@@ -33,6 +33,29 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    /*
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     *  【全体背景を画像にしたい場合】
+     *  下の background: url(...) の部分に画像パスを入れる。
+     *
+     *  パターンA: GitHubにアップした画像（推奨）
+     *    background: url('images/bg.jpg') center/cover fixed;
+     *
+     *  パターンB: 外部URLの画像をそのまま使う
+     *    background: url('https://....jpg') center/cover fixed;
+     *
+     *  ※ background-attachment: fixed で視差スクロール効果あり
+     *     スマホでfixedが効かない場合は scroll に変更
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     */
+    /* body.has-bg-image {
+      background: url('images/bg.jpg') center/cover fixed;
+    }
+    body.has-bg-image .section,
+    body.has-bg-image footer {
+      background: rgba(13,13,11,0.88);
+    } */
+
     /* ─── NAV ─── */
     nav {
       position: sticky; top: 0; z-index: 100;
@@ -68,21 +91,96 @@
     }
 
     /* ─── HERO ─── */
+
+    /*
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     *  背景画像の設定方法
+     *  下の --hero-bg-image に画像URLを入れるだけ。
+     *  例1: GitHubにアップした画像を使う場合
+     *        url('images/hero.jpg')
+     *  例2: 外部URLを直接使う場合
+     *        url('https://example.com/photo.jpg')
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     */
+    :root {
+      --hero-bg-image: none; /* ← ここに画像URLを入れる */
+      --hero-overlay: rgba(10, 10, 8, 0.62); /* 画像の暗さを調整（0.0〜1.0） */
+    }
+
     .hero {
+      position: relative;
       padding: 8rem 2.5rem 7rem;
       border-bottom: 0.5px solid var(--border);
-      min-height: 80vh; display: flex; flex-direction: column; justify-content: center;
+      min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+      overflow: hidden;
     }
+    /* 背景画像レイヤー */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0; z-index: 0;
+      background-image: var(--hero-bg-image);
+      background-size: cover;
+      background-position: center 30%;
+      background-attachment: fixed;
+      transition: opacity 1.2s ease;
+    }
+    /* 暗幕オーバーレイ */
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0; z-index: 1;
+      background: var(--hero-overlay);
+    }
+    /* 画像なし時はグラデ背景 */
+    .hero:not([style*="--hero-bg-image"])::before,
+    .hero[style*="none"]::before {
+      background-image: none;
+    }
+    .hero > * { position: relative; z-index: 2; }
+
     .hero-sub {
       font-size: 11px; letter-spacing: 0.22em;
       color: var(--text-dim); text-transform: uppercase; margin-bottom: 2.5rem;
+      opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards;
     }
+
+    /* タイトルアニメーション */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes revealLine {
+      from { clip-path: inset(0 100% 0 0); }
+      to   { clip-path: inset(0 0% 0 0); }
+    }
+
     .hero-title {
       font-size: clamp(3.5rem, 10vw, 7.5rem);
-      font-weight: 200; line-height: 1.0;
+      font-weight: 200; line-height: 1.05;
       letter-spacing: -0.025em; color: var(--text);
       margin-bottom: 2rem;
     }
+    .hero-title .line {
+      display: block; overflow: hidden;
+    }
+    .hero-title .line-inner {
+      display: block;
+      opacity: 0;
+      transform: translateY(100%);
+      animation: slideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .hero-title .line:nth-child(1) .line-inner { animation-delay: 0.5s; }
+    .hero-title .line:nth-child(2) .line-inner { animation-delay: 0.75s; }
+    .hero-title .line:nth-child(3) .line-inner { animation-delay: 1.0s; }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(100%); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
     .hero-title em {
       font-style: italic;
       color: rgba(232,228,219,0.38);
@@ -90,12 +188,14 @@
     .hero-body {
       max-width: 480px; font-size: 14px;
       line-height: 1.9; color: var(--text-muted);
+      opacity: 0; animation: fadeUp 0.8s ease 1.35s forwards;
     }
     .hero-scroll {
       margin-top: 5rem; display: flex; align-items: center;
       gap: 0.875rem; font-size: 10px;
       letter-spacing: 0.18em; color: rgba(232,228,219,0.28);
       text-transform: uppercase;
+      opacity: 0; animation: fadeIn 1s ease 1.8s forwards;
     }
     .hero-scroll-line { width: 36px; height: 0.5px; background: rgba(232,228,219,0.25); }
 
@@ -344,9 +444,9 @@
 <section class="hero">
   <p class="hero-sub">Artist / Painter — Nagano, Japan</p>
   <h1 class="hero-title">
-    描く。<br>
-    <em>掘る。</em><br>
-    還る。
+    <span class="line"><span class="line-inner">描く。</span></span>
+    <span class="line"><span class="line-inner"><em>掘る。</em></span></span>
+    <span class="line"><span class="line-inner">還る。</span></span>
   </h1>
   <p class="hero-body">
     油彩を起点に、映像・立体・インスタレーションへと展開する多層的な制作。<br>
