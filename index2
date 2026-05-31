@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="津田翔一 Tsuda Shoichi — 長野・左美都を起点に、油彩・映像・立体・インスタレーションで制作するアーティスト。">
+  <meta property="og:title" content="Tsuda Shoichi | 津田 翔一">
+  <meta property="og:description" content="油彩を起点に、映像・立体・インスタレーションへと展開する多層的な制作。左美都という土地の記憶から、存在の根源を問い続ける。">
+  <meta property="og:type" content="website">
+  <title>Tsuda Shoichi | 津田 翔一</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0b;
+      --bg2: #161614;
+      --bg3: #1e1e1b;
+      --text: #e8e4db;
+      --text-muted: rgba(232,228,219,0.55);
+      --text-dim: rgba(232,228,219,0.35);
+      --text-faint: rgba(232,228,219,0.2);
+      --border: rgba(232,228,219,0.12);
+      --border-mid: rgba(232,228,219,0.25);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Helvetica Neue', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /*
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     *  【全体背景を画像にしたい場合】
+     *  下の background: url(...) の部分に画像パスを入れる。
+     *
+     *  パターンA: GitHubにアップした画像（推奨）
+     *    background: url('images/bg.jpg') center/cover fixed;
+     *
+     *  パターンB: 外部URLの画像をそのまま使う
+     *    background: url('https://....jpg') center/cover fixed;
+     *
+     *  ※ background-attachment: fixed で視差スクロール効果あり
+     *     スマホでfixedが効かない場合は scroll に変更
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     */
+    /* body.has-bg-image {
+      background: url('images/bg.jpg') center/cover fixed;
+    }
+    body.has-bg-image .section,
+    body.has-bg-image footer {
+      background: rgba(13,13,11,0.88);
+    } */
+
+    /* ─── NAV ─── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 2.5rem;
+      border-bottom: 0.5px solid var(--border);
+      background: rgba(13,13,11,0.94);
+      backdrop-filter: blur(8px);
+    }
+    .nav-logo {
+      font-size: 12px; letter-spacing: 0.18em;
+      color: var(--text); text-transform: uppercase; text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-size: 12px; color: var(--text-dim);
+      text-decoration: none; letter-spacing: 0.08em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      border: 0.5px solid rgba(232,228,219,0.4); padding: 0.5rem 1.25rem;
+      color: var(--text); text-decoration: none;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: rgba(232,228,219,0.08); }
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-hamburger span {
+      display: block; width: 22px; height: 0.5px;
+      background: var(--text); margin: 5px 0;
+      transition: all 0.25s;
+    }
+
+    /* ─── HERO ─── */
+
+    /*
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     *  背景画像の設定方法
+     *  下の --hero-bg-image に画像URLを入れるだけ。
+     *  例1: GitHubにアップした画像を使う場合
+     *        url('images/hero.jpg')
+     *  例2: 外部URLを直接使う場合
+     *        url('https://example.com/photo.jpg')
+     * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     */
+    :root {
+      --hero-bg-image: none; /* ← ここに画像URLを入れる */
+      --hero-overlay: rgba(10, 10, 8, 0.62); /* 画像の暗さを調整（0.0〜1.0） */
+    }
+
+    .hero {
+      position: relative;
+      padding: 8rem 2.5rem 7rem;
+      border-bottom: 0.5px solid var(--border);
+      min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+      overflow: hidden;
+    }
+    /* 背景画像レイヤー */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0; z-index: 0;
+      background-image: var(--hero-bg-image);
+      background-size: cover;
+      background-position: center 30%;
+      background-attachment: fixed;
+      transition: opacity 1.2s ease;
+    }
+    /* 暗幕オーバーレイ */
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0; z-index: 1;
+      background: var(--hero-overlay);
+    }
+    /* 画像なし時はグラデ背景 */
+    .hero:not([style*="--hero-bg-image"])::before,
+    .hero[style*="none"]::before {
+      background-image: none;
+    }
+    .hero > * { position: relative; z-index: 2; }
+
+    .hero-sub {
+      font-size: 11px; letter-spacing: 0.22em;
+      color: var(--text-dim); text-transform: uppercase; margin-bottom: 2.5rem;
+      opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+
+    /* タイトルアニメーション */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes revealLine {
+      from { clip-path: inset(0 100% 0 0); }
+      to   { clip-path: inset(0 0% 0 0); }
+    }
+
+    .hero-title {
+      font-size: clamp(3.5rem, 10vw, 7.5rem);
+      font-weight: 200; line-height: 1.05;
+      letter-spacing: -0.025em; color: var(--text);
+      margin-bottom: 2rem;
+    }
+    .hero-title .line {
+      display: block; overflow: hidden;
+    }
+    .hero-title .line-inner {
+      display: block;
+      opacity: 0;
+      transform: translateY(100%);
+      animation: slideUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .hero-title .line:nth-child(1) .line-inner { animation-delay: 0.5s; }
+    .hero-title .line:nth-child(2) .line-inner { animation-delay: 0.75s; }
+    .hero-title .line:nth-child(3) .line-inner { animation-delay: 1.0s; }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(100%); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: rgba(232,228,219,0.38);
+    }
+    .hero-body {
+      max-width: 480px; font-size: 14px;
+      line-height: 1.9; color: var(--text-muted);
+      opacity: 0; animation: fadeUp 0.8s ease 1.35s forwards;
+    }
+    .hero-scroll {
+      margin-top: 5rem; display: flex; align-items: center;
+      gap: 0.875rem; font-size: 10px;
+      letter-spacing: 0.18em; color: rgba(232,228,219,0.28);
+      text-transform: uppercase;
+      opacity: 0; animation: fadeIn 1s ease 1.8s forwards;
+    }
+    .hero-scroll-line { width: 36px; height: 0.5px; background: rgba(232,228,219,0.25); }
+
+    /* ─── SECTIONS ─── */
+    .section { padding: 6rem 2.5rem; border-bottom: 0.5px solid var(--border); }
+    .section-label {
+      font-size: 10px; letter-spacing: 0.24em; color: var(--text-dim);
+      text-transform: uppercase; margin-bottom: 3.5rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .section-label::after {
+      content: ''; width: 48px; height: 0.5px;
+      background: rgba(232,228,219,0.2);
+    }
+    .section-heading-en {
+      font-size: 10px; letter-spacing: 0.2em;
+      color: rgba(232,228,219,0.25); text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .section-heading {
+      font-size: clamp(1.75rem, 4vw, 3.25rem);
+      font-weight: 200; line-height: 1.2;
+      color: var(--text); margin-bottom: 2rem;
+      letter-spacing: -0.01em;
+    }
+    .section-body {
+      font-size: 14px; line-height: 1.95;
+      color: var(--text-muted); max-width: 580px;
+    }
+
+    /* ─── STATEMENT ─── */
+
+    /* スクロールアニメーション共通 */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.85s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.85s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.22s; }
+    .reveal-delay-3 { transition-delay: 0.34s; }
+    .reveal-delay-4 { transition-delay: 0.46s; }
+
+    /* 問いかけ：ページ幅いっぱいの大見出し */
+    .concept-question {
+      font-size: clamp(1.6rem, 4.5vw, 3.6rem);
+      font-weight: 200;
+      line-height: 1.35;
+      letter-spacing: -0.015em;
+      color: var(--text);
+      margin: 3.5rem 0 5rem;
+      max-width: 900px;
+    }
+    .concept-question::before {
+      content: '';
+      display: block;
+      width: 1px;
+      height: 48px;
+      background: rgba(232,228,219,0.2);
+      margin-bottom: 2rem;
+    }
+
+    /* 本文3段落：大きめ・余白たっぷり */
+    .concept-paras { max-width: 760px; }
+    .concept-para {
+      font-size: clamp(1rem, 1.8vw, 1.2rem);
+      font-weight: 300;
+      line-height: 2.1;
+      color: rgba(232,228,219,0.72);
+      letter-spacing: 0.03em;
+      padding: 2.5rem 0;
+      border-top: 0.5px solid rgba(232,228,219,0.1);
+    }
+    .concept-para:last-child { border-bottom: 0.5px solid rgba(232,228,219,0.1); }
+
+    /* キーワード強調 */
+    .concept-para em {
+      font-style: normal;
+      color: var(--text);
+      font-weight: 400;
+    }
+
+    /* 4概念グリッド */
+    .concept-tags {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; margin-top: 5rem;
+    }
+    .concept-tag {
+      background: var(--bg2); padding: 2.25rem 2.5rem;
+      transition: background 0.3s;
+    }
+    .concept-tag:hover { background: var(--bg3); }
+    .concept-tag-num {
+      font-size: 11px; letter-spacing: 0.2em;
+      color: rgba(232,228,219,0.2); margin-bottom: 1.25rem;
+    }
+    .concept-tag-term {
+      font-size: clamp(1rem, 1.6vw, 1.3rem);
+      font-weight: 300;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.005em;
+      line-height: 1.3;
+    }
+    .concept-tag-en {
+      font-size: 10px; letter-spacing: 0.18em;
+      color: rgba(232,228,219,0.28); text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .concept-tag-desc {
+      font-size: 13px; line-height: 1.9;
+      color: rgba(232,228,219,0.5);
+    }
+
+    /* ─── WORKS ─── */
+    .works-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5px; margin-top: 2.5rem;
+    }
+    .work-card { background: var(--bg2); overflow: hidden; position: relative; }
+    .work-card a { text-decoration: none; display: block; }
+    .work-thumb {
+      width: 100%; aspect-ratio: 3/4;
+      overflow: hidden; position: relative;
+    }
+    .work-thumb img {
+      width: 100%; height: 100%; object-fit: cover;
+      display: block; transition: transform 0.5s ease;
+      filter: brightness(0.92);
+    }
+    .work-card:hover .work-thumb img { transform: scale(1.03); }
+    .work-thumb-placeholder {
+      width: 100%; aspect-ratio: 3/4;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .work-meta { padding: 1.1rem 1.25rem 1.4rem; }
+    .work-title { font-size: 15px; color: var(--text); font-weight: 400; margin-bottom: 0.2rem; }
+    .work-title-en { font-size: 11px; color: var(--text-dim); letter-spacing: 0.07em; margin-bottom: 0.5rem; }
+    .work-year { font-size: 11px; color: rgba(232,228,219,0.28); letter-spacing: 0.08em; }
+    .work-detail { font-size: 11px; color: rgba(232,228,219,0.28); margin-top: 0.15rem; }
+    .works-more {
+      margin-top: 2rem; text-align: right;
+      font-size: 12px; letter-spacing: 0.1em;
+      color: rgba(232,228,219,0.4); text-decoration: none;
+      border-bottom: 0.5px solid rgba(232,228,219,0.2); padding-bottom: 2px;
+      display: inline-block; transition: color 0.2s;
+    }
+    .works-more:hover { color: var(--text); }
+
+    /* ─── PROFILE ─── */
+    .profile-grid {
+      display: grid; grid-template-columns: 280px 1fr;
+      gap: 4rem; margin-top: 2.5rem; align-items: start;
+    }
+    .profile-img {
+      aspect-ratio: 3/4; background: var(--bg2);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .profile-initial {
+      font-size: 5rem; color: rgba(232,228,219,0.07);
+      font-weight: 200; letter-spacing: -0.03em;
+      user-select: none;
+    }
+    .profile-name { font-size: 2.2rem; font-weight: 200; color: var(--text); margin-bottom: 0.25rem; }
+    .profile-name-en {
+      font-size: 13px; color: var(--text-dim);
+      letter-spacing: 0.16em; margin-bottom: 2.5rem;
+      text-transform: uppercase;
+    }
+    .profile-table { width: 100%; font-size: 13px; border-collapse: collapse; }
+    .profile-table tr { border-bottom: 0.5px solid var(--border); }
+    .profile-table td { padding: 0.85rem 0; vertical-align: top; }
+    .profile-table td:first-child {
+      color: var(--text-dim); min-width: 90px;
+      letter-spacing: 0.04em; padding-right: 1.5rem;
+    }
+    .profile-table td:last-child { color: var(--text-muted); line-height: 1.75; }
+    .profile-table a { color: rgba(232,228,219,0.6); }
+
+    /* ─── GOALS ─── */
+    .goal-cards {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; margin-top: 2.5rem;
+    }
+    .goal-card { background: var(--bg2); padding: 2.25rem; }
+    .goal-num {
+      font-size: 3.5rem; font-weight: 200;
+      color: rgba(232,228,219,0.07); line-height: 1; margin-bottom: 1.25rem;
+    }
+    .goal-title { font-size: 16px; color: var(--text); margin-bottom: 0.6rem; font-weight: 400; }
+    .goal-desc { font-size: 13px; color: rgba(232,228,219,0.45); line-height: 1.75; }
+    .goal-link {
+      display: inline-block; margin-top: 1.25rem; font-size: 11px;
+      color: rgba(232,228,219,0.4); letter-spacing: 0.1em;
+      text-decoration: none; border-bottom: 0.5px solid var(--border-mid);
+      padding-bottom: 2px; transition: color 0.2s;
+    }
+    .goal-link:hover { color: var(--text); }
+
+    /* ─── NEWS ─── */
+    .news-list { margin-top: 2rem; list-style: none; }
+    .news-item {
+      display: flex; gap: 2rem; padding: 1.4rem 0;
+      border-bottom: 0.5px solid var(--border); align-items: flex-start;
+    }
+    .news-date {
+      font-size: 11px; color: var(--text-dim);
+      letter-spacing: 0.06em; min-width: 80px; padding-top: 0.15rem;
+      white-space: nowrap;
+    }
+    .news-body { font-size: 14px; color: rgba(232,228,219,0.68); line-height: 1.65; }
+    .news-tag {
+      display: inline-block; font-size: 9px; letter-spacing: 0.14em;
+      border: 0.5px solid rgba(232,228,219,0.28); padding: 2px 9px;
+      margin-bottom: 0.45rem; color: rgba(232,228,219,0.4);
+      text-transform: uppercase; vertical-align: top;
+    }
+    .news-body a { color: rgba(232,228,219,0.65); transition: color 0.2s; }
+    .news-body a:hover { color: var(--text); }
+
+    /* ─── CONTACT ─── */
+    .contact-section {
+      padding: 7rem 2.5rem; text-align: center;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .contact-section .section-label { justify-content: center; }
+    .contact-section .section-heading { text-align: center; }
+    .contact-body {
+      font-size: 14px; color: var(--text-muted);
+      margin: 0 auto 2.75rem; max-width: 400px; line-height: 1.9;
+    }
+    .contact-btn {
+      display: inline-block;
+      border: 0.5px solid rgba(232,228,219,0.45);
+      padding: 0.9rem 2.75rem; font-size: 11px;
+      letter-spacing: 0.16em; color: var(--text);
+      text-decoration: none; text-transform: uppercase;
+      transition: background 0.2s;
+    }
+    .contact-btn:hover { background: rgba(232,228,219,0.07); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 2.75rem 2.5rem;
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-logo { font-size: 16px; font-weight: 200; color: rgba(232,228,219,0.35); letter-spacing: 0.05em; }
+    .footer-copy { font-size: 10px; color: rgba(232,228,219,0.2); letter-spacing: 0.1em; }
+
+    /* ─── MOBILE ─── */
+    @media (max-width: 768px) {
+      nav { padding: 1.1rem 1.5rem; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: block; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(13,13,11,0.98);
+        align-items: center; justify-content: center;
+        gap: 2.5rem; z-index: 200;
+      }
+      .nav-links.open a { font-size: 1.2rem; }
+      .hero { padding: 5rem 1.5rem 4rem; min-height: 70vh; }
+      .section { padding: 4rem 1.5rem; }
+      .concept-body { column-count: 1; }
+      .concept-tags { grid-template-columns: 1fr; }
+      .concept-question { font-size: clamp(1.3rem, 6vw, 1.8rem); margin: 2.5rem 0 3.5rem; }
+      .works-grid { grid-template-columns: 1fr 1fr; }
+      .profile-grid { grid-template-columns: 1fr; }
+      .profile-img { max-width: 200px; }
+      .goal-cards { grid-template-columns: 1fr; }
+      .news-item { flex-direction: column; gap: 0.5rem; }
+      .contact-section { padding: 5rem 1.5rem; }
+      footer { padding: 2rem 1.5rem; }
+    }
+    @media (max-width: 480px) {
+      .works-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav id="top-nav">
+  <a href="#" class="nav-logo">Tsuda Shoichi</a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#works" onclick="closeMenu()">Works</a></li>
+    <li><a href="#statement" onclick="closeMenu()">Statement</a></li>
+    <li><a href="#profile" onclick="closeMenu()">Profile</a></li>
+    <li><a href="#news" onclick="closeMenu()">News</a></li>
+  </ul>
+  <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+  <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <p class="hero-sub">Artist / Painter — Nagano, Japan</p>
+  <h1 class="hero-title">
+    <span class="line"><span class="line-inner">描く。</span></span>
+    <span class="line"><span class="line-inner"><em>掘る。</em></span></span>
+    <span class="line"><span class="line-inner">還る。</span></span>
+  </h1>
+  <p class="hero-body">
+    油彩を起点に、映像・立体・インスタレーションへと展開する多層的な制作。<br>
+    長野・左美都という土地の記憶から、存在の根源を問い続ける。
+  </p>
+  <div class="hero-scroll">
+    <span class="hero-scroll-line"></span>
+    Scroll
+  </div>
+</section>
+
+<!-- ═══ STATEMENT ═══ -->
+<section class="section" id="statement">
+  <p class="section-label reveal">Statement</p>
+  <p class="section-heading-en reveal reveal-delay-1">制作の姿勢</p>
+  <h2 class="section-heading reveal reveal-delay-2">〈いと〉と〈洞窟〉</h2>
+
+  <p class="concept-question reveal reveal-delay-3">
+    「なぜ私たちは、<br>別の場所で生まれ育つことが<br>できなかったのでしょうか？」
+  </p>
+
+  <div class="concept-paras">
+    <p class="concept-para reveal">
+      私は事物の存在に纏わるあらゆる傾向を、<em>〈単位世界（＝洞窟）〉</em>を構成する最小の事物（＝<em>いと</em>）と捉え、制作しています。〈いと〉とは、〈物語〉のそれ以上細分化できない要素です。そして〈物語〉とは、<em>人間存在そのもの</em>です。なぜなら、私たち人間はすべてを〈物語〉として理解し、機能させて生きているからです。
+    </p>
+    <p class="concept-para reveal reveal-delay-1">
+      私にとっての〈いと〉は、自分が生まれ育った場所である<em>"左美都（さみず、現在の長野県長野市信更町三水）"</em>という地域です。ごく私的な経験を起点とし、その土地に深く根ざした記憶（歴史）や地質、感覚と向き合うことで、私はこの〈洞窟〉の根源を探ろうとしています。
+    </p>
+    <p class="concept-para reveal reveal-delay-2">
+      私の制作の出発点となるのは、<em>油彩による描画</em>です。描画の過程（＝<em>脱領土化</em>）を通して〈いと〉が見いだされ、次に、あるいは同時にさまざまな手法による解釈・再読（＝<em>再領土化</em>）が始まります。再領土化される表現は、絵画にとどまらず、映像、立体、インスタレーションといった多層的な形式へと展開し、複合していきます。
+    </p>
+  </div>
+
+  <div class="concept-tags">
+    <div class="concept-tag reveal">
+      <p class="concept-tag-num">01</p>
+      <p class="concept-tag-term">〈いと〉</p>
+      <p class="concept-tag-en">Ito — The Irreducible Thread</p>
+      <p class="concept-tag-desc">物語のそれ以上細分化できない要素。左美都という土地の記憶・地質・感覚が、津田にとっての〈いと〉となる。</p>
+    </div>
+    <div class="concept-tag reveal reveal-delay-1">
+      <p class="concept-tag-num">02</p>
+      <p class="concept-tag-term">〈洞窟〉</p>
+      <p class="concept-tag-en">Cave — Unit World</p>
+      <p class="concept-tag-desc">複数の重なりや断片、もつれからなる世界の個別のひとつ。単一ではなく、並存する宇宙として捉える造語的概念。</p>
+    </div>
+    <div class="concept-tag reveal reveal-delay-2">
+      <p class="concept-tag-num">03</p>
+      <p class="concept-tag-term">脱領土化</p>
+      <p class="concept-tag-en">Deterritorialization</p>
+      <p class="concept-tag-desc">油彩による描画の過程において、形や意味が解体され、〈いと〉が見いだされていく運動。</p>
+    </div>
+    <div class="concept-tag reveal reveal-delay-3">
+      <p class="concept-tag-num">04</p>
+      <p class="concept-tag-term">再領土化</p>
+      <p class="concept-tag-en">Reterritorialization</p>
+      <p class="concept-tag-desc">絵画・映像・立体・インスタレーションへと多層的に展開する、再解釈と再編成の過程。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WORKS ═══ -->
+<section class="section" id="works">
+  <p class="section-label">Works</p>
+  <p class="section-heading-en">選抜作品</p>
+  <h2 class="section-heading">絵画と変容</h2>
+
+  <div class="works-grid">
+
+    <div class="work-card">
+      <a href="https://tsuda-shoichi.webnode.jp/%e5%b7%a6%e7%be%8e%e9%83%bd%e3%81%ae%e7%a5%9e%e8%a9%b1%e3%81%a8%e4%bc%9d%e6%89%bf/" target="_blank">
+        <div class="work-thumb">
+          <img src="https://de7bbbccc0.cbaul-cdnwnd.com/240d88405885768af7ba7b864ee3299f/200000304-068ff06901/%E3%80%90F100%E7%B8%A6%E3%80%91%E3%82%B9%E3%82%BA%E3%83%A9%E3%83%B3%EF%BC%88%E3%82%A2%E3%83%97%E3%83%AD%E3%83%87%E3%82%A3%E3%83%BC%E3%83%86%E3%83%BC%E3%81%AE%E5%B0%BB%E8%87%80%EF%BC%892-5.jpeg?ph=de7bbbccc0"
+               alt="スズラン ΑΦΡΟΔΙΤΗ" loading="lazy"
+               onerror="this.parentElement.classList.add('no-img')">
+        </div>
+        <div class="work-meta">
+          <p class="work-title">スズラン</p>
+          <p class="work-title-en">ΑΦΡΟΔΙΤΗ</p>
+          <p class="work-year">2022</p>
+          <p class="work-detail">162 × 130.3 cm　油彩・キャンバス</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="work-card">
+      <a href="https://tsuda-shoichi.webnode.jp/" target="_blank">
+        <div class="work-thumb">
+          <img src="https://de7bbbccc0.cbaul-cdnwnd.com/240d88405885768af7ba7b864ee3299f/200000272-4865e48660/%E3%80%90F100%E6%A8%AA%E3%80%91%E6%9C%9D%E7%84%BC%E3%81%91.jpeg?ph=de7bbbccc0"
+               alt="朝焼け" loading="lazy"
+               onerror="this.parentElement.classList.add('no-img')">
+        </div>
+        <div class="work-meta">
+          <p class="work-title">朝焼け</p>
+          <p class="work-title-en">Morning Glow</p>
+          <p class="work-year">2021</p>
+          <p class="work-detail">97 × 162 cm　油彩・キャンバス</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="work-card">
+      <a href="https://tsuda-shoichi.webnode.jp/" target="_blank">
+        <div class="work-thumb">
+          <img src="https://de7bbbccc0.cbaul-cdnwnd.com/240d88405885768af7ba7b864ee3299f/200000288-036db036dd/%E3%80%90S100%E3%80%91so%20far.jpeg?ph=de7bbbccc0"
+               alt="明るい洞窟" loading="lazy"
+               onerror="this.parentElement.classList.add('no-img')">
+        </div>
+        <div class="work-meta">
+          <p class="work-title">明るい洞窟</p>
+          <p class="work-title-en">Bright Cave</p>
+          <p class="work-year">2019</p>
+          <p class="work-detail">162 × 162 cm　油彩・キャンバス</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="work-card">
+      <a href="https://tsuda-shoichi.webnode.jp/" target="_blank">
+        <div class="work-thumb">
+          <img src="https://de7bbbccc0.cbaul-cdnwnd.com/240d88405885768af7ba7b864ee3299f/200000270-6fa196fa1b/%E3%80%90F100%E6%A8%AA%E3%80%91%E6%9E%97-1.jpeg?ph=de7bbbccc0"
+               alt="林" loading="lazy"
+               onerror="this.parentElement.classList.add('no-img')">
+        </div>
+        <div class="work-meta">
+          <p class="work-title">林</p>
+          <p class="work-title-en">Forest</p>
+          <p class="work-year">2021</p>
+          <p class="work-detail">97 × 162 cm　油彩・キャンバス</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="work-card">
+      <a href="https://tsuda-shoichi.webnode.jp/" target="_blank">
+        <div class="work-thumb">
+          <img src="https://de7bbbccc0.cbaul-cdnwnd.com/240d88405885768af7ba7b864ee3299f/200000143-451884518a/F100%E7%B8%A6%E3%80%91Anathema-Ritorn%C3%A8llo-2.jpg?ph=de7bbbccc0"
+               alt="上に溶ける…" loading="lazy"
+               onerror="this.parentElement.classList.add('no-img')">
+        </div>
+        <div class="work-meta">
+          <p class="work-title">上に溶ける…</p>
+          <p class="work-title-en">Dissolving Upward</p>
+          <p class="work-year">2021</p>
+          <p class="work-detail">162 × 130.3 cm　油彩・キャンバス</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="work-card">
+      <a href="https://tsuda-shoichi.webnode.jp/" target="_blank">
+        <div class="work-thumb">
+          <img src="https://de7bbbccc0.cbaul-cdnwnd.com/240d88405885768af7ba7b864ee3299f/200000247-61f1261f15/%E3%80%90F100%E7%B8%A6%E3%80%91%E5%A4%95%E7%84%BC%E3%81%91.jpeg?ph=de7bbbccc0"
+               alt="夕焼け" loading="lazy"
+               onerror="this.parentElement.classList.add('no-img')">
+        </div>
+        <div class="work-meta">
+          <p class="work-title">夕焼け</p>
+          <p class="work-title-en">Evening Glow</p>
+          <p class="work-year">2021</p>
+          <p class="work-detail">162 × 130.3 cm　油彩・キャンバス</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="work-card">
+      <a href="https://tsuda-shoichi.webnode.jp/" target="_blank">
+        <div class="work-thumb">
+          <img src="https://de7bbbccc0.cbaul-cdnwnd.com/240d88405885768af7ba7b864ee3299f/200000113-3305b3305e/Lilith%20Remnants-2-2.jpg?ph=de7bbbccc0"
+               alt="リリス（胸部）Lilith Remnants-2" loading="lazy"
+               onerror="this.parentElement.classList.add('no-img')">
+        </div>
+        <div class="work-meta">
+          <p class="work-title">リリス（胸部）</p>
+          <p class="work-title-en">Lilith Remnants-2</p>
+          <p class="work-year">2020</p>
+          <p class="work-detail">116.7 × 91 cm　油彩・キャンバス</p>
+        </div>
+      </a>
+    </div>
+
+  </div>
+
+  <div style="margin-top: 2.25rem; text-align: right;">
+    <a href="https://tsuda-shoichi.webnode.jp/%e4%bd%9c%e5%93%81%ef%bc%88%e5%88%86%e9%a1%9e%ef%bc%89/"
+       target="_blank" class="works-more">すべての作品を見る →</a>
+  </div>
+</section>
+
+<!-- ═══ PROFILE ═══ -->
+<section class="section" id="profile">
+  <p class="section-label">Profile</p>
+  <div class="profile-grid">
+    <div class="profile-img">
+      <span class="profile-initial">翔一</span>
+    </div>
+    <div>
+      <p class="profile-name">津田 翔一</p>
+      <p class="profile-name-en">Tsuda Shoichi</p>
+      <table class="profile-table">
+        <tr>
+          <td>出身</td>
+          <td>長野県長野市信更町三水（左美都）</td>
+        </tr>
+        <tr>
+          <td>活動</td>
+          <td>油彩絵画を起点に、映像・立体・インスタレーションへと展開する多層的な制作活動を行う。</td>
+        </tr>
+        <tr>
+          <td>テーマ</td>
+          <td>〈いと〉と〈洞窟（単位世界）〉。土地の記憶・地質・神話・伝承を通じた存在の根源の探求。</td>
+        </tr>
+        <tr>
+          <td>シリーズ</td>
+          <td>左美都の神話と伝承 / 異体（Variant）/ 洞窟（Cave）</td>
+        </tr>
+        <tr>
+          <td>販売</td>
+          <td><a href="https://sh012da.base.shop/" target="_blank">Atelier SH01（BASE）</a></td>
+        </tr>
+        <tr>
+          <td>目標</td>
+          <td>ヴェネツィア・ビエンナーレ 出品・出展</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ GOALS ═══ -->
+<section class="section">
+  <p class="section-label">Goals &amp; Vision</p>
+  <h2 class="section-heading">現在の目標</h2>
+  <div class="goal-cards">
+    <div class="goal-card">
+      <p class="goal-num">01</p>
+      <p class="goal-title">ヴェネツィア・ビエンナーレ</p>
+      <p class="goal-desc">国際美術展への出品・出展を目指し、左美都の記憶と普遍的な人間存在への問いを世界に届ける。</p>
+    </div>
+    <div class="goal-card">
+      <p class="goal-num">02</p>
+      <p class="goal-title">作品販売　Atelier SH01</p>
+      <p class="goal-desc">オンラインショップにて作品・グッズの販売を行っています。</p>
+      <a class="goal-link" href="https://sh012da.base.shop/" target="_blank">sh012da.base.shop →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ NEWS ═══ -->
+<section class="section" id="news">
+  <p class="section-label">News</p>
+  <h2 class="section-heading">お知らせ</h2>
+  <ul class="news-list">
+    <li class="news-item">
+      <span class="news-date">2026.02.10</span>
+      <div class="news-body">
+        <span class="news-tag">Exhibition</span><br>
+        ホクト文化ホール1階ギャラリーにて、グループ展「next × N-ART展」を開催中。是非お越しください。
+      </div>
+    </li>
+    <li class="news-item">
+      <span class="news-date">2025.06.29</span>
+      <div class="news-body">
+        <span class="news-tag">Exhibition</span><br>
+        信州高遠美術館にてグループ展「ふうけいのまにまに」を開催いたします。是非お越しください。
+      </div>
+    </li>
+    <li class="news-item">
+      <span class="news-date">2024.06.13</span>
+      <div class="news-body">
+        <span class="news-tag">Media</span><br>
+        <a href="https://note.com/art_walk_repo/n/n78e9b9f3804a" target="_blank">インタビュー記事</a>が掲載されています。ご一読ください。
+      </div>
+    </li>
+    <li class="news-item">
+      <span class="news-date">2024.02.04</span>
+      <div class="news-body">
+        <span class="news-tag">Event</span><br>
+        長野県松本市・キッセイ文化ホールにて２月４日（日）に行われたイベントに出演しました。
+      </div>
+    </li>
+  </ul>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section class="contact-section" id="contact">
+  <p class="section-label" style="justify-content:center;">Contact</p>
+  <h2 class="section-heading">お問い合わせ</h2>
+  <p class="contact-body">
+    展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。
+  </p>
+  <a href="https://tsuda-shoichi.webnode.jp/%e3%81%8a%e5%95%8f%e3%81%84%e5%90%88%e3%82%8f%e3%81%9b/"
+     target="_blank" class="contact-btn">問い合わせフォームへ →</a>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
+  <p class="footer-copy">© 2024 Tsuda Shoichi. All Rights Reserved.</p>
+</footer>
+
+<script>
+  function toggleMenu() {
+    const links = document.getElementById('nav-links');
+    const btn = document.getElementById('nav-cta-btn');
+    links.classList.toggle('open');
+    btn.style.display = links.classList.contains('open') ? 'none' : '';
+  }
+  function closeMenu() {
+    document.getElementById('nav-links').classList.remove('open');
+    document.getElementById('nav-cta-btn').style.display = '';
+  }
+
+  // Scroll fade-in（.reveal と旧来要素の両方に対応）
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.work-card, .goal-card, .news-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+
+  document.querySelectorAll('.reveal').forEach(el => {
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
