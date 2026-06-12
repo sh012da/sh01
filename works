@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSUDA SHOICHI | 作品</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==================================================
+        【背景画像を変更する際の指針】
+        このページの背景に画像を設定するためのスタイルです。
+        以下の手順でカスタマイズしてください。
+        
+        1. 画像の変更:
+           下の `.bg-image` クラスの `background-image: url('...');` のURLを、
+           ご自身の画像のパスに書き換えてください。
+           （例: 油彩キャンバスの接写、左美都の風景、アトリエの写真など）
+           メインサイトの画像フォルダを使用する場合は `url('../images/your-bg.jpg')` のように指定します。
+        
+        2. 画像の濃さ（不透明度）の調整:
+           `.bg-image` クラス内の `opacity: 0.15;` の数値を変更します。
+           0.0（完全な透明）〜 1.0（不透明）の間で調整してください。
+           ※サイト全体のダークで静謐な世界観を活かすため、0.1〜0.2程度の暗めを推奨します。
+        
+        3. 表示の挙動:
+           現在の設定では画面全体を覆うように自動調整（cover）され、
+           スクロールしても背景が固定（fixed）され、奥行きが出るようにしています。
+        ==================================================
+        */
+        .bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            /* ↓↓↓ ここを変更 ↓↓↓ */
+            background-image: url('https://images.unsplash.com/photo-1604871000636-074fa5117945?q=80&w=1920&auto=format&fit=crop'); 
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15; /* ← ここで濃さを調整 */
+        }
+
+        /* ベース設定 */
+        :root {
+            --bg-color: #050505;
+            --text-color: #f4f4f4;
+            --font-en: 'Cormorant Garamond', serif;
+            --font-jp: 'Noto Serif JP', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-jp);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ヘッダー（構造・デザインは変更なし） */
+        header {
+            padding: 40px 5vw;
+            position: absolute;
+            width: 100%;
+            z-index: 10;
+        }
+
+        .logo {
+            font-family: var(--font-en);
+            font-size: 1.5rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        /* ヒーローセクション（レイアウトは変更なし。背景画像が透けるようにグラデーション色のみ微調整） */
+        .hero {
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            background: radial-gradient(circle at center, rgba(26,26,26,0.6) 0%, rgba(5,5,5,0.9) 100%);
+        }
+
+        .hero h1 {
+            font-family: var(--font-en);
+            font-size: 4vw;
+            letter-spacing: 0.2em;
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-weight: 200;
+            font-size: 1rem;
+            letter-spacing: 0.15em;
+            color: #aaa;
+            margin-bottom: 10px;
+        }
+
+        .statement {
+             margin-top: 20px;
+             font-family: var(--font-en);
+             font-size: 0.8rem;
+             color: #666;
+             letter-spacing: 0.25em;
+        }
+
+        /* ギャラリーセクション */
+        .gallery-container {
+            padding: 80px 5vw 150px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* 各作品カテゴリのカード */
+        .grid-item {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 4 / 5;
+            cursor: pointer;
+            background-color: #111;
+        }
+
+        .grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 1.2s ease;
+            opacity: 0.5;
+            filter: grayscale(20%);
+        }
+
+        .grid-item:hover img {
+            transform: scale(1.05);
+            opacity: 0.9;
+            filter: grayscale(0%);
+        }
+
+        .item-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            transition: background 0.5s ease;
+        }
+
+        .grid-item:hover .item-overlay {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .item-title {
+            font-size: 1.4rem;
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            margin-bottom: 10px;
+            transform: translateY(15px);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+
+        .item-en {
+            font-family: var(--font-en);
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            color: #ccc;
+            text-transform: uppercase;
+            transform: translateY(15px);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transition-delay: 0.05s;
+        }
+
+        .grid-item:hover .item-title,
+        .grid-item:hover .item-en {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* フッター */
+        footer {
+            padding: 60px 20px;
+            text-align: center;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            color: #555;
+            font-family: var(--font-en);
+        }
+
+        /* レスポンシブ対応（スマホ向け） */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 8vw; }
+            .grid { grid-template-columns: 1fr; gap: 10px; }
+            .item-title, .item-en { opacity: 1; transform: translateY(0); }
+            .grid-item img { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-image"></div>
+
+    <header>
+        <div class="logo">Tsuda Shoichi</div>
+    </header>
+
+    <section class="hero">
+        <h1>WORKS</h1>
+        <p>枠組みを越え、空間と共鳴する。</p>
+        <div class="statement">SITE-SPECIFIC & STORY-DRIVEN</div>
+    </section>
+
+    <main class="gallery-container">
+        <div class="grid">
+            <article class="grid-item">
+                <img src="https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?q=80&w=800&auto=format&fit=crop" alt="左美都の神話と伝承">
+                <div class="item-overlay">
+                    <h3 class="item-title">左美都の神話と伝承</h3>
+                    <span class="item-en">Myth and Tradition</span>
+                </div>
+            </article>
+
+            <article class="grid-item">
+                <img src="https://images.unsplash.com/photo-1549887552-cb1071d3e5ca?q=80&w=800&auto=format&fit=crop" alt="異体">
+                <div class="item-overlay">
+                    <h3 class="item-title">異体</h3>
+                    <span class="item-en">Variant Forms</span>
+                </div>
+            </article>
+
+            <article class="grid-item">
+                <img src="https://images.unsplash.com/photo-1518331647614-7a1f04cd34cb?q=80&w=800&auto=format&fit=crop" alt="洞窟">
+                <div class="item-overlay">
+                    <h3 class="item-title">洞窟</h3>
+                    <span class="item-en">The Cave</span>
+                </div>
+            </article>
+
+            <article class="grid-item">
+                <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=800&auto=format&fit=crop" alt="素描">
+                <div class="item-overlay">
+                    <h3 class="item-title">素描</h3>
+                    <span class="item-en">Drawings</span>
+                </div>
+            </article>
+
+            <article class="grid-item">
+                <img src="https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=800&auto=format&fit=crop" alt="抽象">
+                <div class="item-overlay">
+                    <h3 class="item-title">抽象</h3>
+                    <span class="item-en">Abstract</span>
+                </div>
+            </article>
+
+            <article class="grid-item">
+                <img src="https://images.unsplash.com/photo-1506804886640-edcf195cb911?q=80&w=800&auto=format&fit=crop" alt="難民(子ども)">
+                <div class="item-overlay">
+                    <h3 class="item-title">難民(子ども)</h3>
+                    <span class="item-en">Refugees</span>
+                </div>
+            </article>
+
+            <article class="grid-item">
+                <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&auto=format&fit=crop" alt="子ども兵士">
+                <div class="item-overlay">
+                    <h3 class="item-title">子ども兵士</h3>
+                    <span class="item-en">Child Soldiers</span>
+                </div>
+            </article>
+
+            <article class="grid-item">
+                <img src="https://images.unsplash.com/photo-1604871000636-074fa5117945?q=80&w=800&auto=format&fit=crop" alt="黒の時代">
+                <div class="item-overlay">
+                    <h3 class="item-title">黒の時代</h3>
+                    <span class="item-en">The Black Period</span>
+                </div>
+            </article>
+
+            <article class="grid-item">
+                <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=800&auto=format&fit=crop" alt="2010年～2011年">
+                <div class="item-overlay">
+                    <h3 class="item-title">2010年～2011年</h3>
+                    <span class="item-en">2010 - 2011</span>
+                </div>
+            </article>
+
+            <article class="grid-item">
+                <img src="https://images.unsplash.com/photo-1533036412175-c9bb3e3e00bd?q=80&w=800&auto=format&fit=crop" alt="標本美術">
+                <div class="item-overlay">
+                    <h3 class="item-title">標本美術</h3>
+                    <span class="item-en">Specimen Art</span>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; Tsuda Shoichi. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>
