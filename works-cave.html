@@ -1,371 +1,521 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>洞窟 The Cave | Tsuda Shoichi</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Shippori+Mincho:wght@400;500&display=swap" rel="stylesheet">
-    
-    <style>
-        /* =========================================
-           CSS Variables
-        ========================================= */
-        :root {
-            --bg-color: #FAFAFA;
-            --text-main: #111111;
-            --text-muted: #777777;
-            --font-jp: 'Shippori Mincho', serif;
-            --font-en: 'Cormorant Garamond', 'Helvetica Neue', Arial, sans-serif;
-            --max-width-text: 680px;
-            --max-width-gallery: 1200px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>洞窟 The Cave | Tsuda Shoichi</title>
 
-        /* =========================================
-           Base Styles
-        ========================================= */
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: var(--font-jp);
-            line-height: 2.2;
-            letter-spacing: 0.06em;
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            /* iPhoneのセーフエリア（ノッチ等）対応 */
-            padding-left: env(safe-area-inset-left);
-            padding-right: env(safe-area-inset-right);
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
 
-        a {
-            color: var(--text-main);
-            text-decoration: none;
-            transition: opacity 0.3s ease;
-        }
+  <style>
+    /* ─── TOKENS ─── */
+    :root {
+      --bg:        #070706;
+      --bg2:       #0f0f0d;
+      --fg:        #e8e4df;
+      --muted:     rgba(232,228,223,0.42);
+      --dim:       rgba(232,228,223,0.22);
+      --accent:    #b8a898;
+      --border:    rgba(232,228,223,0.10);
+      --border-md: rgba(232,228,223,0.22);
+      --en: 'Cormorant Garamond', serif;
+      --jp: 'Noto Serif JP', serif;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --px: clamp(1.25rem, 6vw, 5rem);
+      --text-max: 680px;
+    }
 
-        a:hover {
-            opacity: 0.5;
-        }
+    /* ─── RESET ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
 
-        img {
-            max-width: 100%;
-            height: auto;
-            vertical-align: bottom;
-        }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--jp);
+      line-height: 2.1;
+      letter-spacing: 0.06em;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
 
-        /* =========================================
-           Navigation
-        ========================================= */
-        .global-nav {
-            display: flex;
-            justify-content: space-between;
-            padding: 2.5rem 5vw;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-        }
+    img { max-width: 100%; height: auto; vertical-align: bottom; display: block; }
 
-        /* =========================================
-           Header
-        ========================================= */
-        .series-header {
-            min-height: 40vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            margin-bottom: 5vh;
-        }
+    a {
+      color: var(--fg);
+      text-decoration: none;
+      transition: opacity 0.3s ease;
+    }
+    a:hover { opacity: 0.45; }
 
-        .series-title {
-            font-size: 2.5rem;
-            font-weight: 400;
-            margin: 0;
-            letter-spacing: 0.2em;
-        }
+    /* ─── NAV ─── */
+    .global-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: clamp(1.25rem,3vh,2rem) var(--px);
+      border-bottom: 0.5px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(7,7,6,0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .nav-logo {
+      font-family: var(--en);
+      font-size: clamp(0.7rem, 2vw, 0.85rem);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .nav-works {
+      font-family: var(--en);
+      font-size: clamp(0.6rem, 1.5vw, 0.72rem);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.3s ease;
+    }
+    .nav-works:hover { color: var(--fg); opacity: 1; }
 
-        .series-title span {
-            display: block;
-            font-family: var(--font-en);
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            margin-top: 1rem;
-            letter-spacing: 0.1em;
-        }
+    /* ─── HERO HEADER ─── */
+    .series-header {
+      position: relative;
+      min-height: clamp(52vh, 70vh, 85vh);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 var(--px) clamp(3rem, 8vh, 6rem);
+      border-bottom: 0.5px solid var(--border);
+      overflow: hidden;
+    }
 
-        /* =========================================
-           Concept Section
-        ========================================= */
-        .concept-section {
-            max-width: var(--max-width-text);
-            margin: 0 auto 12vh;
-            padding: 0 6vw;
-        }
+    /* 背景: 最初の作品画像をぼかして敷く */
+    .series-header-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('images/【S100】so far.jpg');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.12;
+      filter: blur(2px);
+      transform: scale(1.05); /* blur端を隠す */
+    }
+    .series-header-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top,
+        rgba(7,7,6,1)   0%,
+        rgba(7,7,6,0.5) 50%,
+        rgba(7,7,6,0.2) 100%);
+    }
 
-        .credit {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 3rem;
-        }
+    /* header テキスト群 */
+    .series-header-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+    }
 
-        .concept-section p {
-            margin-bottom: 2rem;
-            text-align: justify;
-        }
+    .series-eyebrow {
+      font-family: var(--en);
+      font-size: clamp(0.58rem, 1.5vw, 0.68rem);
+      letter-spacing: 0.45em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: clamp(1rem, 3vh, 2rem);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .series-eyebrow::before {
+      content: '';
+      width: 32px;
+      height: 0.5px;
+      background: var(--muted);
+      flex-shrink: 0;
+    }
 
-        /* =========================================
-           Gallery Section (Card Layout)
-        ========================================= */
-        .gallery-section {
-            max-width: var(--max-width-gallery);
-            margin: 0 auto 15vh;
-            padding: 0 5vw;
-        }
+    .series-title-jp {
+      font-family: var(--jp);
+      font-size: clamp(2.8rem, 9vw, 8rem);
+      font-weight: 200;
+      line-height: 1;
+      letter-spacing: 0.05em;
+      color: var(--fg);
+      margin-bottom: clamp(0.75rem, 2vh, 1.5rem);
+    }
 
-        .gallery-grid {
-            display: grid;
-            /* PCでは最小320px、可変幅で美しいグリッドを形成 */
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 8vh 4vw;
-        }
+    .series-title-en {
+      font-family: var(--en);
+      font-size: clamp(1rem, 3vw, 2rem);
+      font-weight: 300;
+      font-style: italic;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+    }
 
-        .artwork-card {
-            display: flex;
-            flex-direction: column;
-            text-decoration: none;
-            color: inherit;
-            /* ホバー時のレイアウト崩れを防ぐため相対配置 */
-            position: relative; 
-        }
+    .series-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-top: clamp(2rem, 4vh, 3.5rem);
+    }
+    .series-meta-line {
+      width: 48px;
+      height: 0.5px;
+      background: var(--border-md);
+      flex-shrink: 0;
+    }
+    .series-meta-text {
+      font-family: var(--en);
+      font-size: clamp(0.58rem, 1.5vw, 0.65rem);
+      letter-spacing: 0.2em;
+      color: var(--dim);
+      text-transform: uppercase;
+    }
 
-        /* 上部：制作年 */
-        .artwork-year {
-            font-family: var(--font-en);
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 0.8rem;
-            letter-spacing: 0.1em;
-        }
+    /* ─── CONCEPT ─── */
+    .concept-section {
+      max-width: calc(var(--text-max) + var(--px) * 2);
+      margin: 0 auto;
+      padding: clamp(4rem, 10vh, 9rem) var(--px);
+      border-bottom: 0.5px solid var(--border);
+    }
 
-        /* カード画像エリア */
-        .artwork-image-wrapper {
-            width: 100%;
-            margin-bottom: 1.5rem;
-            overflow: hidden;
-            background-color: #EFEFEF; /* プレースホルダー */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-        }
+    .concept-label {
+      font-family: var(--en);
+      font-size: clamp(0.58rem, 1.5vw, 0.65rem);
+      letter-spacing: 0.4em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: clamp(2rem, 5vh, 4rem);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .concept-label::after {
+      content: '';
+      flex: 1;
+      height: 0.5px;
+      background: var(--border);
+    }
 
-        .artwork-image {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.8s ease;
-        }
+    .credit {
+      font-family: var(--en);
+      font-size: clamp(0.6rem, 1.5vw, 0.7rem);
+      color: var(--dim);
+      letter-spacing: 0.15em;
+      margin-bottom: clamp(2rem, 4vh, 3rem);
+    }
 
-        /* ホバーエフェクト（PCのみで快適に動作するよう調整） */
-        @media (hover: hover) and (pointer: fine) {
-            .artwork-card:hover .artwork-image-wrapper {
-                transform: translateY(-8px);
-                box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            }
-            /* 画像自体がわずかにズームする上品な演出 */
-            .artwork-card:hover .artwork-image {
-                transform: scale(1.03);
-            }
-        }
+    .concept-body {
+      font-size: clamp(0.875rem, 2vw, 1rem);
+      font-weight: 300;
+      line-height: 2.2;
+      color: rgba(232,228,223,0.72);
+      letter-spacing: 0.06em;
+    }
+    .concept-body p {
+      margin-bottom: 1.8em;
+      text-align: justify;
+    }
+    .concept-body p:last-child { margin-bottom: 0; }
 
-        /* 下部：作品情報 */
-        .artwork-info {
-            display: flex;
-            flex-direction: column;
-        }
+    /* em: キーワード強調 */
+    .concept-body em {
+      font-style: normal;
+      color: var(--fg);
+      border-bottom: 0.5px solid var(--border-md);
+      padding-bottom: 1px;
+    }
 
-        .artwork-title {
-            font-size: 1.1rem;
-            font-weight: 400;
-            margin: 0 0 0.4rem 0;
-            letter-spacing: 0.1em;
-        }
+    /* ─── GALLERY ─── */
+    .gallery-section {
+      max-width: calc(1200px + var(--px) * 2);
+      margin: 0 auto;
+      padding: clamp(4rem, 10vh, 9rem) var(--px) clamp(6rem, 15vh, 12rem);
+    }
 
-        .artwork-size {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin: 0;
-            letter-spacing: 0.05em;
-        }
+    .gallery-label {
+      font-family: var(--en);
+      font-size: clamp(0.58rem, 1.5vw, 0.65rem);
+      letter-spacing: 0.4em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: clamp(3rem, 7vh, 6rem);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .gallery-label::after {
+      content: '';
+      flex: 1;
+      height: 0.5px;
+      background: var(--border);
+    }
 
-        /* =========================================
-           Footer
-        ========================================= */
-        .global-footer {
-            text-align: center;
-            padding: 5vh 0;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            letter-spacing: 0.05em;
-        }
+    /* グリッド: PC 2〜3列 → スマホ 1列 */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(clamp(260px, 30vw, 360px), 1fr));
+      gap: clamp(3rem, 8vh, 7rem) clamp(1.5rem, 3vw, 3rem);
+    }
 
-        /* =========================================
-           Animations
-        ========================================= */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1), transform 1s cubic-bezier(0.25, 1, 0.5, 1);
-        }
+    /* ─── ARTWORK CARD ─── */
+    .artwork-card {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
 
-        .fade-in.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .artwork-year {
+      font-family: var(--en);
+      font-size: clamp(0.62rem, 1.5vw, 0.72rem);
+      letter-spacing: 0.2em;
+      color: var(--dim);
+      margin-bottom: 0.9rem;
+    }
 
-        /* =========================================
-           Mobile Responsiveness (スマートフォン完全対応)
-        ========================================= */
-        @media screen and (max-width: 768px) {
-            /* ナビゲーションの余白を少し詰める */
-            .global-nav {
-                padding: 1.5rem 6vw;
-                font-size: 0.75rem;
-            }
+    .artwork-image-wrapper {
+      width: 100%;
+      overflow: hidden;
+      background: var(--bg2);
+      margin-bottom: 1.5rem;
+      /* 繊細な境界線 */
+      outline: 0.5px solid var(--border);
+      outline-offset: 0;
+      transition:
+        outline-color 0.5s ease,
+        transform 0.6s var(--ease),
+        box-shadow 0.6s var(--ease);
+    }
 
-            /* タイトルのスケールダウン */
-            .series-header {
-                min-height: 30vh;
-                margin-bottom: 3vh;
-            }
-            .series-title {
-                font-size: 2rem;
-            }
-            .series-title span {
-                font-size: 1rem;
-            }
+    .artwork-image {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      display: block;
+      filter: grayscale(30%) brightness(0.82);
+      transition:
+        transform  0.8s var(--ease),
+        filter     0.6s ease;
+    }
 
-            /* テキストが読みやすいように左右の余白を最適化 */
-            .concept-section {
-                padding: 0 6vw;
-                margin-bottom: 8vh;
-            }
+    /* ホバー: ポインタデバイスのみ */
+    @media (hover: hover) and (pointer: fine) {
+      .artwork-card:hover .artwork-image-wrapper {
+        transform: translateY(-6px);
+        box-shadow: 0 24px 48px rgba(0,0,0,0.5);
+        outline-color: var(--border-md);
+      }
+      .artwork-card:hover .artwork-image {
+        transform: scale(1.04);
+        filter: grayscale(0%) brightness(0.95);
+      }
+      .artwork-card:hover .artwork-title { color: var(--fg); }
+    }
 
-            /* ギャラリーを完全に1列表示に固定。縦の余白(gap)を少し広げて作品ごとの区切りを強調 */
-            .gallery-grid {
-                grid-template-columns: 1fr;
-                gap: 6vh 0;
-            }
-            .gallery-section {
-                padding: 0 6vw;
-            }
+    .artwork-info { display: flex; flex-direction: column; gap: 0.3rem; }
 
-            /* スマホでは文字サイズを微調整 */
-            .artwork-title {
-                font-size: 1.05rem;
-            }
-            .artwork-size {
-                font-size: 0.75rem;
-            }
-        }
-    </style>
+    .artwork-title {
+      font-family: var(--jp);
+      font-size: clamp(0.9rem, 2vw, 1.05rem);
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: rgba(232,228,223,0.85);
+      transition: color 0.3s ease;
+    }
+    .artwork-title-en {
+      font-family: var(--en);
+      font-size: clamp(0.6rem, 1.3vw, 0.7rem);
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      font-style: italic;
+    }
+    .artwork-size {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: clamp(0.58rem, 1.3vw, 0.65rem);
+      color: var(--dim);
+      letter-spacing: 0.08em;
+      line-height: 1.7;
+    }
+
+    /* ─── FOOTER ─── */
+    .global-footer {
+      padding: clamp(3rem, 6vh, 5rem) var(--px);
+      border-top: 0.5px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-logo {
+      font-family: var(--en);
+      font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+      letter-spacing: 0.2em;
+      color: var(--dim);
+    }
+    .footer-copy {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: clamp(0.55rem, 1.2vw, 0.65rem);
+      color: var(--dim);
+      letter-spacing: 0.08em;
+    }
+
+    /* ─── SCROLL REVEAL ─── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(22px);
+      transition:
+        opacity   1s var(--ease),
+        transform 1s var(--ease);
+    }
+    .fade-in.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* stagger: JS で --sd をセット */
+    .fade-in { transition-delay: var(--sd, 0ms); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 600px) {
+      .gallery-grid {
+        grid-template-columns: 1fr;
+        gap: clamp(3rem, 8vh, 5rem) 0;
+      }
+      .artwork-image {
+        aspect-ratio: 3 / 2;
+      }
+      .series-header { min-height: 60vh; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      .fade-in { opacity: 1; transform: none; }
+    }
+  </style>
 </head>
+
 <body>
 
-    <nav class="global-nav">
-        <a href="index.html">Tsuda Shoichi</a>
-        <a href="works.html">Works Index</a>
-    </nav>
+  <!-- NAV: 変更なし -->
+  <nav class="global-nav">
+    <a href="index.html" class="nav-logo">Tsuda Shoichi</a>
+    <a href="works.html" class="nav-works">Works Index</a>
+  </nav>
 
-    <main>
-        <header class="series-header fade-in">
-            <h1 class="series-title">洞窟<span>The Cave</span></h1>
-        </header>
+  <main>
 
-        <section class="concept-section fade-in">
-            <p class="credit">解説：左美都研究会、水澤井縄</p>
-            <p>《洞窟》は、津田が定義する〈単位世界〉を示す。</p>
-            <p>〈単位世界〉とは、世界が唯一・単一ではなく、重層的で断片的、かつ並存する複数の現実や感覚のもつれから構成されるという理解に基づき、その中のあるまとまった現象群の場である。</p>
-            <p>「洞窟」は、考古学的にも人類の起源的居住空間とされる。旧石器時代から人は自然洞窟に身を寄せ、天候や外敵から身を守り、火の使用や壁画の制作といった文化的行為の舞台とした。さらに新石器時代には、自然洞窟の構造を模倣したといってよい竪穴住居や地下式施設が出現し、それは建築的・文化的記憶として人類の居住形態に刻み込まれていったと考えられる。</p>
-        </section>
+    <!-- ─── HERO HEADER ─── -->
+    <header class="series-header">
+      <div class="series-header-bg"></div>
+      <div class="series-header-inner fade-in">
+        <p class="series-eyebrow">Series — Cave</p>
+        <h1 class="series-title-jp">洞窟</h1>
+        <p class="series-title-en">The Cave</p>
+        <div class="series-meta-row">
+          <div class="series-meta-line"></div>
+          <span class="series-meta-text">Oil on Canvas &nbsp;·&nbsp; Site-specific Series</span>
+        </div>
+      </div>
+    </header>
 
-        <section class="gallery-section">
-            <div class="gallery-grid">
-                
-                <article class="artwork-card fade-in">
-                    <div class="artwork-year">2021</div>
-                    <a href="images/【S100】so far.jpg" target="_blank" class="artwork-image-wrapper">
-                    <div class="artwork-image-wrapper">
-                        <img src="images/【S100】so far.jpg" alt="明るい洞窟" class="artwork-image">
-                    </div>
-                    </a>
-                    <div class="artwork-info">
-                        <h3 class="artwork-title">明るい洞窟</h3>
-                        <p class="artwork-size">油彩・キャンバス</p>
-                        <p class="artwork-size">162 × 162 cm</p>
-                    </div>
-                </article>
+    <!-- ─── CONCEPT ─── -->
+    <section class="concept-section fade-in">
+      <p class="concept-label">Concept</p>
+      <p class="credit">解説：左美都研究会、水澤井縄</p>
+      <div class="concept-body">
+        <p>《洞窟》は、津田が定義する<em>〈単位世界〉</em>を示す。</p>
+        <p><em>〈単位世界〉</em>とは、世界が唯一・単一ではなく、重層的で断片的、かつ並存する複数の現実や感覚のもつれから構成されるという理解に基づき、その中のあるまとまった現象群の場である。</p>
+        <p>「洞窟」は、考古学的にも人類の起源的居住空間とされる。旧石器時代から人は自然洞窟に身を寄せ、天候や外敵から身を守り、火の使用や壁画の制作といった文化的行為の舞台とした。さらに新石器時代には、自然洞窟の構造を模倣したといってよい竪穴住居や地下式施設が出現し、それは建築的・文化的記憶として人類の居住形態に刻み込まれていったと考えられる。</p>
+      </div>
+    </section>
 
-                <article class="artwork-card fade-in">
-                    <div class="artwork-year">2022</div>
-                    <div class="artwork-image-wrapper">
-                        <img src="images/work2.jpg" alt="作品名2" class="artwork-image">
-                    </div>
-                    <div class="artwork-info">
-                        <h3 class="artwork-title">作品名が入ります</h3>
-                        <p class="artwork-size">130 × 162 cm</p>
-                    </div>
-                </article>
+    <!-- ─── GALLERY ─── -->
+    <section class="gallery-section">
+      <p class="gallery-label">Works</p>
+      <div class="gallery-grid">
 
-                <article class="artwork-card fade-in">
-                    <div class="artwork-year">2022</div>
-                    <div class="artwork-image-wrapper">
-                        <img src="images/work3.jpg" alt="作品名3" class="artwork-image">
-                    </div>
-                    <div class="artwork-info">
-                        <h3 class="artwork-title">作品名が入ります</h3>
-                        <p class="artwork-size">91 × 116 cm</p>
-                    </div>
-                </article>
+        <!-- 作品 01: 変更なし -->
+        <article class="artwork-card fade-in">
+          <div class="artwork-year">2021</div>
+          <a href="images/【S100】so far.jpg" target="_blank" class="artwork-image-wrapper">
+            <img src="images/【S100】so far.jpg" alt="明るい洞窟" class="artwork-image">
+          </a>
+          <div class="artwork-info">
+            <h3 class="artwork-title">明るい洞窟</h3>
+            <p class="artwork-title-en">Bright Cave</p>
+            <p class="artwork-size">油彩・キャンバス</p>
+            <p class="artwork-size">162 × 162 cm</p>
+          </div>
+        </article>
 
-            </div>
-        </section>
-    </main>
+        <!-- 作品 02: 変更なし -->
+        <article class="artwork-card fade-in">
+          <div class="artwork-year">2022</div>
+          <div class="artwork-image-wrapper">
+            <img src="images/work2.jpg" alt="作品名2" class="artwork-image">
+          </div>
+          <div class="artwork-info">
+            <h3 class="artwork-title">作品名が入ります</h3>
+            <p class="artwork-size">130 × 162 cm</p>
+          </div>
+        </article>
 
-    <footer class="global-footer fade-in">
-        <p>© Tsuda Shoichi. All Rights Reserved.</p>
-    </footer>
+        <!-- 作品 03: 変更なし -->
+        <article class="artwork-card fade-in">
+          <div class="artwork-year">2022</div>
+          <div class="artwork-image-wrapper">
+            <img src="images/work3.jpg" alt="作品名3" class="artwork-image">
+          </div>
+          <div class="artwork-info">
+            <h3 class="artwork-title">作品名が入ります</h3>
+            <p class="artwork-size">91 × 116 cm</p>
+          </div>
+        </article>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const faders = document.querySelectorAll('.fade-in');
-            const appearOptions = {
-                threshold: 0.1,
-                rootMargin: "0px 0px -50px 0px"
-            };
+      </div>
+    </section>
 
-            const appearOnScroll = new IntersectionObserver(function(entries, observer) {
-                entries.forEach(entry => {
-                    if (!entry.isIntersecting) {
-                        return;
-                    } else {
-                        entry.target.classList.add('is-visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, appearOptions);
+  </main>
 
-            faders.forEach(fader => {
-                appearOnScroll.observe(fader);
-            });
-        });
-    </script>
+  <!-- FOOTER: 変更なし -->
+  <footer class="global-footer fade-in">
+    <p class="footer-logo">Tsuda Shoichi</p>
+    <p class="footer-copy">© Tsuda Shoichi. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    /* ── Intersection Observer: フェードイン + スタガー ── */
+    const faders = document.querySelectorAll('.fade-in');
+
+    const io = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    /* ギャラリーカードにスタガー遅延を付ける */
+    document.querySelectorAll('.gallery-grid .artwork-card').forEach((el, i) => {
+      el.style.setProperty('--sd', `${i * 100}ms`);
+    });
+
+    faders.forEach(el => io.observe(el));
+  </script>
+
 </body>
 </html>
