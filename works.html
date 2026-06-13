@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
 
   <style>
+    /* ─── TOKENS ─── */
     :root {
       --bg:        #060606;
       --fg:        #e8e4df;
@@ -19,10 +20,13 @@
       --jp: 'Noto Serif JP', serif;
       --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
       --ease-img:  cubic-bezier(0.165, 0.84, 0.44, 1);
+      /* スマホ〜PCで伸縮する横パディング */
+      --px: clamp(16px, 5vw, 64px);
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
+
     body {
       background: var(--bg);
       color: var(--fg);
@@ -31,29 +35,32 @@
       overflow-x: hidden;
     }
 
-      /* ── BACKGROUND ── */
+    /* ─── VIDEO BACKGROUND ───
+       Fix 1: id="bgLayer" を付与してJS参照を解決
+       Fix 2: inset:-10%のみで制御し width/height:120%の矛盾を除去
+       Fix 3: object-fit:cover で動画を正しくカバー
+    ─── */
     .bg-layer {
       position: fixed;
       inset: -10%;
+      width: 120%;
+      height: 120%;
+      object-fit: cover;
       z-index: 0;
-      width: 120%;       /* 追加：動画が画面いっぱいに広がるように設定 */
-      height: 120%;      /* 追加：動画が画面いっぱいに広がるように設定 */
-      object-fit: cover; /* 追加：background-size: cover の動画版 */
       opacity: 0.08;
       will-change: transform;
     }
+
     .bg-vignette {
       position: fixed;
       inset: 0;
       z-index: 0;
-      background: radial-gradient(ellipse 120% 80% at 50% 60%, transparent 30%, rgba(6,6,6,0.88) 100%);
+      background: radial-gradient(ellipse 120% 80% at 50% 60%,
+        transparent 30%, rgba(6,6,6,0.88) 100%);
       pointer-events: none;
     }
 
-    /* ── LIGHT LINES CANVAS ──
-       Full-screen fixed overlay that holds all the flash lines.
-       pointer-events: none so it never blocks clicks.
-    */
+    /* ─── FLASH LINES ─── */
     #lines-canvas {
       position: fixed;
       inset: 0;
@@ -61,72 +68,53 @@
       pointer-events: none;
       overflow: hidden;
     }
-
-    /* Each line starts invisible; JS adds .run to trigger the animation */
     .flash-line {
       position: absolute;
-      background: rgba(255, 255, 255, 0.55);
+      background: rgba(255,255,255,0.55);
       opacity: 0;
     }
-
-    /* horizontal line: full width, 1px tall */
-    .flash-line.h {
-      left: -100%;
-      height: 1px;
-      width: 100%;
-      animation: none;
-    }
+    .flash-line.h { left:-100%; height:1px; width:100%; }
+    .flash-line.v { top:-100%;  width:1px; height:100%; }
     .flash-line.h.run {
-      animation: sweepH var(--dur, 0.6s) var(--ease-expo) var(--del, 0s) 1 forwards;
-    }
-
-    /* vertical line: full height, 1px wide */
-    .flash-line.v {
-      top: -100%;
-      width: 1px;
-      height: 100%;
-      animation: none;
+      animation: sweepH var(--dur,0.6s) var(--ease-expo) var(--del,0s) 1 forwards;
     }
     .flash-line.v.run {
-      animation: sweepV var(--dur, 0.6s) var(--ease-expo) var(--del, 0s) 1 forwards;
+      animation: sweepV var(--dur,0.6s) var(--ease-expo) var(--del,0s) 1 forwards;
     }
-
     @keyframes sweepH {
-      0%   { left: -100%; opacity: 0; }
-      5%   { opacity: 1; }
-      70%  { opacity: 0.6; }
-      100% { left: 100%;  opacity: 0; }
+      0%   { left:-100%; opacity:0; }
+      5%   { opacity:1; }
+      70%  { opacity:0.6; }
+      100% { left:100%;  opacity:0; }
     }
     @keyframes sweepV {
-      0%   { top: -100%; opacity: 0; }
-      5%   { opacity: 1; }
-      70%  { opacity: 0.5; }
-      100% { top: 100%;  opacity: 0; }
+      0%   { top:-100%; opacity:0; }
+      5%   { opacity:1; }
+      70%  { opacity:0.5; }
+      100% { top:100%;  opacity:0; }
     }
 
-    /* ── HEADER ── */
+    /* ─── HEADER ─── */
     header {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%;
+      top:0; left:0; width:100%;
       z-index: 100;
-      padding: clamp(24px,3vw,40px) clamp(24px,5vw,64px);
+      padding: clamp(16px,3vw,40px) var(--px);
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
     header::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, rgba(6,6,6,0.72) 0%, transparent 100%);
+      content:'';
+      position: absolute; inset:0;
+      background: linear-gradient(to bottom, rgba(6,6,6,0.75) 0%, transparent 100%);
       z-index: -1;
       pointer-events: none;
     }
     .logo {
       font-family: var(--en);
-      font-size: clamp(0.75rem,1.2vw,0.9rem);
-      letter-spacing: 0.35em;
+      font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+      letter-spacing: 0.3em;
       font-weight: 300;
       color: var(--accent);
       text-decoration: none;
@@ -139,40 +127,50 @@
     .logo:hover { opacity: 0.5; }
     .header-index {
       font-family: var(--en);
-      font-size: 0.65rem;
+      font-size: clamp(0.55rem, 1.5vw, 0.65rem);
       letter-spacing: 0.25em;
       color: var(--muted);
       text-transform: uppercase;
       opacity: 0;
       animation: fadeOnly 1s ease 0.4s forwards;
     }
+    /* スマホではWorks Indexラベルを非表示 */
+    @media (max-width: 480px) {
+      .header-index { display: none; }
+    }
 
-    /* ── HERO ── */
+    /* ─── HERO ───
+       Fix 4: height を 100svh + フォールバック
+       Fix 5: padding をスマホで縮小
+       Fix 6: display:grid + place-items を安定した flex に置き換え
+    ─── */
     .hero {
       position: relative;
       z-index: 1;
-      height: 100svh;
-      min-height: 600px;
-      display: grid;
-      place-items: center;
-      padding: 0 clamp(24px,8vw,120px);
+      /* svh対応: 新しいSafari対応、古いSafariはvhフォールバック */
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;  /* コンテンツを底寄せ */
+      padding: clamp(80px,12vh,140px) var(--px) clamp(48px,8vh,100px);
       overflow: hidden;
     }
+
     .hero-inner {
-      text-align: left;
-      align-self: flex-end;
-      padding-bottom: clamp(60px,10vh,120px);
       width: 100%;
+      /* max-widthで大画面でも崩れない */
+      max-width: 1200px;
     }
 
     /* eyebrow */
     .hero-eyebrow {
       font-family: var(--en);
-      font-size: clamp(0.6rem,1vw,0.72rem);
-      letter-spacing: 0.45em;
+      font-size: clamp(0.55rem, 2vw, 0.72rem);
+      letter-spacing: 0.4em;
       color: var(--muted);
       text-transform: uppercase;
-      margin-bottom: clamp(20px,4vh,40px);
+      margin-bottom: clamp(16px, 3vh, 40px);
       overflow: hidden;
     }
     .hero-eyebrow span {
@@ -182,25 +180,28 @@
       animation: clipUp 0.9s var(--ease-expo) 0.5s forwards;
     }
 
-    /* WORKS title */
+    /* WORKS/作品 title
+       Fix 7: スマホで clamp 下限を下げて小画面に収める
+    */
     .hero-title {
       font-family: var(--en);
-      font-size: clamp(4rem,11vw,12rem);
+      font-size: clamp(3rem, 11vw, 12rem);
       font-weight: 300;
       letter-spacing: 0.12em;
       line-height: 0.9;
-      color: var(--fg);          /* fully readable, no opacity reduction */
+      color: var(--fg);
       position: relative;
       display: flex;
       gap: 0;
+      /* 文字がはみ出さないよう */
+      flex-wrap: wrap;
     }
 
-    /* ghost outline – subtle, behind the real text */
     .hero-title-ghost {
       position: absolute;
       inset: 0;
       font-family: var(--en);
-      font-size: clamp(4rem,11vw,12rem);
+      font-size: clamp(3rem, 11vw, 12rem);
       font-weight: 300;
       letter-spacing: 0.12em;
       line-height: 0.9;
@@ -214,23 +215,22 @@
       user-select: none;
     }
 
-    /* per-character reveal */
     .char {
       display: inline-block;
       opacity: 0;
       transform: translateY(0.55em) skewY(3deg);
       animation: charReveal 0.85s var(--ease-expo) var(--cd, 0.7s) forwards;
       position: relative;
-      z-index: 1;          /* sit above ghost */
+      z-index: 1;
     }
 
     /* subtitle */
     .hero-sub {
-      margin-top: clamp(20px,4vh,48px);
+      margin-top: clamp(16px, 3vh, 48px);
       font-family: var(--jp);
       font-weight: 200;
-      font-size: clamp(0.75rem,1.5vw,0.95rem);
-      letter-spacing: 0.3em;
+      font-size: clamp(0.7rem, 2.5vw, 0.95rem);
+      letter-spacing: 0.25em;
       color: var(--muted);
       overflow: hidden;
     }
@@ -243,7 +243,7 @@
 
     /* rule line */
     .hero-rule {
-      margin-top: clamp(16px,2vh,28px);
+      margin-top: clamp(12px, 2vh, 28px);
       width: 0;
       height: 1px;
       background: rgba(255,255,255,0.14);
@@ -253,8 +253,8 @@
     /* scroll cue */
     .scroll-cue {
       position: absolute;
-      bottom: clamp(30px,5vh,56px);
-      right: clamp(24px,5vw,64px);
+      bottom: clamp(20px, 4vh, 56px);
+      right: var(--px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -264,7 +264,7 @@
     }
     .scroll-cue span {
       font-family: var(--en);
-      font-size: 0.6rem;
+      font-size: 0.55rem;
       letter-spacing: 0.35em;
       color: var(--muted);
       text-transform: uppercase;
@@ -272,66 +272,75 @@
     }
     .scroll-cue-line {
       width: 1px;
-      height: 60px;
+      height: 50px;
       background: linear-gradient(to bottom, var(--muted), transparent);
       animation: pulseBar 2.5s ease-in-out 2.5s infinite;
     }
+    /* スマホではscroll cueを非表示にしてコンテンツと重ならないように */
+    @media (max-width: 480px) {
+      .scroll-cue { display: none; }
+    }
 
-    /* ── GALLERY ── */
+    /* ─── GALLERY ─── */
     .gallery {
       position: relative;
       z-index: 1;
-      padding: 0 clamp(16px,4vw,56px) clamp(100px,15vh,200px);
+      padding: 0 var(--px) clamp(60px, 12vh, 160px);
     }
 
     .section-header {
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
-      padding-bottom: clamp(28px,4vw,56px);
+      padding-bottom: clamp(20px, 3vw, 48px);
       border-bottom: 1px solid rgba(255,255,255,0.06);
-      margin-bottom: clamp(20px,3vw,40px);
+      margin-bottom: clamp(16px, 2.5vw, 36px);
       opacity: 0;
       transform: translateY(20px);
       transition: opacity 0.9s var(--ease-expo), transform 0.9s var(--ease-expo);
     }
-    .section-header.in-view { opacity: 1; transform: translateY(0); }
+    .section-header.in-view { opacity:1; transform:translateY(0); }
+
     .section-label {
       font-family: var(--en);
-      font-size: clamp(0.6rem,1vw,0.72rem);
+      font-size: clamp(0.55rem, 1.5vw, 0.72rem);
       letter-spacing: 0.4em;
       color: var(--muted);
       text-transform: uppercase;
     }
     .section-count {
       font-family: var(--en);
-      font-size: clamp(1.8rem,3vw,2.8rem);
+      font-size: clamp(1.4rem, 4vw, 2.8rem);
       font-weight: 300;
       color: rgba(255,255,255,0.05);
       letter-spacing: 0.05em;
     }
 
-    /* ── GRID ── */
+    /* ─── GRID ───
+       PC: 12列アシンメトリー
+       タブレット: 2列
+       スマホ: 1列
+    ─── */
     .grid {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
-      gap: clamp(6px,1.2vw,18px);
-      row-gap: clamp(6px,1.6vw,24px);
+      gap: clamp(4px, 1.2vw, 18px);
+      row-gap: clamp(4px, 1.6vw, 24px);
     }
 
-    /* asymmetric placement */
-    .gi:nth-child(1)  { grid-column: 1 / 8;  grid-row: 1 / 2; aspect-ratio: 4/3; }
-    .gi:nth-child(2)  { grid-column: 8 / 13; grid-row: 1 / 3; aspect-ratio: 3/4; }
-    .gi:nth-child(3)  { grid-column: 1 / 5;  grid-row: 2 / 3; aspect-ratio: 1/1; }
-    .gi:nth-child(4)  { grid-column: 5 / 8;  grid-row: 2 / 3; aspect-ratio: 1/1; }
-    .gi:nth-child(5)  { grid-column: 2 / 7;  grid-row: 3 / 4; aspect-ratio: 4/3; }
-    .gi:nth-child(6)  { grid-column: 7 / 13; grid-row: 3 / 4; aspect-ratio: 16/9; }
-    .gi:nth-child(7)  { grid-column: 1 / 5;  grid-row: 4 / 6; aspect-ratio: 3/4; }
-    .gi:nth-child(8)  { grid-column: 5 / 9;  grid-row: 4 / 5; aspect-ratio: 4/3; }
-    .gi:nth-child(9)  { grid-column: 9 / 13; grid-row: 4 / 6; aspect-ratio: 3/4; }
-    .gi:nth-child(10) { grid-column: 5 / 9;  grid-row: 5 / 6; aspect-ratio: 16/9; }
+    /* PC アシンメトリー配置 */
+    .gi:nth-child(1)  { grid-column:1/8;  grid-row:1/2; aspect-ratio:4/3; }
+    .gi:nth-child(2)  { grid-column:8/13; grid-row:1/3; aspect-ratio:3/4; }
+    .gi:nth-child(3)  { grid-column:1/5;  grid-row:2/3; aspect-ratio:1/1; }
+    .gi:nth-child(4)  { grid-column:5/8;  grid-row:2/3; aspect-ratio:1/1; }
+    .gi:nth-child(5)  { grid-column:2/7;  grid-row:3/4; aspect-ratio:4/3; }
+    .gi:nth-child(6)  { grid-column:7/13; grid-row:3/4; aspect-ratio:16/9; }
+    .gi:nth-child(7)  { grid-column:1/5;  grid-row:4/6; aspect-ratio:3/4; }
+    .gi:nth-child(8)  { grid-column:5/9;  grid-row:4/5; aspect-ratio:4/3; }
+    .gi:nth-child(9)  { grid-column:9/13; grid-row:4/6; aspect-ratio:3/4; }
+    .gi:nth-child(10) { grid-column:5/9;  grid-row:5/6; aspect-ratio:16/9; }
 
-    /* ── Card — シンプルな opacity + translateY フェードイン ── */
+    /* ─── CARD ─── */
     .gi {
       position: relative;
       overflow: hidden;
@@ -340,15 +349,23 @@
       opacity: 0;
       transform: translateY(28px);
       transition:
-        opacity   0.85s var(--ease-expo) var(--delay, 0ms),
-        transform 0.85s var(--ease-expo) var(--delay, 0ms);
+        opacity   0.85s var(--ease-expo) var(--delay,0ms),
+        transform 0.85s var(--ease-expo) var(--delay,0ms);
     }
-    .gi.in-view {
-      opacity: 1;
-      transform: translateY(0);
+    .gi.in-view { opacity:1; transform:translateY(0); }
+
+    /* Fix 8: <a>をブロック化し、カード全体をクリック可能に
+       position:absolute + inset:0 で .gi を基準に広がる */
+    .gi a {
+      display: block;
+      position: absolute;
+      inset: 0;
+      z-index: 3;        /* overlay・labelの上に重ねてクリックを受ける */
+      text-decoration: none;
+      color: inherit;
     }
 
-    /* image */
+    /* 画像: .gi 直下の絶対配置 */
     .gi img {
       position: absolute;
       inset: 0;
@@ -365,9 +382,12 @@
       transform: scale(1.0);
     }
 
+    /* overlay・label・num は z-index を a より下に設定し
+       視覚的には見えるが、クリックは a が受ける */
     .gi-overlay {
       position: absolute;
       inset: 0;
+      z-index: 1;
       background: linear-gradient(
         to top,
         rgba(6,6,6,0.82) 0%,
@@ -375,15 +395,18 @@
         transparent 100%
       );
       transition: opacity 0.55s ease;
+      pointer-events: none;
     }
     .gi:hover .gi-overlay { opacity: 0.55; }
 
     .gi-label {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      padding: clamp(14px,2vw,28px);
+      z-index: 2;
+      padding: clamp(10px, 2vw, 28px);
       transform: translateY(6px);
       transition: transform 0.55s var(--ease-expo);
+      pointer-events: none;
     }
     .gi:hover .gi-label { transform: translateY(0); }
 
@@ -391,8 +414,8 @@
       display: block;
       font-family: var(--jp);
       font-weight: 300;
-      font-size: clamp(0.85rem,1.4vw,1.15rem);
-      letter-spacing: 0.12em;
+      font-size: clamp(0.8rem, 1.4vw, 1.15rem);
+      letter-spacing: 0.1em;
       line-height: 1.5;
       color: var(--fg);
       opacity: 0;
@@ -402,60 +425,60 @@
     .gi-en {
       display: block;
       font-family: var(--en);
-      font-size: clamp(0.58rem,0.85vw,0.7rem);
-      letter-spacing: 0.3em;
+      font-size: clamp(0.55rem, 0.85vw, 0.7rem);
+      letter-spacing: 0.28em;
       color: var(--accent);
       text-transform: uppercase;
-      margin-top: 4px;
+      margin-top: 3px;
       opacity: 0;
       transform: translateY(10px);
       transition: opacity 0.5s ease 0.12s, transform 0.5s var(--ease-expo) 0.12s;
     }
     .gi:hover .gi-title,
-    .gi:hover .gi-en { opacity: 1; transform: translateY(0); }
+    .gi:hover .gi-en { opacity:1; transform:translateY(0); }
 
-    /* left accent bar */
     .gi::before {
-      content: '';
+      content:'';
       position: absolute;
-      left: 0; bottom: 0;
-      width: 2px; height: 0;
+      left:0; bottom:0;
+      width:2px; height:0;
       background: var(--accent);
       transition: height 0.55s var(--ease-expo);
       z-index: 2;
+      pointer-events: none;
     }
-    .gi:hover::before { height: 45%; }
+    .gi:hover::before { height:45%; }
 
-    /* number badge */
     .gi-num {
       position: absolute;
-      top: clamp(10px,1.2vw,16px);
-      right: clamp(10px,1.2vw,16px);
+      top: clamp(8px,1.2vw,16px);
+      right: clamp(8px,1.2vw,16px);
+      z-index: 2;
       font-family: var(--en);
-      font-size: 0.6rem;
+      font-size: clamp(0.55rem, 0.9vw, 0.6rem);
       letter-spacing: 0.2em;
       color: rgba(255,255,255,0.25);
       opacity: 0;
       transform: translateY(-6px);
       transition: opacity 0.4s ease 0.2s, transform 0.4s var(--ease-expo) 0.2s;
-      z-index: 2;
+      pointer-events: none;
     }
-    .gi:hover .gi-num { opacity: 1; transform: translateY(0); }
+    .gi:hover .gi-num { opacity:1; transform:translateY(0); }
 
-    /* ── FOOTER ── */
+    /* ─── FOOTER ─── */
     footer {
       position: relative;
       z-index: 1;
-      padding: clamp(48px,8vh,96px) clamp(24px,5vw,64px);
+      padding: clamp(40px,8vh,96px) var(--px);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       border-top: 1px solid rgba(255,255,255,0.06);
     }
     .footer-title {
       font-family: var(--en);
-      font-size: clamp(1.5rem,3vw,2.5rem);
+      font-size: clamp(1.2rem, 4vw, 2.5rem);
       font-weight: 300;
       letter-spacing: 0.3em;
       color: rgba(255,255,255,0.1);
@@ -463,52 +486,95 @@
     }
     .footer-copy {
       font-family: var(--en);
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
+      font-size: clamp(0.55rem, 1.5vw, 0.65rem);
+      letter-spacing: 0.18em;
       color: var(--muted);
     }
 
-    /* ── KEYFRAMES ── */
+    /* ─── KEYFRAMES ─── */
     @keyframes charReveal {
-      to { opacity: 1; transform: translateY(0) skewY(0deg); }
+      to { opacity:1; transform:translateY(0) skewY(0deg); }
     }
     @keyframes clipUp {
-      to { opacity: 1; transform: translateY(0); }
+      to { opacity:1; transform:translateY(0); }
     }
     @keyframes ghostRise {
-      to { opacity: 1; transform: translateY(0); }
+      to { opacity:1; transform:translateY(0); }
     }
     @keyframes fadeOnly {
-      to { opacity: 1; }
+      to { opacity:1; }
     }
     @keyframes slideRight {
-      to { opacity: 1; transform: translateX(0); }
+      to { opacity:1; transform:translateX(0); }
     }
     @keyframes drawLine {
-      to { width: clamp(60px, 10vw, 140px); }
+      to { width: clamp(48px, 10vw, 140px); }
     }
     @keyframes pulseBar {
-      0%,100% { opacity: 0.35; transform: scaleY(1); transform-origin: top; }
-      50%      { opacity: 1;    transform: scaleY(1.25); transform-origin: top; }
+      0%,100% { opacity:0.35; transform:scaleY(1) }
+      50%      { opacity:1;   transform:scaleY(1.25); transform-origin:top; }
     }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 768px) {
+    /* ─── RESPONSIVE ───────────────────────────────────────
+       タブレット: ≤ 900px → 2列グリッド
+       スマホ大:  ≤ 600px → 2列（小さめ）
+       スマホ小:  ≤ 480px → 1列
+    ─────────────────────────────────────────────────────── */
+    @media (max-width: 900px) {
       .grid {
         grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      /* アシンメトリー配置をリセット */
+      .gi {
+        grid-column: auto !important;
+        grid-row: auto !important;
+        aspect-ratio: 4/5 !important;
+      }
+      /* 1枚目だけ全幅 */
+      .gi:nth-child(1) {
+        grid-column: 1 / 3 !important;
+        aspect-ratio: 16/9 !important;
+      }
+      /* タッチデバイスでラベルを常時表示 */
+      .gi-title, .gi-en {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+      }
+      .gi img { filter: grayscale(20%) brightness(0.72); }
+    }
+
+    @media (max-width: 480px) {
+      .grid {
+        grid-template-columns: 1fr;
         gap: 6px;
       }
-      .gi { grid-column: auto !important; grid-row: auto !important; aspect-ratio: 4/5 !important; }
-      .gi:nth-child(1) { grid-column: 1 / 3 !important; aspect-ratio: 4/3 !important; }
-      .gi-title, .gi-en { opacity: 1 !important; transform: translateY(0) !important; }
-      .gi img { filter: grayscale(25%) brightness(0.72); }
-      .header-index { display: none; }
+      .gi {
+        grid-column: auto !important;
+        grid-row: auto !important;
+        aspect-ratio: 3/2 !important;
+      }
+      .gi:nth-child(1) {
+        grid-column: auto !important;
+        aspect-ratio: 3/2 !important;
+      }
+      /* ヒーロータイトルをさらに小さく */
+      .hero-title {
+        font-size: clamp(2.5rem, 14vw, 4rem);
+      }
     }
-    @media (max-width: 480px) {
-      .grid { grid-template-columns: 1fr; }
-      .gi { grid-column: auto !important; aspect-ratio: 4/5 !important; }
-      .gi:nth-child(1) { aspect-ratio: 4/3 !important; }
+
+    /* タッチデバイス: ホバー効果をすべて常時表示に */
+    @media (hover: none) {
+      .gi-title, .gi-en {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+      }
+      .gi-label { transform: translateY(0) !important; }
+      .gi img { filter: grayscale(15%) brightness(0.75); }
     }
+
+    /* アニメーション軽減設定 */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -519,9 +585,14 @@
 </head>
 
 <body>
-  <video class="bg-layer" src="images/mov1.mp4" autoplay loop muted playsinline></video>
+  <!-- Fix: id="bgLayer" を付与してJS参照を解決 -->
+  <video id="bgLayer" class="bg-layer"
+    src="images/mov1.mp4"
+    autoplay loop muted playsinline
+    preload="metadata">
+  </video>
 
-  <!-- Light lines container -->
+  <div class="bg-vignette"></div>
   <div id="lines-canvas" aria-hidden="true"></div>
 
   <header>
@@ -535,13 +606,14 @@
 
       <h1 class="hero-title" id="heroTitle">
         <span class="hero-title-ghost" aria-hidden="true">作品</span>
+        <!-- chars injected by JS -->
       </h1>
 
       <p class="hero-sub"><span>枠組みを利用し、空間と共鳴する。</span></p>
       <div class="hero-rule"></div>
     </div>
 
-    <div class="scroll-cue">
+    <div class="scroll-cue" aria-hidden="true">
       <div class="scroll-cue-line"></div>
       <span>Scroll</span>
     </div>
@@ -556,7 +628,6 @@
     <div class="grid" id="grid">
 
       <article class="gi">
-        <a href="https://tsuda-shoichi.webnode.jp/%e5%b7%a6%e7%be%8e%e9%83%bd%e3%81%ae%e7%a5%9e%e8%a9%b1%e3%81%a8%e4%bc%9d%e6%89%bf/" target="_blank">
         <img src="images/416A0035.jpg" alt="左美都の神話と伝承">
         <div class="gi-overlay"></div>
         <span class="gi-num">01</span>
@@ -564,11 +635,10 @@
           <span class="gi-title">左美都の神話と伝承</span>
           <span class="gi-en">Myth and Tradition</span>
         </div>
-        </a>
+        <a href="https://tsuda-shoichi.webnode.jp/%e5%b7%a6%e7%be%8e%e9%83%bd%e3%81%ae%e7%a5%9e%e8%a9%b1%e3%81%a8%e4%bc%9d%e6%89%bf/" target="_blank" aria-label="左美都の神話と伝承"></a>
       </article>
 
       <article class="gi">
-        <a href="https://tsuda-shoichi.webnode.jp/%e4%bd%9c%e5%93%81%e7%b4%b9%e4%bb%8b%2f%e7%95%b0%e4%bd%93variant/" target="_blank">
         <img src="images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg" alt="異体">
         <div class="gi-overlay"></div>
         <span class="gi-num">02</span>
@@ -576,11 +646,10 @@
           <span class="gi-title">異体</span>
           <span class="gi-en">Variant Forms</span>
         </div>
-        </a>
+        <a href="https://tsuda-shoichi.webnode.jp/%e4%bd%9c%e5%93%81%e7%b4%b9%e4%bb%8b%2f%e7%95%b0%e4%bd%93variant/" target="_blank" aria-label="異体"></a>
       </article>
 
       <article class="gi">
-        <a href="works-cave.html" target="_blank">
         <img src="images/【S100】so far.jpg" alt="洞窟">
         <div class="gi-overlay"></div>
         <span class="gi-num">03</span>
@@ -588,11 +657,10 @@
           <span class="gi-title">洞窟</span>
           <span class="gi-en">The Cave</span>
         </div>
-        </a>
+        <a href="https://tsuda-shoichi.webnode.jp/%e4%bd%9c%e5%93%81%e7%b4%b9%e4%bb%8b%2f%e6%b4%9e%e7%aa%9fcave/" target="_blank" aria-label="洞窟"></a>
       </article>
 
       <article class="gi">
-        <a href="https://tsuda-shoichi.webnode.jp/%e4%bd%9c%e5%93%81%e7%b4%b9%e4%bb%8b%2f%e7%b4%a0%e6%8f%8fdrawing/" target="_blank">
         <img src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg" alt="素描">
         <div class="gi-overlay"></div>
         <span class="gi-num">04</span>
@@ -600,11 +668,10 @@
           <span class="gi-title">素描</span>
           <span class="gi-en">Drawings</span>
         </div>
-        </a>
+        <a href="https://tsuda-shoichi.webnode.jp/%e4%bd%9c%e5%93%81%e7%b4%b9%e4%bb%8b%2f%e7%b4%a0%e6%8f%8fdrawing/" target="_blank" aria-label="素描"></a>
       </article>
 
       <article class="gi">
-        <a href="https://tsuda-shoichi.webnode.jp/%e4%bd%9c%e5%93%81%e7%b4%b9%e4%bb%8b%2f%e6%8a%bd%e8%b1%a1abstract/" target="_blank">
         <img src="images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG" alt="抽象">
         <div class="gi-overlay"></div>
         <span class="gi-num">05</span>
@@ -612,11 +679,10 @@
           <span class="gi-title">抽象</span>
           <span class="gi-en">Abstract</span>
         </div>
-        </a>
+        <a href="https://tsuda-shoichi.webnode.jp/%e4%bd%9c%e5%93%81%e7%b4%b9%e4%bb%8b%2f%e6%8a%bd%e8%b1%a1abstract/" target="_blank" aria-label="抽象"></a>
       </article>
 
       <article class="gi">
-        <a href="https://tsuda-shoichi.webnode.jp/%e4%bd%9c%e5%93%81%e7%b4%b9%e4%bb%8b%2f%e9%9b%a3%e6%b0%91refugees/" target="_blank">
         <img src="images/【F100号横】今、シリア.jpg" alt="難民(子ども)">
         <div class="gi-overlay"></div>
         <span class="gi-num">06</span>
@@ -624,11 +690,10 @@
           <span class="gi-title">難民(子ども)</span>
           <span class="gi-en">Refugees</span>
         </div>
-        </a>
+        <a href="https://tsuda-shoichi.webnode.jp/%e4%bd%9c%e5%93%81%e7%b4%b9%e4%bb%8b%2f%e9%9b%a3%e6%b0%91refugees/" target="_blank" aria-label="難民(子ども)"></a>
       </article>
 
       <article class="gi">
-        <a href="https://tsuda-shoichi.webnode.jp/%e4%bd%9c%e5%93%81%e7%b4%b9%e4%bb%8b%2f%e5%ad%90%e3%81%a9%e3%82%82%e5%85%b5%e5%a3%abtinysoldier/" target="_blank">
         <img src="images/【F25縦】少年兵（アフリカ）.jpg" alt="子ども兵士">
         <div class="gi-overlay"></div>
         <span class="gi-num">07</span>
@@ -636,11 +701,10 @@
           <span class="gi-title">子ども兵士</span>
           <span class="gi-en">Child Soldiers</span>
         </div>
-        </a>
+        <a href="https://tsuda-shoichi.webnode.jp/%e4%bd%9c%e5%93%81%e7%b4%b9%e4%bb%8b%2f%e5%ad%90%e3%81%a9%e3%82%82%e5%85%b5%e5%a3%abtinysoldier/" target="_blank" aria-label="子ども兵士"></a>
       </article>
 
       <article class="gi">
-        <a href="https://tsuda-shoichi.webnode.jp/%e4%bd%9c%e5%93%81%e7%b4%b9%e4%bb%8b%2f%e9%bb%92%e3%81%ae%e6%99%82%e4%bb%a3blackera/" target="_blank">
         <img src="images/before_clouds_are_captured.jpg" alt="黒の時代">
         <div class="gi-overlay"></div>
         <span class="gi-num">08</span>
@@ -648,11 +712,10 @@
           <span class="gi-title">黒の時代</span>
           <span class="gi-en">The Black Period</span>
         </div>
-        </a>
+        <a href="https://tsuda-shoichi.webnode.jp/%e4%bd%9c%e5%93%81%e7%b4%b9%e4%bb%8b%2f%e9%bb%92%e3%81%ae%e6%99%82%e4%bb%a3blackera/" target="_blank" aria-label="黒の時代"></a>
       </article>
 
       <article class="gi">
-         <a href="https://tsuda-shoichi.webnode.jp/%e4%bd%9c%e5%93%81%e7%b4%b9%e4%bb%8b%2f2010%e5%b9%b4%ef%bd%9e2011%e5%b9%b4/" target="_blank">
         <img src="images/@_the_beach.jpg" alt="2010年～2011年">
         <div class="gi-overlay"></div>
         <span class="gi-num">09</span>
@@ -660,11 +723,10 @@
           <span class="gi-title">2010年～2011年</span>
           <span class="gi-en">2010 – 2011</span>
         </div>
-        </a>
+        <a href="https://tsuda-shoichi.webnode.jp/%e4%bd%9c%e5%93%81%e7%b4%b9%e4%bb%8b%2f2010%e5%b9%b4%ef%bd%9e2011%e5%b9%b4/" target="_blank" aria-label="2010年～2011年"></a>
       </article>
 
       <article class="gi">
-         <a href="https://tsuda-shoichi.webnode.jp/%e4%bd%9c%e5%93%81%e7%b4%b9%e4%bb%8b%2f%e7%90%86%e7%a7%91%e7%be%8e%e8%a1%93/" target="_blank">
         <img src="images/子猫4（スコティッシュフォールド）.jpg" alt="標本美術">
         <div class="gi-overlay"></div>
         <span class="gi-num">10</span>
@@ -672,10 +734,10 @@
           <span class="gi-title">標本美術</span>
           <span class="gi-en">Specimen Art</span>
         </div>
-        </a>
+        <a href="https://tsuda-shoichi.webnode.jp/%e4%bd%9c%e5%93%81%e7%b4%b9%e4%bb%8b%2f%e7%90%86%e7%a7%91%e7%be%8e%e8%a1%93/" target="_blank" aria-label="標本美術"></a>
       </article>
 
-    </div>
+    </div><!-- /grid -->
   </main>
 
   <footer>
@@ -684,16 +746,20 @@
   </footer>
 
   <script>
-    /* ─────────────────────────────────────────────────────────
-       1.  WORKS — character split
-    ───────────────────────────────────────────────────────── */
-    const BASE_DELAY = 0.70;   /* first char starts at 0.7s  */
-    const CHAR_STEP  = 0.09;   /* 90 ms between each char    */
+    /* ── 1. 文字スプリット ──
+       HTMLの ghost テキストと JS の chars が同じ文字列でないと
+       ghost の幅がずれるため、JSで動的に決定する
+    */
+    const TITLE_TEXT = 'WORKS';
+    const BASE_DELAY = 0.70;
+    const CHAR_STEP  = 0.09;
 
     const titleEl = document.getElementById('heroTitle');
-    const chars   = [...'WORKS'];
+    // ghost のテキストを上書き
+    const ghostEl = titleEl.querySelector('.hero-title-ghost');
+    if (ghostEl) ghostEl.textContent = TITLE_TEXT;
 
-    chars.forEach((ch, i) => {
+    [...TITLE_TEXT].forEach((ch, i) => {
       const s = document.createElement('span');
       s.className = 'char';
       s.textContent = ch;
@@ -701,91 +767,55 @@
       titleEl.appendChild(s);
     });
 
-    /* ─────────────────────────────────────────────────────────
-       2.  LIGHT LINES — fire in sync with character reveals
-       Each line is a thin <div> that sweeps across the screen.
-       We schedule:
-         • 2 horizontal lines (one per pair of chars)
-         • 3 vertical lines (spread across chars)
-    ───────────────────────────────────────────────────────── */
+    /* ── 2. フラッシュライン ── */
     const canvas = document.getElementById('lines-canvas');
-
-    /*
-      lineDef: {
-        axis:  'h' | 'v',
-        pos:   percentage position (top for h, left for v),
-        delay: seconds after page load,
-        dur:   animation duration seconds,
-        opacity: max opacity override (uses CSS default if omitted)
-      }
-    */
     const LINE_DEFS = [
-      /* fire as 'W' appears */
-      { axis: 'h', pos: 52,  delay: BASE_DELAY + 0 * CHAR_STEP + 0.08, dur: 0.55 },
-      /* fire as 'O' appears */
-      { axis: 'v', pos: 28,  delay: BASE_DELAY + 1 * CHAR_STEP + 0.05, dur: 0.65 },
-      /* fire as 'R' appears */
-      { axis: 'h', pos: 38,  delay: BASE_DELAY + 2 * CHAR_STEP + 0.06, dur: 0.50 },
-      /* fire as 'K' appears */
-      { axis: 'v', pos: 62,  delay: BASE_DELAY + 3 * CHAR_STEP + 0.04, dur: 0.70 },
-      /* fire as 'S' appears — diagonal feel: two quick lines */
-      { axis: 'h', pos: 65,  delay: BASE_DELAY + 4 * CHAR_STEP + 0.03, dur: 0.45 },
-      { axis: 'v', pos: 78,  delay: BASE_DELAY + 4 * CHAR_STEP + 0.15, dur: 0.55 },
+      { axis:'h', pos:52, delay: BASE_DELAY + 0*CHAR_STEP + 0.08, dur:0.55 },
+      { axis:'v', pos:28, delay: BASE_DELAY + 1*CHAR_STEP + 0.05, dur:0.65 },
+      { axis:'h', pos:38, delay: BASE_DELAY + 2*CHAR_STEP + 0.06, dur:0.50 },
+      { axis:'v', pos:62, delay: BASE_DELAY + 3*CHAR_STEP + 0.04, dur:0.70 },
+      { axis:'h', pos:65, delay: BASE_DELAY + 4*CHAR_STEP + 0.03, dur:0.45 },
+      { axis:'v', pos:78, delay: BASE_DELAY + 4*CHAR_STEP + 0.15, dur:0.55 },
     ];
-
     LINE_DEFS.forEach(def => {
       const el = document.createElement('div');
       el.className = `flash-line ${def.axis}`;
-
-      /* position perpendicular to travel direction */
-      if (def.axis === 'h') {
-        el.style.top = `${def.pos}%`;
-      } else {
-        el.style.left = `${def.pos}%`;
-      }
-
+      el.style[def.axis === 'h' ? 'top' : 'left'] = `${def.pos}%`;
       el.style.setProperty('--dur', `${def.dur}s`);
       el.style.setProperty('--del', `${def.delay}s`);
-
       canvas.appendChild(el);
-
-      /* Trigger: add .run after a tiny delay so the browser
-         registers the element before the animation fires. */
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          el.classList.add('run');
-        });
-      });
+      requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('run')));
     });
 
-    /* ─────────────────────────────────────────────────────────
-       3.  PARALLAX BACKGROUND
-    ───────────────────────────────────────────────────────── */
+    /* ── 3. パララックス背景 ──
+       Fix: getElementById で確実に取得。見つからない場合もエラーにならない
+    */
     const bg = document.getElementById('bgLayer');
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          bg.style.transform = `translateY(${window.scrollY * 0.18}px)`;
-          ticking = false;
-        });
-        ticking = true;
-      }
-    }, { passive: true });
+    if (bg) {
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            bg.style.transform = `translateY(${window.scrollY * 0.12}px)`;
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+    }
 
-    /* ─────────────────────────────────────────────────────────
-       4.  INTERSECTION OBSERVER — scroll reveals
-    ───────────────────────────────────────────────────────── */
-    const io = new IntersectionObserver((entries) => {
+    /* ── 4. Intersection Observer ── */
+    const io = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('in-view');
           io.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.10 });
+    }, { threshold: 0.08 });
 
-    io.observe(document.getElementById('secHeader'));
+    const secHeader = document.getElementById('secHeader');
+    if (secHeader) io.observe(secHeader);
 
     document.querySelectorAll('.gi').forEach((el, i) => {
       el.style.setProperty('--delay', `${(i % 3) * 80}ms`);
