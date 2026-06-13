@@ -1,342 +1,689 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TSUDA SHOICHI | 作品</title>
   <link rel="icon" type="image/jpeg" href="images/【FSM横】IMG_7730.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
+
   <style>
-    /* ここにアニメーションのCSSを記述します */
-    .works-title {
-      animation: fadeInUp 1s ease-out forwards;
+    :root {
+      --bg:       #060606;
+      --fg:       #e8e4df;
+      --muted:    #5a5650;
+      --accent:   #b8a898;
+      --en: 'Cormorant Garamond', serif;
+      --jp: 'Noto Serif JP', serif;
+      --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-img:  cubic-bezier(0.165, 0.84, 0.44, 1);
     }
-    .works-subtitle {
-      animation: fadeInUp 1s ease-out 0.3s forwards;
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--jp);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── BACKGROUND ── */
+    .bg-layer {
+      position: fixed;
+      inset: -10%;
+      z-index: 0;
+      background-image: url('images/416A0035.jpg');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.08;
+      will-change: transform;
+    }
+    .bg-vignette {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: radial-gradient(ellipse 120% 80% at 50% 60%, transparent 30%, rgba(6,6,6,0.88) 100%);
+      pointer-events: none;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      z-index: 100;
+      padding: clamp(24px,3vw,40px) clamp(24px,5vw,64px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(6,6,6,0.72) 0%, transparent 100%);
+      z-index: -1;
+      pointer-events: none;
+    }
+    .logo {
+      font-family: var(--en);
+      font-size: clamp(0.75rem,1.2vw,0.9rem);
+      letter-spacing: 0.35em;
+      font-weight: 300;
+      color: var(--accent);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: opacity 0.4s ease;
+
+      /* slide in from left on load */
       opacity: 0;
+      transform: translateX(-14px);
+      animation: slideRight 1s var(--ease-expo) 0.1s forwards;
     }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
+    .logo:hover { opacity: 0.5; }
+    .header-index {
+      font-family: var(--en);
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      color: var(--muted);
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeOnly 1s ease 0.4s forwards;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      height: 100svh;
+      min-height: 600px;
+      display: grid;
+      place-items: center;
+      padding: 0 clamp(24px,8vw,120px);
+      overflow: hidden;
+    }
+    .hero-inner {
+      text-align: left;
+      align-self: flex-end;
+      padding-bottom: clamp(60px,10vh,120px);
+      width: 100%;
+    }
+
+    /* eyebrow – clip-path slide up */
+    .hero-eyebrow {
+      font-family: var(--en);
+      font-size: clamp(0.6rem,1vw,0.72rem);
+      letter-spacing: 0.45em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: clamp(20px,4vh,40px);
+      overflow: hidden;
+    }
+    .hero-eyebrow span {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(100%);
+      animation: clipUp 0.9s var(--ease-expo) 0.5s forwards;
+    }
+
+    /* WORKS – per-character float */
+    .hero-title {
+      font-family: var(--en);
+      font-size: clamp(4rem,11vw,12rem);
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      line-height: 0.9;
+      color: var(--fg);
+      position: relative;
+      display: flex;
+      gap: 0;
+    }
+
+    /* ghost behind the title */
+    .hero-title-ghost {
+      position: absolute;
+      inset: 0;
+      font-family: var(--en);
+      font-size: clamp(4rem,11vw,12rem);
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      line-height: 0.9;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255,255,255,0.04);
+      pointer-events: none;
+      opacity: 0;
+      animation: ghostRise 2s var(--ease-expo) 1.8s forwards;
+      transform: translateY(8px);
+      white-space: nowrap;
+    }
+
+    .char {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(0.6em) skewY(4deg);
+      animation: charReveal 0.9s var(--ease-expo) var(--cd, 0.6s) forwards;
+    }
+
+    /* subtitle */
+    .hero-sub {
+      margin-top: clamp(20px,4vh,48px);
+      font-family: var(--jp);
+      font-weight: 200;
+      font-size: clamp(0.75rem,1.5vw,0.95rem);
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      overflow: hidden;
+    }
+    .hero-sub span {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(100%);
+      animation: clipUp 1s var(--ease-expo) 1.4s forwards;
+    }
+
+    /* horizontal rule that draws in */
+    .hero-rule {
+      margin-top: clamp(16px,2vh,28px);
+      width: 0;
+      height: 1px;
+      background: rgba(255,255,255,0.12);
+      animation: drawLine 1.2s var(--ease-expo) 1.7s forwards;
+    }
+
+    /* scroll cue */
+    .scroll-cue {
+      position: absolute;
+      bottom: clamp(30px,5vh,56px);
+      right: clamp(24px,5vw,64px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      animation: fadeOnly 1s ease 2s forwards;
+    }
+    .scroll-cue span {
+      font-family: var(--en);
+      font-size: 0.6rem;
+      letter-spacing: 0.35em;
+      color: var(--muted);
+      text-transform: uppercase;
+      writing-mode: vertical-rl;
+    }
+    .scroll-cue-line {
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(to bottom, var(--muted), transparent);
+      animation: pulseBar 2.5s ease-in-out 2.5s infinite;
+    }
+
+    /* ── GALLERY ── */
+    .gallery {
+      position: relative;
+      z-index: 1;
+      padding: 0 clamp(16px,4vw,56px) clamp(100px,15vh,200px);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding-bottom: clamp(28px,4vw,56px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: clamp(20px,3vw,40px);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.9s var(--ease-expo), transform 0.9s var(--ease-expo);
+    }
+    .section-header.in-view { opacity: 1; transform: translateY(0); }
+    .section-label {
+      font-family: var(--en);
+      font-size: clamp(0.6rem,1vw,0.72rem);
+      letter-spacing: 0.4em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .section-count {
+      font-family: var(--en);
+      font-size: clamp(1.8rem,3vw,2.8rem);
+      font-weight: 300;
+      color: rgba(255,255,255,0.05);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: clamp(6px,1.2vw,18px);
+      row-gap: clamp(6px,1.6vw,24px);
+    }
+
+    .gi:nth-child(1)  { grid-column: 1 / 8;  grid-row: 1 / 2; aspect-ratio: 4/3; }
+    .gi:nth-child(2)  { grid-column: 8 / 13; grid-row: 1 / 3; aspect-ratio: 3/4; }
+    .gi:nth-child(3)  { grid-column: 1 / 5;  grid-row: 2 / 3; aspect-ratio: 1/1; }
+    .gi:nth-child(4)  { grid-column: 5 / 8;  grid-row: 2 / 3; aspect-ratio: 1/1; }
+    .gi:nth-child(5)  { grid-column: 2 / 7;  grid-row: 3 / 4; aspect-ratio: 4/3; }
+    .gi:nth-child(6)  { grid-column: 7 / 13; grid-row: 3 / 4; aspect-ratio: 16/9; }
+    .gi:nth-child(7)  { grid-column: 1 / 5;  grid-row: 4 / 6; aspect-ratio: 3/4; }
+    .gi:nth-child(8)  { grid-column: 5 / 9;  grid-row: 4 / 5; aspect-ratio: 4/3; }
+    .gi:nth-child(9)  { grid-column: 9 / 13; grid-row: 4 / 5; aspect-ratio: 4/3; }
+    .gi:nth-child(10) { grid-column: 5 / 9;  grid-row: 5 / 6; aspect-ratio: 16/9; }
+
+    /* ── Card base (shutter reveal) ── */
+    .gi {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      background: #0f0e0d;
+
+      /* initial – clipped from bottom, slightly scaled down */
+      clip-path: inset(0 0 100% 0);
+      transform: scale(0.97);
+      opacity: 0;
+
+      transition:
+        clip-path 0s,   /* overridden per-card */
+        transform 0s,
+        opacity 0s;
+    }
+
+    /* when JS adds in-view, switch to animated state */
+    .gi.in-view {
+      clip-path: inset(0 0 0% 0);
+      transform: scale(1);
+      opacity: 1;
+      transition:
+        clip-path   0.95s var(--ease-expo) var(--delay, 0ms),
+        transform   0.95s var(--ease-expo) var(--delay, 0ms),
+        opacity     0.95s ease             var(--delay, 0ms);
+    }
+
+    /* image: zooms in then settles when card appears */
+    .gi img {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: grayscale(60%) brightness(0.6);
+      transform: scale(1.12);
+      transition:
+        filter    1.2s var(--ease-img),
+        transform 1.8s var(--ease-img);
+    }
+
+    /* image settles once card is in view */
+    .gi.in-view img {
+      transform: scale(1.04);
+      transition:
+        filter    1.2s var(--ease-img) calc(var(--delay, 0ms) + 200ms),
+        transform 1.8s var(--ease-img) calc(var(--delay, 0ms) + 200ms);
+    }
+
+    .gi:hover img {
+      filter: grayscale(0%) brightness(0.85);
+      transform: scale(1.0) !important;
+      transition:
+        filter    1.0s var(--ease-img),
+        transform 1.4s var(--ease-img) !important;
+    }
+
+    .gi-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(6,6,6,0.85) 0%,
+        rgba(6,6,6,0.2)  45%,
+        transparent 100%
+      );
+      transition: opacity 0.6s ease;
+    }
+    .gi:hover .gi-overlay { opacity: 0.6; }
+
+    .gi-label {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: clamp(14px,2vw,28px);
+      transform: translateY(6px);
+      transition: transform 0.6s var(--ease-expo);
+    }
+    .gi:hover .gi-label { transform: translateY(0); }
+
+    .gi-title {
+      display: block;
+      font-family: var(--jp);
+      font-weight: 300;
+      font-size: clamp(0.85rem,1.4vw,1.15rem);
+      letter-spacing: 0.12em;
+      line-height: 1.5;
+      color: var(--fg);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.5s ease 0.05s, transform 0.5s var(--ease-expo) 0.05s;
+    }
+    .gi-en {
+      display: block;
+      font-family: var(--en);
+      font-size: clamp(0.58rem,0.85vw,0.7rem);
+      letter-spacing: 0.3em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-top: 4px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.5s ease 0.12s, transform 0.5s var(--ease-expo) 0.12s;
+    }
+    .gi:hover .gi-title,
+    .gi:hover .gi-en { opacity: 1; transform: translateY(0); }
+
+    /* left accent bar */
+    .gi::before {
+      content: '';
+      position: absolute;
+      left: 0; bottom: 0;
+      width: 2px; height: 0;
+      background: var(--accent);
+      transition: height 0.6s var(--ease-expo);
+      z-index: 2;
+    }
+    .gi:hover::before { height: 45%; }
+
+    /* number badge (top-right) */
+    .gi-num {
+      position: absolute;
+      top: clamp(10px,1.2vw,16px);
+      right: clamp(10px,1.2vw,16px);
+      font-family: var(--en);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.25);
+      opacity: 0;
+      transform: translateY(-6px);
+      transition: opacity 0.4s ease 0.2s, transform 0.4s var(--ease-expo) 0.2s;
+      z-index: 2;
+    }
+    .gi:hover .gi-num { opacity: 1; transform: translateY(0); }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: clamp(48px,8vh,96px) clamp(24px,5vw,64px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-title {
+      font-family: var(--en);
+      font-size: clamp(1.5rem,3vw,2.5rem);
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      color: rgba(255,255,255,0.1);
+      text-transform: uppercase;
+    }
+    .footer-copy {
+      font-family: var(--en);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+    }
+
+    /* ── KEYFRAMES ── */
+    @keyframes charReveal {
+      to { opacity: 1; transform: translateY(0) skewY(0deg); }
+    }
+    @keyframes clipUp {
       to { opacity: 1; transform: translateY(0); }
     }
+    @keyframes ghostRise {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeOnly {
+      to { opacity: 1; }
+    }
+    @keyframes slideRight {
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes drawLine {
+      to { width: clamp(60px, 10vw, 140px); }
+    }
+    @keyframes pulseBar {
+      0%,100% { opacity: 0.35; transform: scaleY(1); transform-origin: top; }
+      50%      { opacity: 1;    transform: scaleY(1.25); transform-origin: top; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+      .gi { grid-column: auto !important; grid-row: auto !important; aspect-ratio: 4/5 !important; }
+      .gi:nth-child(1) { grid-column: 1 / 3 !important; aspect-ratio: 4/3 !important; }
+      .gi-title, .gi-en { opacity: 1 !important; transform: translateY(0) !important; }
+      .gi img { filter: grayscale(25%) brightness(0.72); }
+      .header-index { display: none; }
+    }
+    @media (max-width: 480px) {
+      .grid { grid-template-columns: 1fr; }
+      .gi { grid-column: auto !important; aspect-ratio: 4/5 !important; }
+      .gi:nth-child(1) { aspect-ratio: 4/3 !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
-    </head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TSUDA SHOICHI | 作品</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
-    
-    <style>
-        /* ==================================================
-        【背景画像を変更する際の指針】
-        このページの背景に画像を設定するためのスタイルです。
-        以下の手順でカスタマイズしてください。
-        
-        1. 画像の変更:
-           下の `.bg-image` クラスの `background-image: url('...');` のURLを、
-           ご自身の画像のパスに書き換えてください。
-           （例: 油彩キャンバスの接写、左美都の風景、アトリエの写真など）
-           メインサイトの画像フォルダを使用する場合は `url('../images/your-bg.jpg')` のように指定します。
-        
-        2. 画像の濃さ（不透明度）の調整:
-           `.bg-image` クラス内の `opacity: 0.15;` の数値を変更します。
-           0.0（完全な透明）〜 1.0（不透明）の間で調整してください。
-           ※サイト全体のダークで静謐な世界観を活かすため、0.1〜0.2程度の暗めを推奨します。
-        
-        3. 表示の挙動:
-           現在の設定では画面全体を覆うように自動調整（cover）され、
-           スクロールしても背景が固定（fixed）され、奥行きが出るようにしています。
-        ==================================================
-        */
-        .bg-image {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            /* ↓↓↓ ここを変更 ↓↓↓ */
-            background-image: url('images/416A0035.jpg'); 
-            background-size: cover;
-            background-position: center;
-            opacity: 0.15; /* ← ここで濃さを調整 */
-        }
-
-        /* ベース設定 */
-        :root {
-            --bg-color: #050505;
-            --text-color: #f4f4f4;
-            --font-en: 'Cormorant Garamond', serif;
-            --font-jp: 'Noto Serif JP', serif;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: var(--font-jp);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* ヘッダー（構造・デザインは変更なし） */
-        header {
-            padding: 40px 5vw;
-            position: absolute;
-            width: 100%;
-            z-index: 10;
-        }
-
-        .logo {
-            font-family: var(--font-en);
-            font-size: 1.5rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-        }
-
-        /* ヒーローセクション（レイアウトは変更なし。背景画像が透けるようにグラデーション色のみ微調整） */
-        .hero {
-            height: 80vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 20px;
-            background: radial-gradient(circle at center, rgba(26,26,26,0.6) 0%, rgba(5,5,5,0.9) 100%);
-        }
-
-        .hero h1 {
-            font-family: var(--font-en);
-            font-size: 4vw;
-            letter-spacing: 0.2em;
-            font-weight: 300;
-            margin-bottom: 20px;
-        }
-
-        .hero p {
-            font-weight: 200;
-            font-size: 1rem;
-            letter-spacing: 0.15em;
-            color: #aaa;
-            margin-bottom: 10px;
-        }
-
-        .statement {
-             margin-top: 20px;
-             font-family: var(--font-en);
-             font-size: 0.8rem;
-             color: #666;
-             letter-spacing: 0.25em;
-        }
-
-        /* ギャラリーセクション */
-        .gallery-container {
-            padding: 80px 5vw 150px;
-            max-width: 1600px;
-            margin: 0 auto;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        /* 各作品カテゴリのカード */
-        .grid-item {
-            position: relative;
-            overflow: hidden;
-            aspect-ratio: 4 / 5;
-            cursor: pointer;
-            background-color: #111;
-        }
-
-        .grid-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 1.2s ease;
-            opacity: 0.5;
-            filter: grayscale(20%);
-        }
-
-        .grid-item:hover img {
-            transform: scale(1.05);
-            opacity: 0.9;
-            filter: grayscale(0%);
-        }
-
-        .item-overlay {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.3);
-            transition: background 0.5s ease;
-        }
-
-        .grid-item:hover .item-overlay {
-            background: rgba(0, 0, 0, 0.1);
-        }
-
-        .item-title {
-            font-size: 1.4rem;
-            font-weight: 300;
-            letter-spacing: 0.15em;
-            margin-bottom: 10px;
-            transform: translateY(15px);
-            opacity: 0;
-            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-        }
-
-        .item-en {
-            font-family: var(--font-en);
-            font-size: 0.75rem;
-            letter-spacing: 0.2em;
-            color: #ccc;
-            text-transform: uppercase;
-            transform: translateY(15px);
-            opacity: 0;
-            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-            transition-delay: 0.05s;
-        }
-
-        .grid-item:hover .item-title,
-        .grid-item:hover .item-en {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        /* フッター */
-        footer {
-            padding: 60px 20px;
-            text-align: center;
-            font-size: 0.8rem;
-            letter-spacing: 0.1em;
-            color: #555;
-            font-family: var(--font-en);
-        }
-
-        /* レスポンシブ対応（スマホ向け） */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 8vw; }
-            .grid { grid-template-columns: 1fr; gap: 10px; }
-            .item-title, .item-en { opacity: 1; transform: translateY(0); }
-            .grid-item img { opacity: 0.7; }
-        }
-    </style>
 </head>
+
 <body>
-    <div class="bg-image"></div>
+  <div class="bg-layer" id="bgLayer"></div>
+  <div class="bg-vignette"></div>
 
-    <header>
-    <a href="index.html" style="text-decoration: none; color: inherit;">
-        <div class="logo">HOME</div>
-    </a>
-</header>
+  <header>
+    <a href="index.html" class="logo">Tsuda Shoichi</a>
+    <span class="header-index">Works Index</span>
+  </header>
 
-    <section class="hero">
-        <h1>WORKS</h1>
-        <p>枠組みを越え、空間と共鳴する。</p>
-        <div class="statement">SITE-SPECIFIC & STORY-DRIVEN</div>
-    </section>
+  <section class="hero">
+    <div class="hero-inner">
+      <p class="hero-eyebrow"><span>Site-specific &nbsp;·&nbsp; Story-driven</span></p>
 
-    <main class="gallery-container">
-        <div class="grid">
-            <article class="grid-item">
-                <img src="images/416A0035.jpg" alt="左美都の神話と伝承">
-                <div class="item-overlay">
-                    <h3 class="item-title">左美都の神話と伝承</h3>
-                    <span class="item-en">Myth and Tradition</span>
-                </div>
-            </article>
+      <!-- WORKS: each char wrapped by JS -->
+      <h1 class="hero-title" id="heroTitle">
+        <span class="hero-title-ghost" aria-hidden="true">WORKS</span>
+        <!-- chars injected by JS -->
+      </h1>
 
-            <article class="grid-item">
-                <img src="images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg" alt="異体">
-                <div class="item-overlay">
-                    <h3 class="item-title">異体</h3>
-                    <span class="item-en">Variant Forms</span>
-                </div>
-            </article>
+      <p class="hero-sub"><span>枠組みを越え、空間と共鳴する。</span></p>
+      <div class="hero-rule"></div>
+    </div>
 
-            <article class="grid-item">
-                <img src="images/【S100】so far.jpg" alt="洞窟">
-                <div class="item-overlay">
-                    <h3 class="item-title">洞窟</h3>
-                    <span class="item-en">The Cave</span>
-                </div>
-            </article>
+    <div class="scroll-cue">
+      <div class="scroll-cue-line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
 
-            <article class="grid-item">
-                <img src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg" alt="素描">
-                <div class="item-overlay">
-                    <h3 class="item-title">素描</h3>
-                    <span class="item-en">Drawings</span>
-                </div>
-            </article>
+  <main class="gallery">
+    <div class="section-header" id="secHeader">
+      <span class="section-label">Selected Works &nbsp;— &nbsp;Series</span>
+      <span class="section-count">10</span>
+    </div>
 
-            <article class="grid-item">
-                <img src="images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG" alt="抽象">
-                <div class="item-overlay">
-                    <h3 class="item-title">抽象</h3>
-                    <span class="item-en">Abstract</span>
-                </div>
-            </article>
+    <div class="grid" id="grid">
 
-            <article class="grid-item">
-                <img src="images/【F100号横】今、シリア.jpg" alt="難民(子ども)">
-                <div class="item-overlay">
-                    <h3 class="item-title">難民(子ども)</h3>
-                    <span class="item-en">Refugees</span>
-                </div>
-            </article>
-
-            <article class="grid-item">
-                <img src="images/【F30横】少年兵2（アフリカ）.jpg" alt="子ども兵士">
-                <div class="item-overlay">
-                    <h3 class="item-title">子ども兵士</h3>
-                    <span class="item-en">Child Soldiers</span>
-                </div>
-            </article>
-
-            <article class="grid-item">
-                <img src="images/before_clouds_are_captured.jpg" alt="黒の時代">
-                <div class="item-overlay">
-                    <h3 class="item-title">黒の時代</h3>
-                    <span class="item-en">The Black Period</span>
-                </div>
-            </article>
-
-            <article class="grid-item">
-                <img src="images/@_the_beach.jpg" alt="2010年～2011年">
-                <div class="item-overlay">
-                    <h3 class="item-title">2010年～2011年</h3>
-                    <span class="item-en">2010 - 2011</span>
-                </div>
-            </article>
-
-            <article class="grid-item">
-                <img src="https://images.unsplash.com/photo-1533036412175-c9bb3e3e00bd?q=80&w=800&auto=format&fit=crop" alt="標本美術">
-                <div class="item-overlay">
-                    <h3 class="item-title">標本美術</h3>
-                    <span class="item-en">Specimen Art</span>
-                </div>
-            </article>
+      <article class="gi">
+        <img src="images/416A0035.jpg" alt="左美都の神話と伝承">
+        <div class="gi-overlay"></div>
+        <span class="gi-num">01</span>
+        <div class="gi-label">
+          <span class="gi-title">左美都の神話と伝承</span>
+          <span class="gi-en">Myth and Tradition</span>
         </div>
-    </main>
+      </article>
 
-    <footer>
-        <p>&copy; Tsuda Shoichi. All Rights Reserved.</p>
-    </footer>
+      <article class="gi">
+        <img src="images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg" alt="異体">
+        <div class="gi-overlay"></div>
+        <span class="gi-num">02</span>
+        <div class="gi-label">
+          <span class="gi-title">異体</span>
+          <span class="gi-en">Variant Forms</span>
+        </div>
+      </article>
 
+      <article class="gi">
+        <img src="images/【S100】so far.jpg" alt="洞窟">
+        <div class="gi-overlay"></div>
+        <span class="gi-num">03</span>
+        <div class="gi-label">
+          <span class="gi-title">洞窟</span>
+          <span class="gi-en">The Cave</span>
+        </div>
+      </article>
+
+      <article class="gi">
+        <img src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg" alt="素描">
+        <div class="gi-overlay"></div>
+        <span class="gi-num">04</span>
+        <div class="gi-label">
+          <span class="gi-title">素描</span>
+          <span class="gi-en">Drawings</span>
+        </div>
+      </article>
+
+      <article class="gi">
+        <img src="images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG" alt="抽象">
+        <div class="gi-overlay"></div>
+        <span class="gi-num">05</span>
+        <div class="gi-label">
+          <span class="gi-title">抽象</span>
+          <span class="gi-en">Abstract</span>
+        </div>
+      </article>
+
+      <article class="gi">
+        <img src="images/【F100号横】今、シリア.jpg" alt="難民(子ども)">
+        <div class="gi-overlay"></div>
+        <span class="gi-num">06</span>
+        <div class="gi-label">
+          <span class="gi-title">難民(子ども)</span>
+          <span class="gi-en">Refugees</span>
+        </div>
+      </article>
+
+      <article class="gi">
+        <img src="images/【F30横】少年兵2（アフリカ）.jpg" alt="子ども兵士">
+        <div class="gi-overlay"></div>
+        <span class="gi-num">07</span>
+        <div class="gi-label">
+          <span class="gi-title">子ども兵士</span>
+          <span class="gi-en">Child Soldiers</span>
+        </div>
+      </article>
+
+      <article class="gi">
+        <img src="images/before_clouds_are_captured.jpg" alt="黒の時代">
+        <div class="gi-overlay"></div>
+        <span class="gi-num">08</span>
+        <div class="gi-label">
+          <span class="gi-title">黒の時代</span>
+          <span class="gi-en">The Black Period</span>
+        </div>
+      </article>
+
+      <article class="gi">
+        <img src="images/@_the_beach.jpg" alt="2010年～2011年">
+        <div class="gi-overlay"></div>
+        <span class="gi-num">09</span>
+        <div class="gi-label">
+          <span class="gi-title">2010年～2011年</span>
+          <span class="gi-en">2010 – 2011</span>
+        </div>
+      </article>
+
+      <article class="gi">
+        <img src="https://images.unsplash.com/photo-1533036412175-c9bb3e3e00bd?q=80&w=800&auto=format&fit=crop" alt="標本美術">
+        <div class="gi-overlay"></div>
+        <span class="gi-num">10</span>
+        <div class="gi-label">
+          <span class="gi-title">標本美術</span>
+          <span class="gi-en">Specimen Art</span>
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  <footer>
+    <p class="footer-title">Tsuda Shoichi</p>
+    <p class="footer-copy">&copy; Tsuda Shoichi. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    /* ── 1. WORKS character split ── */
+    (function() {
+      const title = document.getElementById('heroTitle');
+      const text = 'WORKS';
+      const BASE_DELAY = 0.7; /* seconds */
+      const CHAR_STEP  = 0.08;
+
+      [...text].forEach((ch, i) => {
+        const s = document.createElement('span');
+        s.className = 'char';
+        s.textContent = ch;
+        s.style.setProperty('--cd', `${BASE_DELAY + i * CHAR_STEP}s`);
+        title.appendChild(s);
+      });
+    })();
+
+    /* ── 2. Parallax background ── */
+    const bg = document.getElementById('bgLayer');
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          bg.style.transform = `translateY(${window.scrollY * 0.18}px)`;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    /* ── 3. Intersection Observer ── */
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.10 });
+
+    /* section header */
+    io.observe(document.getElementById('secHeader'));
+
+    /* grid cards with stagger based on grid position */
+    const cards = document.querySelectorAll('.gi');
+
+    /* read each card's computed grid-column-start to stagger by column */
+    cards.forEach((el, i) => {
+      /* lightweight column stagger: 0–2 groups */
+      const delay = (i % 3) * 90;
+      el.style.setProperty('--delay', `${delay}ms`);
+      io.observe(el);
+    });
+  </script>
 </body>
 </html>
