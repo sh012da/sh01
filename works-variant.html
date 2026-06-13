@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>異体 Variant | Tsuda Shoichi</title>
+  <meta name="description" content="《異体》と分類される作品群は、作者が風景を描出する過程において視覚的構造が次第に特定の形態へと収斂していく中で、結果的に「身体としてみなされうる」かたちが析出されたものである。">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
+
+  <style>
+    /* =====================================================
+       DESIGN TOKENS
+       ─ works.html / cave.html と統一
+    ===================================================== */
+    :root {
+      --bg:        #070706;
+      --bg2:       #0f0f0d;
+      --fg:        #e8e4df;
+      --muted:     rgba(232,228,223,0.42);
+      --dim:       rgba(232,228,223,0.22);
+      --accent:    #b8a898;
+      --border:    rgba(232,228,223,0.10);
+      --border-md: rgba(232,228,223,0.22);
+      --en:        'Cormorant Garamond', serif;
+      --jp:        'Noto Serif JP', serif;
+      --ease:      cubic-bezier(0.16, 1, 0.3, 1);
+
+      /* レスポンシブ余白: スマホ20px〜PC80px */
+      --px: clamp(1.25rem, 6vw, 5rem);
+
+      /* テキスト最大幅 */
+      --text-max:    700px;
+      --gallery-max: 1200px;
+    }
+
+    /* =====================================================
+       RESET
+    ===================================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--jp);
+      line-height: 2.1;
+      letter-spacing: 0.06em;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      /* iPhoneセーフエリア */
+      padding-left:  env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    img { max-width: 100%; height: auto; display: block; }
+
+    a {
+      color: var(--fg);
+      text-decoration: none;
+      transition: opacity 0.3s ease;
+    }
+    a:hover { opacity: 0.45; }
+
+    /* =====================================================
+       NAVIGATION
+       ─ cave.html と同構造
+    ===================================================== */
+    .global-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: clamp(1.25rem, 3vh, 2rem) var(--px);
+      border-bottom: 0.5px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(7,7,6,0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .nav-logo {
+      font-family: var(--en);
+      font-size: clamp(0.7rem, 2vw, 0.85rem);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .nav-works {
+      font-family: var(--en);
+      font-size: clamp(0.6rem, 1.5vw, 0.72rem);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.3s ease;
+    }
+    .nav-works:hover { color: var(--fg); opacity: 1; }
+
+    /* =====================================================
+       HERO HEADER
+       ─ 代表画像（スズラン）を背景に薄く敷く
+    ===================================================== */
+    .series-header {
+      position: relative;
+      min-height: clamp(52vh, 70vh, 85vh);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 var(--px) clamp(3rem, 8vh, 6rem);
+      border-bottom: 0.5px solid var(--border);
+      overflow: hidden;
+    }
+
+    .series-header-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://de7bbbccc0.cbaul-cdnwnd.com/240d88405885768af7ba7b864ee3299f/200000308-dbb13dbb15/700/%E3%80%90F100%E7%B8%A6%E3%80%91%E3%82%B9%E3%82%BA%E3%83%A9%E3%83%B3%EF%BC%88%E3%82%A2%E3%83%97%E3%83%AD%E3%83%87%E3%82%A3%E3%83%BC%E3%83%86%E3%83%BC%E3%81%AE%E5%B0%BB%E8%87%80%EF%BC%892.jpeg?ph=de7bbbccc0');
+      background-size: cover;
+      background-position: center 30%;
+      opacity: 0.13;
+      filter: blur(2px);
+      transform: scale(1.05);
+    }
+    /* 下から背景色に溶かすグラデーション */
+    .series-header-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(7,7,6,1)    0%,
+        rgba(7,7,6,0.55) 50%,
+        rgba(7,7,6,0.2)  100%
+      );
+    }
+
+    .series-header-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+    }
+
+    /* eyebrow ラベル */
+    .series-eyebrow {
+      font-family: var(--en);
+      font-size: clamp(0.58rem, 1.5vw, 0.68rem);
+      letter-spacing: 0.45em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: clamp(1rem, 3vh, 2rem);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .series-eyebrow::before {
+      content: '';
+      width: 32px;
+      height: 0.5px;
+      background: var(--muted);
+      flex-shrink: 0;
+    }
+
+    /* 日本語タイトル */
+    .series-title-jp {
+      font-family: var(--jp);
+      font-size: clamp(2.8rem, 9vw, 8rem);
+      font-weight: 200;
+      line-height: 1;
+      letter-spacing: 0.05em;
+      color: var(--fg);
+      margin-bottom: clamp(0.75rem, 2vh, 1.5rem);
+    }
+
+    /* 英語タイトル */
+    .series-title-en {
+      font-family: var(--en);
+      font-size: clamp(1rem, 3vw, 2rem);
+      font-weight: 300;
+      font-style: italic;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+    }
+
+    /* メタ情報ライン */
+    .series-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-top: clamp(2rem, 4vh, 3.5rem);
+    }
+    .series-meta-line {
+      width: 48px;
+      height: 0.5px;
+      background: var(--border-md);
+      flex-shrink: 0;
+    }
+    .series-meta-text {
+      font-family: var(--en);
+      font-size: clamp(0.58rem, 1.5vw, 0.65rem);
+      letter-spacing: 0.2em;
+      color: var(--dim);
+      text-transform: uppercase;
+    }
+
+    /* =====================================================
+       SECTION WRAPPER
+       ─ concept / gallery 共通の横幅制御
+    ===================================================== */
+    .section-text {
+      max-width: calc(var(--text-max) + var(--px) * 2);
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: var(--px);
+      padding-right: var(--px);
+    }
+    .section-gallery {
+      max-width: calc(var(--gallery-max) + var(--px) * 2);
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: var(--px);
+      padding-right: var(--px);
+    }
+
+    /* =====================================================
+       SECTION LABEL
+       ─ "Concept" / "Works" の小見出し + ライン
+    ===================================================== */
+    .section-label {
+      font-family: var(--en);
+      font-size: clamp(0.58rem, 1.5vw, 0.65rem);
+      letter-spacing: 0.4em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: clamp(2rem, 5vh, 4rem);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 0.5px;
+      background: var(--border);
+    }
+
+    /* =====================================================
+       CONCEPT SECTION
+    ===================================================== */
+    .concept-section {
+      padding-top:    clamp(4rem, 10vh, 9rem);
+      padding-bottom: clamp(4rem, 10vh, 9rem);
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .credit {
+      font-family: var(--en);
+      font-size: clamp(0.6rem, 1.5vw, 0.7rem);
+      color: var(--dim);
+      letter-spacing: 0.15em;
+      margin-bottom: clamp(2rem, 4vh, 3rem);
+    }
+
+    .concept-body {
+      font-size: clamp(0.875rem, 2vw, 1rem);
+      font-weight: 300;
+      line-height: 2.2;
+      color: rgba(232,228,223,0.72);
+      letter-spacing: 0.06em;
+    }
+    .concept-body p { margin-bottom: 1.8em; text-align: justify; }
+    .concept-body p:last-child { margin-bottom: 0; }
+
+    /* キーワード強調 */
+    .concept-body em {
+      font-style: normal;
+      color: var(--fg);
+      border-bottom: 0.5px solid var(--border-md);
+      padding-bottom: 1px;
+    }
+
+    /* =====================================================
+       ARTWORK LIST
+       ─ 作品を1点ずつ縦に大きく並べる
+         （絵画=縦長なので、横2列より縦1列の方が映える）
+    ===================================================== */
+    .artworks-section {
+      padding-top:    clamp(4rem, 10vh, 9rem);
+      padding-bottom: clamp(6rem, 14vh, 12rem);
+    }
+
+    /* 各作品ブロック */
+    .artwork-block {
+      padding-bottom: clamp(5rem, 12vh, 10rem);
+      border-bottom: 0.5px solid var(--border);
+      margin-bottom: clamp(5rem, 12vh, 10rem);
+    }
+    .artwork-block:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    /* ─── 画像 + キャプション を横並び（PC）
+           スマホでは縦積み                          ─── */
+    .artwork-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(2rem, 5vw, 5rem);
+      align-items: start;
+    }
+
+    /* 画像コンテナ */
+    .artwork-image-col { position: relative; }
+
+    .artwork-image-wrapper {
+      display: block;
+      overflow: hidden;
+      background: var(--bg2);
+      outline: 0.5px solid var(--border);
+      transition:
+        outline-color 0.5s ease,
+        box-shadow    0.6s var(--ease);
+    }
+    /* リンクとしての wrapper */
+    a.artwork-image-wrapper { cursor: zoom-in; }
+
+    .artwork-image {
+      width: 100%;
+      aspect-ratio: 4 / 5;   /* 縦長絵画の比率 */
+      object-fit: cover;
+      display: block;
+      filter: grayscale(25%) brightness(0.82);
+      transition:
+        transform 0.8s var(--ease),
+        filter    0.6s ease;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      a.artwork-image-wrapper:hover {
+        outline-color: var(--border-md);
+        box-shadow: 0 24px 56px rgba(0,0,0,0.55);
+      }
+      a.artwork-image-wrapper:hover .artwork-image {
+        transform: scale(1.04);
+        filter: grayscale(0%) brightness(0.95);
+      }
+    }
+
+    /* 画像番号バッジ */
+    .artwork-num {
+      position: absolute;
+      top: clamp(10px, 1.5vw, 18px);
+      left: clamp(10px, 1.5vw, 18px);
+      font-family: var(--en);
+      font-size: clamp(0.58rem, 1.2vw, 0.65rem);
+      letter-spacing: 0.2em;
+      color: rgba(232,228,223,0.3);
+    }
+
+    /* テキスト列 */
+    .artwork-text-col {
+      padding-top: clamp(1rem, 3vh, 2.5rem);
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* 制作年 */
+    .artwork-year {
+      font-family: var(--en);
+      font-size: clamp(0.62rem, 1.5vw, 0.72rem);
+      letter-spacing: 0.2em;
+      color: var(--dim);
+      margin-bottom: 0.6rem;
+    }
+
+    /* 作品タイトル（日本語） */
+    .artwork-title-jp {
+      font-family: var(--jp);
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      font-weight: 200;
+      letter-spacing: 0.08em;
+      line-height: 1.3;
+      color: var(--fg);
+      margin-bottom: 0.4rem;
+    }
+
+    /* 作品タイトル（英語 / ギリシャ語など） */
+    .artwork-title-en {
+      font-family: var(--en);
+      font-size: clamp(0.85rem, 2vw, 1.1rem);
+      font-weight: 300;
+      font-style: italic;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: clamp(1.5rem, 4vh, 3rem);
+    }
+
+    /* スペック（サイズ・素材） */
+    .artwork-spec {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: clamp(0.6rem, 1.3vw, 0.68rem);
+      color: var(--dim);
+      letter-spacing: 0.12em;
+      line-height: 2;
+      margin-bottom: clamp(2rem, 5vh, 4rem);
+    }
+
+    /* 作品解説ラベル */
+    .artwork-desc-label {
+      font-family: var(--en);
+      font-size: clamp(0.58rem, 1.2vw, 0.62rem);
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .artwork-desc-label::after {
+      content: '';
+      flex: 1;
+      height: 0.5px;
+      background: var(--border);
+    }
+
+    /* 解説テキスト */
+    .artwork-desc {
+      font-size: clamp(0.8rem, 1.8vw, 0.92rem);
+      font-weight: 300;
+      line-height: 2.1;
+      color: rgba(232,228,223,0.60);
+      letter-spacing: 0.055em;
+      text-align: justify;
+    }
+    .artwork-desc p { margin-bottom: 1.4em; }
+    .artwork-desc p:last-child { margin-bottom: 0; }
+
+    /* =====================================================
+       FOOTER
+    ===================================================== */
+    .global-footer {
+      padding: clamp(3rem, 6vh, 5rem) var(--px);
+      border-top: 0.5px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-logo {
+      font-family: var(--en);
+      font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+      letter-spacing: 0.2em;
+      color: var(--dim);
+    }
+    .footer-copy {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: clamp(0.55rem, 1.2vw, 0.65rem);
+      color: var(--dim);
+      letter-spacing: 0.08em;
+    }
+
+    /* =====================================================
+       SCROLL REVEAL
+    ===================================================== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(22px);
+      transition:
+        opacity   1s var(--ease),
+        transform 1s var(--ease);
+      transition-delay: var(--sd, 0ms);
+    }
+    .fade-in.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    /* タブレット: 画像とテキストを縦積みに */
+    @media (max-width: 860px) {
+      .artwork-layout {
+        grid-template-columns: 1fr;
+        gap: clamp(1.5rem, 4vw, 3rem);
+      }
+      .artwork-text-col { padding-top: 0; }
+      /* スマホでは画像を横長に */
+      .artwork-image {
+        aspect-ratio: 3 / 2;
+      }
+    }
+
+    /* スマホ */
+    @media (max-width: 480px) {
+      .series-header { min-height: 60vh; }
+      /* タイトルが折り返さないよう少し詰める */
+      .series-title-jp { letter-spacing: 0.02em; }
+    }
+
+    /* アニメーション軽減 */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      .fade-in { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =====================================================
+       NAVIGATION
+  ===================================================== -->
+  <nav class="global-nav">
+    <a href="index.html" class="nav-logo">Tsuda Shoichi</a>
+    <a href="works.html" class="nav-works">Works Index</a>
+  </nav>
+
+  <main>
+
+    <!-- =====================================================
+         HERO HEADER
+    ===================================================== -->
+    <header class="series-header">
+      <div class="series-header-bg"></div>
+      <div class="series-header-inner fade-in">
+        <p class="series-eyebrow">Series — Variant Forms</p>
+        <h1 class="series-title-jp">異体</h1>
+        <p class="series-title-en">Variant</p>
+        <div class="series-meta-row">
+          <div class="series-meta-line"></div>
+          <span class="series-meta-text">Oil on Canvas &nbsp;·&nbsp; Body &amp; Landscape</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- =====================================================
+         CONCEPT
+    ===================================================== -->
+    <section class="concept-section">
+      <div class="section-text fade-in" style="--sd:100ms">
+        <p class="section-label">Concept</p>
+        <p class="credit">解説：左美都研究会、水澤井縄</p>
+        <div class="concept-body">
+          <p>《異体》と分類される作品群は、作者が風景を描出する過程において視覚的構造が次第に特定の形態へと収斂していく中で、結果的に<em>「身体としてみなされうる」</em>かたちが析出されたものである。それは、同一種の表象の連続的変奏ではなく、視覚的素材が風景から身体へと移行する過程を強調する。自然の風景が、人間的・身体的形象へと転位していく知覚の生成を、視覚的・造形的に記録したものと捉えることができる。</p>
+          <p>《異体》における<em>「身体性」</em>は、解剖学的身体の再現ではなく、むしろ風景の要素や断片が、構図上の動性や描画における操作等を経ることによって、準-身体的な形象を帯びてくるという意味での<em>"生成的身体"</em>である。</p>
+          <p>また、考古学的には、特定の遺構や遺物が意図的な形態を持たぬまま、ある文化的マトリクスの中で後付け的に「人型」や「動物型」と見なされる構造に類似している。例えば礫石（れきせき）や自然岩、風化によって生じた非人工的な構造物が、後の文化的文脈において「顔」や「人物」「動物」などの象徴的イメージとして読み替えられる現象が知られている。これは旧石器時代の例に見られ、意図された彫刻や造形ではないにもかかわらず、後世の視覚的・宗教的枠組みにおいて〈像〉としての機能を担うようになる、いわゆる<em>「自然形象物（natural simulacra）」</em>や<em>「擬人的視認（pareidolia）」</em>と呼ばれるものである。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         ARTWORKS
+         ─ 1点ずつ縦に、画像＋解説を横並びで
+    ===================================================== -->
+    <section class="artworks-section">
+      <div class="section-gallery">
+        <p class="section-label fade-in">Individual Works</p>
+
+        <!-- ───────────────────────────
+             作品 01 — スズラン
+        ─────────────────────────── -->
+        <div class="artwork-block fade-in" style="--sd:80ms">
+          <div class="artwork-layout">
+
+            <!-- 画像 -->
+            <div class="artwork-image-col">
+              <span class="artwork-num">01</span>
+              <a href="https://de7bbbccc0.cbaul-cdnwnd.com/240d88405885768af7ba7b864ee3299f/200000329-6e2db6e2dd/%E3%80%90F100%E7%B8%A6%E3%80%91%E3%82%B9%E3%82%BA%E3%83%A9%E3%83%B3%EF%BC%88%E3%82%A2%E3%83%97%E3%83%AD%E3%83%87%E3%82%A3%E3%83%BC%E3%83%86%E3%83%BC%E3%81%AE%E5%B0%BB%E8%87%80%EF%BC%892-1.jpeg?ph=de7bbbccc0"
+                 target="_blank"
+                 class="artwork-image-wrapper"
+                 aria-label="スズラン — 拡大表示">
+                <img
+                  src="https://de7bbbccc0.cbaul-cdnwnd.com/240d88405885768af7ba7b864ee3299f/200000329-6e2db6e2dd/%E3%80%90F100%E7%B8%A6%E3%80%91%E3%82%B9%E3%82%BA%E3%83%A9%E3%83%B3%EF%BC%88%E3%82%A2%E3%83%97%E3%83%AD%E3%83%87%E3%82%A3%E3%83%BC%E3%83%86%E3%83%BC%E3%81%AE%E5%B0%BB%E8%87%80%EF%BC%892-1.jpeg?ph=de7bbbccc0"
+                  alt="スズラン（アプロディーテーの尻臀）"
+                  class="artwork-image"
+                  loading="lazy">
+              </a>
+            </div>
+
+            <!-- テキスト -->
+            <div class="artwork-text-col">
+              <p class="artwork-year">2022</p>
+              <h2 class="artwork-title-jp">スズラン</h2>
+              <p class="artwork-title-en">ΑΦΡΟΔΙΤΗ</p>
+              <p class="artwork-spec">
+                油彩・キャンバス<br>
+                Oil on canvas<br>
+                162 × 130.3 cm
+              </p>
+
+              <p class="artwork-desc-label">Commentary</p>
+              <div class="artwork-desc">
+                <p>スズランは、その名の通り鈴のような小さな白い花をつけ、葉の間にひっそりと咲く植物です。群生して咲くことが多く、控えめながらも清らかで可憐な印象を与えます。また、その芳しい香りは、目に見えない存在感を放ちます。一方で、その美しさとは裏腹に、強い毒性を持つという二面性も持ち合わせています。</p>
+                <p>絵画の中心を占める柔らかな白い塊は、スズランの純粋で無垢な花々を想起させます。それは、対象の具象的な形を直接的に描くのではなく、その本質的な「気配」や「雰囲気」を捉えようとする津田の姿勢を示唆しているのではないでしょうか。スズランが葉陰に隠れてひっそりと咲くように、津田の作品もまた、一見すると抽象的でありながら、その奥に秘められた生命の息吹や感情の揺らぎを静かに表現していると言えます。</p>
+                <p>作品全体に広がる流れるような色彩と形態は、スズランが群生し、風に揺れる様子や、その香りが空間に溶け込んでいく様を視覚的に表現しているかのようです。津田は、具体的な描写に囚われず、色彩と光の相互作用によって、対象が持つ「生命の躍動」や「内なるエネルギー」を抽出しようとしているのかもしれません。これは、彼の制作が、単なる視覚的な模写ではなく、感覚や記憶、そして感情といった非物質的な要素を絵画空間に定着させようとする試みであることを示しています。</p>
+                <p>スズランが持つ「毒性」という側面は、作品に潜む、一見しただけでは分からない複雑さや、美しさの裏に隠された何かを示唆している可能性もあります。津田の作品が持つ、見る者を惹きつけながらも、どこか捉えどころのない神秘性は、スズランの持つ二面性と共鳴しているのかもしれません。</p>
+              </div>
+            </div>
+
+          </div><!-- /.artwork-layout -->
+        </div><!-- /.artwork-block -->
+
+        <!-- ───────────────────────────
+             作品 02 — 上に溶ける…
+        ─────────────────────────── -->
+        <div class="artwork-block fade-in" style="--sd:120ms">
+          <div class="artwork-layout">
+
+            <!-- 画像 -->
+            <div class="artwork-image-col">
+              <span class="artwork-num">02</span>
+              <a href="https://de7bbbccc0.cbaul-cdnwnd.com/240d88405885768af7ba7b864ee3299f/200000331-0a9dc0a9df/%E3%80%90F100%E7%B8%A6%E3%80%91%E4%B8%8A%E3%81%AB%E6%BA%B6%E3%81%91%E3%82%8B%E3%83%BB%E3%83%BB%E3%83%BB.jpeg?ph=de7bbbccc0"
+                 target="_blank"
+                 class="artwork-image-wrapper"
+                 aria-label="上に溶ける… — 拡大表示">
+                <img
+                  src="https://de7bbbccc0.cbaul-cdnwnd.com/240d88405885768af7ba7b864ee3299f/200000331-0a9dc0a9df/%E3%80%90F100%E7%B8%A6%E3%80%91%E4%B8%8A%E3%81%AB%E6%BA%B6%E3%81%91%E3%82%8B%E3%83%BB%E3%83%BB%E3%83%BB.jpeg?ph=de7bbbccc0"
+                  alt="上に溶ける…"
+                  class="artwork-image"
+                  loading="lazy">
+              </a>
+            </div>
+
+            <!-- テキスト -->
+            <div class="artwork-text-col">
+              <p class="artwork-year">2021</p>
+              <h2 class="artwork-title-jp">上に溶ける…</h2>
+              <p class="artwork-title-en">Dissolving Upward</p>
+              <p class="artwork-spec">
+                油彩・キャンバス<br>
+                Oil on canvas<br>
+                162 × 130.3 cm
+              </p>
+
+              <p class="artwork-desc-label">Commentary</p>
+              <div class="artwork-desc">
+                <p>画面の大部分を占めるのは、白を基調とした、とろけるような、あるいは流れ落ちるような有機的な形態です。これらの形は、まるで液体が固形物から溶け出し、重力に逆らうように上昇していくかのような動きを感じさせます。部分的に灰色や薄い青みがかった陰影が加えられることで、形態に奥行きと量感が与えられ、その物質的な存在感が強調されています。</p>
+                <p>そして、画面の右上部には、強烈な光を放つかのような鮮やかな黄色が配されています。この黄色は、まるで光源であるかのように周囲を照らし、また、画面下部から伸びる白い形態が、この黄色い光に向かって上昇し、まさに「溶けていく」かのように吸い込まれていく様子を描いているようです。黄色と黒のコントラストは非常にドラマチックで、光と闇、生成と消滅といった対極的な概念を想起させます。</p>
+                <p>この「上に溶ける・・・」というタイトルと絵画の内容からは、津田が人間の（内面）世界、存在の本質、あるいは生と死といった深遠なテーマに向き合っていることが伺えます。彼の得意とする流動的な表現は、物質と非物質の境界が曖昧になり、形が変容していく様を完璧に捉えています。この作品は、見る者それぞれの心に、解き放たれる感覚、あるいは新たな始まりへの予感をもたらす、示唆に富んだ瞑想的な一枚と言えるでしょう。</p>
+              </div>
+            </div>
+
+          </div><!-- /.artwork-layout -->
+        </div><!-- /.artwork-block -->
+
+      </div><!-- /.section-gallery -->
+    </section>
+
+  </main>
+
+  <!-- =====================================================
+       FOOTER
+  ===================================================== -->
+  <footer class="global-footer fade-in">
+    <p class="footer-logo">Tsuda Shoichi</p>
+    <p class="footer-copy">© Tsuda Shoichi. All Rights Reserved.</p>
+  </footer>
+
+  <!-- =====================================================
+       SCROLL REVEAL JS
+  ===================================================== -->
+  <script>
+    const io = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.07, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+  </script>
+
+</body>
+</html>
