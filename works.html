@@ -11,10 +11,10 @@
 
   <style>
     :root {
-      --bg:       #060606;
-      --fg:       #e8e4df;
-      --muted:    #5a5650;
-      --accent:   #b8a898;
+      --bg:        #060606;
+      --fg:        #e8e4df;
+      --muted:     #5a5650;
+      --accent:    #b8a898;
       --en: 'Cormorant Garamond', serif;
       --jp: 'Noto Serif JP', serif;
       --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -23,7 +23,6 @@
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-
     body {
       background: var(--bg);
       color: var(--fg);
@@ -49,6 +48,60 @@
       z-index: 0;
       background: radial-gradient(ellipse 120% 80% at 50% 60%, transparent 30%, rgba(6,6,6,0.88) 100%);
       pointer-events: none;
+    }
+
+    /* ── LIGHT LINES CANVAS ──
+       Full-screen fixed overlay that holds all the flash lines.
+       pointer-events: none so it never blocks clicks.
+    */
+    #lines-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    /* Each line starts invisible; JS adds .run to trigger the animation */
+    .flash-line {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.55);
+      opacity: 0;
+    }
+
+    /* horizontal line: full width, 1px tall */
+    .flash-line.h {
+      left: -100%;
+      height: 1px;
+      width: 100%;
+      animation: none;
+    }
+    .flash-line.h.run {
+      animation: sweepH var(--dur, 0.6s) var(--ease-expo) var(--del, 0s) 1 forwards;
+    }
+
+    /* vertical line: full height, 1px wide */
+    .flash-line.v {
+      top: -100%;
+      width: 1px;
+      height: 100%;
+      animation: none;
+    }
+    .flash-line.v.run {
+      animation: sweepV var(--dur, 0.6s) var(--ease-expo) var(--del, 0s) 1 forwards;
+    }
+
+    @keyframes sweepH {
+      0%   { left: -100%; opacity: 0; }
+      5%   { opacity: 1; }
+      70%  { opacity: 0.6; }
+      100% { left: 100%;  opacity: 0; }
+    }
+    @keyframes sweepV {
+      0%   { top: -100%; opacity: 0; }
+      5%   { opacity: 1; }
+      70%  { opacity: 0.5; }
+      100% { top: 100%;  opacity: 0; }
     }
 
     /* ── HEADER ── */
@@ -79,8 +132,6 @@
       text-decoration: none;
       text-transform: uppercase;
       transition: opacity 0.4s ease;
-
-      /* slide in from left on load */
       opacity: 0;
       transform: translateX(-14px);
       animation: slideRight 1s var(--ease-expo) 0.1s forwards;
@@ -114,7 +165,7 @@
       width: 100%;
     }
 
-    /* eyebrow – clip-path slide up */
+    /* eyebrow */
     .hero-eyebrow {
       font-family: var(--en);
       font-size: clamp(0.6rem,1vw,0.72rem);
@@ -131,20 +182,20 @@
       animation: clipUp 0.9s var(--ease-expo) 0.5s forwards;
     }
 
-    /* WORKS – per-character float */
+    /* WORKS title */
     .hero-title {
       font-family: var(--en);
       font-size: clamp(4rem,11vw,12rem);
       font-weight: 300;
       letter-spacing: 0.12em;
       line-height: 0.9;
-      color: var(--fg);
+      color: var(--fg);          /* fully readable, no opacity reduction */
       position: relative;
       display: flex;
       gap: 0;
     }
 
-    /* ghost behind the title */
+    /* ghost outline – subtle, behind the real text */
     .hero-title-ghost {
       position: absolute;
       inset: 0;
@@ -154,19 +205,23 @@
       letter-spacing: 0.12em;
       line-height: 0.9;
       color: transparent;
-      -webkit-text-stroke: 1px rgba(255,255,255,0.04);
+      -webkit-text-stroke: 1px rgba(255,255,255,0.06);
       pointer-events: none;
       opacity: 0;
+      transform: translateY(10px);
       animation: ghostRise 2s var(--ease-expo) 1.8s forwards;
-      transform: translateY(8px);
       white-space: nowrap;
+      user-select: none;
     }
 
+    /* per-character reveal */
     .char {
       display: inline-block;
       opacity: 0;
-      transform: translateY(0.6em) skewY(4deg);
-      animation: charReveal 0.9s var(--ease-expo) var(--cd, 0.6s) forwards;
+      transform: translateY(0.55em) skewY(3deg);
+      animation: charReveal 0.85s var(--ease-expo) var(--cd, 0.7s) forwards;
+      position: relative;
+      z-index: 1;          /* sit above ghost */
     }
 
     /* subtitle */
@@ -186,12 +241,12 @@
       animation: clipUp 1s var(--ease-expo) 1.4s forwards;
     }
 
-    /* horizontal rule that draws in */
+    /* rule line */
     .hero-rule {
       margin-top: clamp(16px,2vh,28px);
       width: 0;
       height: 1px;
-      background: rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.14);
       animation: drawLine 1.2s var(--ease-expo) 1.7s forwards;
     }
 
@@ -264,6 +319,7 @@
       row-gap: clamp(6px,1.6vw,24px);
     }
 
+    /* asymmetric placement */
     .gi:nth-child(1)  { grid-column: 1 / 8;  grid-row: 1 / 2; aspect-ratio: 4/3; }
     .gi:nth-child(2)  { grid-column: 8 / 13; grid-row: 1 / 3; aspect-ratio: 3/4; }
     .gi:nth-child(3)  { grid-column: 1 / 5;  grid-row: 2 / 3; aspect-ratio: 1/1; }
@@ -275,62 +331,38 @@
     .gi:nth-child(9)  { grid-column: 9 / 13; grid-row: 4 / 5; aspect-ratio: 4/3; }
     .gi:nth-child(10) { grid-column: 5 / 9;  grid-row: 5 / 6; aspect-ratio: 16/9; }
 
-    /* ── Card base (shutter reveal) ── */
+    /* ── Card — シンプルな opacity + translateY フェードイン ── */
     .gi {
       position: relative;
       overflow: hidden;
       cursor: pointer;
       background: #0f0e0d;
-
-      /* initial – clipped from bottom, slightly scaled down */
-      clip-path: inset(0 0 100% 0);
-      transform: scale(0.97);
       opacity: 0;
-
+      transform: translateY(28px);
       transition:
-        clip-path 0s,   /* overridden per-card */
-        transform 0s,
-        opacity 0s;
+        opacity   0.85s var(--ease-expo) var(--delay, 0ms),
+        transform 0.85s var(--ease-expo) var(--delay, 0ms);
     }
-
-    /* when JS adds in-view, switch to animated state */
     .gi.in-view {
-      clip-path: inset(0 0 0% 0);
-      transform: scale(1);
       opacity: 1;
-      transition:
-        clip-path   0.95s var(--ease-expo) var(--delay, 0ms),
-        transform   0.95s var(--ease-expo) var(--delay, 0ms),
-        opacity     0.95s ease             var(--delay, 0ms);
+      transform: translateY(0);
     }
 
-    /* image: zooms in then settles when card appears */
+    /* image */
     .gi img {
       position: absolute;
       inset: 0;
       width: 100%; height: 100%;
       object-fit: cover;
-      filter: grayscale(60%) brightness(0.6);
-      transform: scale(1.12);
-      transition:
-        filter    1.2s var(--ease-img),
-        transform 1.8s var(--ease-img);
-    }
-
-    /* image settles once card is in view */
-    .gi.in-view img {
+      filter: grayscale(55%) brightness(0.6);
       transform: scale(1.04);
       transition:
-        filter    1.2s var(--ease-img) calc(var(--delay, 0ms) + 200ms),
-        transform 1.8s var(--ease-img) calc(var(--delay, 0ms) + 200ms);
+        filter    1.1s var(--ease-img),
+        transform 1.4s var(--ease-img);
     }
-
     .gi:hover img {
-      filter: grayscale(0%) brightness(0.85);
-      transform: scale(1.0) !important;
-      transition:
-        filter    1.0s var(--ease-img),
-        transform 1.4s var(--ease-img) !important;
+      filter: grayscale(0%) brightness(0.88);
+      transform: scale(1.0);
     }
 
     .gi-overlay {
@@ -338,20 +370,20 @@
       inset: 0;
       background: linear-gradient(
         to top,
-        rgba(6,6,6,0.85) 0%,
-        rgba(6,6,6,0.2)  45%,
+        rgba(6,6,6,0.82) 0%,
+        rgba(6,6,6,0.18) 45%,
         transparent 100%
       );
-      transition: opacity 0.6s ease;
+      transition: opacity 0.55s ease;
     }
-    .gi:hover .gi-overlay { opacity: 0.6; }
+    .gi:hover .gi-overlay { opacity: 0.55; }
 
     .gi-label {
       position: absolute;
       bottom: 0; left: 0; right: 0;
       padding: clamp(14px,2vw,28px);
       transform: translateY(6px);
-      transition: transform 0.6s var(--ease-expo);
+      transition: transform 0.55s var(--ease-expo);
     }
     .gi:hover .gi-label { transform: translateY(0); }
 
@@ -389,12 +421,12 @@
       left: 0; bottom: 0;
       width: 2px; height: 0;
       background: var(--accent);
-      transition: height 0.6s var(--ease-expo);
+      transition: height 0.55s var(--ease-expo);
       z-index: 2;
     }
     .gi:hover::before { height: 45%; }
 
-    /* number badge (top-right) */
+    /* number badge */
     .gi-num {
       position: absolute;
       top: clamp(10px,1.2vw,16px);
@@ -490,6 +522,9 @@
   <div class="bg-layer" id="bgLayer"></div>
   <div class="bg-vignette"></div>
 
+  <!-- Light lines container -->
+  <div id="lines-canvas" aria-hidden="true"></div>
+
   <header>
     <a href="index.html" class="logo">Tsuda Shoichi</a>
     <span class="header-index">Works Index</span>
@@ -499,10 +534,8 @@
     <div class="hero-inner">
       <p class="hero-eyebrow"><span>Site-specific &nbsp;·&nbsp; Story-driven</span></p>
 
-      <!-- WORKS: each char wrapped by JS -->
       <h1 class="hero-title" id="heroTitle">
         <span class="hero-title-ghost" aria-hidden="true">WORKS</span>
-        <!-- chars injected by JS -->
       </h1>
 
       <p class="hero-sub"><span>枠組みを越え、空間と共鳴する。</span></p>
@@ -632,23 +665,83 @@
   </footer>
 
   <script>
-    /* ── 1. WORKS character split ── */
-    (function() {
-      const title = document.getElementById('heroTitle');
-      const text = 'WORKS';
-      const BASE_DELAY = 0.7; /* seconds */
-      const CHAR_STEP  = 0.08;
+    /* ─────────────────────────────────────────────────────────
+       1.  WORKS — character split
+    ───────────────────────────────────────────────────────── */
+    const BASE_DELAY = 0.70;   /* first char starts at 0.7s  */
+    const CHAR_STEP  = 0.09;   /* 90 ms between each char    */
 
-      [...text].forEach((ch, i) => {
-        const s = document.createElement('span');
-        s.className = 'char';
-        s.textContent = ch;
-        s.style.setProperty('--cd', `${BASE_DELAY + i * CHAR_STEP}s`);
-        title.appendChild(s);
+    const titleEl = document.getElementById('heroTitle');
+    const chars   = [...'WORKS'];
+
+    chars.forEach((ch, i) => {
+      const s = document.createElement('span');
+      s.className = 'char';
+      s.textContent = ch;
+      s.style.setProperty('--cd', `${(BASE_DELAY + i * CHAR_STEP).toFixed(2)}s`);
+      titleEl.appendChild(s);
+    });
+
+    /* ─────────────────────────────────────────────────────────
+       2.  LIGHT LINES — fire in sync with character reveals
+       Each line is a thin <div> that sweeps across the screen.
+       We schedule:
+         • 2 horizontal lines (one per pair of chars)
+         • 3 vertical lines (spread across chars)
+    ───────────────────────────────────────────────────────── */
+    const canvas = document.getElementById('lines-canvas');
+
+    /*
+      lineDef: {
+        axis:  'h' | 'v',
+        pos:   percentage position (top for h, left for v),
+        delay: seconds after page load,
+        dur:   animation duration seconds,
+        opacity: max opacity override (uses CSS default if omitted)
+      }
+    */
+    const LINE_DEFS = [
+      /* fire as 'W' appears */
+      { axis: 'h', pos: 52,  delay: BASE_DELAY + 0 * CHAR_STEP + 0.08, dur: 0.55 },
+      /* fire as 'O' appears */
+      { axis: 'v', pos: 28,  delay: BASE_DELAY + 1 * CHAR_STEP + 0.05, dur: 0.65 },
+      /* fire as 'R' appears */
+      { axis: 'h', pos: 38,  delay: BASE_DELAY + 2 * CHAR_STEP + 0.06, dur: 0.50 },
+      /* fire as 'K' appears */
+      { axis: 'v', pos: 62,  delay: BASE_DELAY + 3 * CHAR_STEP + 0.04, dur: 0.70 },
+      /* fire as 'S' appears — diagonal feel: two quick lines */
+      { axis: 'h', pos: 65,  delay: BASE_DELAY + 4 * CHAR_STEP + 0.03, dur: 0.45 },
+      { axis: 'v', pos: 78,  delay: BASE_DELAY + 4 * CHAR_STEP + 0.15, dur: 0.55 },
+    ];
+
+    LINE_DEFS.forEach(def => {
+      const el = document.createElement('div');
+      el.className = `flash-line ${def.axis}`;
+
+      /* position perpendicular to travel direction */
+      if (def.axis === 'h') {
+        el.style.top = `${def.pos}%`;
+      } else {
+        el.style.left = `${def.pos}%`;
+      }
+
+      el.style.setProperty('--dur', `${def.dur}s`);
+      el.style.setProperty('--del', `${def.delay}s`);
+
+      canvas.appendChild(el);
+
+      /* Trigger: add .run after a tiny delay so the browser
+         registers the element before the animation fires. */
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.classList.add('run');
+        });
       });
-    })();
+    });
 
-    /* ── 2. Parallax background ── */
+    /* ─────────────────────────────────────────────────────────
+       3.  PARALLAX BACKGROUND
+    ───────────────────────────────────────────────────────── */
     const bg = document.getElementById('bgLayer');
     let ticking = false;
     window.addEventListener('scroll', () => {
@@ -661,7 +754,9 @@
       }
     }, { passive: true });
 
-    /* ── 3. Intersection Observer ── */
+    /* ─────────────────────────────────────────────────────────
+       4.  INTERSECTION OBSERVER — scroll reveals
+    ───────────────────────────────────────────────────────── */
     const io = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -671,17 +766,10 @@
       });
     }, { threshold: 0.10 });
 
-    /* section header */
     io.observe(document.getElementById('secHeader'));
 
-    /* grid cards with stagger based on grid position */
-    const cards = document.querySelectorAll('.gi');
-
-    /* read each card's computed grid-column-start to stagger by column */
-    cards.forEach((el, i) => {
-      /* lightweight column stagger: 0–2 groups */
-      const delay = (i % 3) * 90;
-      el.style.setProperty('--delay', `${delay}ms`);
+    document.querySelectorAll('.gi').forEach((el, i) => {
+      el.style.setProperty('--delay', `${(i % 3) * 80}ms`);
       io.observe(el);
     });
   </script>
