@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>素描 Drawing | Tsuda Shoichi</title>
+  <meta name="description" content="《素描》シリーズ — 線によって世界の輪郭をなぞり、形が立ち現れる以前の瞬間を捉える試み。鉛筆・木炭・紙を主素材とした津田翔一の素描作品群。">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
+
+  <style>
+    /* =====================================================
+       DESIGN TOKENS — サイト全体で統一
+    ===================================================== */
+    :root {
+      --bg:        #070706;
+      --bg2:       #0f0f0d;
+      --fg:        #e8e4df;
+      --muted:     rgba(232,228,223,0.42);
+      --dim:       rgba(232,228,223,0.22);
+      --accent:    #b8a898;
+      --border:    rgba(232,228,223,0.10);
+      --border-md: rgba(232,228,223,0.22);
+      --en:        'Cormorant Garamond', serif;
+      --jp:        'Noto Serif JP', serif;
+      --ease:      cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-out:  cubic-bezier(0.22, 1, 0.36, 1);
+      --px:        clamp(1.25rem, 6vw, 5rem);
+      --text-max:  700px;
+    }
+
+    /* =====================================================
+       RESET
+    ===================================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--jp);
+      line-height: 2.1;
+      letter-spacing: 0.06em;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      padding-left:  env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    img { max-width: 100%; height: auto; display: block; }
+    a   { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
+    a:hover { opacity: 0.45; }
+
+    /* =====================================================
+       NAVIGATION
+    ===================================================== */
+    .global-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: clamp(1.1rem, 2.5vh, 1.75rem) var(--px);
+      border-bottom: 0.5px solid var(--border);
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(7,7,6,0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: var(--en);
+      font-size: clamp(0.7rem, 2vw, 0.85rem);
+      letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent);
+    }
+    .nav-right { display: flex; align-items: center; gap: clamp(1.2rem, 3vw, 2.5rem); }
+    .nav-link {
+      font-family: var(--en);
+      font-size: clamp(0.58rem, 1.4vw, 0.7rem);
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--muted); transition: color 0.3s ease; white-space: nowrap;
+    }
+    .nav-link:hover { color: var(--fg); opacity: 1; }
+
+    /* =====================================================
+       HERO
+       「素描」という文字が闇から浮かび上がる演出。
+       works.html と同じ char-by-char アーキテクチャ。
+
+       追加演出:
+       ─ 背景に描画ストロークを模した SVG パーティクル線
+         (CSS animation で明滅)
+       ─ 「素」「描」それぞれが別の軸で回転しながら落下
+    ===================================================== */
+    .hero {
+      position: relative;
+      height: 100svh; min-height: 600px;
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 var(--px) clamp(3rem, 9vh, 7rem);
+      overflow: hidden;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    /* 背景画像: 岩間_湘南 をメインに使用 */
+    .hero-bg {
+      position: absolute; inset: 0;
+      background-image: url('images/岩間_湘南_20230317.JPG');
+      background-size: cover;
+      background-position: center center;
+      opacity: 0;
+      filter: blur(0.5px);
+      transform: scale(1.04);
+      transition: opacity 2.8s ease;
+    }
+    .hero-bg.loaded { opacity: 0.18; }
+    .hero-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(to top,
+          rgba(7,7,6,1)    0%,
+          rgba(7,7,6,0.72) 45%,
+          rgba(7,7,6,0.35) 100%),
+        radial-gradient(ellipse 80% 60% at 50% 80%,
+          transparent 40%,
+          rgba(7,7,6,0.5)  100%);
+    }
+
+    /* SVG ストローク線パーティクル */
+    .hero-strokes {
+      position: absolute; inset: 0; z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .stroke-line {
+      position: absolute;
+      background: rgba(232,228,223,var(--op, 0.06));
+      transform-origin: left center;
+      border-radius: 1px;
+      animation: strokeFlicker var(--dur, 4s) ease-in-out var(--del, 0s) infinite;
+    }
+    @keyframes strokeFlicker {
+      0%,100% { opacity: 0; }
+      30%      { opacity: var(--op, 0.06); }
+      60%      { opacity: calc(var(--op, 0.06) * 0.4); }
+      80%      { opacity: var(--op, 0.06); }
+    }
+
+    /* グレイン */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0; z-index: 1;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 180px;
+      pointer-events: none; opacity: 0.4;
+    }
+
+    .hero-inner { position: relative; z-index: 2; }
+
+    /* eyebrow: clip-path 横スライド */
+    .hero-eyebrow {
+      font-family: var(--en);
+      font-size: clamp(0.58rem, 1.4vw, 0.66rem);
+      letter-spacing: 0.48em; color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: clamp(1.2rem, 3.5vh, 2.5rem);
+      display: flex; align-items: center; gap: 1rem;
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path 1.1s var(--ease) 0.2s;
+    }
+    .hero-eyebrow::before {
+      content: ''; width: 28px; height: 0.5px;
+      background: var(--muted); flex-shrink: 0;
+    }
+    .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
+
+    /* ── メインタイトル「素描」──
+       works.html と同じ: translateY(110%) + skewY から浮上。
+       さらに各文字に微細な rotateY を加え、
+       石板から文字が起き上がるような立体感を演出。      */
+    .hero-title {
+      font-family: var(--jp);
+      font-size: clamp(4.5rem, 17vw, 15rem);
+      font-weight: 200;
+      line-height: 0.92;
+      letter-spacing: -0.01em;
+      color: var(--fg);
+      margin-bottom: clamp(0.75rem, 2vh, 1.5rem);
+      display: flex; gap: 0.04em;
+      /* 3D 空間を有効化 */
+      perspective: 800px;
+    }
+
+    .hero-title .char {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(115%) skewY(5deg) rotateX(-15deg);
+      transform-origin: bottom center;
+      transition:
+        transform 1.1s var(--ease-out),
+        opacity   0.7s ease;
+    }
+    .hero-title.revealed .char:nth-child(1) {
+      opacity: 1;
+      transform: translateY(0) skewY(0deg) rotateX(0deg);
+      transition-delay: 0.1s;
+    }
+    .hero-title.revealed .char:nth-child(2) {
+      opacity: 1;
+      transform: translateY(0) skewY(0deg) rotateX(0deg);
+      transition-delay: 0.28s;
+    }
+
+    /* ゴーストアウトライン: 文字の奥行き感 */
+    .hero-title-ghost {
+      position: absolute;
+      /* タイトルと同じ font properties を JS で複製 */
+      font-family: var(--jp);
+      font-size: clamp(4.5rem, 17vw, 15rem);
+      font-weight: 200;
+      line-height: 0.92;
+      letter-spacing: -0.01em;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(232,228,223,0.05);
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+      /* 本体より少し下・右にずれて残像感 */
+      left: calc(var(--px) + 0.06em);
+      bottom: clamp(3rem, 9vh, 7rem);
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 1.6s ease 1.4s, transform 1.6s var(--ease) 1.4s;
+    }
+    .hero-title-ghost.revealed { opacity: 1; transform: translateY(0); }
+
+    /* 英語タイトル */
+    .hero-title-en {
+      font-family: var(--en);
+      font-size: clamp(1rem, 3.5vw, 2.2rem);
+      font-weight: 300; font-style: italic;
+      letter-spacing: 0.22em; color: var(--muted);
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path 1.2s var(--ease) 0.55s;
+    }
+    .hero-title-en.revealed { clip-path: inset(0 0% 0 0); }
+
+    /* meta row */
+    .hero-meta {
+      display: flex; align-items: center; gap: 2rem;
+      margin-top: clamp(2rem, 4.5vh, 4rem);
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 0.9s ease 1.0s, transform 0.9s var(--ease) 1.0s;
+    }
+    .hero-meta.revealed { opacity: 1; transform: translateY(0); }
+    .hero-meta-line { width: 44px; height: 0.5px; background: var(--border-md); flex-shrink: 0; }
+    .hero-meta-text {
+      font-family: var(--en);
+      font-size: clamp(0.56rem, 1.3vw, 0.63rem);
+      letter-spacing: 0.22em; color: var(--dim); text-transform: uppercase;
+    }
+
+    /* scroll cue */
+    .hero-scroll {
+      position: absolute;
+      bottom: clamp(1.5rem, 4vh, 3rem); right: var(--px);
+      z-index: 2;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      opacity: 0; transition: opacity 0.8s ease 1.8s;
+    }
+    .hero-scroll.revealed { opacity: 1; }
+    .hero-scroll-label {
+      font-family: var(--en); font-size: 0.55rem;
+      letter-spacing: 0.35em; color: var(--dim);
+      text-transform: uppercase; writing-mode: vertical-rl;
+    }
+    .hero-scroll-bar {
+      width: 1px; height: 52px;
+      background: linear-gradient(to bottom, var(--dim), transparent);
+      animation: scrollPulse 2s ease-in-out 2.2s infinite;
+    }
+    @keyframes scrollPulse {
+      0%,100% { transform: scaleY(1);    opacity: 0.4; transform-origin: top; }
+      50%      { transform: scaleY(1.3); opacity: 1;   transform-origin: top; }
+    }
+
+    /* =====================================================
+       CONCEPT SECTION
+    ===================================================== */
+    .concept-section {
+      padding: clamp(5rem, 12vh, 10rem) var(--px);
+      border-bottom: 0.5px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr var(--text-max);
+      gap: 0 clamp(3rem, 6vw, 7rem);
+      max-width: calc(var(--text-max) + 240px + var(--px) * 2 + 7rem);
+      margin: 0 auto;
+    }
+
+    .concept-aside {
+      display: flex; flex-direction: column;
+      align-items: flex-start; gap: 1.4rem; padding-top: 0.3rem;
+    }
+    .concept-tag {
+      font-family: var(--en);
+      font-size: clamp(0.56rem, 1.2vw, 0.62rem);
+      letter-spacing: 0.4em; color: var(--muted); text-transform: uppercase;
+      writing-mode: vertical-rl; transform: rotate(180deg); opacity: 0;
+    }
+    .concept-tag.in-view { animation: fadeSlideUp 0.9s var(--ease) forwards; }
+    .concept-vertical-line {
+      width: 0.5px; height: 0;
+      background: var(--border-md); margin-left: 0.3rem;
+      transition: height 1.4s var(--ease) 0.3s;
+    }
+    .concept-vertical-line.in-view { height: 80px; }
+
+    .section-label {
+      font-family: var(--en);
+      font-size: clamp(0.56rem, 1.3vw, 0.63rem);
+      letter-spacing: 0.42em; color: var(--muted); text-transform: uppercase;
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: clamp(2rem, 5vh, 4rem);
+    }
+    .section-label::after { content: ''; flex: 1; height: 0.5px; background: var(--border); }
+
+    .credit {
+      font-family: var(--en);
+      font-size: clamp(0.58rem, 1.3vw, 0.66rem);
+      color: var(--dim); letter-spacing: 0.15em;
+      margin-bottom: clamp(1.8rem, 4vh, 2.8rem);
+    }
+
+    .concept-body {
+      font-size: clamp(0.875rem, 1.9vw, 1rem);
+      font-weight: 300; line-height: 2.25;
+      color: rgba(232,228,223,0.70); letter-spacing: 0.055em;
+    }
+    .concept-body p { margin-bottom: 1.7em; text-align: justify; }
+    .concept-body p:last-child { margin-bottom: 0; }
+    .concept-body em {
+      font-style: normal; color: var(--fg);
+      border-bottom: 0.5px solid var(--border-md); padding-bottom: 1px;
+    }
+
+    /* =====================================================
+       WORKS SECTION
+    ===================================================== */
+    .works-section {
+      padding: clamp(4rem, 9vh, 8rem) 0 clamp(6rem, 14vh, 12rem);
+    }
+
+    .works-header {
+      padding: 0 var(--px) clamp(3rem, 7vh, 6rem);
+      display: flex; align-items: baseline; justify-content: space-between;
+      border-bottom: 0.5px solid var(--border);
+      margin-bottom: clamp(4rem, 9vh, 8rem);
+    }
+    .works-header-label {
+      font-family: var(--en);
+      font-size: clamp(0.56rem, 1.3vw, 0.63rem);
+      letter-spacing: 0.42em; color: var(--muted); text-transform: uppercase;
+    }
+    /* JS が自動更新 */
+    .works-count {
+      font-family: var(--en);
+      font-size: clamp(1.6rem, 5vw, 3.5rem);
+      font-weight: 300; color: rgba(232,228,223,0.05); letter-spacing: 0.02em;
+    }
+
+    /* ────────────────────────────────────────────────────
+       ARTWORK BLOCK
+       ─ 作品を追加するときは
+           <!-- ▼ 作品XX ここから -->
+           <article class="artwork-block" id="blockXX"> ... </article>
+           <!-- ▲ 作品XX ここまで -->
+         ブロックをコピーして末尾「▼ 作品追加エリア」にペースト。
+         変更箇所は各ブロック内のコメントを参照。
+         作品数は JS が自動更新するため手動変更不要。
+    ──────────────────────────────────────────────────── */
+    .artwork-block {
+      padding: 0 var(--px);
+      margin-bottom: clamp(6rem, 14vh, 12rem);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+      gap: 0 clamp(2rem, 5vw, 6rem);
+    }
+    .artwork-block:last-child { margin-bottom: 0; }
+
+    /* 奇数: 画像左 */
+    .artwork-block:nth-child(odd)  .artwork-img-col { order: 1; }
+    .artwork-block:nth-child(odd)  .artwork-txt-col {
+      order: 2; padding-top: clamp(2rem, 6vh, 5rem);
+    }
+    /* 偶数: 画像右 */
+    .artwork-block:nth-child(even) .artwork-img-col { order: 2; }
+    .artwork-block:nth-child(even) .artwork-txt-col {
+      order: 1; padding-top: clamp(2rem, 6vh, 5rem); text-align: right;
+    }
+    .artwork-block:nth-child(even) .artwork-divider  { margin-left: auto; }
+    .artwork-block:nth-child(even) .section-label    { flex-direction: row-reverse; }
+    .artwork-block:nth-child(even) .section-label::after  { display: none; }
+    .artwork-block:nth-child(even) .section-label::before {
+      content: ''; flex: 1; height: 0.5px; background: var(--border);
+    }
+    .artwork-block:nth-child(even) .artwork-num {
+      left: auto; right: clamp(12px, 2vw, 20px);
+    }
+
+    /* ── 画像列 ── */
+    .artwork-img-col { position: relative; }
+
+    /* シャッター reveal: 下から開放 */
+    .artwork-clip-wrap {
+      clip-path: inset(100% 0 0 0);
+      transition: clip-path 1.4s var(--ease);
+      overflow: hidden;
+    }
+    .artwork-clip-wrap.in-view { clip-path: inset(0% 0 0 0); }
+
+    a.artwork-image-link {
+      display: block; overflow: hidden; background: var(--bg2);
+      outline: 0.5px solid var(--border); cursor: zoom-in;
+      transition: outline-color 0.5s ease, box-shadow 0.6s var(--ease);
+    }
+    .artwork-image-link {
+      display: block; overflow: hidden; background: var(--bg2);
+      outline: 0.5px solid var(--border);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      a.artwork-image-link:hover {
+        outline-color: var(--border-md);
+        box-shadow: 0 30px 64px rgba(0,0,0,0.65);
+        opacity: 1;
+      }
+      a.artwork-image-link:hover .artwork-image {
+        transform: scale(1.035);
+        filter: grayscale(0%) brightness(0.97);
+      }
+    }
+
+    .artwork-image {
+      width: 100%;
+      aspect-ratio: 3 / 4; /* 素描デフォルト(縦長) */
+      object-fit: cover; display: block;
+      filter: grayscale(15%) brightness(0.83);
+      transform: scale(1.0);
+      transition: transform 1.1s var(--ease), filter 0.7s ease;
+    }
+    /* 比率バリエーション */
+    .artwork-image.a4            { aspect-ratio: 21 / 29.7; }
+    .artwork-image.a4h           { aspect-ratio: 29.7 / 21; } /* A4横 */
+    .artwork-image.square        { aspect-ratio: 1 / 1; }
+    .artwork-image.landscape     { aspect-ratio: 4 / 3; }
+    .artwork-image.wide          { aspect-ratio: 16 / 9; }
+    .artwork-image.portrait-tall { aspect-ratio: 2 / 3; }
+
+    .artwork-num {
+      position: absolute;
+      top: clamp(12px, 2vw, 20px); left: clamp(12px, 2vw, 20px);
+      font-family: var(--en);
+      font-size: clamp(0.55rem, 1.1vw, 0.62rem);
+      letter-spacing: 0.22em; color: rgba(232,228,223,0.25);
+      z-index: 1; pointer-events: none;
+    }
+
+    /* ── テキスト列アニメーション ── */
+    .artwork-year {
+      font-family: var(--en);
+      font-size: clamp(0.6rem, 1.4vw, 0.7rem);
+      letter-spacing: 0.22em; color: var(--dim); margin-bottom: 0.7rem;
+      opacity: 0; transform: translateY(14px);
+      transition: opacity 0.8s ease 0.15s, transform 0.8s var(--ease) 0.15s;
+    }
+    .artwork-block.in-view .artwork-year { opacity: 1; transform: translateY(0); }
+
+    .artwork-title-jp {
+      font-family: var(--jp);
+      font-size: clamp(1.6rem, 4.5vw, 3rem);
+      font-weight: 200; line-height: 1.2; letter-spacing: 0.04em;
+      color: var(--fg); margin-bottom: 0.4rem;
+      opacity: 0; transform: translateY(18px);
+      transition: opacity 0.9s ease 0.25s, transform 0.9s var(--ease) 0.25s;
+    }
+    .artwork-block.in-view .artwork-title-jp { opacity: 1; transform: translateY(0); }
+
+    .artwork-title-en {
+      font-family: var(--en);
+      font-size: clamp(0.85rem, 2vw, 1.15rem);
+      font-weight: 300; font-style: italic;
+      letter-spacing: 0.16em; color: var(--accent);
+      margin-bottom: clamp(1.2rem, 3vh, 2.2rem);
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 0.8s ease 0.35s, transform 0.8s var(--ease) 0.35s;
+    }
+    .artwork-block.in-view .artwork-title-en { opacity: 1; transform: translateY(0); }
+
+    .artwork-divider {
+      width: 0; height: 0.5px; background: var(--border-md);
+      margin-bottom: clamp(1.2rem, 3vh, 2.2rem);
+      transition: width 1.2s var(--ease) 0.5s;
+    }
+    .artwork-block.in-view .artwork-divider { width: 100%; }
+
+    .artwork-spec {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: clamp(0.58rem, 1.2vw, 0.65rem);
+      color: var(--dim); letter-spacing: 0.12em; line-height: 2;
+      margin-bottom: clamp(2rem, 5vh, 4rem);
+      opacity: 0; transition: opacity 0.8s ease 0.45s;
+    }
+    .artwork-block.in-view .artwork-spec { opacity: 1; }
+
+    .artwork-desc-label {
+      font-family: var(--en);
+      font-size: clamp(0.56rem, 1.2vw, 0.62rem);
+      letter-spacing: 0.3em; color: var(--muted); text-transform: uppercase;
+      margin-bottom: 1.2rem;
+      display: flex; align-items: center; gap: 0.8rem;
+      opacity: 0; transform: translateY(8px);
+      transition: opacity 0.7s ease 0.55s, transform 0.7s var(--ease) 0.55s;
+    }
+    .artwork-desc-label::after { content: ''; flex: 1; height: 0.5px; background: var(--border); }
+    .artwork-block.in-view .artwork-desc-label { opacity: 1; transform: translateY(0); }
+
+    .artwork-desc {
+      font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+      font-weight: 300; line-height: 2.1;
+      color: rgba(232,228,223,0.58);
+      letter-spacing: 0.055em; text-align: justify;
+      opacity: 0; transform: translateY(10px);
+      transition: opacity 0.9s ease 0.65s, transform 0.9s var(--ease) 0.65s;
+    }
+    .artwork-desc p { margin-bottom: 1.4em; }
+    .artwork-desc p:last-child { margin-bottom: 0; }
+    .artwork-block.in-view .artwork-desc { opacity: 1; transform: translateY(0); }
+
+    /* =====================================================
+       FOOTER
+    ===================================================== */
+    .global-footer {
+      padding: clamp(3rem, 6vh, 5rem) var(--px);
+      border-top: 0.5px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-logo {
+      font-family: var(--en);
+      font-size: clamp(0.7rem, 1.5vw, 0.8rem); letter-spacing: 0.2em; color: var(--dim);
+    }
+    .footer-copy {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: clamp(0.55rem, 1.2vw, 0.63rem); color: var(--dim); letter-spacing: 0.08em;
+    }
+
+    /* =====================================================
+       UTILITY
+    ===================================================== */
+    .fade-up {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 1s var(--ease), transform 1s var(--ease);
+      transition-delay: var(--sd, 0ms);
+    }
+    .fade-up.in-view { opacity: 1; transform: translateY(0); }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+    @media (max-width: 900px) {
+      .concept-section { grid-template-columns: 1fr; max-width: calc(var(--text-max) + var(--px) * 2); }
+      .concept-aside   { flex-direction: row; align-items: center; margin-bottom: 2rem; }
+      .concept-tag     { writing-mode: horizontal-tb; transform: none; }
+      .concept-vertical-line { width: 48px; height: 0.5px !important; margin-left: 0; }
+    }
+
+    @media (max-width: 860px) {
+      .artwork-block { grid-template-columns: 1fr; gap: clamp(1.5rem, 4vw, 2.5rem) 0; }
+      .artwork-block:nth-child(odd)  .artwork-img-col,
+      .artwork-block:nth-child(even) .artwork-img-col { order: 1; }
+      .artwork-block:nth-child(odd)  .artwork-txt-col,
+      .artwork-block:nth-child(even) .artwork-txt-col {
+        order: 2; padding-top: 0; text-align: left;
+      }
+      .artwork-block:nth-child(even) .artwork-divider   { margin-left: 0; }
+      .artwork-block:nth-child(even) .section-label     { flex-direction: row; }
+      .artwork-block:nth-child(even) .section-label::before { display: none; }
+      .artwork-block:nth-child(even) .section-label::after  { display: block; }
+      .artwork-block:nth-child(even) .artwork-num { left: clamp(12px,2vw,20px); right: auto; }
+      .artwork-image { aspect-ratio: 3 / 2 !important; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-scroll { display: none; }
+      .works-header { flex-direction: column; gap: 0.5rem; }
+      .hero-title-ghost { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important; animation-duration: 0.01ms !important;
+      }
+      .hero-title .char, .hero-eyebrow, .hero-title-en, .hero-meta, .hero-scroll,
+      .artwork-clip-wrap, .fade-up, .artwork-title-jp, .artwork-title-en,
+      .artwork-year, .artwork-spec, .artwork-divider, .artwork-desc-label,
+      .artwork-desc, .concept-tag, .hero-title-ghost {
+        opacity: 1 !important; transform: none !important;
+        clip-path: none !important; width: auto !important; height: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav class="global-nav">
+    <a href="index.html" class="nav-logo">Tsuda Shoichi</a>
+    <div class="nav-right">
+      <a href="works.html" class="nav-link">Works Index</a>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- =====================================================
+         HERO
+    ===================================================== -->
+    <section class="hero" id="hero">
+
+      <!-- 背景: 岩間_湘南 -->
+      <div class="hero-bg" id="heroBg"></div>
+
+      <!-- 描画ストローク線パーティクル (JS で生成) -->
+      <div class="hero-strokes" id="heroStrokes" aria-hidden="true"></div>
+
+      <!-- ゴーストアウトライン -->
+      <p class="hero-title-ghost" id="heroGhost" aria-hidden="true">素描</p>
+
+      <div class="hero-inner">
+        <p class="hero-eyebrow" id="heroEyebrow">Series — Drawing &nbsp;·&nbsp; Line &amp; Form</p>
+
+        <!--
+          「素」「描」を個別の .char でラップ。
+          JS が各文字に animation delay を設定する。
+        -->
+        <h1 class="hero-title" id="heroTitle" aria-label="素描">
+          <span class="char">素</span>
+          <span class="char">描</span>
+        </h1>
+
+        <p class="hero-title-en" id="heroEn">Drawing</p>
+
+        <div class="hero-meta" id="heroMeta">
+          <div class="hero-meta-line"></div>
+          <span class="hero-meta-text">Pencil &amp; Charcoal on Paper &nbsp;·&nbsp; Line and Form</span>
+        </div>
+      </div>
+
+      <div class="hero-scroll" id="heroScroll" aria-hidden="true">
+        <div class="hero-scroll-bar"></div>
+        <span class="hero-scroll-label">Scroll</span>
+      </div>
+
+    </section>
+
+    <!-- =====================================================
+         CONCEPT
+    ===================================================== -->
+    <section class="concept-section" id="concept">
+
+      <div class="concept-aside">
+        <span class="concept-tag" id="conceptTag">Concept</span>
+        <div class="concept-vertical-line" id="conceptLine"></div>
+      </div>
+
+      <div class="concept-main">
+        <p class="section-label">Concept</p>
+        <p class="credit">解説：左美都研究会、水澤井縄</p>
+        <div class="concept-body fade-up" style="--sd:100ms">
+          <p>《素描》とは、線によって世界の輪郭をなぞり、<em>形が立ち現れる以前の瞬間</em>を捉えようとする行為である。絵画における油彩が〈脱領土化〉と〈再領土化〉の往還であるとすれば、素描はその手前——素材がまだ流動的であり、意味が固定される直前——に宿る<em>「未決定の運動」</em>を記録するものに他ならない。</p>
+          <p>津田の素描は、完成作のための準備稿ではない。それは独立した思考の痕跡であり、鉛筆や木炭の線が紙の繊維と摩擦するその瞬間、<em>〈いと〉</em>が最も剥き出しの状態で析出される場である。線は対象を描くのではなく、対象と描き手のあいだに生じる<em>「力の場」</em>そのものを可視化する。</p>
+          <p>《Cell-Graphics》シリーズや《岩間》に代表されるように、細胞的・地質的・神話的なイメージが素描の中で重なり合う。ミクロとマクロ、有機と無機、生と死の境界が曖昧になるそこでは、左美都の地層が持つ記憶——土と岩の中に刻まれた時間——が、紙の表面へと移植されていく。</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =====================================================
+         WORKS
+    ===================================================== -->
+    <section class="works-section" id="works">
+
+      <div class="works-header fade-up">
+        <span class="works-header-label">Individual Works</span>
+        <!-- JS が .artwork-block の数を数えて自動更新 -->
+        <span class="works-count" id="worksCount">02</span>
+      </div>
+
+
+      <!-- ================================================
+           ▼ 作品01 ここから ——————————————————————————
+           【コピー手順】このブロック全体を「▼ 作品追加エリア」にペーストし
+           以下を書き換える:
+             id="blockN"          → block2, block3…
+             .artwork-num         → "02", "03"…
+             href (a タグ)        → 拡大画像URL (なければ div.artwork-image-link に変更)
+             src / alt            → 画像パス / 説明
+             .artwork-image クラス→ a4 / a4h / square / landscape / wide / portrait-tall
+             artwork-year         → 制作年
+             artwork-title-jp/en  → タイトル日英
+             artwork-spec         → 素材・サイズ
+             artwork-desc         → 解説 (不要なら label+div ごと削除)
+      ================================================ -->
+      <article class="artwork-block" id="block1">
+        <div class="artwork-img-col">
+          <span class="artwork-num">01</span>
+          <div class="artwork-clip-wrap">
+            <a href="https://de7bbbccc0.cbaul-cdnwnd.com/240d88405885768af7ba7b864ee3299f/200000032-b83c8b83ca/700/%E3%80%90CG%28Cell-Graphics%29%20%5Bapocalypse%5D%20-%20III%E3%80%91%20-%20%E4%BF%AE%E6%AD%A3%E5%BE%8C%E3%83%BC.jpg?ph=de7bbbccc0"
+               target="_blank" class="artwork-image-link"
+               aria-label="CG(Cell-Graphics) [apocalypse] - III — 拡大表示">
+              <img
+                src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg"
+                alt="CG(Cell-Graphics) [apocalypse] - III"
+                class="artwork-image a4"
+                loading="lazy">
+            </a>
+          </div>
+        </div>
+        <div class="artwork-txt-col">
+          <p class="section-label">Work 01</p>
+          <p class="artwork-year">2009</p>
+          <h2 class="artwork-title-jp">CG [apocalypse] - III</h2>
+          <p class="artwork-title-en">Cell-Graphics</p>
+          <div class="artwork-divider"></div>
+          <p class="artwork-spec">
+            鉛筆・紙<br>
+            Pencil on paper<br>
+            21 × 29.7 cm (A4)
+          </p>
+          <p class="artwork-desc-label">Commentary</p>
+          <div class="artwork-desc">
+            <p>《CG（Cell-Graphics）》は、細胞（cell）の微視的構造と、グラフィック（graphics）の平面的論理が交差する地点において生成される素描シリーズである。タイトルに含まれる〔apocalypse〕——黙示録——という語は、終末ではなく、<em>「覆いを取り除く」</em>という語源的意味において用いられている。</p>
+            <p>鉛筆の線は、生物学的・地質学的・神話的なイメージを複数のレイヤーとして重ね、単一の表面に<em>「時間の堆積」</em>を刻もうとする。細胞が分裂し、地層が形成されるように、線は繰り返し重なり、消えかかり、また現れる。これは対象の描写ではなく、描くという行為そのものが生み出す〈場〉——左美都の地質が持つ記憶と、紙の繊維が持つ抵抗のあいだに生じる力の痕跡——の記録である。</p>
+          </div>
+        </div>
+      </article>
+      <!-- ▲ 作品01 ここまで ——————————————————————————— -->
+
+
+      <!-- ================================================
+           ▼ 作品02 ここから ——————————————————————————
+      ================================================ -->
+      <article class="artwork-block" id="block2">
+        <div class="artwork-img-col">
+          <span class="artwork-num">02</span>
+          <div class="artwork-clip-wrap">
+            <!--
+              拡大URLがある場合: <a href="拡大URL" target="_blank" class="artwork-image-link">
+              ない場合はこのまま div を使用
+            -->
+            <div class="artwork-image-link">
+              <img
+                src="images/岩間_湘南_20230317.JPG"
+                alt="岩間（湘南）"
+                class="artwork-image landscape"
+                loading="lazy">
+            </div>
+          </div>
+        </div>
+        <div class="artwork-txt-col">
+          <p class="section-label">Work 02</p>
+          <p class="artwork-year">2023</p>
+          <h2 class="artwork-title-jp">岩間（湘南）</h2>
+          <p class="artwork-title-en">Rock Strata, Shōnan</p>
+          <div class="artwork-divider"></div>
+          <p class="artwork-spec">
+            木炭・紙<br>
+            Charcoal on paper<br>
+            2023年3月
+          </p>
+          <p class="artwork-desc-label">Commentary</p>
+          <div class="artwork-desc">
+            <p>湘南の海岸に露出した岩の断面を、木炭でなぞった素描である。隆起し、亀裂し、風化した岩の表面は、地層の時間を可視化する。木炭という素材——炭素の塊、かつて生きていた樹木——が岩の記録と出会うとき、そこには有機と無機、生と死の境界を問うための<em>「力の場」</em>が生まれる。</p>
+            <p>角ばった断面と、そのあいだに走る白い光のような線は、岩の地質学的な裂け目でありながら、同時に津田が定義する<em>〈いと〉</em>——それ以上還元できない存在の最小単位——の形象として読むことができる。左美都の地質と湘南の岩とは地理的に遠いが、地層の記憶という観点において、この素描は津田の制作における<em>「サイト特有の感覚の移植」</em>の試みでもある。</p>
+          </div>
+        </div>
+      </article>
+      <!-- ▲ 作品02 ここまで ——————————————————————————— -->
+
+
+      <!-- ================================================
+           ▼ 作品追加エリア ————————————————————————————
+           新しい作品はここに追加
+           (上のコピー手順を参照)
+           作品数カウンターは JS が自動で更新します
+      ================================================ -->
+
+
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="global-footer">
+    <p class="footer-logo">Tsuda Shoichi</p>
+    <p class="footer-copy">© Tsuda Shoichi. All Rights Reserved.</p>
+  </footer>
+
+  <!-- =====================================================
+       JAVASCRIPT
+       1. Hero entrance (ページ読込直後)
+       2. SVGストローク線パーティクル生成
+       3. Intersection Observer (スクロール連動)
+       4. 作品数カウント自動更新
+  ===================================================== -->
+  <script>
+    /* ── 1. HERO ENTRANCE ───────────────────────────── */
+    const get = id => document.getElementById(id);
+
+    window.addEventListener('load', () => {
+      const bg      = get('heroBg');
+      const ghost   = get('heroGhost');
+      const eyebrow = get('heroEyebrow');
+      const title   = get('heroTitle');
+      const en      = get('heroEn');
+      const meta    = get('heroMeta');
+      const sc      = get('heroScroll');
+
+      // 背景フェードイン
+      if (bg)    setTimeout(() => bg.classList.add('loaded'),          80);
+
+      // ゴーストアウトライン (タイトルより少し遅れて)
+      if (ghost) setTimeout(() => ghost.classList.add('revealed'),    1200);
+
+      // eyebrow → タイトル → 英語 → meta → scroll
+      if (eyebrow) setTimeout(() => eyebrow.classList.add('revealed'), 300);
+      if (title)   setTimeout(() => title.classList.add('revealed'),   500);
+      if (en)      setTimeout(() => en.classList.add('revealed'),      750);
+      if (meta)    setTimeout(() => meta.classList.add('revealed'),   1050);
+      if (sc)      setTimeout(() => sc.classList.add('revealed'),     1800);
+    });
+
+    /* ── 2. ストローク線パーティクル ────────────────── */
+    (function () {
+      const container = get('heroStrokes');
+      if (!container) return;
+
+      // 素描のタッチを模した細い線を散りばめる
+      const lines = [
+        { x: '8%',  y: '22%', w: '18vw', rot: '-12deg', op: 0.07, dur: '5.2s', del: '0s'   },
+        { x: '72%', y: '15%', w: '12vw', rot: '7deg',   op: 0.05, dur: '6.8s', del: '0.8s' },
+        { x: '15%', y: '60%', w: '22vw', rot: '-4deg',  op: 0.06, dur: '4.6s', del: '1.2s' },
+        { x: '55%', y: '72%', w: '16vw', rot: '18deg',  op: 0.08, dur: '7.1s', del: '0.3s' },
+        { x: '38%', y: '38%', w: '9vw',  rot: '-28deg', op: 0.05, dur: '5.9s', del: '2.0s' },
+        { x: '80%', y: '48%', w: '14vw', rot: '3deg',   op: 0.06, dur: '6.3s', del: '0.5s' },
+        { x: '3%',  y: '82%', w: '20vw', rot: '9deg',   op: 0.04, dur: '8.0s', del: '1.6s' },
+        { x: '60%', y: '30%', w: '10vw', rot: '-16deg', op: 0.05, dur: '5.5s', del: '2.4s' },
+      ];
+
+      lines.forEach(l => {
+        const el = document.createElement('div');
+        el.className = 'stroke-line';
+        Object.assign(el.style, {
+          left: l.x, top: l.y,
+          width: l.w, height: '1px',
+          transform: `rotate(${l.rot})`,
+          '--op': l.op,
+          '--dur': l.dur,
+          '--del': l.del,
+        });
+        container.appendChild(el);
+      });
+    })();
+
+    /* ── 3. INTERSECTION OBSERVER ───────────────────── */
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        el.classList.add('in-view');
+
+        // artwork-block: シャッター発火
+        if (el.classList.contains('artwork-block')) {
+          el.querySelectorAll('.artwork-clip-wrap').forEach(c => {
+            setTimeout(() => c.classList.add('in-view'), 0);
+          });
+        }
+        io.unobserve(el);
+      });
+    }, { threshold: 0.10, rootMargin: '0px 0px -60px 0px' });
+
+    document.querySelectorAll([
+      '#conceptTag',
+      '#conceptLine',
+      '.fade-up',
+      '.works-header',
+      '.artwork-block',
+    ].join(', ')).forEach(el => io.observe(el));
+
+    /* ── 4. 作品数カウント自動更新 ──────────────────── */
+    const countEl = get('worksCount');
+    if (countEl) {
+      const n = document.querySelectorAll('.artwork-block').length;
+      countEl.textContent = String(n).padStart(2, '0');
+    }
+  </script>
+
+</body>
+</html>
