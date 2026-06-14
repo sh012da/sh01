@@ -5,38 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>異体 Variant | Tsuda Shoichi</title>
   <meta name="description" content="《異体》と分類される作品群は、作者が風景を描出する過程において視覚的構造が次第に特定の形態へと収斂していく中で、結果的に「身体としてみなされうる」かたちが析出されたものである。">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
-
   <style>
-    /* =====================================================
-       DESIGN TOKENS  — cave.html / works.html と完全統一
-    ===================================================== */
+    /*
+     DESIGN TOKENS
+     cave.html/works.html と完全統一
+    */
     :root {
-      --bg:        #070706;
-      --bg2:       #0f0f0d;
-      --fg:        #e8e4df;
-      --muted:     rgba(232,228,223,0.42);
-      --dim:       rgba(232,228,223,0.22);
-      --accent:    #b8a898;
-      --border:    rgba(232,228,223,0.10);
+      --bg: #070706;
+      --bg2: #0f0f0d;
+      --fg: #e8e4df;
+      --muted: rgba(232,228,223,0.42);
+      --dim: rgba(232,228,223,0.22);
+      --accent: #b8a898;
+      --border: rgba(232,228,223,0.10);
       --border-md: rgba(232,228,223,0.22);
-      --en:        'Cormorant Garamond', serif;
-      --jp:        'Noto Serif JP', serif;
-      --ease:      cubic-bezier(0.16, 1, 0.3, 1);
+      --en: 'Cormorant Garamond', serif;
+      --jp: 'Noto Serif JP', serif;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
       --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
-      --px:        clamp(1.25rem, 6vw, 5rem);
-      --text-max:  700px;
+      --px: clamp(1.25rem, 6vw, 5rem);
+      --text-max: 700px;
     }
 
-    /* =====================================================
-       RESET
-    ===================================================== */
+    /* RESET */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-
     body {
       background: var(--bg);
       color: var(--fg);
@@ -45,17 +41,14 @@
       letter-spacing: 0.06em;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
-      padding-left:  env(safe-area-inset-left);
+      padding-left: env(safe-area-inset-left);
       padding-right: env(safe-area-inset-right);
     }
-
     img { max-width: 100%; height: auto; display: block; }
-    a   { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
+    a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
     a:hover { opacity: 0.45; }
 
-    /* =====================================================
-       NAVIGATION  — cave.html と同一
-    ===================================================== */
+    /* NAVIGATION */
     .global-nav {
       display: flex;
       justify-content: space-between;
@@ -89,13 +82,7 @@
     }
     .nav-link:hover { color: var(--fg); opacity: 1; }
 
-    /* =====================================================
-       HERO  — cave.html と同一のアニメーション体系
-       ・背景: 代表画像をぼかして薄く (JS でフェードイン)
-       ・「異体」2文字: translateY(110%) から落ちてくる
-       ・eyebrow / 英題: clip-path 横スライド
-       ・meta / scroll-cue: opacity フェード
-    ===================================================== */
+    /* HERO */
     .hero {
       position: relative;
       height: 100svh;
@@ -107,8 +94,6 @@
       overflow: hidden;
       border-bottom: 0.5px solid var(--border);
     }
-
-    /* 背景 */
     .hero-bg {
       position: absolute; inset: 0;
       background-image: url('images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg');
@@ -125,13 +110,11 @@
       position: absolute; inset: 0;
       background: linear-gradient(
         to top,
-        rgba(7,7,6,1)    0%,
-        rgba(7,7,6,0.6)  55%,
+        rgba(7,7,6,1) 0%,
+        rgba(7,7,6,0.6) 55%,
         rgba(7,7,6,0.25) 100%
       );
     }
-
-    /* グレイン */
     .hero::before {
       content: '';
       position: absolute; inset: 0; z-index: 1;
@@ -140,10 +123,8 @@
       pointer-events: none;
       opacity: 0.35;
     }
-
     .hero-inner { position: relative; z-index: 2; }
-
-    /* eyebrow */
+    
     .hero-eyebrow {
       font-family: var(--en);
       font-size: clamp(0.58rem, 1.4vw, 0.66rem);
@@ -162,7 +143,6 @@
     }
     .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
 
-    /* タイトル: 「異」「体」を1文字ずつ */
     .hero-title {
       font-family: var(--jp);
       font-size: clamp(4.5rem, 16vw, 14rem);
@@ -178,14 +158,11 @@
       display: inline-block;
       transform: translateY(110%);
       opacity: 0;
-      transition:
-        transform 1.0s var(--ease),
-        opacity   0.6s ease;
+      transition: transform 1.0s var(--ease), opacity 0.6s ease;
     }
     .hero-title.revealed .char:nth-child(1) { transform: translateY(0); opacity: 1; transition-delay: 0.15s; }
     .hero-title.revealed .char:nth-child(2) { transform: translateY(0); opacity: 1; transition-delay: 0.30s; }
 
-    /* 英語タイトル */
     .hero-title-en {
       font-family: var(--en);
       font-size: clamp(1rem, 3.5vw, 2.2rem);
@@ -198,7 +175,6 @@
     }
     .hero-title-en.revealed { clip-path: inset(0 0% 0 0); }
 
-    /* meta */
     .hero-meta {
       display: flex; align-items: center; gap: 2rem;
       margin-top: clamp(2rem, 4.5vh, 4rem);
@@ -213,7 +189,6 @@
       letter-spacing: 0.22em; color: var(--dim); text-transform: uppercase;
     }
 
-    /* scroll cue */
     .hero-scroll {
       position: absolute;
       bottom: clamp(1.5rem, 4vh, 3rem);
@@ -236,13 +211,11 @@
       animation: scrollPulse 2s ease-in-out 2s infinite;
     }
     @keyframes scrollPulse {
-      0%,100% { transform: scaleY(1);    opacity: 0.4; transform-origin: top; }
-      50%      { transform: scaleY(1.3); opacity: 1;   transform-origin: top; }
+      0%, 100% { transform: scaleY(1); opacity: 0.4; transform-origin: top; }
+      50% { transform: scaleY(1.3); opacity: 1; transform-origin: top; }
     }
 
-    /* =====================================================
-       CONCEPT SECTION  — cave.html と同一の2カラム構造
-    ===================================================== */
+    /* CONCEPT SECTION */
     .concept-section {
       padding: clamp(5rem, 12vh, 10rem) var(--px);
       border-bottom: 0.5px solid var(--border);
@@ -252,8 +225,6 @@
       max-width: calc(var(--text-max) + 240px + var(--px) * 2 + 7rem);
       margin: 0 auto;
     }
-
-    /* 左: 縦書きラベル列 */
     .concept-aside {
       display: flex;
       flex-direction: column;
@@ -282,7 +253,6 @@
     }
     .concept-vertical-line.in-view { height: 80px; }
 
-    /* 右: テキスト列 */
     .section-label {
       font-family: var(--en);
       font-size: clamp(0.56rem, 1.3vw, 0.63rem);
@@ -294,14 +264,12 @@
     .section-label::after {
       content: ''; flex: 1; height: 0.5px; background: var(--border);
     }
-
     .credit {
       font-family: var(--en);
       font-size: clamp(0.58rem, 1.3vw, 0.66rem);
       color: var(--dim); letter-spacing: 0.15em;
       margin-bottom: clamp(1.8rem, 4vh, 2.8rem);
     }
-
     .concept-body {
       font-size: clamp(0.875rem, 1.9vw, 1rem);
       font-weight: 300; line-height: 2.25;
@@ -315,15 +283,10 @@
       border-bottom: 0.5px solid var(--border-md); padding-bottom: 1px;
     }
 
-    /* =====================================================
-       WORKS SECTION
-       — cave.html の artwork-block 構造と完全統一
-       — 奇数: 画像左 / 偶数: 画像右
-    ===================================================== */
+    /* WORKS SECTION */
     .works-section {
       padding: clamp(4rem, 9vh, 8rem) 0 clamp(6rem, 14vh, 12rem);
     }
-
     .works-header {
       padding: 0 var(--px) clamp(3rem, 7vh, 6rem);
       display: flex; align-items: baseline;
@@ -336,7 +299,6 @@
       font-size: clamp(0.56rem, 1.3vw, 0.63rem);
       letter-spacing: 0.42em; color: var(--muted); text-transform: uppercase;
     }
-    /* 作品総数: 作品を追加したらここの数字も更新 */
     .works-count {
       font-family: var(--en);
       font-size: clamp(1.6rem, 5vw, 3.5rem);
@@ -345,12 +307,7 @@
       letter-spacing: 0.02em;
     }
 
-    /* ────────────────────────────────────────────────
-       ARTWORK BLOCK
-       ─ 作品を追加するときは
-         <!-- ▼ 作品XX ここから --> ... <!-- ▲ 作品XX ここまで -->
-         のブロックをまるごとコピーして末尾に追加する
-    ──────────────────────────────────────────────── */
+    /* ARTWORK BLOCK */
     .artwork-block {
       padding: 0 var(--px);
       margin-bottom: clamp(6rem, 14vh, 12rem);
@@ -362,31 +319,25 @@
     .artwork-block:last-child { margin-bottom: 0; }
 
     /* 奇数: 画像が左 */
-    .artwork-block:nth-child(odd)  .artwork-img-col { order: 1; }
-    .artwork-block:nth-child(odd)  .artwork-txt-col {
-      order: 2;
-      padding-top: clamp(2rem, 6vh, 5rem);
+    .artwork-block:nth-child(odd) .artwork-img-col { order: 1; }
+    .artwork-block:nth-child(odd) .artwork-txt-col {
+      order: 2; padding-top: clamp(2rem, 6vh, 5rem);
     }
 
     /* 偶数: 画像が右 */
     .artwork-block:nth-child(even) .artwork-img-col { order: 2; }
     .artwork-block:nth-child(even) .artwork-txt-col {
-      order: 1;
-      padding-top: clamp(2rem, 6vh, 5rem);
-      text-align: right;
+      order: 1; padding-top: clamp(2rem, 6vh, 5rem); text-align: right;
     }
-    /* 偶数のラインを右から伸ばす */
     .artwork-block:nth-child(even) .artwork-divider { margin-left: auto; }
-    .artwork-block:nth-child(even) .section-label   { flex-direction: row-reverse; }
-    .artwork-block:nth-child(even) .section-label::after  { display: none; }
+    .artwork-block:nth-child(even) .section-label { flex-direction: row-reverse; }
+    .artwork-block:nth-child(even) .section-label::after { display: none; }
     .artwork-block:nth-child(even) .section-label::before {
       content: ''; flex: 1; height: 0.5px; background: var(--border);
     }
 
-    /* ── 画像列 ── */
+    /* 画像列 */
     .artwork-img-col { position: relative; }
-
-    /* シャッター: 下から開放 (cave.html と同一) */
     .artwork-clip-wrap {
       clip-path: inset(100% 0 0 0);
       transition: clip-path 1.3s var(--ease);
@@ -394,7 +345,6 @@
     }
     .artwork-clip-wrap.in-view { clip-path: inset(0% 0 0 0); }
 
-    /* リンクラッパー */
     a.artwork-image-link {
       display: block;
       overflow: hidden;
@@ -403,7 +353,6 @@
       cursor: zoom-in;
       transition: outline-color 0.5s ease, box-shadow 0.6s var(--ease);
     }
-    /* リンクなしの場合 (div ラッパー) */
     .artwork-image-link {
       display: block;
       overflow: hidden;
@@ -422,19 +371,15 @@
       }
     }
 
+    /* ★修正点: 画像全体が常に表示されるように変更 */
     .artwork-image {
       width: 100%;
-      aspect-ratio: 4 / 5;   /* 縦長絵画デフォルト。クラスで override 可 */
-      object-fit: cover;
+      height: auto; /* 高さを自動調整してトリミングを防ぐ */
       display: block;
       filter: grayscale(20%) brightness(0.80);
       transform: scale(1.0);
       transition: transform 1.0s var(--ease), filter 0.7s ease;
     }
-    /* 比率バリエーション */
-    .artwork-image.square    { aspect-ratio: 1 / 1; }
-    .artwork-image.landscape { aspect-ratio: 4 / 3; }
-    .artwork-image.wide      { aspect-ratio: 16/ 9; }
 
     /* 番号バッジ */
     .artwork-num {
@@ -448,16 +393,12 @@
       z-index: 1;
       pointer-events: none;
     }
-    /* 偶数ブロックの番号は右上に */
     .artwork-block:nth-child(even) .artwork-num {
       left: auto;
       right: clamp(12px, 2vw, 20px);
     }
 
-    /* ── テキスト列 ── */
-    .artwork-txt-col {}
-
-    /* 各テキスト要素: in-view で順番にフェードアップ */
+    /* テキスト列 */
     .artwork-year {
       font-family: var(--en);
       font-size: clamp(0.6rem, 1.4vw, 0.7rem);
@@ -491,7 +432,6 @@
     }
     .artwork-block.in-view .artwork-title-en { opacity: 1; transform: translateY(0); }
 
-    /* 区切り線: 幅0から伸びる */
     .artwork-divider {
       width: 0; height: 0.5px;
       background: var(--border-md);
@@ -503,18 +443,19 @@
     .artwork-spec {
       font-family: 'Helvetica Neue', Arial, sans-serif;
       font-size: clamp(0.58rem, 1.2vw, 0.65rem);
-      color: var(--dim); letter-spacing: 0.12em; line-height: 2;
+      color: var(--dim); letter-spacing: 0.12em;
+      line-height: 2;
       margin-bottom: clamp(2rem, 5vh, 4rem);
       opacity: 0;
       transition: opacity 0.8s ease 0.45s;
     }
     .artwork-block.in-view .artwork-spec { opacity: 1; }
 
-    /* 解説ラベル */
     .artwork-desc-label {
       font-family: var(--en);
       font-size: clamp(0.56rem, 1.2vw, 0.62rem);
-      letter-spacing: 0.3em; color: var(--muted);
+      letter-spacing: 0.3em;
+      color: var(--muted);
       text-transform: uppercase;
       margin-bottom: 1.2rem;
       display: flex; align-items: center; gap: 0.8rem;
@@ -526,7 +467,6 @@
     }
     .artwork-block.in-view .artwork-desc-label { opacity: 1; transform: translateY(0); }
 
-    /* 解説テキスト */
     .artwork-desc {
       font-size: clamp(0.8rem, 1.8vw, 0.9rem);
       font-weight: 300; line-height: 2.1;
@@ -540,9 +480,7 @@
     .artwork-desc p:last-child { margin-bottom: 0; }
     .artwork-block.in-view .artwork-desc { opacity: 1; transform: translateY(0); }
 
-    /* =====================================================
-       FOOTER  — cave.html と同一
-    ===================================================== */
+    /* FOOTER */
     .global-footer {
       padding: clamp(3rem, 6vh, 5rem) var(--px);
       border-top: 0.5px solid var(--border);
@@ -560,11 +498,10 @@
       color: var(--dim); letter-spacing: 0.08em;
     }
 
-    /* =====================================================
-       UTILITY
-    ===================================================== */
+    /* UTILITY */
     .fade-up {
-      opacity: 0; transform: translateY(20px);
+      opacity: 0;
+      transform: translateY(20px);
       transition: opacity 1s var(--ease), transform 1s var(--ease);
       transition-delay: var(--sd, 0ms);
     }
@@ -572,14 +509,10 @@
 
     @keyframes fadeSlideUp {
       from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* =====================================================
-       RESPONSIVE
-    ===================================================== */
-
-    /* タブレット: concept を1列に */
+    /* RESPONSIVE */
     @media (max-width: 900px) {
       .concept-section {
         grid-template-columns: 1fr;
@@ -593,41 +526,35 @@
       .concept-vertical-line { width: 48px; height: 0.5px !important; margin-left: 0; }
     }
 
-    /* タブレット: artwork-block を縦積みに */
     @media (max-width: 860px) {
       .artwork-block {
         grid-template-columns: 1fr;
         gap: clamp(1.5rem, 4vw, 2.5rem) 0;
       }
-      /* 画像を常に上に */
-      .artwork-block:nth-child(odd)  .artwork-img-col,
+      .artwork-block:nth-child(odd) .artwork-img-col,
       .artwork-block:nth-child(even) .artwork-img-col { order: 1; }
-      .artwork-block:nth-child(odd)  .artwork-txt-col,
+      .artwork-block:nth-child(odd) .artwork-txt-col,
       .artwork-block:nth-child(even) .artwork-txt-col {
         order: 2; padding-top: 0; text-align: left;
       }
-      /* 偶数ブロックのラベル・ラインをリセット */
       .artwork-block:nth-child(even) .artwork-divider { margin-left: 0; }
-      .artwork-block:nth-child(even) .section-label   { flex-direction: row; }
+      .artwork-block:nth-child(even) .section-label { flex-direction: row; }
       .artwork-block:nth-child(even) .section-label::before { display: none; }
-      .artwork-block:nth-child(even) .section-label::after  { display: block; }
-      /* 番号バッジを左に統一 */
+      .artwork-block:nth-child(even) .section-label::after { display: block; }
       .artwork-block:nth-child(even) .artwork-num { left: clamp(12px,2vw,20px); right: auto; }
-      /* スマホでは横長に */
-      .artwork-image { aspect-ratio: 3 / 2 !important; }
+      
+      /* ★修正点: スマホの強制的な横長アスペクト比指定を削除しました */
     }
 
-    /* スマホ */
     @media (max-width: 480px) {
       .hero-scroll { display: none; }
       .works-header { flex-direction: column; gap: 0.5rem; }
     }
 
-    /* アニメーション軽減 */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         transition-duration: 0.01ms !important;
-        animation-duration:  0.01ms !important;
+        animation-duration: 0.01ms !important;
       }
       .hero-title .char, .hero-eyebrow, .hero-title-en,
       .hero-meta, .hero-scroll,
@@ -646,8 +573,6 @@
 </head>
 
 <body>
-
-  <!-- NAV -->
   <nav class="global-nav">
     <a href="index.html" class="nav-logo">Tsuda Shoichi</a>
     <div class="nav-right">
@@ -656,102 +581,57 @@
   </nav>
 
   <main>
-
-    <!-- =====================================================
-         HERO
-    ===================================================== -->
     <section class="hero" id="hero">
       <div class="hero-bg" id="heroBg"></div>
-
       <div class="hero-inner">
         <p class="hero-eyebrow" id="heroEyebrow">Series — Variant Forms &nbsp;·&nbsp; Body &amp; Landscape</p>
-
         <h1 class="hero-title" id="heroTitle" aria-label="異体">
           <span class="char">異</span>
           <span class="char">体</span>
         </h1>
-
         <p class="hero-title-en" id="heroEn">Variant</p>
-
         <div class="hero-meta" id="heroMeta">
           <div class="hero-meta-line"></div>
           <span class="hero-meta-text">Oil on Canvas &nbsp;·&nbsp; Landscape into Body</span>
         </div>
       </div>
-
       <div class="hero-scroll" id="heroScroll" aria-hidden="true">
         <div class="hero-scroll-bar"></div>
         <span class="hero-scroll-label">Scroll</span>
       </div>
     </section>
 
-    <!-- =====================================================
-         CONCEPT
-    ===================================================== -->
     <section class="concept-section" id="concept">
-
       <div class="concept-aside">
         <span class="concept-tag" id="conceptTag">Concept</span>
         <div class="concept-vertical-line" id="conceptLine"></div>
       </div>
-
       <div class="concept-main">
         <p class="section-label">Concept</p>
         <p class="credit">解説：左美都研究会、水澤井縄</p>
         <div class="concept-body fade-up" style="--sd:100ms">
           <p>《異体》と分類される作品群は、作者が風景を描出する過程において視覚的構造が次第に特定の形態へと収斂していく中で、結果的に<em>「身体としてみなされうる」</em>かたちが析出されたものである。それは、同一種の表象の連続的変奏ではなく、視覚的素材が風景から身体へと移行する過程を強調する。自然の風景が、人間的・身体的形象へと転位していく知覚の生成を、視覚的・造形的に記録したものと捉えることができる。</p>
-          <p>《異体》における<em>「身体性」</em>は、解剖学的身体の再現ではなく、むしろ風景の要素や断片が、構図上の動性や描画における操作等を経ることによって、準-身体的な形象を帯びてくるという意味での<em>"生成的身体"</em>である。</p>
+          <p>《異体》における<em>「身体性」</em>は、解剖学的身体の再現ではなく、むしろ風景の要素や断片が、構図上の動性や描画における操作等を経ることによって、準身体的な形象を帯びてくるという意味での<em>"生成的身体"</em>である。</p>
           <p>また、考古学的には、特定の遺構や遺物が意図的な形態を持たぬまま、ある文化的マトリクスの中で後付け的に「人型」や「動物型」と見なされる構造に類似している。例えば礫石（れきせき）や自然岩、風化によって生じた非人工的な構造物が、後の文化的文脈において「顔」や「人物」「動物」などの象徴的イメージとして読み替えられる現象が知られている。これは旧石器時代の例に見られ、意図された彫刻や造形ではないにもかかわらず、後世の視覚的・宗教的枠組みにおいて〈像〉としての機能を担うようになる、いわゆる<em>「自然形象物（natural simulacra）」</em>や<em>「擬人的視認（pareidolia）」</em>と呼ばれるものである。</p>
         </div>
       </div>
-
     </section>
 
-    <!-- =====================================================
-         WORKS
-    ===================================================== -->
     <section class="works-section" id="works">
-
       <div class="works-header fade-up">
         <span class="works-header-label">Individual Works</span>
-        <!--
-          ▼ 作品を追加したら、この数字を更新する
-            例: 作品が3点になったら "03" に変える
-        -->
         <span class="works-count" id="worksCount">02</span>
       </div>
 
-      <!-- ================================================
-           ▼ 作品01 ここから ——————————————————————————
-           【コピー手順】
-           このブロック全体 (article.artwork-block) を
-           末尾の「▼ 作品追加エリア」にペーストし、
-           以下の項目を書き換える:
-             - id="blockN"         … N=連番
-             - class="artwork-num" … 番号テキスト
-             - href=               … 拡大用URL (なければ div.artwork-image-link に変更)
-             - src=                … 画像パス
-             - alt=                … 画像の説明
-             - class="artwork-image ___" … square / landscape / wide / (無し=縦長4:5)
-             - artwork-year        … 制作年
-             - artwork-title-jp    … 作品タイトル（日本語）
-             - artwork-title-en    … 作品タイトル（英語）
-             - artwork-spec        … 素材・サイズ
-             - artwork-desc        … 解説テキスト (不要なら削除可)
-           ================================================ -->
       <article class="artwork-block" id="block1">
         <div class="artwork-img-col">
           <span class="artwork-num">01</span>
           <div class="artwork-clip-wrap">
-            <a href="https://de7bbbccc0.cbaul-cdnwnd.com/240d88405885768af7ba7b864ee3299f/200000329-6e2db6e2dd/%E3%80%90F100%E7%B8%A6%E3%80%91%E3%82%B9%E3%82%BA%E3%83%A9%E3%83%B3%EF%BC%88%E3%82%A2%E3%83%97%E3%83%AD%E3%83%87%E3%82%A3%E3%83%BC%E3%83%86%E3%83%BC%E3%81%AE%E5%B0%BB%E8%87%80%EF%BC%892-1.jpeg?ph=de7bbbccc0"
+            <a href="https://de7bbbccc0.cbaulcdnwnd.com/240d88405885768af7ba7b864ee3299f/200000329-6e2db6e2dd/%E3%80%90F100%E7%B8%A6%E3%80%91%E3%82%B9%E3%82%BA%E3%83%A9%E3%83%B3%EF%BC%88%E3%82%A2%E3%83%97%E3%83%AD%E3%83%87%E3%82%A3%E3%83%BC%E3%83%86%E3%83%BC%E3%81%AE%E5%B0%BB%E8%87%80%EF%BC%892-1.jpeg?ph=de7bbbccc0"
                target="_blank"
                class="artwork-image-link"
                aria-label="スズラン — 拡大表示">
-              <img
-                src="images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg"
-                alt="スズラン（アプロディーテーの尻臀）"
-                class="artwork-image"
-                loading="lazy">
+              <img src="images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg" alt="スズラン（アプロディーテーの尻臀）" class="artwork-image" loading="lazy">
             </a>
           </div>
         </div>
@@ -775,25 +655,16 @@
           </div>
         </div>
       </article>
-      <!-- ▲ 作品01 ここまで ——————————————————————————— -->
 
-
-      <!-- ================================================
-           ▼ 作品02 ここから ——————————————————————————
-      ================================================ -->
       <article class="artwork-block" id="block2">
         <div class="artwork-img-col">
           <span class="artwork-num">02</span>
           <div class="artwork-clip-wrap">
-            <a href="https://de7bbbccc0.cbaul-cdnwnd.com/240d88405885768af7ba7b864ee3299f/200000331-0a9dc0a9df/%E3%80%90F100%E7%B8%A6%E3%80%91%E4%B8%8A%E3%81%AB%E6%BA%B6%E3%81%91%E3%82%8B%E3%83%BB%E3%83%BB%E3%83%BB.jpeg?ph=de7bbbccc0"
+            <a href="https://de7bbbccc0.cbaulcdnwnd.com/240d88405885768af7ba7b864ee3299f/200000331-0a9dc0a9df/%E3%80%90F100%E7%B8%A6%E3%80%91%E4%B8%8A%E3%81%AB%E6%BA%B6%E3%81%91%E3%82%8B%E3%83%BB%E3%83%BB%E3%83%BB.jpeg?ph=de7bbbccc0"
                target="_blank"
                class="artwork-image-link"
                aria-label="上に溶ける… — 拡大表示">
-              <img
-                src="images/【F100縦】上に溶ける・・・.jpg"
-                alt="上に溶ける…"
-                class="artwork-image"
-                loading="lazy">
+              <img src="images/【F100縦】上に溶ける・・・.jpg" alt="上に溶ける…" class="artwork-image" loading="lazy">
             </a>
           </div>
         </div>
@@ -816,69 +687,47 @@
           </div>
         </div>
       </article>
-      <!-- ▲ 作品02 ここまで ——————————————————————————— -->
-
-
-      <!-- ================================================
-           ▼ 作品追加エリア ————————————————————————————
-           新しい作品は「作品02」ブロックの後にここへ追加
-           (上のコピー手順を参照)
-      ================================================ -->
-
 
     </section>
-
   </main>
 
-  <!-- FOOTER -->
   <footer class="global-footer">
     <p class="footer-logo">Tsuda Shoichi</p>
     <p class="footer-copy">© Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
-  <!-- =====================================================
-       JAVASCRIPT
-       1. Hero entrance
-       2. Intersection Observer (scroll reveal)
-       3. 作品数カウント自動更新
-  ===================================================== -->
   <script>
-    /* ── 1. HERO ENTRANCE ── */
     window.addEventListener('load', () => {
-      const bg     = document.getElementById('heroBg');
+      const bg = document.getElementById('heroBg');
       const eyebrow = document.getElementById('heroEyebrow');
-      const title  = document.getElementById('heroTitle');
-      const en     = document.getElementById('heroEn');
-      const meta   = document.getElementById('heroMeta');
-      const sc     = document.getElementById('heroScroll');
+      const title = document.getElementById('heroTitle');
+      const en = document.getElementById('heroEn');
+      const meta = document.getElementById('heroMeta');
+      const sc = document.getElementById('heroScroll');
 
-      if (bg)      setTimeout(() => bg.classList.add('loaded'),   100);
+      if (bg) setTimeout(() => bg.classList.add('loaded'), 100);
       if (eyebrow) setTimeout(() => eyebrow.classList.add('revealed'), 200);
-      if (title)   setTimeout(() => title.classList.add('revealed'),   400);
-      if (en)      setTimeout(() => en.classList.add('revealed'),      650);
-      if (meta)    setTimeout(() => meta.classList.add('revealed'),    950);
-      if (sc)      setTimeout(() => sc.classList.add('revealed'),     1550);
+      if (title) setTimeout(() => title.classList.add('revealed'), 400);
+      if (en) setTimeout(() => en.classList.add('revealed'), 650);
+      if (meta) setTimeout(() => meta.classList.add('revealed'), 950);
+      if (sc) setTimeout(() => sc.classList.add('revealed'), 1550);
     });
 
-    /* ── 2. INTERSECTION OBSERVER ── */
     const io = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
         const el = entry.target;
         el.classList.add('in-view');
 
-        /* artwork-block: 画像シャッターも同時に発火 */
         if (el.classList.contains('artwork-block')) {
           el.querySelectorAll('.artwork-clip-wrap').forEach(c => {
             setTimeout(() => c.classList.add('in-view'), 0);
           });
         }
-
         io.unobserve(el);
       });
     }, { threshold: 0.10, rootMargin: '0px 0px -60px 0px' });
 
-    /* observe 対象をまとめて登録 */
     document.querySelectorAll([
       '#conceptTag',
       '#conceptLine',
@@ -887,15 +736,11 @@
       '.artwork-block',
     ].join(', ')).forEach(el => io.observe(el));
 
-    /* ── 3. 作品数カウント自動更新 ──
-       artwork-block の数を数えて works-count に反映。
-       作品を追加しても手動で数字を直す必要がなくなる。 */
     const countEl = document.getElementById('worksCount');
     if (countEl) {
       const n = document.querySelectorAll('.artwork-block').length;
       countEl.textContent = String(n).padStart(2, '0');
     }
   </script>
-
 </body>
 </html>
