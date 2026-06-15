@@ -98,7 +98,6 @@
       border-bottom: 0.5px solid var(--border);
     }
 
-    /* 背景画像: 岩間_湘南 をメインに使用 */
     .hero-bg {
       position: absolute; inset: 0;
       background-image: url('images/岩間_湘南_20230317.JPG');
@@ -154,7 +153,6 @@
 
     .hero-inner { position: relative; z-index: 2; }
 
-    /* eyebrow: clip-path 横スライド */
     .hero-eyebrow {
       font-family: var(--en);
       font-size: clamp(0.58rem, 1.4vw, 0.66rem);
@@ -171,7 +169,6 @@
     }
     .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
 
-    /* メインタイトル「素描」 */
     .hero-title {
       font-family: var(--jp);
       font-size: clamp(4.5rem, 17vw, 15rem);
@@ -189,43 +186,30 @@
       opacity: 0;
       transform: translateY(115%) skewY(5deg) rotateX(-15deg);
       transform-origin: bottom center;
-      transition:
-        transform 1.1s var(--ease-out),
-        opacity   0.7s ease;
+      transition: transform 1.1s var(--ease-out), opacity 0.7s ease;
     }
     .hero-title.revealed .char:nth-child(1) {
-      opacity: 1;
-      transform: translateY(0) skewY(0deg) rotateX(0deg);
-      transition-delay: 0.1s;
+      opacity: 1; transform: translateY(0) skewY(0deg) rotateX(0deg); transition-delay: 0.1s;
     }
     .hero-title.revealed .char:nth-child(2) {
-      opacity: 1;
-      transform: translateY(0) skewY(0deg) rotateX(0deg);
-      transition-delay: 0.28s;
+      opacity: 1; transform: translateY(0) skewY(0deg) rotateX(0deg); transition-delay: 0.28s;
     }
 
-    /* ゴーストアウトライン: 文字の奥行き感 */
     .hero-title-ghost {
       position: absolute;
       font-family: var(--jp);
       font-size: clamp(4.5rem, 17vw, 15rem);
-      font-weight: 200;
-      line-height: 0.92;
-      letter-spacing: -0.01em;
+      font-weight: 200; line-height: 0.92; letter-spacing: -0.01em;
       color: transparent;
       -webkit-text-stroke: 1px rgba(232,228,223,0.05);
-      pointer-events: none;
-      user-select: none;
-      white-space: nowrap;
+      pointer-events: none; user-select: none; white-space: nowrap;
       left: calc(var(--px) + 0.06em);
       bottom: clamp(3rem, 9vh, 7rem);
-      opacity: 0;
-      transform: translateY(4px);
+      opacity: 0; transform: translateY(4px);
       transition: opacity 1.6s ease 1.4s, transform 1.6s var(--ease) 1.4s;
     }
     .hero-title-ghost.revealed { opacity: 1; transform: translateY(0); }
 
-    /* 英語タイトル */
     .hero-title-en {
       font-family: var(--en);
       font-size: clamp(1rem, 3.5vw, 2.2rem);
@@ -236,7 +220,6 @@
     }
     .hero-title-en.revealed { clip-path: inset(0 0% 0 0); }
 
-    /* meta row */
     .hero-meta {
       display: flex; align-items: center; gap: 2rem;
       margin-top: clamp(2rem, 4.5vh, 4rem);
@@ -251,7 +234,6 @@
       letter-spacing: 0.22em; color: var(--dim); text-transform: uppercase;
     }
 
-    /* scroll cue */
     .hero-scroll {
       position: absolute;
       bottom: clamp(1.5rem, 4vh, 3rem); right: var(--px);
@@ -352,7 +334,6 @@
       font-size: clamp(0.56rem, 1.3vw, 0.63rem);
       letter-spacing: 0.42em; color: var(--muted); text-transform: uppercase;
     }
-    /* JS が自動更新 */
     .works-count {
       font-family: var(--en);
       font-size: clamp(1.6rem, 5vw, 3.5rem);
@@ -370,42 +351,41 @@
     }
     .artwork-block:last-child { margin-bottom: 0; }
 
-    /* 奇数: 画像左 */
-    .artwork-block:nth-child(odd)  .artwork-img-col { order: 1; }
-    .artwork-block:nth-child(odd)  .artwork-txt-col {
-      order: 2; padding-top: clamp(2rem, 6vh, 5rem);
+    /* 画像列の配置ロジック */
+    .artwork-img-col {
+      position: relative;
+      display: flex;
     }
-    /* 偶数: 画像右 */
-    .artwork-block:nth-child(even) .artwork-img-col { order: 2; }
-    .artwork-block:nth-child(even) .artwork-txt-col {
-      order: 1; padding-top: clamp(2rem, 6vh, 5rem); text-align: right;
-    }
+    .artwork-block:nth-child(odd)  .artwork-img-col { order: 1; justify-content: flex-start; }
+    .artwork-block:nth-child(even) .artwork-img-col { order: 2; justify-content: flex-end; }
+    
+    .artwork-block:nth-child(odd)  .artwork-txt-col { order: 2; padding-top: clamp(2rem, 6vh, 5rem); }
+    .artwork-block:nth-child(even) .artwork-txt-col { order: 1; padding-top: clamp(2rem, 6vh, 5rem); text-align: right; }
+    
     .artwork-block:nth-child(even) .artwork-divider  { margin-left: auto; }
     .artwork-block:nth-child(even) .section-label    { flex-direction: row-reverse; }
     .artwork-block:nth-child(even) .section-label::after  { display: none; }
     .artwork-block:nth-child(even) .section-label::before {
       content: ''; flex: 1; height: 0.5px; background: var(--border);
     }
-    .artwork-block:nth-child(even) .artwork-num {
-      left: auto; right: clamp(12px, 2vw, 20px);
-    }
 
-    /* ── 画像列 ── */
-    .artwork-img-col { position: relative; }
-
-    /* シャッター reveal: 下から開放 */
+    /* ── 素描に特化した画像ラッパー設定 ── */
     .artwork-clip-wrap {
+      position: relative; /* 番号バッジの基準点 */
+      width: 78%;         /* 画像を少し小ぶりに表示 */
+      max-width: 480px;   /* 大きすぎないように制限 */
       clip-path: inset(100% 0 0 0);
       transition: clip-path 1.4s var(--ease);
       overflow: hidden;
     }
     .artwork-clip-wrap.in-view { clip-path: inset(0% 0 0 0); }
 
-    /* モーダル起動ボタン（オリジナルホバーアニメーション） */
+    /* モーダル起動ボタン（トリミング・黒縁なし設定） */
     button.artwork-image-link {
       display: block; width: 100%; border: none; padding: 0; margin: 0;
-      overflow: hidden; background: var(--bg2);
+      overflow: hidden; background: transparent; /* 黒縁を完全に防ぐため透過 */
       outline: 0.5px solid var(--border); cursor: zoom-in;
+      line-height: 0; /* 下部の謎の隙間を消滅させるハック */
       transition: outline-color 0.5s ease, box-shadow 0.6s var(--ease);
     }
     @media (hover: hover) and (pointer: fine) {
@@ -419,29 +399,25 @@
       }
     }
 
+    /* 画像本体（アスペクト比自由・トリミングなし） */
     .artwork-image {
       width: 100%;
-      aspect-ratio: 3 / 4; /* 素描デフォルト(縦長) */
-      object-fit: cover; display: block;
+      height: auto; /* natural aspect ratio を完全に維持 */
+      display: block;
       filter: grayscale(15%) brightness(0.83);
       transform: scale(1.0);
       transition: transform 1.1s var(--ease), filter 0.7s ease;
     }
-    /* 比率バリエーション */
-    .artwork-image.a4            { aspect-ratio: 21 / 29.7; }
-    .artwork-image.a4h           { aspect-ratio: 29.7 / 21; } /* A4横 */
-    .artwork-image.square        { aspect-ratio: 1 / 1; }
-    .artwork-image.landscape     { aspect-ratio: 4 / 3; }
-    .artwork-image.wide          { aspect-ratio: 16 / 9; }
-    .artwork-image.portrait-tall { aspect-ratio: 2 / 3; }
 
+    /* 番号バッジ（画像カードの左上固定） */
     .artwork-num {
       position: absolute;
-      top: clamp(12px, 2vw, 20px); left: clamp(12px, 2vw, 20px);
+      top: 15px; left: 15px;
       font-family: var(--en);
       font-size: clamp(0.55rem, 1.1vw, 0.62rem);
-      letter-spacing: 0.22em; color: rgba(232,228,223,0.25);
-      z-index: 1; pointer-events: none;
+      letter-spacing: 0.22em; color: rgba(232,228,223,0.6);
+      z-index: 5; pointer-events: none;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
     }
 
     /* ── テキスト列アニメーション ── */
@@ -549,7 +525,7 @@
     }
 
     /* -------------------------------------
-        IMAGE MODAL (UPDATED FOR CAPTION)
+        IMAGE MODAL (PERFECT DISPLAY)
     -------------------------------------- */
     .image-modal {
       position: fixed; inset: 0;
@@ -557,7 +533,7 @@
       display: flex; justify-content: center; align-items: center;
       opacity: 0; visibility: hidden;
       transition: opacity 0.6s var(--ease), visibility 0.6s;
-      overflow-y: auto; /* スマホやコンテンツ超過時の縦スクロールを許可 */
+      overflow-y: auto; 
       -webkit-overflow-scrolling: touch;
     }
     .image-modal.is-active {
@@ -571,7 +547,7 @@
       cursor: zoom-out;
     }
     .image-modal-close {
-      position: fixed; /* スクロールしても位置を固定 */
+      position: fixed; 
       top: clamp(1rem, 3vh, 2rem);
       right: var(--px);
       z-index: 10001;
@@ -585,16 +561,15 @@
       transform: scale(1.1) rotate(90deg);
     }
     
-    /* モーダルコンテンツ・コンテナ */
     .image-modal-content {
       position: relative; z-index: 10000;
       max-width: 90vw;
-      margin: auto; /* 画面サイズ内に収まる時は中央、超える時はスクロール可能にする堅牢なハック */
-      padding: clamp(4rem, 8vh, 6rem) 0; /* 上下の安全なスクロール余白 */
+      margin: auto; 
+      padding: clamp(4rem, 8vh, 6rem) 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: clamp(1.2rem, 3vh, 2rem); /* 画像とタイトルの適度な距離 */
+      gap: clamp(1.2rem, 3vh, 2rem); 
       opacity: 0; transform: scale(0.96) translateY(10px);
       transition: opacity 0.6s var(--ease) 0.1s, transform 0.6s var(--ease) 0.1s;
       pointer-events: auto;
@@ -603,18 +578,16 @@
       opacity: 1; transform: scale(1) translateY(0);
     }
     
-    /* モーダル内画像 */
     .image-modal-content img {
       width: auto; height: auto;
       max-width: 100%;
-      max-height: 68svh; /* スマホやノートPCの縦幅でもタイトルが下部に収まる比率 */
+      max-height: 68svh; 
       object-fit: contain;
       box-shadow: 0 30px 70px rgba(0,0,0,0.7);
       border: 0.5px solid var(--border);
-      cursor: zoom-out; /* 画像クリックでも閉じられるように示唆 */
+      cursor: zoom-out;
     }
 
-    /* モーダル内キャプション領域 */
     .image-modal-caption {
       text-align: center;
       width: 100%;
@@ -650,20 +623,30 @@
 
     @media (max-width: 860px) {
       .artwork-block { grid-template-columns: 1fr; gap: clamp(1.5rem, 4vw, 2.5rem) 0; }
+      
+      /* 画像列とテキスト列のリセット */
+      .artwork-img-col { justify-content: center !important; margin-bottom: 1rem; }
+      
+      .artwork-clip-wrap {
+        width: 85%; /* スマホでは85%幅で美しくセンタリング */
+        max-width: 420px;
+        margin: 0 auto;
+      }
+      
       .artwork-block:nth-child(odd)  .artwork-img-col,
       .artwork-block:nth-child(even) .artwork-img-col { order: 1; }
+      
       .artwork-block:nth-child(odd)  .artwork-txt-col,
       .artwork-block:nth-child(even) .artwork-txt-col {
         order: 2; padding-top: 0; text-align: left;
       }
+      
       .artwork-block:nth-child(even) .artwork-divider   { margin-left: 0; }
       .artwork-block:nth-child(even) .section-label     { flex-direction: row; }
       .artwork-block:nth-child(even) .section-label::before { display: none; }
       .artwork-block:nth-child(even) .section-label::after  { display: block; }
-      .artwork-block:nth-child(even) .artwork-num { left: clamp(12px,2vw,20px); right: auto; }
-      .artwork-image { aspect-ratio: 3 / 2 !important; }
       
-      /* スマホ・タブレット用調整 */
+      /* スマホ用モーダル微調整 */
       .image-modal-content { max-width: 92vw; }
       .image-modal-content img { max-height: 65svh; }
     }
@@ -699,25 +682,18 @@
   </nav>
 
   <main>
-
     <section class="hero" id="hero">
-
       <div class="hero-bg" id="heroBg"></div>
-
       <div class="hero-strokes" id="heroStrokes" aria-hidden="true"></div>
-
       <p class="hero-title-ghost" id="heroGhost" aria-hidden="true">素描</p>
 
       <div class="hero-inner">
         <p class="hero-eyebrow" id="heroEyebrow">Series — Drawing &nbsp;·&nbsp; Line &amp; Form</p>
-
         <h1 class="hero-title" id="heroTitle" aria-label="素描">
           <span class="char">素</span>
           <span class="char">描</span>
         </h1>
-
         <p class="hero-title-en" id="heroEn">Drawing</p>
-
         <div class="hero-meta" id="heroMeta">
           <div class="hero-meta-line"></div>
           <span class="hero-meta-text">Pencil &amp; Charcoal on Paper &nbsp;·&nbsp; Line and Form</span>
@@ -728,11 +704,9 @@
         <div class="hero-scroll-bar"></div>
         <span class="hero-scroll-label">Scroll</span>
       </div>
-
     </section>
 
     <section class="concept-section" id="concept">
-
       <div class="concept-aside">
         <span class="concept-tag" id="conceptTag">Concept</span>
         <div class="concept-vertical-line" id="conceptLine"></div>
@@ -747,26 +721,23 @@
           <p>《Cell-Graphics》シリーズや《岩間》に代表されるように、細胞的・地質的・神話的なイメージが素描の中で重なり合う。ミクロとマクロ、有機と無機、生と死の境界が曖昧になるそこでは、左美都の地層が持つ記憶——土と岩の中に刻まれた時間——が、紙の表面へと移植されていく。</p>
         </div>
       </div>
-
     </section>
 
     <section class="works-section" id="works">
-
       <div class="works-header fade-up">
         <span class="works-header-label">Individual Works</span>
         <span class="works-count" id="worksCount">02</span>
       </div>
 
-
       <article class="artwork-block" id="block1">
         <div class="artwork-img-col">
-          <span class="artwork-num">01</span>
           <div class="artwork-clip-wrap">
+            <span class="artwork-num">01</span>
             <button type="button" class="artwork-image-link js-modal-open" aria-label="CG[apocalypse] - III — 拡大表示" data-img-src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg">
               <img
                 src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg"
                 alt="CG(Cell-Graphics) [apocalypse] - III"
-                class="artwork-image a4"
+                class="artwork-image"
                 loading="lazy">
             </button>
           </div>
@@ -789,15 +760,16 @@
           </div>
         </div>
       </article>
+
       <article class="artwork-block" id="block2">
         <div class="artwork-img-col">
-          <span class="artwork-num">02</span>
           <div class="artwork-clip-wrap">
+            <span class="artwork-num">02</span>
             <button type="button" class="artwork-image-link js-modal-open" aria-label="岩間（湘南） — 拡大表示" data-img-src="images/岩間（湘南）20230317.JPG">
               <img
                 src="images/岩間（湘南）20230317.JPG"
                 alt="岩間（湘南）"
-                class="artwork-image landscape"
+                class="artwork-image"
                 loading="lazy">
             </button>
           </div>
@@ -819,8 +791,8 @@
           </div>
         </div>
       </article>
-      </section>
 
+    </section>
   </main>
 
   <footer class="global-footer">
@@ -858,13 +830,8 @@
       const meta    = get('heroMeta');
       const sc      = get('heroScroll');
 
-      // 背景フェードイン
       if (bg)      setTimeout(() => bg.classList.add('loaded'), 80);
-
-      // ゴーストアウトライン (タイトルより少し遅れて)
       if (ghost)   setTimeout(() => ghost.classList.add('revealed'), 1200);
-
-      // eyebrow → タイトル → 英語 → meta → scroll
       if (eyebrow) setTimeout(() => eyebrow.classList.add('revealed'), 300);
       if (title)   setTimeout(() => title.classList.add('revealed'),   500);
       if (en)      setTimeout(() => en.classList.add('revealed'),      750);
@@ -877,7 +844,6 @@
       const container = get('heroStrokes');
       if (!container) return;
 
-      // 素描のタッチを模した細い線を散りばめる
       const lines = [
         { x: '8%',  y: '22%', w: '18vw', rot: '-12deg', op: 0.07, dur: '5.2s', del: '0s'   },
         { x: '72%', y: '15%', w: '12vw', rot: '7deg',   op: 0.05, dur: '6.8s', del: '0.8s' },
@@ -911,7 +877,6 @@
         const el = entry.target;
         el.classList.add('in-view');
 
-        // artwork-block: シャッター発火
         if (el.classList.contains('artwork-block')) {
           el.querySelectorAll('.artwork-clip-wrap').forEach(c => {
             setTimeout(() => c.classList.add('in-view'), 0);
@@ -952,7 +917,7 @@
       
       modal.classList.add('is-active');
       modal.setAttribute('aria-hidden', 'false');
-      document.body.classList.add('is-locked'); // 背景スクロールロック
+      document.body.classList.add('is-locked');
     };
 
     const closeModal = () => {
@@ -960,7 +925,6 @@
       modal.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('is-locked');
       
-      // フェードアウト後にアセットをクリア
       setTimeout(() => {
         modalImg.src = '';
         modalTitleJp.textContent = '';
@@ -972,22 +936,17 @@
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         const src = btn.getAttribute('data-img-src');
-        
-        // 該当する作品ブロックのHTML内からタイトル情報を自動抽出
         const block = btn.closest('.artwork-block');
         const titleJp = block.querySelector('.artwork-title-jp').textContent;
         const titleEn = block.querySelector('.artwork-title-en').textContent;
-        
         if(src) openModal(src, titleJp, titleEn);
       });
     });
 
-    // 背景、×ボタン、および「画像自体」のクリックでも閉じるように直感化
     modalBg.addEventListener('click', closeModal);
     modalClose.addEventListener('click', closeModal);
     modalImg.addEventListener('click', closeModal);
     
-    // ESCキーで閉じる
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && modal.classList.contains('is-active')) {
         closeModal();
