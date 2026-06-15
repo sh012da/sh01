@@ -43,7 +43,9 @@
     .nav-links { display: flex; gap: 2rem; list-style: none; }
     .nav-links a { font-size: 12px; color: var(--text-dim); text-decoration: none; letter-spacing: 0.08em; transition: color 0.2s; }
     .nav-links a:hover { color: var(--text); }
-    .nav-cta { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; border: 0.5px solid rgba(232,228,219,0.4); padding: 0.5rem 1.25rem; color: var(--text); text-decoration: none; transition: background 0.2s; }
+    .nav-cta { font-size: 11px; letter-spacing: 0.12em;
+      text-transform: uppercase; border: 0.5px solid rgba(232,228,219,0.4); padding: 0.5rem 1.25rem; color: var(--text); text-decoration: none; transition: background 0.2s;
+    }
     .nav-cta:hover { background: rgba(232,228,219,0.08); }
     .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
     .nav-hamburger span { display: block; width: 22px; height: 0.5px; background: var(--text); margin: 5px 0; transition: all 0.25s; }
@@ -113,50 +115,20 @@
 
     /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
        WORKS セクション
-       背景動画：position:fixed で画面全体を常にカバー。
-       works.htmlと同じ実装。
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     #works {
       position: relative;
       padding: 6rem 2.5rem 8rem;
       border-bottom: 0.5px solid var(--border);
-      /* overflow: hidden は使わない（fixedと相性が悪いため） */
     }
-
-    /* ── 背景動画：position:fixed で画面全体にフルカバー ── */
-    .works-video-bg {
-      position: fixed;
-      /* ← fixed にすることで画面全体をカバー */
-      inset: 0;
-      z-index: -1;
-      /* コンテンツより後ろ、他セクションでは隠れる */
-      pointer-events: none;
-      opacity: 0;
-      /* 初期は非表示 */
-      transition: opacity 0.6s ease;
-    }
-    /* worksセクションがアクティブな間だけ表示するクラス */
-    .works-video-bg.active {
-      opacity: 1;
-    }
-    .works-video-bg video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.22;
-      display: block;
-    }
+    .works-video-bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 0.6s ease; }
+    .works-video-bg.active { opacity: 1; }
+    .works-video-bg video { width: 100%; height: 100%; object-fit: cover; opacity: 0.22; display: block; }
     .works-video-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        to bottom,
-        rgba(13,13,11,0.45) 0%,
-        rgba(13,13,11,0.75) 100%
-      );
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(13,13,11,0.45) 0%, rgba(13,13,11,0.75) 100%);
     }
 
-    /* コンテンツ */
     .works-content { position: relative; z-index: 1; }
     .works-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 5rem; }
     .works-more { font-size: 12px; letter-spacing: 0.1em; color: rgba(232,228,219,0.4); text-decoration: none; border-bottom: 0.5px solid rgba(232,228,219,0.2); padding-bottom: 2px; transition: color 0.2s; flex-shrink: 0; }
@@ -164,53 +136,41 @@
 
     /* ── タイムライン ── */
     .tl-container { position: relative; padding-left: 90px; }
-    .tl-spine { position: absolute; left: 32px; top: 0; width: 2px; height: 100%; overflow: hidden; }
+    .tl-spine { position: absolute; left: 32px; top: 0; width: 2px; height: 100%; overflow: hidden; z-index: 0; }
     .tl-spine-fill {
-      position: absolute; left: 0; top: 0; width: 100%;
-      height: 0%;
-      background: linear-gradient(to bottom,
-        rgba(232,228,219,0) 0%,
-        rgba(232,228,219,0.6) 6%,
-        rgba(232,228,219,0.6) 94%,
-        rgba(232,228,219,0) 100%);
+      position: absolute; left: 0; top: 0; width: 100%; height: 0%;
+      background: linear-gradient(to bottom, rgba(232,228,219,0) 0%, rgba(232,228,219,0.6) 6%, rgba(232,228,219,0.6) 94%, rgba(232,228,219,0) 100%);
       transition: height 1.8s cubic-bezier(0.16,1,0.3,1);
     }
     .tl-spine-fill.animated { height: 100%; }
 
-    /* 1作品エントリ */
     .tl-entry {
       position: relative;
-      display: flex;
-      align-items: flex-start;
-      gap: 2.5rem;
-      margin-bottom: 5rem;
-      opacity: 0;
-      transform: translateY(36px);
+      display: flex; align-items: flex-start; gap: 2.5rem; margin-bottom: 5rem;
+      opacity: 0; transform: translateY(36px);
       transition: opacity 0.85s cubic-bezier(0.16,1,0.3,1), transform 0.85s cubic-bezier(0.16,1,0.3,1);
     }
     .tl-entry:last-child { margin-bottom: 0; }
     .tl-entry.visible { opacity: 1; transform: translateY(0); }
 
-    /* 年ラベル */
+    /* 年ラベルの可読性向上 */
     .tl-year-col {
       position: absolute;
       left: -90px; top: 0;
       width: 80px;
       display: flex; flex-direction: column; align-items: center;
       padding-top: 4px;
+      z-index: 2; /* タイムラインの線よりも手前に配置 */
     }
     .tl-dot {
       width: 11px; height: 11px; border-radius: 50%;
-      background: rgba(232,228,219,0.12);
+      background: var(--bg); /* 背景色と同化させ線を遮る */
       border: 1.5px solid rgba(232,228,219,0.3);
       margin-bottom: 0.55rem; flex-shrink: 0;
+      position: relative; z-index: 2;
       transition: background 0.5s, box-shadow 0.5s, border-color 0.5s;
     }
-    .tl-entry.visible .tl-dot {
-      background: rgba(232,228,219,0.8);
-      border-color: rgba(232,228,219,1);
-      box-shadow: 0 0 16px rgba(232,228,219,0.55);
-    }
+    .tl-entry.visible .tl-dot { background: rgba(232,228,219,0.8); border-color: rgba(232,228,219,1); box-shadow: 0 0 16px rgba(232,228,219,0.55); }
     .tl-year-num {
       font-family:'Times New Roman',Times,serif;
       font-size: clamp(1.2rem,1.8vw,1.6rem);
@@ -218,14 +178,14 @@
       color: rgba(232,228,219,0.3);
       line-height: 1; text-align: center;
       transition: color 0.5s;
+      background: var(--bg); /* 背景色を敷いて線をマスクする */
+      padding: 6px 0;
+      width: 100%;
     }
     .tl-entry.visible .tl-year-num { color: rgba(232,228,219,0.92); }
     .tl-year-sub { font-size: 8px; letter-spacing: 0.16em; color: rgba(232,228,219,0.18); text-transform: uppercase; margin-top: 0.3rem; }
 
-    /* ── カード画像 ──
-       PC: --w で幅指定。aspect-ratio は各作品の実寸比率。
-       スマホ: 幅100%・aspect-ratio は作品ごとの比率を維持（黒帯なし）。
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    /* ── カード画像（黒帯なしで完璧にフィット） ── */
     .tl-img-link {
       display: block;
       text-decoration: none;
@@ -235,16 +195,16 @@
     .tl-img-wrap {
       width: 100%;
       overflow: hidden;
-      background: #0d0d0b;
+      background: transparent; /* 黒帯の原因を削除 */
       border: 0.5px solid rgba(232,228,219,0.08);
       transition: border-color 0.4s;
-      /* aspect-ratio は各作品のインラインstyleで設定 */
+      aspect-ratio: auto !important; /* 強制的な比率を解除 */
+      height: auto !important;
     }
     .tl-img-link:hover .tl-img-wrap { border-color: rgba(232,228,219,0.32); }
     .tl-img-wrap img {
-      width: 100%; height: 100%;
-      object-fit: contain;
-      /* ★ 作品全体を正確に表示。黒帯はbg色と一致 */
+      width: 100%; 
+      height: auto; /* 元画像の比率に従って表示 */
       display: block;
       filter: brightness(0.9);
       transition: transform 0.8s cubic-bezier(0.16,1,0.3,1), filter 0.5s;
@@ -311,7 +271,6 @@
        RESPONSIVE
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     @media (max-width: 1100px) {
-      /* タブレット：カード幅を42vw上限に */
       .tl-img-link { width: min(var(--w, 200px), 42vw) !important; }
       .profile-goals-layout { grid-template-columns: 200px 1fr; }
       .goals-column { grid-column: 1 / -1; flex-direction: row; gap: 1.5rem; }
@@ -323,13 +282,7 @@
       nav { padding: 1.1rem 1.5rem; }
       .nav-links { display: none; }
       .nav-hamburger { display: block; }
-      .nav-links.open {
-        display: flex; flex-direction: row; flex-wrap: nowrap;
-        position: fixed; inset: 0;
-        background: rgba(13,13,11,0.98);
-        align-items: center; justify-content: center;
-        gap: 0.6rem; z-index: 300; padding: 1rem; overflow-x: auto;
-      }
+      .nav-links.open { display: flex; flex-direction: row; flex-wrap: nowrap; position: fixed; inset: 0; background: rgba(13,13,11,0.98); align-items: center; justify-content: center; gap: 0.6rem; z-index: 300; padding: 1rem; overflow-x: auto; }
       .nav-links.open a { font-size: 0.95rem; padding: 0.6rem 0.4rem; display: block; white-space: nowrap; }
 
       .hero { padding: 5rem 1.5rem 4rem; min-height: 70vh; }
@@ -339,37 +292,20 @@
 
       /* タイムライン：スマホ用レイアウト */
       .tl-container { padding-left: 52px; }
-      .tl-spine { left: 16px; width: 1.5px; }
-      .tl-year-col { left: -52px; width: 44px; }
-      .tl-year-num { font-size: 0.88rem; letter-spacing: 0; }
+      .tl-spine { left: 16px; width: 1.5px; z-index: 0; }
+      .tl-year-col { left: -52px; width: 44px; z-index: 2; }
+      .tl-year-num { font-size: 0.88rem; letter-spacing: 0; background: var(--bg); padding: 6px 0; width: 100%; }
       .tl-year-sub { display: none; }
       .tl-dot { width: 8px; height: 8px; }
+      .tl-entry { flex-direction: column; gap: 1rem; margin-bottom: 3.5rem; }
 
-      /* スマホ：縦積みレイアウト */
-      .tl-entry {
-        flex-direction: column; gap: 1rem;
-        margin-bottom: 3.5rem;
-      }
-
-      /* ★━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-         スマホ画像：作品の縦横比を正確に維持
-         object-fit:contain で全体を表示（黒帯なし＝bg色と一致）
-         幅は画面幅いっぱい、高さは縦横比に従って自動
-      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━★ */
-      .tl-img-link {
-        width: 100% !important; }
-      .tl-img-wrap {
-        /* aspect-ratio はインラインstyleの値をそのまま使う（上書きしない） */
-        width: 100%; }
-      .tl-img-wrap img {
-        object-fit: contain !important; object-position: center center;
-        width: 100%;
-        height: 100%;
-      }
+      /* スマホ画像：完全フィット対応（黒帯なし・比率保持） */
+      .tl-img-link { width: 100% !important; }
+      .tl-img-wrap { width: 100%; height: auto !important; aspect-ratio: auto !important; background: transparent !important; }
+      .tl-img-wrap img { width: 100%; height: auto !important; }
 
       .tl-desc { max-width: 100%; font-size: 13px; }
       .tl-process { flex-wrap: wrap; }
-
       .concept-tags { grid-template-columns: 1fr 1fr; gap: 2rem 1.5rem; }
       .profile-goals-layout { grid-template-columns: 1fr; gap: 2rem; }
       .profile-img { width: 130px; height: 130px; margin: 0 auto; }
@@ -450,6 +386,7 @@
   <h2 class="concept-question reveal" style="transition-delay:.20s">
     「なぜ私たちは、<span class="no-break">別の場所で生まれ育つことが</span><br><span class="no-break">できなかったのでしょうか？」</span>
   </h2>
+  
   <div class="concept-paras">
     <p class="concept-para reveal" style="transition-delay:.28s">私は事物の存在に纏わるあらゆる傾向を、<em>〈単位世界（＝洞窟）〉</em>を構成する最小の事物（＝いと）と捉え、制作しています。<em>〈いと〉</em>とは、〈物語〉のそれ以上細分化できない要素です。そして〈物語〉とは、人間存在そのものです。なぜなら、私たち人間はすべてを〈物語〉として理解し、機能させて生きているからです。</p>
     <p class="concept-para reveal" style="transition-delay:.36s">私にとっての〈いと〉は、自分が生まれ育った場所である"左美都（さみず、現在の長野県長野市信更町三水）"という地域です。ごく私的な経験を起点とし、その土地に深く根ざした記憶（歴史）や地質、感覚と向き合うことで、私はこの〈洞窟〉の根源を探ろうとしています。</p>
@@ -510,7 +447,7 @@
           <span class="tl-year-sub">year</span>
         </div>
         <a href="works-cave.html" target="_blank" class="tl-img-link" style="--w:800px;">
-          <div class="tl-img-wrap" style="aspect-ratio:162/130;">
+          <div class="tl-img-wrap">
             <img src="images/【F100横】森20251217.jpg" alt="森 20251217" loading="lazy">
           </div>
         </a>
@@ -521,7 +458,7 @@
           <p class="tl-spec">130.3 × 162 cm ／ 油彩・キャンバス</p>
           <div class="tl-divider"></div>
           <p class="tl-desc">左美都の山林を歩きながら感じた、木々の間に漂う光と沈黙。その場の<em>空気そのもの</em>を描こうとした作品です。形を明確に描くのではなく、色の重なりと筆の痕跡によって「森にいる感覚」が生まれるよう意図しました。土地の〈いと〉の記憶が、絵具の層に染み込んでいます。</p>
-          <div class="tl-process"><span>油彩による描画</span><span>→</span><span>場の感覚への還元</span></div>
+          <div class="tl-process"><span>油彩による描画</span><span>場の感覚への還元</span></div>
         </div>
       </div>
 
@@ -532,7 +469,7 @@
           <span class="tl-year-sub">year</span>
         </div>
         <a href="works-cave.html" target="_blank" class="tl-img-link" style="--w:880px;">
-          <div class="tl-img-wrap" style="aspect-ratio:500/600;">
+          <div class="tl-img-wrap">
             <img src="images/山脈.jpg" alt="山脈" loading="lazy">
           </div>
         </a>
@@ -543,7 +480,7 @@
           <p class="tl-spec">500 × 600 cm ／ 油彩・キャンバス</p>
           <div class="tl-divider"></div>
           <p class="tl-desc">高さ5メートル、幅6メートルという圧倒的なスケールの大作。信州の山並みを「見る」のではなく、山と<em>同化する</em>ような体験を目指しました。地質と時間の堆積が、絵具の重なりとして現れています。</p>
-          <div class="tl-process"><span>大画面での身体的描画</span><span>→</span><span>地質・時間の可視化</span></div>
+          <div class="tl-process"><span>大画面での身体的描画</span><span>地質・時間の可視化</span></div>
         </div>
       </div>
 
@@ -554,7 +491,7 @@
           <span class="tl-year-sub">year</span>
         </div>
         <a href="works-cave.html" target="_blank" class="tl-img-link" style="--w:720px;">
-          <div class="tl-img-wrap" style="aspect-ratio:112/162;">
+          <div class="tl-img-wrap">
             <img src="images/石筍20230405.jpg" alt="石筍 20230405" loading="lazy">
           </div>
         </a>
@@ -565,7 +502,7 @@
           <p class="tl-spec">162 × 112 cm ／ 油彩・キャンバス</p>
           <div class="tl-divider"></div>
           <p class="tl-desc">石筍とは、洞窟の床から水滴が積もってできる石の柱のこと。何千年もかけてほんの数センチ伸びるその姿に、<em>時間の蓄積</em>そのものを見ました。左美都の地下に眠る地層のイメージと重なり、人の記憶が層として積み重なる様子を描いています。</p>
-          <div class="tl-process"><span>地質への着目</span><span>→</span><span>記憶の層への変換</span></div>
+          <div class="tl-process"><span>地質への着目</span><span>記憶の層への変換</span></div>
         </div>
       </div>
 
@@ -576,7 +513,7 @@
           <span class="tl-year-sub">year</span>
         </div>
         <a href="works-variant.html" target="_blank" class="tl-img-link" style="--w:760px;">
-          <div class="tl-img-wrap" style="aspect-ratio:130/162;">
+          <div class="tl-img-wrap">
             <img src="images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg" alt="スズラン" loading="lazy">
           </div>
         </a>
@@ -587,7 +524,7 @@
           <p class="tl-spec">162 × 130.3 cm ／ 油彩・キャンバス</p>
           <div class="tl-divider"></div>
           <p class="tl-desc">左美都に自生するスズランは、毒を持ちながら清楚な白い花を咲かせます。ギリシャ神話の美の女神アフロディーテーの名を副題に持つこの作品は、<em>美しさと危うさが同居する存在</em>を描いています。自然の中に潜む矛盾と、それでも咲き続けようとする力を表現しました。</p>
-          <div class="tl-process"><span>植物の観察</span><span>→</span><span>神話との接続</span><span>→</span><span>異体化</span></div>
+          <div class="tl-process"><span>植物の観察</span><span>神話との接続</span><span>異体化</span></div>
         </div>
       </div>
 
@@ -598,7 +535,7 @@
           <span class="tl-year-sub">year</span>
         </div>
         <a href="https://tsuda-shoichi.webnode.jp/" target="_blank" class="tl-img-link" style="--w:760px;">
-          <div class="tl-img-wrap" style="aspect-ratio:130/162;">
+          <div class="tl-img-wrap">
             <img src="images/【F100縦】夕焼け.jpg" alt="夕焼け" loading="lazy">
           </div>
         </a>
@@ -609,7 +546,7 @@
           <p class="tl-spec">162 × 130.3 cm ／ 油彩・キャンバス</p>
           <div class="tl-divider"></div>
           <p class="tl-desc">子どもの頃、左美都の野原から見た夕焼けの記憶。空が燃えるような赤から、夜の静けさへと変わっていく一瞬を閉じ込めました。懐かしさと切なさが混ざり合う感覚——それは<em>〈いと〉として刻まれた時間</em>の一端です。</p>
-          <div class="tl-process"><span>幼少期の記憶</span><span>→</span><span>色彩による再構成</span></div>
+          <div class="tl-process"><span>幼少期の記憶</span><span>色彩による再構成</span></div>
         </div>
       </div>
 
@@ -620,7 +557,7 @@
           <span class="tl-year-sub">year</span>
         </div>
         <a href="works-variant.html" target="_blank" class="tl-img-link" style="--w:390px;">
-          <div class="tl-img-wrap" style="aspect-ratio:91/116;">
+          <div class="tl-img-wrap">
             <img src="images/【F50縦】リリス（胸部）Lilith Remnants-2.jpg" alt="リリス（胸部）" loading="lazy">
           </div>
         </a>
@@ -631,7 +568,7 @@
           <p class="tl-spec">116.7 × 91 cm ／ 油彩・キャンバス</p>
           <div class="tl-divider"></div>
           <p class="tl-desc">リリスとは、旧約聖書外典に登場する「最初の女性」とも言われる存在。歴史の中で消された声、忘れられた記憶の断片を、<em>身体の部位として描く</em>シリーズです。かつて存在した何かの痕跡を絵画として残しています。</p>
-          <div class="tl-process"><span>神話・伝承の調査</span><span>→</span><span>身体表現への変換</span><span>→</span><span>異体（Variant）化</span></div>
+          <div class="tl-process"><span>神話・伝承の調査</span><span>身体表現への変換</span><span>異体（Variant）化</span></div>
         </div>
       </div>
 
@@ -642,7 +579,7 @@
           <span class="tl-year-sub">year</span>
         </div>
         <a href="works-cave.html" target="_blank" class="tl-img-link" style="--w:960px;">
-          <div class="tl-img-wrap" style="aspect-ratio:1/1;">
+          <div class="tl-img-wrap">
             <img src="images/【S100】so far.jpg" alt="明るい洞窟" loading="lazy">
           </div>
         </a>
@@ -653,7 +590,7 @@
           <p class="tl-spec">162 × 162 cm ／ 油彩・キャンバス</p>
           <div class="tl-divider"></div>
           <p class="tl-desc">「洞窟」といえば暗くて閉じた場所を想像しますが、この作品の洞窟は明るい。それは恐れるべき場所ではなく、<em>自分の内側に戻っていく入口</em>のようなものです。正方形の画面が、内と外の境目がないことを暗示しています。</p>
-          <div class="tl-process"><span>洞窟という概念の探求</span><span>→</span><span>内的空間の可視化</span></div>
+          <div class="tl-process"><span>洞窟という概念の探求</span><span>内的空間の可視化</span></div>
         </div>
       </div>
 
@@ -664,7 +601,7 @@
           <span class="tl-year-sub">year</span>
         </div>
         <a href="works-variant.html" target="_blank" class="tl-img-link" style="--w:760px;">
-          <div class="tl-img-wrap" style="aspect-ratio:130/162;">
+          <div class="tl-img-wrap">
             <img src="images/【F100縦】上に溶ける・・・.jpg" alt="上に溶ける・・・" loading="lazy">
           </div>
         </a>
@@ -675,7 +612,7 @@
           <p class="tl-spec">162 × 130.3 cm ／ 油彩・キャンバス</p>
           <div class="tl-divider"></div>
           <p class="tl-desc">固いものが溶けて、上へと向かっていく。形があることと、形がないことの間を探った作品です。人間の記憶や感情が気化していくような感覚は、<em>失われることではなく、別の状態へと変化すること</em>だと気づきました。</p>
-          <div class="tl-process"><span>形態の解体</span><span>→</span><span>脱領土化の実験</span></div>
+          <div class="tl-process"><span>形態の解体</span><span>脱領土化の実験</span></div>
         </div>
       </div>
 
@@ -686,7 +623,7 @@
           <span class="tl-year-sub">year</span>
         </div>
         <a href="works-cave.html" target="_blank" class="tl-img-link" style="--w:400px;">
-          <div class="tl-img-wrap" style="aspect-ratio:65/53;">
+          <div class="tl-img-wrap">
             <img src="images/【F15横】into_cave.jpg" alt="into_cave" loading="lazy">
           </div>
         </a>
@@ -697,18 +634,18 @@
           <p class="tl-spec">53 × 65.2 cm ／ 油彩・キャンバス</p>
           <div class="tl-divider"></div>
           <p class="tl-desc">「洞窟へと入っていく」瞬間を描いた、Caveシリーズの出発点となった小品。暗闇の中に一歩踏み込む感覚——恐怖ではなく、<em>好奇心と静けさ</em>がそこにあります。津田翔一の核心である「洞窟（＝単位世界）」という概念が生まれはじめた作品です。</p>
-          <div class="tl-process"><span>洞窟の体験</span><span>→</span><span>概念の発見</span><span>→</span><span>シリーズの起点</span></div>
+          <div class="tl-process"><span>洞窟の体験</span><span>概念の発見</span><span>シリーズの起点</span></div>
         </div>
       </div>
 
        <div class="tl-entry">
-        <div class="tl-year-col">
+         <div class="tl-year-col">
           <div class="tl-dot"></div>
           <span class="tl-year-num">2016</span>
           <span class="tl-year-sub">year</span>
         </div>
         <a href="works-cave.html" target="_blank" class="tl-img-link" style="--w:350px;">
-          <div class="tl-img-wrap" style="aspect-ratio:32/41;">
+          <div class="tl-img-wrap">
             <img src="images/【F6横】傷.jpg" alt="傷(5)(イスラエルの少女、2008年)" loading="lazy">
           </div>
         </a>
@@ -730,7 +667,7 @@
           <span class="tl-year-sub">year</span>
         </div>
         <a href="https://tsuda-shoichi.webnode.jp/" target="_blank" class="tl-img-link" style="--w:320px;">
-          <div class="tl-img-wrap" style="aspect-ratio:21/30;">
+          <div class="tl-img-wrap">
             <img src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg" alt="CG [apocalypse] - III" loading="lazy">
           </div>
         </a>
@@ -741,7 +678,7 @@
           <p class="tl-spec">21 × 29.7 cm ／ 鉛筆・紙</p>
           <div class="tl-divider"></div>
           <p class="tl-desc">鉛筆のみで描かれた細密なドローイングシリーズ「Cell-Graphics（CG）」。細胞（Cell）のように増殖していく形の連鎖が画面を埋め尽くします。「世界の終わり（apocalypse）」を主題とし、<em>すべての始まりとなる根源的な問い</em>を内包しています。</p>
-          <div class="tl-process"><span>鉛筆による細密描写</span><span>→</span><span>形の増殖・連鎖</span></div>
+          <div class="tl-process"><span>鉛筆による細密描写</span><span>形の増殖・連鎖</span></div>
         </div>
       </div>
 
@@ -845,7 +782,6 @@ function closeMenu() {
     if (document.hidden) { clearInterval(timer); } else { clearInterval(timer); start(); }
   });
 })();
-
 /* ━━━ Statement フェードイン ━━━ */
 var revealObs = new IntersectionObserver(function (entries) {
   entries.forEach(function (e) {
@@ -872,8 +808,7 @@ document.querySelectorAll('.reveal').forEach(function (el) { revealObs.observe(e
 
   videoObs.observe(worksSection);
 })();
-
-/* ━━━ タイムライン縦線 + 浮き出しアニメーション（スクロールのたびに再生） ━━━ */
+/* ━━━ タイムライン縦線 + 浮き出しアニメーション ━━━ */
 (function () {
   var container = document.getElementById('tl-container');
   var spineFill = document.getElementById('tl-spine-fill');
@@ -901,7 +836,6 @@ document.querySelectorAll('.reveal').forEach(function (el) { revealObs.observe(e
 
   obs.observe(container);
 })();
-
 /* ━━━ Profile・News フェードイン ━━━ */
 var fadeObs = new IntersectionObserver(function (entries) {
   entries.forEach(function (e) {
