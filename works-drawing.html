@@ -49,6 +49,9 @@
       padding-left:  env(safe-area-inset-left);
       padding-right: env(safe-area-inset-right);
     }
+    
+    /* モーダル展開時の背景固定用 */
+    body.is-locked { overflow: hidden; }
 
     img { max-width: 100%; height: auto; display: block; }
     a   { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
@@ -84,13 +87,6 @@
 
     /* =====================================================
        HERO
-       「素描」という文字が闇から浮かび上がる演出。
-       works.html と同じ char-by-char アーキテクチャ。
-
-       追加演出:
-       ─ 背景に描画ストロークを模した SVG パーティクル線
-         (CSS animation で明滅)
-       ─ 「素」「描」それぞれが別の軸で回転しながら落下
     ===================================================== */
     .hero {
       position: relative;
@@ -175,10 +171,7 @@
     }
     .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
 
-    /* ── メインタイトル「素描」──
-       works.html と同じ: translateY(110%) + skewY から浮上。
-       さらに各文字に微細な rotateY を加え、
-       石板から文字が起き上がるような立体感を演出。      */
+    /* メインタイトル「素描」 */
     .hero-title {
       font-family: var(--jp);
       font-size: clamp(4.5rem, 17vw, 15rem);
@@ -188,7 +181,6 @@
       color: var(--fg);
       margin-bottom: clamp(0.75rem, 2vh, 1.5rem);
       display: flex; gap: 0.04em;
-      /* 3D 空間を有効化 */
       perspective: 800px;
     }
 
@@ -215,7 +207,6 @@
     /* ゴーストアウトライン: 文字の奥行き感 */
     .hero-title-ghost {
       position: absolute;
-      /* タイトルと同じ font properties を JS で複製 */
       font-family: var(--jp);
       font-size: clamp(4.5rem, 17vw, 15rem);
       font-weight: 200;
@@ -226,7 +217,6 @@
       pointer-events: none;
       user-select: none;
       white-space: nowrap;
-      /* 本体より少し下・右にずれて残像感 */
       left: calc(var(--px) + 0.06em);
       bottom: clamp(3rem, 9vh, 7rem);
       opacity: 0;
@@ -369,16 +359,7 @@
       font-weight: 300; color: rgba(232,228,223,0.05); letter-spacing: 0.02em;
     }
 
-    /* ────────────────────────────────────────────────────
-       ARTWORK BLOCK
-       ─ 作品を追加するときは
-           <!-- ▼ 作品XX ここから -->
-           <article class="artwork-block" id="blockXX"> ... </article>
-           <!-- ▲ 作品XX ここまで -->
-         ブロックをコピーして末尾「▼ 作品追加エリア」にペースト。
-         変更箇所は各ブロック内のコメントを参照。
-         作品数は JS が自動更新するため手動変更不要。
-    ──────────────────────────────────────────────────── */
+    /* ARTWORK BLOCK */
     .artwork-block {
       padding: 0 var(--px);
       margin-bottom: clamp(6rem, 14vh, 12rem);
@@ -420,22 +401,19 @@
     }
     .artwork-clip-wrap.in-view { clip-path: inset(0% 0 0 0); }
 
-    a.artwork-image-link {
-      display: block; overflow: hidden; background: var(--bg2);
+    /* モーダル起動ボタン（オリジナルホバーアニメーション） */
+    button.artwork-image-link {
+      display: block; width: 100%; border: none; padding: 0; margin: 0;
+      overflow: hidden; background: var(--bg2);
       outline: 0.5px solid var(--border); cursor: zoom-in;
       transition: outline-color 0.5s ease, box-shadow 0.6s var(--ease);
     }
-    .artwork-image-link {
-      display: block; overflow: hidden; background: var(--bg2);
-      outline: 0.5px solid var(--border);
-    }
     @media (hover: hover) and (pointer: fine) {
-      a.artwork-image-link:hover {
+      button.artwork-image-link:hover {
         outline-color: var(--border-md);
         box-shadow: 0 30px 64px rgba(0,0,0,0.65);
-        opacity: 1;
       }
-      a.artwork-image-link:hover .artwork-image {
+      button.artwork-image-link:hover .artwork-image {
         transform: scale(1.035);
         filter: grayscale(0%) brightness(0.97);
       }
@@ -570,6 +548,96 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
+    /* -------------------------------------
+        IMAGE MODAL (UPDATED FOR CAPTION)
+    -------------------------------------- */
+    .image-modal {
+      position: fixed; inset: 0;
+      z-index: 9999;
+      display: flex; justify-content: center; align-items: center;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.6s var(--ease), visibility 0.6s;
+      overflow-y: auto; /* スマホやコンテンツ超過時の縦スクロールを許可 */
+      -webkit-overflow-scrolling: touch;
+    }
+    .image-modal.is-active {
+      opacity: 1; visibility: visible;
+    }
+    .image-modal-bg {
+      position: absolute; inset: 0;
+      background: rgba(7, 7, 6, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      cursor: zoom-out;
+    }
+    .image-modal-close {
+      position: fixed; /* スクロールしても位置を固定 */
+      top: clamp(1rem, 3vh, 2rem);
+      right: var(--px);
+      z-index: 10001;
+      background: none; border: none;
+      color: var(--muted);
+      cursor: pointer; padding: 0.5rem;
+      transition: color 0.3s ease, transform 0.3s var(--ease);
+    }
+    .image-modal-close:hover {
+      color: var(--fg);
+      transform: scale(1.1) rotate(90deg);
+    }
+    
+    /* モーダルコンテンツ・コンテナ */
+    .image-modal-content {
+      position: relative; z-index: 10000;
+      max-width: 90vw;
+      margin: auto; /* 画面サイズ内に収まる時は中央、超える時はスクロール可能にする堅牢なハック */
+      padding: clamp(4rem, 8vh, 6rem) 0; /* 上下の安全なスクロール余白 */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(1.2rem, 3vh, 2rem); /* 画像とタイトルの適度な距離 */
+      opacity: 0; transform: scale(0.96) translateY(10px);
+      transition: opacity 0.6s var(--ease) 0.1s, transform 0.6s var(--ease) 0.1s;
+      pointer-events: auto;
+    }
+    .image-modal.is-active .image-modal-content {
+      opacity: 1; transform: scale(1) translateY(0);
+    }
+    
+    /* モーダル内画像 */
+    .image-modal-content img {
+      width: auto; height: auto;
+      max-width: 100%;
+      max-height: 68svh; /* スマホやノートPCの縦幅でもタイトルが下部に収まる比率 */
+      object-fit: contain;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.7);
+      border: 0.5px solid var(--border);
+      cursor: zoom-out; /* 画像クリックでも閉じられるように示唆 */
+    }
+
+    /* モーダル内キャプション領域 */
+    .image-modal-caption {
+      text-align: center;
+      width: 100%;
+      padding: 0 1rem;
+    }
+    .modal-title-jp {
+      font-family: var(--jp);
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      font-weight: 200;
+      color: var(--fg);
+      line-height: 1.4;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.3rem;
+    }
+    .modal-title-en {
+      font-family: var(--en);
+      font-size: clamp(0.75rem, 1.5vw, 1rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--accent);
+      letter-spacing: 0.14em;
+    }
+
     /* =====================================================
        RESPONSIVE
     ===================================================== */
@@ -594,6 +662,10 @@
       .artwork-block:nth-child(even) .section-label::after  { display: block; }
       .artwork-block:nth-child(even) .artwork-num { left: clamp(12px,2vw,20px); right: auto; }
       .artwork-image { aspect-ratio: 3 / 2 !important; }
+      
+      /* スマホ・タブレット用調整 */
+      .image-modal-content { max-width: 92vw; }
+      .image-modal-content img { max-height: 65svh; }
     }
 
     @media (max-width: 480px) {
@@ -609,7 +681,7 @@
       .hero-title .char, .hero-eyebrow, .hero-title-en, .hero-meta, .hero-scroll,
       .artwork-clip-wrap, .fade-up, .artwork-title-jp, .artwork-title-en,
       .artwork-year, .artwork-spec, .artwork-divider, .artwork-desc-label,
-      .artwork-desc, .concept-tag, .hero-title-ghost {
+      .artwork-desc, .concept-tag, .hero-title-ghost, .image-modal, .image-modal-content {
         opacity: 1 !important; transform: none !important;
         clip-path: none !important; width: auto !important; height: auto !important;
       }
@@ -619,7 +691,6 @@
 
 <body>
 
-  <!-- NAV -->
   <nav class="global-nav">
     <a href="index.html" class="nav-logo">Tsuda Shoichi</a>
     <div class="nav-right">
@@ -629,27 +700,17 @@
 
   <main>
 
-    <!-- =====================================================
-         HERO
-    ===================================================== -->
     <section class="hero" id="hero">
 
-      <!-- 背景: 岩間_湘南 -->
       <div class="hero-bg" id="heroBg"></div>
 
-      <!-- 描画ストローク線パーティクル (JS で生成) -->
       <div class="hero-strokes" id="heroStrokes" aria-hidden="true"></div>
 
-      <!-- ゴーストアウトライン -->
       <p class="hero-title-ghost" id="heroGhost" aria-hidden="true">素描</p>
 
       <div class="hero-inner">
         <p class="hero-eyebrow" id="heroEyebrow">Series — Drawing &nbsp;·&nbsp; Line &amp; Form</p>
 
-        <!--
-          「素」「描」を個別の .char でラップ。
-          JS が各文字に animation delay を設定する。
-        -->
         <h1 class="hero-title" id="heroTitle" aria-label="素描">
           <span class="char">素</span>
           <span class="char">描</span>
@@ -670,9 +731,6 @@
 
     </section>
 
-    <!-- =====================================================
-         CONCEPT
-    ===================================================== -->
     <section class="concept-section" id="concept">
 
       <div class="concept-aside">
@@ -692,45 +750,25 @@
 
     </section>
 
-    <!-- =====================================================
-         WORKS
-    ===================================================== -->
     <section class="works-section" id="works">
 
       <div class="works-header fade-up">
         <span class="works-header-label">Individual Works</span>
-        <!-- JS が .artwork-block の数を数えて自動更新 -->
         <span class="works-count" id="worksCount">02</span>
       </div>
 
 
-      <!-- ================================================
-           ▼ 作品01 ここから ——————————————————————————
-           【コピー手順】このブロック全体を「▼ 作品追加エリア」にペーストし
-           以下を書き換える:
-             id="blockN"          → block2, block3…
-             .artwork-num         → "02", "03"…
-             href (a タグ)        → 拡大画像URL (なければ div.artwork-image-link に変更)
-             src / alt            → 画像パス / 説明
-             .artwork-image クラス→ a4 / a4h / square / landscape / wide / portrait-tall
-             artwork-year         → 制作年
-             artwork-title-jp/en  → タイトル日英
-             artwork-spec         → 素材・サイズ
-             artwork-desc         → 解説 (不要なら label+div ごと削除)
-      ================================================ -->
       <article class="artwork-block" id="block1">
         <div class="artwork-img-col">
           <span class="artwork-num">01</span>
           <div class="artwork-clip-wrap">
-            <a href="https://de7bbbccc0.cbaul-cdnwnd.com/240d88405885768af7ba7b864ee3299f/200000032-b83c8b83ca/700/%E3%80%90CG%28Cell-Graphics%29%20%5Bapocalypse%5D%20-%20III%E3%80%91%20-%20%E4%BF%AE%E6%AD%A3%E5%BE%8C%E3%83%BC.jpg?ph=de7bbbccc0"
-               target="_blank" class="artwork-image-link"
-               aria-label="CG(Cell-Graphics) [apocalypse] - III — 拡大表示">
+            <button type="button" class="artwork-image-link js-modal-open" aria-label="CG[apocalypse] - III — 拡大表示" data-img-src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg">
               <img
                 src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg"
                 alt="CG(Cell-Graphics) [apocalypse] - III"
                 class="artwork-image a4"
                 loading="lazy">
-            </a>
+            </button>
           </div>
         </div>
         <div class="artwork-txt-col">
@@ -751,27 +789,17 @@
           </div>
         </div>
       </article>
-      <!-- ▲ 作品01 ここまで ——————————————————————————— -->
-
-
-      <!-- ================================================
-           ▼ 作品02 ここから ——————————————————————————
-      ================================================ -->
       <article class="artwork-block" id="block2">
         <div class="artwork-img-col">
           <span class="artwork-num">02</span>
           <div class="artwork-clip-wrap">
-            <!--
-              拡大URLがある場合: <a href="拡大URL" target="_blank" class="artwork-image-link">
-              ない場合はこのまま div を使用
-            -->
-            <div class="artwork-image-link">
+            <button type="button" class="artwork-image-link js-modal-open" aria-label="岩間（湘南） — 拡大表示" data-img-src="images/岩間（湘南）20230317.JPG">
               <img
                 src="images/岩間（湘南）20230317.JPG"
                 alt="岩間（湘南）"
                 class="artwork-image landscape"
                 loading="lazy">
-            </div>
+            </button>
           </div>
         </div>
         <div class="artwork-txt-col">
@@ -791,38 +819,36 @@
           </div>
         </div>
       </article>
-      <!-- ▲ 作品02 ここまで ——————————————————————————— -->
-
-
-      <!-- ================================================
-           ▼ 作品追加エリア ————————————————————————————
-           新しい作品はここに追加
-           (上のコピー手順を参照)
-           作品数カウンターは JS が自動で更新します
-      ================================================ -->
-
-
-    </section>
+      </section>
 
   </main>
 
-  <!-- FOOTER -->
   <footer class="global-footer">
     <p class="footer-logo">Tsuda Shoichi</p>
     <p class="footer-copy">© Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
-  <!-- =====================================================
-       JAVASCRIPT
-       1. Hero entrance (ページ読込直後)
-       2. SVGストローク線パーティクル生成
-       3. Intersection Observer (スクロール連動)
-       4. 作品数カウント自動更新
-  ===================================================== -->
+  <div class="image-modal" id="imageModal" aria-hidden="true" role="dialog">
+    <div class="image-modal-bg" id="modalBg" aria-label="モーダルを閉じる"></div>
+    <button class="image-modal-close" id="modalClose" aria-label="閉じる">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square">
+        <line x1="4" y1="4" x2="20" y2="20"></line>
+        <line x1="20" y1="4" x2="4" y2="20"></line>
+      </svg>
+    </button>
+    <div class="image-modal-content">
+      <img src="" alt="拡大画像" id="modalImg">
+      <div class="image-modal-caption">
+        <h3 class="modal-title-jp" id="modalTitleJp"></h3>
+        <p class="modal-title-en" id="modalTitleEn"></p>
+      </div>
+    </div>
+  </div>
+
   <script>
-    /* ── 1. HERO ENTRANCE ───────────────────────────── */
     const get = id => document.getElementById(id);
 
+    /* ── 1. HERO ENTRANCE ───────────────────────────── */
     window.addEventListener('load', () => {
       const bg      = get('heroBg');
       const ghost   = get('heroGhost');
@@ -833,10 +859,10 @@
       const sc      = get('heroScroll');
 
       // 背景フェードイン
-      if (bg)    setTimeout(() => bg.classList.add('loaded'),          80);
+      if (bg)      setTimeout(() => bg.classList.add('loaded'), 80);
 
       // ゴーストアウトライン (タイトルより少し遅れて)
-      if (ghost) setTimeout(() => ghost.classList.add('revealed'),    1200);
+      if (ghost)   setTimeout(() => ghost.classList.add('revealed'), 1200);
 
       // eyebrow → タイトル → 英語 → meta → scroll
       if (eyebrow) setTimeout(() => eyebrow.classList.add('revealed'), 300);
@@ -909,6 +935,64 @@
       const n = document.querySelectorAll('.artwork-block').length;
       countEl.textContent = String(n).padStart(2, '0');
     }
+
+    /* ── 5. モーダル展開ロジック ────────────────────── */
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImg');
+    const modalBg = document.getElementById('modalBg');
+    const modalClose = document.getElementById('modalClose');
+    const modalTitleJp = document.getElementById('modalTitleJp');
+    const modalTitleEn = document.getElementById('modalTitleEn');
+    const modalTriggers = document.querySelectorAll('.js-modal-open');
+
+    const openModal = (src, titleJp, titleEn) => {
+      modalImg.src = src;
+      modalTitleJp.textContent = titleJp;
+      modalTitleEn.textContent = titleEn;
+      
+      modal.classList.add('is-active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('is-locked'); // 背景スクロールロック
+    };
+
+    const closeModal = () => {
+      modal.classList.remove('is-active');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('is-locked');
+      
+      // フェードアウト後にアセットをクリア
+      setTimeout(() => {
+        modalImg.src = '';
+        modalTitleJp.textContent = '';
+        modalTitleEn.textContent = '';
+      }, 600);
+    };
+
+    modalTriggers.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const src = btn.getAttribute('data-img-src');
+        
+        // 該当する作品ブロックのHTML内からタイトル情報を自動抽出
+        const block = btn.closest('.artwork-block');
+        const titleJp = block.querySelector('.artwork-title-jp').textContent;
+        const titleEn = block.querySelector('.artwork-title-en').textContent;
+        
+        if(src) openModal(src, titleJp, titleEn);
+      });
+    });
+
+    // 背景、×ボタン、および「画像自体」のクリックでも閉じるように直感化
+    modalBg.addEventListener('click', closeModal);
+    modalClose.addEventListener('click', closeModal);
+    modalImg.addEventListener('click', closeModal);
+    
+    // ESCキーで閉じる
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('is-active')) {
+        closeModal();
+      }
+    });
   </script>
 
 </body>
