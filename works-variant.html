@@ -11,8 +11,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
   <style>
     /*
-     DESIGN TOKENS
-     cave.html/works.html と完全統一
+      DESIGN TOKENS
+      cave.html/works.html と完全統一
     */
     :root {
       --bg: #070706;
@@ -346,7 +346,7 @@
     }
     .artwork-clip-wrap.in-view { clip-path: inset(0% 0 0 0); }
 
-    /* モーダル起動ボタン（元aタグをbuttonに変更） */
+    /* モーダル起動ボタン */
     button.artwork-image-link {
       display: block; width: 100%; border: none; padding: 0; margin: 0;
       overflow: hidden;
@@ -507,7 +507,7 @@
     }
 
     /* -------------------------------------
-       IMAGE MODAL (NEW)
+        IMAGE MODAL (UPDATED FOR CAPTION)
     -------------------------------------- */
     .image-modal {
       position: fixed; inset: 0;
@@ -515,22 +515,24 @@
       display: flex; justify-content: center; align-items: center;
       opacity: 0; visibility: hidden;
       transition: opacity 0.6s var(--ease), visibility 0.6s;
+      overflow-y: auto; /* スマホやコンテンツ超過時の縦スクロールを許可 */
+      -webkit-overflow-scrolling: touch;
     }
     .image-modal.is-active {
       opacity: 1; visibility: visible;
     }
     .image-modal-bg {
       position: absolute; inset: 0;
-      background: rgba(7, 7, 6, 0.92);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background: rgba(7, 7, 6, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       cursor: zoom-out;
     }
     .image-modal-close {
-      position: absolute;
+      position: fixed; /* スクロールしても位置を固定 */
       top: clamp(1rem, 3vh, 2rem);
       right: var(--px);
-      z-index: 10000;
+      z-index: 10001;
       background: none; border: none;
       color: var(--muted);
       cursor: pointer; padding: 0.5rem;
@@ -540,22 +542,58 @@
       color: var(--fg);
       transform: scale(1.1) rotate(90deg);
     }
+    
+    /* モーダルコンテンツ・コンテナ */
     .image-modal-content {
       position: relative; z-index: 10000;
-      max-width: 90vw; max-height: 85svh;
+      max-width: 90vw;
+      margin: auto; /* 画面サイズ内に収まる時は中央、超える時はスクロール可能にする極めて堅牢なハック */
+      padding: clamp(4rem, 8vh, 6rem) 0; /* 上下の安全なスクロール余白 */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(1.2rem, 3vh, 2rem); /* 画像とタイトルの適度な距離 */
       opacity: 0; transform: scale(0.96) translateY(10px);
       transition: opacity 0.6s var(--ease) 0.1s, transform 0.6s var(--ease) 0.1s;
-      pointer-events: none; /* 画像自体のクリックは無視 */
+      pointer-events: auto; /* テキスト選択や画像クリックイベントのために初期化 */
     }
     .image-modal.is-active .image-modal-content {
       opacity: 1; transform: scale(1) translateY(0);
     }
+    
+    /* モーダル内画像 */
     .image-modal-content img {
       width: auto; height: auto;
-      max-width: 100%; max-height: 85svh;
+      max-width: 100%;
+      max-height: 68svh; /* スマホの縦画面や、ノートPCの低い画面でもタイトルが下部にしっかり同時に収まる黄金比率 */
       object-fit: contain;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      box-shadow: 0 30px 70px rgba(0,0,0,0.7);
       border: 0.5px solid var(--border);
+      cursor: zoom-out; /* 画像クリックでも閉じられるように示唆 */
+    }
+
+    /* モーダル内キャプション領域 */
+    .image-modal-caption {
+      text-align: center;
+      width: 100%;
+      padding: 0 1rem;
+    }
+    .modal-title-jp {
+      font-family: var(--jp);
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      font-weight: 200;
+      color: var(--fg);
+      line-height: 1.4;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.3rem;
+    }
+    .modal-title-en {
+      font-family: var(--en);
+      font-size: clamp(0.75rem, 1.5vw, 1rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--accent);
+      letter-spacing: 0.14em;
     }
 
     /* RESPONSIVE */
@@ -589,8 +627,9 @@
       .artwork-block:nth-child(even) .section-label::after { display: block; }
       .artwork-block:nth-child(even) .artwork-num { left: clamp(12px,2vw,20px); right: auto; }
       
-      .image-modal-content { max-width: 95vw; max-height: 80svh; }
-      .image-modal-content img { max-height: 80svh; }
+      /* スマホ・タブレット用調整 */
+      .image-modal-content { max-width: 92vw; }
+      .image-modal-content img { max-height: 65svh; }
     }
 
     @media (max-width: 480px) {
@@ -747,6 +786,10 @@
     </button>
     <div class="image-modal-content">
       <img src="" alt="拡大画像" id="modalImg">
+      <div class="image-modal-caption">
+        <h3 class="modal-title-jp" id="modalTitleJp"></h3>
+        <p class="modal-title-en" id="modalTitleEn"></p>
+      </div>
     </div>
   </div>
 
@@ -799,15 +842,20 @@
       countEl.textContent = String(n).padStart(2, '0');
     }
 
-    // MODAL LOGIC
+    // MODAL LOGIC (UPDATED)
     const modal = document.getElementById('imageModal');
     const modalImg = document.getElementById('modalImg');
     const modalBg = document.getElementById('modalBg');
     const modalClose = document.getElementById('modalClose');
+    const modalTitleJp = document.getElementById('modalTitleJp');
+    const modalTitleEn = document.getElementById('modalTitleEn');
     const modalTriggers = document.querySelectorAll('.js-modal-open');
 
-    const openModal = (src) => {
+    const openModal = (src, titleJp, titleEn) => {
       modalImg.src = src;
+      modalTitleJp.textContent = titleJp;
+      modalTitleEn.textContent = titleEn;
+      
       modal.classList.add('is-active');
       modal.setAttribute('aria-hidden', 'false');
       document.body.classList.add('is-locked'); // 背景スクロールロック
@@ -818,9 +866,11 @@
       modal.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('is-locked');
       
-      // フェードアウト後に画像をクリア
+      // フェードアウト後にアセットをクリア
       setTimeout(() => {
         modalImg.src = '';
+        modalTitleJp.textContent = '';
+        modalTitleEn.textContent = '';
       }, 600);
     };
 
@@ -828,13 +878,20 @@
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         const src = btn.getAttribute('data-img-src');
-        if(src) openModal(src);
+        
+        // 該当する作品ブロックのHTML内からタイトル情報を自動抽出
+        const block = btn.closest('.artwork-block');
+        const titleJp = block.querySelector('.artwork-title-jp').textContent;
+        const titleEn = block.querySelector('.artwork-title-en').textContent;
+        
+        if(src) openModal(src, titleJp, titleEn);
       });
     });
 
-    // 背景または×ボタンクリックで閉じる
+    // 背景、×ボタン、および「画像自体」のクリックでも閉じるように直感化
     modalBg.addEventListener('click', closeModal);
     modalClose.addEventListener('click', closeModal);
+    modalImg.addEventListener('click', closeModal);
     
     // ESCキーで閉じる
     document.addEventListener('keydown', (e) => {
