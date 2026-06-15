@@ -27,6 +27,7 @@
       --border:     rgba(232,228,219,0.12);
       --border-mid: rgba(232,228,219,0.25);
       --accent:     #cbbfb0;
+      --accent-glow:rgba(203,191,176,0.35);
       --muted-col:  #7a746e;
       --en: 'Cormorant Garamond', serif;
       --jp: 'Noto Serif JP', serif;
@@ -99,8 +100,8 @@
     @keyframes slideUp { from { opacity:0; transform:translateY(100%); } to { opacity:1; transform:translateY(0); } }
     .hero-sub {
       font-family: var(--en); font-size: clamp(0.55rem,2vw,0.72rem);
-      letter-spacing: 0.35em; color: var(--muted-col); text-transform: uppercase;
-      margin-bottom: 2.5rem; opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards;
+      letter-spacing: 0.35em; color: var(--muted-col);
+      text-transform: uppercase; margin-bottom: 2.5rem; opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards;
     }
     .hero-title {
       font-family: var(--jp); font-size: clamp(3.5rem,10vw,7.5rem);
@@ -131,7 +132,7 @@
     /* ════════════════════════════════════════
        SECTION BASE
     ════════════════════════════════════════ */
-    .section { padding: 6rem 2.5rem; border-bottom: 0.5px solid var(--border); }
+    .section { padding: 8rem 2.5rem; border-bottom: 0.5px solid var(--border); }
     .section-label {
       font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
       letter-spacing: 0.28em; color: var(--muted-col); text-transform: uppercase;
@@ -150,79 +151,112 @@
     }
 
     /* ════════════════════════════════════════
-       STATEMENT
+       STATEMENT (ゆったりとした没入空間)
     ════════════════════════════════════════ */
     #statement {
-      padding: 5rem 2.5rem 6rem;
-      background-image: linear-gradient(rgba(13,13,11,0.70),rgba(13,13,11,0.70)),url('images/【津田翔一】展示の様子１.jpg');
-      background-size: cover; background-position: center; background-attachment: scroll;
+      position: relative;
+      padding: 10rem 2.5rem 12rem;
+      background-color: var(--bg);
+      background-image: linear-gradient(rgba(8,8,8,0.88),rgba(8,8,8,0.96)),url('images/【津田翔一】展示の様子１.jpg');
+      background-size: cover; background-position: center; background-attachment: fixed;
+      overflow: hidden;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
     }
+    /* 背景の巨大透かし文字 */
+    .statement-bg-word {
+      position: absolute;
+      top: 15%; left: 50%; transform: translateX(-50%);
+      font-family: var(--en); font-size: 28vw; font-weight: 200; line-height: 1;
+      color: rgba(232,228,219,0.015);
+      pointer-events: none; z-index: 0; user-select: none;
+      white-space: nowrap; letter-spacing: 0.05em;
+    }
+    .statement-bg-word.word2 { top: 60%; font-size: 22vw; }
+    
+    #statement > * { position: relative; z-index: 1; }
+
     .s-eyebrow {
-      display: flex; align-items: baseline; gap: 1.2rem; margin-bottom: 3rem;
+      display: inline-flex; align-items: center; justify-content: center; gap: 1.2rem; margin-bottom: 6rem;
       font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
       letter-spacing: 0.28em; color: var(--muted-col); text-transform: uppercase;
     }
-    .s-eyebrow::after { content:""; width: 48px; height: 0.5px; background: rgba(232,228,219,0.2); }
-    .s-eyebrow-en {
-      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
-      letter-spacing: 0.28em; color: rgba(232,228,219,0.12); text-transform: uppercase;
-    }
-    .concept-quote-lead {
-      font-family: var(--jp); font-size: clamp(1rem,2vw,1.35rem); font-weight: 300;
-      line-height: 1.9; color: rgba(232,228,219,0.82); margin: 0 0 3.5rem;
-      font-style: italic; letter-spacing: 0.03em;
-      border-left: 0.5px solid rgba(232,228,219,0.22);
-      padding-left: 2.2rem; max-width: 780px;
-    }
+    .s-eyebrow::before, .s-eyebrow::after { content:""; width: 40px; height: 0.5px; background: rgba(232,228,219,0.2); }
+    
     .concept-question {
-      font-family: var(--jp); font-size: clamp(1.4rem,3.5vw,2.6rem); font-weight: 300;
-      line-height: 1.5; letter-spacing: -0.01em; color: var(--text);
-      margin-bottom: 3.5rem; max-width: 860px;
+      font-family: var(--jp); font-size: clamp(1.8rem, 4.5vw, 3.8rem); font-weight: 300;
+      line-height: 1.6; letter-spacing: 0.03em; color: var(--text);
+      margin-bottom: 8rem; max-width: 1000px;
+      text-shadow: 0 4px 24px rgba(0,0,0,0.8);
     }
-    .concept-paras { max-width: 760px; margin-bottom: 3.5rem; }
+
+    /* 解説テキストのレイアウト（幅を広げ、行間をゆったりと） */
+    .concept-story { 
+      max-width: 900px; /* パソコンでゆったり表示 */
+      margin: 0 auto 10rem; 
+      text-align: left; 
+    }
+    
+    .concept-block { margin-bottom: 6rem; }
+    .concept-block:last-child { margin-bottom: 0; }
+    
+    .concept-block-en {
+      font-family: var(--en); font-size: 11px; letter-spacing: 0.3em; color: var(--accent);
+      text-transform: uppercase; margin-bottom: 1.5rem; display: block; opacity: 0.6;
+    }
     .concept-para {
-      font-size: clamp(0.9rem,1.6vw,1.02rem); font-weight: 300; line-height: 2.1;
-      color: rgba(232,228,219,0.70); margin-bottom: 1.6rem; letter-spacing: 0.035em;
+      font-size: clamp(1rem, 1.4vw, 1.15rem); font-weight: 300; 
+      line-height: 2.4; /* 読書の呼吸に合わせた行間 */
+      color: rgba(232,228,219,0.8); letter-spacing: 0.06em; /* 文字間を広げて視認性向上 */
     }
-    .concept-para:last-child { margin-bottom: 0; }
     .concept-para em {
       font-style: normal; color: var(--text); font-weight: 400;
-      border-bottom: 1px solid rgba(232,228,219,0.25); padding-bottom: 1px;
+      background: linear-gradient(transparent 70%, rgba(203,191,176,0.15) 70%);
+      padding: 0 4px;
     }
-    .concept-sep { width: 100%; height: 1px; background: rgba(232,228,219,0.07); margin: 0 0 3rem; }
-    .concept-sub-eyebrow { display: flex; align-items: baseline; gap: 1.2rem; margin-bottom: 2rem; }
-    .concept-sub-ja {
-      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
-      letter-spacing: 0.28em; color: var(--muted-col); text-transform: uppercase;
+
+    /* 概念カード (ゆったりとしたグリッド) */
+    .concept-cards-wrap { width: 100%; max-width: 1400px; margin: 0 auto; }
+    .concept-tags { 
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem; 
+      text-align: left;
     }
-    .concept-sub-en {
-      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
-      color: rgba(232,228,219,0.12); text-transform: uppercase; letter-spacing: 0.28em;
+    .concept-tag {
+      background: rgba(255, 255, 255, 0.015);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 0.5px solid rgba(232, 228, 219, 0.08);
+      padding: 3.5rem 2.5rem; border-radius: 4px;
+      transition: transform 0.6s var(--ease-expo), background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
     }
-    .concept-tags { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5rem 2.5rem; }
+    .concept-tag:hover {
+      transform: translateY(-8px);
+      background: rgba(255, 255, 255, 0.035);
+      border-color: rgba(203, 191, 176, 0.25);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    }
     .concept-tag-num {
-      font-family: var(--en); font-size: clamp(1.8rem,3.5vw,2.8rem); font-weight: 300;
-      color: rgba(232,228,219,0.08); line-height: 1; margin-bottom: 0.7rem;
-      display: block; letter-spacing: -0.03em;
+      font-family: var(--en); font-size: 2.5rem; font-weight: 300;
+      color: rgba(232,228,219,0.15); line-height: 1; margin-bottom: 1.5rem;
+      display: block; letter-spacing: -0.02em; transition: color 0.4s ease;
     }
-    .concept-tag-term { font-family: var(--jp); font-size: 0.95rem; font-weight: 300; color: var(--text); margin-bottom: 0.25rem; letter-spacing: 0.05em; }
+    .concept-tag:hover .concept-tag-num { color: rgba(203,191,176,0.4); }
+    .concept-tag-term { font-family: var(--jp); font-size: 1.2rem; font-weight: 300; color: var(--text); margin-bottom: 0.5rem; letter-spacing: 0.05em; }
     .concept-tag-en-label {
-      font-family: var(--en); font-size: 9px; letter-spacing: 0.18em;
-      color: rgba(232,228,219,0.28); text-transform: uppercase; margin-bottom: 0.7rem;
+      font-family: var(--en); font-size: 11px; letter-spacing: 0.2em;
+      color: rgba(232,228,219,0.4); text-transform: uppercase; margin-bottom: 1.5rem;
     }
-    .concept-tag-desc { font-size: 12px; line-height: 1.85; color: rgba(232,228,219,0.48); letter-spacing: 0.01em; }
+    .concept-tag-desc { font-size: 14px; line-height: 2.1; color: rgba(232,228,219,0.65); letter-spacing: 0.03em; }
 
     /* ════════════════════════════════════════
        REVEAL
     ════════════════════════════════════════ */
-    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 1.2s var(--ease-expo), transform 1.2s var(--ease-expo); }
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 1.4s var(--ease-expo), transform 1.4s var(--ease-expo); }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
     /* ════════════════════════════════════════
-       WORKS セクション
+       WORKS セクション (広々とした空間構成)
     ════════════════════════════════════════ */
     #works {
-      position: relative; padding: 6rem 2.5rem 8rem;
+      position: relative; padding: 10rem 2.5rem 12rem;
       border-bottom: 0.5px solid var(--border);
     }
     .works-video-bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 0.6s ease; }
@@ -230,360 +264,267 @@
     .works-video-bg video { width: 100%; height: 100%; object-fit: cover; opacity: 0.18; display: block; }
     .works-video-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(to bottom, rgba(13,13,11,0.5) 0%, rgba(13,13,11,0.8) 100%);
+      background: linear-gradient(to bottom, rgba(13,13,11,0.5) 0%, rgba(13,13,11,0.9) 100%);
     }
-    .works-content { position: relative; z-index: 1; }
-    .works-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 5rem; }
+    .works-content { position: relative; z-index: 1; max-width: 1600px; margin: 0 auto; } /* 全体幅を拡大 */
+    
+    .works-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 10rem; }
     .works-more {
       font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.72rem);
-      letter-spacing: 0.18em; color: rgba(232,228,219,0.4); text-decoration: none;
-      border-bottom: 0.5px solid rgba(232,228,219,0.2); padding-bottom: 2px;
+      letter-spacing: 0.18em; color: rgba(232,228,219,0.4);
+      text-decoration: none; border-bottom: 0.5px solid rgba(232,228,219,0.2); padding-bottom: 2px;
       transition: color 0.2s; flex-shrink: 0; text-transform: uppercase;
     }
     .works-more:hover { color: var(--accent); }
 
-    /* ════════════════════════════════════════
-       ★ タイムライン — 改修版
-    ════════════════════════════════════════ */
-
     /* ── レイアウトベース ── */
     .tl-outer {
-      position: relative;
-      max-width: 1100px;
+      position: relative; max-width: 1400px; /* タイムライン全体の幅を大きく */
       margin: 0 auto;
-      padding-right: 64px; /* 地層バー用の余白 */
     }
 
     /* ── 縦線ゾーン ── */
     .tl-spine-zone {
-      position: absolute;
-      left: 100px; /* 年号カラムの幅に合わせる */
-      top: 0; bottom: 0;
-      width: 2px;
-      z-index: 0;
+      position: absolute; left: 160px; top: 0; bottom: 0; width: 1px; z-index: 0;
     }
     .tl-spine-track {
-      position: absolute;
-      top: 12px; bottom: 12px; left: 0;
-      width: 2px;
-      background: rgba(232,228,219,0.07);
+      position: absolute; top: 12px; bottom: 12px; left: 0; width: 1px; background: rgba(232,228,219,0.06);
     }
     .tl-spine-progress {
-      position: absolute;
-      top: 12px; left: 0;
-      width: 2px; height: 0%;
-      background: linear-gradient(to bottom, transparent 0%, rgba(203,191,176,0.0) 0%, rgba(203,191,176,0.9) 10%, rgba(203,191,176,0.9) 90%, rgba(203,191,176,0.0) 100%);
-      box-shadow: 0 0 12px rgba(203,191,176,0.35), 0 0 28px rgba(203,191,176,0.15);
-      transition: height 0.08s linear;
-      will-change: height;
-    }
-    .tl-spine-particle {
-      position: absolute; left: -3px; width: 8px; height: 48px;
-      background: linear-gradient(to bottom, transparent, rgba(203,191,176,0.9), transparent);
-      border-radius: 4px; opacity: 0; filter: blur(1px);
-      animation: particleFlow 3.2s ease-in-out infinite; pointer-events: none;
-    }
-    .tl-spine-particle:nth-child(2) { animation-delay: 1.1s; }
-    .tl-spine-particle:nth-child(3) { animation-delay: 2.2s; }
-    @keyframes particleFlow {
-      0%   { top: 0%; opacity: 0; }
-      8%   { opacity: 0.8; }
-      92%  { opacity: 0.6; }
-      100% { top: 100%; opacity: 0; }
+      position: absolute; top: 12px; left: 0; width: 1px; height: 0%;
+      background: linear-gradient(to bottom, transparent 0%, rgba(203,191,176,0.8) 10%, rgba(203,191,176,0.8) 90%, transparent 100%);
+      box-shadow: 0 0 16px rgba(203,191,176,0.4);
+      transition: height 0.1s linear; will-change: height;
     }
 
     /* ── メインコンテンツカラム ── */
     .tl-entries-col {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 8rem; /* 作品間の余白 */
+      position: relative; z-index: 1; display: flex; flex-direction: column; gap: 14rem; /* 作品間の余白を拡大 */
     }
 
-    /* ── 地層バー（右） ── */
-    .tl-strata-bar {
-      position: absolute;
-      right: 0; top: 12px;
-      height: calc(100% - 24px);
-      display: flex; flex-direction: column; justify-content: space-between; align-items: center;
-      padding: 8px 0; border-left: 0.5px solid rgba(232,228,219,0.06);
-    }
-    .tl-strata-item {
-      display: flex; flex-direction: column; align-items: center; gap: 3px;
-      cursor: pointer; opacity: 0.22; transition: opacity 0.35s ease, transform 0.35s ease;
-      background: transparent; border: none; padding: 0; margin-left: 16px;
-    }
-    .tl-strata-item.active { opacity: 1; }
-    .tl-strata-item:hover { opacity: 0.65; }
-    .tl-strata-dot {
-      width: 4px; height: 4px; border-radius: 50%; background: var(--accent);
-      transition: transform 0.35s ease, box-shadow 0.35s ease;
-    }
-    .tl-strata-item.active .tl-strata-dot { transform: scale(1.8); box-shadow: 0 0 8px rgba(203,191,176,0.6); }
-    .tl-strata-year {
-      font-family: var(--en); font-size: 7px; letter-spacing: 0.05em; color: var(--accent);
-      writing-mode: vertical-rl; transform: rotate(180deg);
-    }
-
-    /* ── エントリ（1作品） ── */
+    /* ── エントリ（発掘アニメーション） ── */
     .tl-entry {
-      position: relative;
-      display: flex;
-      align-items: stretch; /* 年号を作品の高さに合わせる */
-      opacity: 0;
-      transform: translateY(32px);
-      transition: opacity 0.9s var(--ease-expo), transform 0.9s var(--ease-expo);
+      position: relative; display: flex; align-items: stretch;
+      opacity: 0; transform: translateY(80px); filter: blur(5px) brightness(0.3);
+      transition: opacity 1.6s var(--ease-expo), transform 1.6s var(--ease-expo), filter 1.6s var(--ease-expo);
     }
-    .tl-entry.visible { opacity: 1; transform: translateY(0); }
+    .tl-entry.visible { opacity: 1; transform: translateY(0); filter: blur(0) brightness(1); }
 
-    /* ── 年号カラム（左） ── */
-    .tl-year-col {
-      width: 100px;
-      flex-shrink: 0;
-      position: relative;
-    }
+    /* ── 年号ナビゲーションカラム（左） ── */
+    .tl-year-col { width: 160px; flex-shrink: 0; position: relative; }
     .tl-year-sticky {
-      position: sticky;
-      top: 120px;
-      text-align: right;
-      padding-right: 24px;
+      position: sticky; top: 200px; padding-right: 40px;
+      display: flex; flex-direction: column; align-items: flex-end;
+    }
+    .tl-year-btn {
+      background: transparent; border: none; padding: 0; margin: 0;
+      display: flex; align-items: center; justify-content: flex-end; gap: 16px;
+      cursor: pointer; color: rgba(232,228,219,0.22);
+      transition: color 0.5s ease; width: 100%;
     }
     .tl-year-num {
-      font-family: var(--en); font-size: clamp(1.2rem, 2vw, 1.6rem); font-weight: 300; letter-spacing: 0.06em;
-      color: rgba(232,228,219,0.22); line-height: 1; display: block;
-      transition: color 0.55s ease, transform 0.55s var(--ease-expo);
+      font-family: var(--en); font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 300; letter-spacing: 0.05em;
+      line-height: 1; display: block;
+      transition: transform 0.6s var(--ease-expo), text-shadow 0.6s ease;
       transform-origin: right center;
     }
-    .tl-year-sub {
-      font-family: var(--en); font-size: 8px; letter-spacing: 0.14em; color: rgba(232,228,219,0.14);
-      text-transform: uppercase; display: block; margin-top: 6px;
+    .tl-year-indicator {
+      width: 6px; height: 6px; border-radius: 50%; background: currentColor;
+      opacity: 0; transform: scale(0.5); transition: all 0.5s var(--ease-expo);
     }
-    .tl-entry.visible .tl-year-num { color: var(--accent); transform: scale(1.08); }
+    
+    .tl-year-btn:hover { color: rgba(232,228,219,0.7); }
+    .tl-year-btn:hover .tl-year-indicator { opacity: 0.5; transform: scale(0.8); }
 
-    /* ドット（ノード） */
+    .tl-entry.visible .tl-year-btn { color: var(--accent); }
+    .tl-entry.visible .tl-year-num {
+      transform: scale(1.15); text-shadow: 0 0 20px var(--accent-glow);
+    }
+    .tl-entry.visible .tl-year-indicator {
+      opacity: 1; transform: scale(1); box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    /* ノード */
     .tl-dot-wrap {
-      position: absolute;
-      left: 100px; /* 縦線上 */
-      top: 14px; /* テキストの1行目に合わせる */
-      transform: translateX(-50%);
-      display: flex; flex-direction: column; align-items: center;
-      z-index: 3;
+      position: absolute; left: 160px; top: 26px; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; z-index: 3;
     }
     .tl-dot {
-      width: 10px; height: 10px; border-radius: 50%;
-      background: var(--bg); border: 1.5px solid rgba(232,228,219,0.2);
-      transition: background 0.55s ease, border-color 0.55s ease, box-shadow 0.55s ease;
+      width: 10px; height: 10px; border-radius: 50%; background: var(--bg);
+      border: 1px solid rgba(232,228,219,0.15);
+      transition: background 0.7s ease, border-color 0.7s ease, box-shadow 0.7s ease;
     }
     .tl-entry.visible .tl-dot {
       background: var(--accent); border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(203,191,176,0.12), 0 0 20px rgba(203,191,176,0.4);
+      box-shadow: 0 0 0 4px rgba(203,191,176,0.1), 0 0 20px rgba(203,191,176,0.5);
     }
-    /* ノードから引き出す横線 */
     .tl-dot-line {
-      position: absolute;
-      left: 12px; top: 50%; transform: translateY(-50%);
-      width: 0; height: 0.5px;
-      background: linear-gradient(to right, var(--accent), transparent);
-      transition: width 0.6s var(--ease-expo) 0.3s;
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      width: 0; height: 1px; background: linear-gradient(to right, rgba(203,191,176,0.6), transparent);
+      transition: width 0.8s var(--ease-expo) 0.4s;
     }
-    .tl-entry.visible .tl-dot-line { width: 40px; }
+    .tl-entry.visible .tl-dot-line { width: 64px; }
 
-    /* ── コンテンツエリア（画像＋テキスト） ── */
+    /* ── コンテンツエリア ── */
     .tl-content-col {
-      flex: 1;
-      padding-left: 48px;
-      display: flex;
-      align-items: flex-start;
-      gap: 3rem;
-      min-width: 0;
+      flex: 1; padding-left: 90px; display: flex; align-items: flex-start; gap: 6rem; min-width: 0;
     }
-
-    /* 画像 */
-    .tl-img-link { display: block; text-decoration: none; flex-shrink: 0; width: var(--w, 220px); position: relative; }
+    /* 画像エリア（JSでの指定サイズを尊重しつつ、最大幅は親要素の100%に留める） */
+    .tl-img-link { 
+      display: block; text-decoration: none; flex-shrink: 0; 
+      width: var(--w, 500px); max-width: 100%; position: relative; 
+    }
     
-    /* 改修：露光マスクは完全に消えるように修正（暗化処理を排除） */
     .tl-img-wrap {
-      width: 100%; overflow: hidden;
-      border: 0.5px solid rgba(232,228,219,0.08); transition: border-color 0.4s ease;
-      background: #141312; position: relative;
+      width: 100%; overflow: hidden; border: 0.5px solid rgba(232,228,219,0.08);
+      background: #080808; position: relative; transition: border-color 0.5s ease, box-shadow 0.5s ease;
     }
     .tl-img-wrap::after {
-      content: ''; position: absolute; inset: 0;
-      background: #080808; /* 真っ黒なカバー */
-      transform-origin: right; /* 右を基点に縮む */
-      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      content: ''; position: absolute; inset: 0; background: #080808;
+      transform-origin: bottom; transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
       pointer-events: none;
     }
-    .tl-entry.visible .tl-img-wrap::after {
-      transform: scaleX(0); /* カバーが完全に消えて100%露光される */
-      transition-delay: 0.2s;
-    }
-    .tl-img-link:hover .tl-img-wrap { border-color: rgba(203,191,176,0.4); }
+    .tl-entry.visible .tl-img-wrap::after { transform: scaleY(0); transition-delay: 0.3s; }
+    .tl-img-link:hover .tl-img-wrap { border-color: rgba(203,191,176,0.3); box-shadow: 0 12px 48px rgba(0,0,0,0.7); }
     
-    /* 画像本体：不要な filter を削除 */
     .tl-img-wrap img {
-      width: 100%; height: auto; display: block;
-      transition: transform 0.9s var(--ease-expo);
+      width: 100%; height: auto; display: block; transition: transform 1.4s var(--ease-expo);
     }
     .tl-img-link:hover .tl-img-wrap img { transform: scale(1.03); }
 
-    /* 年号オーバーレイ（画像の角） */
     .tl-img-year-badge {
-      position: absolute; top: 0; left: 0; padding: 8px 12px;
-      font-family: var(--en); font-size: 10px; letter-spacing: 0.22em;
-      color: rgba(232,228,219,0.55); text-transform: uppercase;
-      background: linear-gradient(135deg, rgba(8,8,8,0.75), transparent);
+      position: absolute; top: 0; left: 0; padding: 12px 16px;
+      font-family: var(--en); font-size: 12px; letter-spacing: 0.22em; color: rgba(232,228,219,0.6);
+      background: linear-gradient(135deg, rgba(8,8,8,0.85), transparent);
       opacity: 0; transition: opacity 0.4s ease; pointer-events: none;
     }
     .tl-img-link:hover .tl-img-year-badge { opacity: 1; }
 
     /* テキストエリア */
-    .tl-info { flex: 1; min-width: 0; padding-top: 0.2rem; }
+    .tl-info { flex: 1; min-width: 0; padding-top: 0.5rem; }
     .tl-series {
-      font-family: var(--en); font-size: 9px; letter-spacing: 0.24em; color: rgba(203,191,176,0.45); text-transform: uppercase; margin-bottom: 0.55rem;
-      display: flex; align-items: center; gap: 8px;
+      font-family: var(--en); font-size: 11px; letter-spacing: 0.25em; color: rgba(203,191,176,0.5);
+      text-transform: uppercase; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 10px;
     }
-    .tl-series::before { content: ''; width: 16px; height: 0.5px; background: rgba(203,191,176,0.3); flex-shrink: 0; }
-    .tl-title-ja { font-family: var(--jp); font-size: clamp(1.1rem,2vw,1.5rem); font-weight: 300; color: var(--text); line-height: 1.25; margin-bottom: 0.2rem; letter-spacing: 0.03em; }
-    .tl-title-en { font-family: var(--en); font-size: 13px; color: var(--muted-col); letter-spacing: 0.14em; margin-bottom: 1rem; font-weight: 300; font-style: italic; }
-    .tl-spec { font-family: var(--en); font-size: 11px; color: rgba(232,228,219,0.26); line-height: 1.7; margin-bottom: 1.2rem; letter-spacing: 0.07em; }
-    .tl-stratum { display: flex; align-items: center; gap: 10px; margin-bottom: 1.2rem; }
-    .tl-stratum-line { flex: 1; max-width: 48px; height: 0.5px; background: linear-gradient(to right, var(--accent), transparent); opacity: 0.35; }
-    .tl-stratum-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(203,191,176,0.4); }
-    .tl-desc { font-size: 13px; line-height: 1.95; color: rgba(232,228,219,0.6); letter-spacing: 0.025em; max-width: 400px; }
-    .tl-desc em { font-style: normal; color: rgba(232,228,219,0.9); border-bottom: 0.5px solid rgba(232,228,219,0.25); padding-bottom: 1px; }
-    .tl-process { margin-top: 1.1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .tl-series::before { content: ''; width: 24px; height: 1px; background: rgba(203,191,176,0.3); flex-shrink: 0; }
+    .tl-title-ja { font-family: var(--jp); font-size: clamp(1.4rem, 2.5vw, 1.8rem); font-weight: 300; color: var(--text); line-height: 1.4; margin-bottom: 0.4rem; letter-spacing: 0.05em; }
+    .tl-title-en { font-family: var(--en); font-size: 15px; color: var(--muted-col); letter-spacing: 0.15em; margin-bottom: 1.4rem; font-weight: 300; font-style: italic; }
+    .tl-spec { font-family: var(--en); font-size: 12px; color: rgba(232,228,219,0.35); line-height: 1.8; margin-bottom: 2rem; letter-spacing: 0.08em; }
+    
+    .tl-desc { font-size: 14.5px; line-height: 2.2; color: rgba(232,228,219,0.7); letter-spacing: 0.04em; max-width: 520px; }
+    .tl-desc em { font-style: normal; color: rgba(232,228,219,0.95); border-bottom: 0.5px solid rgba(232,228,219,0.25); padding-bottom: 1px; }
+    
+    .tl-process { margin-top: 2rem; display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
     .tl-process span {
-      font-family: var(--en); font-size: 9px; letter-spacing: 0.12em; color: rgba(232,228,219,0.28); text-transform: uppercase;
-      border: 0.5px solid rgba(232,228,219,0.12); padding: 3px 9px; transition: color 0.3s, border-color 0.3s;
+      font-family: var(--en); font-size: 11px; letter-spacing: 0.15em; color: rgba(232,228,219,0.4);
+      text-transform: uppercase; border: 0.5px solid rgba(232,228,219,0.15); padding: 5px 14px; border-radius: 20px;
+      transition: color 0.3s, border-color 0.3s, background 0.3s;
     }
-    .tl-process span:hover { color: var(--accent); border-color: rgba(203,191,176,0.4); }
+    .tl-process span:hover { color: var(--text); border-color: rgba(203,191,176,0.5); background: rgba(255,255,255,0.03); }
 
     /* ════════════════════════════════════════
-       PROFILE & GOALS
+       PROFILE & NEWS & FOOTER
     ════════════════════════════════════════ */
-    .profile-goals-layout { display: grid; grid-template-columns: 200px 1fr 1fr; gap: 3.5rem; margin-top: 2.5rem; align-items: start; }
-    .profile-img { width: 200px; height: 280px; overflow: hidden; border-radius: 50%; }
+    .profile-goals-layout { display: grid; grid-template-columns: 240px 1fr 1fr; gap: 4rem; margin-top: 3rem; align-items: start; }
+    .profile-img { width: 240px; height: 320px; overflow: hidden; border-radius: 50%; }
     .profile-img img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
-    .profile-name { font-family: var(--jp); font-size: 2rem; font-weight: 300; color: var(--text); margin-bottom: 0.2rem; }
-    .profile-name-en { font-family: var(--en); font-size: 12px; color: var(--muted-col); letter-spacing: 0.22em; margin-bottom: 2rem; text-transform: uppercase; }
-    .profile-table { width: 100%; font-size: 12px; border-collapse: collapse; }
+    .profile-name { font-family: var(--jp); font-size: 2.2rem; font-weight: 300; color: var(--text); margin-bottom: 0.2rem; }
+    .profile-name-en { font-family: var(--en); font-size: 13px; color: var(--muted-col); letter-spacing: 0.22em; margin-bottom: 2.5rem; text-transform: uppercase; }
+    .profile-table { width: 100%; font-size: 13px; border-collapse: collapse; }
     .profile-table tr { border-bottom: 0.5px solid var(--border); }
-    .profile-table td { padding: 0.75rem 0; vertical-align: top; }
-    .profile-table td:first-child { font-family: var(--en); color: var(--muted-col); min-width: 72px; letter-spacing: 0.1em; padding-right: 1rem; white-space: nowrap; font-size: 11px; text-transform: uppercase; }
-    .profile-table td:last-child { color: var(--text-muted); line-height: 1.7; }
+    .profile-table td { padding: 1rem 0; vertical-align: top; }
+    .profile-table td:first-child { font-family: var(--en); color: var(--muted-col); min-width: 80px; letter-spacing: 0.1em; padding-right: 1.5rem; white-space: nowrap; font-size: 12px; text-transform: uppercase; }
+    .profile-table td:last-child { color: var(--text-muted); line-height: 1.9; }
     .goals-column { display: flex; flex-direction: column; padding-top: 0.25rem; }
-    .goals-header {
-      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
-      letter-spacing: 0.22em; color: var(--muted-col); text-transform: uppercase;
-      margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem;
-    }
+    .goals-header { font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem); letter-spacing: 0.22em; color: var(--muted-col); text-transform: uppercase; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 1rem; }
     .goals-header::after { content:''; width: 32px; height: 0.5px; background: rgba(232,228,219,0.2); }
-    .goal-card { padding: 1.5rem 0; border-bottom: 0.5px solid var(--border); }
+    .goal-card { padding: 2rem 0; border-bottom: 0.5px solid var(--border); }
     .goal-card:last-child { border-bottom: none; }
-    .goal-num { font-family: var(--en); font-size: 2rem; font-weight: 300; color: rgba(232,228,219,0.08); line-height: 1; margin-bottom: 0.6rem; }
-    .goal-title { font-family: var(--jp); font-size: 14px; color: var(--text); font-weight: 400; margin-bottom: 0.4rem; line-height: 1.5; }
-    .goal-desc { font-size: 12px; color: rgba(232,228,219,0.45); line-height: 1.75; }
-    .goal-link {
-      display: inline-block; margin-top: 0.8rem; font-family: var(--en); font-size: 11px;
-      color: var(--muted-col); letter-spacing: 0.14em; text-decoration: none;
-      border-bottom: 0.5px solid var(--border-mid); padding-bottom: 2px;
-      transition: color 0.2s; text-transform: uppercase;
-    }
+    .goal-num { font-family: var(--en); font-size: 2.2rem; font-weight: 300; color: rgba(232,228,219,0.08); line-height: 1; margin-bottom: 0.8rem; }
+    .goal-title { font-family: var(--jp); font-size: 15px; color: var(--text); font-weight: 400; margin-bottom: 0.6rem; line-height: 1.6; }
+    .goal-desc { font-size: 13px; color: rgba(232,228,219,0.5); line-height: 1.85; }
+    .goal-link { display: inline-block; margin-top: 1rem; font-family: var(--en); font-size: 11px; color: var(--muted-col); letter-spacing: 0.14em; text-decoration: none; border-bottom: 0.5px solid var(--border-mid); padding-bottom: 2px; transition: color 0.2s; text-transform: uppercase; }
     .goal-link:hover { color: var(--accent); }
 
-    /* ════════════════════════════════════════
-       NEWS
-    ════════════════════════════════════════ */
-    .news-list { margin-top: 2rem; list-style: none; }
-    .news-item { display: flex; gap: 2rem; padding: 1.4rem 0; border-bottom: 0.5px solid var(--border); align-items: flex-start; }
-    .news-date { font-family: var(--en); font-size: 11px; color: var(--muted-col); letter-spacing: 0.1em; min-width: 80px; padding-top: 0.15rem; white-space: nowrap; }
-    .news-body { font-size: 14px; color: rgba(232,228,219,0.68); line-height: 1.65; }
-    .news-tag {
-      display: inline-block; font-family: var(--en); font-size: 9px; letter-spacing: 0.18em;
-      border: 0.5px solid rgba(184,168,152,0.3); padding: 2px 9px; margin-bottom: 0.45rem; color: var(--muted-col);
-      text-transform: uppercase; vertical-align: top;
-    }
+    .news-list { margin-top: 3rem; list-style: none; }
+    .news-item { display: flex; gap: 3rem; padding: 1.8rem 0; border-bottom: 0.5px solid var(--border); align-items: flex-start; }
+    .news-date { font-family: var(--en); font-size: 12px; color: var(--muted-col); letter-spacing: 0.1em; min-width: 90px; padding-top: 0.15rem; white-space: nowrap; }
+    .news-body { font-size: 15px; color: rgba(232,228,219,0.7); line-height: 1.8; }
+    .news-tag { display: inline-block; font-family: var(--en); font-size: 10px; letter-spacing: 0.18em; border: 0.5px solid rgba(184,168,152,0.3); padding: 3px 10px; margin-bottom: 0.6rem; color: var(--muted-col); text-transform: uppercase; vertical-align: top; }
     .news-body a { color: rgba(232,228,219,0.65); transition: color 0.2s; }
     .news-body a:hover { color: var(--accent); }
 
-    /* ════════════════════════════════════════
-       CONTACT & FOOTER
-    ════════════════════════════════════════ */
-    .contact-section { padding: 7rem 2.5rem; text-align: center; border-bottom: 0.5px solid var(--border); }
+    .contact-section { padding: 9rem 2.5rem; text-align: center; border-bottom: 0.5px solid var(--border); }
     .contact-section .section-label { justify-content: center; }
     .contact-section .section-heading { text-align: center; }
-    .contact-body-text { font-size: 14px; color: var(--text-muted); margin: 0 auto 2.75rem; max-width: 400px; line-height: 1.9; }
-    .contact-btn {
-      display: inline-block; font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
-      letter-spacing: 0.22em; text-transform: uppercase; border: 0.5px solid rgba(184,168,152,0.45); padding: 0.9rem 2.75rem;
-      color: var(--accent); text-decoration: none; transition: background 0.2s, color 0.2s;
-    }
+    .contact-body-text { font-size: 15px; color: var(--text-muted); margin: 0 auto 3.5rem; max-width: 440px; line-height: 2; }
+    .contact-btn { display: inline-block; font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem); letter-spacing: 0.22em; text-transform: uppercase; border: 0.5px solid rgba(184,168,152,0.45); padding: 1rem 3rem; color: var(--accent); text-decoration: none; transition: background 0.2s, color 0.2s; }
     .contact-btn:hover { background: rgba(184,168,152,0.07); color: var(--fg); }
-    footer { padding: 2.75rem 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    
+    footer { padding: 3.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
     .footer-logo { font-family: var(--jp); font-size: 16px; font-weight: 300; color: rgba(232,228,219,0.35); letter-spacing: 0.05em; }
-    .footer-copy { font-family: var(--en); font-size: 10px; color: rgba(232,228,219,0.2); letter-spacing: 0.14em; }
+    .footer-copy { font-family: var(--en); font-size: 11px; color: rgba(232,228,219,0.2); letter-spacing: 0.14em; }
 
     /* ════════════════════════════════════════
-       RESPONSIVE
+       RESPONSIVE (スマホ完全対応)
     ════════════════════════════════════════ */
     @media (max-width: 1100px) {
-      .tl-outer { padding-right: 0; }
-      .tl-strata-bar { display: none; }
-      .tl-img-link { width: min(var(--w,220px), 40vw) !important; }
-      .profile-goals-layout { grid-template-columns: 200px 1fr; }
-      .goals-column { grid-column: 1/-1; flex-direction: row; gap: 1.5rem; }
-      .goal-card { flex: 1; border-bottom: none; border-left: 0.5px solid var(--border); padding: 0 0 0 1.5rem; }
+      .tl-content-col { flex-direction: column; gap: 3rem; } /* タブレット以下は画像を上に、テキストを下に */
+      .tl-img-link { width: 100% !important; max-width: 600px; }
+      .profile-goals-layout { grid-template-columns: 240px 1fr; }
+      .goals-column { grid-column: 1/-1; flex-direction: row; gap: 2rem; }
+      .goal-card { flex: 1; border-bottom: none; border-left: 0.5px solid var(--border); padding: 0 0 0 2rem; }
       .goal-card:first-of-type { border-left: none; padding-left: 0; }
     }
     @media (max-width: 768px) {
       nav { padding: 1rem 1.25rem; }
       .nav-links { display: none; }
       .nav-hamburger { display: block; }
-      .nav-links.open {
-        display: flex; flex-direction: row; flex-wrap: nowrap;
-        position: fixed; inset: 0; background: rgba(13,13,11,0.98);
-        align-items: center; justify-content: center; gap: 0.6rem; z-index: 300; padding: 1rem; overflow-x: auto;
-      }
+      .nav-links.open { display: flex; flex-direction: row; flex-wrap: nowrap; position: fixed; inset: 0; background: rgba(13,13,11,0.98); align-items: center; justify-content: center; gap: 0.6rem; z-index: 300; padding: 1rem; overflow-x: auto; }
       .nav-links.open a { font-size: 0.9rem; padding: 0.6rem 0.5rem; display: block; white-space: nowrap; }
+      
       .hero { padding: 5rem 1.5rem 4rem; min-height: 70vh; }
-      .section { padding: 4rem 1.5rem; }
-      #statement { padding: 4rem 1.5rem 5rem; }
-      #works { padding: 3rem 1.5rem 4rem; }
+      .section { padding: 5rem 1.5rem; }
+      
+      #statement { padding: 7rem 1.5rem; }
+      .statement-bg-word { font-size: 40vw; }
+      .concept-question { font-size: 1.6rem; margin-bottom: 5rem; line-height: 1.8; }
+      .concept-cards-wrap { margin-bottom: 2rem; }
+      .concept-tags { grid-template-columns: 1fr; gap: 2rem; } /* スマホは1列 */
 
-      /* スマホ用タイムライン */
+      #works { padding: 5rem 1.5rem 6rem; }
+      .works-header { margin-bottom: 5rem; flex-direction: column; align-items: flex-start; gap: 2rem; }
+      
+      /* タイムラインスマホ対応 */
       .tl-spine-zone { left: 24px; }
-      .tl-entries-col { gap: 5rem; }
+      .tl-entries-col { gap: 6rem; }
       .tl-entry { flex-direction: column; align-items: flex-start; }
-      .tl-year-col { width: 100%; padding-left: 56px; margin-bottom: 1.2rem; }
-      .tl-year-sticky { position: relative; top: auto; text-align: left; padding-right: 0; }
-      .tl-year-num { transform-origin: left center; display: inline-block; font-size: 1.1rem; }
-      .tl-year-sub { display: inline-block; margin-left: 8px; margin-top: 0; }
-      .tl-dot-wrap { left: 24px; top: 6px; }
-      .tl-content-col { padding-left: 56px; flex-direction: column; gap: 1.5rem; }
+      .tl-year-col { width: 100%; padding-left: 56px; margin-bottom: 1.5rem; }
+      .tl-year-sticky { position: relative; top: auto; align-items: flex-start; padding-right: 0; }
+      .tl-year-btn { justify-content: flex-start; flex-direction: row-reverse; gap: 10px; }
+      .tl-year-num { font-size: 1.8rem; transform-origin: left center; }
+      .tl-dot-wrap { left: 24px; top: 12px; }
+      .tl-dot-line { width: 32px; }
+      .tl-content-col { padding-left: 56px; flex-direction: column; gap: 2rem; }
       .tl-img-link { width: 100% !important; }
 
-      .concept-tags { grid-template-columns: 1fr 1fr; gap: 2rem 1.5rem; }
-      .profile-goals-layout { grid-template-columns: 1fr; gap: 2rem; }
-      .profile-img { width: 130px; height: 130px; margin: 0 auto; }
+      .profile-goals-layout { grid-template-columns: 1fr; gap: 3rem; }
+      .profile-img { width: 160px; height: 160px; margin: 0 auto; }
       .profile-name, .profile-name-en { text-align: center; }
       .goals-column { flex-direction: column; }
-      .goal-card { border-left: none; padding: 1.2rem 0; border-bottom: 0.5px solid var(--border); }
+      .goal-card { border-left: none; padding: 1.5rem 0; border-bottom: 0.5px solid var(--border); }
       .goal-card:last-child { border-bottom: none; }
-      .news-item { flex-direction: column; gap: 0.5rem; }
-      .contact-section { padding: 5rem 1.5rem; }
-      footer { padding: 2rem 1.5rem; }
+      .news-item { flex-direction: column; gap: 0.8rem; }
+      .contact-section { padding: 6rem 1.5rem; }
+      footer { padding: 2.5rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
     }
     @media (max-width: 480px) {
-      .tl-spine-zone { left: 20px; }
-      .tl-dot-wrap { left: 20px; }
+      .tl-spine-zone, .tl-dot-wrap { left: 20px; }
       .tl-year-col, .tl-content-col { padding-left: 48px; }
-      .concept-tags { grid-template-columns: 1fr; }
+      .concept-para { font-size: 1rem; line-height: 2.1; }
     }
     @media (prefers-reduced-motion: reduce) {
       .hero-slide { transition: opacity 0.5s ease-in-out; }
-      .tl-spine-particle { animation: none; }
       .tl-entry { transition: opacity 0.3s ease; }
       .works-video-bg { transition: none; }
     }
@@ -634,54 +575,70 @@
   <div class="hero-scroll"><span class="hero-scroll-line"></span>Scroll</div>
 </section>
 
-<section class="section" id="statement">
+<section id="statement">
+  <div class="statement-bg-word" aria-hidden="true">CAVE</div>
+  <div class="statement-bg-word word2" aria-hidden="true">ITO</div>
+
   <div class="s-eyebrow reveal">Statement <span class="s-eyebrow-en">Statement</span></div>
-  <blockquote class="concept-quote-lead reveal" style="transition-delay:.10s">
-    〈いと〉とは何か。<br>それは、例えば生まれた土地の記憶、地質、感覚——<br>それ以上還元できない、存在の最小単位。
-  </blockquote>
-  <h2 class="concept-question reveal" style="transition-delay:.20s">
-    「なぜ私たちは、<span class="no-break">別の場所で生まれ育つことが</span><br><span class="no-break">できなかったのでしょうか？」</span>
+
+  <h2 class="concept-question reveal" style="transition-delay:.10s">
+    「なぜ私たちは、別の場所で<br>生まれ育つことが<br>できなかったのでしょうか？」
   </h2>
-  <div class="concept-paras">
-    <p class="concept-para reveal" style="transition-delay:.28s">私は事物の存在に纏わるあらゆる傾向を、<em>〈単位世界（＝洞窟）〉</em>を構成する最小の事物（＝いと）と捉え、制作しています。<em>〈いと〉</em>とは、〈物語〉のそれ以上細分化できない要素です。そして〈物語〉とは、人間存在そのものです。なぜなら、私たち人間はすべてを〈物語〉として理解し、機能させて生きているからです。</p>
-    <p class="concept-para reveal" style="transition-delay:.36s">私にとっての〈いと〉は、自分が生まれ育った場所である"左美都（さみず、現在の長野県長野市信更町三水）"という地域です。ごく私的な経験を起点とし、その土地に深く根ざした記憶（歴史）や地質、感覚と向き合うことで、私はこの〈洞窟〉の根源を探ろうとしています。</p>
-    <p class="concept-para reveal" style="transition-delay:.44s">私の制作の出発点となるのは、<em>油彩による描画</em>です。<em>描画の過程（＝脱領土化）</em>を通して〈いと〉が見いだされ、次に、あるいは同時にさまざまな手法による<em>解釈・再読（＝再領土化）</em>が始まります。再領土化される表現は、絵画にとどまらず、映像、立体、インスタレーションといった多層的な形式へと展開し、複合していきます。</p>
+
+  <div class="concept-story">
+    <div class="concept-block reveal" style="transition-delay:.20s">
+      <p class="concept-para">〈いと〉とは何か。<br>それは、例えば生まれた土地の記憶、地質、感覚——<br>それ以上還元できない、存在の最小単位。</p>
+    </div>
+
+    <div class="concept-block reveal" style="transition-delay:.30s">
+      <span class="concept-block-en">Unit World</span>
+      <p class="concept-para">私は事物の存在に纏わるあらゆる傾向を、<em>〈単位世界（＝洞窟）〉</em>を構成する最小の事物（＝いと）と捉え、制作しています。〈いと〉とは、〈物語〉のそれ以上細分化できない要素です。そして〈物語〉とは、人間存在そのものです。なぜなら、私たち人間はすべてを〈物語〉として理解し、機能させて生きているからです。</p>
+    </div>
+
+    <div class="concept-block reveal" style="transition-delay:.40s">
+      <span class="concept-block-en">Geological Memory</span>
+      <p class="concept-para">私にとっての〈いと〉は、自分が生まれ育った場所である"左美都（さみず、現在の長野県長野市信更町三水）"という地域です。ごく私的な経験を起点とし、その土地に深く根ざした記憶（歴史）や地質、感覚と向き合うことで、私はこの〈洞窟〉の根源を探ろうとしています。</p>
+    </div>
+
+    <div class="concept-block reveal" style="transition-delay:.50s">
+      <span class="concept-block-en">Process</span>
+      <p class="concept-para">私の制作の出発点となるのは、<em>油彩による描画</em>です。描画の過程（＝脱領土化）を通して〈いと〉が見いだされ、次に、あるいは同時にさまざまな手法による解釈・再読（＝再領土化）が始まります。再領土化される表現は、絵画にとどまらず、映像、立体、インスタレーションといった多層的な形式へと展開し、複合していきます。</p>
+    </div>
   </div>
-  <div class="concept-sep reveal" style="transition-delay:.50s"></div>
-  <div class="concept-sub-eyebrow reveal" style="transition-delay:.54s">
-    <span class="concept-sub-ja">概念</span><span class="concept-sub-en">Concepts</span>
-  </div>
-  <div class="concept-tags">
-    <div class="concept-tag reveal" style="transition-delay:.60s">
-      <span class="concept-tag-num">01</span>
-      <p class="concept-tag-term">〈いと〉</p>
-      <p class="concept-tag-en-label">Ito — The Minimal Thread</p>
-      <p class="concept-tag-desc">"左美都"という土地の記憶・地質・感覚。物語のそれ以上細分化できない、最小の要素。</p>
-    </div>
-    <div class="concept-tag reveal" style="transition-delay:.67s">
-      <span class="concept-tag-num">02</span>
-      <p class="concept-tag-term">洞窟</p>
-      <p class="concept-tag-en-label">Cave — Unit World</p>
-      <p class="concept-tag-desc">断片ともつれから成る世界の個別のひとつ。単一では無く、並存する宇宙として捉える造語的概念。</p>
-    </div>
-    <div class="concept-tag reveal" style="transition-delay:.74s">
-      <span class="concept-tag-num">03</span>
-      <p class="concept-tag-term">脱領土化</p>
-      <p class="concept-tag-en-label">Deterritorialization</p>
-      <p class="concept-tag-desc">油彩の描画過程において、形や意味が解体され、〈いと〉が見いだされていく運動。</p>
-    </div>
-    <div class="concept-tag reveal" style="transition-delay:.81s">
-      <span class="concept-tag-num">04</span>
-      <p class="concept-tag-term">再領土化</p>
-      <p class="concept-tag-en-label">Reterritorialization</p>
-      <p class="concept-tag-desc">絵画・映像・立体・インスタレーションへと多層的に展開する、再解釈と再編成の過程。</p>
+
+  <div class="concept-cards-wrap">
+    <div class="concept-tags">
+      <div class="concept-tag reveal" style="transition-delay:.20s">
+        <span class="concept-tag-num">01</span>
+        <p class="concept-tag-term">〈いと〉</p>
+        <p class="concept-tag-en-label">Ito — The Minimal Thread</p>
+        <p class="concept-tag-desc">"左美都"という土地の記憶・地質・感覚。物語のそれ以上細分化できない、最小の要素。</p>
+      </div>
+      <div class="concept-tag reveal" style="transition-delay:.30s">
+        <span class="concept-tag-num">02</span>
+        <p class="concept-tag-term">洞窟</p>
+        <p class="concept-tag-en-label">Cave — Unit World</p>
+        <p class="concept-tag-desc">断片ともつれから成る世界の個別のひとつ。単一では無く、並存する宇宙として捉える造語的概念。</p>
+      </div>
+      <div class="concept-tag reveal" style="transition-delay:.40s">
+        <span class="concept-tag-num">03</span>
+        <p class="concept-tag-term">脱領土化</p>
+        <p class="concept-tag-en-label">Deterritorialization</p>
+        <p class="concept-tag-desc">油彩の描画過程において、形や意味が解体され、〈いと〉が見いだされていく運動。</p>
+      </div>
+      <div class="concept-tag reveal" style="transition-delay:.50s">
+        <span class="concept-tag-num">04</span>
+        <p class="concept-tag-term">再領土化</p>
+        <p class="concept-tag-en-label">Reterritorialization</p>
+        <p class="concept-tag-desc">絵画・映像・立体・インスタレーションへと多層的に展開する、再解釈と再編成の過程。</p>
+      </div>
     </div>
   </div>
 </section>
 
 <section id="works">
   <div class="works-content">
-    <div class="works-header" style="padding: 6rem 2.5rem 0;">
+    <div class="works-header">
       <div>
         <p class="section-label">Works</p>
         <p class="section-heading-en">作品年譜</p>
@@ -690,26 +647,18 @@
       <a href="works.html" class="works-more">すべての作品を見る →</a>
     </div>
 
-    <div style="padding: 4rem 2.5rem 8rem;">
+    <div>
       <div class="tl-outer" id="tl-outer">
-
         <div class="tl-spine-zone" aria-hidden="true">
           <div class="tl-spine-track"></div>
-          <div class="tl-spine-progress" id="tl-spine-progress">
-            <div class="tl-spine-particle"></div>
-            <div class="tl-spine-particle"></div>
-            <div class="tl-spine-particle"></div>
-          </div>
+          <div class="tl-spine-progress" id="tl-spine-progress"></div>
         </div>
 
         <div class="tl-entries-col" id="tl-entries-col">
           </div>
-
-        <div class="tl-strata-bar" id="tl-strata-bar" aria-label="年代ナビゲーション"></div>
-
       </div>
 
-      <div style="text-align:right; margin-top:3rem;">
+      <div style="text-align:right; margin-top:8rem;">
         <a href="works.html" class="works-more">すべての作品を見る →</a>
       </div>
     </div>
@@ -784,166 +733,27 @@
 
 <script>
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   作品データ（ここを編集するだけでタイムラインが自動更新）
-   作品を追加・削除するときは WORKS_DATA にオブジェクトを追加するだけ
+   【画像サイズ調整の設定項目】
+   ・imgWidth: パソコン閲覧時の画像の「最大表示ピクセル幅」を指定します。
+     （例：800 にすると、画面幅に余裕があれば最大800pxで表示されます。
+       数値を大きくすると迫力が増し、小さくするとテキストとの対比が強まります。
+       ※スマホでは自動で画面幅100%になるため影響しません）
+   ・アスペクト比（縦横比）は元画像の比率が自動で維持されます。
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 var WORKS_DATA = [
-  {
-    year: 2025,
-    series: 'Cave Series',
-    titleJa: '森 20251217',
-    titleEn: 'Forest',
-    spec: '130.3 × 162 cm ／ 油彩・キャンバス',
-    imgSrc: 'images/【F100横】森20251217.jpg',
-    imgWidth: 800,
-    link: 'works-cave.html',
-    desc: '左美都の山林を歩きながら感じた、木々の間に漂う光と沈黙。その場の<em>空気そのもの</em>を描こうとした作品です。形を明確に描くのではなく、色の重なりと筆の痕跡によって「森にいる感覚」が生まれるよう意図しました。土地の〈いと〉の記憶が、絵具の層に染み込んでいます。',
-    tags: ['油彩による描画', '場の感覚への還元']
-  },
-  {
-    year: 2024,
-    series: 'Cave Series',
-    titleJa: '山脈',
-    titleEn: 'Mountain Range',
-    spec: '500 × 600 cm ／ 油彩・キャンバス',
-    imgSrc: 'images/山脈.jpg',
-    imgWidth: 1000,
-    link: 'works-cave.html',
-    desc: '高さ5メートル、幅6メートルという圧倒的なスケールの大作。信州の山並みを「見る」のではなく、山と<em>同化する</em>ような体験を目指しました。地質と時間の堆積が、絵具の重なりとして現れています。',
-    tags: ['大画面での身体的描画', '地質・時間の可視化']
-  },
-  {
-    year: 2023,
-    series: 'Cave Series',
-    titleJa: '石筍 20230405',
-    titleEn: 'Stalagmite',
-    spec: '162 × 112 cm ／ 油彩・キャンバス',
-    imgSrc: 'images/石筍20230405.jpg',
-    imgWidth: 640,
-    link: 'works-cave.html',
-    desc: '石筍とは、洞窟の床から水滴が積もってできる石の柱のこと。何千年もかけてほんの数センチ伸びるその姿に、<em>時間の蓄積</em>そのものを見ました。左美都の地下に眠る地層のイメージと重なり、人の記憶が層として積み重なる様子を描いています。',
-    tags: ['地質への着目', '記憶の層への変換']
-  },
-  {
-    year: 2022,
-    series: 'Variant Series',
-    titleJa: 'スズラン',
-    titleEn: 'ΑΦΡΟΔΙΤΗ（アフロディーテー）',
-    spec: '162 × 130.3 cm ／ 油彩・キャンバス',
-    imgSrc: 'images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg',
-    imgWidth: 520,
-    link: 'works-variant.html',
-    desc: '左美都に自生するスズランは、毒を持ちながら清楚な白い花を咲かせます。ギリシャ神話の美の女神アフロディーテーの名を副題に持つこの作品は、<em>美しさと危うさが同居する存在</em>を描いています。自然の中に潜む矛盾と、それでも咲き続けようとする力を表現しました。',
-    tags: ['植物の観察', '神話との接続', '異体化']
-  },
-  {
-    year: 2021,
-    series: 'Cave Series',
-    titleJa: '夕焼け',
-    titleEn: 'Evening Glow',
-    spec: '162 × 130.3 cm ／ 油彩・キャンバス',
-    imgSrc: 'images/【F100縦】夕焼け.jpg',
-    imgWidth: 520,
-    link: 'https://tsuda-shoichi.webnode.jp/',
-    desc: '子どもの頃、左美都の野原から見た夕焼けの記憶。空が燃えるような赤から、夜の静けさへと変わっていく一瞬を閉じ込めました。懐かしさと切なさが混ざり合う感覚——それは<em>〈いと〉として刻まれた時間</em>の一端です。',
-    tags: ['幼少期の記憶', '色彩による再構成']
-  },
-  {
-    year: 2020,
-    series: 'Variant Series',
-    titleJa: 'リリス（胸部）',
-    titleEn: 'Lilith Remnants-2',
-    spec: '116.7 × 91 cm ／ 油彩・キャンバス',
-    imgSrc: 'images/【F50縦】リリス（胸部）Lilith Remnants-2.jpg',
-    imgWidth: 380,
-    link: 'works-variant.html',
-    desc: 'リリスとは、旧約聖書外典に登場する「最初の女性」とも言われる存在。歴史の中で消された声、忘れられた記憶の断片を、<em>身体の部位として描く</em>シリーズです。かつて存在した何かの痕跡を絵画として残しています。',
-    tags: ['神話・伝承の調査', '身体表現への変換', '異体（Variant）化']
-  },
-  {
-    year: 2019,
-    series: 'Cave Series',
-    titleJa: '明るい洞窟',
-    titleEn: 'Bright Cave',
-    spec: '162 × 162 cm ／ 油彩・キャンバス',
-    imgSrc: 'images/【S100】so far.jpg',
-    imgWidth: 680,
-    link: 'works-cave.html',
-    desc: '「洞窟」といえば暗くて閉じた場所を想像しますが、この作品の洞窟は明るい。それは恐れるべき場所ではなく、<em>自分の内側に戻っていく入口</em>のようなものです。正方形の画面が、内と外の境目がないことを暗示しています。',
-    tags: ['洞窟という概念の探求', '内的空間の可視化']
-  },
-  {
-    year: 2018,
-    series: 'Variant Series',
-    titleJa: '上に溶ける…',
-    titleEn: 'Dissolving Upward',
-    spec: '162 × 130.3 cm ／ 油彩・キャンバス',
-    imgSrc: 'images/【F100縦】上に溶ける・・・.jpg',
-    imgWidth: 520,
-    link: 'works-variant.html',
-    desc: '固いものが溶けて、上へと向かっていく。形があることと、形がないことの間を探った作品です。人間の記憶や感情が気化していくような感覚は、<em>失われることではなく、別の状態へと変化すること</em>だと気づきました。',
-    tags: ['形態の解体', '脱領土化の実験']
-  },
-  {
-    year: 2017,
-    series: 'Cave Series',
-    titleJa: 'into_cave',
-    titleEn: 'into_cave',
-    spec: '53 × 65.2 cm ／ 油彩・キャンバス',
-    imgSrc: 'images/【F15横】into_cave.jpg',
-    imgWidth: 360,
-    link: 'works-cave.html',
-    desc: '「洞窟へと入っていく」瞬間を描いた、Caveシリーズの出発点となった小品。暗闇の中に一歩踏み込む感覚——恐怖ではなく、<em>好奇心と静けさ</em>がそこにあります。津田翔一の核心である「洞窟（＝単位世界）」という概念が生まれはじめた作品です。',
-    tags: ['洞窟の体験', '概念の発見', 'シリーズの起点']
-  },
-  {
-    year: 2016,
-    series: 'Cave Series',
-    titleJa: '傷(5)（イスラエルの少女、2008年）',
-    titleEn: 'Scar(5) (Israeli Girl, 2008)',
-    spec: '31.8 × 41 cm ／ 油彩・キャンバス',
-    imgSrc: 'images/【F6横】傷.jpg',
-    imgWidth: 340,
-    link: 'works-cave.html',
-    desc: '霞がかったモノクロームの画面の向こうから、ひとりの少女が静かにこちらを見つめています。全体を覆う揺らぎは「薄れゆく記憶の危うさ」を思わせる一方で、顔の中心に刻まれた<em>「傷」</em>の存在感をより一層、生々しく浮き彫りにしています。',
-    tags: ['傷', '子供']
-  },
-  {
-    year: 2015,
-    series: 'Cave Series',
-    titleJa: 'Acid Attack Victim [ソナリ・ムカジー]',
-    titleEn: 'Acid Attack Victim (Sonali Mukherjee)',
-    spec: '130.3 × 162 cm ／ 油彩・キャンバス',
-    imgSrc: 'images/【F100横】Acid Attack Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg',
-    imgWidth: 780,
-    link: 'works-cave.html',
-    desc: 'インドで酸攻撃という卑劣な暴力に直面した女性の姿を、F100という巨大なキャンバスに克明に描き出しています。彼女を包む青いヒジャブは、傷を隠すためではなく、<em>彼女の失われない尊厳と美しさ</em>を強調しているかのようです。',
-    tags: ['酸攻撃被害者(AAV)', '証言']
-  },
-  {
-    year: 2014,
-    series: 'Tiny Soldier',
-    titleJa: '少年兵（アフリカ）',
-    titleEn: 'Child Soldier · Africa',
-    spec: '80.3 × 65.2 cm ／ 油彩・キャンバス',
-    imgSrc: 'images/【F25縦】少年兵（アフリカ）.jpg',
-    imgWidth: 380,
-    link: 'works-tinysoldier.html',
-    desc: '戦禍の現実を生きるアフリカの少年兵の姿を描き出したポートレイト。彼の身体を包むオーバーサイズの白いシャツと、不釣り合いに大きな銃——<em>静寂に包まれたその表情</em>は、言葉にならない重い問いとして、見る者の心に深く沈み込んでいきます。',
-    tags: ['少年兵', '証言']
-  },
-  {
-    year: 2009,
-    series: 'Cell-Graphics',
-    titleJa: 'Cell-Graphics [apocalypse] - III',
-    titleEn: 'Cell-Graphics [apocalypse] - III',
-    spec: '21 × 29.7 cm ／ 鉛筆・紙',
-    imgSrc: 'images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg',
-    imgWidth: 300,
-    link: 'works-drawing.html',
-    desc: '鉛筆のみで描かれた細密なドローイングシリーズ「Cell-Graphics（CG）」。細胞（Cell）のように増殖していく形の連鎖が画面を埋め尽くします。「世界の終わり（apocalypse）」を主題とし、<em>すべての始まりとなる根源的な問い</em>を内包しています。',
-    tags: ['鉛筆による細密描写', '形の増殖・連鎖']
-  }
+  { year: 2025, series: 'Cave Series', titleJa: '森 20251217', titleEn: 'Forest', spec: '130.3 × 162 cm ／ 油彩・キャンバス', imgSrc: 'images/【F100横】森20251217.jpg', imgWidth: 850, link: 'works-cave.html', desc: '左美都の山林を歩きながら感じた、木々の間に漂う光と沈黙。その場の<em>空気そのもの</em>を描こうとした作品です。形を明確に描くのではなく、色の重なりと筆の痕跡によって「森にいる感覚」が生まれるよう意図しました。土地の〈いと〉の記憶が、絵具の層に染み込んでいます。', tags: ['油彩による描画', '場の感覚への還元'] },
+  { year: 2024, series: 'Cave Series', titleJa: '山脈', titleEn: 'Mountain Range', spec: '500 × 600 cm ／ 油彩・キャンバス', imgSrc: 'images/山脈.jpg', imgWidth: 910, link: 'works-cave.html', desc: '高さ5メートル、幅6メートルという圧倒的なスケールの大作。信州の山並みを「見る」のではなく、山と<em>同化する</em>ような体験を目指しました。地質と時間の堆積が、絵具の重なりとして現れています。', tags: ['大画面での身体的描画', '地質・時間の可視化'] },
+  { year: 2023, series: 'Cave Series', titleJa: '石筍 20230405', titleEn: 'Stalagmite', spec: '162 × 112 cm ／ 油彩・キャンバス', imgSrc: 'images/石筍20230405.jpg', imgWidth: 600, link: 'works-cave.html', desc: '石筍とは、洞窟の床から水滴が積もってできる石の柱のこと。何千年もかけてほんの数センチ伸びるその姿に、<em>時間の蓄積</em>そのものを見ました。左美都の地下に眠る地層のイメージと重なり、人の記憶が層として積み重なる様子を描いています。', tags: ['地質への着目', '記憶の層への変換'] },
+  { year: 2022, series: 'Variant Series', titleJa: 'スズラン', titleEn: 'ΑΦΡΟΔΙΤΗ（アフロディーテー）', spec: '162 × 130.3 cm ／ 油彩・キャンバス', imgSrc: 'images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg', imgWidth: 500, link: 'works-variant.html', desc: '左美都に自生するスズランは、毒を持ちながら清楚な白い花を咲かせます。ギリシャ神話の美の女神アフロディーテーの名を副題に持つこの作品は、<em>美しさと危うさが同居する存在</em>を描いています。自然の中に潜む矛盾と、それでも咲き続けようとする力を表現しました。', tags: ['植物の観察', '神話との接続', '異体化'] },
+  { year: 2021, series: 'Cave Series', titleJa: '夕焼け', titleEn: 'Evening Glow', spec: '162 × 130.3 cm ／ 油彩・キャンバス', imgSrc: 'images/【F100縦】夕焼け.jpg', imgWidth: 500, link: 'https://tsuda-shoichi.webnode.jp/', desc: '子どもの頃、左美都の野原から見た夕焼けの記憶。空が燃えるような赤から、夜の静けさへと変わっていく一瞬を閉じ込めました。懐かしさと切なさが混ざり合う感覚——それは<em>〈いと〉として刻まれた時間</em>の一端です。', tags: ['幼少期の記憶', '色彩による再構成'] },
+  { year: 2020, series: 'Variant Series', titleJa: 'リリス（胸部）', titleEn: 'Lilith Remnants-2', spec: '116.7 × 91 cm ／ 油彩・キャンバス', imgSrc: 'images/【F50縦】リリス（胸部）Lilith Remnants-2.jpg', imgWidth: 420, link: 'works-variant.html', desc: 'リリスとは、旧約聖書外典に登場する「最初の女性」とも言われる存在。歴史の中で消された声、忘れられた記憶の断片を、<em>身体の部位として描く</em>シリーズです。かつて存在した何かの痕跡を絵画として残しています。', tags: ['神話・伝承の調査', '身体表現への変換', '異体（Variant）化'] },
+  { year: 2019, series: 'Cave Series', titleJa: '明るい洞窟', titleEn: 'Bright Cave', spec: '162 × 162 cm ／ 油彩・キャンバス', imgSrc: 'images/【S100】so far.jpg', imgWidth: 720, link: 'works-cave.html', desc: '「洞窟」といえば暗くて閉じた場所を想像しますが、この作品の洞窟は明るい。それは恐れるべき場所ではなく、<em>自分の内側に戻っていく入口</em>のようなものです。正方形の画面が、内と外の境目がないことを暗示しています。', tags: ['洞窟という概念の探求', '内的空間の可視化'] },
+  { year: 2018, series: 'Variant Series', titleJa: '上に溶ける…', titleEn: 'Dissolving Upward', spec: '162 × 130.3 cm ／ 油彩・キャンバス', imgSrc: 'images/【F100縦】上に溶ける・・・.jpg', imgWidth: 500, link: 'works-variant.html', desc: '固いものが溶けて、上へと向かっていく。形があることと、形がないことの間を探った作品です。人間の記憶や感情が気化していくような感覚は、<em>失われることではなく、別の状態へと変化すること</em>だと気づきました。', tags: ['形態の解体', '脱領土化の実験'] },
+  { year: 2017, series: 'Cave Series', titleJa: 'into_cave', titleEn: 'into_cave', spec: '53 × 65.2 cm ／ 油彩・キャンバス', imgSrc: 'images/【F15横】into_cave.jpg', imgWidth: 450, link: 'works-cave.html', desc: '「洞窟へと入っていく」瞬間を描いた、Caveシリーズの出発点となった小品。暗闇の中に一歩踏み込む感覚——恐怖ではなく、<em>好奇心と静けさ</em>がそこにあります。津田翔一の核心である「洞窟（＝単位世界）」という概念が生まれはじめた作品です。', tags: ['洞窟の体験', '概念の発見', 'シリーズの起点'] },
+  { year: 2016, series: 'Cave Series', titleJa: '傷(5)（イスラエルの少女、2008年）', titleEn: 'Scar(5) (Israeli Girl, 2008)', spec: '31.8 × 41 cm ／ 油彩・キャンバス', imgSrc: 'images/【F6横】傷.jpg', imgWidth: 400, link: 'works-cave.html', desc: '霞がかったモノクロームの画面の向こうから、ひとりの少女が静かにこちらを見つめています。全体を覆う揺らぎは「薄れゆく記憶の危うさ」を思わせる一方で、顔の中心に刻まれた<em>「傷」</em>の存在感をより一層、生々しく浮き彫りにしています。', tags: ['傷', '子供'] },
+  { year: 2015, series: 'Cave Series', titleJa: 'Acid Attack Victim [ソナリ・ムカジー]', titleEn: 'Acid Attack Victim (Sonali Mukherjee)', spec: '130.3 × 162 cm ／ 油彩・キャンバス', imgSrc: 'images/【F100横】Acid Attack Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg', imgWidth: 800, link: 'works-cave.html', desc: 'インドで酸攻撃という卑劣な暴力に直面した女性の姿を、F100という巨大なキャンバスに克明に描き出しています。彼女を包む青いヒジャブは、傷を隠すためではなく、<em>彼女の失われない尊厳と美しさ</em>を強調しているかのようです。', tags: ['酸攻撃被害者(AAV)', '証言'] },
+  { year: 2014, series: 'Tiny Soldier', titleJa: '少年兵（アフリカ）', titleEn: 'Child Soldier · Africa', spec: '80.3 × 65.2 cm ／ 油彩・キャンバス', imgSrc: 'images/【F25縦】少年兵（アフリカ）.jpg', imgWidth: 400, link: 'works-tinysoldier.html', desc: '戦禍の現実を生きるアフリカの少年兵の姿を描き出したポートレイト。彼の身体を包むオーバーサイズの白いシャツと、不釣り合いに大きな銃——<em>静寂に包まれたその表情</em>は、言葉にならない重い問いとして、見る者の心に深く沈み込んでいきます。', tags: ['少年兵', '証言'] },
+  { year: 2009, series: 'Cell-Graphics', titleJa: 'Cell-Graphics [apocalypse] - III', titleEn: 'Cell-Graphics [apocalypse] - III', spec: '21 × 29.7 cm ／ 鉛筆・紙', imgSrc: 'images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg', imgWidth: 340, link: 'works-drawing.html', desc: '鉛筆のみで描かれた細密なドローイングシリーズ「Cell-Graphics（CG）」。細胞（Cell）のように増殖していく形の連鎖が画面を埋め尽くします。「世界の終わり（apocalypse）」を主題とし、<em>すべての始まりとなる根源的な問い</em>を内包しています。', tags: ['鉛筆による細密描写', '形の増殖・連鎖'] }
 ];
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -951,31 +761,11 @@ var WORKS_DATA = [
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 (function () {
   var entriesCol = document.getElementById('tl-entries-col');
-  var strataBar  = document.getElementById('tl-strata-bar');
-
   if (!entriesCol) return;
-
-  /* 地層バーを生成 */
-  WORKS_DATA.forEach(function (work, i) {
-    var item = document.createElement('button');
-    item.className = 'tl-strata-item';
-    item.setAttribute('aria-label', work.year + '年の作品へ');
-    item.dataset.index = i;
-    item.innerHTML =
-      '<div class="tl-strata-dot"></div>' +
-      '<span class="tl-strata-year">' + work.year + '</span>';
-    item.addEventListener('click', function () {
-      var target = document.querySelectorAll('.tl-entry')[i];
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
-    strataBar.appendChild(item);
-  });
 
   /* エントリを生成 */
   WORKS_DATA.forEach(function (work, i) {
-    var tags = work.tags.map(function (t) {
-      return '<span>' + t + '</span>';
-    }).join('');
+    var tags = work.tags.map(function (t) { return '<span>' + t + '</span>'; }).join('');
 
     var entry = document.createElement('article');
     entry.className = 'tl-entry';
@@ -983,13 +773,16 @@ var WORKS_DATA = [
     entry.dataset.index = i;
     entry.setAttribute('aria-label', work.year + '年 ' + work.titleJa);
 
-    var w = Math.min(work.imgWidth, 660);
-
+    // CSS変数 --w として、設定項目 imgWidth を割り当てます
+    var w = work.imgWidth || 500;
+    
     entry.innerHTML =
       '<div class="tl-year-col">' +
         '<div class="tl-year-sticky">' +
-          '<span class="tl-year-num">' + work.year + '</span>' +
-          '<span class="tl-year-sub">year</span>' +
+          '<button class="tl-year-btn" aria-label="' + work.year + '年の作品へスクロール">' +
+            '<span class="tl-year-indicator"></span>' +
+            '<span class="tl-year-num">' + work.year + '</span>' +
+          '</button>' +
         '</div>' +
       '</div>' +
       '<div class="tl-dot-wrap" aria-hidden="true">' +
@@ -1005,21 +798,27 @@ var WORKS_DATA = [
         '</a>' +
         '<div class="tl-info">' +
           '<p class="tl-series">' + work.series + '</p>' +
-          '<p class="tl-title-ja">' + work.titleJa + '</p>' +
+          '<h3 class="tl-title-ja">' + work.titleJa + '</h3>' +
           '<p class="tl-title-en">' + work.titleEn + '</p>' +
           '<p class="tl-spec">' + work.spec + '</p>' +
-          '<div class="tl-stratum"><div class="tl-stratum-line"></div><div class="tl-stratum-dot"></div></div>' +
           '<p class="tl-desc">' + work.desc + '</p>' +
           '<div class="tl-process">' + tags + '</div>' +
         '</div>' +
       '</div>';
 
     entriesCol.appendChild(entry);
+
+    var btn = entry.querySelector('.tl-year-btn');
+    if(btn) {
+      btn.addEventListener('click', function() {
+        entry.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
   });
 })();
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   ナビゲーション
+   ナビゲーション & スライドショー
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 function toggleMenu() {
   var links = document.getElementById('nav-links');
@@ -1032,9 +831,6 @@ function closeMenu() {
   document.getElementById('nav-cta-btn').style.display = '';
 }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   スライドショー
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 (function () {
   var slides  = Array.from(document.querySelectorAll('.hero-slide'));
   if (slides.length < 2) return;
@@ -1052,13 +848,13 @@ function closeMenu() {
 })();
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   Statement フェードイン
+   フェードイン監視 (Reveal)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 var revealObs = new IntersectionObserver(function (entries) {
   entries.forEach(function (e) {
     if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
   });
-}, { threshold: 0.07 });
+}, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(function (el) { revealObs.observe(el); });
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1076,62 +872,48 @@ document.querySelectorAll('.reveal').forEach(function (el) { revealObs.observe(e
 })();
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   タイムライン：縦線 + エントリ + 地層バー 連動
+   タイムライン：縦線 + エントリ連動
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 (function () {
-  var entries      = Array.from(document.querySelectorAll('.tl-entry'));
+  var entries       = Array.from(document.querySelectorAll('.tl-entry'));
   var spineProgress = document.getElementById('tl-spine-progress');
-  var strataItems  = Array.from(document.querySelectorAll('.tl-strata-item'));
-  var outer        = document.getElementById('tl-outer');
+  var outer         = document.getElementById('tl-outer');
 
   if (!entries.length || !spineProgress) return;
 
-  /* スクロールで縦線を伸ばす */
   function updateSpine() {
     if (!outer) return;
     var rect = outer.getBoundingClientRect();
     var totalH = outer.offsetHeight;
     if (totalH <= 0) return;
-    var viewCenter = window.innerHeight * 0.5;
+    var viewCenter = window.innerHeight * 0.6; 
     var pct = (viewCenter - rect.top) / totalH * 100;
     pct = Math.max(0, Math.min(100, pct));
     spineProgress.style.height = pct + '%';
   }
 
-  /* エントリ可視判定 */
   var entryObs = new IntersectionObserver(function (list) {
     list.forEach(function (e) {
       if (e.isIntersecting) {
         e.target.classList.add('visible');
-        var idx = parseInt(e.target.dataset.index, 10);
-        strataItems.forEach(function (s, si) {
-          s.classList[si === idx ? 'add' : 'remove']('active');
-        });
       }
     });
-  }, { threshold: 0.15, rootMargin: '-10% 0px -30% 0px' });
+  }, { threshold: 0.2, rootMargin: '-10% 0px -20% 0px' });
 
   entries.forEach(function (el) { entryObs.observe(el); });
 
-  /* スクロールイベント */
   var ticking = false;
   window.addEventListener('scroll', function () {
     if (!ticking) {
-      requestAnimationFrame(function () {
-        updateSpine();
-        ticking = false;
-      });
+      requestAnimationFrame(function () { updateSpine(); ticking = false; });
       ticking = true;
     }
   }, { passive: true });
 
-  /* 初期実行 */
   updateSpine();
 })();
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   Profile・News フェードイン
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* Profile・News フェードイン */
 var fadeObs = new IntersectionObserver(function (entries) {
   entries.forEach(function (e) {
     if (e.isIntersecting) {
