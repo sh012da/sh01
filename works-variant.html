@@ -45,6 +45,9 @@
       padding-left: env(safe-area-inset-left);
       padding-right: env(safe-area-inset-right);
     }
+    /* モーダル展開時の背景固定用 */
+    body.is-locked { overflow: hidden; }
+
     img { max-width: 100%; height: auto; display: block; }
     a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
     a:hover { opacity: 0.45; }
@@ -319,13 +322,10 @@
     }
     .artwork-block:last-child { margin-bottom: 0; }
 
-    /* 奇数: 画像が左 */
     .artwork-block:nth-child(odd) .artwork-img-col { order: 1; }
     .artwork-block:nth-child(odd) .artwork-txt-col {
       order: 2; padding-top: clamp(2rem, 6vh, 5rem);
     }
-
-    /* 偶数: 画像が右 */
     .artwork-block:nth-child(even) .artwork-img-col { order: 2; }
     .artwork-block:nth-child(even) .artwork-txt-col {
       order: 1; padding-top: clamp(2rem, 6vh, 5rem); text-align: right;
@@ -346,36 +346,29 @@
     }
     .artwork-clip-wrap.in-view { clip-path: inset(0% 0 0 0); }
 
-    a.artwork-image-link {
-      display: block;
+    /* モーダル起動ボタン（元aタグをbuttonに変更） */
+    button.artwork-image-link {
+      display: block; width: 100%; border: none; padding: 0; margin: 0;
       overflow: hidden;
       background: var(--bg2);
       outline: 0.5px solid var(--border);
       cursor: zoom-in;
       transition: outline-color 0.5s ease, box-shadow 0.6s var(--ease);
     }
-    .artwork-image-link {
-      display: block;
-      overflow: hidden;
-      background: var(--bg2);
-      outline: 0.5px solid var(--border);
-    }
     @media (hover: hover) and (pointer: fine) {
-      a.artwork-image-link:hover {
+      button.artwork-image-link:hover {
         outline-color: var(--border-md);
         box-shadow: 0 28px 60px rgba(0,0,0,0.6);
-        opacity: 1;
       }
-      a.artwork-image-link:hover .artwork-image {
+      button.artwork-image-link:hover .artwork-image {
         transform: scale(1.035);
         filter: grayscale(0%) brightness(0.97);
       }
     }
 
-    /* ★修正点: 画像全体が常に表示されるように変更 */
     .artwork-image {
       width: 100%;
-      height: auto; /* 高さを自動調整してトリミングを防ぐ */
+      height: auto;
       display: block;
       filter: grayscale(20%) brightness(0.80);
       transform: scale(1.0);
@@ -513,6 +506,58 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* -------------------------------------
+       IMAGE MODAL (NEW)
+    -------------------------------------- */
+    .image-modal {
+      position: fixed; inset: 0;
+      z-index: 9999;
+      display: flex; justify-content: center; align-items: center;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.6s var(--ease), visibility 0.6s;
+    }
+    .image-modal.is-active {
+      opacity: 1; visibility: visible;
+    }
+    .image-modal-bg {
+      position: absolute; inset: 0;
+      background: rgba(7, 7, 6, 0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      cursor: zoom-out;
+    }
+    .image-modal-close {
+      position: absolute;
+      top: clamp(1rem, 3vh, 2rem);
+      right: var(--px);
+      z-index: 10000;
+      background: none; border: none;
+      color: var(--muted);
+      cursor: pointer; padding: 0.5rem;
+      transition: color 0.3s ease, transform 0.3s var(--ease);
+    }
+    .image-modal-close:hover {
+      color: var(--fg);
+      transform: scale(1.1) rotate(90deg);
+    }
+    .image-modal-content {
+      position: relative; z-index: 10000;
+      max-width: 90vw; max-height: 85svh;
+      opacity: 0; transform: scale(0.96) translateY(10px);
+      transition: opacity 0.6s var(--ease) 0.1s, transform 0.6s var(--ease) 0.1s;
+      pointer-events: none; /* 画像自体のクリックは無視 */
+    }
+    .image-modal.is-active .image-modal-content {
+      opacity: 1; transform: scale(1) translateY(0);
+    }
+    .image-modal-content img {
+      width: auto; height: auto;
+      max-width: 100%; max-height: 85svh;
+      object-fit: contain;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      border: 0.5px solid var(--border);
+    }
+
     /* RESPONSIVE */
     @media (max-width: 900px) {
       .concept-section {
@@ -544,7 +589,8 @@
       .artwork-block:nth-child(even) .section-label::after { display: block; }
       .artwork-block:nth-child(even) .artwork-num { left: clamp(12px,2vw,20px); right: auto; }
       
-      /* ★修正点: スマホの強制的な横長アスペクト比指定を削除しました */
+      .image-modal-content { max-width: 95vw; max-height: 80svh; }
+      .image-modal-content img { max-height: 80svh; }
     }
 
     @media (max-width: 480px) {
@@ -563,7 +609,7 @@
       .artwork-title-jp, .artwork-title-en,
       .artwork-year, .artwork-spec, .artwork-divider,
       .artwork-desc-label, .artwork-desc,
-      .concept-tag {
+      .concept-tag, .image-modal, .image-modal-content {
         opacity: 1 !important;
         transform: none !important;
         clip-path: none !important;
@@ -628,12 +674,9 @@
         <div class="artwork-img-col">
           <span class="artwork-num">01</span>
           <div class="artwork-clip-wrap">
-            <a href="https://de7bbbccc0.cbaulcdnwnd.com/240d88405885768af7ba7b864ee3299f/200000329-6e2db6e2dd/%E3%80%90F100%E7%B8%A6%E3%80%91%E3%82%B9%E3%82%BA%E3%83%A9%E3%83%B3%EF%BC%88%E3%82%A2%E3%83%97%E3%83%AD%E3%83%87%E3%82%A3%E3%83%BC%E3%83%86%E3%83%BC%E3%81%AE%E5%B0%BB%E8%87%80%EF%BC%892-1.jpeg?ph=de7bbbccc0"
-               target="_blank"
-               class="artwork-image-link"
-               aria-label="スズラン — 拡大表示">
+            <button type="button" class="artwork-image-link js-modal-open" aria-label="スズラン — 拡大表示" data-img-src="images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg">
               <img src="images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg" alt="スズラン（アプロディーテーの尻臀）" class="artwork-image" loading="lazy">
-            </a>
+            </button>
           </div>
         </div>
         <div class="artwork-txt-col">
@@ -661,12 +704,9 @@
         <div class="artwork-img-col">
           <span class="artwork-num">02</span>
           <div class="artwork-clip-wrap">
-            <a href="https://de7bbbccc0.cbaulcdnwnd.com/240d88405885768af7ba7b864ee3299f/200000331-0a9dc0a9df/%E3%80%90F100%E7%B8%A6%E3%80%91%E4%B8%8A%E3%81%AB%E6%BA%B6%E3%81%91%E3%82%8B%E3%83%BB%E3%83%BB%E3%83%BB.jpeg?ph=de7bbbccc0"
-               target="_blank"
-               class="artwork-image-link"
-               aria-label="上に溶ける… — 拡大表示">
+            <button type="button" class="artwork-image-link js-modal-open" aria-label="上に溶ける… — 拡大表示" data-img-src="images/【F100縦】上に溶ける・・・.jpg">
               <img src="images/【F100縦】上に溶ける・・・.jpg" alt="上に溶ける…" class="artwork-image" loading="lazy">
-            </a>
+            </button>
           </div>
         </div>
         <div class="artwork-txt-col">
@@ -697,7 +737,21 @@
     <p class="footer-copy">© Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
+  <div class="image-modal" id="imageModal" aria-hidden="true" role="dialog">
+    <div class="image-modal-bg" id="modalBg" aria-label="モーダルを閉じる"></div>
+    <button class="image-modal-close" id="modalClose" aria-label="閉じる">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square">
+        <line x1="4" y1="4" x2="20" y2="20"></line>
+        <line x1="20" y1="4" x2="4" y2="20"></line>
+      </svg>
+    </button>
+    <div class="image-modal-content">
+      <img src="" alt="拡大画像" id="modalImg">
+    </div>
+  </div>
+
   <script>
+    // INITIAL ANIMATIONS
     window.addEventListener('load', () => {
       const bg = document.getElementById('heroBg');
       const eyebrow = document.getElementById('heroEyebrow');
@@ -714,6 +768,7 @@
       if (sc) setTimeout(() => sc.classList.add('revealed'), 1550);
     });
 
+    // SCROLL OBSERVER
     const io = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
@@ -737,11 +792,56 @@
       '.artwork-block',
     ].join(', ')).forEach(el => io.observe(el));
 
+    // WORK COUNT
     const countEl = document.getElementById('worksCount');
     if (countEl) {
       const n = document.querySelectorAll('.artwork-block').length;
       countEl.textContent = String(n).padStart(2, '0');
     }
+
+    // MODAL LOGIC
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImg');
+    const modalBg = document.getElementById('modalBg');
+    const modalClose = document.getElementById('modalClose');
+    const modalTriggers = document.querySelectorAll('.js-modal-open');
+
+    const openModal = (src) => {
+      modalImg.src = src;
+      modal.classList.add('is-active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('is-locked'); // 背景スクロールロック
+    };
+
+    const closeModal = () => {
+      modal.classList.remove('is-active');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('is-locked');
+      
+      // フェードアウト後に画像をクリア
+      setTimeout(() => {
+        modalImg.src = '';
+      }, 600);
+    };
+
+    modalTriggers.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const src = btn.getAttribute('data-img-src');
+        if(src) openModal(src);
+      });
+    });
+
+    // 背景または×ボタンクリックで閉じる
+    modalBg.addEventListener('click', closeModal);
+    modalClose.addEventListener('click', closeModal);
+    
+    // ESCキーで閉じる
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('is-active')) {
+        closeModal();
+      }
+    });
   </script>
 </body>
 </html>
