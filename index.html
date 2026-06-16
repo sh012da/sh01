@@ -18,22 +18,38 @@
     ════════════════════════════════════════ */
     .no-break { display: inline-block; white-space: nowrap; }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg:         #080808;
-      --fg:         #ede9e4;
-      --text:       #e8e4db;
-      --text-muted: rgba(232,228,219,0.55);
-      --text-dim:   rgba(232,228,219,0.35);
-      --border:     rgba(232,228,219,0.12);
-      --border-mid: rgba(232,228,219,0.25);
-      --accent:     #cbbfb0;
-      --accent-glow:rgba(203,191,176,0.35);
-      --muted-col:  #7a746e;
-      --en: 'Cormorant Garamond', serif;
-      --jp: 'Noto Serif JP', serif;
-      --ease-expo:  cubic-bezier(0.16, 1, 0.3, 1);
-      --px:         clamp(16px, 5vw, 64px);
-    }
+   /* 21行目あたりからの :root の修正と、新クラスの追加 */
+:root {
+  --bg :         #080808;
+  --fg :         #ede9e4;
+  --text :       #e8e4db;
+  --text-muted : rgba(232, 228, 219, 0.55);
+  /* より存在を薄く、最小単位へと還元するために 0.35 -> 0.28 へ変更 */
+  --text-dim :   rgba(232, 228, 219, 0.28); 
+  --border :     rgba(232, 228, 219, 0.12);
+  --border-mid : rgba(232, 228, 219, 0.25);
+  --accent :     #cbbfb0;
+  --accent-glow : rgba(203, 191, 176, 0.35);
+  --muted-col :  #7a746e;
+  --en : 'Cormorant Garamond' , serif;
+  --jp : 'Noto Serif JP' , serif;
+  --ease-expo : cubic-bezier(0.16, 1, 0.3, 1);
+  --px : clamp(16px, 5vw, 64px);
+}
+
+/* 〈いと〉のステートメント専用のクラス（CSS内の適切な場所、またはstyleの最後に追加） */
+.text-ito-minimal {
+  color: var(--text-dim);
+  letter-spacing: 0.18em;            /* 字間を広げて文字を独立させる */
+  line-height: 2.2;                  /* 行間にも余白（余白＝洞窟の空間）を持たせる */
+  font-weight: 200;                  /* 可能な限り細くし、線の存在感を削ぎ落とす */
+  transition: color 0.8s var(--ease-expo); /* 鑑賞者が凝視した時のための滑らかな遷移 */
+}
+
+/* マウスホバー時、または画面タップ時に、わずかに「記憶が蘇る」ように明度を少し戻す演出 */
+.text-ito-minimal:hover {
+  color: var(--text-muted);
+}
     html { scroll-behavior: smooth; }
     body {
       background: var(--bg);
@@ -622,7 +638,11 @@
 
   <div class="concept-story">
     <div class="concept-block reveal" style="transition-delay:.20s">
-      <p class="concept-para">〈いと〉とは何か。<br>例えば、生まれた土地の記憶、地質、感覚——<br>それ以上還元できない、存在の最小単位。</p>
+      <p class="text-ito-minimal">
+  〈いと〉とは何か。<br>
+  例えば、生まれた土地の記憶、地質、感覚——<br>
+  それ以上還元できない、存在の最小単位。
+      </p>
     </div>
     <div class="concept-block reveal" style="transition-delay:.30s">
       <span class="concept-block-en">Unit World</span>
