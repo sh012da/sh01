@@ -33,8 +33,7 @@
       --jp:          'Noto Serif JP', serif;
       --ease-expo:   cubic-bezier(0.16, 1, 0.3, 1);
       --px:          clamp(16px, 5vw, 64px);
-
-      /* 改善②: タイピング完了後の opacity 値をトークン化 */
+      /* タイピング等完了後の opacity 値 */
       --typed-rest-opacity: 0.76;
     }
     html { scroll-behavior: smooth; }
@@ -53,7 +52,8 @@
        NAV
     ════════════════════════════════════════ */
     nav {
-      position: sticky; top: 0; z-index: 200;
+      position: sticky;
+      top: 0; z-index: 200;
       display: flex; align-items: center; justify-content: space-between;
       padding: clamp(14px,3vw,36px) var(--px);
       border-bottom: 0.5px solid var(--border);
@@ -81,14 +81,17 @@
       color: var(--accent); text-decoration: none; transition: background 0.25s, color 0.25s;
     }
     .nav-cta:hover { background: rgba(184,168,152,0.08); color: var(--fg); }
-    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
-    .nav-hamburger span { display: block; width: 22px; height: 0.5px; background: var(--accent); margin: 6px 0; transition: all 0.25s; }
+    .nav-hamburger { display: none; background: none;
+      border: none; cursor: pointer; padding: 4px; }
+    .nav-hamburger span { display: block; width: 22px; height: 0.5px;
+      background: var(--accent); margin: 6px 0; transition: all 0.25s; }
 
     /* ════════════════════════════════════════
        HERO
     ════════════════════════════════════════ */
     .hero {
-      position: relative; padding: 8rem 2.5rem 7rem;
+      position: relative;
+      padding: 8rem 2.5rem 7rem;
       border-bottom: 0.5px solid var(--border);
       min-height: 100vh; display: flex; flex-direction: column;
       justify-content: center; overflow: hidden;
@@ -101,7 +104,8 @@
       will-change: opacity;
     }
     .hero-slide.active { opacity: 1; }
-    .hero-overlay { position: absolute; inset: 0; z-index: 1; background: rgba(10,10,8,0.65); }
+    .hero-overlay { position: absolute; inset: 0; z-index: 1;
+      background: rgba(10,10,8,0.65); }
     .hero > *:not(.hero-slideshow):not(.hero-overlay) { position: relative; z-index: 2; }
 
     @keyframes fadeUp  { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
@@ -116,7 +120,8 @@
     }
     .hero-title {
       font-family: var(--jp); font-size: clamp(3.5rem,10vw,7.5rem);
-      font-weight: 200; line-height: 1.05; letter-spacing: -0.025em;
+      font-weight: 200; line-height: 1.05;
+      letter-spacing: -0.025em;
       color: var(--text); margin-bottom: 2rem;
     }
     .hero-title .line { display: block; overflow: hidden; }
@@ -131,9 +136,13 @@
 
     .hero-body {
       font-size: clamp(13px, 1.2vw + 10px, 15px); line-height: 2;
-      color: var(--text-muted); opacity: 0;
-      animation: fadeUp 0.8s ease 1.35s forwards;
+      color: var(--text-muted);
       letter-spacing: 0.04em;
+      min-height: 3em;
+    }
+    /* タイピング前はopacity:0を保持 */
+    .hero-body:not(.typing-init):not(.typing-active):not(.typing-done) {
+      opacity: 0;
     }
     .hero-scroll {
       margin-top: 5rem; display: flex; align-items: center; gap: 0.875rem;
@@ -168,32 +177,40 @@
        STATEMENT
     ════════════════════════════════════════ */
     #statement {
-      position: relative; padding: 10rem 2.5rem 12rem;
+      position: relative;
+      padding: 10rem 2.5rem 12rem;
       background-color: var(--bg);
       background-image: linear-gradient(rgba(8,8,8,0.44),rgba(8,8,8,0.56)),url('images/【津田翔一】展示の様子１.jpg');
       background-size: cover; background-position: center; background-attachment: fixed;
-      overflow: hidden; display: flex; flex-direction: column; align-items: center; text-align: center;
+      overflow: hidden; display: flex; flex-direction: column;
+      align-items: center; text-align: center;
     }
     .statement-bg-word {
-      position: absolute; top: 15%; left: 50%; transform: translateX(-50%);
+      position: absolute; top: 15%;
+      left: 50%; transform: translateX(-50%);
       font-family: var(--en); font-size: 28vw; font-weight: 200; line-height: 1;
       color: rgba(232,228,219,0.015); pointer-events: none; z-index: 0;
-      user-select: none; white-space: nowrap; letter-spacing: 0.05em;
+      user-select: none;
+      white-space: nowrap; letter-spacing: 0.05em;
     }
     .statement-bg-word.word2 { top: 60%; font-size: 22vw; }
     #statement > * { position: relative; z-index: 1; }
 
     .s-eyebrow {
-      display: inline-flex; align-items: center; justify-content: center; gap: 1.2rem; margin-bottom: 6rem;
+      display: inline-flex; align-items: center; justify-content: center; gap: 1.2rem;
+      margin-bottom: 6rem;
       font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
       letter-spacing: 0.28em; color: var(--muted-col); text-transform: uppercase;
     }
-    .s-eyebrow::before, .s-eyebrow::after { content:""; width: 40px; height: 0.5px; background: rgba(232,228,219,0.2); }
+    .s-eyebrow::before, .s-eyebrow::after { content:"";
+      width: 40px; height: 0.5px; background: rgba(232,228,219,0.2); }
 
     .concept-question {
-      font-family: var(--jp); font-size: clamp(1.5rem, 4.0vw, 3.0rem); font-weight: 300;
+      font-family: var(--jp);
+      font-size: clamp(1.5rem, 4.0vw, 3.0rem); font-weight: 300;
       line-height: 1.8; letter-spacing: 0.05em; color: var(--text);
-      margin-bottom: 8rem; max-width: 1000px; text-shadow: 0 4px 24px rgba(0,0,0,0.8);
+      margin-bottom: 8rem; max-width: 1000px;
+      text-shadow: 0 4px 24px rgba(0,0,0,0.8);
       word-break: normal; word-break: auto-phrase; overflow-wrap: break-word; text-wrap: balance;
     }
 
@@ -202,17 +219,17 @@
     .concept-block:last-child { margin-bottom: 0; }
     .concept-block-en {
       font-family: var(--en); font-size: 11px; letter-spacing: 0.3em;
-      color: var(--accent); text-transform: uppercase; margin-bottom: 1.5rem;
+      color: var(--accent);
+      text-transform: uppercase; margin-bottom: 1.5rem;
       display: block; opacity: 0.6;
     }
 
-    /* 改善③: concept-para の読書体験最適化 */
     .concept-para {
       font-size: clamp(1rem, 3.2vw, 1.12rem);
       font-weight: 300;
-      line-height: 2.35;          /* 行間を少し広げて読みやすく */
+      line-height: 2.35;
       color: rgba(232,228,219,0.85);
-      letter-spacing: 0.07em;     /* 字間をわずかに広げてゆとり */
+      letter-spacing: 0.07em;
       word-break: normal;
       overflow-wrap: break-word;
     }
@@ -220,6 +237,28 @@
       font-style: normal; color: var(--text); font-weight: 400;
       background: linear-gradient(transparent 70%, rgba(203,191,176,0.15) 70%);
       padding: 0 4px;
+    }
+
+    /* 〈いと〉とは何か。段落 ─ タイピング前/後ともに低明度、ホバーで明るく */
+    .ito-intro {
+      opacity: 0.48;
+      transition: opacity 0.55s ease;
+      cursor: default;
+    }
+    /* タイピング中は通常色 */
+    .ito-intro.typing-active {
+      opacity: 1 !important;
+    }
+    /* タイピング完了後は低明度に戻す */
+    .ito-intro.typing-done {
+      opacity: 0.48 !important;
+      transition: opacity 1.0s ease !important;
+    }
+    .ito-intro.typing-done:hover,
+    .ito-intro.typing-done:focus,
+    .ito-intro.typing-done:active {
+      opacity: 1 !important;
+      transition: opacity 0.35s ease !important;
     }
 
     /* ════════════════════════════════════════
@@ -236,36 +275,44 @@
       display: flex; flex-direction: column; height: 100%;
     }
     .concept-tag:hover {
-      transform: translateY(-8px); background: rgba(255,255,255,0.035);
+      transform: translateY(-8px);
+      background: rgba(255,255,255,0.035);
       border-color: rgba(203,191,176,0.25); box-shadow: 0 16px 40px rgba(0,0,0,0.4);
     }
     .concept-tag-num {
-      font-family: var(--en); font-size: 2.2rem; font-weight: 300;
+      font-family: var(--en);
+      font-size: 2.2rem; font-weight: 300;
       color: rgba(232,228,219,0.15); line-height: 1; margin-bottom: 1.2rem;
       display: block; letter-spacing: -0.02em; transition: color 0.4s ease;
     }
     .concept-tag:hover .concept-tag-num { color: rgba(203,191,176,0.4); }
-    .concept-tag-term { font-family: var(--jp); font-size: 1.15rem; font-weight: 300; color: var(--text); margin-bottom: 0.5rem; letter-spacing: 0.05em; }
+    .concept-tag-term { font-family: var(--jp); font-size: 1.15rem;
+      font-weight: 300; color: var(--text); margin-bottom: 0.5rem; letter-spacing: 0.05em; }
     .concept-tag-en-label {
-      font-family: var(--en); font-size: 11px; letter-spacing: 0.2em;
+      font-family: var(--en);
+      font-size: 11px; letter-spacing: 0.2em;
       color: rgba(232,228,219,0.4); text-transform: uppercase; margin-bottom: 1.2rem;
     }
-    .concept-tag-desc { font-size: 13px; line-height: 1.9; color: rgba(232,228,219,0.65); letter-spacing: 0.04em; }
+    .concept-tag-desc { font-size: 13px; line-height: 1.9;
+      color: rgba(232,228,219,0.65); letter-spacing: 0.04em; }
 
     /* ════════════════════════════════════════
        REVEAL
     ════════════════════════════════════════ */
-    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 1.4s var(--ease-expo), transform 1.4s var(--ease-expo); }
+    .reveal { opacity: 0;
+      transform: translateY(40px); transition: opacity 1.4s var(--ease-expo), transform 1.4s var(--ease-expo); }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
     /* ════════════════════════════════════════
        WORKS
     ════════════════════════════════════════ */
     #works {
-      position: relative; padding: 10rem 2.5rem 12rem;
+      position: relative;
+      padding: 10rem 2.5rem 12rem;
       border-bottom: 0.5px solid var(--border);
     }
-    .works-video-bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 0.6s ease; }
+    .works-video-bg { position: fixed; inset: 0; z-index: -1;
+      pointer-events: none; opacity: 0; transition: opacity 0.6s ease; }
     .works-video-bg.active { opacity: 1; }
     .works-video-bg video { width: 100%; height: 100%; object-fit: cover; opacity: 0.18; display: block; }
     .works-video-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(13,13,11,0.5) 0%, rgba(13,13,11,0.9) 100%); }
@@ -301,7 +348,8 @@
     .tl-spine-zone { position: absolute; left: 160px; top: 0; bottom: 0; width: 1px; z-index: 0; }
     .tl-spine-track { position: absolute; top: 12px; bottom: 12px; left: 0; width: 1px; background: rgba(232,228,219,0.06); }
     .tl-spine-progress {
-      position: absolute; top: 12px; left: 0; width: 1px; height: 0%;
+      position: absolute; top: 12px; left: 0;
+      width: 1px; height: 0%;
       background: linear-gradient(to bottom, transparent 0%, rgba(203,191,176,0.8) 10%, rgba(203,191,176,0.8) 90%, transparent 100%);
       box-shadow: 0 0 16px rgba(203,191,176,0.4);
       transition: height 0.1s linear; will-change: height;
@@ -324,7 +372,8 @@
       cursor: pointer; color: rgba(232,228,219,0.22); transition: color 0.5s ease; width: 100%;
     }
     .tl-year-num {
-      font-family: var(--en); font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 300; letter-spacing: 0.05em;
+      font-family: var(--en); font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 300;
+      letter-spacing: 0.05em;
       line-height: 1; display: block;
       transition: transform 0.6s var(--ease-expo), text-shadow 0.6s ease;
       transform-origin: right center;
@@ -363,12 +412,11 @@
     .tl-title-en { font-family: var(--en); font-size: 15px; color: var(--muted-col); letter-spacing: 0.15em; margin-bottom: 1.4rem; font-weight: 300; font-style: italic; }
     .tl-spec { font-family: var(--en); font-size: 12px; color: rgba(232,228,219,0.35); line-height: 1.8; margin-bottom: 2rem; letter-spacing: 0.08em; }
 
-    /* 改善③: tl-desc の読書体験向上 */
     .tl-desc {
-      font-size: 15px;           /* 14.5px → 15px で明瞭に */
-      line-height: 2.3;          /* 2.2 → 2.3 で行間ゆとり */
-      color: rgba(232,228,219,0.75);  /* 0.7 → 0.75 でコントラスト改善 */
-      letter-spacing: 0.05em;    /* 0.04em → 0.05em */
+      font-size: 15px;
+      line-height: 2.3;
+      color: rgba(232,228,219,0.75);
+      letter-spacing: 0.05em;
       max-width: 520px;
     }
     .tl-desc em { font-style: normal; color: rgba(232,228,219,0.95); border-bottom: 0.5px solid rgba(232,228,219,0.25); padding-bottom: 1px; }
@@ -382,7 +430,8 @@
       display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
       padding: 3rem 6rem; border: 0.5px solid var(--border-mid);
       background: rgba(255,255,255,0.015); text-decoration: none; transition: all 0.6s var(--ease-expo);
-      border-radius: 2px; gap: 0.8rem; position: relative; overflow: hidden; width: 100%; max-width: 600px;
+      border-radius: 2px; gap: 0.8rem;
+      position: relative; overflow: hidden; width: 100%; max-width: 600px;
     }
     .works-archive-cta:hover { background: rgba(203,191,176,0.08); border-color: rgba(203,191,176,0.3); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.3); }
     .cta-label-en { font-family: var(--en); font-size: 0.85rem; letter-spacing: 0.3em; color: var(--accent); text-transform: uppercase; transition: color 0.3s ease; }
@@ -423,14 +472,6 @@
     .news-body a { color: rgba(232,228,219,0.65); transition: color 0.2s; }
     .news-body a:hover { color: var(--accent); }
 
-    /* ════════════════════════════════════════
-       改善⑤: Contact ボタン — 「すべての作品を見る」と同格以上の視認性
-       works-more との視覚的一貫性を保ちながら、
-       CTAとしての存在感を持たせる。
-       ・サイズ・余白を拡大
-       ・accent カラーを前面に
-       ・pill 形状で「すべての作品を見る」と意匠を統一
-    ════════════════════════════════════════ */
     .contact-section { padding: 9rem 2.5rem; text-align: center; border-bottom: 0.5px solid var(--border); }
     .contact-section .section-label { justify-content: center; }
     .contact-section .section-heading { text-align: center; }
@@ -440,13 +481,12 @@
       align-items: center;
       gap: 0.7em;
       font-family: var(--en);
-      font-size: clamp(0.7rem, 1.5vw, 0.85rem);  /* 拡大 */
+      font-size: clamp(0.7rem, 1.5vw, 0.85rem);
       letter-spacing: 0.25em;
       text-transform: uppercase;
-      /* pill デザインで「すべての作品を見る」と統一 */
       border: 1px solid rgba(203,191,176,0.5);
       border-radius: 40px;
-      padding: 1.1rem 3rem;              /* 余白拡大 */
+      padding: 1.1rem 3rem;
       color: var(--accent);
       background: rgba(203,191,176,0.04);
       text-decoration: none;
@@ -461,145 +501,119 @@
       box-shadow: 0 10px 30px rgba(203,191,176,0.22);
       transform: translateY(-3px);
     }
-    /* タップ領域拡大（モバイル） */
-    @media (max-width: 768px) {
-      .contact-btn {
-        padding: 1.2rem 2.4rem;
-        font-size: 0.8rem;
-        width: 100%;
-        max-width: 340px;
-        justify-content: center;
-      }
-    }
 
     footer { padding: 3.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
     .footer-logo { font-family: var(--jp); font-size: 16px; font-weight: 300; color: rgba(232,228,219,0.35); letter-spacing: 0.05em; }
     .footer-copy { font-family: var(--en); font-size: 11px; color: rgba(232,228,219,0.2); letter-spacing: 0.14em; }
 
     /* ════════════════════════════════════════
-       改善④: NEWS POPUP + モーダルオーバーレイ
-       ポップアップ表示中は背景全体を暗くし、
-       美術館のキャプションを見る感覚に近づける。
-       backdrop-filter: blur(4px) で軽いブラー。
-       完全な黒ではなく温かみのある暗色 (0.58 透明度)。
+       NEWS POPUP + モーダルオーバーレイ
     ════════════════════════════════════════ */
-
-    /* オーバーレイ本体: popup と連動して表示/非表示 */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      z-index: 998;                        /* popupより下 */
-      background: rgba(8, 8, 7, 0.58);     /* 温かみのある暗色。完全黒を避ける */
-      backdrop-filter: blur(4px) saturate(0.8);
-      -webkit-backdrop-filter: blur(4px) saturate(0.8);
+      z-index: 998;
+      background: rgba(8, 8, 7, 0.62);
+      backdrop-filter: blur(6px) saturate(0.8);
+      -webkit-backdrop-filter: blur(6px) saturate(0.8);
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.55s var(--ease-expo);
     }
     .modal-overlay.active {
       opacity: 1;
-      pointer-events: auto;               /* クリックで閉じる */
+      pointer-events: auto;
     }
 
+    /* ─── PC：画面中央に大きく表示 ─── */
     .news-popup {
       position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      width: calc(100% - 4rem);
-      max-width: 360px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -44%) scale(0.94);
+      width: min(560px, calc(100vw - 3rem));
       z-index: 999;
       opacity: 0;
-      transform: translateY(20px);
       pointer-events: none;
-      transition: opacity 0.6s var(--ease-expo), transform 0.6s var(--ease-expo);
+      transition: opacity 0.55s var(--ease-expo), transform 0.55s var(--ease-expo);
     }
     .news-popup.show {
       opacity: 1;
-      transform: translateY(0);
+      transform: translate(-50%, -50%) scale(1);
       pointer-events: auto;
     }
     .news-popup-content {
-      background: rgba(13,13,11,0.88);
-      backdrop-filter: blur(16px) saturate(1.1);
-      -webkit-backdrop-filter: blur(16px) saturate(1.1);
-      border: 0.5px solid rgba(203,191,176,0.3);
-      border-radius: 12px;
-      padding: 2.2rem 2.4rem;
+      background: rgba(13,13,11,0.92);
+      backdrop-filter: blur(24px) saturate(1.15);
+      -webkit-backdrop-filter: blur(24px) saturate(1.15);
+      border: 0.5px solid rgba(203,191,176,0.35);
+      border-radius: 14px;
+      padding: 3rem 3.2rem 2.6rem;
       position: relative;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.85), 0 0 0 0.5px rgba(203,191,176,0.12);
     }
     .news-popup-close {
-      position: absolute; top: 1rem; right: 1.2rem;
-      background: none; border: none; color: var(--muted-col);
-      font-size: 1.2rem; cursor: pointer; transition: color 0.3s;
-      /* タップ領域確保 */
-      width: 40px; height: 40px;
+      position: absolute; top: 1.1rem; right: 1.3rem;
+      background: none;
+      border: none; color: var(--muted-col);
+      font-size: 1.3rem; cursor: pointer; transition: color 0.3s;
+      width: 44px; height: 44px;
       display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
     }
-    .news-popup-close:hover { color: var(--accent); }
+    .news-popup-close:hover { color: var(--accent); background: rgba(255,255,255,0.04); }
     .news-popup-label {
-      font-family: var(--en); font-size: 11px; letter-spacing: 0.2em;
-      color: var(--accent); text-transform: uppercase; margin-bottom: 0.5rem;
+      font-family: var(--en);
+      font-size: 11px; letter-spacing: 0.28em;
+      color: var(--accent); text-transform: uppercase; margin-bottom: 0.8rem;
     }
-    .news-popup-date { font-family: var(--en); font-size: 13px; color: var(--text); margin-bottom: 0.8rem; }
-    .news-popup-text { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem; }
+    .news-popup-date { font-family: var(--en); font-size: 14px; color: var(--text); margin-bottom: 1rem; letter-spacing: 0.08em; }
+    .news-popup-text { font-size: 15px; color: var(--text-muted); line-height: 1.85; margin-bottom: 2rem; }
     .news-popup-link {
       font-family: var(--jp); font-size: 13px; color: var(--accent);
-      text-decoration: none; border-bottom: 0.5px solid rgba(203,191,176,0.4);
+      text-decoration: none;
+      border-bottom: 0.5px solid rgba(203,191,176,0.4);
       padding-bottom: 2px; transition: all 0.3s;
     }
     .news-popup-link:hover { color: var(--fg); border-color: var(--fg); }
 
-    /* ════════════════════════════════════════
-       改善①②: タイピングアニメーション用 CSS
-       
-       【重要設計方針】
-       - JS が全制御。CSS は視覚状態のみ定義。
-       - typing-target クラスをつけた要素は
-         「タイピング前」は完全に非表示にする。
-         (height は維持して CLS を防ぐ)
-       - タイピング中は opacity:1 (文字が出てくる瞬間を見せる)
-       - 完了後は --typed-rest-opacity まで少し暗くする
-       - ホバー/タップで opacity:1 に戻す
-    ════════════════════════════════════════ */
-
-    /*
-      タイピング前の状態: 要素は存在するが文字は見えない。
-      JS が .typing-init を付与してこの状態にする。
-      height:min-content でレイアウトを維持 → CLS ゼロ。
-    */
-    .typing-init {
-      /* 要素自体は見えない。ただしスペースは占有する。 */
-      color: transparent !important;
+    /* ─── スマホ：右下に小さく（元のまま） ─── */
+    @media (max-width: 768px) {
+      .news-popup {
+        top: auto;
+        left: auto;
+        bottom: 1rem;
+        right: 1rem;
+        transform: translateY(16px) scale(0.96);
+        width: calc(100% - 2rem);
+        max-width: none;
+      }
+      .news-popup.show {
+        transform: translateY(0) scale(1);
+      }
+      .news-popup-content {
+        padding: 2rem 2rem 1.8rem;
+        border-radius: 10px;
+      }
     }
 
-    /*
-      タイピング中: カーソルと共に文字が表示される。
-      JS が .typing-active を付与。
-    */
+    /* ════════════════════════════════════════
+       タイピングアニメーション用 CSS
+    ════════════════════════════════════════ */
+    .typing-init {
+      color: transparent !important;
+    }
     .typing-active {
       color: inherit !important;
     }
-
-    /*
-      改善②: タイピング完了後、文章を「静かに沈める」。
-      記憶が堆積した状態のメタファー。
-      opacity 遷移を 1.2s かけてゆっくり。
-    */
     .typing-done {
       opacity: var(--typed-rest-opacity) !important;
       transition: opacity 1.2s ease !important;
     }
-    /*
-      PC: ホバーで明るく戻す
-    */
     .typing-done:hover {
       opacity: 1 !important;
       transition: opacity 0.4s ease !important;
     }
-    /*
-      モバイル: タップ/フォーカスで明るく戻す
-    */
     .typing-done:focus,
     .typing-done:focus-within,
     .typing-done:active {
@@ -607,7 +621,6 @@
       transition: opacity 0.3s ease !important;
     }
 
-    /* カーソル: 点滅するバー */
     @keyframes typing-cursor-blink {
       0%, 100% { opacity: 1; }
       50%       { opacity: 0; }
@@ -615,13 +628,12 @@
     .typing-cursor-el {
       display: inline-block;
       width: 1.5px;
-      /* em単位で親フォントサイズに追従 */
       height: 0.9em;
       background: var(--accent);
       vertical-align: middle;
       margin-left: 1px;
       animation: typing-cursor-blink 0.85s step-end infinite;
-      will-change: opacity; /* GPU合成レイヤーで点滅処理 */
+      will-change: opacity;
       border-radius: 1px;
     }
     @keyframes typing-cursor-fadeout {
@@ -638,7 +650,6 @@
     @media (max-width: 1024px) {
       .concept-tags { grid-template-columns: repeat(2, 1fr); }
     }
-
     @media (max-width: 1100px) {
       .tl-content-col { flex-direction: column; gap: 3rem; }
       .tl-img-link { width: 100% !important; max-width: 600px; }
@@ -647,7 +658,6 @@
       .goal-card { flex: 1; border-bottom: none; border-left: 0.5px solid var(--border); padding: 0 0 0 2rem; }
       .goal-card:first-of-type { border-left: none; padding-left: 0; }
     }
-
     @media (max-width: 768px) {
       .pc-only { display: none !important; }
       nav { padding: 1rem 1.25rem; }
@@ -655,28 +665,20 @@
       .nav-hamburger { display: block; }
       .nav-links.open { display: flex; flex-direction: row; flex-wrap: nowrap; position: fixed; inset: 0; background: rgba(13,13,11,0.98); align-items: center; justify-content: center; gap: 0.6rem; z-index: 300; padding: 1rem; overflow-x: auto; }
       .nav-links.open a { font-size: 0.9rem; padding: 0.6rem 0.5rem; display: block; white-space: nowrap; }
-
       .hero { padding: 5rem 1.5rem 4rem; min-height: 70vh; }
       .section { padding: 5rem 1.5rem; }
-
       #statement { padding: 7rem 1.5rem; }
       .statement-bg-word { font-size: 40vw; }
       .concept-question { font-size: 1.4rem; margin-bottom: 5rem; line-height: 1.9; }
       .concept-cards-wrap { margin-bottom: 2rem; }
       .concept-tags { grid-template-columns: 1fr; gap: 1.5rem; }
-
       #works { padding: 5rem 1.5rem 6rem; }
       .works-header { margin-bottom: 4rem; flex-direction: column; align-items: flex-start; gap: 2rem; }
       .works-more { width: 100%; text-align: center; display: block; padding: 1.2rem; }
       .works-archive-cta { padding: 2.5rem 2rem; }
-
       .tl-spine-zone { left: 24px; }
       .tl-entries-col { gap: 5rem; }
-      .tl-entry {
-        flex-direction: column; align-items: flex-start;
-        position: relative; padding-top: 3.5rem;
-        scroll-margin-top: 120px;
-      }
+      .tl-entry { flex-direction: column; align-items: flex-start; position: relative; padding-top: 3.5rem; scroll-margin-top: 120px; }
       .tl-year-col { width: 100%; position: absolute; top: 0; left: 0; padding-left: 56px; margin-bottom: 0; }
       .tl-year-sticky { position: relative; top: auto; align-items: flex-start; padding-right: 0; }
       .tl-year-btn { justify-content: flex-start; flex-direction: row-reverse; gap: 10px; }
@@ -685,7 +687,6 @@
       .tl-dot-line { width: 32px; }
       .tl-content-col { padding-left: 56px; flex-direction: column; gap: 2rem; width: 100%; }
       .tl-img-link { width: 100% !important; }
-
       .profile-goals-layout { grid-template-columns: 1fr; gap: 3rem; }
       .profile-img { width: 160px; height: 160px; margin: 0 auto; }
       .profile-name, .profile-name-en { text-align: center; }
@@ -694,11 +695,10 @@
       .goal-card:last-child { border-bottom: none; }
       .news-item { flex-direction: column; gap: 0.8rem; padding: 1.5rem 0; }
       .contact-section { padding: 6rem 1.5rem; }
+      .contact-btn { padding: 1.2rem 2.4rem; font-size: 0.8rem; width: 100%; max-width: 340px; justify-content: center; }
       footer { padding: 2.5rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-
       .news-popup { bottom: 1rem; right: 1rem; width: calc(100% - 2rem); max-width: none; }
     }
-
     @media (max-width: 480px) {
       .tl-spine-zone, .tl-dot-wrap { left: 20px; }
       .tl-year-col, .tl-content-col { padding-left: 48px; }
@@ -706,12 +706,10 @@
       .tl-desc { font-size: 14px; }
       .works-archive-cta { padding: 2rem 1.5rem; }
     }
-
     @media (prefers-reduced-motion: reduce) {
       .hero-slide { transition: opacity 0.5s ease-in-out; }
       .tl-entry { transition: opacity 0.3s ease; }
       .works-video-bg { transition: none; }
-      /* reduced-motion: タイピングなし。JS側でも制御。 */
       .typing-init  { color: inherit !important; }
       .typing-done  { opacity: 1 !important; transition: none !important; }
       .typing-cursor-el { display: none; }
@@ -720,7 +718,6 @@
 </head>
 <body>
 
-<!-- 改善④: ポップアップ背景オーバーレイ -->
 <div id="modal-overlay" class="modal-overlay" aria-hidden="true"></div>
 
 <div class="works-video-bg" id="works-video-bg" aria-hidden="true">
@@ -777,17 +774,8 @@
   </h2>
 
   <div class="concept-story">
-    <!--
-      改善①: data-typing 属性でタイピング対象を指定。
-      改行は <br> タグではなく data-lines 属性で行分割テキストを渡す。
-      → JS が改行を解析して行ごとに処理。
-      HTMLエンティティ・emタグ等は data-plain に格納し、
-      タイピング完了後に innerHTML を復元する方式。
-    -->
     <div class="concept-block reveal" style="transition-delay:.20s">
-      <p class="concept-para"
-         data-typing="ito"
-         data-plain="〈いと〉とは何か。&#10;例えば、生まれた土地の記憶、地質、感覚——&#10;それ以上還元できない、存在の最小単位。">〈いと〉とは何か。<br>例えば、生まれた土地の記憶、地質、感覚——<br>それ以上還元できない、存在の最小単位。</p>
+      <p class="concept-para ito-intro">〈いと〉とは何か。<br>例えば、生まれた土地の記憶、地質、感覚——<br>それ以上還元できない、存在の最小単位。</p>
     </div>
 
     <div class="concept-block reveal" style="transition-delay:.30s">
@@ -926,7 +914,6 @@
   <p class="section-label" style="justify-content:center;">Contact</p>
   <h2 class="section-heading">お問い合わせ</h2>
   <p class="contact-body-text">展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。</p>
-  <!-- 改善⑤: 視認性・タップ領域を向上 -->
   <a href="contact.html" target="_blank" class="contact-btn">
     問い合わせフォームへ&ensp;→
   </a>
@@ -1054,8 +1041,6 @@ var WORKS_DATA = [
 
 /* ════════════════════════════════════════════════════════
    タイムライン DOM 生成
-   改善③: 表示順を 画像 → タイトル → スペック → 解説文 に固定。
-   data-desc に解説文HTMLを保存し、タイピング対象として登録。
 ════════════════════════════════════════════════════════ */
 (function () {
   var entriesCol = document.getElementById('tl-entries-col');
@@ -1070,9 +1055,7 @@ var WORKS_DATA = [
     entry.setAttribute('aria-label', work.year + '年 ' + work.titleJa);
 
     var w = work.imgWidth || 500;
-    /* 改善①: data-desc-html に解説テキストを保存。
-       タイピング完了後に innerHTML へ復元して em タグを有効化。
-       表示順: 画像 → タイトル → スペック → 解説文（タイピング対象） */
+ 
     entry.innerHTML =
       '<div class="tl-year-col">' +
         '<div class="tl-year-sticky">' +
@@ -1087,7 +1070,6 @@ var WORKS_DATA = [
         '<div class="tl-dot-line"></div>' +
       '</div>' +
       '<div class="tl-content-col">' +
-        /* ① 画像 */
         '<a href="' + work.link + '" target="_blank" class="tl-img-link" style="--w:' + w + 'px;" aria-label="' + work.titleJa + ' の詳細へ">' +
           '<div class="tl-img-wrap">' +
             '<img src="' + work.imgSrc + '" alt="' + work.titleJa + '" loading="lazy" decoding="async">' +
@@ -1096,17 +1078,13 @@ var WORKS_DATA = [
         '</a>' +
         '<div class="tl-info">' +
           '<p class="tl-series">' + work.series + '</p>' +
-          /* ② タイトル */
           '<h3 class="tl-title-ja">' + work.titleJa + '</h3>' +
           '<p class="tl-title-en">' + work.titleEn + '</p>' +
-          /* ③ スペック */
           '<p class="tl-spec">' + work.spec + '</p>' +
-          /* ④ 解説文: data-desc-html に元HTMLを保存 */
           '<p class="tl-desc" data-typing="desc" data-desc-html="' + work.desc.replace(/"/g, '&quot;') + '">' + work.desc + '</p>' +
           '<div class="tl-process">' + tags + '</div>' +
         '</div>' +
       '</div>';
-
     entriesCol.appendChild(entry);
 
     var btn = entry.querySelector('.tl-year-btn');
@@ -1191,6 +1169,7 @@ document.querySelectorAll('.reveal').forEach(function (el) { revealObs.observe(e
     if (totalH <= 0) return;
     var viewCenter = window.innerHeight * 0.6;
     var pct = (viewCenter - rect.top) / totalH * 100;
+  
     pct = Math.max(0, Math.min(100, pct));
     spineProgress.style.height = pct + '%';
   }
@@ -1232,7 +1211,7 @@ document.querySelectorAll('.goal-card, .news-item').forEach(function (el) {
 });
 
 /* ════════════════════════════════════════════════════════
-   改善④: ポップアップ + オーバーレイ制御
+   ポップアップ + オーバーレイ制御
 ════════════════════════════════════════════════════════ */
 function closeNewsPopup() {
   var popup   = document.getElementById('news-popup');
@@ -1240,11 +1219,9 @@ function closeNewsPopup() {
   popup.classList.remove('show');
   popup.setAttribute('aria-hidden', 'true');
   overlay.classList.remove('active');
-  /* スクロール固定解除 */
   document.body.style.overflow = '';
 }
 
-/* オーバーレイクリックでも閉じる */
 document.getElementById('modal-overlay').addEventListener('click', function () {
   closeNewsPopup();
 });
@@ -1260,11 +1237,10 @@ document.getElementById('modal-overlay').addEventListener('click', function () {
         setTimeout(function () {
           var popup   = document.getElementById('news-popup');
           var overlay = document.getElementById('modal-overlay');
+   
           popup.classList.add('show');
           popup.setAttribute('aria-hidden', 'false');
           overlay.classList.add('active');
-          /* ポップアップ表示中はスクロールを止めない（コンテンツは見せる） */
-          /* ただし背景は暗くして「主役」を演出する */
         }, 500);
         popupObs.disconnect();
       }
@@ -1274,80 +1250,17 @@ document.getElementById('modal-overlay').addEventListener('click', function () {
 })();
 
 /* ════════════════════════════════════════════════════════
-   改善①②: タイピングアニメーション エンジン
-   
-   【PCで失敗していた根本原因と解決策】
-   
-   根本原因:
-   1. IntersectionObserver の発火タイミング問題
-      - PCではページロード時に多くの要素がすでに
-        viewport内に存在する場合がある。
-      - 特に Chrome/Safari では、DOMContentLoaded 直後に
-        IntersectionObserver のコールバックが同期的に
-        発火することがある（スマホより早い）。
-      - この時点で fonts.ready が未解決のまま Observer が
-        コールバックを呼ぶと、フォントなしでレイアウトが
-        計算され、タイピング開始が「すでに完了した」と
-        判定されてしまうことがある。
-   
-   2. threshold 値の問題
-      - threshold: 0.6 など高い値を使うと、
-        PCではページロード時に要素が既に完全に
-        viewport内に入っているため、Observer が
-        「交差率100% → 即コールバック」を返す。
-      - この場合、タイピング演出の開始前に
-        要素が「表示済み」となってしまう。
-   
-   3. color: transparent による初期化の失敗
-      - CSS で color:transparent を設定しても、
-        PC の特定ブラウザ（特に Safari）では
-        !important の扱いが異なり、
-        継承されたスタイルに上書きされてしまう。
-   
-   解決策:
-   1. document.fonts.ready を必ず待ってから初期化する。
-      → フォントロード完了後に Observer を登録。
-   
-   2. Observer の登録前に「タイピング対象」要素の
-      innerHTML を空にし、カーソルだけを置く。
-      → 要素が既に viewport 内にあっても
-        「文字は見えない」状態を保証。
-   
-   3. Observer の threshold を 0 にし、
-      「1px でも交差したら」タイピング開始とする。
-      rootMargin で「少し手前から」検知する。
-      → threshold 高値による即時発火を回避。
-   
-   4. タイピング完了フラグを要素単位で管理。
-      → 複数要素の競合・二重実行を防ぐ。
-   
-   5. 文字列解析は純粋なテキスト操作のみ。
-      幅計算・overflow 計算を一切使わない。
-      → PC/スマホのフォントサイズ差に依存しない。
-
+   タイピングアニメーション エンジン
 ════════════════════════════════════════════════════════ */
 
-/* prefers-reduced-motion の検出 */
 var REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/*
-  テキストを「セグメント配列」に変換する。
-  セグメント = { type: 'char'|'br', char: string }
-  改行（\n または <br>）を br セグメントとして扱う。
-  
-  入力: プレーンテキスト（\n区切り）またはHTML文字列
-  改行は \n で統一。<br> タグも \n に変換して処理。
-*/
 function textToSegments(text) {
-  /* <br> タグを \n に統一 */
   var normalized = text.replace(/<br\s*\/?>/gi, '\n');
-  /* HTMLタグを除去してプレーンテキストを取得 */
   var tmp = document.createElement('div');
   tmp.innerHTML = normalized;
   var plain = tmp.textContent || tmp.innerText || '';
-
   var segs = [];
-  /* Array.from で Unicode サロゲートペア・絵文字を正しく分割 */
   var chars = Array.from(plain);
   for (var i = 0; i < chars.length; i++) {
     if (chars[i] === '\n') {
@@ -1359,68 +1272,44 @@ function textToSegments(text) {
   return segs;
 }
 
-/*
-  タイピングエンジン: 1要素に対してタイピングを実行する。
-  
-  el         : 対象 DOM 要素
-  segments   : textToSegments() の結果
-  restoreHTML: タイピング完了後に復元する innerHTML（em タグを含む）
-  onDone     : 完了コールバック（省略可）
-*/
 function runTyping(el, segments, restoreHTML, onDone) {
-  if (el._typingActive) return; /* 二重実行防止 */
+  if (el._typingActive) return;
   el._typingActive = true;
-
-  /* ステータスクラスを設定 */
   el.classList.remove('typing-init');
   el.classList.add('typing-active');
 
-  /* カーソル要素を生成 */
   var cursor = document.createElement('span');
   cursor.className = 'typing-cursor-el';
   cursor.setAttribute('aria-hidden', 'true');
 
-  /* 要素を空にしてカーソルだけを置く */
   el.innerHTML = '';
   el.appendChild(cursor);
 
   var idx = 0;
-
-  /* タイピング速度設定
-     日本語: 1文字あたり 40〜80ms が自然な速度感
-     句読点、改行では「息継ぎ」として少し長めに待つ */
-  var BASE_MS   = 52;  /* 基本速度 */
-  var JITTER_MS = 22;  /* ランダムゆらぎ幅 */
+  var BASE_MS   = 52;
+  var JITTER_MS = 22;
 
   function typeNext() {
     if (idx >= segments.length) {
-      /* ── タイピング完了 ── */
       cursor.classList.add('done');
       setTimeout(function () {
-        /* em タグを含む元 HTML を復元 */
         el.innerHTML = restoreHTML || el.textContent;
-        /* 改善②: 完了後に opacity を少し落とす */
         el.classList.remove('typing-active');
         el.classList.add('typing-done');
         if (typeof onDone === 'function') onDone();
-      }, 700); /* カーソルフェードアウト後に復元 */
+      }, 700);
       return;
     }
 
     var seg = segments[idx++];
-
     if (seg.type === 'br') {
-      /* 改行: br 要素を挿入 */
       var br = document.createElement('br');
       el.insertBefore(br, cursor);
-      /* 改行後は少し長めに待つ（段落の区切り感） */
       setTimeout(typeNext, BASE_MS + 160 + Math.random() * 40);
     } else {
-      /* 文字を TextNode として挿入（XSS安全） */
       var tn = document.createTextNode(seg.char);
       el.insertBefore(tn, cursor);
 
-      /* 句読点・記号での自然な「間」 */
       var delay = BASE_MS + (Math.random() * JITTER_MS * 2 - JITTER_MS);
       var ch = seg.char;
       if (ch === '。' || ch === '．' || ch === '…') {
@@ -1433,47 +1322,22 @@ function runTyping(el, segments, restoreHTML, onDone) {
       setTimeout(typeNext, delay);
     }
   }
-
-  /* 最初の文字まで少し間を置く（「始まる前の静寂」） */
   setTimeout(typeNext, 180);
 }
 
-/*
-  タイピング対象要素を初期化する。
-  
-  【重要】この関数は document.fonts.ready 解決後に呼ぶ。
-  
-  処理:
-  1. 対象要素のテキストを取得してセグメント化
-  2. 要素に typing-init クラスを付与（color:transparent で非表示）
-  3. IntersectionObserver を登録
-  4. 要素が viewport に入ったらタイピング開始
-*/
 function initTypingTarget(el) {
-  if (el._typingInited) return; /* 二重初期化防止 */
+  if (el._typingInited) return;
   el._typingInited = true;
 
-  /* reduced-motion の場合はタイピングなしで完了状態にする */
   if (REDUCED_MOTION) {
     el.classList.add('typing-done');
     return;
   }
 
-  /* テキストデータを収集する（data属性 or innerHTML から） */
   var plainText = el.getAttribute('data-plain') || '';
   var restoreHTML;
 
-  if (el.getAttribute('data-typing') === 'ito') {
-    /* 〈いと〉ステートメント: data-plain 属性からプレーンテキストを取得 */
-    restoreHTML = el.innerHTML; /* 現在の innerHTML を保持（後で復元） */
-    if (!plainText) {
-      /* data-plain がない場合は innerHTML から生成 */
-      var tmp = document.createElement('div');
-      tmp.innerHTML = el.innerHTML;
-      plainText = (tmp.textContent || tmp.innerText || '').trim();
-    }
-  } else if (el.getAttribute('data-typing') === 'desc') {
-    /* 作品解説文: data-desc-html 属性から取得 */
+  if (el.getAttribute('data-typing') === 'desc') {
     restoreHTML = el.getAttribute('data-desc-html') || el.innerHTML;
     var tmp2 = document.createElement('div');
     tmp2.innerHTML = restoreHTML;
@@ -1488,94 +1352,37 @@ function initTypingTarget(el) {
   var segments = textToSegments(plainText);
   if (segments.length === 0) return;
 
-  /*
-    【PCとスマホで同じ挙動を保証する核心部分】
-    
-    要素に typing-init を付与して color:transparent にする。
-    これにより:
-    - テキストは見えないがレイアウトは占有する → CLS ゼロ
-    - Observer 発火前に文字が見えることがない → PC/スマホ統一
-    
-    !important を使う理由:
-    - 親要素や他の CSS ルールによる color 上書きを防ぐ
-    - Safari での継承による上書きを防ぐ
-  */
   el.classList.add('typing-init');
-
-  /*
-    IntersectionObserver の設定:
-    
-    threshold: 0
-    → 1px でも viewport に入ったら検知。
-      PCでは高い threshold だと「既に完全交差」として
-      即発火してしまうバグを回避する。
-    
-    rootMargin: '0px 0px -8% 0px'
-    → 画面下端から 8% 手前で検知開始。
-      要素が画面に完全に入る少し前にタイピングが始まり、
-      「要素と共に文字が現れる」体験になる。
-      -50% などの大きな値は避ける（PCでは要素が大きく
-      viewport内に収まりきらない場合に検知されなくなる）。
-  */
   var obs = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
       if (e.isIntersecting) {
-        obs.unobserve(el); /* 一度だけ実行 */
+        obs.unobserve(el);
         runTyping(el, segments, restoreHTML, null);
       }
     });
   }, {
-    threshold: 0,           /* 1px交差で発火 */
-    rootMargin: '0px 0px -8% 0px'  /* 下端8%手前から */
+    threshold: 0,
+    rootMargin: '0px 0px -8% 0px'
   });
   obs.observe(el);
 }
 
-/*
-  全タイピング対象要素を document.fonts.ready 後に初期化する。
-  
-  【これが PC/スマホ統一挙動の最重要ポイント】
-  
-  理由:
-  - フォントロード前に IntersectionObserver を登録すると、
-    Chromium 系ブラウザ（Chrome, Edge）では
-    フォントなしのレイアウトで Observer が計算を行い、
-    要素の intersecting 判定が不安定になる。
-  - Noto Serif JP は特にファイルサイズが大きく、
-    ロードに時間がかかる。この間に Observer が発火すると
-    PCでは「ロード完了前に交差完了」と判定されてしまう。
-  - document.fonts.ready は全フォントのロードを保証する。
-  
-  フォールバック:
-  - fonts API 非対応ブラウザでは setTimeout 100ms で代替。
-*/
 function initAllTyping() {
-  /* 〈いと〉ステートメント */
-  var itoEl = document.querySelector('[data-typing="ito"]');
-  if (itoEl) { initTypingTarget(itoEl); }
-
-  /* 作品解説文 (tl-desc) — 各エントリで独立して管理 */
   var descEls = Array.from(document.querySelectorAll('[data-typing="desc"]'));
   descEls.forEach(function (el) {
     initTypingTarget(el);
   });
 }
 
-/* フォントロード後に初期化を実行 */
 if (document.fonts && document.fonts.ready) {
   document.fonts.ready.then(function () {
-    /* さらに 1 フレーム待つことでレイアウトが安定する */
-    /* requestAnimationFrame は「次の描画フレーム」に実行を遅延 */
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
-        /* 2フレーム待つことで Chrome/Safari/Firefox 全ての
-           レイアウト計算が確実に完了した後に Observer を登録 */
         initAllTyping();
       });
     });
   });
 } else {
-  /* fonts API 非対応のフォールバック */
   window.addEventListener('load', function () {
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
