@@ -184,13 +184,8 @@
     .concept-question {
       font-family: var(--jp); font-size: clamp(1.5rem, 4.0vw, 3.0rem); font-weight: 300;
       line-height: 1.8; letter-spacing: 0.05em; color: var(--text);
-      margin-bottom: 8rem; max-width: 1000px;
-      text-shadow: 0 4px 24px rgba(0,0,0,0.8);
-      /* 日本語のはみ出しバグを修正し、美しい改行を実現 */
-      word-break: normal;
-      word-break: auto-phrase;
-      overflow-wrap: break-word;
-      text-wrap: balance;
+      margin-bottom: 8rem; max-width: 1000px; text-shadow: 0 4px 24px rgba(0,0,0,0.8);
+      word-break: normal; word-break: auto-phrase; overflow-wrap: break-word; text-wrap: balance;
     }
 
     .concept-story { max-width: 900px; margin: 0 auto 10rem; text-align: left; }
@@ -203,9 +198,7 @@
     .concept-para {
       font-size: clamp(0.95rem, 3.5vw, 1.15rem); font-weight: 300; line-height: 2.2;
       color: rgba(232, 228, 219, 0.85); letter-spacing: 0.06em;
-      /* keep-all を削除し、適切に折り返されるように修正 */
-      word-break: normal;
-      overflow-wrap: break-word;
+      word-break: normal; overflow-wrap: break-word;
     }
     .concept-para em {
       font-style: normal; color: var(--text); font-weight: 400;
@@ -262,12 +255,30 @@
     
     .works-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 10rem; }
     
+    /* UI改善：すべての作品を見るボタン */
     .works-more {
-      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.72rem); letter-spacing: 0.18em;
-      color: rgba(232,228,219,0.4); text-decoration: none; border-bottom: 0.5px solid rgba(232,228,219,0.2); padding-bottom: 2px;
-      transition: color 0.2s; flex-shrink: 0; text-transform: uppercase;
+      font-family: var(--en); 
+      font-size: clamp(0.6rem, 1.5vw, 0.75rem);
+      letter-spacing: 0.2em;
+      color: var(--text); 
+      text-decoration: none; 
+      border: 1px solid rgba(232,228,219,0.3); 
+      padding: 1rem 2.5rem; 
+      border-radius: 40px;
+      transition: all 0.4s var(--ease-expo); 
+      flex-shrink: 0; 
+      text-transform: uppercase;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
     }
-    .works-more:hover { color: var(--accent); }
+    .works-more:hover { 
+      color: var(--bg);
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 10px 30px rgba(203,191,176,0.25);
+      transform: translateY(-3px);
+    }
 
     .tl-outer { position: relative; max-width: 1400px; margin: 0 auto; }
     .tl-spine-zone { position: absolute; left: 160px; top: 0; bottom: 0; width: 1px; z-index: 0; }
@@ -284,7 +295,7 @@
       position: relative; display: flex; align-items: stretch;
       opacity: 0; transform: translateY(80px); filter: blur(5px) brightness(0.3);
       transition: opacity 1.6s var(--ease-expo), transform 1.6s var(--ease-expo), filter 1.6s var(--ease-expo);
-      scroll-margin-top: 100px;
+      scroll-margin-top: 180px; /* スクロール位置修正：ヘッダーの被りを防ぐために増やす */
     }
     .tl-entry.visible { opacity: 1; transform: translateY(0); filter: blur(0) brightness(1); }
 
@@ -396,6 +407,84 @@
     .footer-copy { font-family: var(--en); font-size: 11px; color: rgba(232,228,219,0.2); letter-spacing: 0.14em; }
 
     /* ════════════════════════════════════════
+       NEWS POPUP
+    ════════════════════════════════════════ */
+    .news-popup {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: calc(100% - 4rem);
+      max-width: 360px;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
+      transition: opacity 0.6s var(--ease-expo), transform 0.6s var(--ease-expo);
+    }
+    .news-popup.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .news-popup-content {
+      background: rgba(13, 13, 11, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 0.5px solid rgba(203,191,176,0.3);
+      border-radius: 12px;
+      padding: 2rem;
+      position: relative;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+    }
+    .news-popup-close {
+      position: absolute;
+      top: 1rem;
+      right: 1.2rem;
+      background: none;
+      border: none;
+      color: var(--muted-col);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .news-popup-close:hover {
+      color: var(--accent);
+    }
+    .news-popup-label {
+      font-family: var(--en);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .news-popup-date {
+      font-family: var(--en);
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 0.8rem;
+    }
+    .news-popup-text {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    .news-popup-link {
+      font-family: var(--jp);
+      font-size: 13px;
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 0.5px solid rgba(203,191,176,0.4);
+      padding-bottom: 2px;
+      transition: all 0.3s;
+    }
+    .news-popup-link:hover {
+      color: var(--fg);
+      border-color: var(--fg);
+    }
+
+    /* ════════════════════════════════════════
        RESPONSIVE
     ════════════════════════════════════════ */
     @media (max-width: 1024px) {
@@ -430,17 +519,28 @@
 
       #works { padding: 5rem 1.5rem 6rem; }
       .works-header { margin-bottom: 4rem; flex-direction: column; align-items: flex-start; gap: 2rem; }
+      
+      /* UI改善（モバイル）：すべての作品を見るボタン */
+      .works-more {
+        width: 100%;
+        text-align: center;
+        display: block;
+        padding: 1.2rem;
+      }
+      
       .works-archive-cta { padding: 2.5rem 2rem; }
       
       .tl-spine-zone { left: 24px; }
       .tl-entries-col { gap: 5rem; }
       .tl-entry { 
-        flex-direction: column; align-items: flex-start; position: relative; 
+        flex-direction: column; align-items: flex-start;
+        position: relative; 
         padding-top: 3.5rem; 
-        scroll-margin-top: 80px; 
+        scroll-margin-top: 120px; /* スクロール位置修正 */
       }
       .tl-year-col { 
-        width: 100%; position: absolute; top: 0; left: 0; 
+        width: 100%;
+        position: absolute; top: 0; left: 0; 
         padding-left: 56px; margin-bottom: 0; 
       }
       .tl-year-sticky { position: relative; top: auto; align-items: flex-start; padding-right: 0; }
@@ -460,6 +560,13 @@
       .news-item { flex-direction: column; gap: 0.8rem; padding: 1.5rem 0; }
       .contact-section { padding: 6rem 1.5rem; }
       footer { padding: 2.5rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+
+      .news-popup {
+        bottom: 1rem;
+        right: 1rem;
+        width: calc(100% - 2rem);
+        max-width: none;
+      }
     }
     
     @media (max-width: 480px) {
@@ -602,7 +709,7 @@
         </div>
 
         <div class="tl-entries-col" id="tl-entries-col">
-          </div>
+        </div>
       </div>
 
       <div class="cta-wrapper">
@@ -681,6 +788,16 @@
   <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
   <p class="footer-copy">© 2026 Tsuda Shoichi. All Rights Reserved.</p>
 </footer>
+
+<div id="news-popup" class="news-popup" aria-hidden="true">
+  <div class="news-popup-content">
+    <button class="news-popup-close" aria-label="閉じる" onclick="closeNewsPopup()">✕</button>
+    <p class="news-popup-label">Latest News</p>
+    <p class="news-popup-date">2026.02.10</p>
+    <p class="news-popup-text">ホクト文化ホール 1 階ギャラリーにて、グループ展「next × N-ART 展」を開催いたしました。</p>
+    <a href="#news" class="news-popup-link" onclick="closeNewsPopup()">詳細を見る →</a>
+  </div>
+</div>
 
 <script>
 var WORKS_DATA = [
@@ -1006,6 +1123,28 @@ document.querySelectorAll('.goal-card, .news-item').forEach(function (el) {
   el.style.transition = 'opacity 0.65s ease, transform 0.65s ease';
   fadeObs.observe(el);
 });
+
+/* ポップアップの表示・非表示のロジック */
+function closeNewsPopup() {
+  document.getElementById('news-popup').classList.remove('show');
+}
+(function() {
+  var popupShown = false;
+  var statementSec = document.getElementById('statement');
+  if (!statementSec) return;
+  var popupObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting && !popupShown) {
+        popupShown = true;
+        setTimeout(function() {
+          document.getElementById('news-popup').classList.add('show');
+        }, 500); // 演出のため少し遅れて表示
+        popupObs.disconnect(); // 一度だけ表示
+      }
+    });
+  }, { threshold: 0.1 });
+  popupObs.observe(statementSec);
+})();
 </script>
 </body>
 </html>
