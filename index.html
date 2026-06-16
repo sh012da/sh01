@@ -186,7 +186,11 @@
       line-height: 1.8; letter-spacing: 0.05em; color: var(--text);
       margin-bottom: 8rem; max-width: 1000px;
       text-shadow: 0 4px 24px rgba(0,0,0,0.8);
-      word-break: keep-all; overflow-wrap: break-word;
+      /* 日本語のはみ出しバグを修正し、美しい改行を実現 */
+      word-break: normal;
+      word-break: auto-phrase;
+      overflow-wrap: break-word;
+      text-wrap: balance;
     }
 
     .concept-story { max-width: 900px; margin: 0 auto 10rem; text-align: left; }
@@ -199,7 +203,9 @@
     .concept-para {
       font-size: clamp(0.95rem, 3.5vw, 1.15rem); font-weight: 300; line-height: 2.2;
       color: rgba(232, 228, 219, 0.85); letter-spacing: 0.06em;
-      word-break: keep-all; overflow-wrap: break-word;
+      /* keep-all を削除し、適切に折り返されるように修正 */
+      word-break: normal;
+      overflow-wrap: break-word;
     }
     .concept-para em {
       font-style: normal; color: var(--text); font-weight: 400;
@@ -207,20 +213,14 @@
       padding: 0 4px;
     }
 
-    /* 概念カード (改善③：4列・高密度化) */
+    /* 概念カード */
     .concept-cards-wrap { width: 100%; max-width: 1400px; margin: 0 auto; }
-    .concept-tags { 
-      display: grid; 
-      grid-template-columns: repeat(4, 1fr); /* PCで4列 */
-      gap: 1.5rem; 
-      text-align: left; 
-    }
+    .concept-tags { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; text-align: left; }
     .concept-tag {
       background: rgba(255, 255, 255, 0.015);
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border: 0.5px solid rgba(232, 228, 219, 0.08);
-      padding: 2.5rem 1.8rem; /* 圧縮パディング */
-      border-radius: 4px;
+      padding: 2.5rem 1.8rem; border-radius: 4px;
       transition: transform 0.6s var(--ease-expo), background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
       display: flex; flex-direction: column; height: 100%;
     }
@@ -262,7 +262,6 @@
     
     .works-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 10rem; }
     
-    /* ヘッダー内リンクはそのままのトーンで維持 */
     .works-more {
       font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.72rem); letter-spacing: 0.18em;
       color: rgba(232,228,219,0.4); text-decoration: none; border-bottom: 0.5px solid rgba(232,228,219,0.2); padding-bottom: 2px;
@@ -270,7 +269,6 @@
     }
     .works-more:hover { color: var(--accent); }
 
-    /* タイムライン基盤 */
     .tl-outer { position: relative; max-width: 1400px; margin: 0 auto; }
     .tl-spine-zone { position: absolute; left: 160px; top: 0; bottom: 0; width: 1px; z-index: 0; }
     .tl-spine-track { position: absolute; top: 12px; bottom: 12px; left: 0; width: 1px; background: rgba(232,228,219,0.06); }
@@ -282,12 +280,11 @@
 
     .tl-entries-col { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 14rem; }
 
-    /* タイムラインエントリ */
     .tl-entry {
       position: relative; display: flex; align-items: stretch;
       opacity: 0; transform: translateY(80px); filter: blur(5px) brightness(0.3);
       transition: opacity 1.6s var(--ease-expo), transform 1.6s var(--ease-expo), filter 1.6s var(--ease-expo);
-      scroll-margin-top: 100px; /* スクロール位置のヘッダー被り防止 */
+      scroll-margin-top: 100px;
     }
     .tl-entry.visible { opacity: 1; transform: translateY(0); filter: blur(0) brightness(1); }
 
@@ -341,7 +338,6 @@
     .tl-process span { font-family: var(--en); font-size: 11px; letter-spacing: 0.15em; color: rgba(232,228,219,0.4); text-transform: uppercase; border: 0.5px solid rgba(232,228,219,0.15); padding: 5px 14px; border-radius: 20px; transition: color 0.3s, border-color 0.3s, background 0.3s; }
     .tl-process span:hover { color: var(--text); border-color: rgba(203,191,176,0.5); background: rgba(255,255,255,0.03); }
 
-    /* 高品質なアーカイブ導線CTA (改善②) */
     .cta-wrapper { text-align: center; margin-top: 8rem; width: 100%; display: flex; justify-content: center; }
     .works-archive-cta {
       display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
@@ -400,7 +396,7 @@
     .footer-copy { font-family: var(--en); font-size: 11px; color: rgba(232,228,219,0.2); letter-spacing: 0.14em; }
 
     /* ════════════════════════════════════════
-       RESPONSIVE (完全改修)
+       RESPONSIVE
     ════════════════════════════════════════ */
     @media (max-width: 1024px) {
       .concept-tags { grid-template-columns: repeat(2, 1fr); }
@@ -436,12 +432,11 @@
       .works-header { margin-bottom: 4rem; flex-direction: column; align-items: flex-start; gap: 2rem; }
       .works-archive-cta { padding: 2.5rem 2rem; }
       
-      /* タイムラインスマホ対応（優先度A対応：画像被り防止と配置最適化） */
       .tl-spine-zone { left: 24px; }
       .tl-entries-col { gap: 5rem; }
       .tl-entry { 
         flex-direction: column; align-items: flex-start; position: relative; 
-        padding-top: 3.5rem; /* 年号を置くための上部余白 */
+        padding-top: 3.5rem; 
         scroll-margin-top: 80px; 
       }
       .tl-year-col { 
@@ -908,7 +903,6 @@ var WORKS_DATA = [
     var btn = entry.querySelector('.tl-year-btn');
     if(btn) {
       btn.addEventListener('click', function() {
-        // 改善①：スマホで年号クリック時に画像が確実に見えるよう、block: 'start' で追従させる
         entry.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     }
