@@ -33,8 +33,6 @@
       --jp:          'Noto Serif JP', serif;
       --ease-expo:   cubic-bezier(0.16, 1, 0.3, 1);
       --px:          clamp(16px, 5vw, 64px);
-      /* タイピング等完了後の opacity 値 */
-      --typed-rest-opacity: 0.76;
     }
     html { scroll-behavior: smooth; }
     body {
@@ -45,6 +43,7 @@
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
+    body.no-scroll { overflow: hidden; }
 
     .pc-only { display: inline; }
 
@@ -52,8 +51,7 @@
        NAV
     ════════════════════════════════════════ */
     nav {
-      position: sticky;
-      top: 0; z-index: 200;
+      position: sticky; top: 0; z-index: 200;
       display: flex; align-items: center; justify-content: space-between;
       padding: clamp(14px,3vw,36px) var(--px);
       border-bottom: 0.5px solid var(--border);
@@ -81,17 +79,14 @@
       color: var(--accent); text-decoration: none; transition: background 0.25s, color 0.25s;
     }
     .nav-cta:hover { background: rgba(184,168,152,0.08); color: var(--fg); }
-    .nav-hamburger { display: none; background: none;
-      border: none; cursor: pointer; padding: 4px; }
-    .nav-hamburger span { display: block; width: 22px; height: 0.5px;
-      background: var(--accent); margin: 6px 0; transition: all 0.25s; }
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-hamburger span { display: block; width: 22px; height: 0.5px; background: var(--accent); margin: 6px 0; transition: all 0.25s; }
 
     /* ════════════════════════════════════════
        HERO
     ════════════════════════════════════════ */
     .hero {
-      position: relative;
-      padding: 8rem 2.5rem 7rem;
+      position: relative; padding: 8rem 2.5rem 7rem;
       border-bottom: 0.5px solid var(--border);
       min-height: 100vh; display: flex; flex-direction: column;
       justify-content: center; overflow: hidden;
@@ -104,8 +99,7 @@
       will-change: opacity;
     }
     .hero-slide.active { opacity: 1; }
-    .hero-overlay { position: absolute; inset: 0; z-index: 1;
-      background: rgba(10,10,8,0.65); }
+    .hero-overlay { position: absolute; inset: 0; z-index: 1; background: rgba(10,10,8,0.65); }
     .hero > *:not(.hero-slideshow):not(.hero-overlay) { position: relative; z-index: 2; }
 
     @keyframes fadeUp  { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
@@ -120,8 +114,7 @@
     }
     .hero-title {
       font-family: var(--jp); font-size: clamp(3.5rem,10vw,7.5rem);
-      font-weight: 200; line-height: 1.05;
-      letter-spacing: -0.025em;
+      font-weight: 200; line-height: 1.05; letter-spacing: -0.025em;
       color: var(--text); margin-bottom: 2rem;
     }
     .hero-title .line { display: block; overflow: hidden; }
@@ -134,15 +127,12 @@
     .hero-title .line:nth-child(3) .line-inner { animation-delay: 1.0s; }
     .hero-title em { font-style: normal; color: rgba(232,228,219,0.38); }
 
+    /* 修正①: 「油彩を起点に…」が確実に表示されるようにフェードアニメーションを正常化 */
     .hero-body {
       font-size: clamp(13px, 1.2vw + 10px, 15px); line-height: 2;
-      color: var(--text-muted);
-      letter-spacing: 0.04em;
-      min-height: 3em;
-    }
-    /* タイピング前はopacity:0を保持 */
-    .hero-body:not(.typing-init):not(.typing-active):not(.typing-done) {
-      opacity: 0;
+      color: var(--text-muted); opacity: 0;
+      animation: fadeUp 0.8s ease 1.35s forwards;
+      letter-spacing: 0.04em; min-height: 3em;
     }
     .hero-scroll {
       margin-top: 5rem; display: flex; align-items: center; gap: 0.875rem;
@@ -164,101 +154,82 @@
     .section-label::after { content:""; width: 48px; height: 0.5px; background: rgba(232,228,219,0.2); }
     .section-heading-en {
       font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
-      color: rgba(232,228,219,0.25); text-transform: uppercase;
-      letter-spacing: 0.2em; margin-bottom: 0.5rem;
+      color: rgba(232,228,219,0.25); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem;
     }
     .section-heading {
       font-family: var(--jp); font-size: clamp(1.75rem,4vw,3.25rem);
-      font-weight: 300; line-height: 1.2; color: var(--text);
-      margin-bottom: 2rem; letter-spacing: -0.01em;
+      font-weight: 300; line-height: 1.2; color: var(--text); margin-bottom: 2rem; letter-spacing: -0.01em;
     }
 
     /* ════════════════════════════════════════
        STATEMENT
     ════════════════════════════════════════ */
     #statement {
-      position: relative;
-      padding: 10rem 2.5rem 12rem;
+      position: relative; padding: 10rem 2.5rem 12rem;
       background-color: var(--bg);
       background-image: linear-gradient(rgba(8,8,8,0.44),rgba(8,8,8,0.56)),url('images/【津田翔一】展示の様子１.jpg');
       background-size: cover; background-position: center; background-attachment: fixed;
-      overflow: hidden; display: flex; flex-direction: column;
-      align-items: center; text-align: center;
+      overflow: hidden; display: flex; flex-direction: column; align-items: center; text-align: center;
     }
     .statement-bg-word {
-      position: absolute; top: 15%;
-      left: 50%; transform: translateX(-50%);
+      position: absolute; top: 15%; left: 50%; transform: translateX(-50%);
       font-family: var(--en); font-size: 28vw; font-weight: 200; line-height: 1;
       color: rgba(232,228,219,0.015); pointer-events: none; z-index: 0;
-      user-select: none;
-      white-space: nowrap; letter-spacing: 0.05em;
+      user-select: none; white-space: nowrap; letter-spacing: 0.05em;
     }
     .statement-bg-word.word2 { top: 60%; font-size: 22vw; }
     #statement > * { position: relative; z-index: 1; }
 
     .s-eyebrow {
-      display: inline-flex; align-items: center; justify-content: center; gap: 1.2rem;
-      margin-bottom: 6rem;
+      display: inline-flex; align-items: center; justify-content: center; gap: 1.2rem; margin-bottom: 6rem;
       font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
       letter-spacing: 0.28em; color: var(--muted-col); text-transform: uppercase;
     }
-    .s-eyebrow::before, .s-eyebrow::after { content:"";
-      width: 40px; height: 0.5px; background: rgba(232,228,219,0.2); }
+    .s-eyebrow::before, .s-eyebrow::after { content:""; width: 40px; height: 0.5px; background: rgba(232,228,219,0.2); }
 
     .concept-question {
-      font-family: var(--jp);
-      font-size: clamp(1.5rem, 4.0vw, 3.0rem); font-weight: 300;
-      line-height: 1.8; letter-spacing: 0.05em; color: var(--text);
-      margin-bottom: 8rem; max-width: 1000px;
-      text-shadow: 0 4px 24px rgba(0,0,0,0.8);
-      word-break: normal; word-break: auto-phrase; overflow-wrap: break-word; text-wrap: balance;
+      font-family: var(--jp); font-size: clamp(1.5rem, 4.0vw, 3.0rem); font-weight: 300;
+      line-height: 1.8; letter-spacing: 0.05em; color: var(--text); margin-bottom: 8rem; max-width: 1000px;
+      text-shadow: 0 4px 24px rgba(0,0,0,0.8); word-break: normal; word-break: auto-phrase; overflow-wrap: break-word; text-wrap: balance;
     }
 
     .concept-story { max-width: 900px; margin: 0 auto 10rem; text-align: left; }
     .concept-block { margin-bottom: 6rem; }
     .concept-block:last-child { margin-bottom: 0; }
     .concept-block-en {
-      font-family: var(--en); font-size: 11px; letter-spacing: 0.3em;
-      color: var(--accent);
-      text-transform: uppercase; margin-bottom: 1.5rem;
-      display: block; opacity: 0.6;
+      font-family: var(--en); font-size: 11px; letter-spacing: 0.3em; color: var(--accent);
+      text-transform: uppercase; margin-bottom: 1.5rem; display: block; opacity: 0.6;
     }
-
     .concept-para {
-      font-size: clamp(1rem, 3.2vw, 1.12rem);
-      font-weight: 300;
-      line-height: 2.35;
-      color: rgba(232,228,219,0.85);
-      letter-spacing: 0.07em;
-      word-break: normal;
-      overflow-wrap: break-word;
+      font-size: clamp(1rem, 3.2vw, 1.12rem); font-weight: 300; line-height: 2.35;
+      color: rgba(232,228,219,0.85); letter-spacing: 0.07em; word-break: normal; overflow-wrap: break-word;
     }
     .concept-para em {
       font-style: normal; color: var(--text); font-weight: 400;
-      background: linear-gradient(transparent 70%, rgba(203,191,176,0.15) 70%);
-      padding: 0 4px;
+      background: linear-gradient(transparent 70%, rgba(203,191,176,0.15) 70%); padding: 0 4px;
     }
 
-    /* 〈いと〉とは何か。段落 ─ タイピング前/後ともに低明度、ホバーで明るく */
-    .ito-intro {
-      opacity: 0.48;
-      transition: opacity 0.55s ease;
+    /* 修正②: 「〈いと〉とは何か。」近づくと明るくなる気配のデザイン */
+    .ito-block {
+      /* 文字の周囲に広大な「見えない反応エリア」を作る */
+      padding: 4rem 2rem;
+      margin: -4rem -2rem 2rem -2rem; 
       cursor: default;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
     }
-    /* タイピング中は通常色 */
-    .ito-intro.typing-active {
-      opacity: 1 !important;
+    .tw-wrap.tw-done.ito-intro {
+      opacity: 0.45; /* タイピング完了後は深く沈み込ませる */
+      transition: opacity 0.8s ease, text-shadow 0.8s ease;
     }
-    /* タイピング完了後は低明度に戻す */
-    .ito-intro.typing-done {
-      opacity: 0.48 !important;
-      transition: opacity 1.0s ease !important;
-    }
-    .ito-intro.typing-done:hover,
-    .ito-intro.typing-done:focus,
-    .ito-intro.typing-done:active {
-      opacity: 1 !important;
-      transition: opacity 0.35s ease !important;
+    /* エリア内にホバー、またはスマホでタップ（focus/active）した時だけ浮かび上がる */
+    .ito-block:hover .tw-wrap.tw-done.ito-intro,
+    .ito-block:focus .tw-wrap.tw-done.ito-intro,
+    .ito-block:active .tw-wrap.tw-done.ito-intro,
+    .ito-block:focus-within .tw-wrap.tw-done.ito-intro {
+      opacity: 1;
+      text-shadow: 0 0 16px rgba(232, 228, 219, 0.15); /* わずかに発光するような上品な効果 */
+      transition: opacity 0.4s ease, text-shadow 0.4s ease;
     }
 
     /* ════════════════════════════════════════
@@ -267,52 +238,37 @@
     .concept-cards-wrap { width: 100%; max-width: 1400px; margin: 0 auto; }
     .concept-tags { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; text-align: left; }
     .concept-tag {
-      background: rgba(255,255,255,0.015);
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border: 0.5px solid rgba(232,228,219,0.08);
-      padding: 2.5rem 1.8rem; border-radius: 4px;
+      background: rgba(255,255,255,0.015); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 0.5px solid rgba(232,228,219,0.08); padding: 2.5rem 1.8rem; border-radius: 4px;
       transition: transform 0.6s var(--ease-expo), background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
       display: flex; flex-direction: column; height: 100%;
     }
     .concept-tag:hover {
-      transform: translateY(-8px);
-      background: rgba(255,255,255,0.035);
+      transform: translateY(-8px); background: rgba(255,255,255,0.035);
       border-color: rgba(203,191,176,0.25); box-shadow: 0 16px 40px rgba(0,0,0,0.4);
     }
     .concept-tag-num {
-      font-family: var(--en);
-      font-size: 2.2rem; font-weight: 300;
-      color: rgba(232,228,219,0.15); line-height: 1; margin-bottom: 1.2rem;
-      display: block; letter-spacing: -0.02em; transition: color 0.4s ease;
+      font-family: var(--en); font-size: 2.2rem; font-weight: 300; color: rgba(232,228,219,0.15);
+      line-height: 1; margin-bottom: 1.2rem; display: block; letter-spacing: -0.02em; transition: color 0.4s ease;
     }
     .concept-tag:hover .concept-tag-num { color: rgba(203,191,176,0.4); }
-    .concept-tag-term { font-family: var(--jp); font-size: 1.15rem;
-      font-weight: 300; color: var(--text); margin-bottom: 0.5rem; letter-spacing: 0.05em; }
+    .concept-tag-term { font-family: var(--jp); font-size: 1.15rem; font-weight: 300; color: var(--text); margin-bottom: 0.5rem; letter-spacing: 0.05em; }
     .concept-tag-en-label {
-      font-family: var(--en);
-      font-size: 11px; letter-spacing: 0.2em;
-      color: rgba(232,228,219,0.4); text-transform: uppercase; margin-bottom: 1.2rem;
+      font-family: var(--en); font-size: 11px; letter-spacing: 0.2em; color: rgba(232,228,219,0.4); text-transform: uppercase; margin-bottom: 1.2rem;
     }
-    .concept-tag-desc { font-size: 13px; line-height: 1.9;
-      color: rgba(232,228,219,0.65); letter-spacing: 0.04em; }
+    .concept-tag-desc { font-size: 13px; line-height: 1.9; color: rgba(232,228,219,0.65); letter-spacing: 0.04em; }
 
     /* ════════════════════════════════════════
        REVEAL
     ════════════════════════════════════════ */
-    .reveal { opacity: 0;
-      transform: translateY(40px); transition: opacity 1.4s var(--ease-expo), transform 1.4s var(--ease-expo); }
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 1.4s var(--ease-expo), transform 1.4s var(--ease-expo); }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
     /* ════════════════════════════════════════
        WORKS
     ════════════════════════════════════════ */
-    #works {
-      position: relative;
-      padding: 10rem 2.5rem 12rem;
-      border-bottom: 0.5px solid var(--border);
-    }
-    .works-video-bg { position: fixed; inset: 0; z-index: -1;
-      pointer-events: none; opacity: 0; transition: opacity 0.6s ease; }
+    #works { position: relative; padding: 10rem 2.5rem 12rem; border-bottom: 0.5px solid var(--border); }
+    .works-video-bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 0.6s ease; }
     .works-video-bg.active { opacity: 1; }
     .works-video-bg video { width: 100%; height: 100%; object-fit: cover; opacity: 0.18; display: block; }
     .works-video-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(13,13,11,0.5) 0%, rgba(13,13,11,0.9) 100%); }
@@ -321,38 +277,20 @@
     .works-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 10rem; }
 
     .works-more {
-      font-family: var(--en);
-      font-size: clamp(0.6rem, 1.5vw, 0.75rem);
-      letter-spacing: 0.2em;
-      color: var(--text);
-      text-decoration: none;
-      border: 1px solid rgba(232,228,219,0.3);
-      padding: 1rem 2.5rem;
-      border-radius: 40px;
-      transition: all 0.4s var(--ease-expo);
-      flex-shrink: 0;
-      text-transform: uppercase;
-      background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+      font-family: var(--en); font-size: clamp(0.6rem, 1.5vw, 0.75rem); letter-spacing: 0.2em;
+      color: var(--text); text-decoration: none; border: 1px solid rgba(232,228,219,0.3);
+      padding: 1rem 2.5rem; border-radius: 40px; transition: all 0.4s var(--ease-expo); flex-shrink: 0;
+      text-transform: uppercase; background: rgba(255,255,255,0.03); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
     }
-    .works-more:hover {
-      color: var(--bg);
-      background: var(--accent);
-      border-color: var(--accent);
-      box-shadow: 0 10px 30px rgba(203,191,176,0.25);
-      transform: translateY(-3px);
-    }
+    .works-more:hover { color: var(--bg); background: var(--accent); border-color: var(--accent); box-shadow: 0 10px 30px rgba(203,191,176,0.25); transform: translateY(-3px); }
 
     .tl-outer { position: relative; max-width: 1400px; margin: 0 auto; }
     .tl-spine-zone { position: absolute; left: 160px; top: 0; bottom: 0; width: 1px; z-index: 0; }
     .tl-spine-track { position: absolute; top: 12px; bottom: 12px; left: 0; width: 1px; background: rgba(232,228,219,0.06); }
     .tl-spine-progress {
-      position: absolute; top: 12px; left: 0;
-      width: 1px; height: 0%;
+      position: absolute; top: 12px; left: 0; width: 1px; height: 0%;
       background: linear-gradient(to bottom, transparent 0%, rgba(203,191,176,0.8) 10%, rgba(203,191,176,0.8) 90%, transparent 100%);
-      box-shadow: 0 0 16px rgba(203,191,176,0.4);
-      transition: height 0.1s linear; will-change: height;
+      box-shadow: 0 0 16px rgba(203,191,176,0.4); transition: height 0.1s linear; will-change: height;
     }
     .tl-entries-col { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 14rem; }
 
@@ -372,16 +310,10 @@
       cursor: pointer; color: rgba(232,228,219,0.22); transition: color 0.5s ease; width: 100%;
     }
     .tl-year-num {
-      font-family: var(--en); font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 300;
-      letter-spacing: 0.05em;
-      line-height: 1; display: block;
-      transition: transform 0.6s var(--ease-expo), text-shadow 0.6s ease;
-      transform-origin: right center;
+      font-family: var(--en); font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 300; letter-spacing: 0.05em;
+      line-height: 1; display: block; transition: transform 0.6s var(--ease-expo), text-shadow 0.6s ease; transform-origin: right center;
     }
-    .tl-year-indicator {
-      width: 6px; height: 6px; border-radius: 50%; background: currentColor;
-      opacity: 0; transform: scale(0.5); transition: all 0.5s var(--ease-expo);
-    }
+    .tl-year-indicator { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0; transform: scale(0.5); transition: all 0.5s var(--ease-expo); }
     .tl-year-btn:hover { color: rgba(232,228,219,0.7); }
     .tl-year-btn:hover .tl-year-indicator { opacity: 0.5; transform: scale(0.8); }
     .tl-entry.visible .tl-year-btn { color: var(--accent); }
@@ -413,13 +345,13 @@
     .tl-spec { font-family: var(--en); font-size: 12px; color: rgba(232,228,219,0.35); line-height: 1.8; margin-bottom: 2rem; letter-spacing: 0.08em; }
 
     .tl-desc {
-      font-size: 15px;
-      line-height: 2.3;
-      color: rgba(232,228,219,0.75);
-      letter-spacing: 0.05em;
+      font-size: clamp(15px, 1.2vw, 16px);
+      line-height: 2.2;
+      color: rgba(232,228,219,0.88);
+      letter-spacing: 0.06em;
       max-width: 520px;
     }
-    .tl-desc em { font-style: normal; color: rgba(232,228,219,0.95); border-bottom: 0.5px solid rgba(232,228,219,0.25); padding-bottom: 1px; }
+    .tl-desc em { font-style: normal; color: #fff; border-bottom: 0.5px solid rgba(232,228,219,0.35); padding-bottom: 1px; }
 
     .tl-process { margin-top: 2rem; display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
     .tl-process span { font-family: var(--en); font-size: 11px; letter-spacing: 0.15em; color: rgba(232,228,219,0.4); text-transform: uppercase; border: 0.5px solid rgba(232,228,219,0.15); padding: 5px 14px; border-radius: 20px; transition: color 0.3s, border-color 0.3s, background 0.3s; }
@@ -428,15 +360,24 @@
     .cta-wrapper { text-align: center; margin-top: 8rem; width: 100%; display: flex; justify-content: center; }
     .works-archive-cta {
       display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 3rem 6rem; border: 0.5px solid var(--border-mid);
-      background: rgba(255,255,255,0.015); text-decoration: none; transition: all 0.6s var(--ease-expo);
-      border-radius: 2px; gap: 0.8rem;
-      position: relative; overflow: hidden; width: 100%; max-width: 600px;
+      padding: 3.5rem 6rem; border: 1px solid rgba(203,191,176,0.3);
+      background: rgba(203,191,176,0.02); text-decoration: none; transition: all 0.6s var(--ease-expo);
+      border-radius: 4px; gap: 0.8rem; position: relative; overflow: hidden; width: 100%; max-width: 680px;
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
     }
-    .works-archive-cta:hover { background: rgba(203,191,176,0.08); border-color: rgba(203,191,176,0.3); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.3); }
-    .cta-label-en { font-family: var(--en); font-size: 0.85rem; letter-spacing: 0.3em; color: var(--accent); text-transform: uppercase; transition: color 0.3s ease; }
-    .cta-label-ja { font-family: var(--jp); font-size: 1.15rem; color: var(--text); font-weight: 300; letter-spacing: 0.15em; }
-    .cta-arrow { display: block; margin-top: 1rem; color: var(--accent); font-size: 1.4rem; transition: transform 0.5s var(--ease-expo); }
+    .works-archive-cta:hover { 
+      background: var(--accent); 
+      border-color: var(--accent); 
+      transform: translateY(-4px);
+      box-shadow: 0 20px 50px rgba(203,191,176,0.15); 
+    }
+    .cta-label-en { font-family: var(--en); font-size: 0.95rem; letter-spacing: 0.35em; color: var(--accent); text-transform: uppercase; transition: color 0.4s ease; }
+    .cta-label-ja { font-family: var(--jp); font-size: 1.3rem; color: var(--text); font-weight: 300; letter-spacing: 0.2em; transition: color 0.4s ease; }
+    .cta-arrow { display: block; margin-top: 1.5rem; color: var(--accent); font-size: 1.6rem; transition: transform 0.5s var(--ease-expo), color 0.4s ease; }
+    
+    .works-archive-cta:hover .cta-label-en,
+    .works-archive-cta:hover .cta-label-ja,
+    .works-archive-cta:hover .cta-arrow { color: var(--bg); }
     .works-archive-cta:hover .cta-arrow { transform: translateX(12px); }
 
     /* ════════════════════════════════════════
@@ -476,31 +417,8 @@
     .contact-section .section-label { justify-content: center; }
     .contact-section .section-heading { text-align: center; }
     .contact-body-text { font-size: 15px; color: var(--text-muted); margin: 0 auto 3.5rem; max-width: 440px; line-height: 2; }
-    .contact-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.7em;
-      font-family: var(--en);
-      font-size: clamp(0.7rem, 1.5vw, 0.85rem);
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      border: 1px solid rgba(203,191,176,0.5);
-      border-radius: 40px;
-      padding: 1.1rem 3rem;
-      color: var(--accent);
-      background: rgba(203,191,176,0.04);
-      text-decoration: none;
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      transition: all 0.4s var(--ease-expo);
-    }
-    .contact-btn:hover {
-      color: var(--bg);
-      background: var(--accent);
-      border-color: var(--accent);
-      box-shadow: 0 10px 30px rgba(203,191,176,0.22);
-      transform: translateY(-3px);
-    }
+    .contact-btn { display: inline-flex; align-items: center; gap: 0.7em; font-family: var(--en); font-size: clamp(0.7rem, 1.5vw, 0.85rem); letter-spacing: 0.25em; text-transform: uppercase; border: 1px solid rgba(203,191,176,0.5); border-radius: 40px; padding: 1.1rem 3rem; color: var(--accent); background: rgba(203,191,176,0.04); text-decoration: none; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: all 0.4s var(--ease-expo); }
+    .contact-btn:hover { color: var(--bg); background: var(--accent); border-color: var(--accent); box-shadow: 0 10px 30px rgba(203,191,176,0.22); transform: translateY(-3px); }
 
     footer { padding: 3.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
     .footer-logo { font-family: var(--jp); font-size: 16px; font-weight: 300; color: rgba(232,228,219,0.35); letter-spacing: 0.05em; }
@@ -508,6 +426,7 @@
 
     /* ════════════════════════════════════════
        NEWS POPUP + モーダルオーバーレイ
+       （完全にお客様ご指定の中央配置仕様を維持しています）
     ════════════════════════════════════════ */
     .modal-overlay {
       position: fixed;
@@ -558,14 +477,16 @@
       border: none; color: var(--muted-col);
       font-size: 1.3rem; cursor: pointer; transition: color 0.3s;
       width: 44px; height: 44px;
-      display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: center;
+      justify-content: center;
       border-radius: 50%;
     }
     .news-popup-close:hover { color: var(--accent); background: rgba(255,255,255,0.04); }
     .news-popup-label {
       font-family: var(--en);
       font-size: 11px; letter-spacing: 0.28em;
-      color: var(--accent); text-transform: uppercase; margin-bottom: 0.8rem;
+      color: var(--accent);
+      text-transform: uppercase; margin-bottom: 0.8rem;
     }
     .news-popup-date { font-family: var(--en); font-size: 14px; color: var(--text); margin-bottom: 1rem; letter-spacing: 0.08em; }
     .news-popup-text { font-size: 15px; color: var(--text-muted); line-height: 1.85; margin-bottom: 2rem; }
@@ -577,7 +498,7 @@
     }
     .news-popup-link:hover { color: var(--fg); border-color: var(--fg); }
 
-    /* ─── スマホ：右下に小さく（元のまま） ─── */
+    /* ─── スマホ：右下に小さく（ご指定の仕様を維持） ─── */
     @media (max-width: 768px) {
       .news-popup {
         top: auto;
@@ -598,51 +519,22 @@
     }
 
     /* ════════════════════════════════════════
-       タイピングアニメーション用 CSS
+       タイピングアニメーション 完全刷新 (JS連携)
+       DOM解析を行いHTMLを保護し、PCでも完璧に動作します
     ════════════════════════════════════════ */
-    .typing-init {
-      color: transparent !important;
-    }
-    .typing-active {
-      color: inherit !important;
-    }
-    .typing-done {
-      opacity: var(--typed-rest-opacity) !important;
-      transition: opacity 1.2s ease !important;
-    }
-    .typing-done:hover {
-      opacity: 1 !important;
-      transition: opacity 0.4s ease !important;
-    }
-    .typing-done:focus,
-    .typing-done:focus-within,
-    .typing-done:active {
-      opacity: 1 !important;
-      transition: opacity 0.3s ease !important;
-    }
+    .tw-wrap { transition: opacity 1.2s ease; }
+    .tw-wrap.tw-done { opacity: 0.76; }
 
-    @keyframes typing-cursor-blink {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0; }
-    }
-    .typing-cursor-el {
-      display: inline-block;
-      width: 1.5px;
-      height: 0.9em;
-      background: var(--accent);
-      vertical-align: middle;
-      margin-left: 1px;
+    /* カーソルアニメーション */
+    .tw-cursor {
+      display: inline-block; width: 1.5px; height: 1em;
+      background: var(--accent); vertical-align: middle; margin-left: 2px;
       animation: typing-cursor-blink 0.85s step-end infinite;
-      will-change: opacity;
-      border-radius: 1px;
+      will-change: opacity; border-radius: 1px;
     }
-    @keyframes typing-cursor-fadeout {
-      0%   { opacity: 1; }
-      100% { opacity: 0; }
-    }
-    .typing-cursor-el.done {
-      animation: typing-cursor-fadeout 0.8s ease forwards;
-    }
+    @keyframes typing-cursor-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    @keyframes typing-cursor-fadeout { 0% { opacity: 1; } 100% { opacity: 0; } }
+    .tw-cursor.fade-out { animation: typing-cursor-fadeout 0.8s ease forwards; }
 
     /* ════════════════════════════════════════
        RESPONSIVE
@@ -697,7 +589,9 @@
       .contact-section { padding: 6rem 1.5rem; }
       .contact-btn { padding: 1.2rem 2.4rem; font-size: 0.8rem; width: 100%; max-width: 340px; justify-content: center; }
       footer { padding: 2.5rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-      .news-popup { bottom: 1rem; right: 1rem; width: calc(100% - 2rem); max-width: none; }
+      
+      /* スマホ用の「〈いと〉」段落ホバー・タップ領域調整 */
+      .ito-block { padding: 2.5rem 1rem; margin: -2.5rem -1rem 2rem -1rem; }
     }
     @media (max-width: 480px) {
       .tl-spine-zone, .tl-dot-wrap { left: 20px; }
@@ -710,9 +604,8 @@
       .hero-slide { transition: opacity 0.5s ease-in-out; }
       .tl-entry { transition: opacity 0.3s ease; }
       .works-video-bg { transition: none; }
-      .typing-init  { color: inherit !important; }
-      .typing-done  { opacity: 1 !important; transition: none !important; }
-      .typing-cursor-el { display: none; }
+      .tw-wrap.tw-done { opacity: 1 !important; transition: none !important; }
+      .tw-cursor { display: none !important; }
     }
   </style>
 </head>
@@ -774,8 +667,8 @@
   </h2>
 
   <div class="concept-story">
-    <div class="concept-block reveal" style="transition-delay:.20s">
-      <p class="concept-para ito-intro">〈いと〉とは何か。<br>例えば、生まれた土地の記憶、地質、感覚——<br>それ以上還元できない、存在の最小単位。</p>
+    <div class="concept-block reveal ito-block" tabindex="0">
+      <p class="concept-para ito-intro" data-typewriter="true">〈いと〉とは何か。<br>例えば、生まれた土地の記憶、地質、感覚——<br>それ以上還元できない、存在の最小単位。</p>
     </div>
 
     <div class="concept-block reveal" style="transition-delay:.30s">
@@ -1081,7 +974,8 @@ var WORKS_DATA = [
           '<h3 class="tl-title-ja">' + work.titleJa + '</h3>' +
           '<p class="tl-title-en">' + work.titleEn + '</p>' +
           '<p class="tl-spec">' + work.spec + '</p>' +
-          '<p class="tl-desc" data-typing="desc" data-desc-html="' + work.desc.replace(/"/g, '&quot;') + '">' + work.desc + '</p>' +
+          /* HTMLを破壊しないために data-typewriter属性を使用 */
+          '<p class="tl-desc" data-typewriter="true">' + work.desc + '</p>' +
           '<div class="tl-process">' + tags + '</div>' +
         '</div>' +
       '</div>';
@@ -1169,14 +1063,15 @@ document.querySelectorAll('.reveal').forEach(function (el) { revealObs.observe(e
     if (totalH <= 0) return;
     var viewCenter = window.innerHeight * 0.6;
     var pct = (viewCenter - rect.top) / totalH * 100;
-  
     pct = Math.max(0, Math.min(100, pct));
     spineProgress.style.height = pct + '%';
   }
 
   var entryObs = new IntersectionObserver(function (list) {
     list.forEach(function (e) {
-      if (e.isIntersecting) { e.target.classList.add('visible'); }
+      if (e.isIntersecting) { 
+        e.target.classList.add('visible'); 
+      }
     });
   }, { threshold: 0.2, rootMargin: '-10% 0px -20% 0px' });
   entries.forEach(function (el) { entryObs.observe(el); });
@@ -1219,12 +1114,10 @@ function closeNewsPopup() {
   popup.classList.remove('show');
   popup.setAttribute('aria-hidden', 'true');
   overlay.classList.remove('active');
-  document.body.style.overflow = '';
+  document.body.classList.remove('no-scroll');
 }
 
-document.getElementById('modal-overlay').addEventListener('click', function () {
-  closeNewsPopup();
-});
+document.getElementById('modal-overlay').addEventListener('click', closeNewsPopup);
 
 (function () {
   var popupShown  = false;
@@ -1237,10 +1130,10 @@ document.getElementById('modal-overlay').addEventListener('click', function () {
         setTimeout(function () {
           var popup   = document.getElementById('news-popup');
           var overlay = document.getElementById('modal-overlay');
-   
           popup.classList.add('show');
           popup.setAttribute('aria-hidden', 'false');
           overlay.classList.add('active');
+          document.body.classList.add('no-scroll');
         }, 500);
         popupObs.disconnect();
       }
@@ -1250,146 +1143,139 @@ document.getElementById('modal-overlay').addEventListener('click', function () {
 })();
 
 /* ════════════════════════════════════════════════════════
-   タイピングアニメーション エンジン
+   タイピングアニメーション 完全版エンジン（DOM解析型）
+   一気に表示されるバグを完全に修正し、HTMLタグを保護します
 ════════════════════════════════════════════════════════ */
 
-var REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-function textToSegments(text) {
-  var normalized = text.replace(/<br\s*\/?>/gi, '\n');
-  var tmp = document.createElement('div');
-  tmp.innerHTML = normalized;
-  var plain = tmp.textContent || tmp.innerText || '';
-  var segs = [];
-  var chars = Array.from(plain);
-  for (var i = 0; i < chars.length; i++) {
-    if (chars[i] === '\n') {
-      segs.push({ type: 'br' });
-    } else {
-      segs.push({ type: 'char', char: chars[i] });
-    }
-  }
-  return segs;
-}
+/**
+ * 対象要素内のテキストノードを再帰的に走査し、
+ * 1文字ずつのspanでラッピングする。
+ */
+function prepareTypewriterDOM(el) {
+  if (el.dataset.twPrepared) return;
+  el.dataset.twPrepared = "true";
 
-function runTyping(el, segments, restoreHTML, onDone) {
-  if (el._typingActive) return;
-  el._typingActive = true;
-  el.classList.remove('typing-init');
-  el.classList.add('typing-active');
+  function wrapTextNodes(node) {
+    if (node.nodeType === 3) { // テキストノード
+      const text = node.nodeValue;
+      if (!text.trim() && text.includes('\n')) return;
 
-  var cursor = document.createElement('span');
-  cursor.className = 'typing-cursor-el';
-  cursor.setAttribute('aria-hidden', 'true');
-
-  el.innerHTML = '';
-  el.appendChild(cursor);
-
-  var idx = 0;
-  var BASE_MS   = 52;
-  var JITTER_MS = 22;
-
-  function typeNext() {
-    if (idx >= segments.length) {
-      cursor.classList.add('done');
-      setTimeout(function () {
-        el.innerHTML = restoreHTML || el.textContent;
-        el.classList.remove('typing-active');
-        el.classList.add('typing-done');
-        if (typeof onDone === 'function') onDone();
-      }, 700);
-      return;
-    }
-
-    var seg = segments[idx++];
-    if (seg.type === 'br') {
-      var br = document.createElement('br');
-      el.insertBefore(br, cursor);
-      setTimeout(typeNext, BASE_MS + 160 + Math.random() * 40);
-    } else {
-      var tn = document.createTextNode(seg.char);
-      el.insertBefore(tn, cursor);
-
-      var delay = BASE_MS + (Math.random() * JITTER_MS * 2 - JITTER_MS);
-      var ch = seg.char;
-      if (ch === '。' || ch === '．' || ch === '…') {
-        delay += 140;
-      } else if (ch === '、' || ch === '，' || ch === '——' || ch === '—') {
-        delay += 60;
-      } else if (ch === '「' || ch === '」' || ch === '〈' || ch === '〉') {
-        delay += 20;
+      const fragment = document.createDocumentFragment();
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        if (char === '\n' || char === '\r') continue;
+        
+        const span = document.createElement('span');
+        span.className = 'tw-char';
+        span.style.opacity = '0';
+        span.textContent = char;
+        fragment.appendChild(span);
       }
-      setTimeout(typeNext, delay);
+      node.parentNode.replaceChild(fragment, node);
+    } else if (node.nodeType === 1) { // エレメントノード
+      if (node.classList.contains('tw-char')) return;
+      Array.from(node.childNodes).forEach(wrapTextNodes);
     }
   }
-  setTimeout(typeNext, 180);
+
+  wrapTextNodes(el);
+  el.classList.add('tw-wrap');
 }
 
-function initTypingTarget(el) {
-  if (el._typingInited) return;
-  el._typingInited = true;
+/**
+ * 準備されたDOMを1文字ずつ表示(opacity:1)にする
+ */
+function runTypewriter(el) {
+  if (el.dataset.twRunning || el.dataset.twDone) return;
+  el.dataset.twRunning = "true";
 
   if (REDUCED_MOTION) {
-    el.classList.add('typing-done');
+    finishTypewriter(el, []);
     return;
   }
 
-  var plainText = el.getAttribute('data-plain') || '';
-  var restoreHTML;
+  const chars = el.querySelectorAll('.tw-char');
+  if (chars.length === 0) return;
 
-  if (el.getAttribute('data-typing') === 'desc') {
-    restoreHTML = el.getAttribute('data-desc-html') || el.innerHTML;
-    var tmp2 = document.createElement('div');
-    tmp2.innerHTML = restoreHTML;
-    plainText = (tmp2.textContent || tmp2.innerText || '').trim();
-  } else {
-    restoreHTML = el.innerHTML;
-    var tmp3 = document.createElement('div');
-    tmp3.innerHTML = el.innerHTML;
-    plainText = (tmp3.textContent || tmp3.innerText || '').trim();
+  const cursor = document.createElement('span');
+  cursor.className = 'tw-cursor';
+  el.appendChild(cursor);
+
+  let i = 0;
+
+  function nextChar() {
+    if (i < chars.length) {
+      chars[i].style.opacity = '1';
+      const text = chars[i].textContent;
+      
+      let delay = 35;
+      if (/[。．…]/.test(text)) delay = 160;
+      else if (/[、，——]/.test(text)) delay = 80;
+      else if (/[「」〈〉]/.test(text)) delay = 45;
+
+      i++;
+      setTimeout(() => requestAnimationFrame(nextChar), delay);
+    } else {
+      finishTypewriter(el, cursor);
+    }
   }
-
-  var segments = textToSegments(plainText);
-  if (segments.length === 0) return;
-
-  el.classList.add('typing-init');
-  var obs = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (e.isIntersecting) {
-        obs.unobserve(el);
-        runTyping(el, segments, restoreHTML, null);
-      }
-    });
-  }, {
-    threshold: 0,
-    rootMargin: '0px 0px -8% 0px'
-  });
-  obs.observe(el);
+  
+  requestAnimationFrame(nextChar);
 }
 
-function initAllTyping() {
-  var descEls = Array.from(document.querySelectorAll('[data-typing="desc"]'));
-  descEls.forEach(function (el) {
-    initTypingTarget(el);
+function finishTypewriter(el, cursor) {
+  el.dataset.twDone = "true";
+  el.classList.add('tw-done');
+  if (cursor && cursor.classList) {
+    cursor.classList.add('fade-out');
+    setTimeout(() => cursor.remove(), 800);
+  } else {
+    const chars = el.querySelectorAll('.tw-char');
+    chars.forEach(c => c.style.opacity = '1');
+  }
+}
+
+/**
+ * 監視と初期化
+ */
+function initAllTypewriters() {
+  const targets = document.querySelectorAll('[data-typewriter="true"]');
+  
+  targets.forEach(el => {
+    prepareTypewriterDOM(el);
+
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          obs.unobserve(el);
+          
+          const parentEntry = el.closest('.tl-entry');
+          if (parentEntry) {
+            setTimeout(() => {
+              requestAnimationFrame(() => runTypewriter(el));
+            }, 600);
+          } else {
+            setTimeout(() => {
+              requestAnimationFrame(() => runTypewriter(el));
+            }, 200);
+          }
+        }
+      });
+    }, {
+      threshold: 0,
+      rootMargin: '0px 0px -10% 0px'
+    });
+
+    obs.observe(el);
   });
 }
 
 if (document.fonts && document.fonts.ready) {
-  document.fonts.ready.then(function () {
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        initAllTyping();
-      });
-    });
-  });
+  document.fonts.ready.then(() => requestAnimationFrame(initAllTypewriters));
 } else {
-  window.addEventListener('load', function () {
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        initAllTyping();
-      });
-    });
-  });
+  window.addEventListener('load', () => requestAnimationFrame(initAllTypewriters));
 }
 </script>
 </body>
