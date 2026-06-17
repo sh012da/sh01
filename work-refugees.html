@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link rel="icon" type="image/jpeg" href="images/【FSM横】IMG_7730.jpg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="津田翔一 作品シリーズ「難民（子ども）/ Refugees」— 戦禍を生きた子どもたちの、沈黙と叫びを油彩に刻む。">
+  <meta property="og:title" content="難民（子ども）/ Refugees | Tsuda Shoichi">
+  <meta property="og:description" content="戦禍を生きた子どもたちの、沈黙と叫びを油彩に刻む。">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="080808">
+  <title>難民（子ども）/ Refugees | Tsuda Shoichi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
+  <style>
+    /* ════════════════════════════════════════
+       DESIGN TOKENS — サイト共通トークン継承
+       難民シリーズ固有: accent を冷たい鉄錆び色に
+    ════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:          #080808;
+      --fg:          #ede9e4;
+      --text:        #e8e4db;
+      --text-muted:  rgba(232,228,219,0.55);
+      --text-dim:    rgba(232,228,219,0.35);
+      --border:      rgba(232,228,219,0.10);
+      --border-mid:  rgba(232,228,219,0.22);
+      /* このシリーズ固有: 血と泥の間、鉄錆び朱 */
+      --accent:      #a87560;
+      --accent-dim:  rgba(168,117,96,0.30);
+      --muted-col:   #7a746e;
+      --en:          'Cormorant Garamond', serif;
+      --jp:          'Noto Serif JP', serif;
+      --ease:        cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-img:    cubic-bezier(0.165, 0.84, 0.44, 1);
+      --px:          clamp(20px, 5vw, 64px);
+      --section-py:  clamp(60px, 10vh, 120px);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--jp);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* ─── 固定暗色背景（ビデオなし：このシリーズには動く映像は不要） ─── */
+    .works-bg {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background:
+        radial-gradient(ellipse 80% 60% at 30% 20%, rgba(60,20,10,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 70% 80%, rgba(20,10,5,0.25) 0%, transparent 60%),
+        #080808;
+    }
+
+    /* ════════════════════════════════════════
+       SCROLL PROGRESS
+    ════════════════════════════════════════ */
+    .scroll-progress {
+      position: fixed; top: 0; left: 0; z-index: 500;
+      height: 1px; width: 0%;
+      background: linear-gradient(to right,
+        rgba(168,117,96,0.2), var(--accent), rgba(168,117,96,0.2));
+      transition: width 0.1s linear;
+      pointer-events: none;
+    }
+
+    /* ════════════════════════════════════════
+       NAV（サイト統一）
+    ════════════════════════════════════════ */
+    .skip-nav {
+      position: absolute; top: -100%; left: var(--px);
+      background: var(--accent); color: var(--bg);
+      padding: 0.5rem 1rem; font-family: var(--en);
+      font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+      text-decoration: none; z-index: 9999; transition: top 0.2s;
+    }
+    .skip-nav:focus { top: 0; }
+    nav {
+      position: sticky; top: 0; z-index: 300;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: clamp(14px,3vw,36px) var(--px);
+      border-bottom: 0.5px solid var(--border);
+      background: rgba(8,8,8,0.93);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: var(--en); font-size: clamp(0.7rem,2.5vw,0.9rem);
+      letter-spacing: 0.3em; font-weight: 300; color: var(--accent);
+      text-decoration: none; text-transform: uppercase; transition: opacity 0.4s;
+    }
+    .nav-logo:hover { opacity: 0.5; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.72rem);
+      letter-spacing: 0.25em; color: var(--muted-col); text-decoration: none;
+      text-transform: uppercase; transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-cta {
+      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
+      letter-spacing: 0.25em; text-transform: uppercase;
+      border: 0.5px solid rgba(168,117,96,0.35); padding: 0.55rem 1.4rem;
+      color: var(--accent); text-decoration: none; transition: background 0.25s, color 0.25s;
+    }
+    .nav-cta:hover { background: rgba(168,117,96,0.08); color: var(--fg); }
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-hamburger span {
+      display: block; width: 22px; height: 0.5px;
+      background: var(--accent); margin: 6px 0; transition: all 0.25s;
+    }
+
+    /* ════════════════════════════════════════
+       PAGE-INTERNAL NAV（ドット）
+    ════════════════════════════════════════ */
+    .page-nav {
+      position: fixed; right: clamp(16px,3vw,32px); top: 50%;
+      transform: translateY(-50%); z-index: 200;
+      display: flex; flex-direction: column; gap: 16px;
+      opacity: 0; transition: opacity 0.6s var(--ease);
+    }
+    .page-nav.visible { opacity: 1; }
+    .page-nav-item {
+      display: flex; align-items: center; gap: 10px;
+      cursor: pointer; text-decoration: none; background: none; border: none;
+      padding: 0; font-family: var(--en);
+    }
+    .page-nav-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: rgba(232,228,219,0.18);
+      transition: background 0.35s, transform 0.35s, box-shadow 0.35s;
+      flex-shrink: 0;
+    }
+    .page-nav-label {
+      font-size: 9px; letter-spacing: 0.2em; color: rgba(232,228,219,0.0);
+      text-transform: uppercase; transition: color 0.35s; white-space: nowrap;
+    }
+    .page-nav-item:hover .page-nav-dot,
+    .page-nav-item.active .page-nav-dot {
+      background: var(--accent);
+      transform: scale(1.6);
+      box-shadow: 0 0 8px rgba(168,117,96,0.5);
+    }
+    .page-nav-item:hover .page-nav-label { color: rgba(232,228,219,0.55); }
+    .page-nav-item.active .page-nav-label { color: var(--accent); }
+
+    /* ════════════════════════════════════════
+       HERO — 証言の沈黙
+       背景：アップロード画像を full-bleed で
+    ════════════════════════════════════════ */
+    .series-hero {
+      position: relative; overflow: hidden;
+      min-height: 100vh; min-height: 100svh;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: clamp(90px,13vh,150px) var(--px) clamp(52px,9vh,100px);
+    }
+    .hero-bg-img {
+      position: absolute; inset: 0; z-index: 0; overflow: hidden;
+    }
+    .hero-bg-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      object-position: center 35%;
+      /* モノクロ＋暗め: 傷・血の色を残しつつ抑制 */
+      filter: grayscale(40%) brightness(0.22) contrast(1.1);
+      transform: scale(1.04);
+      animation: heroBreath 22s ease-in-out 0s infinite alternate;
+    }
+    @keyframes heroBreath {
+      from { transform: scale(1.04); }
+      to   { transform: scale(1.00); }
+    }
+    .hero-bg-overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(
+        160deg,
+        rgba(8,8,8,0.10) 0%,
+        rgba(8,8,8,0.50) 35%,
+        rgba(8,8,8,0.94) 100%
+      );
+    }
+
+    /* ゴーストテキスト — このシリーズは日本語で刻む */
+    .hero-ghost {
+      position: absolute; inset: 0; z-index: 1;
+      display: flex; align-items: center; justify-content: flex-end;
+      padding-right: calc(var(--px) * 0.3);
+      pointer-events: none; user-select: none;
+      font-family: var(--jp);
+      font-size: clamp(5rem,18vw,20rem);
+      font-weight: 200; letter-spacing: 0.1em;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(168,117,96,0.055);
+      writing-mode: vertical-rl; /* 縦書き：証言の碑文のように */
+      white-space: nowrap; line-height: 1;
+      opacity: 0; transform: translateX(14px);
+      animation: ghostSlide 2.8s var(--ease) 1.4s forwards;
+    }
+    @keyframes ghostSlide { to { opacity: 1; transform: translateX(0); } }
+
+    .hero-inner { position: relative; z-index: 2; max-width: 1000px; }
+    .hero-eyebrow {
+      font-family: var(--en); font-size: clamp(0.55rem,1.6vw,0.68rem);
+      letter-spacing: 0.46em; color: var(--muted-col); text-transform: uppercase;
+      margin-bottom: clamp(14px,3vh,36px); overflow: hidden;
+    }
+    .hero-eyebrow span {
+      display: inline-block; opacity: 0; transform: translateY(100%);
+      animation: clipUp 0.9s var(--ease) 0.45s forwards;
+    }
+
+    /* タイトル: 日英を縦に重ねる / Cormorant Garamondの細字で証言感 */
+    .hero-title-block { overflow: hidden; }
+    .hero-title-jp {
+      font-family: var(--jp); font-weight: 300;
+      font-size: clamp(2.4rem,8vw,7rem);
+      letter-spacing: 0.14em; line-height: 0.95;
+      color: var(--fg);
+      display: block; opacity: 0;
+      transform: translateY(0.55em);
+      animation: charReveal 1.05s var(--ease) 0.62s forwards;
+    }
+    .hero-title-en {
+      font-family: var(--en); font-style: italic;
+      font-size: clamp(1.6rem,5vw,5rem);
+      font-weight: 300; letter-spacing: 0.12em; line-height: 1.0;
+      color: rgba(168,117,96,0.80);
+      display: block; opacity: 0;
+      transform: translateY(0.5em);
+      animation: charReveal 1.0s var(--ease) 0.88s forwards;
+    }
+    .hero-year-note {
+      font-family: var(--en); font-size: clamp(0.58rem,1.4vw,0.75rem);
+      letter-spacing: 0.32em; color: rgba(232,228,219,0.25);
+      margin-top: 0.6em; text-transform: uppercase; overflow: hidden;
+    }
+    .hero-year-note span {
+      display: inline-block; opacity: 0; transform: translateY(100%);
+      animation: clipUp 0.9s var(--ease) 1.1s forwards;
+    }
+    .hero-sub {
+      margin-top: clamp(18px,3.5vh,52px);
+      font-family: var(--jp); font-weight: 200;
+      font-size: clamp(0.78rem,2vw,1rem);
+      letter-spacing: 0.22em; color: var(--muted-col); overflow: hidden;
+    }
+    .hero-sub span {
+      display: inline-block; opacity: 0; transform: translateY(100%);
+      animation: clipUp 1s var(--ease) 1.25s forwards;
+    }
+    .hero-rule {
+      margin-top: clamp(14px,2.5vh,32px);
+      width: 0; height: 0.5px;
+      background: rgba(168,117,96,0.3);
+      animation: drawLine 1.2s var(--ease) 1.6s forwards;
+    }
+
+    /* 証言フレーズ: ヒーロー右下に浮かぶ */
+    .hero-testimony {
+      position: absolute; bottom: clamp(52px,9vh,100px);
+      right: var(--px); z-index: 2;
+      max-width: 320px;
+      text-align: right;
+      opacity: 0;
+      animation: fadeOnly 1.2s ease 2.0s forwards;
+    }
+    .hero-testimony q {
+      font-family: var(--jp); font-style: italic; font-weight: 200;
+      font-size: clamp(0.72rem,1.4vw,0.9rem);
+      line-height: 1.9; letter-spacing: 0.04em;
+      color: rgba(232,228,219,0.45);
+      quotes: none;
+      display: block;
+    }
+    .hero-testimony cite {
+      display: block; margin-top: 0.6rem;
+      font-family: var(--en); font-style: normal;
+      font-size: 0.58rem; letter-spacing: 0.25em;
+      color: rgba(168,117,96,0.55); text-transform: uppercase;
+    }
+
+    /* ════════════════════════════════════════
+       REVEAL
+    ════════════════════════════════════════ */
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity 1.0s var(--ease), transform 1.0s var(--ease);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ════════════════════════════════════════
+       SECTION 共通
+    ════════════════════════════════════════ */
+    .page-section {
+      padding: var(--section-py) var(--px);
+      border-top: 0.5px solid var(--border);
+      position: relative; z-index: 1;
+    }
+    .section-head {
+      display: grid; grid-template-columns: clamp(80px,14vw,180px) 1fr;
+      gap: clamp(2rem,4vw,6rem); align-items: start;
+      margin-bottom: clamp(48px,8vh,96px);
+    }
+    .section-sidebar-label {
+      font-family: var(--en); font-size: clamp(0.55rem,1.3vw,0.66rem);
+      letter-spacing: 0.40em; color: var(--muted-col);
+      text-transform: uppercase; padding-top: 0.3rem; line-height: 1;
+    }
+    .section-sidebar-num {
+      font-family: var(--en); font-size: clamp(2.5rem,6vw,5rem);
+      font-weight: 300; line-height: 1; color: rgba(168,117,96,0.05);
+      letter-spacing: -0.02em; margin-top: 1rem;
+    }
+    .section-title-en {
+      font-family: var(--en); font-size: clamp(1.6rem,4vw,3.5rem);
+      font-weight: 300; letter-spacing: 0.1em; line-height: 1.05;
+      color: var(--fg); margin-bottom: 0.4rem;
+    }
+    .section-title-jp {
+      font-family: var(--jp); font-weight: 200;
+      font-size: clamp(0.85rem,2vw,1.1rem);
+      letter-spacing: 0.22em; color: var(--muted-col);
+      margin-bottom: 2rem;
+    }
+    .section-credit {
+      font-family: var(--en); font-size: 0.62rem; letter-spacing: 0.22em;
+      color: rgba(237,233,228,0.22); text-transform: uppercase; margin-bottom: 1.8rem;
+    }
+
+    /* ════════════════════════════════════════
+       INTRODUCTION
+    ════════════════════════════════════════ */
+    .intro-lead {
+      font-family: var(--jp); font-weight: 200;
+      font-size: clamp(1.15rem,2.8vw,1.65rem);
+      letter-spacing: 0.04em; line-height: 1.85;
+      color: rgba(237,233,228,0.88); margin-bottom: 2.5rem;
+      max-width: 760px;
+    }
+    .intro-text {
+      font-size: clamp(0.88rem,1.7vw,1.02rem); font-weight: 300;
+      line-height: 2.2; color: var(--text-muted);
+      letter-spacing: 0.035em; margin-bottom: 1.8rem; max-width: 720px;
+    }
+    .intro-text:last-child { margin-bottom: 0; }
+    .intro-text em {
+      font-style: normal; color: var(--accent);
+      border-bottom: 0.5px solid var(--border-mid); padding-bottom: 2px;
+    }
+
+    /* コンセプトキーワードパネル */
+    .concept-keywords {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 1px; margin-top: 4rem;
+      border: 0.5px solid var(--border);
+    }
+    .concept-kw {
+      padding: 2rem 1.75rem;
+      background: rgba(255,255,255,0.010);
+      transition: background 0.35s var(--ease), transform 0.35s var(--ease);
+    }
+    .concept-kw:hover {
+      background: rgba(168,117,96,0.03); transform: translateY(-3px);
+    }
+    .concept-kw-num {
+      font-family: var(--en); font-size: 0.62rem;
+      letter-spacing: 0.28em; color: rgba(168,117,96,0.3);
+      text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .concept-kw-title {
+      font-size: clamp(0.88rem,1.5vw,1.02rem); font-weight: 300;
+      color: var(--fg); letter-spacing: 0.06em; margin-bottom: 0.85rem;
+    }
+    .concept-kw-desc {
+      font-size: clamp(0.76rem,1.2vw,0.86rem); font-weight: 300;
+      line-height: 1.88; color: var(--text-muted);
+    }
+
+    /* ════════════════════════════════════════
+       WORKS — Museum Catalogue Layout
+       このシリーズ: 画像を大きく、暗部を保つ
+    ════════════════════════════════════════ */
+    .works-header-row {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      padding-bottom: clamp(18px,3vw,40px);
+      border-bottom: 0.5px solid var(--border);
+      margin-bottom: clamp(48px,8vh,96px);
+    }
+    .works-header-label {
+      font-family: var(--en); font-size: clamp(0.55rem,1.4vw,0.68rem);
+      letter-spacing: 0.4em; color: var(--muted-col); text-transform: uppercase;
+    }
+    .works-header-count {
+      font-family: var(--en); font-size: clamp(2.2rem,5vw,5rem);
+      font-weight: 300; letter-spacing: -0.03em;
+      color: rgba(168,117,96,0.06); line-height: 1;
+    }
+
+    /* 作品アイテム */
+    .work-item {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: clamp(2rem,5vw,6rem);
+      padding: clamp(48px,8vh,100px) 0;
+      border-bottom: 0.5px solid var(--border);
+      align-items: center;
+    }
+    .work-item:last-child { border-bottom: none; }
+    .work-item.reverse .work-img-col  { order: 2; }
+    .work-item.reverse .work-text-col { order: 1; }
+
+    /* 画像 */
+    .work-img-frame {
+      position: relative; overflow: hidden;
+      background: rgba(10,8,6,0.95); cursor: zoom-in;
+    }
+    .work-img-frame.landscape { aspect-ratio: 4/3; }
+    .work-img-frame.portrait  { aspect-ratio: 3/4; }
+    .work-img-frame.square    { aspect-ratio: 1/1; }
+    .work-img-frame img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      /* このシリーズ: より深い暗さで絵の持つ緊張感を保つ */
+      filter: grayscale(15%) brightness(0.75) contrast(1.06);
+      transform: scale(1.02);
+      transition: filter 1.3s var(--ease-img), transform 1.6s var(--ease-img);
+    }
+    .work-img-frame:hover img {
+      filter: grayscale(0%) brightness(0.95) contrast(1.0);
+      transform: scale(1.0);
+    }
+    /* グラデオーバーレイ — 底部に暗く、上部は開放 */
+    .work-img-frame::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top,
+        rgba(8,8,8,0.75) 0%, rgba(8,8,8,0.08) 40%, transparent 100%);
+      opacity: 0; transition: opacity 0.45s ease; pointer-events: none;
+    }
+    .work-img-frame:hover::after { opacity: 1; }
+    /* アクセントライン — 鉄錆び色 */
+    .work-img-frame::before {
+      content: ''; position: absolute; left: 0; bottom: 0; z-index: 3;
+      width: 2px; height: 0; background: var(--accent);
+      transition: height 0.7s var(--ease); pointer-events: none;
+    }
+    .work-img-frame:hover::before { height: 60%; }
+    .work-zoom-hint {
+      position: absolute; bottom: 1.2rem; right: 1.2rem; z-index: 4;
+      font-family: var(--en); font-size: 0.54rem; letter-spacing: 0.22em;
+      color: rgba(237,233,228,0.60); text-transform: uppercase;
+      opacity: 0; transform: translateY(5px);
+      transition: opacity 0.4s ease, transform 0.4s var(--ease);
+      pointer-events: none;
+    }
+    .work-img-frame:hover .work-zoom-hint { opacity: 1; transform: translateY(0); }
+    .work-catalog-num {
+      position: absolute; top: 1rem; left: 1rem; z-index: 4;
+      font-family: var(--en); font-size: 0.58rem; letter-spacing: 0.28em;
+      color: rgba(237,233,228,0.40); text-transform: uppercase;
+      background: linear-gradient(135deg, rgba(8,8,8,0.72), transparent);
+      padding: 6px 10px; pointer-events: none;
+    }
+    /* サイズバッジ（号数） */
+    .work-size-badge {
+      position: absolute; top: 1rem; right: 1rem; z-index: 4;
+      font-family: var(--en); font-size: 0.52rem; letter-spacing: 0.22em;
+      color: rgba(168,117,96,0.55); text-transform: uppercase;
+      pointer-events: none;
+    }
+
+    /* テキスト */
+    .work-index {
+      font-family: var(--en); font-size: 0.62rem;
+      letter-spacing: 0.32em; color: rgba(237,233,228,0.20);
+      text-transform: uppercase; margin-bottom: 1.8rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .work-index::after {
+      content: ''; width: 40px; height: 0.5px;
+      background: rgba(168,117,96,0.15);
+    }
+    .work-year {
+      font-family: var(--en); font-size: clamp(0.65rem,1.5vw,0.82rem);
+      letter-spacing: 0.28em; color: var(--muted-col);
+      display: block; margin-bottom: 0.8rem;
+    }
+    .work-title-ja {
+      font-family: var(--jp); font-weight: 200;
+      font-size: clamp(1.3rem,3.2vw,2.4rem);
+      letter-spacing: 0.06em; line-height: 1.3;
+      color: var(--fg); margin-bottom: 0.35rem;
+    }
+    .work-title-en {
+      font-family: var(--en); font-style: italic;
+      font-size: clamp(0.85rem,2vw,1.25rem);
+      letter-spacing: 0.12em; color: var(--accent);
+      display: block; margin-bottom: 2rem;
+    }
+    .work-spec-table { margin-bottom: 2.5rem; }
+    .work-spec-row {
+      display: flex; gap: 1.4rem; padding: 0.55rem 0;
+      border-bottom: 0.5px solid rgba(232,228,219,0.05);
+      font-size: 0.72rem; letter-spacing: 0.12em;
+    }
+    .work-spec-key {
+      font-family: var(--en); color: rgba(237,233,228,0.26);
+      text-transform: uppercase; min-width: 72px; flex-shrink: 0;
+    }
+    .work-spec-val { font-family: var(--en); color: rgba(237,233,228,0.52); }
+    .work-commentary-label {
+      font-family: var(--en); font-size: 0.58rem;
+      letter-spacing: 0.3em; color: var(--muted-col);
+      text-transform: uppercase; margin-bottom: 1.2rem;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .work-commentary-label::after {
+      content: ''; flex: 1; height: 0.5px;
+      background: rgba(168,117,96,0.10); max-width: 56px;
+    }
+    .work-commentary {
+      font-size: clamp(0.86rem,1.6vw,1.0rem); font-weight: 300;
+      line-height: 2.15; color: var(--text-muted); letter-spacing: 0.03em;
+    }
+    .work-commentary p + p { margin-top: 1.2em; }
+    .work-commentary em {
+      font-style: normal; color: var(--accent);
+      border-bottom: 0.5px solid var(--border-mid); padding-bottom: 1px;
+    }
+    .work-tags {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.8rem;
+    }
+    .work-tag {
+      font-family: var(--en); font-size: 0.58rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: rgba(237,233,228,0.30);
+      border: 0.5px solid rgba(168,117,96,0.15); padding: 0.3rem 0.9rem;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .work-tag:hover { color: var(--accent); border-color: var(--accent-dim); }
+
+    /* ════════════════════════════════════════
+       TIMELINE
+    ════════════════════════════════════════ */
+    .tl-wrap {
+      position: relative;
+      display: grid; grid-template-columns: 72px 2px 1fr;
+    }
+    .tl-spine-col { grid-column: 2; position: relative; }
+    .tl-spine-track {
+      position: absolute; top: 10px; bottom: 10px; left: 0;
+      width: 2px; background: rgba(232,228,219,0.05);
+    }
+    .tl-spine-fill {
+      position: absolute; top: 10px; left: 0;
+      width: 2px; height: 0%;
+      background: linear-gradient(to bottom,
+        transparent 0%,
+        var(--accent) 8%,
+        var(--accent) 92%,
+        transparent 100%);
+      box-shadow: 0 0 14px rgba(168,117,96,0.35), 0 0 32px rgba(168,117,96,0.12);
+      transition: height 0.06s linear;
+      will-change: height;
+    }
+    .tl-year-col { grid-column: 1; position: relative; }
+    .tl-entries { grid-column: 3; padding-left: 40px; }
+    .tl-entry {
+      display: flex; align-items: flex-start; gap: 2rem;
+      margin-bottom: 4rem; position: relative;
+      opacity: 0; transform: translateX(-12px);
+      transition: opacity 0.85s var(--ease), transform 0.85s var(--ease);
+    }
+    .tl-entry:last-child { margin-bottom: 0; }
+    .tl-entry.visible { opacity: 1; transform: translateX(0); }
+    .tl-node {
+      position: absolute; left: -49px; top: 6px;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+    }
+    .tl-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      border: 1.5px solid rgba(232,228,219,0.18); background: var(--bg);
+      transition: border-color 0.5s, background 0.5s, box-shadow 0.5s;
+      position: relative; z-index: 2;
+    }
+    .tl-entry.visible .tl-dot {
+      background: var(--accent); border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(168,117,96,0.12), 0 0 18px rgba(168,117,96,0.40);
+    }
+    .tl-year-label {
+      font-family: var(--en); font-size: clamp(0.72rem,1.2vw,0.9rem);
+      font-weight: 300; letter-spacing: 0.06em;
+      color: rgba(232,228,219,0.20); line-height: 1;
+      transition: color 0.5s; text-align: center;
+      position: absolute; left: -58px; top: 0;
+      width: 52px;
+    }
+    .tl-entry.visible .tl-year-label { color: var(--accent); }
+    .tl-thumb {
+      width: 120px; flex-shrink: 0; overflow: hidden;
+      border: 0.5px solid rgba(232,228,219,0.07);
+      transition: border-color 0.4s; cursor: pointer;
+    }
+    .tl-thumb:hover { border-color: rgba(168,117,96,0.35); }
+    .tl-thumb img {
+      width: 100%; height: auto; display: block;
+      filter: brightness(0.76) grayscale(15%);
+      transition: transform 0.8s var(--ease), filter 0.5s;
+    }
+    .tl-thumb:hover img { transform: scale(1.04); filter: brightness(0.96) grayscale(0%); }
+    .tl-info { flex: 1; min-width: 0; }
+    .tl-series-label {
+      font-family: var(--en); font-size: 8px; letter-spacing: 0.28em;
+      color: rgba(168,117,96,0.38); text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .tl-title {
+      font-family: var(--jp); font-size: clamp(0.9rem,1.8vw,1.2rem);
+      font-weight: 300; color: var(--text); line-height: 1.4;
+      margin-bottom: 0.2rem; letter-spacing: 0.03em;
+    }
+    .tl-title-en-sm {
+      font-family: var(--en); font-size: 11px; color: var(--muted-col);
+      letter-spacing: 0.14em; margin-bottom: 0.7rem; font-style: italic;
+    }
+    .tl-spec-sm {
+      font-family: var(--en); font-size: 10px; color: rgba(232,228,219,0.24);
+      letter-spacing: 0.1em; line-height: 1.7;
+    }
+
+    /* ════════════════════════════════════════
+       STATEMENT
+    ════════════════════════════════════════ */
+    .statement-blockquote {
+      font-family: var(--jp); font-weight: 200;
+      font-size: clamp(1.1rem,2.8vw,1.7rem);
+      letter-spacing: 0.03em; line-height: 1.9;
+      color: rgba(237,233,228,0.82);
+      border-left: 1.5px solid rgba(168,117,96,0.35);
+      padding-left: 2.2rem; max-width: 780px;
+      margin-bottom: 3rem;
+      font-style: italic;
+    }
+    .statement-text {
+      font-size: clamp(0.88rem,1.7vw,1.0rem); font-weight: 300;
+      line-height: 2.2; color: var(--text-muted);
+      letter-spacing: 0.035em; margin-bottom: 1.6rem; max-width: 720px;
+    }
+    .statement-text em {
+      font-style: normal; color: var(--accent);
+      border-bottom: 0.5px solid var(--border-mid); padding-bottom: 2px;
+    }
+
+    /* ════════════════════════════════════════
+       BACK LINK
+    ════════════════════════════════════════ */
+    .back-wrap {
+      text-align: center; padding: clamp(40px,7vh,80px) var(--px) clamp(20px,4vh,40px);
+    }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 1rem;
+      font-family: var(--en); font-size: 0.64rem;
+      letter-spacing: 0.25em; color: var(--muted-col);
+      text-transform: uppercase; text-decoration: none; transition: color 0.3s;
+    }
+    .back-link-arrow { font-size: 1rem; transition: transform 0.3s; }
+    .back-link:hover { color: var(--accent); }
+    .back-link:hover .back-link-arrow { transform: translateX(-5px); }
+
+    /* ════════════════════════════════════════
+       LIGHTBOX
+    ════════════════════════════════════════ */
+    .lb {
+      position: fixed; inset: 0; z-index: 800;
+      background: rgba(3,2,2,0.97);
+      display: none; align-items: center; justify-content: center;
+      cursor: zoom-out; padding: clamp(20px,5vw,60px);
+      opacity: 0; transition: opacity 0.35s ease;
+    }
+    .lb.open  { display: flex; }
+    .lb.vis   { opacity: 1; }
+    .lb-img-wrap { position: relative; max-width: 100%; max-height: 90vh; }
+    .lb img {
+      max-width: 100%; max-height: 88vh; object-fit: contain; display: block;
+      transform: scale(0.96); transition: transform 0.45s var(--ease);
+    }
+    .lb.vis img { transform: scale(1); }
+    .lb-caption {
+      position: absolute; bottom: -2rem; left: 0; right: 0;
+      text-align: center; font-family: var(--jp); font-size: 0.65rem;
+      letter-spacing: 0.15em; color: rgba(237,233,228,0.35);
+    }
+    .lb-close {
+      position: absolute; top: 1.5rem; right: 2rem;
+      font-family: var(--en); font-size: 0.6rem; letter-spacing: 0.22em;
+      color: rgba(237,233,228,0.38); text-transform: uppercase;
+      background: none; border: none; cursor: pointer;
+      display: flex; align-items: center; gap: 0.5rem; transition: color 0.2s;
+    }
+    .lb-close:hover { color: var(--fg); }
+    .lb-close-x { font-size: 1.5rem; font-weight: 100; line-height: 1; }
+
+    /* ════════════════════════════════════════
+       CONTACT & FOOTER
+    ════════════════════════════════════════ */
+    .contact-section {
+      padding: 7rem 2.5rem; text-align: center;
+      border-top: 0.5px solid var(--border);
+      border-bottom: 0.5px solid var(--border);
+      background: var(--bg); position: relative; z-index: 2;
+    }
+    .section-label-center {
+      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
+      letter-spacing: 0.28em; color: var(--muted-col); text-transform: uppercase;
+      margin-bottom: 3.5rem; display: flex; align-items: center;
+      justify-content: center; gap: 1rem;
+    }
+    .section-label-center::before,
+    .section-label-center::after {
+      content: ''; width: 48px; height: 0.5px; background: rgba(232,228,219,0.18);
+    }
+    .contact-heading {
+      font-family: var(--jp); font-size: clamp(1.75rem,4vw,3.25rem);
+      font-weight: 300; line-height: 1.2; color: var(--text);
+      margin-bottom: 2rem; letter-spacing: -0.01em; text-align: center;
+    }
+    .contact-body {
+      font-size: 14px; color: var(--text-muted);
+      margin: 0 auto 2.75rem; max-width: 400px; line-height: 1.9;
+    }
+    .contact-btn {
+      display: inline-block; font-family: var(--en);
+      font-size: clamp(0.55rem,1.5vw,0.65rem);
+      letter-spacing: 0.22em; text-transform: uppercase;
+      border: 0.5px solid rgba(168,117,96,0.38); padding: 0.9rem 2.75rem;
+      color: var(--accent); text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .contact-btn:hover { background: rgba(168,117,96,0.07); color: var(--fg); }
+    footer {
+      padding: 2.75rem 2.5rem; display: flex;
+      justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem;
+      background: var(--bg); position: relative; z-index: 2;
+    }
+    .footer-logo {
+      font-family: var(--jp); font-size: 15px; font-weight: 300;
+      color: rgba(232,228,219,0.30); letter-spacing: 0.06em;
+    }
+    .footer-copy {
+      font-family: var(--en); font-size: 10px;
+      color: rgba(232,228,219,0.18); letter-spacing: 0.14em;
+    }
+
+    /* ════════════════════════════════════════
+       KEYFRAMES
+    ════════════════════════════════════════ */
+    @keyframes clipUp     { to { opacity:1; transform:translateY(0); } }
+    @keyframes charReveal { to { opacity:1; transform:translateY(0) skewY(0deg); } }
+    @keyframes fadeOnly   { to { opacity:1; } }
+    @keyframes drawLine   { to { width: clamp(48px,12vw,160px); } }
+
+    /* ════════════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════════════ */
+    @media (max-width: 1100px) {
+      .concept-keywords { grid-template-columns: 1fr 1fr; }
+      .page-nav { display: none; }
+    }
+    @media (max-width: 900px) {
+      .section-head { grid-template-columns: 1fr; gap: 1.5rem; }
+      .work-item,
+      .work-item.reverse { grid-template-columns: 1fr; gap: 2.5rem; }
+      .work-item.reverse .work-img-col,
+      .work-item.reverse .work-text-col { order: unset; }
+      .work-img-frame img { filter: grayscale(8%) brightness(0.80); }
+      .work-zoom-hint { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.25rem; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: block; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: fixed; inset: 0;
+        background: rgba(8,8,8,0.98);
+        align-items: center; justify-content: center;
+        gap: 2rem; z-index: 400;
+      }
+      .nav-links.open li a { font-size: 1.1rem; letter-spacing: 0.2em; }
+      .concept-keywords { grid-template-columns: 1fr; }
+      .tl-wrap { grid-template-columns: 48px 1.5px 1fr; }
+      .tl-entries { padding-left: 24px; }
+      .tl-node { left: -33px; }
+      .tl-year-label { left: -44px; width: 38px; font-size: 0.7rem; }
+      .tl-thumb { width: 80px; }
+      .tl-entry { gap: 1rem; margin-bottom: 3rem; }
+      .hero-testimony { display: none; }
+      .contact-section { padding: 5rem 1.5rem; }
+      footer { padding: 2rem 1.5rem; }
+    }
+    @media (max-width: 480px) {
+      .series-hero { min-height: 85vh; }
+      .tl-entry { flex-direction: column; gap: 1rem; }
+      .tl-thumb { width: 100%; }
+    }
+    @media (hover: none) {
+      .work-img-frame img { filter: grayscale(8%) brightness(0.82); }
+      .work-zoom-hint { opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-bg-img img { animation: none; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    @media (min-width: 2000px) {
+      :root { --px: 120px; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-nav">メインコンテンツへスキップ</a>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+  <div class="works-bg" aria-hidden="true"></div>
+
+  <!-- PAGE-INTERNAL NAV -->
+  <nav class="page-nav" id="pageNav" aria-label="ページ内ナビゲーション">
+    <button class="page-nav-item" data-target="intro"        aria-label="Introductionへ">
+      <div class="page-nav-dot"></div>
+      <span class="page-nav-label">Intro</span>
+    </button>
+    <button class="page-nav-item" data-target="works-gallery" aria-label="Worksへ">
+      <div class="page-nav-dot"></div>
+      <span class="page-nav-label">Works</span>
+    </button>
+    <button class="page-nav-item" data-target="timeline"     aria-label="Timelineへ">
+      <div class="page-nav-dot"></div>
+      <span class="page-nav-label">Timeline</span>
+    </button>
+    <button class="page-nav-item" data-target="statement"    aria-label="Statementへ">
+      <div class="page-nav-dot"></div>
+      <span class="page-nav-label">Statement</span>
+    </button>
+  </nav>
+
+  <!-- NAV -->
+  <nav id="top-nav" role="navigation" aria-label="サイトナビゲーション">
+    <a href="index.html" class="nav-logo">Tsuda Shoichi</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html#statement" onclick="closeMenu()">Statement</a></li>
+      <li><a href="works.html"           onclick="closeMenu()">Works</a></li>
+      <li><a href="index.html#profile"   onclick="closeMenu()">Profile</a></li>
+      <li><a href="index.html#news"      onclick="closeMenu()">News</a></li>
+    </ul>
+    <button class="nav-hamburger" id="hamburger"
+      aria-label="メニューを開く" aria-expanded="false" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
+  </nav>
+
+  <main id="main">
+    <!-- ════════════════════════════
+         HERO
+    ════════════════════════════ -->
+    <section class="series-hero" aria-labelledby="hero-title">
+      <!-- 画像1: ぜんぶかみさまにいいつけてやるんだから（シリア） をヒーロー背景に -->
+      <div class="hero-bg-img" aria-hidden="true">
+        <img
+          src="images/refugees/_F50横__ぜんぶかみさまにいいつけてやるんだから____3歳で死んだシリアの難民の子供が最後に言い残した言葉__2014_.jpg"
+          alt="" loading="eager" decoding="async">
+      </div>
+      <div class="hero-bg-overlay" aria-hidden="true"></div>
+
+      <!-- 縦書きゴーストテキスト -->
+      <div class="hero-ghost" aria-hidden="true">難民</div>
+
+      <div class="hero-inner">
+        <p class="hero-eyebrow">
+          <span>Series — Refugees &nbsp;·&nbsp; Oil on Canvas</span>
+        </p>
+        <div class="hero-title-block" id="hero-title">
+          <span class="hero-title-jp">難民（子ども）</span>
+          <span class="hero-title-en">Refugees</span>
+        </div>
+        <p class="hero-year-note">
+          <span>2014 – &nbsp;· &nbsp;Syria &nbsp;· &nbsp;Africa &nbsp;· &nbsp;Ifo</span>
+        </p>
+        <p class="hero-sub">
+          <span>子どもたちは、何も悪いことをしていない。</span>
+        </p>
+        <div class="hero-rule"></div>
+      </div>
+
+      <!-- 証言フレーズ（タイトル作品の最後の言葉） -->
+      <div class="hero-testimony" aria-label="作品タイトルより">
+        <q>ぜんぶかみさまにいいつけてやるんだから</q>
+        <cite>— 3歳で死んだシリアの難民の子供が<br>最後に言い残した言葉, 2014</cite>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════
+         INTRODUCTION
+    ════════════════════════════ -->
+    <section class="page-section" id="intro" aria-labelledby="intro-title">
+      <div class="section-head">
+        <div>
+          <p class="section-sidebar-label reveal">Introduction</p>
+          <p class="section-sidebar-num reveal" style="transition-delay:.1s">難</p>
+        </div>
+        <div>
+          <h2 id="intro-title">
+            <p class="section-title-en reveal" style="transition-delay:.08s">Refugees Series</p>
+            <p class="section-title-jp reveal" style="transition-delay:.14s">シリーズ概要</p>
+          </h2>
+          <p class="section-credit reveal" style="transition-delay:.18s">Series Commentary — Tsuda Shoichi</p>
+          <p class="intro-lead reveal" style="transition-delay:.22s">
+            絵画は、報道が届かない場所へ行く。
+          </p>
+          <p class="intro-text reveal" style="transition-delay:.30s">
+            「難民（子ども）/ Refugees」シリーズは、シリア内戦・アフリカ・ケニアのイフォ難民キャンプで撮影された報道写真を起点に制作された油彩作品群だ。写真という<em>瞬間の証拠</em>を、絵画という<em>時間の堆積</em>へと変換することで、津田翔一はこれらの像に別の生を与えようとした。
+          </p>
+          <p class="intro-text reveal" style="transition-delay:.38s">
+            子どもたちが写真に写った。そしてその多くは、今はもういない。写真は「あった」という事実を記録する。しかし絵画は、その事実を<em>見る者の身体へと接触させる</em>。カンバスに残る絵の具の質感、重なり合う色の層——それは単なる複製ではなく、画家の眼と手が問い直した「存在の記憶」だ。
+          </p>
+          <p class="intro-text reveal" style="transition-delay:.44s">
+            一枚の絵を前にして、私たちは統計の中の一人ではなく、<em>一人の子どもの顔</em>と向き合う。それが、津田がこのシリーズで絵画に課した義務だ。「見ること」の倫理——それは傍観ではなく、応答責任の始まりだ。
+          </p>
+          <div class="concept-keywords">
+            <div class="concept-kw reveal" style="transition-delay:.05s">
+              <p class="concept-kw-num">01</p>
+              <p class="concept-kw-title">証言としての絵画</p>
+              <p class="concept-kw-desc">報道写真を油彩へ。複製でも模倣でもなく、画家の応答として再生成された「証言」の記録。</p>
+            </div>
+            <div class="concept-kw reveal" style="transition-delay:.12s">
+              <p class="concept-kw-num">02</p>
+              <p class="concept-kw-title">見ることの倫理</p>
+              <p class="concept-kw-desc">見て、描いて、展示する。この行為の連鎖が問うのは、他者の痛みの前に立つ者の責任だ。</p>
+            </div>
+            <div class="concept-kw reveal" style="transition-delay:.20s">
+              <p class="concept-kw-num">03</p>
+              <p class="concept-kw-title">名もなき個人</p>
+              <p class="concept-kw-desc">難民という群の中の、一人の子ども。大画面の油彩が回復しようとするのは、その個の顔と生だ。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════
+         WORKS GALLERY
+    ════════════════════════════ -->
+    <section class="page-section" id="works-gallery" aria-labelledby="works-title">
+      <h2 id="works-title" class="sr-only">作品一覧</h2>
+      <div class="works-header-row reveal">
+        <span class="works-header-label">Individual Works &nbsp;— &nbsp;Refugees</span>
+        <span class="works-header-count">04</span>
+      </div>
+
+      <!-- ── Work 01 ── -->
+      <article class="work-item reveal">
+        <div class="work-img-col">
+          <div class="work-img-frame landscape"
+               onclick="openLB('images/refugees/_F50横__ぜんぶかみさまにいいつけてやるんだから____3歳で死んだシリアの難民の子供が最後に言い残した言葉__2014_.jpg','ぜんぶかみさまにいいつけてやるんだから')"
+               role="button" tabindex="0" aria-label="作品を拡大表示"
+               onkeydown="if(event.key==='Enter')this.click()">
+            <span class="work-catalog-num">REF-01</span>
+            <span class="work-size-badge">F50</span>
+            <img src="images/refugees/_F50横__ぜんぶかみさまにいいつけてやるんだから____3歳で死んだシリアの難民の子供が最後に言い残した言葉__2014_.jpg"
+                 alt="ぜんぶかみさまにいいつけてやるんだから — 3歳で死んだシリアの難民の子供が最後に言い残した言葉, 2014"
+                 loading="lazy" decoding="async">
+            <span class="work-zoom-hint">Expand ↗</span>
+          </div>
+        </div>
+        <div class="work-text-col">
+          <p class="work-index">Work 01</p>
+          <span class="work-year">2014</span>
+          <h3 class="work-title-ja">ぜんぶかみさまにいいつけてやるんだから</h3>
+          <span class="work-title-en">I'll Tell God Everything</span>
+          <div class="work-spec-table">
+            <div class="work-spec-row">
+              <span class="work-spec-key">Medium</span>
+              <span class="work-spec-val">油彩・キャンバス / Oil on canvas</span>
+            </div>
+            <div class="work-spec-row">
+              <span class="work-spec-key">Size</span>
+              <span class="work-spec-val">F50号・横 / F50 landscape</span>
+            </div>
+            <div class="work-spec-row">
+              <span class="work-spec-key">Subject</span>
+              <span class="work-spec-val">Syria — 3歳で死んだ難民の子供</span>
+            </div>
+          </div>
+          <p class="work-commentary-label">Commentary</p>
+          <div class="work-commentary">
+            <p>
+              これは<em>最後の言葉</em>を持つ絵画だ。タイトルそのものが証言であり、遺言だ。3歳の子どもがシリアの戦禍の中で言い残したというこの言葉——「ぜんぶかみさまにいいつけてやるんだから」——を、津田はキャンバスの題として刻んだ。
+            </p>
+            <p>
+              描かれた子どもは、まだここにいる。医療施設のベッドに座り、傷を負いながらも、こちらを見ている。あるいは見ていない。油彩の層が証言する——<em>この子は実在した</em>。誰も彼女の名を知らないとしても、この絵は彼女の存在を永続させる。
+            </p>
+          </div>
+          <div class="work-tags">
+            <span class="work-tag">Syria</span>
+            <span class="work-tag">証言</span>
+            <span class="work-tag">子ども</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- ── Work 02 ── -->
+      <article class="work-item reverse reveal" style="transition-delay:.06s">
+        <div class="work-img-col">
+          <div class="work-img-frame landscape"
+               onclick="openLB('images/refugees/_F30横_1_1057000000_アフリカ_.jpg','1,057,000,000 — アフリカ')"
+               role="button" tabindex="0" aria-label="作品を拡大表示"
+               onkeydown="if(event.key==='Enter')this.click()">
+            <span class="work-catalog-num">REF-02</span>
+            <span class="work-size-badge">F30</span>
+            <img src="images/refugees/_F30横_1_1057000000_アフリカ_.jpg"
+                 alt="1,057,000,000 — アフリカ"
+                 loading="lazy" decoding="async">
+            <span class="work-zoom-hint">Expand ↗</span>
+          </div>
+        </div>
+        <div class="work-text-col">
+          <p class="work-index">Work 02</p>
+          <span class="work-year">—</span>
+          <h3 class="work-title-ja">1,057,000,000</h3>
+          <span class="work-title-en">One Billion Fifty-Seven Million — Africa</span>
+          <div class="work-spec-table">
+            <div class="work-spec-row">
+              <span class="work-spec-key">Medium</span>
+              <span class="work-spec-val">油彩・キャンバス / Oil on canvas</span>
+            </div>
+            <div class="work-spec-row">
+              <span class="work-spec-key">Size</span>
+              <span class="work-spec-val">F30号・横 / F30 landscape</span>
+            </div>
+            <div class="work-spec-row">
+              <span class="work-spec-key">Subject</span>
+              <span class="work-spec-val">Africa — 人口・数・匿名性</span>
+            </div>
+          </div>
+          <p class="work-commentary-label">Commentary</p>
+          <div class="work-commentary">
+            <p>
+              10億5700万——アフリカ大陸の人口を示す数字がタイトルに置かれる。この巨大な数の中に、<em>一人の子どもの身体</em>が横たわる。うずくまり、手を組み、頭を伏せている。
+            </p>
+            <p>
+              数は人を匿名化する。10億という規模において、個人の苦痛は統計の誤差となる。しかしこの絵画は、その巨数の<em>背後にある一つの身体の重さ</em>を問う。横たわる子どもに名前はない。しかし、油彩の厚みがその存在に固有の重力を与えている。
+            </p>
+          </div>
+          <div class="work-tags">
+            <span class="work-tag">Africa</span>
+            <span class="work-tag">匿名と個</span>
+            <span class="work-tag">数と身体</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- ── Work 03 ── -->
+      <article class="work-item reveal" style="transition-delay:.08s">
+        <div class="work-img-col">
+          <div class="work-img-frame landscape"
+               onclick="openLB('images/refugees/_F50横_おんぶ_難民の子供_イフォ_.jpg','おんぶ — 難民の子供, イフォ')"
+               role="button" tabindex="0" aria-label="作品を拡大表示"
+               onkeydown="if(event.key==='Enter')this.click()">
+            <span class="work-catalog-num">REF-03</span>
+            <span class="work-size-badge">F50</span>
+            <img src="images/refugees/_F50横_おんぶ_難民の子供_イフォ_.jpg"
+                 alt="おんぶ — 難民の子供, イフォ"
+                 loading="lazy" decoding="async">
+            <span class="work-zoom-hint">Expand ↗</span>
+          </div>
+        </div>
+        <div class="work-text-col">
+          <p class="work-index">Work 03</p>
+          <span class="work-year">—</span>
+          <h3 class="work-title-ja">おんぶ</h3>
+          <span class="work-title-en">Carried on the Back — Ifo Refugee Camp</span>
+          <div class="work-spec-table">
+            <div class="work-spec-row">
+              <span class="work-spec-key">Medium</span>
+              <span class="work-spec-val">油彩・キャンバス / Oil on canvas</span>
+            </div>
+            <div class="work-spec-row">
+              <span class="work-spec-key">Size</span>
+              <span class="work-spec-val">F50号・横 / F50 landscape</span>
+            </div>
+            <div class="work-spec-row">
+              <span class="work-spec-key">Subject</span>
+              <span class="work-spec-val">Ifo Camp, Kenya — 難民の子供</span>
+            </div>
+          </div>
+          <p class="work-commentary-label">Commentary</p>
+          <div class="work-commentary">
+            <p>
+              「おんぶ」——これほど日常的な言葉が、これほど重い文脈に置かれることはない。ケニアのイフォ難民キャンプで撮られたこの像において、<em>背負うという行為</em>は愛情であると同時に、生き延びることの全重量だ。
+            </p>
+            <p>
+              子どもは背にしがみついている。その顔は、笑っているのか、泣いているのか。大判のキャンバスに描かれた近景の顔は、見る者と<em>呼吸の距離</em>で向き合う。イフォ難民キャンプには、2011年時点で推定40万人以上が暮らしていた。この子は、その40万のうちの一人だ。
+            </p>
+          </div>
+          <div class="work-tags">
+            <span class="work-tag">Kenya / Ifo</span>
+            <span class="work-tag">身体の接触</span>
+            <span class="work-tag">生の連鎖</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- ── Work 04 ── -->
+      <article class="work-item reverse reveal" style="transition-delay:.10s">
+        <div class="work-img-col">
+          <div class="work-img-frame landscape"
+               onclick="openLB('images/refugees/_F100号横_今_シリア.jpg','今 — シリア')"
+               role="button" tabindex="0" aria-label="作品を拡大表示"
+               onkeydown="if(event.key==='Enter')this.click()">
+            <span class="work-catalog-num">REF-04</span>
+            <span class="work-size-badge">F100</span>
+            <img src="images/refugees/_F100号横_今_シリア.jpg"
+                 alt="今 — シリア"
+                 loading="lazy" decoding="async">
+            <span class="work-zoom-hint">Expand ↗</span>
+          </div>
+        </div>
+        <div class="work-text-col">
+          <p class="work-index">Work 04</p>
+          <span class="work-year">—</span>
+          <h3 class="work-title-ja">今、シリア</h3>
+          <span class="work-title-en">Now, Syria</span>
+          <div class="work-spec-table">
+            <div class="work-spec-row">
+              <span class="work-spec-key">Medium</span>
+              <span class="work-spec-val">油彩・キャンバス / Oil on canvas</span>
+            </div>
+            <div class="work-spec-row">
+              <span class="work-spec-key">Size</span>
+              <span class="work-spec-val">F100号・横 / F100 landscape</span>
+            </div>
+            <div class="work-spec-row">
+              <span class="work-spec-key">Subject</span>
+              <span class="work-spec-val">Syria — 現在進行</span>
+            </div>
+          </div>
+          <p class="work-commentary-label">Commentary</p>
+          <div class="work-commentary">
+            <p>
+              タイトルは「今、シリア」だ。過去形ではない。<em>現在進行形</em>の惨禍として、この絵画は描かれた。F100号（162×130cm）——このシリーズ最大の画面に、子どもの顔と両手が迫ってくる。
+            </p>
+            <p>
+              血と傷と、それでも開かれた口。叫んでいるのか、呼んでいるのか。両手を前に差し出す姿勢は、助けを求めているのか、あるいはこちらを押し止めようとしているのか。大判の画面が持つ<em>圧倒的な身体性</em>が、「見て見ぬふり」を不可能にする。これは最も激しく、最も静かな告発だ。
+            </p>
+          </div>
+          <div class="work-tags">
+            <span class="work-tag">Syria</span>
+            <span class="work-tag">現在進行</span>
+            <span class="work-tag">大画面・F100</span>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ════════════════════════════
+         TIMELINE
+    ════════════════════════════ -->
+    <section class="page-section" id="timeline" aria-labelledby="tl-title">
+      <div class="section-head">
+        <div>
+          <p class="section-sidebar-label reveal">Timeline</p>
+          <p class="section-sidebar-num reveal" style="transition-delay:.1s">年譜</p>
+        </div>
+        <div>
+          <h2 id="tl-title">
+            <p class="section-title-en reveal" style="transition-delay:.08s">Chronology</p>
+            <p class="section-title-jp reveal" style="transition-delay:.14s">難民シリーズ 制作年譜</p>
+          </h2>
+        </div>
+      </div>
+      <div class="tl-wrap" id="tl-wrap">
+        <div class="tl-year-col" aria-hidden="true"></div>
+        <div class="tl-spine-col" aria-hidden="true">
+          <div class="tl-spine-track"></div>
+          <div class="tl-spine-fill" id="tl-spine-fill"></div>
+        </div>
+        <div class="tl-entries" id="tl-entries">
+          <div class="tl-entry" data-year="2014">
+            <div class="tl-node" aria-hidden="true">
+              <div class="tl-dot"></div>
+              <span class="tl-year-label">2014</span>
+            </div>
+            <div class="tl-thumb"
+                 onclick="openLB('images/refugees/_F50横__ぜんぶかみさまにいいつけてやるんだから____3歳で死んだシリアの難民の子供が最後に言い残した言葉__2014_.jpg','ぜんぶかみさまにいいつけてやるんだから')"
+                 role="button" tabindex="0" aria-label="拡大">
+              <img src="images/refugees/_F50横__ぜんぶかみさまにいいつけてやるんだから____3歳で死んだシリアの難民の子供が最後に言い残した言葉__2014_.jpg"
+                   alt="" loading="lazy">
+            </div>
+            <div class="tl-info">
+              <p class="tl-series-label">Refugees — Syria</p>
+              <p class="tl-title">ぜんぶかみさまにいいつけてやるんだから</p>
+              <p class="tl-title-en-sm">I'll Tell God Everything</p>
+              <p class="tl-spec-sm">油彩・キャンバス &nbsp;F50号横</p>
+            </div>
+          </div>
+          <div class="tl-entry" data-year="—">
+            <div class="tl-node" aria-hidden="true">
+              <div class="tl-dot"></div>
+              <span class="tl-year-label">—</span>
+            </div>
+            <div class="tl-thumb"
+                 onclick="openLB('images/refugees/_F30横_1_1057000000_アフリカ_.jpg','1,057,000,000 — アフリカ')"
+                 role="button" tabindex="0" aria-label="拡大">
+              <img src="images/refugees/_F30横_1_1057000000_アフリカ_.jpg"
+                   alt="" loading="lazy">
+            </div>
+            <div class="tl-info">
+              <p class="tl-series-label">Refugees — Africa</p>
+              <p class="tl-title">1,057,000,000</p>
+              <p class="tl-title-en-sm">One Billion Fifty-Seven Million</p>
+              <p class="tl-spec-sm">油彩・キャンバス &nbsp;F30号横</p>
+            </div>
+          </div>
+          <div class="tl-entry" data-year="—">
+            <div class="tl-node" aria-hidden="true">
+              <div class="tl-dot"></div>
+              <span class="tl-year-label">—</span>
+            </div>
+            <div class="tl-thumb"
+                 onclick="openLB('images/refugees/_F50横_おんぶ_難民の子供_イフォ_.jpg','おんぶ — イフォ')"
+                 role="button" tabindex="0" aria-label="拡大">
+              <img src="images/refugees/_F50横_おんぶ_難民の子供_イフォ_.jpg"
+                   alt="" loading="lazy">
+            </div>
+            <div class="tl-info">
+              <p class="tl-series-label">Refugees — Ifo, Kenya</p>
+              <p class="tl-title">おんぶ</p>
+              <p class="tl-title-en-sm">Carried on the Back</p>
+              <p class="tl-spec-sm">油彩・キャンバス &nbsp;F50号横</p>
+            </div>
+          </div>
+          <div class="tl-entry" data-year="—">
+            <div class="tl-node" aria-hidden="true">
+              <div class="tl-dot"></div>
+              <span class="tl-year-label">—</span>
+            </div>
+            <div class="tl-thumb"
+                 onclick="openLB('images/refugees/_F100号横_今_シリア.jpg','今、シリア')"
+                 role="button" tabindex="0" aria-label="拡大">
+              <img src="images/refugees/_F100号横_今_シリア.jpg"
+                   alt="" loading="lazy">
+            </div>
+            <div class="tl-info">
+              <p class="tl-series-label">Refugees — Syria</p>
+              <p class="tl-title">今、シリア</p>
+              <p class="tl-title-en-sm">Now, Syria</p>
+              <p class="tl-spec-sm">油彩・キャンバス &nbsp;F100号横</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════
+         STATEMENT
+    ════════════════════════════ -->
+    <section class="page-section" id="statement" aria-labelledby="stmt-title">
+      <div class="section-head">
+        <div>
+          <p class="section-sidebar-label reveal">Statement</p>
+          <p class="section-sidebar-num reveal" style="transition-delay:.1s">声明</p>
+        </div>
+        <div>
+          <h2 id="stmt-title">
+            <p class="section-title-en reveal" style="transition-delay:.08s">Artist Statement</p>
+            <p class="section-title-jp reveal" style="transition-delay:.14s">作家のことば</p>
+          </h2>
+          <blockquote class="statement-blockquote reveal" style="transition-delay:.22s">
+            描かないことは、見なかったことと同じだ。<br>
+            だから私は、描く。
+          </blockquote>
+          <p class="statement-text reveal" style="transition-delay:.30s">
+            このシリーズを描き始めたとき、私は絵画に何ができるかより、<em>絵画が何をしなければならないか</em>を考えていた。報道写真はすでにそこにある。誰もが見ようと思えば見られる。しかし、見られていない。
+          </p>
+          <p class="statement-text reveal" style="transition-delay:.38s">
+            油彩を選んだのは、その<em>物質としての重さ</em>のためだ。絵の具は乾く。固まる。残る。写真が光の記録であるなら、油彩は物質の記録だ。画家が何時間もキャンバスの前に立ち、子どもの顔の輪郭を何度も引き直した事実——それが絵画の中に蓄積する。
+          </p>
+          <p class="statement-text reveal" style="transition-delay:.44s">
+            「ぜんぶかみさまにいいつけてやるんだから」——その言葉を初めて読んだとき、私は長い間、何もできなかった。この子は神を信じていた。神に告訴しようとしていた。そして死んだ。私が絵を描くことは、<em>その告訴状を受け取ること</em>だと思っている。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 戻るリンク -->
+    <div class="back-wrap reveal">
+      <a href="works.html" class="back-link">
+        <span class="back-link-arrow">←</span>
+        Back to Works Index
+      </a>
+    </div>
+  </main>
+
+  <!-- LIGHTBOX -->
+  <div class="lb" id="lb" role="dialog" aria-modal="true"
+       aria-label="作品拡大表示">
+    <button class="lb-close" onclick="closeLB()" aria-label="閉じる">
+      <span class="lb-close-x" aria-hidden="true">×</span> Close
+    </button>
+    <div class="lb-img-wrap" onclick="event.stopPropagation()">
+      <img id="lb-img" src="" alt="">
+      <p class="lb-caption" id="lb-caption"></p>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <section class="contact-section" id="contact" aria-labelledby="contact-title">
+    <p class="section-label-center" aria-hidden="true">Contact</p>
+    <h2 id="contact-title" class="contact-heading">お問い合わせ</h2>
+    <p class="contact-body">
+      展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。
+    </p>
+    <a href="contact.html" class="contact-btn">問い合わせフォームへ →</a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
+    <p class="footer-copy">© 2026 Tsuda Shoichi. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    'use strict';
+    /* ── Nav ── */
+    function toggleMenu() {
+      var links = document.getElementById('nav-links');
+      var btn   = document.getElementById('nav-cta-btn');
+      var ham   = document.getElementById('hamburger');
+      var open  = links.classList.toggle('open');
+      ham.setAttribute('aria-expanded', String(open));
+      btn.style.display = open ? 'none' : '';
+    }
+    function closeMenu() {
+      var links = document.getElementById('nav-links');
+      var btn   = document.getElementById('nav-cta-btn');
+      var ham   = document.getElementById('hamburger');
+      links.classList.remove('open');
+      ham.setAttribute('aria-expanded', 'false');
+      btn.style.display = '';
+    }
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') { closeMenu(); closeLB(); }
+    });
+
+    /* ── スクロールプログレスバー ── */
+    var progressBar = document.getElementById('scrollProgress');
+    function updateProgress() {
+      var scrolled = window.scrollY;
+      var total    = document.documentElement.scrollHeight - window.innerHeight;
+      progressBar.style.width = (total > 0 ? (scrolled / total * 100) : 0) + '%';
+    }
+
+    /* ── タイムライン縦線 ── */
+    var spineFill = document.getElementById('tl-spine-fill');
+    var tlWrap    = document.getElementById('tl-wrap');
+    function updateSpine() {
+      if (!tlWrap || !spineFill) return;
+      var rect   = tlWrap.getBoundingClientRect();
+      var totalH = tlWrap.offsetHeight;
+      if (totalH <= 0) return;
+      var pct = (window.innerHeight * 0.55 - rect.top) / totalH * 100;
+      spineFill.style.height = Math.max(0, Math.min(100, pct)) + '%';
+    }
+
+    /* ── ページ内ナビ アクティブ制御 ── */
+    var pageNav  = document.getElementById('pageNav');
+    var navItems = Array.from(document.querySelectorAll('.page-nav-item'));
+    var sections = ['intro','works-gallery','timeline','statement'].map(function(id) {
+      return document.getElementById(id);
+    });
+    function updatePageNav() {
+      var scrollY = window.scrollY + window.innerHeight * 0.4;
+      var active  = null;
+      sections.forEach(function(sec) {
+        if (sec && sec.offsetTop <= scrollY) active = sec;
+      });
+      navItems.forEach(function(item) {
+        var target = document.getElementById(item.dataset.target);
+        item.classList.toggle('active', target === active);
+      });
+      pageNav.classList.toggle('visible', window.scrollY > window.innerHeight * 0.6);
+    }
+
+    /* ── Reveal ── */
+    var revealObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          revealObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(function(el) { revealObs.observe(el); });
+
+    /* ── タイムラインエントリ ── */
+    var tlEntryObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          tlEntryObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '-5% 0px -20% 0px' });
+    document.querySelectorAll('.tl-entry').forEach(function(el) { tlEntryObs.observe(el); });
+
+    /* ── ページ内ナビ クリック ── */
+    navItems.forEach(function(item) {
+      item.addEventListener('click', function() {
+        var target = document.getElementById(item.dataset.target);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    /* ── スクロールイベント（RAF） ── */
+    var ticking = false;
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        requestAnimationFrame(function() {
+          updateProgress();
+          updateSpine();
+          updatePageNav();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    updateProgress();
+    updateSpine();
+    updatePageNav();
+
+    /* ── Lightbox ── */
+    function openLB(src, caption) {
+      var lb  = document.getElementById('lb');
+      var img = document.getElementById('lb-img');
+      var cap = document.getElementById('lb-caption');
+      img.src = src;
+      img.alt = caption || '';
+      if (cap) cap.textContent = caption || '';
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() { lb.classList.add('vis'); });
+      });
+    }
+    function closeLB() {
+      var lb = document.getElementById('lb');
+      lb.classList.remove('vis');
+      setTimeout(function() {
+        lb.classList.remove('open');
+        document.body.style.overflow = '';
+        document.getElementById('lb-img').src = '';
+      }, 360);
+    }
+    document.getElementById('lb').addEventListener('click', function(e) {
+      if (e.target === this) closeLB();
+    });
+  </script>
+</body>
+</html>
