@@ -49,8 +49,8 @@
       padding-right: env(safe-area-inset-right);
     }
     
-    /* モーダルが開いている時は背景のスクロールを固定 */
-    body.modal-open {
+    /* モーダルやスマホメニューが開いている時は背景のスクロールを固定 */
+    body.modal-open, body.menu-open {
       overflow: hidden;
     }
 
@@ -58,42 +58,47 @@
     a   { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
     a:hover { opacity: 0.45; }
 
-    /* =====================================================
-       NAVIGATION
-    ===================================================== */
-    .global-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: clamp(1rem, 2.5vh, 1.75rem) var(--px);
-      border-bottom: 0.5px solid var(--border);
+
+    /* ════════════════════════════════════════
+       ★ UNIFIED HEADER (統一デザイン)
+    ════════════════════════════════════════ */
+    nav#top-nav {
       position: sticky; top: 0; z-index: 200;
-      background: rgba(7,7,6,0.94);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: clamp(14px, 3vw, 36px) var(--px);
+      border-bottom: 0.5px solid var(--border);
+      background: rgba(13,13,11,0.94);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     }
-    .nav-logo {
-      font-family: var(--en);
-      font-size: clamp(0.75rem, 2vw, 0.85rem);
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--accent);
+    .nav-logo-unified {
+      font-family: var(--en); font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+      letter-spacing: 0.3em; font-weight: 300; color: var(--accent);
+      text-decoration: none; text-transform: uppercase; transition: opacity 0.4s ease;
     }
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: clamp(1rem, 3vw, 2.5rem);
+    .nav-logo-unified:hover { opacity: 0.5; }
+    
+    .nav-links { display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0; }
+    .nav-links a {
+      font-family: var(--en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
+      letter-spacing: 0.25em; color: var(--muted); text-decoration: none;
+      text-transform: uppercase; transition: color 0.3s ease;
     }
-    .nav-link {
-      font-family: var(--en);
-      font-size: clamp(0.6rem, 1.4vw, 0.7rem);
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--muted);
-      transition: color 0.3s ease;
-      white-space: nowrap;
+    .nav-links a:hover { color: var(--accent); }
+    
+    .nav-cta {
+      font-family: var(--en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
+      letter-spacing: 0.25em; text-transform: uppercase;
+      border: 0.5px solid rgba(184,168,152,0.4); padding: 0.55rem 1.4rem;
+      color: var(--accent); text-decoration: none; transition: background 0.25s, color 0.25s;
     }
-    .nav-link:hover { color: var(--fg); opacity: 1; }
+    .nav-cta:hover { background: rgba(184,168,152,0.08); color: var(--fg); }
+    
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-hamburger span {
+      display: block; width: 22px; height: 0.5px;
+      background: var(--accent); margin: 6px 0; transition: all 0.25s;
+    }
+
 
     /* =====================================================
        HERO
@@ -157,7 +162,8 @@
     }
     .hero-eyebrow::before {
       content: '';
-      width: 20px; height: 0.5px;
+      width: 20px;
+      height: 0.5px;
       background: var(--muted); flex-shrink: 0;
     }
     .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
@@ -296,7 +302,8 @@
     .credit {
       font-family: var(--en);
       font-size: clamp(0.55rem, 1.2vw, 0.66rem);
-      color: var(--dim); letter-spacing: 0.1em;
+      color: var(--dim);
+      letter-spacing: 0.1em;
       margin-bottom: clamp(1.5rem, 3vh, 2.8rem);
     }
 
@@ -309,7 +316,8 @@
     .concept-body p { margin-bottom: 1.5em; text-align: justify; }
     .concept-body p:last-child { margin-bottom: 0; }
     .concept-body em {
-      font-style: normal; color: var(--fg);
+      font-style: normal;
+      color: var(--fg);
       border-bottom: 0.5px solid var(--border-md); padding-bottom: 1px;
     }
 
@@ -322,7 +330,8 @@
 
     .works-header {
       padding: 0 var(--px) clamp(2rem, 5vh, 6rem);
-      display: flex; align-items: baseline;
+      display: flex;
+      align-items: baseline;
       justify-content: space-between;
       border-bottom: 0.5px solid var(--border);
       margin-bottom: clamp(3rem, 7vh, 8rem);
@@ -330,7 +339,8 @@
     .works-header-label {
       font-family: var(--en);
       font-size: clamp(0.55rem, 1.2vw, 0.63rem);
-      letter-spacing: 0.3em; color: var(--muted); text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: var(--muted); text-transform: uppercase;
     }
     .works-count {
       font-family: var(--en);
@@ -358,7 +368,8 @@
     .artwork-block:nth-child(even) .artwork-txt-col .section-label { flex-direction: row-reverse; }
     .artwork-block:nth-child(even) .artwork-txt-col .section-label::after { display: none; }
     .artwork-block:nth-child(even) .artwork-txt-col .section-label::before {
-      content: ''; flex: 1; height: 0.5px; background: var(--border);
+      content: ''; flex: 1; height: 0.5px;
+      background: var(--border);
     }
 
     .artwork-img-col { position: relative; }
@@ -390,7 +401,8 @@
       font-family: var(--en);
       font-size: 0.6rem; letter-spacing: 0.2em;
       color: #fff; background: rgba(0,0,0,0.5);
-      padding: 6px 12px; border-radius: 20px;
+      padding: 6px 12px;
+      border-radius: 20px;
       opacity: 0; transform: translateY(10px);
       transition: opacity 0.3s ease, transform 0.3s ease;
       backdrop-filter: blur(4px);
@@ -408,7 +420,8 @@
         filter: grayscale(0%) brightness(0.97);
       }
       a.zoom-trigger:hover::after {
-        opacity: 1; transform: translateY(0);
+        opacity: 1;
+        transform: translateY(0);
       }
     }
 
@@ -441,7 +454,8 @@
     .artwork-year {
       font-family: var(--en);
       font-size: clamp(0.55rem, 1.2vw, 0.7rem);
-      letter-spacing: 0.2em; color: var(--dim);
+      letter-spacing: 0.2em;
+      color: var(--dim);
       margin-bottom: 0.5rem;
       opacity: 0; transform: translateY(14px);
       transition: opacity 0.8s ease var(--td, 0.15s), transform 0.8s var(--ease) var(--td, 0.15s);
@@ -499,7 +513,8 @@
     .artwork-block.in-view .artwork-spec { opacity: 1; }
 
     .artwork-divider {
-      width: 0; height: 0.5px;
+      width: 0;
+      height: 0.5px;
       background: var(--border-md);
       margin-bottom: clamp(1.2rem, 3vh, 2.5rem);
       transition: width 1.2s var(--ease) 0.5s;
@@ -590,35 +605,61 @@
       transform: scale(1.1);
     }
 
-    /* =====================================================
-       FOOTER
-    ===================================================== */
-    .global-footer {
-      padding: clamp(2rem, 5vh, 5rem) var(--px);
-      border-top: 0.5px solid var(--border);
-      display: flex; justify-content: space-between; align-items: center;
-      flex-wrap: wrap; gap: 1rem;
+    /* ════════════════════════════════════════
+       ★ UNIFIED CONTACT & FOOTER (統一デザイン)
+    ════════════════════════════════════════ */
+    .contact-section {
+      position: relative; z-index:1; padding: 7rem var(--px); text-align: center;
+      border-top: 0.5px solid rgba(255,255,255,0.08);
     }
-    .footer-logo {
-      font-family: var(--en);
-      font-size: clamp(0.65rem, 1.5vw, 0.8rem);
-      letter-spacing: 0.15em; color: var(--dim);
+    .contact-label {
+      font-family: var(--en); font-size: 10px; letter-spacing: 0.28em; color: var(--muted);
+      text-transform: uppercase; margin-bottom: 2rem;
+      display: flex; align-items: center; justify-content: center; gap: 1rem;
     }
-    .footer-copy {
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      font-size: clamp(0.5rem, 1vw, 0.63rem);
-      color: var(--dim); letter-spacing: 0.05em;
+    .contact-label::before, .contact-label::after {
+      content: ''; width: 32px; height: 0.5px; background: rgba(255,255,255,0.15);
+    }
+    .contact-heading {
+      font-family: var(--jp); font-size: clamp(1.6rem,4vw,3rem); font-weight: 200;
+      line-height: 1.2; color: var(--fg); margin-bottom: 1.5rem; letter-spacing: -0.01em;
+    }
+    .contact-body-text {
+      font-family: var(--jp); font-size: 14px; color: rgba(237,233,228,0.55);
+      margin: 0 auto 2.5rem; max-width: 400px; line-height: 1.95;
+    }
+    .contact-btn {
+      display: inline-block; border: 0.5px solid rgba(237,233,228,0.40); padding: 0.9rem 2.75rem;
+      font-family: var(--en); font-size: clamp(0.6rem,1.5vw,0.7rem); letter-spacing: 0.18em;
+      color: var(--fg); text-decoration: none; text-transform: uppercase; transition: background 0.2s;
+    }
+    .contact-btn:hover { background: rgba(237,233,228,0.07); }
+
+    footer.unified-footer {
+      position:relative; z-index:1; padding: clamp(32px,6vh,72px) var(--px);
+      display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-logo-unified {
+      font-family: var(--jp); font-size: 14px; font-weight:200;
+      color: rgba(237,233,228,0.30); letter-spacing:0.08em;
+    }
+    .footer-copy-unified {
+      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
+      letter-spacing:0.18em; color: var(--muted);
     }
 
     /* =====================================================
        UTILITY ANIMATIONS
     ===================================================== */
     .fade-up {
-      opacity: 0; transform: translateY(20px);
+      opacity: 0;
+      transform: translateY(20px);
       transition: opacity 1s var(--ease), transform 1s var(--ease);
       transition-delay: var(--sd, 0ms);
     }
-    .fade-up.in-view { opacity: 1; transform: translateY(0); }
+    .fade-up.in-view { opacity: 1;
+      transform: translateY(0); }
 
     @keyframes fadeSlideUp {
       from { opacity: 0; transform: translateY(8px); }
@@ -644,6 +685,18 @@
       .artwork-block:nth-child(even) .artwork-divider { margin-left: 0; }
     }
 
+    @media (max-width: 768px) {
+      nav#top-nav { padding: 1rem 1.25rem; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: block; }
+      .nav-links.open {
+        display: flex; flex-direction: row; flex-wrap: nowrap; position: fixed; inset: 0;
+        background: rgba(13,13,11,0.98); align-items: center; justify-content: center;
+        gap: 0.6rem; z-index: 300; padding: 1rem; overflow-x: auto;
+      }
+      .nav-links.open li a { font-size: 0.9rem; padding: 0.6rem 0.5rem; display: block; white-space: nowrap; }
+    }
+
     @media (max-width: 480px) {
       .hero-scroll { display: flex; transform: scale(0.8); transform-origin: bottom right; }
       .works-header { flex-direction: column; gap: 0.5rem; }
@@ -664,11 +717,18 @@
 
 <body>
 
-  <nav class="global-nav">
-    <a href="index.html" class="nav-logo">Tsuda Shoichi</a>
-    <div class="nav-right">
-      <a href="works.html" class="nav-link">Works Index</a>
-    </div>
+  <nav id="top-nav">
+    <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html#statement" onclick="closeMenu()">Statement</a></li>
+      <li><a href="index.html#works"     onclick="closeMenu()">Works</a></li>
+      <li><a href="index.html#profile"   onclick="closeMenu()">Profile</a></li>
+      <li><a href="index.html#news"      onclick="closeMenu()">News</a></li>
+    </ul>
+    <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
   </nav>
 
   <main>
@@ -714,23 +774,6 @@
         <span class="works-count">03</span>
       </div>
 
-      <!-- 
-      ===============================================================
-       [追加ガイド] 今後、新しい作品を追加する場合の手順
-      ===============================================================
-      以下の <div class="artwork-block"> から </div> までをコピーして、
-      リストの最後（またはお好きな場所）に貼り付けてください。
-
-      1. id="blockX" の X を連番に変更する（例：block4）
-      2. <span class="artwork-num"> の数字を変更する（例：04）
-      3. <a href="..."> の中に「拡大表示させたい大きな画像」のパスを入れる
-      4. data-caption="..." の中に、拡大時に表示させたいタイトルを入れる
-      5. <img src="..."> の中に「ページに表示する画像」のパスを入れる
-      6. タイトル、年代、解説文(<p class="artwork-desc">)、スペックを書き換える
-      ===============================================================
-      -->
-
-      <!-- Work 01 -->
       <div class="artwork-block" id="block1">
         <div class="artwork-img-col">
           <span class="artwork-num">01</span>
@@ -755,7 +798,6 @@
         </div>
       </div>
 
-      <!-- Work 02 -->
       <div class="artwork-block" id="block2">
         <div class="artwork-img-col">
           <span class="artwork-num">02</span>
@@ -780,7 +822,6 @@
         </div>
       </div>
 
-      <!-- Work 03 -->
       <div class="artwork-block" id="block3">
         <div class="artwork-img-col">
           <span class="artwork-num">03</span>
@@ -808,12 +849,24 @@
     </section>
   </main>
 
-  <footer class="global-footer">
-    <p class="footer-logo">Tsuda Shoichi</p>
-    <p class="footer-copy">© Tsuda Shoichi. All Rights Reserved.</p>
+
+  <section class="contact-section" id="contact">
+    <p class="contact-label">Contact</p>
+    <h2 class="contact-heading">お問い合わせ</h2>
+    <p class="contact-body-text">
+      展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。
+    </p>
+    <a href="https://sh012da.github.io/sh01/contact.html" class="contact-btn">
+      問い合わせフォームへ →
+    </a>
+  </section>
+
+  <footer class="unified-footer">
+    <p class="footer-logo-unified">津田 翔一 / Tsuda Shoichi</p>
+    <p class="footer-copy-unified">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
-  <!-- HTML末尾にオリジナルモーダルの構造を追加 -->
+
   <div id="customModal" class="custom-modal" aria-hidden="true">
     <div class="modal-bg" id="modalBg"></div>
     <button class="modal-close" id="modalClose" aria-label="閉じる">×</button>
@@ -824,6 +877,27 @@
   </div>
 
   <script>
+    /* ── 統一ヘッダーのナビゲーション（スマホメニュー）開閉処理 ── */
+    function toggleMenu() {
+      const links = document.getElementById('nav-links');
+      const btn   = document.getElementById('nav-cta-btn');
+      if(links) {
+        links.classList.toggle('open');
+        document.body.classList.toggle('menu-open', links.classList.contains('open'));
+      }
+      if(btn) btn.style.display = links.classList.contains('open') ? 'none' : '';
+    }
+    function closeMenu() {
+      const links = document.getElementById('nav-links');
+      const btn   = document.getElementById('nav-cta-btn');
+      if(links) {
+        links.classList.remove('open');
+        document.body.classList.remove('menu-open');
+      }
+      if(btn) btn.style.display = '';
+    }
+
+
     /* ── 0. CUSTOM MODAL LOGIC ──────────────────────────── */
     document.addEventListener("DOMContentLoaded", function() {
       const modal = document.getElementById('customModal');
@@ -861,7 +935,6 @@
       zoomTriggers.forEach(trigger => {
         trigger.addEventListener('click', openModal);
       });
-
       // 背景の暗い部分か、×ボタンをクリックしたら閉じる
       modalBg.addEventListener('click', closeModal);
       modalClose.addEventListener('click', closeModal);
