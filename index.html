@@ -42,6 +42,9 @@
       line-height: 1.7;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      /* ★不自然な改行を防ぐ基本設定 */
+      word-break: keep-all; 
+      overflow-wrap: break-word;
     }
     body.no-scroll { overflow: hidden; }
 
@@ -255,9 +258,8 @@
       line-height: 1.8; letter-spacing: 0.05em; color: var(--text);
       max-width: 1000px; width: 100%;
       text-shadow: 0 4px 24px rgba(0,0,0,0.85); 
-      word-break: keep-all;
-      overflow-wrap: break-word;
       filter: blur(0);
+      /* ★強制改行のための指定を緩和。全体のkeep-allに従わせる */
     }
 
     .concept-para.ito-intro {
@@ -292,7 +294,8 @@
     }
     .concept-para {
       font-size: clamp(1rem, 3.2vw, 1.12rem); font-weight: 300; line-height: 2.35;
-      color: rgba(232,228,219,0.92); letter-spacing: 0.07em; word-break: normal; overflow-wrap: break-word;
+      color: rgba(232,228,219,0.92); letter-spacing: 0.07em; 
+      /* ★ここも body の keep-all を活かすため、word-break: normal を削除 */
     }
     .concept-para em {
       font-style: normal;
@@ -438,9 +441,21 @@
     .tl-desc em { font-style: normal; color: #fff; border-bottom: 0.5px solid rgba(232,228,219,0.35); padding-bottom: 1px; }
 
     .tl-process { margin-top: 2rem; display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
-    .tl-process span { font-family: var(--en); font-size: 11px; letter-spacing: 0.15em; color: rgba(232,228,219,0.55); text-transform: uppercase;
-      border: 0.5px solid rgba(232,228,219,0.15); padding: 5px 14px; border-radius: 20px; transition: color 0.3s, border-color 0.3s, background 0.3s; }
-    .tl-process span:hover { color: var(--text); border-color: rgba(203,191,176,0.5); background: rgba(255,255,255,0.03); }
+    /* ★ スマホでのタップ演出復活のための修正（:active, :focus を追加） */
+    .tl-process span { 
+      font-family: var(--en); font-size: 11px; letter-spacing: 0.15em; color: rgba(232,228,219,0.55); text-transform: uppercase;
+      border: 0.5px solid rgba(232,228,219,0.15); padding: 5px 14px; border-radius: 20px; transition: color 0.3s, border-color 0.3s, background 0.3s; 
+      /* スマホでタップしやすくするための設定 */
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tl-process span:hover,
+    .tl-process span:active,
+    .tl-process span:focus { 
+      color: var(--text); 
+      border-color: rgba(203,191,176,0.5); 
+      background: rgba(255,255,255,0.03); 
+    }
 
     .cta-wrapper { text-align: center; margin-top: 8rem; width: 100%; display: flex; justify-content: center; }
     .works-archive-cta {
@@ -632,7 +647,8 @@
         box-sizing: border-box;
       }
 
-      .concept-question { font-size: 1.35rem; line-height: 1.9; word-break: normal; }
+      /* ★ここにも不要な word-break の上書きがあれば削除・統一 */
+      .concept-question { font-size: 1.35rem; line-height: 1.9; }
       .concept-para.ito-intro { font-size: 0.95rem; line-height: 2; }
       .ito-block { margin: 0; padding: 1.5rem 1rem; width: 100%; box-sizing: border-box; }
 
@@ -1029,7 +1045,7 @@ var WORKS_DATA = [
   if (!entriesCol) return;
 
   WORKS_DATA.forEach(function (work, i) {
-    var tags = work.tags.map(function (t) { return '<span>' + t + '</span>'; }).join('');
+    var tags = work.tags.map(function (t) { return '<span tabindex="0">' + t + '</span>'; }).join('');
     var entry = document.createElement('article');
     entry.className = 'tl-entry';
     entry.dataset.year = work.year;
