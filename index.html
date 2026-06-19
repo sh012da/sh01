@@ -122,8 +122,7 @@
       object-fit: cover; object-position: center 30%; opacity: 0; transition: opacity 2.5s ease-in-out; will-change: opacity;
     }
     .hero-slide.active { opacity: 1; }
-    .hero-overlay { position: absolute; inset: 0; z-index: 1;
-      background: rgba(10,10,8,0.65); }
+    .hero-overlay { position: absolute; inset: 0; z-index: 1; background: rgba(10,10,8,0.65); }
     .hero > *:not(.hero-slideshow):not(.hero-overlay) { position: relative; z-index: 2; }
 
     @keyframes fadeUp  { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
@@ -214,12 +213,13 @@
       font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
       letter-spacing: 0.28em; color: var(--muted-col); text-transform: uppercase;
     }
-    .s-eyebrow::before, .s-eyebrow::after { content:""; width: 40px; height: 0.5px; background: rgba(232,228,219,0.2); }
+    .s-eyebrow::before, .s-eyebrow::after { content:"";
+      width: 40px; height: 0.5px; background: rgba(232,228,219,0.2); }
 
     #top-of-concept { scroll-margin-top: 120px; }
 
     /* ════════════════════════════════════════
-       ★オープニングステージ（重なり防止・明度調整対応版）
+       ★オープニングステージ（明度固定・タイピング対応版）
     ════════════════════════════════════════ */
     .opening-stage {
       position: relative;
@@ -238,14 +238,15 @@
     .opening-question {
       top: 28vh;
       z-index: 10;
+      opacity: 0.15; /* 最初から明度を下げた状態で固定 */
+      transform: scale(0.98);
+      pointer-events: none; /* マウスオーバーも無効化 */
     }
 
     .opening-ito {
       top: 54vh;
       z-index: 5;
-      opacity: 0; pointer-events: none; transition: opacity 1.4s var(--ease-expo);
     }
-    .opening-ito.ito-in { opacity: 1; pointer-events: auto; }
 
     .concept-question {
       font-family: var(--jp);
@@ -256,16 +257,7 @@
       text-shadow: 0 4px 24px rgba(0,0,0,0.85); 
       word-break: keep-all;
       overflow-wrap: break-word;
-      opacity: 1;
-      transition: opacity 1.6s var(--ease-expo), filter 1.6s var(--ease-expo), transform 1.6s var(--ease-expo);
-      filter: blur(0); transform: scale(1);
-    }
-
-    /* 30秒経過後に付与されるクラス：下の文章より暗くうっすらと残す。ホバー効果は削除。 */
-    .opening-question.q-dimmed { 
-      opacity: 0.15;
-      transform: scale(0.98); 
-      pointer-events: none; 
+      filter: blur(0);
     }
 
     .concept-para.ito-intro {
@@ -289,7 +281,8 @@
       text-shadow: 0 0 18px rgba(203,191,176,0.32), 0 2px 14px rgba(0,0,0,0.6);
     }
 
-    .concept-story { max-width: 900px; margin: 0 auto 10rem; text-align: left; }
+    .concept-story { max-width: 900px;
+      margin: 0 auto 10rem; text-align: left; }
     .concept-block { margin-bottom: 6rem; }
     .concept-block:last-child { margin-bottom: 0; }
     .concept-block-en {
@@ -384,23 +377,19 @@
       position: relative; display: flex; align-items: stretch;
       opacity: 0; transform: translateY(80px); filter: blur(5px) brightness(0.3);
       transition: opacity 1.6s var(--ease-expo), transform 1.6s var(--ease-expo), filter 1.6s var(--ease-expo);
-      scroll-margin-top: 180px;
-    }
+      scroll-margin-top: 180px; }
     .tl-entry.visible { opacity: 1; transform: translateY(0); filter: blur(0) brightness(1); }
 
     .tl-year-col { width: 160px; flex-shrink: 0; position: relative; }
-    .tl-year-sticky { position: sticky;
-      top: 200px; padding-right: 40px; display: flex; flex-direction: column; align-items: flex-end; }
+    .tl-year-sticky { position: sticky; top: 200px; padding-right: 40px; display: flex; flex-direction: column; align-items: flex-end; }
     .tl-year-btn {
       background: transparent; border: none; padding: 0; margin: 0;
       display: flex; align-items: center; justify-content: flex-end; gap: 16px;
-      cursor: pointer; color: rgba(232,228,219,0.3); transition: color 0.5s ease; width: 100%;
-    }
+      cursor: pointer; color: rgba(232,228,219,0.3); transition: color 0.5s ease; width: 100%; }
     .tl-year-num {
       font-family: var(--en); font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 300;
       letter-spacing: 0.05em;
-      line-height: 1; display: block; transition: transform 0.6s var(--ease-expo), text-shadow 0.6s ease; transform-origin: right center;
-    }
+      line-height: 1; display: block; transition: transform 0.6s var(--ease-expo), text-shadow 0.6s ease; transform-origin: right center; }
     .tl-year-indicator { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0; transform: scale(0.5);
       transition: all 0.5s var(--ease-expo); }
     .tl-year-btn:hover { color: rgba(232,228,219,0.8); }
@@ -415,8 +404,7 @@
     .tl-entry.visible .tl-dot { background: var(--accent);
       border-color: var(--accent); box-shadow: 0 0 0 4px rgba(203,191,176,0.1), 0 0 20px rgba(203,191,176,0.5); }
     .tl-dot-line { position: absolute;
-      left: 14px; top: 50%; transform: translateY(-50%); width: 0; height: 1px; background: linear-gradient(to right, rgba(203,191,176,0.6), transparent); transition: width 0.8s var(--ease-expo) 0.4s;
-    }
+      left: 14px; top: 50%; transform: translateY(-50%); width: 0; height: 1px; background: linear-gradient(to right, rgba(203,191,176,0.6), transparent); transition: width 0.8s var(--ease-expo) 0.4s; }
     .tl-entry.visible .tl-dot-line { width: 64px; }
 
     .tl-content-col { flex: 1; padding-left: 90px;
@@ -424,8 +412,7 @@
     .tl-img-link { display: block; text-decoration: none; flex-shrink: 0;
       width: var(--w, 500px); max-width: 100%; position: relative; }
     .tl-img-wrap { width: 100%; overflow: hidden;
-      border: 0.5px solid rgba(232,228,219,0.08); background: #080808; position: relative; transition: border-color 0.5s ease, box-shadow 0.5s ease;
-    }
+      border: 0.5px solid rgba(232,228,219,0.08); background: #080808; position: relative; transition: border-color 0.5s ease, box-shadow 0.5s ease; }
     .tl-img-wrap::after { content: ''; position: absolute; inset: 0; background: #080808; transform-origin: bottom;
       transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none; }
     .tl-entry.visible .tl-img-wrap::after { transform: scaleY(0); transition-delay: 0.3s; }
@@ -439,12 +426,12 @@
 
     .tl-info { flex: 1; min-width: 0; padding-top: 0.5rem; }
     .tl-series { font-family: var(--en);
-      font-size: 11px; letter-spacing: 0.25em; color: rgba(203,191,176,0.62); text-transform: uppercase; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 10px;
-    }
+      font-size: 11px; letter-spacing: 0.25em; color: rgba(203,191,176,0.62); text-transform: uppercase; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 10px; }
     .tl-series::before { content: ''; width: 24px; height: 1px; background: rgba(203,191,176,0.3); flex-shrink: 0; }
     .tl-title-ja { font-family: var(--jp); font-size: clamp(1.4rem, 2.5vw, 1.8rem); font-weight: 300; color: var(--text); line-height: 1.4; margin-bottom: 0.4rem;
       letter-spacing: 0.05em; }
-    .tl-title-en { font-family: var(--en); font-size: 15px; color: var(--muted-col); letter-spacing: 0.15em; margin-bottom: 1.4rem; font-weight: 300; font-style: italic; }
+    .tl-title-en { font-family: var(--en); font-size: 15px; color: var(--muted-col); letter-spacing: 0.15em; margin-bottom: 1.4rem; font-weight: 300;
+      font-style: italic; }
     .tl-spec { font-family: var(--en); font-size: 12px; color: rgba(232,228,219,0.5); line-height: 1.8; margin-bottom: 2rem; letter-spacing: 0.08em; }
 
     .tl-desc { font-size: clamp(15px, 1.2vw, 16px); line-height: 2.2; color: rgba(232,228,219,0.92); letter-spacing: 0.06em; max-width: 520px; }
@@ -452,8 +439,7 @@
 
     .tl-process { margin-top: 2rem; display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
     .tl-process span { font-family: var(--en); font-size: 11px; letter-spacing: 0.15em; color: rgba(232,228,219,0.55); text-transform: uppercase;
-      border: 0.5px solid rgba(232,228,219,0.15); padding: 5px 14px; border-radius: 20px; transition: color 0.3s, border-color 0.3s, background 0.3s;
-    }
+      border: 0.5px solid rgba(232,228,219,0.15); padding: 5px 14px; border-radius: 20px; transition: color 0.3s, border-color 0.3s, background 0.3s; }
     .tl-process span:hover { color: var(--text); border-color: rgba(203,191,176,0.5); background: rgba(255,255,255,0.03); }
 
     .cta-wrapper { text-align: center; margin-top: 8rem; width: 100%; display: flex; justify-content: center; }
@@ -472,8 +458,7 @@
     .cta-label-ja { font-family: var(--jp); font-size: 1.3rem;
       color: var(--text); font-weight: 300; letter-spacing: 0.2em; transition: color 0.4s ease; }
     .cta-arrow { display: block; margin-top: 1.5rem;
-      color: var(--accent); font-size: 1.6rem; transition: transform 0.5s var(--ease-expo), color 0.4s ease;
-    }
+      color: var(--accent); font-size: 1.6rem; transition: transform 0.5s var(--ease-expo), color 0.4s ease; }
     
     .works-archive-cta:hover .cta-label-en,
     .works-archive-cta:hover .cta-label-ja,
@@ -499,8 +484,7 @@
 
     .goals-column { display: flex; flex-direction: column; padding-top: 0.25rem; }
     .goals-header { font-family: var(--en);
-      font-size: clamp(0.55rem,1.5vw,0.65rem); letter-spacing: 0.22em; color: var(--muted-col); text-transform: uppercase; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 1rem;
-    }
+      font-size: clamp(0.55rem,1.5vw,0.65rem); letter-spacing: 0.22em; color: var(--muted-col); text-transform: uppercase; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 1rem; }
     .goals-header::after { content:''; width: 32px; height: 0.5px; background: rgba(232,228,219,0.2); }
     .goal-card { padding: 2rem 0; border-bottom: 0.5px solid var(--border); }
     .goal-card:last-child { border-bottom: none; }
@@ -518,10 +502,12 @@
       padding: 1.8rem 0; border-bottom: 0.5px solid var(--border); align-items: flex-start; }
     .news-date { font-family: var(--en); font-size: 12px;
       color: var(--muted-col); letter-spacing: 0.1em; min-width: 90px; padding-top: 0.15rem; white-space: nowrap; }
-    .news-body { font-size: 15px; color: rgba(232,228,219,0.85); line-height: 1.8; }
+    .news-body { font-size: 15px; color: rgba(232,228,219,0.85);
+      line-height: 1.8; }
     .news-tag { display: inline-block; font-family: var(--en); font-size: 10px; letter-spacing: 0.18em; border: 0.5px solid rgba(184,168,152,0.3);
       padding: 3px 10px; margin-bottom: 0.6rem; color: var(--muted-col); text-transform: uppercase; vertical-align: top; }
-    .news-body a { color: rgba(232,228,219,0.8); transition: color 0.2s; }
+    .news-body a { color: rgba(232,228,219,0.8);
+      transition: color 0.2s; }
     .news-body a:hover { color: var(--accent); }
 
     .contact-section { padding: 9rem 2.5rem; text-align: center; border-bottom: 0.5px solid var(--border); }
@@ -534,8 +520,10 @@
     .contact-btn:hover { color: var(--bg); background: var(--accent); border-color: var(--accent);
       box-shadow: 0 10px 30px rgba(203,191,176,0.22); transform: translateY(-3px); }
 
-    footer { padding: 3.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-    .footer-logo { font-family: var(--jp); font-size: 16px; font-weight: 300; color: rgba(232,228,219,0.5); letter-spacing: 0.05em; }
+    footer { padding: 3.5rem 2.5rem; display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .footer-logo { font-family: var(--jp); font-size: 16px; font-weight: 300; color: rgba(232,228,219,0.5);
+      letter-spacing: 0.05em; }
     .footer-copy { font-family: var(--en); font-size: 11px; color: rgba(232,228,219,0.32); letter-spacing: 0.14em; }
 
     /* ════════════════════════════════════════
@@ -546,29 +534,27 @@
       inset: 0; z-index: 998; background: rgba(8, 8, 7, 0.62);
       backdrop-filter: blur(6px) saturate(0.8); -webkit-backdrop-filter: blur(6px) saturate(0.8);
       opacity: 0; pointer-events: none;
-      transition: opacity 0.55s var(--ease-expo);
-    }
+      transition: opacity 0.55s var(--ease-expo); }
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
     .news-popup {
       position: fixed; top: 50%; left: 50%;
       transform: translate(-50%, -44%) scale(0.94);
       width: min(560px, calc(100vw - 3rem)); z-index: 999; opacity: 0; pointer-events: none;
-      transition: opacity 0.55s var(--ease-expo), transform 0.55s var(--ease-expo);
-    }
-    .news-popup.show { opacity: 1; transform: translate(-50%, -50%) scale(1); pointer-events: auto; }
+      transition: opacity 0.55s var(--ease-expo), transform 0.55s var(--ease-expo); }
+    .news-popup.show { opacity: 1; transform: translate(-50%, -50%) scale(1);
+      pointer-events: auto; }
     .news-popup-content {
       background: rgba(13,13,11,0.92); backdrop-filter: blur(24px) saturate(1.15);
       -webkit-backdrop-filter: blur(24px) saturate(1.15);
       border: 0.5px solid rgba(203,191,176,0.35); border-radius: 14px; padding: 3rem 3.2rem 2.6rem; position: relative;
-      box-shadow: 0 32px 80px rgba(0,0,0,0.85), 0 0 0 0.5px rgba(203,191,176,0.12);
-    }
+      box-shadow: 0 32px 80px rgba(0,0,0,0.85), 0 0 0 0.5px rgba(203,191,176,0.12); }
     .news-popup-close {
       position: absolute; top: 1.1rem; right: 1.3rem; background: none;
       border: none; color: var(--muted-col);
       font-size: 1.3rem; cursor: pointer; transition: color 0.3s; width: 44px; height: 44px;
-      display: flex; align-items: center; justify-content: center; border-radius: 50%;
-    }
+      display: flex; align-items: center;
+      justify-content: center; border-radius: 50%; }
     .news-popup-close:hover { color: var(--accent); background: rgba(255,255,255,0.04); }
     .news-popup-label { font-family: var(--en); font-size: 11px; letter-spacing: 0.28em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.8rem; }
     .news-popup-date { font-family: var(--en); font-size: 14px; color: var(--text); margin-bottom: 1rem; letter-spacing: 0.08em; }
@@ -579,8 +565,7 @@
 
     @media (max-width: 768px) {
       .news-popup { top: auto; left: auto;
-        bottom: 1rem; right: 1rem; transform: translateY(16px) scale(0.96); width: calc(100% - 2rem); max-width: none;
-      }
+        bottom: 1rem; right: 1rem; transform: translateY(16px) scale(0.96); width: calc(100% - 2rem); max-width: none; }
       .news-popup.show { transform: translateY(0) scale(1); }
       .news-popup-content { padding: 2rem 2rem 1.8rem; border-radius: 10px; }
     }
@@ -595,8 +580,7 @@
     .tw-cursor {
       display: inline-block; width: 1.5px; height: 1em; background: var(--accent);
       vertical-align: middle; margin-left: 2px;
-      animation: typing-cursor-blink 0.85s step-end infinite; will-change: opacity; border-radius: 1px;
-    }
+      animation: typing-cursor-blink 0.85s step-end infinite; will-change: opacity; border-radius: 1px; }
     @keyframes typing-cursor-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     @keyframes typing-cursor-fadeout { 0% { opacity: 1; } 100% { opacity: 0; } }
     .tw-cursor.fade-out { animation: typing-cursor-fadeout 0.8s ease forwards; }
@@ -621,8 +605,7 @@
       .nav-links { display: none; }
       .nav-hamburger { display: block; }
       .nav-links.open { display: flex; flex-direction: row; flex-wrap: nowrap; position: fixed; inset: 0; background: rgba(13,13,11,0.98);
-        align-items: center; justify-content: center; gap: 0.6rem; z-index: 300; padding: 1rem; overflow-x: auto;
-      }
+        align-items: center; justify-content: center; gap: 0.6rem; z-index: 300; padding: 1rem; overflow-x: auto; }
       .nav-links.open a { font-size: 0.9rem; padding: 0.6rem 0.5rem; display: block; white-space: nowrap; }
       .hero { padding: 5rem 1.5rem 4rem; min-height: 70vh; }
       .section { padding: 5rem 1.5rem; }
@@ -633,21 +616,20 @@
       
       /* ★ スマホでの文字のはみ出し防止と明度・位置の完璧な調整 */
       .opening-question { 
-        top: 22vh; 
+        top: 22vh;
         padding: 0 1rem; 
         width: 100%; 
         box-sizing: border-box; 
-        /* スマホ時は最初から明度を落とし、過剰に明るくならないようにする */
-        opacity: 0.3 !important; 
+        opacity: 0.3 !important; /* スマホも最初から明度を落とす */
         filter: blur(0px);
         transform: scale(0.98);
       }
       
       .opening-ito { 
-        top: 45vh; /* スマホで確実に画面内に入るように位置を調整 */
+        top: 45vh;
         padding: 0 1rem; 
         width: 100%; 
-        box-sizing: border-box; 
+        box-sizing: border-box;
       }
 
       .concept-question { font-size: 1.35rem; line-height: 1.9; word-break: normal; }
@@ -761,7 +743,7 @@
     </h2>
     <div class="opening-ito" id="openingIto" style="margin-top: 100px; margin-bottom: 200px;">
       <div class="concept-block ito-block" tabindex="0">
-        <p class="concept-para ito-intro">〈いと〉とは何か。<br>例えば、生まれた土地の記憶、地質、感覚——<br>それ以上還元できない、存在の最小単位。</p>
+        <p class="concept-para ito-intro" data-typewriter="true">〈いと〉とは何か。<br>例えば、生まれた土地の記憶、地質、感覚——<br>それ以上還元できない、存在の最小単位。</p>
       </div>
     </div>
   </div>
@@ -769,7 +751,7 @@
   <div class="concept-story">
     <div class="concept-block reveal" style="transition-delay:.30s">
       <span class="concept-block-en">Unit World</span>
-      <p class="concept-para">私は事物の存在に纏わるあらゆる傾向を、<em>〈単位世界（＝洞窟）〉</em>を構成する最小の事物（＝いと）と捉え、制作しています。〈いと〉とは、〈物語〉のそれ以上細分化できない要素です。そして〈物語〉とは、人間存在 turning そのものです。なぜなら、私たち人間はすべてを〈物語〉として理解し、機能させて生きているからです。</p>
+      <p class="concept-para">私は事物の存在に纏わるあらゆる傾向を、<em>〈単位世界（＝洞窟）〉</em>を構成する最小の事物（＝いと）と捉え、制作しています。〈いと〉とは、〈物語〉のそれ以上細分化できない要素です。そして〈物語〉とは、人間存在そのものです。なぜなら、私たち人間はすべてを〈物語〉として理解し、機能させて生きているからです。</p>
     </div>
 
     <div class="concept-block reveal" style="transition-delay:.40s">
@@ -1027,7 +1009,7 @@ var WORKS_DATA = [
     year: 2013, series: 'Refugees', titleJa: '今、シリア', titleEn: 'Syria, now',
     spec: '130.3 × 162 cm ／ 油彩・キャンバス', imgSrc: 'images/【F100号横】今、シリア.jpg', imgWidth: 720,
     link: 'work-refugees.html',
-    desc: 'シリア内戦の報道写真をもとに制作した作品です。流れ去るニュースの映像を絵画として描き直すことで、一人の人間の存在と向き合う時間を生み出生み出そうと試みました。傷ついた子どもの表情や仕草を通して、私たちと遠い出来事との距離を問いかけています。',
+    desc: 'シリア内戦の報道写真をもとに制作した作品です。流れ去るニュースの映像を絵画として描き直すことで、一人の人間の存在と向き合う時間を生み出そうと試みました。傷ついた子どもの表情や仕草を通して、私たちと遠い出来事との距離を問いかけています。',
     tags: ['難民(子ども) ', '証言']
   },
   {
@@ -1166,100 +1148,6 @@ var revealObs = new IntersectionObserver(function (entries) {
 document.querySelectorAll('.reveal').forEach(function (el) { revealObs.observe(el); });
 
 /* ════════════════════════════════════════════════════════
-   オープニング・ステージ演出（明度ダウン対応版）
-════════════════════════════════════════════════════════ */
-(function () {
-  var stage = document.querySelector('.opening-stage');
-  var question = document.getElementById('openingQuestion');
-  var ito = document.getElementById('openingIto');
-  if (!stage || !question || !ito) return;
-
-  var REDUCED   = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var ITO_MS    = 6000;    // ★ 6秒後に下の「〈いと〉とは何か〜」を表示開始
-  var DIM_MS    = 30000;   // ★ 30秒後にメインの問いの明度を落とす
-
-  var timers = [];
-  var running = false;
-  var hasCompleted = false;
-
-  function clearTimers() {
-    timers.forEach(function (t) { clearTimeout(t); });
-    timers = [];
-  }
-
-  // 完全に画面外に出た時だけリセットする
-  function resetStage() {
-    if (hasCompleted) return;
-    clearTimers();
-    running = false;
-    question.classList.remove('q-dimmed');
-    ito.classList.remove('ito-in');
-  }
-
-  function playSequence() {
-    if (running) return;
-    running = true;
-    if (REDUCED) {
-      question.classList.add('q-dimmed');
-      ito.classList.add('ito-in');
-      hasCompleted = true;
-      return;
-    }
-
-    // 1. 6秒後に下のテキストをフェードイン表示
-    timers.push(setTimeout(function () {
-      ito.classList.add('ito-in');
-    }, ITO_MS));
-
-    // 2. 30秒後に上の問いかけの明度を落とす
-    timers.push(setTimeout(function () {
-      question.classList.add('q-dimmed');
-      hasCompleted = true;
-    }, DIM_MS));
-  }
-
-  function isPopupOpen() {
-    var popup = document.getElementById('news-popup');
-    return !!(popup && popup.classList.contains('show'));
-  }
-
-  function tryStart() {
-    if (running || hasCompleted) return;
-    if (isPopupOpen()) {
-      window.addEventListener('app:newsPopupClosed', function onClosed() {
-        window.removeEventListener('app:newsPopupClosed', onClosed);
-        if (stage.dataset.inView === 'true') playSequence();
-      });
-    } else {
-      playSequence();
-    }
-  }
-
-  var triggerObs = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      // スマホ対応：マージンを少し広げて確実に発火させる
-      if (e.isIntersecting) {
-        stage.dataset.inView = 'true';
-        tryStart();
-      } else {
-        stage.dataset.inView = 'false';
-      }
-    });
-  }, { rootMargin: "-10% 0px -10% 0px", threshold: 0 }); // マージンを調整
-  triggerObs.observe(stage);
-
-  var resetObs = new IntersectionObserver(function(entries) {
-     entries.forEach(function(e) {
-         if (!e.isIntersecting) {
-             resetStage();
-             hasCompleted = false;
-         }
-     });
-  }, { rootMargin: "20% 0px 20% 0px", threshold: 0 });
-  resetObs.observe(stage);
-})();
-
-/* ════════════════════════════════════════════════════════
    動画背景
 ════════════════════════════════════════════════════════ */
 (function () {
@@ -1375,7 +1263,6 @@ document.getElementById('modal-overlay').addEventListener('click', closeNewsPopu
 ════════════════════════════════════════════════════════ */
 
 const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
 /**
  * 対象要素内のテキストノードを再帰的に走査し、
  * 1文字ずつのspanでラッピングする。
@@ -1383,7 +1270,6 @@ const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').mat
 function prepareTypewriterDOM(el) {
   if (el.dataset.twPrepared) return;
   el.dataset.twPrepared = "true";
-
   function wrapTextNodes(node) {
     if (node.nodeType === 3) { // テキストノード
       const text = node.nodeValue;
@@ -1479,7 +1365,7 @@ function initAllTypewriters() {
           const parentEntry = el.closest('.tl-entry');
           if (parentEntry) {
             setTimeout(() => {
-               requestAnimationFrame(() => runTypewriter(el));
+              requestAnimationFrame(() => runTypewriter(el));
             }, 600);
           } else {
             setTimeout(() => {
@@ -1487,7 +1373,7 @@ function initAllTypewriters() {
             }, 200);
           }
         }
-        });
+       });
     }, {
       threshold: 0,
       rootMargin: '0px 0px -10% 0px'
