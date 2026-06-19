@@ -631,9 +631,24 @@
       
       .opening-stage { margin-bottom: 5rem; min-height: 120vh; }
       
-      /* ★ スマホでの文字のはみ出し防止（パディングと横幅、改行の完璧な調整） */
-      .opening-question { top: 22vh; padding: 0 1rem; width: 100%; box-sizing: border-box; }
-      .opening-ito { top: 48vh; padding: 0 1rem; width: 100%; box-sizing: border-box; }
+      /* ★ スマホでの文字のはみ出し防止と明度・位置の完璧な調整 */
+      .opening-question { 
+        top: 22vh; 
+        padding: 0 1rem; 
+        width: 100%; 
+        box-sizing: border-box; 
+        /* スマホ時は最初から明度を落とし、過剰に明るくならないようにする */
+        opacity: 0.3 !important; 
+        filter: blur(0px);
+        transform: scale(0.98);
+      }
+      
+      .opening-ito { 
+        top: 45vh; /* スマホで確実に画面内に入るように位置を調整 */
+        padding: 0 1rem; 
+        width: 100%; 
+        box-sizing: border-box; 
+      }
 
       .concept-question { font-size: 1.35rem; line-height: 1.9; word-break: normal; }
       .concept-para.ito-intro { font-size: 0.95rem; line-height: 2; }
@@ -754,7 +769,7 @@
   <div class="concept-story">
     <div class="concept-block reveal" style="transition-delay:.30s">
       <span class="concept-block-en">Unit World</span>
-      <p class="concept-para">私は事物の存在に纏わるあらゆる傾向を、<em>〈単位世界（＝洞窟）〉</em>を構成する最小の事物（＝いと）と捉え、制作しています。〈いと〉とは、〈物語〉のそれ以上細分化できない要素です。そして〈物語〉とは、人間存在そのものです。なぜなら、私たち人間はすべてを〈物語〉として理解し、機能させて生きているからです。</p>
+      <p class="concept-para">私は事物の存在に纏わるあらゆる傾向を、<em>〈単位世界（＝洞窟）〉</em>を構成する最小の事物（＝いと）と捉え、制作しています。〈いと〉とは、〈物語〉のそれ以上細分化できない要素です。そして〈物語〉とは、人間存在 turning そのものです。なぜなら、私たち人間はすべてを〈物語〉として理解し、機能させて生きているからです。</p>
     </div>
 
     <div class="concept-block reveal" style="transition-delay:.40s">
@@ -1012,7 +1027,7 @@ var WORKS_DATA = [
     year: 2013, series: 'Refugees', titleJa: '今、シリア', titleEn: 'Syria, now',
     spec: '130.3 × 162 cm ／ 油彩・キャンバス', imgSrc: 'images/【F100号横】今、シリア.jpg', imgWidth: 720,
     link: 'work-refugees.html',
-    desc: 'シリア内戦の報道写真をもとに制作した作品です。流れ去るニュースの映像を絵画として描き直すことで、一人の人間の存在と向き合う時間を生み出そうと試みました。傷ついた子どもの表情や仕草を通して、私たちと遠い出来事との距離を問いかけています。',
+    desc: 'シリア内戦の報道写真をもとに制作した作品です。流れ去るニュースの映像を絵画として描き直すことで、一人の人間の存在と向き合う時間を生み出生み出そうと試みました。傷ついた子どもの表情や仕草を通して、私たちと遠い出来事との距離を問いかけています。',
     tags: ['難民(子ども) ', '証言']
   },
   {
@@ -1151,7 +1166,7 @@ var revealObs = new IntersectionObserver(function (entries) {
 document.querySelectorAll('.reveal').forEach(function (el) { revealObs.observe(el); });
 
 /* ════════════════════════════════════════════════════════
-   オープニング・ステージ演出（明度ダウン・ホバー対応版）
+   オープニング・ステージ演出（明度ダウン対応版）
 ════════════════════════════════════════════════════════ */
 (function () {
   var stage = document.querySelector('.opening-stage');
@@ -1222,6 +1237,7 @@ document.querySelectorAll('.reveal').forEach(function (el) { revealObs.observe(e
 
   var triggerObs = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
+      // スマホ対応：マージンを少し広げて確実に発火させる
       if (e.isIntersecting) {
         stage.dataset.inView = 'true';
         tryStart();
@@ -1229,7 +1245,7 @@ document.querySelectorAll('.reveal').forEach(function (el) { revealObs.observe(e
         stage.dataset.inView = 'false';
       }
     });
-  }, { rootMargin: "-30% 0px -30% 0px", threshold: 0 });
+  }, { rootMargin: "-10% 0px -10% 0px", threshold: 0 }); // マージンを調整
   triggerObs.observe(stage);
 
   var resetObs = new IntersectionObserver(function(entries) {
@@ -1239,7 +1255,7 @@ document.querySelectorAll('.reveal').forEach(function (el) { revealObs.observe(e
              hasCompleted = false;
          }
      });
-  }, { rootMargin: "10% 0px 10% 0px", threshold: 0 });
+  }, { rootMargin: "20% 0px 20% 0px", threshold: 0 });
   resetObs.observe(stage);
 })();
 
