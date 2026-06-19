@@ -125,26 +125,33 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       HERO
+       HERO & CONCEPT WRAPPER (背景共有)
     ============================================================ */
-    .hero {
+    .hero-concept-wrap {
       position: relative;
-      height: 100svh; min-height: 580px;
-      display: flex; flex-direction: column; justify-content: flex-end;
-      padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); overflow: hidden;
     }
     .hero-canvas {
-      position: absolute; inset: 0;
+      position: absolute; inset: 0; z-index: 0;
       background:
-        radial-gradient(ellipse 70% 60% at 30% 55%, rgba(124,154,160,0.07) 0%, transparent 65%),
-        radial-gradient(ellipse 55% 80% at 72% 40%, rgba(196,168,130,0.06) 0%, transparent 60%),
-        radial-gradient(ellipse 90% 90% at 50% 50%, rgba(20,18,15,1) 40%, var(--bg) 100%);
+        radial-gradient(ellipse 70% 60% at 30% 30%, rgba(124,154,160,0.07) 0%, transparent 55%),
+        radial-gradient(ellipse 55% 80% at 72% 25%, rgba(196,168,130,0.06) 0%, transparent 55%),
+        radial-gradient(ellipse 100% 100% at 50% 50%, rgba(20,18,15,0.9) 35%, var(--bg) 100%);
     }
     .hero-grain {
-      position: absolute; inset: 0;
+      position: absolute; inset: 0; z-index: 0;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
       background-size: 200px 200px;
       pointer-events: none; opacity: 0.5;
+    }
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    .hero {
+      position: relative; z-index: 1;
+      height: 100svh; min-height: 580px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); overflow: hidden;
     }
     .hero-divider {
       position: absolute; left: 0;
@@ -231,8 +238,11 @@
        CONCEPT SECTION
     ============================================================ */
     .concept-section {
+      position: relative; z-index: 1;
       padding: clamp(5rem, 13vh, 11rem) var(--px);
       border-bottom: 0.5px solid var(--border);
+      /* 背景が重なるため、可読性維持のグラデーション保護層を追加 */
+      background: linear-gradient(to bottom, rgba(6,6,5,0) 0%, rgba(6,6,5,0.7) 20%, rgba(6,6,5,1) 100%);
     }
     .concept-inner {
       max-width: 860px; margin: 0 auto;
@@ -273,7 +283,8 @@
     }
     .concept-body {
       font-size: clamp(0.875rem, 1.85vw, 0.98rem); font-weight: 300; line-height: 2.3;
-      color: rgba(233,229,223,0.65); letter-spacing: 0.055em;
+      color: rgba(233,229,223,0.7); letter-spacing: 0.055em;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.8); /* テキストの可読性強化 */
     }
     .concept-body p { margin-bottom: 1.8em; text-align: justify; }
     .concept-body p:last-child { margin-bottom: 0; }
@@ -310,14 +321,16 @@
       gap: clamp(1.5rem, 3vw, 2.5rem);
     }
     .gallery-item {
-      display: block; opacity: 0;
+      display: flex; flex-direction: column; opacity: 0;
+      height: 100%; /* 高さをグリッドの行に合わせる */
       transform: translateY(28px);
       transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
       transition-delay: var(--gi-delay, 0ms); cursor: pointer;
     }
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
     .gallery-item-img-wrap {
-      overflow: hidden; background: transparent; outline: 0.5px solid var(--border);
+      aspect-ratio: 3 / 4; /* ★ サムネイルの高さを完全に統一 */
+      width: 100%; overflow: hidden; background: transparent; outline: 0.5px solid var(--border);
       position: relative; transition: outline-color 0.4s ease, box-shadow 0.5s var(--ease);
     }
     @media (hover: hover) and (pointer: fine) {
@@ -331,13 +344,13 @@
       }
     }
     .gallery-item-thumb {
-      width: 100%;
-      height: auto; display: block; filter: grayscale(12%) brightness(0.84); transform: scale(1.0);
+      width: 100%; height: 100%; object-fit: cover; /* ★ トリミングして枠いっぱいに揃える */
+      display: block; filter: grayscale(12%) brightness(0.84); transform: scale(1.0);
       transition: transform 1s var(--ease), filter 0.7s ease;
     }
     .gallery-item-cap {
       padding: clamp(0.7rem, 1.5vw, 1.1rem) 0 0; display: flex;
-      flex-direction: column; align-items: flex-start; gap: 0.3rem;
+      flex-direction: column; align-items: flex-start; gap: 0.3rem; flex-grow: 1;
     }
     .gallery-item-title {
       font-family: var(--jp);
@@ -391,9 +404,11 @@
     }
     .artwork-clip.in-view { clip-path: inset(0% 0 0 0); }
     button.img-btn {
-      display: block; width: 100%; border: none; padding: 0;
-      margin: 0;
-      background: transparent; outline: 0.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center; /* 中央配置 */
+      width: 100%; aspect-ratio: 4 / 5; /* ★ 画像枠（マット）の高さを統一 */
+      border: none; padding: 0; margin: 0;
+      background: rgba(233,229,223,0.015); /* ★ ほんのりと色を敷いて統一されたキャンバスに見せる */
+      outline: 0.5px solid var(--border);
       cursor: zoom-in; overflow: hidden; line-height: 0;
       transition: outline-color 0.5s ease, box-shadow 0.7s var(--ease);
     }
@@ -403,7 +418,8 @@
       button.img-btn:hover .artwork-img { transform: scale(1.03); filter: grayscale(0%) brightness(0.95); }
     }
     .artwork-img {
-      width: 100%; height: auto;
+      width: 100%; height: 100%;
+      object-fit: contain; /* ★ 原画をトリミングせずに全貌を表示 */
       display: block; filter: grayscale(15%) brightness(0.82);
       transform: scale(1.0); transition: transform 1.1s var(--ease), filter 0.8s ease;
     }
@@ -761,24 +777,11 @@
       .concept-tag { writing-mode: horizontal-tb; transform: none; }
       .concept-line { width: 48px !important; height: 0.5px !important; }
       
-      /* ★ ページ内ナビゲーションのスマホ対応 */
-      .page-nav.visible {
-        right: 8px; /* 画面端に寄せる */
-        gap: 16px;
-        opacity: 0.5; /* 普段は半透明にして鑑賞の邪魔にならないように */
-      }
-      .page-nav.visible:hover, .page-nav.visible:active {
-        opacity: 1; /* タッチ時はくっきり表示 */
-      }
-      .page-nav-label {
-        display: none; /* テキストは非表示にして省スペース化 */
-      }
-      .page-nav-item {
-        padding: 10px 8px; /* タップしやすいように領域は広めに */
-      }
-      .page-nav-dot {
-        width: 6px; height: 6px; /* ドットも少し小さく */
-      }
+      .page-nav.visible { right: 8px; gap: 16px; opacity: 0.5; }
+      .page-nav.visible:hover, .page-nav.visible:active { opacity: 1; }
+      .page-nav-label { display: none; }
+      .page-nav-item { padding: 10px 8px; }
+      .page-nav-dot { width: 6px; height: 6px; }
 
       /* Timeline Responsive */
       .tl-wrap { grid-template-columns: 48px 1.5px 1fr; }
@@ -841,48 +844,51 @@
   </nav>
 
   <main>
-    <section class="hero">
+    <div class="hero-concept-wrap">
       <div class="hero-canvas" aria-hidden="true"></div>
       <div class="hero-grain"  aria-hidden="true"></div>
-      <div class="hero-divider" aria-hidden="true"></div>
-      <div class="hero-inner">
-        <p class="hero-eyebrow" id="heroEyebrow">Series — Variant Forms &nbsp;·&nbsp; Body &amp; Landscape</p>
-        <h1 class="hero-title" id="heroTitle" aria-label="異体">
-          <span class="char">異</span><span class="char">体</span>
-        </h1>
-        <p class="hero-title-en" id="heroEn">Variant</p>
-        <div class="hero-meta" id="heroMeta">
-          <div class="hero-meta-line"></div>
-          <span class="hero-meta-text">Oil on Canvas &nbsp;·&nbsp; Landscape into Body</span>
-        </div>
-      </div>
-      <div class="hero-scroll" id="heroScroll" aria-hidden="true">
-        <div class="hero-scroll-track">
-          <div class="hero-scroll-fill"></div>
-        </div>
-        <span class="hero-scroll-label">Scroll</span>
-      </div>
-    </section>
-
-    <section class="concept-section" id="concept">
-      <div class="concept-inner">
-        <div class="concept-aside">
-          <span class="concept-tag" id="conceptTag">Concept</span>
-          <div class="concept-line" id="conceptLine"></div>
-        </div>
-        <div class="concept-main">
-          <p class="section-label">Concept</p>
-          <p class="credit">解説:左美都研究会、水澤井縄</p>
-          <div class="concept-body fade-up" style="--sd:80ms">
-            <p>はじめは<em>風景</em>でした。</p>
-            <p>森や道、岩や影を描いているうちに、画面の中に人のようなもの、動物のようなものが現れ始めます。それは意図して描いた人物ではありません。風景の形や動きが集まり、偶然にも身体のように見えてきた存在です。</p>
-            <p>私たちは昔から、雲に顔を見つけたり、石に動物の姿を見たりしてきました。そうした知覚の働きを絵画の中でたどった作品群です。</p>
-            <p>見方によっては風景に見え、別の瞬間には身体に見えます。</p>
-            <p>その境界で生まれる不思議な存在たちを、私は<em>「異体」</em>と呼んでいます。</p>
+      
+      <section class="hero">
+        <div class="hero-divider" aria-hidden="true"></div>
+        <div class="hero-inner">
+          <p class="hero-eyebrow" id="heroEyebrow">Series — Variant Forms &nbsp;·&nbsp; Body &amp; Landscape</p>
+          <h1 class="hero-title" id="heroTitle" aria-label="異体">
+            <span class="char">異</span><span class="char">体</span>
+          </h1>
+          <p class="hero-title-en" id="heroEn">Variant</p>
+          <div class="hero-meta" id="heroMeta">
+            <div class="hero-meta-line"></div>
+            <span class="hero-meta-text">Oil on Canvas &nbsp;·&nbsp; Landscape into Body</span>
           </div>
         </div>
-      </div>
-    </section>
+        <div class="hero-scroll" id="heroScroll" aria-hidden="true">
+          <div class="hero-scroll-track">
+            <div class="hero-scroll-fill"></div>
+          </div>
+          <span class="hero-scroll-label">Scroll</span>
+        </div>
+      </section>
+
+      <section class="concept-section" id="concept">
+        <div class="concept-inner">
+          <div class="concept-aside">
+            <span class="concept-tag" id="conceptTag">Concept</span>
+            <div class="concept-line" id="conceptLine"></div>
+          </div>
+          <div class="concept-main">
+            <p class="section-label">Concept</p>
+            <p class="credit">解説:左美都研究会、水澤井縄</p>
+            <div class="concept-body fade-up" style="--sd:80ms">
+              <p>はじめは<em>風景</em>でした。</p>
+              <p>森や道、岩や影を描いているうちに、画面の中に人のようなもの、動物のようなものが現れ始めます。それは意図して描いた人物ではありません。風景の形や動きが集まり、偶然にも身体のように見えてきた存在です。</p>
+              <p>私たちは昔から、雲に顔を見つけたり、石に動物の姿を見たりしてきました。そうした知覚の働きを絵画の中でたどった作品群です。</p>
+              <p>見方によっては風景に見え、別の瞬間には身体に見えます。</p>
+              <p>その境界で生まれる不思議な存在たちを、私は<em>「異体」</em>と呼んでいます。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
 
     <section class="gallery-section" id="gallery">
       <div class="gallery-header fade-up">
@@ -1142,7 +1148,7 @@
               <p>この「上に溶ける・・・」というタイトルと絵画の内容からは、津田が人間の(内面)世界、存在の本質、あるいは生と死といった深遠なテーマに向き合っていることが伺えます。彼の得意とする流動的な表現は、物質と非物質の境界が曖昧になり、形が変容していく様を完璧に捉えています。</p>
             </div>
           </div>
-         </div>
+        </div>
       </article>
 
     </section>
@@ -1181,7 +1187,7 @@
               <span class="tl-year-label">2023</span>
             </div>
             <div class="tl-thumb js-modal-open" data-img-src="images/【F50縦】リリス（胸部）Lilith Remnants-2.jpg" role="button" tabindex="0" aria-label="拡大">
-              <img src="images/【F50縦】リリス（胸部）Lilith Remnants-2.jpg" alt="リリス（胸部）" loading="lazy">
+               <img src="images/【F50縦】リリス（胸部）Lilith Remnants-2.jpg" alt="リリス（胸部）" loading="lazy">
             </div>
             <div class="tl-info">
               <p class="tl-title">神話的身体への展開「リリス三部作」他</p>
@@ -1202,7 +1208,9 @@
               <p class="tl-desc">無機物から有機物へ。植物の持つ可憐さと毒性、その二面性をモチーフに、具体的な形を持たない「気配」としての身体性をキャンバスに定着させる手法を確立。</p>
             </div>
           </div>
-
+          
+        </div>
+      </div>
     </section>
 
   </main>
