@@ -213,6 +213,56 @@
     }
 
     /* ============================================================
+       SERIES STATEMENT (Long-form Essay)
+    ============================================================ */
+    .statement-section {
+      padding: clamp(4rem, 9vh, 7rem) var(--px) clamp(6rem, 13vh, 10rem);
+      max-width: 880px; margin: 0 auto;
+      border-top: 0.5px solid var(--border);
+    }
+    .statement-label {
+      font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem);
+      letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase;
+      text-align: center; margin-bottom: clamp(2.5rem, 6vh, 4rem);
+    }
+    .statement-pullquote {
+      font-family: var(--font-ja); font-weight: 200;
+      font-size: clamp(1.3rem, 3.2vw, 2.1rem); line-height: 1.75;
+      color: var(--fg); text-align: center;
+      letter-spacing: 0.03em;
+      margin-bottom: clamp(3rem, 7vh, 5rem);
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 1s var(--ease), transform 1s var(--ease);
+    }
+    .statement-pullquote.in-view { opacity: 1; transform: translateY(0); }
+    .statement-pullquote .accent-word { color: var(--accent); }
+    .statement-body {
+      display: flex; flex-direction: column; gap: clamp(1.6rem, 3vh, 2.2rem);
+    }
+    .statement-para {
+      font-size: clamp(0.86rem, 1.7vw, 0.98rem); line-height: 2.25;
+      color: rgba(233,229,223,0.72); letter-spacing: 0.04em; text-align: justify;
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+    }
+    .statement-para.in-view { opacity: 1; transform: translateY(0); }
+    .statement-para strong {
+      color: var(--accent); font-weight: 400;
+    }
+    .statement-divider {
+      width: 40px; height: 0.5px; margin: clamp(2.5rem, 5vh, 3.5rem) auto;
+      background: linear-gradient(to right, var(--accent), var(--accent2));
+    }
+    .statement-closing {
+      font-family: var(--font-en); font-style: italic; font-weight: 300;
+      font-size: clamp(0.95rem, 2vw, 1.15rem); line-height: 1.9;
+      color: var(--accent); text-align: center; letter-spacing: 0.04em;
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+    }
+    .statement-closing.in-view { opacity: 1; transform: translateY(0); }
+
+    /* ============================================================
        PERFECT HEIGHT GALLERY GRID (高さ完全統一＆文字は画像外)
     ============================================================ */
     .gallery-section {
@@ -240,7 +290,15 @@
       display: flex; justify-content: center; align-items: center;
       background: transparent; overflow: hidden;
       border: 0.5px solid var(--border);
-      transition: border-color 0.4s ease, box-shadow 0.5s var(--ease);
+      transition: border-color 0.4s ease, box-shadow 0.5s var(--ease), height 0.4s ease;
+    }
+    /* flow は連作の起点として大きめに */
+    .gallery-item.is-featured .gallery-item-img-wrap {
+      height: clamp(240px, 36vh, 460px);
+    }
+    /* 赤い空と吹く風 〜 mountains between us は小品のため控えめに */
+    .gallery-item.is-compact .gallery-item-img-wrap {
+      height: clamp(130px, 20vh, 220px);
     }
     .gallery-item-img-wrap img {
       height: 100%; width: auto; max-width: none;
@@ -318,7 +376,18 @@
       width: 54%; position: relative;
       border: 0.5px solid var(--border); overflow: hidden;
       background: var(--bg); cursor: zoom-in;
+      transition: width 0.4s ease;
     }
+    .tl-body {
+      width: 42%; position: relative; z-index: 2;
+      transition: width 0.4s ease;
+    }
+    /* flow は連作の起点として大きく見せる */
+    .tl-entry.is-featured .tl-figure { width: 64%; }
+    .tl-entry.is-featured .tl-body   { width: 32%; }
+    /* 赤い空と吹く風 〜 mountains between us は実寸が小さいため、図版も控えめに */
+    .tl-entry.is-compact .tl-figure { width: 40%; }
+    .tl-entry.is-compact .tl-body   { width: 52%; }
     .tl-figure img {
       width: 100%; height: auto; display: block;
       filter: grayscale(12%) brightness(0.85);
@@ -326,9 +395,6 @@
     }
     .tl-figure:hover img {
       transform: scale(1.03); filter: grayscale(0%) brightness(1.0);
-    }
-    .tl-body {
-      width: 42%; position: relative; z-index: 2;
     }
     .tl-title {
       font-family: var(--font-ja); font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 300;
@@ -429,7 +495,9 @@
     ============================================================ */
     @media (max-width: 860px) {
       .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2rem; }
-      .tl-figure, .tl-body { width: 100%; }
+      .tl-figure, .tl-body,
+      .tl-entry.is-featured .tl-figure, .tl-entry.is-featured .tl-body,
+      .tl-entry.is-compact .tl-figure, .tl-entry.is-compact .tl-body { width: 100%; }
       .timeline-spine-wrapper { left: 20px; transform: none; }
       .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; }
     }
@@ -443,12 +511,16 @@
       .page-nav.visible:hover { opacity: 1; }
       .page-nav-label { display: none; }
       .gallery-grid { flex-direction: column; }
-      .gallery-item-img-wrap { height: auto; max-height: 50vh; }
+      .gallery-item-img-wrap,
+      .gallery-item.is-featured .gallery-item-img-wrap,
+      .gallery-item.is-compact .gallery-item-img-wrap { height: auto; max-height: 50vh; }
       .gallery-item-img-wrap img { width: 100%; height: auto; }
     }
     @media (max-width: 480px) {
       .hero-scroll { display: none; }
       .modal-content img { max-height: 60svh; }
+      .statement-para { text-align: left; }
+      .statement-section { padding-left: 1.25rem; padding-right: 1.25rem; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
@@ -512,46 +584,77 @@
       </p>
     </section>
 
+    <section class="statement-section">
+      <p class="statement-label">Series Statement</p>
+
+      <p class="statement-pullquote reveal-fade">
+        「抽象（Abstract）」シリーズは、津田翔一の制作における<span class="accent-word">脱領土化</span>——すなわち形態・意味・物語が解体されていく過程——を、最も純粋な形で体現した作品群だ。
+      </p>
+
+      <div class="statement-body">
+        <p class="statement-para reveal-fade">
+          具体的な対象を持たず、あるいは対象を持ちながらも、その形が絵画行為の中で次第に溶解し、別の何かへと変容していく。油彩という物質の重さ、筆の痕跡、絵の具の層。描き、削り、重ねていく行為の蓄積が、具象を解体し、新たな感覚の地平を開いていく。抽象絵画は「何を描くか」ではなく「<strong>いかに存在するか</strong>」を問う。
+        </p>
+        <p class="statement-para reveal-fade">
+          本シリーズには、初期の実験的なドローイングから、現在進行形の大画面油彩まで、津田の形態変容への問いが連続している。それは単なる様式の変化ではなく、「左美都という土地の感覚をどこまで絵具の層として蓄積できるか」という持続的な探求の記録でもある。
+        </p>
+
+        <div class="statement-divider" aria-hidden="true"></div>
+
+        <p class="statement-para reveal-fade">
+          抽象とは、何かを描かないことではない。何かを描くことをやめられなくなった先にあるものだ。私が「抽象」と呼ぶ作品群は、最初から「抽象的なもの」を目指して描かれたわけではない。むしろ、描き続ける中で具体的な形が溶け出していった結果として生まれたものだ。
+        </p>
+        <p class="statement-para reveal-fade">
+          油彩という素材は、決して素直ではない。乾くまでの時間、混ざり合う色、予期しない質感——これらは絵を描く者の意図を超えて動き始める。〈<strong>脱領土化</strong>〉とは、この素材の反乱に身を委ねる行為でもある。
+        </p>
+        <p class="statement-para reveal-fade">
+          抽象シリーズを通じて私が問い続けているのは、「絵画は何を記録できるか」という問いだ。形でも色でもなく、その場にあった何か——感覚の痕跡を留めることが、絵画の本質かもしれない。それは左美都の地質が数千万年の時間を岩に閉じ込めるのと同じように。
+        </p>
+      </div>
+
+      <p class="statement-closing reveal-fade">— Tsuda Shoichi</p>
+    </section>
+
     <section class="gallery-section" id="gallery">
       <div class="section-label">Works Index</div>
       <div class="gallery-grid">
-        <a href="#work-flow" class="gallery-item">
+        <a href="#work-flow" class="gallery-item is-featured">
           <div class="gallery-item-img-wrap"><img src="images/【P20縦】flow.jpg" alt="flow" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">flow</span><span class="gallery-item-meta">2026 / Oil on canvas</span>
           </div>
         </a>
-        <a href="#work-redsky" class="gallery-item">
+        <a href="#work-redsky" class="gallery-item is-compact">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】IMG_7401(赤い空と吹く風).jpg" alt="赤い空と吹く風" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">赤い空と吹く風</span><span class="gallery-item-meta">2025 / Oil on canvas</span>
           </div>
         </a>
-        <a href="#work-desert" class="gallery-item">
+        <a href="#work-desert" class="gallery-item is-compact">
           <div class="gallery-item-img-wrap"><img src="images/【S10】IMG_7399(砂漠の山).jpg" alt="砂漠の山" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">砂漠の山</span><span class="gallery-item-meta">2025 / Oil on canvas</span>
           </div>
         </a>
-        <a href="#work-dondoyaki" class="gallery-item">
+        <a href="#work-dondoyaki" class="gallery-item is-compact">
           <div class="gallery-item-img-wrap"><img src="images/【F20横】IMG_7397(どんど焼き).jpg" alt="どんど焼き" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">どんど焼き</span><span class="gallery-item-meta">2025 / Oil on canvas</span>
           </div>
         </a>
-        <a href="#work-7242" class="gallery-item">
+        <a href="#work-7242" class="gallery-item is-compact">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】IMG_7242.jpg" alt="無題" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">無題 (IMG_7242)</span><span class="gallery-item-meta">2024 / Oil on canvas</span>
           </div>
         </a>
-        <a href="#work-7237" class="gallery-item">
+        <a href="#work-7237" class="gallery-item is-compact">
           <div class="gallery-item-img-wrap"><img src="images/【F6縦】IMG_7237.jpg" alt="無題" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">無題 (IMG_7237)</span><span class="gallery-item-meta">2024 / Oil on canvas</span>
           </div>
         </a>
-        <a href="#work-mountains" class="gallery-item">
+        <a href="#work-mountains" class="gallery-item is-compact">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】IMG_7236[mountains between us].jpg" alt="mountains between us" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">mountains between us</span><span class="gallery-item-meta">2024 / Oil on canvas</span>
@@ -560,13 +663,19 @@
         <a href="#work-dregs" class="gallery-item">
           <div class="gallery-item-img-wrap"><img src="images/【Dregs（澱）】 修正後.JPG" alt="【Dregs（澱）】" loading="lazy"></div>
           <div class="gallery-item-cap">
-            <span class="gallery-item-title">【Dregs（澱）】</span><span class="gallery-item-meta">2023 / Oil on canvas</span>
+            <span class="gallery-item-title">【Dregs（澱）】</span><span class="gallery-item-meta">2009 / Oil on canvas</span>
           </div>
         </a>
         <a href="#work-noise" class="gallery-item">
           <div class="gallery-item-img-wrap"><img src="images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG" alt="tHE n0iSe" loading="lazy"></div>
           <div class="gallery-item-cap">
-            <span class="gallery-item-title">tHE n0iSe Of ThE PriMItⅣe sEA</span><span class="gallery-item-meta">2022 / Oil on canvas</span>
+            <span class="gallery-item-title">tHE n0iSe Of ThE PriMItⅣe sEA</span><span class="gallery-item-meta">2009 / Oil on canvas</span>
+          </div>
+        </a>
+        <a href="#work-damagedealer" class="gallery-item">
+          <div class="gallery-item-img-wrap"><img src="images/Damage_Dealer.JPG" alt="Damage Dealer" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">Damage Dealer</span><span class="gallery-item-meta">2009 / Oil on canvas</span>
           </div>
         </a>
         <a href="#work-castle" class="gallery-item">
@@ -596,8 +705,8 @@
           <div class="timeline-spine-progress" id="tl-spine-fill"></div>
         </div>
 
-        <article class="tl-entry" id="work-flow">
-          <div class="tl-year-display">2026</div>
+        <article class="tl-entry is-featured" id="work-flow">
+          <div class="tl-year-display">2020</div>
           <div class="tl-content-wrap">
             <div class="tl-figure js-modal-open" data-img-src="images/【P20縦】flow.jpg">
               <img src="images/【P20縦】flow.jpg" alt="flow" loading="lazy">
@@ -610,8 +719,8 @@
           </div>
         </article>
 
-        <article class="tl-entry" id="work-redsky">
-          <div class="tl-year-display">2025</div>
+        <article class="tl-entry is-compact" id="work-redsky">
+          <div class="tl-year-display">2016</div>
           <div class="tl-content-wrap">
             <div class="tl-figure js-modal-open" data-img-src="images/【F6横】IMG_7401(赤い空と吹く風).jpg">
               <img src="images/【F6横】IMG_7401(赤い空と吹く風).jpg" alt="赤い空と吹く風" loading="lazy">
@@ -624,8 +733,8 @@
           </div>
         </article>
 
-        <article class="tl-entry" id="work-desert">
-          <div class="tl-year-display">2025</div>
+        <article class="tl-entry is-compact" id="work-desert">
+          <div class="tl-year-display">2016</div>
           <div class="tl-content-wrap">
             <div class="tl-figure js-modal-open" data-img-src="images/【S10】IMG_7399(砂漠の山).jpg">
               <img src="images/【S10】IMG_7399(砂漠の山).jpg" alt="砂漠の山" loading="lazy">
@@ -638,8 +747,8 @@
           </div>
         </article>
 
-        <article class="tl-entry" id="work-dondoyaki">
-          <div class="tl-year-display">2025</div>
+        <article class="tl-entry is-compact" id="work-dondoyaki">
+          <div class="tl-year-display">2016</div>
           <div class="tl-content-wrap">
             <div class="tl-figure js-modal-open" data-img-src="images/【F20横】IMG_7397(どんど焼き).jpg">
               <img src="images/【F20横】IMG_7397(どんど焼き).jpg" alt="どんど焼き" loading="lazy">
@@ -652,8 +761,8 @@
           </div>
         </article>
 
-        <article class="tl-entry" id="work-7242">
-          <div class="tl-year-display">2024</div>
+        <article class="tl-entry is-compact" id="work-7242">
+          <div class="tl-year-display">2016</div>
           <div class="tl-content-wrap">
             <div class="tl-figure js-modal-open" data-img-src="images/【F6横】IMG_7242.jpg">
               <img src="images/【F6横】IMG_7242.jpg" alt="無題" loading="lazy">
@@ -666,8 +775,8 @@
           </div>
         </article>
 
-        <article class="tl-entry" id="work-7237">
-          <div class="tl-year-display">2024</div>
+        <article class="tl-entry is-compact" id="work-7237">
+          <div class="tl-year-display">2016</div>
           <div class="tl-content-wrap">
             <div class="tl-figure js-modal-open" data-img-src="images/【F6縦】IMG_7237.jpg">
               <img src="images/【F6縦】IMG_7237.jpg" alt="無題" loading="lazy">
@@ -680,8 +789,8 @@
           </div>
         </article>
 
-        <article class="tl-entry" id="work-mountains">
-          <div class="tl-year-display">2024</div>
+        <article class="tl-entry is-compact" id="work-mountains">
+          <div class="tl-year-display">2016</div>
           <div class="tl-content-wrap">
             <div class="tl-figure js-modal-open" data-img-src="images/【F6横】IMG_7236[mountains between us].jpg">
               <img src="images/【F6横】IMG_7236[mountains between us].jpg" alt="mountains between us" loading="lazy">
@@ -695,7 +804,7 @@
         </article>
 
         <article class="tl-entry" id="work-dregs">
-          <div class="tl-year-display">2023</div>
+          <div class="tl-year-display">2010</div>
           <div class="tl-content-wrap">
             <div class="tl-figure js-modal-open" data-img-src="images/【Dregs（澱）】 修正後.JPG">
               <img src="images/【Dregs（澱）】 修正後.JPG" alt="Dregs（澱）" loading="lazy">
@@ -709,7 +818,7 @@
         </article>
 
         <article class="tl-entry" id="work-noise">
-          <div class="tl-year-display">2022</div>
+          <div class="tl-year-display">2009</div>
           <div class="tl-content-wrap">
             <div class="tl-figure js-modal-open" data-img-src="images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG">
               <img src="images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG" alt="tHE n0iSe" loading="lazy">
@@ -722,8 +831,22 @@
           </div>
         </article>
 
+        <article class="tl-entry" id="work-damagedealer">
+          <div class="tl-year-display">2009</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/Damage_Dealer.JPG">
+              <img src="images/Damage_Dealer.JPG" alt="Damage Dealer" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">Damage Dealer</h3>
+              <p class="tl-meta">Oil on canvas</p>
+              <p class="tl-desc">黄と青、二つの領域がせめぎ合う画面の中で、人のかたちが溶け、滲み、また結ばれ直していく。具象と抽象のあわいに留まり続けることで、傷つけること／傷つくことの両義性が一枚の絵肌として定着している。</p>
+            </div>
+          </div>
+        </article>
+
         <article class="tl-entry" id="work-castle">
-          <div class="tl-year-display">2021</div>
+          <div class="tl-year-display">2009</div>
           <div class="tl-content-wrap">
             <div class="tl-figure js-modal-open" data-img-src="images/3.13_a_cAstLe.jpg">
               <img src="images/3.13_a_cAstLe.jpg" alt="3.13【a cAstLe】" loading="lazy">
@@ -737,7 +860,7 @@
         </article>
 
         <article class="tl-entry" id="work-stilllife">
-          <div class="tl-year-display">2020</div>
+          <div class="tl-year-display">2009</div>
           <div class="tl-content-wrap">
             <div class="tl-figure js-modal-open" data-img-src="images/Still-Life.jpg">
               <img src="images/Still-Life.jpg" alt="Still-Life" loading="lazy">
@@ -751,7 +874,7 @@
         </article>
 
         <article class="tl-entry" id="work-cg">
-          <div class="tl-year-display">2019</div>
+          <div class="tl-year-display">2009</div>
           <div class="tl-content-wrap">
             <div class="tl-figure js-modal-open" data-img-src="images/CG_catastrophe_II.jpg">
               <img src="images/CG_catastrophe_II.jpg" alt="CG" loading="lazy">
@@ -841,7 +964,7 @@
         io.unobserve(entry.target);
       });
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.gallery-item, .tl-entry').forEach(el => io.observe(el));
+    document.querySelectorAll('.gallery-item, .tl-entry, .reveal-fade').forEach(el => io.observe(el));
 
     /* ── Typewriter Engine ── */
     function prepareTypewriterDOM(el) {
