@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link rel="icon" type="image/jpeg" href="images/【S100】so far.jpg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Profile 津田翔一 | Tsuda Shoichi</title>
+  <meta name="description" content="津田翔一 / TSUDA Shoichi。1984年長野県生まれ、2013年東京藝術大学美術学部絵画科油画専攻卒業。左美都という土地の記憶を起点に、油彩を中心とした制作を続ける画家のプロフィールと経歴。">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS (Matched to work-abstract.html / works-variant.html)
+    ============================================================ */
+    :root {
+      --bg:        #060605;
+      --bg2:       #0c0c0a;
+      --bg3:       #111110;
+      --fg:        #e9e5df;
+      --muted:     rgba(233,229,223,0.44);
+      --dim:       rgba(233,229,223,0.22);
+      --whisper:   rgba(233,229,223,0.10);
+      --accent:    #c4a882;
+      --accent2:   #7c9aa0;
+      --border:    rgba(233,229,223,0.08);
+      --border-md: rgba(233,229,223,0.20);
+      --font-en:   'Cormorant Garamond', serif;
+      --font-ja:   'Noto Serif JP', serif;
+      --ease:      cubic-bezier(0.16, 1, 0.3, 1);
+      --px:        clamp(1.25rem, 6vw, 5rem);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-ja);
+      line-height: 2.1;
+      letter-spacing: 0.06em;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+    body.is-locked { overflow: hidden; }
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
+    a:hover { opacity: 0.45; }
+
+    /* ============================================================
+       NAVIGATION (Transparent Top Nav & Page Nav)
+    ============================================================ */
+    nav#top-nav {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 300;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: clamp(14px, 3vw, 36px) var(--px);
+      background: transparent;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 0.5px solid transparent;
+      transition: background 0.4s ease, border-color 0.4s ease;
+    }
+    nav#top-nav.scrolled {
+      background: rgba(10,10,9,0.93);
+      border-color: var(--border);
+    }
+    .nav-logo-unified {
+      font-family: var(--font-en); font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+      letter-spacing: 0.3em; font-weight: 300; color: var(--accent);
+      text-transform: uppercase; transition: opacity 0.4s ease;
+    }
+    .nav-logo-unified:hover { opacity: 0.5; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
+      letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase; transition: color 0.3s ease;
+    }
+    .nav-links a:hover, .nav-links a.is-current { color: var(--accent); }
+    .nav-cta {
+      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
+      letter-spacing: 0.25em; text-transform: uppercase;
+      border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem;
+      color: var(--accent); transition: background 0.25s, color 0.25s;
+    }
+    .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-hamburger span {
+      display: block; width: 22px; height: 0.5px;
+      background: var(--accent); margin: 6px 0; transition: all 0.25s;
+    }
+
+    .page-nav {
+      position: fixed; right: clamp(20px, 4vw, 40px); top: 50%;
+      transform: translateY(-50%); z-index: 200;
+      display: flex; flex-direction: column; gap: 24px;
+      opacity: 0; visibility: hidden; transition: opacity 0.6s var(--ease), visibility 0.6s;
+    }
+    .page-nav.visible { opacity: 1; visibility: visible; }
+    .page-nav-item {
+      display: flex; align-items: center; gap: 12px; flex-direction: row-reverse;
+      cursor: pointer; background: none; border: none; padding: 8px 0;
+    }
+    .page-nav-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(233,229,223,0.4); transition: all 0.35s; flex-shrink: 0;
+    }
+    .page-nav-label {
+      font-family: var(--font-en); font-size: 12px; letter-spacing: 0.15em;
+      color: rgba(233,229,223,0.4); text-transform: uppercase; transition: color 0.35s; white-space: nowrap;
+    }
+    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot {
+      background: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px rgba(196,168,130,0.6);
+    }
+    .page-nav-item:hover .page-nav-label { color: rgba(233,229,223,0.85); }
+    .page-nav-item.active .page-nav-label { color: var(--accent); }
+
+    /* ============================================================
+       HERO FIRST VIEW (Matched to work-abstract.html)
+    ============================================================ */
+    .hero {
+      position: relative; height: 100svh; min-height: 580px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); overflow: hidden;
+      background:
+        radial-gradient(ellipse 70% 60% at 30% 30%, rgba(124,154,160,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 55% 80% at 72% 25%, rgba(196,168,130,0.04) 0%, transparent 55%),
+        var(--bg);
+    }
+    .hero-divider {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+      background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%);
+    }
+    .hero-inner { position: relative; z-index: 2; }
+    .hero-eyebrow {
+      font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem);
+      letter-spacing: 0.5em; color: var(--dim); text-transform: uppercase;
+      margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.2rem;
+      clip-path: inset(0 100% 0 0); transition: clip-path 1.2s var(--ease) 0.2s;
+    }
+    .hero-eyebrow::before {
+      content: ''; width: 24px; height: 0.5px; background: var(--accent2); flex-shrink: 0; opacity: 0.6;
+    }
+    .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
+    .hero-title {
+      font-family: var(--font-ja); font-size: clamp(2.6rem, 9.5vw, 7.2rem); font-weight: 200;
+      line-height: 1.05; letter-spacing: -0.01em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem);
+      display: flex; flex-wrap: wrap; gap: 0.05em; overflow: visible;
+    }
+    .hero-title .char {
+      display: inline-block; opacity: 0; transition: transform 1.2s var(--ease), opacity 0.9s ease;
+    }
+    .hero-title .char:nth-child(odd)  { transform: translateX(-40px); }
+    .hero-title .char:nth-child(even) { transform: translateX(40px); }
+    .hero-title .char:nth-child(1) { transition-delay: 0.15s; }
+    .hero-title .char:nth-child(2) { transition-delay: 0.25s; }
+    .hero-title .char:nth-child(3) { transition-delay: 0.35s; }
+    .hero-title .char:nth-child(4) { transition-delay: 0.45s; }
+    .hero-title.revealed .char { opacity: 1; transform: translateX(0); }
+    .hero-title-en {
+      font-family: var(--font-en); font-size: clamp(0.95rem, 3vw, 2rem);
+      font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.55);
+      clip-path: inset(0 100% 0 0); transition: clip-path 1.4s var(--ease) 0.7s;
+    }
+    .hero-title-en.revealed { clip-path: inset(0 0% 0 0); }
+    .hero-meta {
+      display: flex; align-items: center; gap: 1.8rem;
+      margin-top: clamp(2rem, 5vh, 4.5rem); opacity: 0; transform: translateY(14px);
+      transition: opacity 1s ease 1.1s, transform 1s var(--ease) 1.1s;
+      flex-wrap: wrap;
+    }
+    .hero-meta.revealed { opacity: 1; transform: translateY(0); }
+    .hero-meta-line {
+      width: 40px; height: 0.5px; background: linear-gradient(to right, var(--accent), var(--accent2)); flex-shrink: 0;
+    }
+    .hero-meta-text {
+      font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.62rem);
+      letter-spacing: 0.24em; color: var(--dim); text-transform: uppercase;
+    }
+    .hero-scroll {
+      position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px);
+      z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 12px;
+      opacity: 0; transition: opacity 0.9s ease 1.8s;
+    }
+    .hero-scroll.revealed { opacity: 1; }
+    .hero-scroll-label {
+      font-family: var(--font-en); font-size: 0.52rem; letter-spacing: 0.38em;
+      color: var(--whisper); text-transform: uppercase; writing-mode: vertical-rl;
+    }
+    .hero-scroll-track {
+      width: 1px; height: 48px; background: var(--border); position: relative; overflow: hidden;
+    }
+    .hero-scroll-fill {
+      position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollDrop 2.2s ease-in-out 2s infinite;
+    }
+    @keyframes scrollDrop {
+      0%   { top: -100%; opacity: 1; }
+      70%  { top: 100%;  opacity: 0.4; }
+      71%  { top: -100%; opacity: 0; }
+      100% { top: -100%; opacity: 0; }
+    }
+
+    /* ============================================================
+       CONCEPT / INTRO SECTION
+    ============================================================ */
+    .concept-section {
+      padding: clamp(6rem, 13vh, 10rem) var(--px) clamp(3rem, 7vh, 5rem);
+      max-width: 900px; margin: 0 auto;
+      text-align: center;
+    }
+    .concept-text {
+      font-size: clamp(0.9rem, 2vw, 1.05rem); font-weight: 300; line-height: 2.3;
+      color: rgba(233,229,223,0.85); letter-spacing: 0.08em;
+    }
+
+    /* ============================================================
+       PROFILE SPLIT (Portrait + Facts)
+    ============================================================ */
+    .profile-section {
+      padding: clamp(3rem, 7vh, 5rem) var(--px) clamp(7rem, 14vh, 10rem);
+      max-width: 1300px; margin: 0 auto;
+    }
+    .section-label {
+      font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem);
+      letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase;
+      text-align: center; margin-bottom: clamp(3rem, 7vh, 5rem);
+    }
+    .profile-split {
+      display: grid; grid-template-columns: minmax(240px, 38%) 1fr;
+      gap: clamp(2.5rem, 6vw, 6rem); align-items: center;
+    }
+    .profile-portrait {
+      position: relative; border: 0.5px solid var(--border);
+      overflow: hidden; background: var(--bg2); cursor: zoom-in;
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 1s var(--ease), transform 1s var(--ease), border-color 0.4s ease, box-shadow 0.5s var(--ease);
+    }
+    .profile-portrait.in-view { opacity: 1; transform: translateY(0); }
+    .profile-portrait img {
+      width: 100%; height: 100%; object-fit: cover; aspect-ratio: 3 / 4;
+      filter: grayscale(18%) brightness(0.88);
+      transition: transform 1.1s var(--ease), filter 0.6s ease;
+    }
+    .profile-portrait:hover { border-color: rgba(196,168,130,0.35); box-shadow: 0 16px 40px rgba(0,0,0,0.5); }
+    .profile-portrait:hover img { transform: scale(1.04); filter: grayscale(0%) brightness(1.0); }
+    .profile-portrait-cap {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      padding: 1rem 1.2rem;
+      background: linear-gradient(to top, rgba(6,6,5,0.85), transparent);
+      font-family: var(--font-en); font-size: 0.62rem; letter-spacing: 0.16em;
+      color: var(--dim); text-transform: uppercase;
+    }
+    .profile-facts {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 1s var(--ease) 0.15s, transform 1s var(--ease) 0.15s;
+    }
+    .profile-facts.in-view { opacity: 1; transform: translateY(0); }
+    .profile-name-jp {
+      font-family: var(--font-ja); font-weight: 300;
+      font-size: clamp(1.5rem, 3vw, 2.1rem); color: var(--fg);
+      margin-bottom: 0.4rem; letter-spacing: 0.06em;
+    }
+    .profile-name-en {
+      font-family: var(--font-en); font-style: italic; font-weight: 300;
+      font-size: clamp(0.85rem, 1.6vw, 1rem); color: var(--accent);
+      letter-spacing: 0.18em; margin-bottom: clamp(1.8rem, 4vh, 2.6rem);
+    }
+    .profile-table { width: 100%; border-collapse: collapse; }
+    .profile-table tr { border-top: 0.5px solid var(--border); }
+    .profile-table tr:last-child { border-bottom: 0.5px solid var(--border); }
+    .profile-table th, .profile-table td {
+      text-align: left; padding: clamp(0.9rem, 2vh, 1.3rem) 0; vertical-align: top;
+      font-weight: 300;
+    }
+    .profile-table th {
+      font-family: var(--font-en); font-size: clamp(0.6rem, 1.1vw, 0.68rem);
+      letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase;
+      width: clamp(90px, 18%, 150px); white-space: nowrap; padding-right: 1.5rem;
+    }
+    .profile-table td {
+      font-size: clamp(0.82rem, 1.5vw, 0.92rem); color: rgba(233,229,223,0.78);
+      line-height: 1.9;
+    }
+
+    /* ============================================================
+       CAREER / EXHIBITIONS SECTION
+    ============================================================ */
+    .career-section {
+      padding: clamp(5rem, 12vh, 9rem) var(--px) clamp(6rem, 13vh, 10rem);
+      background: var(--bg2); border-top: 0.5px solid var(--border);
+    }
+    .career-container { max-width: 1100px; margin: 0 auto; }
+    .career-group { margin-bottom: clamp(4rem, 9vh, 6rem); }
+    .career-group:last-child { margin-bottom: 0; }
+    .career-group-head {
+      display: flex; align-items: baseline; gap: 1.2rem;
+      margin-bottom: clamp(2rem, 5vh, 3rem);
+      padding-bottom: 1rem; border-bottom: 0.5px solid var(--border-md);
+    }
+    .career-group-title {
+      font-family: var(--font-ja); font-weight: 300;
+      font-size: clamp(1.2rem, 2.4vw, 1.6rem); color: var(--fg); letter-spacing: 0.06em;
+    }
+    .career-group-title-en {
+      font-family: var(--font-en); font-style: italic; font-size: clamp(0.7rem, 1.4vw, 0.85rem);
+      color: var(--muted); letter-spacing: 0.18em;
+    }
+    .career-list { display: flex; flex-direction: column; }
+    .career-row {
+      display: grid; grid-template-columns: clamp(70px, 10vw, 110px) 1fr;
+      gap: clamp(1rem, 3vw, 2.5rem); align-items: baseline;
+      padding: clamp(1.1rem, 2.4vh, 1.6rem) 0;
+      border-bottom: 0.5px solid var(--border);
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+    }
+    .career-row.in-view { opacity: 1; transform: translateY(0); }
+    .career-row:last-child { border-bottom: none; }
+    .career-year {
+      font-family: var(--font-en); font-weight: 300;
+      font-size: clamp(1.1rem, 2.2vw, 1.6rem); color: var(--accent); letter-spacing: 0.02em;
+    }
+    .career-detail-title {
+      font-size: clamp(0.86rem, 1.6vw, 0.96rem); color: var(--fg); line-height: 1.9;
+      font-weight: 300;
+    }
+    .career-detail-venue {
+      display: block; margin-top: 0.25rem;
+      font-family: var(--font-en); font-size: clamp(0.66rem, 1.2vw, 0.74rem);
+      color: var(--muted); letter-spacing: 0.06em; font-style: italic;
+    }
+    .career-note {
+      margin-top: clamp(2rem, 5vh, 3rem); text-align: center;
+      font-family: var(--font-en); font-style: italic; font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+      color: var(--dim); letter-spacing: 0.1em;
+    }
+
+    /* ============================================================
+       CONTACT & FOOTER
+    ============================================================ */
+    .contact-section {
+      padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center;
+      border-top: 0.5px solid var(--border);
+      background: radial-gradient(circle at center, rgba(196,168,130,0.06) 0%, var(--bg) 70%);
+    }
+    .contact-heading {
+      font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200;
+      line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em;
+    }
+    .contact-body-text {
+      font-family: var(--font-ja); font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+      color: rgba(233,229,223,0.55); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2;
+    }
+    .contact-btn {
+      display: inline-block; padding: 1.2rem 3.5rem; background: var(--accent); color: var(--bg);
+      font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500;
+      letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none;
+      transition: all 0.4s var(--ease); border-radius: 2px;
+    }
+    .contact-btn:hover {
+      background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3);
+    }
+
+    footer {
+      padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); background: var(--bg);
+    }
+    .footer-logo { font-family: var(--font-ja); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.28); letter-spacing: 0.08em; }
+    .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
+
+    /* ============================================================
+       LIGHTBOX (MODAL)
+    ============================================================ */
+    .image-modal {
+      position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center;
+      opacity: 0; visibility: hidden; transition: opacity 0.55s var(--ease), visibility 0.55s;
+    }
+    .image-modal.is-active { opacity: 1; visibility: visible; }
+    .modal-bg { position: absolute; inset: 0; background: rgba(6,6,5,0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); cursor: zoom-out; }
+    .modal-close {
+      position: fixed; top: clamp(1rem, 3vh, 2rem); right: var(--px); z-index: 10001;
+      background: none; border: none; color: var(--muted); cursor: pointer; padding: 0.5rem; transition: color 0.3s ease, transform 0.3s var(--ease);
+    }
+    .modal-close:hover { color: var(--fg); transform: scale(1.1) rotate(90deg); }
+    .modal-content {
+      position: relative; z-index: 10000; max-width: 90vw; margin: auto;
+      display: flex; flex-direction: column; align-items: center; gap: clamp(1rem, 2vh, 1.5rem);
+      opacity: 0; transform: scale(0.96) translateY(12px); transition: opacity 0.55s var(--ease) 0.08s, transform 0.55s var(--ease) 0.08s;
+    }
+    .image-modal.is-active .modal-content { opacity: 1; transform: scale(1) translateY(0); }
+    .modal-content img { max-width: 100%; max-height: 75svh; object-fit: contain; box-shadow: 0 32px 80px rgba(0,0,0,0.75); border: 0.5px solid var(--border); cursor: zoom-out; }
+    .modal-caption { text-align: center; width: 100%; padding: 0 1rem; }
+    .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 200; color: var(--fg); margin-bottom: 0.3rem; }
+    .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.72rem, 1.2vw, 0.85rem); font-style: italic; color: var(--accent); letter-spacing: 0.15em; }
+
+    /* ============================================================
+       BACK TO TOP
+    ============================================================ */
+    .back-to-top {
+      position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px);
+      z-index: 9000; width: clamp(64px, 10vw, 90px); height: clamp(64px, 10vw, 90px);
+      border-radius: 50%; background: rgba(196, 168, 130, 0.85); border: 1px solid var(--accent);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: var(--bg); opacity: 0; visibility: hidden; transform: translateY(20px);
+      transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
+    }
+    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
+    .back-to-top:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-6px); }
+    .back-to-top svg { width: clamp(20px, 3vw, 32px); height: clamp(20px, 3vw, 32px); margin-bottom: 2px; }
+    .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.9rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
+
+    /* ============================================================
+       RESPONSIVE DESIGN
+    ============================================================ */
+    @media (max-width: 860px) {
+      .profile-split { grid-template-columns: 1fr; gap: 2.2rem; }
+      .profile-portrait { max-width: 320px; margin: 0 auto; }
+    }
+    @media (max-width: 768px) {
+      nav#top-nav { padding: 1rem 1.25rem; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: block; }
+      .nav-links.open { display: flex; flex-direction: row; flex-wrap: nowrap; position: fixed; inset: 0; background: rgba(10,10,9,0.98); align-items: center; justify-content: center; gap: 0.6rem; z-index: 300; padding: 1rem; overflow-x: auto; }
+      .nav-links.open li a { font-size: 0.9rem; padding: 0.6rem 0.5rem; white-space: nowrap; }
+      .page-nav.visible { right: 8px; opacity: 0.5; }
+      .page-nav.visible:hover { opacity: 1; }
+      .page-nav-label { display: none; }
+      .career-row { grid-template-columns: 60px 1fr; gap: 1rem; }
+    }
+    @media (max-width: 480px) {
+      .hero-scroll { display: none; }
+      .modal-content img { max-height: 60svh; }
+      .career-row { grid-template-columns: 1fr; gap: 0.4rem; }
+      .career-year { font-size: 1rem; }
+      .profile-table th { width: 80px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+      .profile-portrait, .profile-facts, .career-row { opacity: 1 !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body id="top">
+
+  <nav id="top-nav">
+    <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html#statement" onclick="closeMenu()">Statement</a></li>
+      <li><a href="index.html#works"     onclick="closeMenu()">Works</a></li>
+      <li><a href="profile.html" class="is-current" onclick="closeMenu()">Profile</a></li>
+      <li><a href="index.html#news"      onclick="closeMenu()">News</a></li>
+    </ul>
+    <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="index.html#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
+  </nav>
+
+  <nav class="page-nav" id="pageNav" aria-label="ページ内ナビゲーション">
+    <button class="page-nav-item" data-target="profile" aria-label="Profileへ">
+      <div class="page-nav-dot"></div><span class="page-nav-label">Profile</span>
+    </button>
+    <button class="page-nav-item" data-target="career" aria-label="Careerへ">
+      <div class="page-nav-dot"></div><span class="page-nav-label">Career</span>
+    </button>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="hero-divider" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <p class="hero-eyebrow" id="heroEyebrow">Artist Profile &nbsp;·&nbsp; b.1984, Nagano</p>
+        <h1 class="hero-title" id="heroTitle" aria-label="津田翔一">
+          <span class="char">津</span><span class="char">田</span><span class="char">翔</span><span class="char">一</span>
+        </h1>
+        <p class="hero-title-en" id="heroEn">TSUDA Shoichi</p>
+        <div class="hero-meta" id="heroMeta">
+          <div class="hero-meta-line"></div>
+          <span class="hero-meta-text">Oil Painter &nbsp;·&nbsp; Nagano, Japan</span>
+        </div>
+      </div>
+      <div class="hero-scroll" id="heroScroll" aria-hidden="true">
+        <div class="hero-scroll-track">
+          <div class="hero-scroll-fill"></div>
+        </div>
+        <span class="hero-scroll-label">Scroll</span>
+      </div>
+    </section>
+
+    <section class="concept-section">
+      <p class="concept-text">
+        1984年、長野県生まれ。2013年、東京藝術大学美術学部絵画科油画専攻卒業。<br>
+        出生の地である左美都（長野県長野市信更町三水）の記憶・地質・感覚を起点に、<br>
+        油彩を中心とした多層的な制作を続けている。
+      </p>
+    </section>
+
+    <section class="profile-section" id="profile">
+      <div class="section-label">Profile</div>
+      <div class="profile-split">
+        <figure class="profile-portrait js-modal-open" data-img-src="images/IMG_7685.JPG" data-cap-jp="津田 翔一" data-cap-en="Tsuda Shoichi, in the studio">
+          <img src="images/IMG_7685.JPG" alt="津田翔一 制作風景" loading="lazy">
+          <figcaption class="profile-portrait-cap">Tsuda Shoichi — at work</figcaption>
+        </figure>
+
+        <div class="profile-facts">
+          <p class="profile-name-jp">津田 翔一</p>
+          <p class="profile-name-en">TSUDA Shoichi</p>
+          <table class="profile-table">
+            <tbody>
+              <tr>
+                <th scope="row">Born</th>
+                <td>1984年　長野県生まれ</td>
+              </tr>
+              <tr>
+                <th scope="row">Education</th>
+                <td>2013年　東京藝術大学美術学部絵画科油画専攻卒業</td>
+              </tr>
+              <tr>
+                <th scope="row">Base</th>
+                <td>長野県長野市信更町三水（左美都）</td>
+              </tr>
+              <tr>
+                <th scope="row">Practice</th>
+                <td>油彩絵画を起点に、映像・立体・インスタレーションへと展開する多層的な制作活動を行う。</td>
+              </tr>
+              <tr>
+                <th scope="row">Theme</th>
+                <td>〈いと〉と〈洞窟（単位世界）〉。土地の記憶・地質・神話・伝承を通じた存在の根源の探求。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="career-section" id="career">
+      <div class="career-container">
+        <div class="section-label">Career</div>
+
+        <div class="career-group">
+          <div class="career-group-head">
+            <span class="career-group-title">個展</span>
+            <span class="career-group-title-en">Solo Exhibitions</span>
+          </div>
+          <div class="career-list">
+            <div class="career-row">
+              <span class="career-year">2023</span>
+              <div>
+                <span class="career-detail-title">文化庁メディア芸術クリエイター育成支援事業採択企画展示</span>
+                <span class="career-detail-venue">長野, 東京</span>
+              </div>
+            </div>
+            <div class="career-row">
+              <span class="career-year">2021</span>
+              <div>
+                <span class="career-detail-title">「油彩画展 ～明るい洞窟～」</span>
+                <span class="career-detail-venue">長野県立美術館（長野）</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="career-group">
+          <div class="career-group-head">
+            <span class="career-group-title">グループ展</span>
+            <span class="career-group-title-en">Group Exhibitions</span>
+          </div>
+          <div class="career-list">
+            <div class="career-row">
+              <span class="career-year">2025</span>
+              <div>
+                <span class="career-detail-title">「ふうけいのまにまに」</span>
+                <span class="career-detail-venue">信州高頭美術館（長野）</span>
+              </div>
+            </div>
+            <div class="career-row">
+              <span class="career-year">2024</span>
+              <div>
+                <span class="career-detail-title">「長野県ゆかりのアーティストステージ」</span>
+                <span class="career-detail-venue">キッセイ文化ホール（長野）</span>
+              </div>
+            </div>
+            <div class="career-row">
+              <span class="career-year">2023</span>
+              <div>
+                <span class="career-detail-title">「若手作家公募個展トライアル・ギャラリー」</span>
+                <span class="career-detail-venue">長野県伊那文化会館（長野）</span>
+              </div>
+            </div>
+            <div class="career-row">
+              <span class="career-year">2022</span>
+              <div>
+                <span class="career-detail-title">「市内作家によるアートグループ展」</span>
+                <span class="career-detail-venue">長野市役所展示サロン（長野）</span>
+              </div>
+            </div>
+            <div class="career-row">
+              <span class="career-year">2021</span>
+              <div>
+                <span class="career-detail-title">「シェル美術賞展」</span>
+              </div>
+            </div>
+            <div class="career-row">
+              <span class="career-year">2021</span>
+              <div>
+                <span class="career-detail-title">「第23回雪梁舎フィレンツェ賞展」</span>
+              </div>
+            </div>
+            <div class="career-row">
+              <span class="career-year">2015</span>
+              <div>
+                <span class="career-detail-title">「群馬青年ビエンナーレ」</span>
+              </div>
+            </div>
+            <div class="career-row">
+              <span class="career-year">2014</span>
+              <div>
+                <span class="career-detail-title">「トーキョーワンダーウォール」</span>
+              </div>
+            </div>
+          </div>
+          <p class="career-note">— その他個展グループ展多数 —</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section class="contact-section" id="contact">
+    <p class="section-label" style="text-align: center; margin-bottom: 1.5rem;">Contact</p>
+    <h2 class="contact-heading">お問い合わせ</h2>
+    <p class="contact-body-text">
+      展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。
+    </p>
+    <a href="contact.html" class="contact-btn">
+      問い合わせフォームへ
+    </a>
+  </section>
+
+  <footer>
+    <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
+    <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
+  </footer>
+
+  <a href="#top" class="back-to-top" id="backToTop" aria-label="ページの先頭に戻る">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+    <span class="back-to-top-text">TOP</span>
+  </a>
+
+  <div class="image-modal" id="imageModal" aria-hidden="true" role="dialog">
+    <div class="modal-bg" id="modalBg"></div>
+    <button class="modal-close" id="modalClose" aria-label="閉じる">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square">
+        <line x1="4" y1="4" x2="20" y2="20"/>
+        <line x1="20" y1="4" x2="4" y2="20"/>
+      </svg>
+    </button>
+    <div class="modal-content">
+      <img src="" alt="拡大画像" id="modalImg">
+      <div class="modal-caption">
+        <p class="modal-caption-jp" id="modalTitleJp"></p>
+        <p class="modal-caption-en" id="modalTitleEn"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ── ナビゲーション & メニュー ── */
+    function toggleMenu() {
+      const links = document.getElementById('nav-links');
+      const cta = document.getElementById('nav-cta-btn');
+      links.classList.toggle('open');
+      if(cta) cta.style.display = links.classList.contains('open') ? 'none' : '';
+    }
+    function closeMenu() {
+      const links = document.getElementById('nav-links');
+      const cta = document.getElementById('nav-cta-btn');
+      links.classList.remove('open');
+      if(cta) cta.style.display = '';
+    }
+
+    /* ── ファーストビュー アニメーション ── */
+    window.addEventListener('load', () => {
+      setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 150);
+      setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'),   350);
+      setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'),      680);
+      setTimeout(() => document.getElementById('heroMeta')?.classList.add('revealed'),    980);
+      setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1700);
+    });
+
+    /* ── Observer (Fade Up) ── */
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.profile-portrait, .profile-facts, .career-row').forEach(el => io.observe(el));
+
+    /* ── Scroll Interactions (Nav, Page-Nav, Back to Top) ── */
+    const topNav = document.getElementById('top-nav');
+    const pageNav = document.getElementById('pageNav');
+    const navItems = document.querySelectorAll('.page-nav-item');
+    const sections = ['profile', 'career'].map(id => document.getElementById(id));
+
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+
+          /* Top Nav Glassmorphism */
+          if (scrollY > 50) topNav.classList.add('scrolled');
+          else topNav.classList.remove('scrolled');
+
+          /* Page Nav Visibility & Active State */
+          const checkY = scrollY + window.innerHeight * 0.4;
+          let activeSec = null;
+          sections.forEach(sec => {
+            if (sec && sec.offsetTop <= checkY) activeSec = sec;
+          });
+          navItems.forEach(item => {
+            const target = document.getElementById(item.getAttribute('data-target'));
+            item.classList.toggle('active', target === activeSec);
+          });
+          if (pageNav) {
+            pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.6);
+          }
+
+          /* Back to Top */
+          const b2t = document.getElementById('backToTop');
+          if (scrollY > 400) b2t.classList.add('is-visible');
+          else b2t.classList.remove('is-visible');
+
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const target = document.getElementById(item.getAttribute('data-target'));
+        if (target) {
+          const offset = topNav?.offsetHeight || 0;
+          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+        }
+      });
+    });
+
+    /* ── Lightbox (Modal) ── */
+    const modal      = document.getElementById('imageModal');
+    const modalImg   = document.getElementById('modalImg');
+    const modalBg    = document.getElementById('modalBg');
+    const modalClose = document.getElementById('modalClose');
+    const titleJpEl  = document.getElementById('modalTitleJp');
+    const titleEnEl  = document.getElementById('modalTitleEn');
+
+    const openModal = (src, jp, en) => {
+      modalImg.src = src;
+      titleJpEl.textContent = jp || '';
+      titleEnEl.textContent = en || '';
+      modal.classList.add('is-active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('is-locked');
+    };
+
+    const closeModal = () => {
+      modal.classList.remove('is-active');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('is-locked');
+      setTimeout(() => { modalImg.src = ''; titleJpEl.textContent = ''; titleEnEl.textContent = ''; }, 560);
+    };
+
+    document.querySelectorAll('.js-modal-open').forEach(el => {
+      el.addEventListener('click', () => {
+        const src = el.getAttribute('data-img-src');
+        const jp  = el.getAttribute('data-cap-jp') || '';
+        const en  = el.getAttribute('data-cap-en') || '';
+        if (src) openModal(src, jp, en);
+      });
+    });
+
+    modalBg.addEventListener('click', closeModal);
+    modalClose.addEventListener('click', closeModal);
+    modalImg.addEventListener('click', closeModal);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('is-active')) closeModal(); });
+  </script>
+</body>
+</html>
