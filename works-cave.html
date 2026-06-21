@@ -201,24 +201,31 @@
     }
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
 
-    /* --- 24カラム グリッド比率設定 --- */
-    /* 1行目 (計24) */
-    .gi-sanmyaku   { grid-column: span 10; }
-    .gi-samizu     { grid-column: span 10; }
-    .gi-kakuchi    { grid-column: span 4; }
+    /* --- 24カラム グリッド比率設定（改修版） --- */
 
-    /* 2行目 (計24) */
-    .gi-asayake    { grid-column: span 7; }
-    .gi-yuyake     { grid-column: span 5; }
-    .gi-suiheisen  { grid-column: span 6; }
-    .gi-sofar      { grid-column: span 6; }
+    /* 1行目：山脈と左美都の2作のみで全幅を占有 (12 + 12 = 24) */
+    .gi-sanmyaku   { grid-column: span 12; }
+    .gi-samizu     { grid-column: span 12; }
 
-    /* 3行目 (計14 / 中央寄せオフセット) */
-    .gi-vole       { grid-column: span 3; grid-column-start: 6; }
-    .gi-untitled   { grid-column: span 3; }
-    .gi-ritornello { grid-column: span 3; }
-    .gi-mon        { grid-column: span 3; }
-    .gi-intocave   { grid-column: span 2; }
+    /* 2行目：高さ同期グループ (6 + 11 + 7 = 24) */
+    /* ※P100(縦)の+覚知kaと、F100(縦)の夕焼けの描画高さを精密に一致させる比率 */
+    .gi-kakuchi    { grid-column: span 6; }
+    .gi-asayake    { grid-column: span 11; }
+    .gi-yuyake     { grid-column: span 7; }
+
+    /* 3行目：正方形シリーズ (8 + 8 = 16 / 左右4カラム余白で中央配置) */
+    .gi-suiheisen  { grid-column: span 8; grid-column-start: 5; }
+    .gi-sofar      { grid-column: span 8; }
+
+    /* 4行目：中・小品グループ (6 + 6 + 5 = 17 / 左3カラム余白で中央配置) */
+    /* ※Vol'e(6) > ritornello(5) とし、全体を従来より拡大 */
+    .gi-vole       { grid-column: span 6; grid-column-start: 4; }
+    .gi-untitled   { grid-column: span 6; }
+    .gi-ritornello { grid-column: span 5; }
+
+    /* 5行目：起点作グループ (4 + 4 = 8 / 左右8カラム余白で中央配置) */
+    .gi-mon        { grid-column: span 4; grid-column-start: 9; }
+    .gi-intocave   { grid-column: span 4; }
 
     .gallery-item-img-wrap {
       width: 100%; display: flex; justify-content: center; align-items: center;
@@ -259,13 +266,13 @@
     .tl-entry.is-featured .tl-figure { width: 64%; }
     .tl-entry.is-featured .tl-body   { width: 32%; }
 
-    /* ── Full Figure (左美都: 山脈と同程度の大迫力全幅表示) ── */
+    /* Full Figure */
     .tl-entry.is-full-figure .tl-content-wrap { flex-direction: column; align-items: stretch; gap: clamp(2rem, 4vw, 3.5rem); }
     .tl-entry.is-full-figure .tl-figure { width: 100%; max-height: 75vh; border: 0.5px solid var(--border); background: var(--bg); display: flex; justify-content: center; align-items: center; }
     .tl-entry.is-full-figure .tl-figure img { width: 100%; max-height: 75vh; object-fit: contain; }
     .tl-entry.is-full-figure .tl-body { width: 100%; max-width: 1000px; margin: 0 auto; }
 
-    /* ── Dual Figure (山脈: 二画像を少しずらして配置) ── */
+    /* Dual Figure */
     .tl-entry.is-dual-figure .tl-figure { border: none; background: none; overflow: visible; cursor: default; position: relative; display: block; padding-bottom: clamp(2.5rem, 7vw, 5rem); padding-right: clamp(2rem, 6vw, 4rem); }
     .tl-img-main, .tl-img-sub { border: 0.5px solid var(--border); overflow: hidden; cursor: zoom-in; background: var(--bg); transition: border-color 0.4s ease, box-shadow 0.5s var(--ease); }
     .tl-img-main img, .tl-img-sub img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(12%) brightness(0.85); transition: transform 1s var(--ease), filter 0.6s ease; }
@@ -332,14 +339,13 @@
        RESPONSIVE DESIGN adjustments
     ============================================================ */
     @media (max-width: 980px) {
-      .gallery-grid { grid-template-columns: repeat(12, 1fr); }
+      .gallery-grid { grid-template-columns: repeat(12, 1fr); gap: 3rem 1.5rem; }
       .gi-sanmyaku, .gi-samizu { grid-column: span 12; }
-      .gi-kakuchi, .gi-yuyake { grid-column: span 6; }
-      .gi-asayake { grid-column: span 12; }
-      .gi-suiheisen, .gi-sofar { grid-column: span 6; }
-      .gi-vole { grid-column-start: auto; }
-      .gi-vole, .gi-untitled, .gi-ritornello, .gi-mon { grid-column: span 3; }
-      .gi-intocave { grid-column: span 12; }
+      .gi-kakuchi, .gi-asayake, .gi-yuyake, .gi-suiheisen, .gi-sofar,
+      .gi-vole, .gi-untitled, .gi-ritornello, .gi-mon, .gi-intocave {
+        grid-column: span 6;
+        grid-column-start: auto;
+      }
     }
     @media (max-width: 860px) {
       .timeline-container { padding-left: 36px; }
@@ -363,7 +369,7 @@
       .modal-content img { max-height: 60svh; }
       .statement-para { text-align: left; }
       .statement-section { padding-left: 1.25rem; padding-right: 1.25rem; }
-      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-grid { grid-template-columns: 1fr; gap: 2.5rem 0; }
       .gallery-item { grid-column: span 1 !important; grid-column-start: auto !important; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -462,13 +468,13 @@
             <span class="gallery-item-title">左美都</span><span class="gallery-item-meta">2023 / F100×3</span>
           </div>
         </a>
+
         <a href="#work-kakuchi" class="gallery-item gi-kakuchi">
           <div class="gallery-item-img-wrap"><img src="images/【P100縦】+覚知ka.jpg" alt="+覚知ka" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">+覚知ka</span><span class="gallery-item-meta">2022 / P100</span>
           </div>
         </a>
-
         <a href="#work-asayake" class="gallery-item gi-asayake">
           <div class="gallery-item-img-wrap"><img src="images/【F100横】朝焼け.jpg" alt="朝焼け" loading="lazy"></div>
           <div class="gallery-item-cap">
@@ -481,6 +487,7 @@
             <span class="gallery-item-title">夕焼け</span><span class="gallery-item-meta">2021 / F100</span>
           </div>
         </a>
+
         <a href="#work-suiheisen" class="gallery-item gi-suiheisen">
           <div class="gallery-item-img-wrap"><img src="images/【S100】水平線.jpg" alt="水平線" loading="lazy"></div>
           <div class="gallery-item-cap">
@@ -512,6 +519,7 @@
             <span class="gallery-item-title">ritornello_of_bright_cave</span><span class="gallery-item-meta">2019 / F50</span>
           </div>
         </a>
+
         <a href="#work-mon" class="gallery-item gi-mon">
           <div class="gallery-item-img-wrap"><img src="images/【F30縦】門.jpg" alt="門" loading="lazy"></div>
           <div class="gallery-item-cap">
@@ -996,7 +1004,7 @@
           const jpTitleEl = block.querySelector('.tl-title');
           jp = jpTitleEl ? jpTitleEl.textContent : '';
         } else {
-           const galleryItem = btn.closest('.gallery-item');
+            const galleryItem = btn.closest('.gallery-item');
           if (galleryItem) {
              const jpTitleEl = galleryItem.querySelector('.gallery-item-title');
              jp = jpTitleEl ? jpTitleEl.textContent : '';
