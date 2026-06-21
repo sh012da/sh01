@@ -1,731 +1,536 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-5RF8JPF5D8');
 </script>
   <link rel="icon" type="image/jpeg" href="images/【S100】so far.jpg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>洞窟 The Cave | Tsuda Shoichi</title>
+  <meta name="description" content="《洞窟》と分類される作品群は、風景を描出する過程において、空間的深度と光の境界線を探求したものである。それは単なる物理的な空洞の再現ではなく、絵画の表面を超えて視線を引き込む「内なる空間」の構築を意味している。">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
 
   <style>
-    /* =====================================================
-       TOKENS
-    ===================================================== */
+    /* ============================================================
+       DESIGN TOKENS (Aligned with "Variant" Page)
+    ============================================================ */
     :root {
-      --bg:        #070706;
-      --bg2:       #0f0f0d;
-      --fg:        #e8e4df;
-      --muted:     rgba(232,228,223,0.42);
-      --dim:       rgba(232,228,223,0.22);
-      --accent:    #b8a898;
-      --border:    rgba(232,228,223,0.10);
-      --border-md: rgba(232,228,223,0.22);
-      --en:  'Cormorant Garamond', serif;
-      --jp:  'Noto Serif JP', serif;
+      --bg:        #060605;
+      --bg2:       #0c0c0a;
+      --bg3:       #111110;
+      --fg:        #e9e5df;
+      --muted:     rgba(233,229,223,0.44);
+      --dim:       rgba(233,229,223,0.22);
+      --whisper:   rgba(233,229,223,0.10);
+      --accent:    #c4a882;
+      --accent2:   #7c9aa0;
+      --border:    rgba(233,229,223,0.08);
+      --border-md: rgba(233,229,223,0.20);
+      --font-en:   'Cormorant Garamond', serif;
+      --font-ja:   'Noto Serif JP', serif;
       --ease:      cubic-bezier(0.16, 1, 0.3, 1);
-      --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
-      --px: clamp(1.25rem, 5vw, 5rem);
-      --text-max: 680px;
+      --px:        clamp(1.25rem, 6vw, 5rem);
     }
-
-    /* =====================================================
-       RESET & BASE
-    ===================================================== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-
     body {
       background: var(--bg);
       color: var(--fg);
-      font-family: var(--jp);
+      font-family: var(--font-ja);
       line-height: 2.1;
       letter-spacing: 0.06em;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
-      padding-left:  env(safe-area-inset-left);
+      padding-left: env(safe-area-inset-left);
       padding-right: env(safe-area-inset-right);
     }
-    
-    /* モーダルやスマホメニューが開いている時は背景のスクロールを固定 */
-    body.modal-open, body.menu-open {
-      overflow: hidden;
-    }
-
+    body.is-locked { overflow: hidden; }
     img { max-width: 100%; height: auto; display: block; }
-    a   { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
+    a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
     a:hover { opacity: 0.45; }
-
-
-    /* ════════════════════════════════════════
-       ★ UNIFIED HEADER (統一デザイン)
-    ════════════════════════════════════════ */
+    /* ============================================================
+       NAVIGATION
+    ============================================================ */
     nav#top-nav {
-      position: sticky; top: 0; z-index: 200;
+      position: fixed;
+      top: 0; left: 0; width: 100%; z-index: 300;
       display: flex; align-items: center; justify-content: space-between;
       padding: clamp(14px, 3vw, 36px) var(--px);
-      border-bottom: 0.5px solid var(--border);
-      background: rgba(13,13,11,0.94);
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      background: transparent;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 0.5px solid transparent;
+      transition: background 0.4s ease, border-color 0.4s ease;
+    }
+    nav#top-nav.scrolled {
+      background: rgba(10,10,9,0.93);
+      border-color: var(--border);
     }
     .nav-logo-unified {
-      font-family: var(--en); font-size: clamp(0.7rem, 2.5vw, 0.9rem);
-      letter-spacing: 0.3em; font-weight: 300; color: var(--accent);
-      text-decoration: none; text-transform: uppercase; transition: opacity 0.4s ease;
+      font-family: var(--font-en); font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+      letter-spacing: 0.3em;
+      font-weight: 300; color: var(--accent);
+      text-transform: uppercase; transition: opacity 0.4s ease;
     }
     .nav-logo-unified:hover { opacity: 0.5; }
-    
-    .nav-links { display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
     .nav-links a {
-      font-family: var(--en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
-      letter-spacing: 0.25em; color: var(--muted); text-decoration: none;
-      text-transform: uppercase; transition: color 0.3s ease;
+      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
+      letter-spacing: 0.25em;
+      color: var(--muted); text-transform: uppercase; transition: color 0.3s ease;
     }
     .nav-links a:hover { color: var(--accent); }
-    
     .nav-cta {
-      font-family: var(--en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
-      letter-spacing: 0.25em; text-transform: uppercase;
-      border: 0.5px solid rgba(184,168,152,0.4); padding: 0.55rem 1.4rem;
-      color: var(--accent); text-decoration: none; transition: background 0.25s, color 0.25s;
+      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem;
+      color: var(--accent); transition: background 0.25s, color 0.25s;
     }
-    .nav-cta:hover { background: rgba(184,168,152,0.08); color: var(--fg); }
-    
-    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
+
+    /* Hamburger */
+    .nav-hamburger { display: none; background: none;
+      border: none; cursor: pointer; padding: 4px; position: relative; z-index: 301; width: 30px; height: 20px;
+    }
     .nav-hamburger span {
-      display: block; width: 22px; height: 0.5px;
-      background: var(--accent); margin: 6px 0; transition: all 0.25s;
+      display: block; position: absolute; left: 0; width: 100%;
+      height: 1px;
+      background: var(--accent); transition: transform 0.4s var(--ease), opacity 0.4s var(--ease), top 0.4s var(--ease);
     }
-
-
-    /* =====================================================
-       HERO
-    ===================================================== */
+    .nav-hamburger span:nth-child(1) { top: 0px; }
+    .nav-hamburger span:nth-child(2) { top: 9px; }
+    .nav-hamburger span:nth-child(3) { top: 18px; }
+    .nav-hamburger.is-active span:nth-child(1) { top: 9px; transform: rotate(45deg); }
+    .nav-hamburger.is-active span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.is-active span:nth-child(3) { top: 9px; transform: rotate(-45deg); }
+    /* Page Nav (Right fixed) */
+    .page-nav {
+      position: fixed;
+      right: clamp(20px, 4vw, 40px); top: 50%;
+      transform: translateY(-50%); z-index: 200;
+      display: flex; flex-direction: column; gap: 24px;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.6s var(--ease), visibility 0.6s;
+    }
+    .page-nav.visible { opacity: 1; visibility: visible; }
+    .page-nav-item {
+      display: flex; align-items: center; gap: 12px; flex-direction: row-reverse;
+      cursor: pointer; background: none; border: none; padding: 8px 0;
+    }
+    .page-nav-dot {
+      width: 8px;
+      height: 8px; border-radius: 50%;
+      background: rgba(233,229,223,0.4); transition: all 0.35s; flex-shrink: 0;
+    }
+    .page-nav-label {
+      font-family: var(--font-en); font-size: 12px; letter-spacing: 0.15em;
+      color: rgba(233,229,223,0.4);
+      text-transform: uppercase; transition: color 0.35s; white-space: nowrap;
+    }
+    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot {
+      background: var(--accent);
+      transform: scale(1.4); box-shadow: 0 0 10px rgba(196,168,130,0.6);
+    }
+    .page-nav-item:hover .page-nav-label { color: rgba(233,229,223,0.85); }
+    .page-nav-item.active .page-nav-label { color: var(--accent); }
+    /* ============================================================
+       HERO FIRST VIEW
+    ============================================================ */
     .hero {
       position: relative;
-      height: 100svh;
-      min-height: 500px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 0 var(--px) clamp(4rem, 9vh, 7rem);
-      overflow: hidden;
-      border-bottom: 0.5px solid var(--border);
+      height: 100svh; min-height: 580px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); overflow: hidden;
+      background:
+        radial-gradient(ellipse 70% 60% at 30% 30%, rgba(124,154,160,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 55% 80% at 72% 25%, rgba(196,168,130,0.04) 0%, transparent 55%),
+        var(--bg);
     }
-
-    .hero-bg {
-      position: absolute; inset: 0;
-      background-image: url('images/【S100】so far.jpg');
-      background-size: cover;
-      background-position: center 40%;
-      opacity: 0;
-      filter: blur(1px);
-      transform: scale(1.04);
-      transition: opacity 2.4s ease;
+    .hero-divider {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%);
     }
-    .hero-bg.loaded { opacity: 0.14; }
-
-    .hero-bg::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(
-        to top,
-        rgba(7,7,6,1)    0%,
-        rgba(7,7,6,0.6)  55%,
-        rgba(7,7,6,0.25) 100%
-      );
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute; inset: 0; z-index: 1;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      background-size: 180px 180px;
-      pointer-events: none;
-      opacity: 0.35;
-    }
-
     .hero-inner { position: relative; z-index: 2; }
-
     .hero-eyebrow {
-      font-family: var(--en);
-      font-size: clamp(0.55rem, 1.4vw, 0.66rem);
-      letter-spacing: 0.3em;
-      color: var(--muted);
-      text-transform: uppercase;
-      margin-bottom: clamp(1rem, 3vh, 2.5rem);
-      display: flex; align-items: center; gap: 0.8rem;
+      font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem);
+      letter-spacing: 0.5em;
+      color: var(--dim); text-transform: uppercase;
+      margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.2rem;
       clip-path: inset(0 100% 0 0);
-      transition: clip-path 1.1s var(--ease) 0.3s;
+      transition: clip-path 1.2s var(--ease) 0.2s;
     }
-    .hero-eyebrow::before {
-      content: '';
-      width: 20px;
-      height: 0.5px;
-      background: var(--muted); flex-shrink: 0;
-    }
+    .hero-eyebrow::before { content: ''; width: 24px; height: 0.5px; background: var(--accent2); flex-shrink: 0; opacity: 0.6; }
     .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
 
     .hero-title {
-      font-family: var(--jp);
-      font-size: clamp(4rem, 18vw, 14rem);
-      font-weight: 200;
-      line-height: 0.95;
-      letter-spacing: -0.02em;
-      color: var(--fg);
-      margin-bottom: clamp(0.5rem, 2vh, 1.5rem);
-      display: flex; gap: 0.04em;
-      overflow: hidden;
+      font-family: var(--font-ja);
+      font-size: clamp(5rem, 19vw, 17rem); font-weight: 200;
+      line-height: 0.88; letter-spacing: -0.02em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem);
+      display: flex; gap: 0.05em;
+      overflow: visible;
     }
-
     .hero-title .char {
-      display: inline-block;
-      transform: translateY(110%);
-      opacity: 0;
-      transition: transform 1.0s var(--ease), opacity 0.6s ease;
+      display: inline-block; opacity: 0;
+      transition: transform 1.4s var(--ease), opacity 0.9s ease;
     }
-    .hero-title.revealed .char:nth-child(1) { transform: translateY(0); opacity: 1; transition-delay: 0.15s; }
-    .hero-title.revealed .char:nth-child(2) { transform: translateY(0); opacity: 1; transition-delay: 0.28s; }
+    .hero-title .char:nth-child(1) { transform: translateX(-60px); transition-delay: 0.2s; }
+    .hero-title .char:nth-child(2) { transform: translateX(60px);  transition-delay: 0.35s; }
+    .hero-title.revealed .char { opacity: 1; transform: translateX(0); }
 
     .hero-title-en {
-      font-family: var(--en);
-      font-size: clamp(1.2rem, 3.5vw, 2.2rem);
-      font-weight: 300;
-      font-style: italic;
-      letter-spacing: 0.15em;
-      color: var(--muted);
+      font-family: var(--font-en);
+      font-size: clamp(0.95rem, 3vw, 2rem);
+      font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.55);
       clip-path: inset(0 100% 0 0);
-      transition: clip-path 1.2s var(--ease) 0.7s;
+      transition: clip-path 1.4s var(--ease) 0.7s;
     }
     .hero-title-en.revealed { clip-path: inset(0 0% 0 0); }
 
     .hero-meta {
-      display: flex; align-items: center; gap: 1.5rem;
-      margin-top: clamp(1.5rem, 4vh, 4rem);
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.9s ease 1.1s, transform 0.9s var(--ease) 1.1s;
+      display: flex; align-items: center;
+      gap: 1.8rem; margin-top: clamp(2rem, 5vh, 4.5rem);
+      opacity: 0; transform: translateY(14px); transition: opacity 1s ease 1.1s, transform 1s var(--ease) 1.1s;
     }
     .hero-meta.revealed { opacity: 1; transform: translateY(0); }
-    .hero-meta-line  { width: 30px; height: 0.5px; background: var(--border-md); flex-shrink: 0; }
-    .hero-meta-text  {
-      font-family: var(--en);
-      font-size: clamp(0.5rem, 1.2vw, 0.63rem);
-      letter-spacing: 0.15em; color: var(--dim); text-transform: uppercase;
-      line-height: 1.4;
-    }
+    .hero-meta-line { width: 40px; height: 0.5px; background: linear-gradient(to right, var(--accent), var(--accent2)); flex-shrink: 0; }
+    .hero-meta-text { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.62rem); letter-spacing: 0.24em; color: var(--dim); text-transform: uppercase; }
 
     .hero-scroll {
       position: absolute;
-      bottom: clamp(1rem, 3vh, 3rem);
-      right: var(--px);
-      z-index: 2;
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      bottom: clamp(2rem, 5vh, 4rem); right: var(--px); z-index: 2;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
       opacity: 0;
-      transition: opacity 0.8s ease 1.6s;
+      transition: opacity 0.9s ease 1.8s;
     }
     .hero-scroll.revealed { opacity: 1; }
-    .hero-scroll-label {
-      font-family: var(--en);
-      font-size: 0.5rem; letter-spacing: 0.35em;
-      color: var(--dim); text-transform: uppercase;
-      writing-mode: vertical-rl;
+    .hero-scroll-label { font-family: var(--font-en); font-size: 0.52rem; letter-spacing: 0.38em; color: var(--whisper); text-transform: uppercase; writing-mode: vertical-rl; }
+    .hero-scroll-track { width: 1px; height: 48px; background: var(--border); position: relative; overflow: hidden; }
+    .hero-scroll-fill {
+      position: absolute; top: -100%; left: 0; width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--accent), transparent); animation: scrollDrop 2.2s ease-in-out 2s infinite;
     }
-    .hero-scroll-bar {
-      width: 1px; height: 40px;
-      background: linear-gradient(to bottom, var(--dim), transparent);
-      animation: scrollPulse 2s ease-in-out 2s infinite;
-    }
-    @keyframes scrollPulse {
-      0%,100% { transform: scaleY(1); opacity: 0.4; transform-origin: top; }
-      50%      { transform: scaleY(1.3); opacity: 1;   transform-origin: top; }
-    }
-
-    /* =====================================================
+    @keyframes scrollDrop { 0% { top: -100%; opacity: 1; } 70% { top: 100%; opacity: 0.4; } 71% { top: -100%; opacity: 0; } 100% { top: -100%; opacity: 0; } }
+    /* ============================================================
        CONCEPT SECTION
-    ===================================================== */
+    ============================================================ */
     .concept-section {
-      padding: clamp(4rem, 10vh, 10rem) var(--px);
-      border-bottom: 0.5px solid var(--border);
-      display: grid;
-      grid-template-columns: 1fr var(--text-max);
-      gap: 0 clamp(2rem, 6vw, 7rem);
-      max-width: calc(var(--text-max) + 240px + var(--px) * 2 + 7rem);
-      margin: 0 auto;
+      padding: clamp(6rem, 13vh, 10rem) var(--px);
+      max-width: 900px; margin: 0 auto; text-align: center;
+    }
+    .concept-text {
+      font-size: clamp(0.9rem, 2vw, 1.05rem);
+      font-weight: 300; line-height: 2.3;
+      color: rgba(233,229,223,0.85); letter-spacing: 0.08em;
+    }
+    /* ============================================================
+       SERIES STATEMENT
+    ============================================================ */
+    .statement-section {
+      padding: clamp(4rem, 9vh, 7rem) var(--px) clamp(6rem, 13vh, 10rem);
+      max-width: 880px; margin: 0 auto; border-top: 0.5px solid var(--border);
+    }
+    .statement-label {
+      font-family: var(--font-en);
+      font-size: clamp(0.54rem, 1.2vw, 0.61rem);
+      letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase;
+      text-align: center; margin-bottom: clamp(2.5rem, 6vh, 4rem);
+    }
+    .statement-pullquote {
+      font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.3rem, 3.2vw, 2.1rem);
+      line-height: 1.75; color: var(--fg); text-align: center; letter-spacing: 0.03em;
+      margin-bottom: clamp(3rem, 7vh, 5rem);
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 1s var(--ease), transform 1s var(--ease);
+    }
+    .statement-pullquote.in-view { opacity: 1; transform: translateY(0); }
+    .statement-pullquote .accent-word { color: var(--accent); }
+
+    .statement-body { display: flex; flex-direction: column; gap: clamp(1.6rem, 3vh, 2.2rem); }
+    .statement-para {
+      font-size: clamp(0.86rem, 1.7vw, 0.98rem);
+      line-height: 2.25;
+      color: rgba(233,229,223,0.72); letter-spacing: 0.04em; text-align: justify;
+      opacity: 0; transform: translateY(16px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+    }
+    .statement-para.in-view { opacity: 1; transform: translateY(0); }
+    .statement-para strong { color: var(--accent); font-weight: 400; }
+
+    .statement-divider {
+      width: 40px;
+      height: 0.5px; margin: clamp(2.5rem, 5vh, 3.5rem) auto;
+      background: linear-gradient(to right, var(--accent), var(--accent2));
     }
 
-    .concept-aside {
-      padding-top: 0.3rem;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1.4rem;
-    }
-    .concept-tag {
-      font-family: var(--en);
-      font-size: clamp(0.56rem, 1.2vw, 0.62rem);
-      letter-spacing: 0.4em;
-      color: var(--muted);
-      text-transform: uppercase;
-      writing-mode: vertical-rl;
-      transform: rotate(180deg);
-      opacity: 0;
-      transform-origin: center;
-    }
-    .concept-tag.in-view {
-      animation: fadeSlideUp 0.9s var(--ease) forwards;
-    }
-    .concept-vertical-line {
-      width: 0.5px;
-      height: 0;
-      background: var(--border-md);
-      margin-left: 0.3rem;
-      transition: height 1.4s var(--ease) 0.3s;
-    }
-    .concept-vertical-line.in-view { height: 80px; }
-
-    .section-label {
-      font-family: var(--en);
-      font-size: clamp(0.55rem, 1.3vw, 0.63rem);
-      letter-spacing: 0.3em;
-      color: var(--muted);
-      text-transform: uppercase;
-      display: flex; align-items: center; gap: 1rem;
-      margin-bottom: clamp(1.5rem, 4vh, 4rem);
-    }
-    .section-label::after {
-      content: ''; flex: 1; height: 0.5px; background: var(--border);
-    }
-
-    .credit {
-      font-family: var(--en);
-      font-size: clamp(0.55rem, 1.2vw, 0.66rem);
-      color: var(--dim);
-      letter-spacing: 0.1em;
-      margin-bottom: clamp(1.5rem, 3vh, 2.8rem);
-    }
-
-    .concept-body {
-      font-size: clamp(0.85rem, 1.8vw, 1rem);
-      font-weight: 300; line-height: 2;
-      color: rgba(232,228,223,0.70);
-      letter-spacing: 0.05em;
-    }
-    .concept-body p { margin-bottom: 1.5em; text-align: justify; }
-    .concept-body p:last-child { margin-bottom: 0; }
-    .concept-body em {
-      font-style: normal;
-      color: var(--fg);
-      border-bottom: 0.5px solid var(--border-md); padding-bottom: 1px;
-    }
-
-    /* =====================================================
-       WORKS SECTION
-    ===================================================== */
-    .works-section {
-      padding: clamp(3rem, 8vh, 8rem) 0 clamp(4rem, 10vh, 12rem);
-    }
-
-    .works-header {
-      padding: 0 var(--px) clamp(2rem, 5vh, 6rem);
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      border-bottom: 0.5px solid var(--border);
-      margin-bottom: clamp(3rem, 7vh, 8rem);
-    }
-    .works-header-label {
-      font-family: var(--en);
-      font-size: clamp(0.55rem, 1.2vw, 0.63rem);
-      letter-spacing: 0.3em;
-      color: var(--muted); text-transform: uppercase;
-    }
-    .works-count {
-      font-family: var(--en);
-      font-size: clamp(1.4rem, 5vw, 3.5rem);
+    .statement-closing {
+      font-family: var(--font-en); font-style: italic;
       font-weight: 300;
-      color: rgba(232,228,223,0.05);
-      letter-spacing: 0.02em;
+      font-size: clamp(0.95rem, 2vw, 1.15rem); line-height: 1.9; color: var(--accent);
+      text-align: center; letter-spacing: 0.04em; opacity: 0; transform: translateY(16px);
+      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
     }
-
-    .artwork-block {
-      padding: 0 var(--px);
-      margin-bottom: clamp(4rem, 10vh, 12rem);
+    .statement-closing.in-view { opacity: 1; transform: translateY(0); }
+    /* ============================================================
+       GALLERY GRID
+    ============================================================ */
+    .gallery-section {
+      padding: 0 var(--px) clamp(6rem, 13vh, 10rem);
+      max-width: 1600px; margin: 0 auto;
+    }
+    .section-label {
+      font-family: var(--font-en);
+      font-size: clamp(0.54rem, 1.2vw, 0.61rem);
+      letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase;
+      text-align: center; margin-bottom: clamp(3rem, 7vh, 5rem);
+    }
+    .gallery-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      align-items: start;
-      gap: 0 clamp(1.5rem, 4vw, 6rem);
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: clamp(1.5rem, 3vw, 2.5rem);
+      justify-content: center;
     }
-    .artwork-block:last-child { margin-bottom: 0; }
+    .gallery-item {
+      display: flex; flex-direction: column; text-decoration: none; cursor: pointer;
+      opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+    }
+    .gallery-item.in-view { opacity: 1; transform: translateY(0); }
 
-    .artwork-block:nth-child(odd)  .artwork-img-col { order: 1; }
-    .artwork-block:nth-child(odd)  .artwork-txt-col { order: 2; padding-top: clamp(2rem, 6vh, 7rem); }
-
-    .artwork-block:nth-child(even) .artwork-img-col { order: 2; }
-    .artwork-block:nth-child(even) .artwork-txt-col { order: 1; padding-top: clamp(2rem, 6vh, 7rem); text-align: right; }
-    .artwork-block:nth-child(even) .artwork-txt-col .section-label { flex-direction: row-reverse; }
-    .artwork-block:nth-child(even) .artwork-txt-col .section-label::after { display: none; }
-    .artwork-block:nth-child(even) .artwork-txt-col .section-label::before {
-      content: ''; flex: 1; height: 0.5px;
-      background: var(--border);
-    }
-
-    .artwork-img-col { position: relative; }
-
-    .artwork-clip-wrap {
-      clip-path: inset(100% 0 0 0);
-      transition: clip-path 1.3s var(--ease);
-      overflow: hidden;
-    }
-    .artwork-clip-wrap.in-view {
-      clip-path: inset(0% 0 0 0);
-    }
-
-    /* クリック拡大用のボタンスタイル */
-    a.zoom-trigger {
-      display: block;
-      position: relative;
-      overflow: hidden;
-      background: var(--bg2);
-      outline: 0.5px solid var(--border);
-      outline-offset: 0;
-      cursor: zoom-in;
-      transition: outline-color 0.5s ease, box-shadow 0.6s var(--ease);
-    }
-    a.zoom-trigger::after {
-      content: '+ EXPAND';
-      position: absolute;
-      bottom: 15px; right: 15px;
-      font-family: var(--en);
-      font-size: 0.6rem; letter-spacing: 0.2em;
-      color: #fff; background: rgba(0,0,0,0.5);
-      padding: 6px 12px;
-      border-radius: 20px;
-      opacity: 0; transform: translateY(10px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-    }
-    
-    @media (hover: hover) and (pointer: fine) {
-      a.zoom-trigger:hover {
-        outline-color: var(--border-md);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        opacity: 1;
-      }
-      a.zoom-trigger:hover .artwork-image {
-        transform: scale(1.035);
-        filter: grayscale(0%) brightness(0.97);
-      }
-      a.zoom-trigger:hover::after {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .artwork-image {
+    .gallery-item-img-wrap {
       width: 100%;
-      height: auto;
-      object-fit: cover;
-      display: block;
-      filter: grayscale(20%) brightness(0.85);
-      transform: scale(1.0);
-      transition: transform 1.0s var(--ease), filter 0.7s ease;
+      aspect-ratio: 91 / 116.7;
+      display: flex; justify-content: center; align-items: center;
+      background: transparent; overflow: hidden; border: 0.5px solid var(--border);
+      transition: border-color 0.4s ease, box-shadow 0.5s var(--ease);
     }
-    
-    .artwork-image.portrait { aspect-ratio: 4 / 5; }
-    .artwork-image.square { aspect-ratio: 1 / 1; }
-    .artwork-image.landscape { aspect-ratio: 4 / 3; }
+    .gallery-item-img-wrap img {
+      width: 100%;
+      height: 100%; object-fit: cover;
+      filter: grayscale(15%) brightness(0.85);
+      transition: transform 0.8s var(--ease), filter 0.6s ease;
+    }
+    .gallery-item:hover .gallery-item-img-wrap {
+      border-color: rgba(196,168,130,0.35);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+    }
+    .gallery-item:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
 
-    .artwork-num {
+    .gallery-item-cap { padding-top: 1rem; text-align: left; }
+    .gallery-item-title {
+      font-family: var(--font-ja); font-size: clamp(0.85rem, 1.4vw, 1rem); font-weight: 300;
+      color: var(--fg); letter-spacing: 0.05em; margin-bottom: 0.3rem; display: block;
+    }
+    .gallery-item-meta {
+      font-family: var(--font-en);
+      font-size: clamp(0.6rem, 1.1vw, 0.7rem);
+      color: var(--accent); letter-spacing: 0.14em; font-style: italic; display: block;
+    }
+    /* ============================================================
+       CHRONOLOGY SECTION
+    ============================================================ */
+    .chronology-section {
+      padding: clamp(5rem, 12vh, 10rem) var(--px);
+      background: var(--bg2); border-top: 0.5px solid var(--border); position: relative;
+    }
+    .timeline-container { max-width: 1200px; margin: 0 auto; position: relative; }
+    .timeline-spine-wrapper {
+      position: absolute; top: 0; bottom: 0;
+      left: 50%; width: 1px;
+      background: rgba(233,229,223,0.06); transform: translateX(-50%);
+    }
+    .timeline-spine-progress {
       position: absolute;
-      top: clamp(10px, 2vw, 20px);
-      left: clamp(10px, 2vw, 20px);
-      font-family: var(--en);
-      font-size: clamp(0.5rem, 1vw, 0.62rem);
-      letter-spacing: 0.22em;
-      color: rgba(232,228,223,0.35);
-      z-index: 1;
-      pointer-events: none;
+      top: 0; left: 0; width: 1px;
+      background: linear-gradient(to bottom, transparent 0%, var(--accent) 10%, var(--accent) 90%, transparent 100%);
+      height: 0%;
+      transition: height 0.1s linear;
     }
 
-    .artwork-year {
-      font-family: var(--en);
-      font-size: clamp(0.55rem, 1.2vw, 0.7rem);
-      letter-spacing: 0.2em;
-      color: var(--dim);
-      margin-bottom: 0.5rem;
-      opacity: 0; transform: translateY(14px);
-      transition: opacity 0.8s ease var(--td, 0.15s), transform 0.8s var(--ease) var(--td, 0.15s);
+    .tl-entry {
+      position: relative;
+      width: 100%; margin-bottom: clamp(7rem, 16vh, 12rem);
+      opacity: 0; transform: translateY(30px); transition: opacity 1s var(--ease), transform 1s var(--ease);
     }
-    .in-view .artwork-year, .artwork-year.in-view { opacity: 1; transform: translateY(0); }
+    .tl-entry:last-child { margin-bottom: 0; }
+    .tl-entry.in-view { opacity: 1; transform: translateY(0); }
 
-    .artwork-title-jp {
-      font-family: var(--jp);
-      font-size: clamp(1.4rem, 4vw, 3rem);
-      font-weight: 200;
-      line-height: 1.3; letter-spacing: 0.04em;
-      color: var(--fg);
-      margin-bottom: 0.2rem;
-      opacity: 0; transform: translateY(18px);
-      transition: opacity 0.9s ease var(--td, 0.25s), transform 0.9s var(--ease) var(--td, 0.25s);
+    .tl-year-display {
+      font-family: var(--font-en);
+      font-size: clamp(3.5rem, 7vw, 5.5rem); font-weight: 300;
+      color: var(--accent); letter-spacing: 0.02em; line-height: 1;
+      margin-bottom: clamp(1rem, 2vh, 2rem); padding-left: 2%; opacity: 0.85;
     }
-    .artwork-block.in-view .artwork-title-jp { opacity: 1; transform: translateY(0); }
-
-    .artwork-title-en {
-      font-family: var(--en);
-      font-size: clamp(0.8rem, 1.8vw, 1.15rem);
-      font-weight: 300; font-style: italic;
-      letter-spacing: 0.12em; color: var(--accent);
-      margin-bottom: clamp(1rem, 2.5vh, 2.2rem);
-      opacity: 0; transform: translateY(12px);
-      transition: opacity 0.8s ease var(--td, 0.35s), transform 0.8s var(--ease) var(--td, 0.35s);
+    .tl-entry:nth-child(even) .tl-year-display { text-align: left; }
+    .tl-content-wrap {
+      display: flex;
+      justify-content: space-between; align-items: center; gap: clamp(2rem, 5vw, 6rem);
     }
-    .artwork-block.in-view .artwork-title-en { opacity: 1; transform: translateY(0); }
+    .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
 
-    /* 作品解説文 */
-    .artwork-desc {
-      font-size: clamp(0.8rem, 1.5vw, 0.9rem);
-      font-weight: 300; line-height: 2.2;
-      color: rgba(232,228,223,0.75);
-      letter-spacing: 0.06em;
-      margin-bottom: clamp(1.5rem, 3vh, 3rem);
-      opacity: 0; transform: translateY(10px);
-      transition: opacity 0.8s ease var(--td, 0.45s), transform 0.8s ease var(--td, 0.45s);
+    .tl-figure {
+      width: 54%; position: relative;
+      border: 0.5px solid var(--border);
+      overflow: hidden; background: var(--bg); cursor: zoom-in; transition: width 0.4s ease;
+    }
+    .tl-body { width: 42%; position: relative; z-index: 2; transition: width 0.4s ease; }
+
+    .tl-entry.is-featured .tl-figure { width: 64%; }
+    .tl-entry.is-featured .tl-body   { width: 32%; }
+
+    .tl-figure img {
+      width: 100%; height: auto;
+      display: block; filter: grayscale(12%) brightness(0.85);
+      transition: transform 1s var(--ease), filter 0.6s ease;
+    }
+    .tl-figure:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
+
+    .tl-title {
+      font-family: var(--font-ja);
+      font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 300;
+      color: var(--fg); line-height: 1.4; margin-bottom: 0.8rem;
+    }
+    .tl-meta {
+      font-family: var(--font-en); font-size: clamp(0.6rem, 1.2vw, 0.75rem); color: var(--accent);
+      letter-spacing: 0.15em; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border-md);
+    }
+    .tl-desc {
+      font-size: clamp(0.85rem, 1.6vw, 0.95rem); line-height: 2.1; color: rgba(233,229,223,0.7);
       text-align: justify;
     }
-    .artwork-block.in-view .artwork-desc { opacity: 1; transform: translateY(0); }
-
-    .artwork-spec {
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      font-size: clamp(0.55rem, 1.1vw, 0.65rem);
-      color: var(--dim); letter-spacing: 0.1em; line-height: 1.8;
-      padding-top: clamp(0.8rem, 2vh, 1.8rem);
-      padding-bottom: clamp(0.8rem, 2vh, 1.8rem);
-      border-top: 0.5px solid var(--border);
-      border-bottom: 0.5px solid var(--border);
-      margin-bottom: clamp(1.5rem, 3vh, 3rem);
-      opacity: 0;
-      transition: opacity 0.8s ease var(--td, 0.55s);
+    .tl-desc p { margin-bottom: 1.2em; }
+    .tl-desc p:last-child { margin-bottom: 0; }
+    /* Typewriter Style */
+    .tw-char { opacity: 0; display: inline-block; transition: opacity 0.3s ease; }
+    .tw-cursor {
+      display: inline-block; width: 1.5px;
+      height: 1.1em; background-color: var(--accent);
+      margin-left: 2px; vertical-align: middle; animation: tw-blink 0.8s infinite;
     }
-    .artwork-block.in-view .artwork-spec { opacity: 1; }
-
-    .artwork-divider {
-      width: 0;
-      height: 0.5px;
-      background: var(--border-md);
-      margin-bottom: clamp(1.2rem, 3vh, 2.5rem);
-      transition: width 1.2s var(--ease) 0.5s;
-    }
-    .artwork-block.in-view .artwork-divider { width: 100%; }
-    .artwork-block:nth-child(even) .artwork-divider { margin-left: auto; }
-
-    /* =====================================================
-       CUSTOM MODAL (オリジナル拡大ビューワー)
-    ===================================================== */
-    .custom-modal {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.5s ease, visibility 0.5s ease;
-    }
-    .custom-modal.is-active {
-      pointer-events: auto;
-      opacity: 1;
-      visibility: visible;
-    }
-    
-    .modal-bg {
-      position: absolute;
-      inset: 0;
-      background: rgba(7, 7, 6, 0.96); /* サイトの世界観に合わせた深い黒 */
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      cursor: zoom-out;
-    }
-
-    .modal-content {
-      position: relative;
-      z-index: 2;
-      max-width: 90vw;
-      max-height: 90vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-      transform: scale(0.96);
-      transition: transform 0.6s var(--ease-back);
-    }
-    .custom-modal.is-active .modal-content {
-      transform: scale(1);
-    }
-
-    .modal-image {
-      max-width: 100%;
-      max-height: 80vh;
-      object-fit: contain;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-      border: 0.5px solid var(--border);
-    }
-
-    .modal-caption {
-      font-family: var(--jp);
-      font-size: clamp(0.75rem, 1.5vw, 0.85rem);
-      letter-spacing: 0.15em;
-      color: var(--fg);
-      text-align: center;
-      font-weight: 300;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: clamp(15px, 3vw, 30px);
-      right: clamp(15px, 3vw, 30px);
-      z-index: 3;
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-size: 2rem;
-      font-weight: 100;
-      cursor: pointer;
-      line-height: 1;
-      padding: 10px;
-      transition: color 0.3s ease, transform 0.3s var(--ease);
-    }
-    .modal-close:hover {
-      color: var(--fg);
-      transform: scale(1.1);
-    }
-
-    /* ════════════════════════════════════════
-       ★ UNIFIED CONTACT & FOOTER (統一デザイン)
-    ════════════════════════════════════════ */
+    @keyframes tw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .fade-out { opacity: 0; transition: opacity 0.8s ease; }
+    /* ============================================================
+       CONTACT & FOOTER
+    ============================================================ */
     .contact-section {
-      position: relative; z-index:1; padding: 7rem var(--px); text-align: center;
-      border-top: 0.5px solid rgba(255,255,255,0.08);
-    }
-    .contact-label {
-      font-family: var(--en); font-size: 10px; letter-spacing: 0.28em; color: var(--muted);
-      text-transform: uppercase; margin-bottom: 2rem;
-      display: flex; align-items: center; justify-content: center; gap: 1rem;
-    }
-    .contact-label::before, .contact-label::after {
-      content: ''; width: 32px; height: 0.5px; background: rgba(255,255,255,0.15);
+      padding: clamp(7rem, 15vh, 11rem) var(--px);
+      text-align: center;
+      border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(196,168,130,0.06) 0%, var(--bg) 70%);
     }
     .contact-heading {
-      font-family: var(--jp); font-size: clamp(1.6rem,4vw,3rem); font-weight: 200;
-      line-height: 1.2; color: var(--fg); margin-bottom: 1.5rem; letter-spacing: -0.01em;
+      font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200;
+      line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em;
     }
     .contact-body-text {
-      font-family: var(--jp); font-size: 14px; color: rgba(237,233,228,0.55);
-      margin: 0 auto 2.5rem; max-width: 400px; line-height: 1.95;
+      font-family: var(--font-ja);
+      font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+      color: rgba(233,229,223,0.55); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2;
     }
     .contact-btn {
-      display: inline-block; border: 0.5px solid rgba(237,233,228,0.40); padding: 0.9rem 2.75rem;
-      font-family: var(--en); font-size: clamp(0.6rem,1.5vw,0.7rem); letter-spacing: 0.18em;
-      color: var(--fg); text-decoration: none; text-transform: uppercase; transition: background 0.2s;
+      display: inline-block; padding: 1.2rem 3.5rem; background: var(--accent); color: var(--bg);
+      font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500;
+      letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none;
+      transition: all 0.4s var(--ease); border-radius: 2px;
     }
-    .contact-btn:hover { background: rgba(237,233,228,0.07); }
-
-    footer.unified-footer {
-      position:relative; z-index:1; padding: clamp(32px,6vh,72px) var(--px);
-      display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;
-      border-top: 1px solid rgba(255,255,255,0.06);
+    .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3); }
+    footer {
+      padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); background: var(--bg);
     }
-    .footer-logo-unified {
-      font-family: var(--jp); font-size: 14px; font-weight:200;
-      color: rgba(237,233,228,0.30); letter-spacing:0.08em;
+    .footer-logo { font-family: var(--font-ja);
+      font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.28); letter-spacing: 0.08em; }
+    .footer-copy { font-family: var(--font-en);
+      font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
+    /* ============================================================
+       LIGHTBOX (MODAL) & BACK TO TOP
+    ============================================================ */
+    .image-modal {
+      position: fixed;
+      inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center;
+      opacity: 0; visibility: hidden; transition: opacity 0.55s var(--ease), visibility 0.55s;
     }
-    .footer-copy-unified {
-      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
-      letter-spacing:0.18em; color: var(--muted);
+    .image-modal.is-active { opacity: 1; visibility: visible; }
+    .modal-bg { position: absolute; inset: 0;
+      background: rgba(6,6,5,0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); cursor: zoom-out; }
+    .modal-close {
+      position: fixed;
+      top: clamp(1rem, 3vh, 2rem); right: var(--px); z-index: 10001;
+      background: none; border: none; color: var(--muted); cursor: pointer; padding: 0.5rem;
+      transition: color 0.3s ease, transform 0.3s var(--ease);
     }
-
-    /* =====================================================
-       UTILITY ANIMATIONS
-    ===================================================== */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 1s var(--ease), transform 1s var(--ease);
-      transition-delay: var(--sd, 0ms);
+    .modal-close:hover { color: var(--fg); transform: scale(1.1) rotate(90deg); }
+    .modal-content {
+      position: relative; z-index: 10000; max-width: 90vw; margin: auto;
+      display: flex; flex-direction: column; align-items: center; gap: clamp(1rem, 2vh, 1.5rem);
+      opacity: 0; transform: scale(0.96) translateY(12px);
+      transition: opacity 0.55s var(--ease) 0.08s, transform 0.55s var(--ease) 0.08s;
     }
-    .fade-up.in-view { opacity: 1;
-      transform: translateY(0); }
-
-    @keyframes fadeSlideUp {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
+    .image-modal.is-active .modal-content { opacity: 1; transform: scale(1) translateY(0); }
+    .modal-content img { max-width: 100%; max-height: 75svh; object-fit: contain;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.75); border: 0.5px solid var(--border); cursor: zoom-out; }
+    .modal-caption { text-align: center; width: 100%; padding: 0 1rem; }
+    .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 200; color: var(--fg); margin-bottom: 0.3rem; }
+    .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.72rem, 1.2vw, 0.85rem); font-style: italic; color: var(--accent); letter-spacing: 0.15em; }
+    .back-to-top {
+      position: fixed; bottom: clamp(1.5rem, 5vh, 4rem);
+      right: clamp(15px, 4vw, 50px);
+      z-index: 9000; width: clamp(64px, 10vw, 90px); height: clamp(64px, 10vw, 90px);
+      border-radius: 50%;
+      background: rgba(196, 168, 130, 0.85); border: 1px solid var(--accent);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: var(--bg);
+      opacity: 0; visibility: hidden; transform: translateY(20px);
+      transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
     }
-
-    /* =====================================================
-       RESPONSIVE (Mobile & Tablet)
-    ===================================================== */
-    @media (max-width: 900px) {
-      .concept-section { grid-template-columns: 1fr; gap: 2rem 0; }
-      .concept-aside { flex-direction: row; align-items: center; padding-top: 0; }
-      .concept-tag { writing-mode: horizontal-tb; transform: none; }
-      .concept-vertical-line { width: 48px; height: 0.5px !important; margin-left: 0; }
-      .artwork-block { grid-template-columns: 1fr; gap: 1.5rem 0; }
-      .artwork-block:nth-child(odd)  .artwork-img-col,
-      .artwork-block:nth-child(even) .artwork-img-col { order: 1; }
-      .artwork-block:nth-child(odd)  .artwork-txt-col,
-      .artwork-block:nth-child(even) .artwork-txt-col { order: 2; padding-top: 0; text-align: left; }
-      .artwork-block:nth-child(even) .artwork-txt-col .section-label { flex-direction: row; }
-      .artwork-block:nth-child(even) .artwork-txt-col .section-label::before { display: none; }
-      .artwork-block:nth-child(even) .artwork-txt-col .section-label::after { display: block; }
-      .artwork-block:nth-child(even) .artwork-divider { margin-left: 0; }
+    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
+    .back-to-top:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-6px); }
+    .back-to-top svg { width: clamp(20px, 3vw, 32px); height: clamp(20px, 3vw, 32px); margin-bottom: 2px; }
+    .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.9rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
+    /* ============================================================
+       RESPONSIVE DESIGN
+    ============================================================ */
+    @media (max-width: 860px) {
+      .timeline-container { padding-left: 36px; }
+      .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2rem; }
+      .tl-figure, .tl-body, .tl-entry.is-featured .tl-figure, .tl-entry.is-featured .tl-body { width: 100%; }
+      .timeline-spine-wrapper { left: 16px; transform: none; }
+      .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; font-size: clamp(2.5rem, 8vw, 3.5rem); }
     }
-
     @media (max-width: 768px) {
       nav#top-nav { padding: 1rem 1.25rem; }
       .nav-links { display: none; }
       .nav-hamburger { display: block; }
       .nav-links.open {
-        display: flex; flex-direction: row; flex-wrap: nowrap; position: fixed; inset: 0;
-        background: rgba(13,13,11,0.98); align-items: center; justify-content: center;
-        gap: 0.6rem; z-index: 300; padding: 1rem; overflow-x: auto;
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        position: fixed; inset: 0; background: rgba(10,10,9,0.98);
+        gap: 2.5rem; z-index: 300; padding: 2rem;
       }
-      .nav-links.open li a { font-size: 0.9rem; padding: 0.6rem 0.5rem; display: block; white-space: nowrap; }
+      .nav-links.open li a { font-size: 1.4rem; letter-spacing: 0.35em; padding: 10px; display: block; }
+      .page-nav.visible { right: 8px; opacity: 0.5; }
+      .page-nav.visible:hover { opacity: 1; }
+      .page-nav-label { display: none; }
     }
-
     @media (max-width: 480px) {
-      .hero-scroll { display: flex; transform: scale(0.8); transform-origin: bottom right; }
-      .works-header { flex-direction: column; gap: 0.5rem; }
-      .artwork-block { margin-bottom: 5rem; }
+      .hero-scroll { display: none; }
+      .modal-content img { max-height: 60svh; }
+      .statement-para { text-align: left; }
+      .statement-section { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
     }
-
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
-      .hero-title .char, .hero-eyebrow, .hero-title-en, .hero-meta, .hero-scroll,
-      .artwork-clip-wrap, .artwork-title-jp, .artwork-title-en, .artwork-desc,
-      .artwork-year, .artwork-spec, .artwork-divider, .fade-up, .concept-tag,
-      .custom-modal, .modal-content {
-        opacity: 1 !important; transform: none !important; clip-path: none !important; width: auto !important; height: auto !important;
-      }
+      .gallery-item, .tl-entry, .reveal-fade { opacity: 1 !important; transform: none !important; }
     }
   </style>
 </head>
-
-<body>
-
+<body id="top">
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
@@ -737,277 +542,511 @@
     <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
       <span></span><span></span><span></span>
     </button>
-    <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
+    <a href="index.html#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
   </nav>
-
+  <nav class="page-nav" id="pageNav" aria-label="ページ内ナビゲーション">
+    <button class="page-nav-item" data-target="gallery" aria-label="Galleryへ">
+      <div class="page-nav-dot"></div><span class="page-nav-label">Gallery</span>
+    </button>
+    <button class="page-nav-item" data-target="chronology" aria-label="Timelineへ">
+      <div class="page-nav-dot"></div><span class="page-nav-label">Timeline</span>
+    </button>
+  </nav>
   <main>
-    <section class="hero" id="hero">
-      <div class="hero-bg" id="heroBg"></div>
+    <section class="hero">
+      <div class="hero-divider" aria-hidden="true"></div>
       <div class="hero-inner">
-        <p class="hero-eyebrow" id="heroEyebrow">Series — Cave &nbsp;·&nbsp; Site-specific</p>
+        <p class="hero-eyebrow" id="heroEyebrow">Series — Depth & Threshold &nbsp;·&nbsp; Light & Darkness</p>
         <h1 class="hero-title" id="heroTitle" aria-label="洞窟">
-          <span class="char">洞</span>
-          <span class="char">窟</span>
+          <span class="char">洞</span><span class="char">窟</span>
         </h1>
         <p class="hero-title-en" id="heroEn">The Cave</p>
         <div class="hero-meta" id="heroMeta">
           <div class="hero-meta-line"></div>
-          <span class="hero-meta-text">Oil on Canvas &nbsp;·&nbsp; Site-specific Series</span>
+          <span class="hero-meta-text">Oil on Canvas &nbsp;·&nbsp; Works 2017 – 2021</span>
         </div>
       </div>
       <div class="hero-scroll" id="heroScroll" aria-hidden="true">
-        <div class="hero-scroll-bar"></div>
+        <div class="hero-scroll-track">
+          <div class="hero-scroll-fill"></div>
+        </div>
         <span class="hero-scroll-label">Scroll</span>
       </div>
     </section>
-
-    <section class="concept-section" id="concept">
-      <div class="concept-aside">
-        <span class="concept-tag" id="conceptTag">Concept</span>
-        <div class="concept-vertical-line" id="conceptLine"></div>
+    <section class="concept-section">
+      <p class="concept-text">
+        光があたる外側から、光が届かない内側へ。<br>
+        その境界に身を置くとき、絵画はひとつの入り口になる。<br>
+        暗がりへの没入が呼び覚ます、恐怖と根源的な安堵。
+      </p>
+    </section>
+    <section class="statement-section">
+      <p class="statement-label">Series Statement</p>
+      <p class="statement-pullquote reveal-fade">
+        《洞窟》と分類される作品群は、風景を描出する過程において、<span class="accent-word">空間的深度と光の境界線</span>を探求したものである。
+      </p>
+      <div class="statement-body">
+        <p class="statement-para reveal-fade">
+          それは単なる物理的な空洞の再現ではなく、絵画の表面を超えて視線を引き込む「内なる空間」の構築を意味している。画面の奥行きは現実の遠近法に従うのではなく、見る者の意識そのものを引き寄せる重力として機能する。
+        </p>
+        <p class="statement-para reveal-fade">
+          暗がりへの没入は、恐怖と同時に根源的な安堵を呼び覚ます。光があたる外側（表層）から、光が届かない内側（深層）への移行——その境界に現れる事象を捉えることで、絵画そのものが一種の入り口として機能し始める。
+        </p>
+        <div class="statement-divider" aria-hidden="true"></div>
+        <p class="statement-para reveal-fade">
+          《洞窟》シリーズの各作品は、特定の場所の記憶でありながら、誰の内面にも通じる<strong>普遍的な閾</strong>を描こうとする試みでもある。
+        </p>
       </div>
-      <div class="concept-main">
-        <p class="section-label">Concept</p>
-        <p class="credit">解説：左美都研究会、水澤井縄</p>
-        <div class="concept-body fade-up" style="--sd:100ms">
-          <p>《洞窟》は、津田が<em>〈単位世界〉</em>と呼ぶものを示した作品です。</p>
-          <p>私たちは一つの同じ世界を生きているようでいて、実際には人それぞれ異なる記憶や経験、感覚によって形づくられた世界の中にいます。世界は単一のものではなく、複数の現実や認識が重なり合いながら存在しているのではないでしょうか。</p>
-          <p>津田は、その重なり合う世界の中で、一つのまとまりを持って立ち現れる現象や感覚の場を<em>〈単位世界〉</em>と呼んでいます。</p>
-          <p>「洞窟」は、人類にとって最も古い居住空間の一つです。旧石器時代の人々は洞窟に身を寄せ、外敵や風雨から身を守りながら生活し、火を使い、壁画を描きました。さらに新石器時代には、その構造を受け継ぐような竪穴住居や地下式施設が現れ、洞窟的な空間は建築や文化の記憶として人類史の中に刻まれていきました。</p>
-          <p>洞窟は単なる空間ではありません。それは外界から切り離されながらも世界と接続する場所であり、人間が世界を認識し、想像し、表現するための原初的な場なのです。</p>
-          <p>《洞窟》に分類される作品は、そのような人類の深層に刻まれた空間の記憶を手がかりとして、〈単位世界〉の姿を描き出そうとする試みです。</p>
-        </div>
+      <p class="statement-closing reveal-fade">— Tsuda Shoichi</p>
+    </section>
+    <section class="gallery-section" id="gallery">
+      <div class="section-label">Works Index</div>
+      <div class="gallery-grid">
+        <a href="#work-suiheisen" class="gallery-item">
+          <div class="gallery-item-img-wrap"><img src="images/【S100】水平線.jpg" alt="水平線" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">水平線</span><span class="gallery-item-meta">2021 / S100</span>
+          </div>
+        </a>
+        <a href="#work-yuyake" class="gallery-item">
+          <div class="gallery-item-img-wrap"><img src="images/【F100縦】夕焼け.jpg" alt="夕焼け" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">夕焼け</span><span class="gallery-item-meta">2021 / F100</span>
+          </div>
+        </a>
+        <a href="#work-vole" class="gallery-item">
+          <div class="gallery-item-img-wrap"><img src="images/【F60縦】Vol'e（ヴォー’レ）.jpg" alt="Vol'e（ヴォー’レ）" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">Vol'e（ヴォー’レ）</span><span class="gallery-item-meta">2020 / F60</span>
+          </div>
+        </a>
+        <a href="#work-untitled" class="gallery-item">
+          <div class="gallery-item-img-wrap"><img src="images/【P15横】IMG_8024.jpg" alt="Untitled" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">Untitled</span><span class="gallery-item-meta">2020 / P15</span>
+          </div>
+        </a>
+        <a href="#work-sofar" class="gallery-item">
+          <div class="gallery-item-img-wrap"><img src="images/【S100】so far.jpg" alt="so far" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">so far</span><span class="gallery-item-meta">2019 / S100</span>
+          </div>
+        </a>
+        <a href="#work-ritornello" class="gallery-item">
+          <div class="gallery-item-img-wrap"><img src="images/【F50縦】ritornello_of_bright_cave(2).jpg" alt="ritornello of bright cave" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">ritornello of bright cave</span><span class="gallery-item-meta">2019 / F50</span>
+          </div>
+        </a>
+        <a href="#work-taki" class="gallery-item">
+          <div class="gallery-item-img-wrap"><img src="images/【F50縦×２】滝.jpg" alt="滝" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">滝</span><span class="gallery-item-meta">2019 / F50×2</span>
+          </div>
+        </a>
+        <a href="#work-mon" class="gallery-item">
+          <div class="gallery-item-img-wrap"><img src="images/【F30縦】門.jpg" alt="門" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">門</span><span class="gallery-item-meta">2017 / F30</span>
+          </div>
+        </a>
+        <a href="#work-intocave" class="gallery-item">
+          <div class="gallery-item-img-wrap"><img src="images/into_cave.jpg" alt="into_cave" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">into_cave</span><span class="gallery-item-meta">2017</span>
+          </div>
+        </a>
       </div>
     </section>
+    <section class="chronology-section" id="chronology">
+      <div class="timeline-container">
+        <div class="timeline-spine-wrapper">
+          <div class="timeline-spine-progress" id="tl-spine-fill"></div>
+        </div>
 
-    <section class="works-section" id="works">
-      <div class="works-header fade-up">
-        <span class="works-header-label">Selected Works</span>
-        <span class="works-count">03</span>
-      </div>
-
-      <div class="artwork-block" id="block1">
-        <div class="artwork-img-col">
-          <span class="artwork-num">01</span>
-          <div class="artwork-clip-wrap">
-            <a href="images/【S100】so far.jpg" class="zoom-trigger" data-caption="明るい洞窟 (Bright Cave)">
-              <img src="images/【S100】so far.jpg" alt="明るい洞窟" class="artwork-image square" loading="lazy">
-            </a>
+        <article class="tl-entry is-featured" id="work-suiheisen">
+          <div class="tl-year-display">2021</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【S100】水平線.jpg">
+              <img src="images/【S100】水平線.jpg" alt="水平線" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">水平線</h3>
+              <p class="tl-meta">S100 / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>洞窟の奥から外界を望むように、画面の彼方に水平線が引かれる。内なる暗がりと外の光が、ひとつの地平で接する瞬間を捉えた作品である。</p>
+                <p>視線は深層から表層へ、表層から深層へと往復し続け、絵画そのものが境界=入り口として機能し始める。</p>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="artwork-txt-col">
-          <p class="section-label">Work 01</p>
-          <p class="artwork-year">2021</p>
-          <h2 class="artwork-title-jp">明るい洞窟</h2>
-          <p class="artwork-title-en">Bright Cave</p>
-          <p class="artwork-desc">
-            光が差し込む洞窟の内部構造を、特有の物質的アプローチで解体し再構築したS100号の大作。外部と内部の境界が曖昧になる瞬間をキャンバス上に定着させている。
-          </p>
-          <div class="artwork-divider"></div>
-          <p class="artwork-spec">
-            油彩・キャンバス<br>Oil on canvas<br>162 × 162 cm
-          </p>
-        </div>
-      </div>
+        </article>
 
-      <div class="artwork-block" id="block2">
-        <div class="artwork-img-col">
-          <span class="artwork-num">02</span>
-          <div class="artwork-clip-wrap">
-            <a href="images/【F30縦】ritornello_of_bright_cave(2).jpg" class="zoom-trigger" data-caption="ritornello_of_bright_cave(2)">
-              <img src="images/【F30縦】ritornello_of_bright_cave(2).jpg" alt="ritornello_of_bright_cave(2)" class="artwork-image portrait" loading="lazy">
-            </a>
+        <article class="tl-entry" id="work-yuyake">
+          <div class="tl-year-display">2021</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F100縦】夕焼け.jpg">
+              <img src="images/【F100縦】夕焼け.jpg" alt="夕焼け" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">夕焼け</h3>
+              <p class="tl-meta">F100 / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>光が消えゆく瞬間の空を、洞窟の入り口から見上げるような構図で描いた一枚。暮れていく光は、内側の暗がりへと誘う最後の境界線として機能する。</p>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="artwork-txt-col">
-          <p class="section-label">Work 02</p>
-          <p class="artwork-year">2017</p>
-          <h2 class="artwork-title-jp">ritornello_of_bright_cave(2)</h2>
-          <p class="artwork-title-en">&nbsp;</p>
-          <p class="artwork-desc">
-            《明るい洞窟》のモチーフが反復される過程で生じる差異（リトルネロ）を探求した作品。空間の親和性を意識した縦長の画面構成が、鑑賞者の視線を深部へと誘う。
-          </p>
-          <div class="artwork-divider"></div>
-          <p class="artwork-spec">
-            油彩・キャンバス<br>Oil on canvas<br>91 × 72.7 cm
-          </p>
-        </div>
-      </div>
+        </article>
 
-      <div class="artwork-block" id="block3">
-        <div class="artwork-img-col">
-          <span class="artwork-num">03</span>
-          <div class="artwork-clip-wrap">
-            <a href="images/【F15横】into_cave.jpg" class="zoom-trigger" data-caption="into_cave (Into the Cave)">
-              <img src="images/【F15横】into_cave.jpg" alt="into_cave" class="artwork-image landscape" loading="lazy">
-            </a>
+        <article class="tl-entry" id="work-vole">
+          <div class="tl-year-display">2020</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F60縦】Vol'e（ヴォー’レ）.jpg">
+              <img src="images/【F60縦】Vol'e（ヴォー’レ）.jpg" alt="Vol'e（ヴォー’レ）" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">Vol'e（ヴォー’レ）</h3>
+              <p class="tl-meta">F60 / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>飛翔と落下、上昇と下降が同居する不安定な空間構成。重力から解き放たれたかのような筆致が、洞窟内部の不確かな方向感覚を呼び起こす。</p>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="artwork-txt-col">
-          <p class="section-label">Work 03</p>
-          <p class="artwork-year">2017</p>
-          <h2 class="artwork-title-jp">into_cave</h2>
-          <p class="artwork-title-en">Into the Cave</p>
-          <p class="artwork-desc">
-            居住形態の原点としての洞窟へ「入っていく」身体的感覚を視覚化。F15号という比較的小さなフォーマットの中で、圧縮された空間表現が試みられている。
-          </p>
-          <div class="artwork-divider"></div>
-          <p class="artwork-spec">
-            油彩・キャンバス<br>Oil on canvas<br>53 × 65.2 cm
-          </p>
-        </div>
-      </div>
+        </article>
 
+        <article class="tl-entry" id="work-untitled">
+          <div class="tl-year-display">2020</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【P15横】IMG_8024.jpg">
+              <img src="images/【P15横】IMG_8024.jpg" alt="Untitled" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">Untitled</h3>
+              <p class="tl-meta">P15 / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>小品ながら、画面の中心に据えられた暗部が深い奥行きを生み出す。タイトルを持たないことで、鑑賞者自身の記憶や経験が空洞を満たす余地として残されている。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry is-featured" id="work-sofar">
+          <div class="tl-year-display">2019</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【S100】so far.jpg">
+              <img src="images/【S100】so far.jpg" alt="so far" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">so far</h3>
+              <p class="tl-meta">S100 / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>「ここまで」を意味するタイトルは、洞窟探索の一時的な到達点を示すと同時に、絵画制作そのものの現在地をも暗示する。重ねられた絵の具の層が、辿ってきた時間の堆積を物語る。</p>
+                <p>暗部と明部のコントラストは、外側の光が届く限界線=洞窟の「現在地」を描き出している。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry" id="work-ritornello">
+          <div class="tl-year-display">2019</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F50縦】ritornello_of_bright_cave(2).jpg">
+              <img src="images/【F50縦】ritornello_of_bright_cave(2).jpg" alt="ritornello of bright cave" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">ritornello of bright cave</h3>
+              <p class="tl-meta">F50 / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>音楽用語「リトルネッロ（反復句）」を借りたタイトルが示す通り、明るい洞窟のモチーフが画面の中で繰り返し回帰する。光の反復は、暗闇の中で確かな道しるべとなる。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry" id="work-taki">
+          <div class="tl-year-display">2019</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F50縦×２】滝.jpg">
+              <img src="images/【F50縦×２】滝.jpg" alt="滝" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">滝</h3>
+              <p class="tl-meta">F50×2 / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>二面のキャンバスを連ねることで、垂直に落下し続ける水の運動と時間の持続を表現している。流れ落ちる水音は、洞窟の闇の奥へと響き渡る境界の合図でもある。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry" id="work-mon">
+          <div class="tl-year-display">2017</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F30縦】門.jpg">
+              <img src="images/【F30縦】門.jpg" alt="門" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">門</h3>
+              <p class="tl-meta">F30 / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>《洞窟》シリーズの起点となる作品の一つ。「門」というモチーフは、内と外、光と闇を分かつ閾そのものを直接的に主題化している。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry" id="work-intocave">
+          <div class="tl-year-display">2017</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/into_cave.jpg">
+              <img src="images/into_cave.jpg" alt="into_cave" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">into_cave</h3>
+              <p class="tl-meta">Oil on canvas</p>
+              <div class="tl-desc">
+                <p>シリーズの出発点となった作品。洞窟という空間的主題への最初のアプローチであり、以降の連作を貫く「内なる空間」への関心の原点がここに記されている。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
     </section>
   </main>
-
-
   <section class="contact-section" id="contact">
-    <p class="contact-label">Contact</p>
+    <p class="section-label" style="text-align: center; margin-bottom: 1.5rem;">Contact</p>
     <h2 class="contact-heading">お問い合わせ</h2>
     <p class="contact-body-text">
       展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。
     </p>
-    <a href="https://sh012da.github.io/sh01/contact.html" class="contact-btn">
-      問い合わせフォームへ →
+    <a href="contact.html" class="contact-btn">
+      問い合わせフォームへ
     </a>
   </section>
-
-  <footer class="unified-footer">
-    <p class="footer-logo-unified">津田 翔一 / Tsuda Shoichi</p>
-    <p class="footer-copy-unified">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
+  <footer>
+    <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
+    <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
-
-
-  <div id="customModal" class="custom-modal" aria-hidden="true">
+  <a href="#gallery" class="back-to-top" id="backToTop" aria-label="ギャラリーの先頭に戻る">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+    <span class="back-to-top-text">TOP</span>
+  </a>
+  <div class="image-modal" id="imageModal" aria-hidden="true" role="dialog">
     <div class="modal-bg" id="modalBg"></div>
-    <button class="modal-close" id="modalClose" aria-label="閉じる">×</button>
+    <button class="modal-close" id="modalClose" aria-label="閉じる">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square">
+        <line x1="4" y1="4" x2="20" y2="20"/>
+        <line x1="20" y1="4" x2="4" y2="20"/>
+      </svg>
+    </button>
     <div class="modal-content">
-      <img id="modalImg" class="modal-image" src="" alt="">
-      <p id="modalCaptionText" class="modal-caption"></p>
+      <img src="" alt="拡大画像" id="modalImg">
+      <div class="modal-caption">
+        <p class="modal-caption-jp" id="modalTitleJp"></p>
+        <p class="modal-caption-en" id="modalTitleEn"></p>
+      </div>
     </div>
   </div>
-
   <script>
-    /* ── 統一ヘッダーのナビゲーション（スマホメニュー）開閉処理 ── */
+    /* ── ナビゲーション & メニュー ── */
     function toggleMenu() {
       const links = document.getElementById('nav-links');
-      const btn   = document.getElementById('nav-cta-btn');
-      if(links) {
-        links.classList.toggle('open');
-        document.body.classList.toggle('menu-open', links.classList.contains('open'));
+      const cta = document.getElementById('nav-cta-btn');
+      const hamburger = document.getElementById('hamburger');
+      links.classList.toggle('open');
+      hamburger.classList.toggle('is-active');
+      if(cta) cta.style.display = links.classList.contains('open') ? 'none' : '';
+      if (links.classList.contains('open')) {
+        document.body.classList.add('is-locked');
+      } else {
+        document.body.classList.remove('is-locked');
       }
-      if(btn) btn.style.display = links.classList.contains('open') ? 'none' : '';
     }
+
     function closeMenu() {
       const links = document.getElementById('nav-links');
-      const btn   = document.getElementById('nav-cta-btn');
-      if(links) {
-        links.classList.remove('open');
-        document.body.classList.remove('menu-open');
-      }
-      if(btn) btn.style.display = '';
+      const cta = document.getElementById('nav-cta-btn');
+      const hamburger = document.getElementById('hamburger');
+      links.classList.remove('open');
+      hamburger.classList.remove('is-active');
+      if(cta) cta.style.display = '';
+      document.body.classList.remove('is-locked');
     }
-
-
-    /* ── 0. CUSTOM MODAL LOGIC ──────────────────────────── */
-    document.addEventListener("DOMContentLoaded", function() {
-      const modal = document.getElementById('customModal');
-      const modalImg = document.getElementById('modalImg');
-      const modalCaption = document.getElementById('modalCaptionText');
-      const modalBg = document.getElementById('modalBg');
-      const modalClose = document.getElementById('modalClose');
-      const zoomTriggers = document.querySelectorAll('.zoom-trigger');
-
-      function openModal(e) {
-        e.preventDefault();
-        const src = this.getAttribute('href');
-        const caption = this.getAttribute('data-caption');
-        
-        modalImg.src = src;
-        modalCaption.textContent = caption || '';
-        
-        modal.classList.add('is-active');
-        document.body.classList.add('modal-open'); // 背景スクロールを止める
-      }
-
-      function closeModal() {
-        modal.classList.remove('is-active');
-        document.body.classList.remove('modal-open');
-        
-        // フェードアウトが終わってから画像をクリアする
-        setTimeout(() => {
-          if (!modal.classList.contains('is-active')) {
-            modalImg.src = '';
-            modalCaption.textContent = '';
-          }
-        }, 500);
-      }
-
-      zoomTriggers.forEach(trigger => {
-        trigger.addEventListener('click', openModal);
-      });
-      // 背景の暗い部分か、×ボタンをクリックしたら閉じる
-      modalBg.addEventListener('click', closeModal);
-      modalClose.addEventListener('click', closeModal);
-    });
-
-    /* ── 1. HERO ENTRANCE ──────────────────────────────── */
+    /* ── ファーストビュー アニメーション ── */
     window.addEventListener('load', () => {
-      const bg = document.getElementById('heroBg');
-      if (bg) setTimeout(() => bg.classList.add('loaded'), 100);
-
-      const eyebrow = document.getElementById('heroEyebrow');
-      if (eyebrow) setTimeout(() => eyebrow.classList.add('revealed'), 200);
-
-      const title = document.getElementById('heroTitle');
-      if (title) setTimeout(() => title.classList.add('revealed'), 400);
-
-      const en = document.getElementById('heroEn');
-      if (en) setTimeout(() => en.classList.add('revealed'), 600);
-
-      const meta = document.getElementById('heroMeta');
-      if (meta) setTimeout(() => meta.classList.add('revealed'), 900);
-
-      const sc = document.getElementById('heroScroll');
-      if (sc) setTimeout(() => sc.classList.add('revealed'), 1500);
+      setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 150);
+      setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'),   350);
+      setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'),      680);
+      setTimeout(() => document.getElementById('heroMeta')?.classList.add('revealed'),    980);
+      setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1700);
     });
-
-    /* ── 2. INTERSECTION OBSERVER ──────────────────────── */
+    /* ── Observer (Fade Up & Grid Animation) ── */
     const io = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
-        const el = entry.target;
-
-        el.classList.add('in-view');
-
-        if (el.classList.contains('artwork-block')) {
-          el.querySelectorAll('.artwork-clip-wrap').forEach(c => {
-            setTimeout(() => c.classList.add('in-view'), 0);
-          });
-          el.querySelectorAll('.artwork-year').forEach(c => {
-            setTimeout(() => c.classList.add('in-view'), 200);
-          });
-          el.querySelectorAll('.artwork-desc').forEach(c => {
-            setTimeout(() => c.classList.add('in-view'), 300);
-          });
-        }
-        io.unobserve(el);
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
       });
-    }, { threshold: 0.10, rootMargin: '0px 0px -10% 0px' });
-
-    [
-      '#concept .concept-tag',
-      '#concept .concept-vertical-line',
-      '#concept .fade-up',
-      '.works-header',
-      '#block1', '#block2', '#block3',
-    ].forEach(sel => {
-      document.querySelectorAll(sel).forEach(el => io.observe(el));
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.gallery-item, .tl-entry, .reveal-fade').forEach(el => io.observe(el));
+    /* ── Typewriter Engine ── */
+    function prepareTypewriterDOM(el) {
+      if (el.dataset.twPrepared === "true") return;
+      const txt = el.textContent.trim();
+      el.textContent = '';
+      for (let i = 0; i < txt.length; i++) {
+        const span = document.createElement('span');
+        span.className = 'tw-char';
+        span.textContent = txt[i];
+        el.appendChild(span);
+      }
+      const cursor = document.createElement('span');
+      cursor.className = 'tw-cursor';
+      el.appendChild(cursor);
+      el.dataset.twPrepared = "true";
+    }
+    function runTypewriter(el) {
+      if (el.dataset.twDone === "true") return;
+      const chars = el.querySelectorAll('.tw-char');
+      const cursor = el.querySelector('.tw-cursor');
+      let idx = 0;
+      function nextChar() {
+        if (idx < chars.length) {
+          chars[idx].style.opacity = '1';
+          idx++;
+          setTimeout(() => requestAnimationFrame(nextChar), 45);
+        } else {
+          el.dataset.twDone = "true";
+          if (cursor) {
+            cursor.classList.add('fade-out');
+            setTimeout(() => cursor.remove(), 800);
+          }
+        }
+      }
+      requestAnimationFrame(nextChar);
+    }
+    document.querySelectorAll('[data-typewriter="true"]').forEach(el => {
+      prepareTypewriterDOM(el);
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            obs.unobserve(el);
+            setTimeout(() => requestAnimationFrame(() => runTypewriter(el)), 300);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
+      obs.observe(el);
     });
+    /* ── Scroll Interactions (Spine, Nav, Page-Nav) ── */
+    const topNav = document.getElementById('top-nav');
+    const pageNav = document.getElementById('pageNav');
+    const navItems = document.querySelectorAll('.page-nav-item');
+    const sections = ['gallery', 'chronology'].map(id => document.getElementById(id));
+    const spineFill = document.getElementById('tl-spine-fill');
+    const tlWrap = document.querySelector('.timeline-container');
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
 
-    document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+          /* Top Nav Glassmorphism */
+          if (scrollY > 50) topNav.classList.add('scrolled');
+          else topNav.classList.remove('scrolled');
+          /* Page Nav Visibility & Active State */
+          const checkY = scrollY + window.innerHeight * 0.4;
+          let activeSec = null;
+          sections.forEach(sec => {
+            if (sec && sec.offsetTop <= checkY) activeSec = sec;
+          });
+          navItems.forEach(item => {
+            const target = document.getElementById(item.getAttribute('data-target'));
+            item.classList.toggle('active', target === activeSec);
+          });
+          if (pageNav) {
+            pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.6);
+          }
+          /* Timeline Spine Progress */
+          if (tlWrap && spineFill) {
+            const rect = tlWrap.getBoundingClientRect();
+            const totalH = tlWrap.offsetHeight;
+            if (totalH > 0) {
+              const pct = (window.innerHeight * 0.55 - rect.top) / totalH * 100;
+              spineFill.style.height = Math.max(0, Math.min(100, pct)) + '%';
+            }
+          }
+          /* Back to Top */
+          const b2t = document.getElementById('backToTop');
+          if (scrollY > 400) b2t.classList.add('is-visible');
+          else b2t.classList.remove('is-visible');
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const target = document.getElementById(item.getAttribute('data-target'));
+        if (target) {
+          const offset = topNav?.offsetHeight || 0;
+          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+        }
+      });
+    });
+    document.getElementById('backToTop').addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.getElementById('gallery');
+      if (target) {
+        const offset = topNav?.offsetHeight || 80;
+        window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+      }
+    });
+    /* ── Lightbox (Modal) ── */
+    const modal      = document.getElementById('imageModal');
+    const modalImg   = document.getElementById('modalImg');
+    const modalBg    = document.getElementById('modalBg');
+    const modalClose = document.getElementById('modalClose');
+    const titleJpEl  = document.getElementById('modalTitleJp');
+    const titleEnEl  = document.getElementById('modalTitleEn');
+    const openModal = (src, jp, en) => {
+      modalImg.src = src;
+      titleJpEl.textContent = jp || '';
+      titleEnEl.textContent = en || '';
+      modal.classList.add('is-active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('is-locked');
+    };
+    const closeModal = () => {
+      modal.classList.remove('is-active');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('is-locked');
+      setTimeout(() => { modalImg.src = ''; titleJpEl.textContent = ''; titleEnEl.textContent = ''; }, 560);
+    };
+    document.querySelectorAll('.js-modal-open').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const src = btn.getAttribute('data-img-src');
+        const block = btn.closest('.tl-entry');
+        let jp = '';
+        if (block) {
+          const jpTitleEl = block.querySelector('.tl-title');
+          jp = jpTitleEl ? jpTitleEl.textContent : '';
+        } else {
+          const galleryItem = btn.closest('.gallery-item');
+          if (galleryItem) {
+             const jpTitleEl = galleryItem.querySelector('.gallery-item-title');
+             jp = jpTitleEl ? jpTitleEl.textContent : '';
+          }
+        }
+        if (src) openModal(src, jp, '');
+      });
+    });
+    modalBg.addEventListener('click', closeModal);
+    modalClose.addEventListener('click', closeModal);
+    modalImg.addEventListener('click', closeModal);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('is-active')) closeModal(); });
   </script>
-
 </body>
 </html>
