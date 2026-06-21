@@ -1,943 +1,1089 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-5RF8JPF5D8');
-</script>
-  <link rel="icon" type="image/jpeg" href="images/【FSM横】IMG_7730.jpg">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5RF8JPF5D8');
+  </script>
+  <link rel="icon" type="image/jpeg" href="images/【F120縦】早春圖-改.jpg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>黒の時代 The Black Period | Tsuda Shoichi</title>
   <meta name="description" content="津田翔一 作品シリーズ「黒の時代 / The Black Period」— 黒という色の内側に潜む、無数の色と沈黙の記録。">
-  <meta property="og:title" content="黒の時代 / The Black Period | Tsuda Shoichi">
-  <meta property="og:description" content="黒という色の内側に潜む、無数の色と沈黙の記録。">
-  <meta property="og:type" content="website">
-  <meta name="theme-color" content="#080808">
-  <title>黒の時代 / The Black Period | Tsuda Shoichi</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
+  
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* ============================================================
+       DESIGN TOKENS (Variant Design System)
+    ============================================================ */
     :root {
-      --bg:          #080808;
-      --fg:          #ede9e4;
-      --text:        #e8e4db;
-      --text-muted:  rgba(232,228,219,0.55);
-      --text-dim:    rgba(232,228,219,0.35);
-      --border:      rgba(232,228,219,0.10);
-      --border-mid:  rgba(232,228,219,0.22);
-      --accent:      #b8955a;
-      --accent-dim:  rgba(184,149,90,0.30);
-      --muted-col:   #7a746e;
-      --en:          'Cormorant Garamond', serif;
-      --jp:          'Noto Serif JP', serif;
-      --ease:        cubic-bezier(0.16, 1, 0.3, 1);
-      --ease-img:    cubic-bezier(0.165, 0.84, 0.44, 1);
-      --px:          clamp(20px, 5vw, 64px);
-      --section-py:  clamp(60px, 10vh, 120px);
+      --bg:        #060605;
+      --bg2:       #0c0c0a;
+      --bg3:       #111110;
+      --fg:        #e9e5df;
+      --muted:     rgba(233,229,223,0.44);
+      --dim:       rgba(233,229,223,0.22);
+      --whisper:   rgba(233,229,223,0.10);
+      --accent:    #c4a882;
+      --accent2:   #7c9aa0;
+      --border:    rgba(233,229,223,0.08);
+      --border-md: rgba(233,229,223,0.20);
+      --font-en:   'Cormorant Garamond', serif;
+      --font-ja:   'Noto Serif JP', serif;
+      --ease:      cubic-bezier(0.16, 1, 0.3, 1);
+      --px:        clamp(1.25rem, 6vw, 5rem);
+      --grid-base-h: 320px;
     }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
       background: var(--bg);
-      color: var(--text);
-      font-family: var(--jp);
-      line-height: 1.7;
+      color: var(--fg);
+      font-family: var(--font-ja);
+      line-height: 2.1;
+      letter-spacing: 0.06em;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
     }
-    .sr-only {
-      position: absolute; width: 1px; height: 1px;
-      padding: 0; margin: -1px; overflow: hidden;
-      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    body.is-locked { overflow: hidden; }
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
+    a:hover { opacity: 0.45; }
+
+    /* ============================================================
+       NAVIGATION
+    ============================================================ */
+    nav#top-nav {
+      position: fixed;
+      top: 0; left: 0; width: 100%; z-index: 300;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: clamp(14px, 3vw, 36px) var(--px);
+      background: transparent;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 0.5px solid transparent;
+      transition: background 0.4s ease, border-color 0.4s ease;
     }
-
-    /* ─── VIDEO BG ─── */
-    .works-video-bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
-    .works-video-bg video { width: 100%; height: 100%; object-fit: cover; opacity: 0.08; display: block; filter: grayscale(100%); }
-    .works-video-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(8,8,8,0.60) 0%, rgba(8,8,8,0.97) 100%); }
-
-    /* ─── SKIP NAV ─── */
-    .skip-nav {
-      position: absolute; top: -100%; left: var(--px);
-      background: var(--accent); color: var(--bg);
-      padding: 0.5rem 1rem; font-family: var(--en);
-      font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
-      text-decoration: none; z-index: 9999; transition: top 0.2s;
+    nav#top-nav.scrolled {
+      background: rgba(10,10,9,0.93);
+      border-color: var(--border);
     }
-    .skip-nav:focus { top: 0; }
-
-    /* ─── SCROLL PROGRESS ─── */
-    .scroll-progress {
-      position: fixed; top: 0; left: 0; z-index: 500;
-      height: 1px; width: 0%;
-      background: linear-gradient(to right, rgba(184,149,90,0.25), var(--accent), rgba(184,149,90,0.25));
-      transition: width 0.1s linear; pointer-events: none;
+    .nav-logo-unified {
+      font-family: var(--font-en); font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+      letter-spacing: 0.3em;
+      font-weight: 300; color: var(--accent);
+      text-transform: uppercase; transition: opacity 0.4s ease;
     }
+    .nav-logo-unified:hover { opacity: 0.5; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
+      letter-spacing: 0.25em;
+      color: var(--muted); text-transform: uppercase; transition: color 0.3s ease;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-cta {
+      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem;
+      color: var(--accent); transition: background 0.25s, color 0.25s;
+    }
+    .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
+    
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; position: relative; z-index: 301; width: 30px; height: 20px; }
+    .nav-hamburger span {
+      display: block; position: absolute; left: 0; width: 100%; height: 1px;
+      background: var(--accent); transition: transform 0.4s var(--ease), opacity 0.4s var(--ease), top 0.4s var(--ease);
+    }
+    .nav-hamburger span:nth-child(1) { top: 0px; }
+    .nav-hamburger span:nth-child(2) { top: 9px; }
+    .nav-hamburger span:nth-child(3) { top: 18px; }
+    .nav-hamburger.is-active span:nth-child(1) { top: 9px; transform: rotate(45deg); }
+    .nav-hamburger.is-active span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.is-active span:nth-child(3) { top: 9px; transform: rotate(-45deg); }
 
-    /* ─── PAGE-INTERNAL NAV (desktop dots) ─── */
+    /* Page Nav */
     .page-nav {
-      position: fixed; right: clamp(16px,3vw,32px); top: 50%;
+      position: fixed;
+      right: clamp(20px, 4vw, 40px); top: 50%;
       transform: translateY(-50%); z-index: 200;
-      display: flex; flex-direction: column; gap: 16px;
-      opacity: 0; transition: opacity 0.6s var(--ease);
+      display: flex; flex-direction: column; gap: 24px;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.6s var(--ease), visibility 0.6s;
     }
-    .page-nav.visible { opacity: 1; }
-    .page-nav-item { display: flex; align-items: center; gap: 10px; cursor: pointer; text-decoration: none; background: none; border: none; padding: 0; font-family: var(--en); }
-    .page-nav-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(232,228,219,0.18); transition: background 0.35s, transform 0.35s, box-shadow 0.35s; flex-shrink: 0; }
-    .page-nav-label { font-size: 9px; letter-spacing: 0.2em; color: rgba(232,228,219,0.0); text-transform: uppercase; transition: color 0.35s; white-space: nowrap; }
-    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot { background: var(--accent); transform: scale(1.6); box-shadow: 0 0 8px rgba(184,149,90,0.55); }
-    .page-nav-item:hover .page-nav-label { color: rgba(232,228,219,0.50); }
+    .page-nav.visible { opacity: 1; visibility: visible; }
+    .page-nav-item {
+      display: flex; align-items: center; gap: 12px; flex-direction: row-reverse;
+      cursor: pointer; background: none; border: none; padding: 8px 0;
+    }
+    .page-nav-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(233,229,223,0.4); transition: all 0.35s; flex-shrink: 0;
+    }
+    .page-nav-label {
+      font-family: var(--font-en); font-size: 12px; letter-spacing: 0.15em;
+      color: rgba(233,229,223,0.4);
+      text-transform: uppercase; transition: color 0.35s; white-space: nowrap;
+    }
+    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot {
+      background: var(--accent);
+      transform: scale(1.4); box-shadow: 0 0 10px rgba(196,168,130,0.6);
+    }
+    .page-nav-item:hover .page-nav-label { color: rgba(233,229,223,0.85); }
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
-    /* ─── BACK-TO-TOP (mobile only) ─── */
-    .mobile-top-btn {
-      display: none; position: fixed; right: 16px; bottom: 18px; z-index: 250;
-      width: 44px; height: 44px; align-items: center; justify-content: center;
-      border-radius: 50%; border: 0.5px solid rgba(184,149,90,0.40);
-      background: rgba(8,8,8,0.82); backdrop-filter: blur(8px);
-      color: var(--accent); cursor: pointer;
-      opacity: 0; pointer-events: none; transition: opacity 0.4s ease, transform 0.3s ease;
-    }
-    .mobile-top-btn.visible { opacity: 1; pointer-events: auto; }
-    .mobile-top-btn svg { width: 16px; height: 16px; }
-
-    /* ─── NAV ─── */
-    nav#top-nav {
-      position: sticky; top: 0; z-index: 300;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: clamp(14px,3vw,36px) var(--px); border-bottom: 0.5px solid var(--border);
-      background: rgba(8,8,8,0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    }
-    .nav-logo { font-family: var(--en); font-size: clamp(0.7rem,2.5vw,0.9rem); letter-spacing: 0.3em; font-weight: 300; color: var(--accent); text-decoration: none; text-transform: uppercase; transition: opacity 0.4s; }
-    .nav-logo:hover { opacity: 0.5; }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a { font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.72rem); letter-spacing: 0.25em; color: var(--muted-col); text-decoration: none; text-transform: uppercase; transition: color 0.3s; }
-    .nav-links a:hover { color: var(--accent); }
-    .nav-cta { font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem); letter-spacing: 0.25em; text-transform: uppercase; border: 0.5px solid rgba(184,149,90,0.38); padding: 0.55rem 1.4rem; color: var(--accent); text-decoration: none; transition: background 0.25s, color 0.25s; }
-    .nav-cta:hover { background: rgba(184,149,90,0.08); color: var(--fg); }
-
-    /* ─── HERO ─── */
-    .series-hero {
-      position: relative; overflow: hidden; min-height: 100vh; min-height: 100svh;
+    /* ============================================================
+       HERO FIRST VIEW
+    ============================================================ */
+    .hero {
+      position: relative;
+      height: 100svh; min-height: 580px;
       display: flex; flex-direction: column; justify-content: flex-end;
-      padding: clamp(90px,13vh,150px) var(--px) clamp(52px,9vh,100px);
+      padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); overflow: hidden;
+      background:
+        radial-gradient(ellipse 70% 60% at 30% 30%, rgba(124,154,160,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 55% 80% at 72% 25%, rgba(196,168,130,0.04) 0%, transparent 55%),
+        var(--bg);
     }
-    .hero-bg-img { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
-    .hero-bg-img img { width: 100%; height: 100%; object-fit: cover; object-position: center 40%; filter: grayscale(80%) brightness(0.18) contrast(1.15); transform: scale(1.05); animation: heroZoom 22s ease-in-out 0s infinite alternate; }
-    @keyframes heroZoom { from { transform: scale(1.05); } to { transform: scale(1.00); } }
-    .hero-bg-overlay { position: absolute; inset: 0; z-index: 1; background: linear-gradient(170deg, rgba(8,8,8,0.30) 0%, rgba(8,8,8,0.65) 42%, rgba(8,8,8,0.97) 100%); }
-    .hero-ghost {
-      position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; justify-content: flex-end;
-      padding-right: calc(var(--px) * 0.4); pointer-events: none; user-select: none;
-      font-family: var(--en); font-size: clamp(6rem,20vw,22rem); font-weight: 300; letter-spacing: 0.04em; color: transparent;
-      -webkit-text-stroke: 1px rgba(184,149,90,0.055); white-space: nowrap; line-height: 1;
-      opacity: 0; transform: translateY(14px); animation: ghostRise 2.5s var(--ease) 1.4s forwards;
+    .hero-divider {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+      background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%);
     }
-    .hero-gold-line {
-      position: absolute; left: 0; right: 0; z-index: 2; top: clamp(80px,12vh,130px); height: 0.5px;
-      background: linear-gradient(to right, transparent 0%, rgba(184,149,90,0.12) 15%, rgba(184,149,90,0.35) 40%, rgba(184,149,90,0.12) 80%, transparent 100%);
-      pointer-events: none; opacity: 0; animation: fadeOnly 1.5s ease 0.8s forwards;
+    .hero-inner { position: relative; z-index: 2; }
+    .hero-eyebrow {
+      font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem);
+      letter-spacing: 0.5em;
+      color: var(--dim); text-transform: uppercase;
+      margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.2rem;
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path 1.2s var(--ease) 0.2s;
     }
-    .hero-inner { position: relative; z-index: 2; max-width: 1000px; }
-    .hero-eyebrow { font-family: var(--en); font-size: clamp(0.55rem,1.6vw,0.68rem); letter-spacing: 0.46em; color: var(--muted-col); text-transform: uppercase; margin-bottom: clamp(14px,3vh,36px); overflow: hidden; }
-    .hero-eyebrow span { display: inline-block; opacity: 0; transform: translateY(100%); animation: clipUp 0.9s var(--ease) 0.45s forwards; }
-    .hero-title-en { font-family: var(--en); font-size: clamp(3.2rem,11vw,10rem); font-weight: 300; letter-spacing: 0.07em; line-height: 0.88; color: var(--fg); overflow: hidden; }
-    .hero-title-en span { display: block; opacity: 0; transform: translateY(0.65em) skewY(2.5deg); animation: charReveal 1.05s var(--ease) forwards; }
-    .hero-title-en span:nth-child(1) { animation-delay: 0.60s; }
-    .hero-title-en span:nth-child(2) { animation-delay: 0.78s; }
-    .hero-title-en span:nth-child(3) { animation-delay: 0.94s; }
-    .hero-title-jp { font-family: var(--jp); font-weight: 200; font-size: clamp(1rem,3vw,2rem); letter-spacing: 0.22em; color: rgba(237,233,228,0.38); margin-top: 0.65em; overflow: hidden; }
-    .hero-title-jp span { display: block; opacity: 0; transform: translateY(0.5em); animation: charReveal 0.9s var(--ease) 1.05s forwards; }
-    .hero-sub { margin-top: clamp(18px,3.5vh,52px); font-family: var(--jp); font-weight: 200; font-size: clamp(0.78rem,2vw,1rem); letter-spacing: 0.22em; color: var(--muted-col); overflow: hidden; }
-    .hero-sub span { display: inline-block; opacity: 0; transform: translateY(100%); animation: clipUp 1s var(--ease) 1.25s forwards; }
-    .hero-rule { margin-top: clamp(14px,2.5vh,32px); width: 0; height: 0.5px; background: rgba(184,149,90,0.30); animation: drawLine 1.2s var(--ease) 1.55s forwards; }
-    .scroll-cue { position: absolute; bottom: clamp(24px,5vh,56px); right: var(--px); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: 0; animation: fadeOnly 1s ease 2.2s forwards; }
-    .scroll-cue-line { width: 1px; height: 48px; background: linear-gradient(to bottom, var(--muted-col), transparent); animation: pulseBar 2.5s ease-in-out 2.5s infinite; }
-    .scroll-cue span { font-family: var(--en); font-size: 0.52rem; letter-spacing: 0.4em; color: var(--muted-col); text-transform: uppercase; writing-mode: vertical-rl; }
+    .hero-eyebrow::before { content: ''; width: 24px; height: 0.5px; background: var(--accent2); flex-shrink: 0; opacity: 0.6; }
+    .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
+    
+    .hero-title {
+      font-family: var(--font-ja);
+      font-size: clamp(4.5rem, 17vw, 15rem); font-weight: 200;
+      line-height: 0.88; letter-spacing: -0.02em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem);
+      display: flex; gap: 0.05em; overflow: visible;
+    }
+    .hero-title .char {
+      display: inline-block; opacity: 0;
+      transition: transform 1.4s var(--ease), opacity 0.9s ease;
+    }
+    .hero-title .char:nth-child(1) { transform: translateY(40px); transition-delay: 0.2s; }
+    .hero-title .char:nth-child(2) { transform: translateY(40px); transition-delay: 0.3s; }
+    .hero-title .char:nth-child(3) { transform: translateY(40px); transition-delay: 0.4s; }
+    .hero-title .char:nth-child(4) { transform: translateY(40px); transition-delay: 0.5s; }
+    .hero-title.revealed .char { opacity: 1; transform: translateY(0); }
+    
+    .hero-title-en {
+      font-family: var(--font-en);
+      font-size: clamp(0.95rem, 3vw, 2rem);
+      font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.55);
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path 1.4s var(--ease) 0.8s;
+    }
+    .hero-title-en.revealed { clip-path: inset(0 0% 0 0); }
+    
+    .hero-meta {
+      display: flex; align-items: center; gap: 1.8rem; margin-top: clamp(2rem, 5vh, 4.5rem); 
+      opacity: 0; transform: translateY(14px); transition: opacity 1s ease 1.2s, transform 1s var(--ease) 1.2s;
+    }
+    .hero-meta.revealed { opacity: 1; transform: translateY(0); }
+    .hero-meta-line { width: 40px; height: 0.5px; background: linear-gradient(to right, var(--accent), var(--accent2)); flex-shrink: 0; }
+    .hero-meta-text { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.62rem); letter-spacing: 0.24em; color: var(--dim); text-transform: uppercase; }
+    
+    .hero-scroll {
+      position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px); z-index: 2; 
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      opacity: 0; transition: opacity 0.9s ease 1.8s;
+    }
+    .hero-scroll.revealed { opacity: 1; }
+    .hero-scroll-label { font-family: var(--font-en); font-size: 0.52rem; letter-spacing: 0.38em; color: var(--whisper); text-transform: uppercase; writing-mode: vertical-rl; }
+    .hero-scroll-track { width: 1px; height: 48px; background: var(--border); position: relative; overflow: hidden; }
+    .hero-scroll-fill {
+      position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(to bottom, var(--accent), transparent); animation: scrollDrop 2.2s ease-in-out 2s infinite;
+    }
+    @keyframes scrollDrop { 0% { top: -100%; opacity: 1; } 70% { top: 100%; opacity: 0.4; } 71% { top: -100%; opacity: 0; } 100% { top: -100%; opacity: 0; } }
 
-    /* ─── REVEAL ─── */
-    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 1.0s var(--ease), transform 1.0s var(--ease); }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-
-    /* ─── SECTION 共通 ─── */
-    .page-section { padding: var(--section-py) var(--px); border-top: 0.5px solid var(--border); position: relative; z-index: 1; }
-    .section-head { display: grid; grid-template-columns: clamp(80px,14vw,180px) 1fr; gap: clamp(2rem,4vw,6rem); align-items: start; margin-bottom: clamp(48px,8vh,96px); }
-    .section-sidebar-label { font-family: var(--en); font-size: clamp(0.55rem,1.3vw,0.66rem); letter-spacing: 0.40em; color: var(--muted-col); text-transform: uppercase; padding-top: 0.3rem; line-height: 1; }
-    .section-sidebar-num { font-family: var(--en); font-size: clamp(2.5rem,6vw,5rem); font-weight: 300; line-height: 1; color: rgba(184,149,90,0.05); letter-spacing: -0.02em; margin-top: 1rem; }
-    .section-title-en { font-family: var(--en); font-size: clamp(1.6rem,4vw,3.5rem); font-weight: 300; letter-spacing: 0.1em; line-height: 1.05; color: var(--fg); margin-bottom: 0.4rem; }
-    .section-title-jp { font-family: var(--jp); font-weight: 200; font-size: clamp(0.85rem,2vw,1.1rem); letter-spacing: 0.22em; color: var(--muted-col); margin-bottom: 2rem; }
-    .section-credit { font-family: var(--en); font-size: 0.62rem; letter-spacing: 0.22em; color: rgba(237,233,228,0.22); text-transform: uppercase; margin-bottom: 1.8rem; }
-
-    /* ─── INTRODUCTION ─── */
-    .intro-lead { font-family: var(--jp); font-weight: 200; font-size: clamp(1.15rem,2.8vw,1.65rem); letter-spacing: 0.04em; line-height: 1.85; color: rgba(237,233,228,0.88); margin-bottom: 2.5rem; max-width: 760px; }
-    .intro-text { font-size: clamp(0.88rem,1.7vw,1.02rem); font-weight: 300; line-height: 2.2; color: var(--text-muted); letter-spacing: 0.035em; margin-bottom: 1.8rem; max-width: 720px; }
-    .intro-text:last-child { margin-bottom: 0; }
-    .intro-text em { font-style: normal; color: var(--accent); border-bottom: 0.5px solid var(--border-mid); padding-bottom: 2px; }
-    .concept-keywords { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; margin-top: 4rem; border: 0.5px solid var(--border); }
-    .concept-kw { padding: 2rem 1.75rem; background: rgba(255,255,255,0.010); transition: background 0.35s var(--ease), transform 0.35s var(--ease); }
-    .concept-kw:hover { background: rgba(184,149,90,0.03); transform: translateY(-3px); }
-    .concept-kw-num { font-family: var(--en); font-size: 0.62rem; letter-spacing: 0.28em; color: rgba(184,149,90,0.28); text-transform: uppercase; margin-bottom: 1rem; }
-    .concept-kw-title { font-size: clamp(0.88rem,1.5vw,1.02rem); font-weight: 300; color: var(--fg); letter-spacing: 0.06em; margin-bottom: 0.85rem; }
-    .concept-kw-desc { font-size: clamp(0.76rem,1.2vw,0.86rem); font-weight: 300; line-height: 1.88; color: var(--text-muted); }
-
-    /* ─── WORKS GALLERY (balanced justified grid, top-aligned) ─── */
-    .works-header-row { display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: clamp(18px,3vw,40px); border-bottom: 0.5px solid var(--border); margin-bottom: clamp(40px,7vh,80px); }
-    .works-header-label { font-family: var(--en); font-size: clamp(0.55rem,1.4vw,0.68rem); letter-spacing: 0.4em; color: var(--muted-col); text-transform: uppercase; }
-    .works-header-count { font-family: var(--en); font-size: clamp(2.2rem,5vw,5rem); font-weight: 300; letter-spacing: -0.03em; color: rgba(184,149,90,0.06); line-height: 1; }
-
-    .works-grid {
-      display: flex; flex-wrap: wrap; align-items: flex-start;
-      gap: clamp(10px,1.6vw,22px);
+    /* ============================================================
+       CONCEPT SECTION
+    ============================================================ */
+    .concept-section {
+      padding: clamp(6rem, 13vh, 10rem) var(--px);
+      max-width: 900px; margin: 0 auto; text-align: center;
     }
-    .work-card {
-      position: relative; flex-grow: 1;
-      height: clamp(220px, 32vw, 400px);
-      min-width: 160px;
-      overflow: hidden; background: #050505; cursor: zoom-in;
+    .concept-text {
+      font-size: clamp(0.9rem, 2vw, 1.05rem);
+      font-weight: 300; line-height: 2.3;
+      color: rgba(233,229,223,0.85); letter-spacing: 0.08em;
     }
-    .work-card img {
-      width: 100%; height: 100%; object-fit: cover; display: block;
-      filter: grayscale(55%) brightness(0.74) contrast(1.08); transform: scale(1.03);
-      transition: filter 1.1s var(--ease-img), transform 1.4s var(--ease-img);
-    }
-    .work-card:hover img { filter: grayscale(8%) brightness(0.94) contrast(1.02); transform: scale(1.0); }
-    .work-card::after {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(8,8,8,0.86) 0%, rgba(8,8,8,0.18) 46%, transparent 100%);
-      opacity: 0.85; transition: opacity 0.45s ease; pointer-events: none;
-    }
-    .work-card:hover::after { opacity: 1; }
-    .work-card-info { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 1.1rem 1.2rem; pointer-events: none; }
-    .work-card-num { font-family: var(--en); font-size: 0.56rem; letter-spacing: 0.26em; color: rgba(184,149,90,0.65); text-transform: uppercase; margin-bottom: 0.4rem; }
-    .work-card-title { font-family: var(--jp); font-weight: 300; font-size: clamp(0.95rem,1.6vw,1.15rem); color: var(--fg); line-height: 1.3; }
-    .work-card-en { font-family: var(--en); font-style: italic; font-size: 0.72rem; letter-spacing: 0.1em; color: var(--text-muted); margin-top: 0.25rem; }
-    .work-card-year { font-family: var(--en); font-size: 0.6rem; letter-spacing: 0.22em; color: rgba(237,233,228,0.40); position: absolute; top: 1rem; left: 1rem; z-index: 2; background: linear-gradient(135deg, rgba(8,8,8,0.72), transparent); padding: 6px 10px; }
-    .work-card-zoom { position: absolute; top: 1rem; right: 1rem; z-index: 2; font-family: var(--en); font-size: 0.5rem; letter-spacing: 0.2em; color: rgba(237,233,228,0.55); text-transform: uppercase; opacity: 0; transition: opacity 0.35s ease; }
-    .work-card:hover .work-card-zoom { opacity: 1; }
 
-    /* ─── WORK DETAIL LIST (commentary, below grid) ─── */
-    .works-detail-list { margin-top: clamp(60px,9vh,120px); }
-    .work-detail {
-      padding: clamp(40px,6vh,72px) 0; border-top: 0.5px solid var(--border);
-      display: grid; grid-template-columns: clamp(70px,10vw,130px) 1fr; gap: clamp(1.5rem,3vw,4rem);
+    /* ============================================================
+       SERIES STATEMENT & KEYWORDS
+    ============================================================ */
+    .statement-section {
+      padding: clamp(4rem, 9vh, 7rem) var(--px) clamp(6rem, 13vh, 10rem);
+      max-width: 960px; margin: 0 auto; border-top: 0.5px solid var(--border);
     }
-    .work-detail:first-child { border-top: none; }
-    .work-detail-year { font-family: var(--en); font-size: clamp(0.7rem,1.6vw,0.92rem); letter-spacing: 0.2em; color: var(--accent); line-height: 1.3; }
-    .work-detail-num { display: block; font-size: 0.6rem; letter-spacing: 0.24em; color: rgba(237,233,228,0.22); margin-top: 0.5rem; text-transform: uppercase; }
-    .work-detail-title-ja { font-family: var(--jp); font-weight: 200; font-size: clamp(1.3rem,3vw,2rem); color: var(--fg); letter-spacing: 0.04em; margin-bottom: 0.3rem; }
-    .work-detail-title-en { font-family: var(--en); font-style: italic; font-size: clamp(0.8rem,1.6vw,1rem); letter-spacing: 0.1em; color: var(--accent); display: block; margin-bottom: 1.2rem; }
-    .work-detail-commentary { font-size: clamp(0.84rem,1.5vw,0.96rem); font-weight: 300; line-height: 2.1; color: var(--text-muted); letter-spacing: 0.03em; max-width: 680px; }
-    .work-detail-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.4rem; }
-    .work-tag { font-family: var(--en); font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(237,233,228,0.32); border: 0.5px solid rgba(184,149,90,0.18); padding: 0.3rem 0.9rem; transition: color 0.3s, border-color 0.3s; }
-    .work-tag:hover { color: var(--accent); border-color: var(--accent-dim); }
+    .statement-label {
+      font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem);
+      letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase;
+      text-align: center; margin-bottom: clamp(2.5rem, 6vh, 4rem);
+    }
+    .statement-pullquote {
+      font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.3rem, 3.2vw, 2.1rem);
+      line-height: 1.75; color: var(--fg); text-align: center; letter-spacing: 0.03em;
+      margin-bottom: clamp(3rem, 7vh, 5rem);
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 1s var(--ease), transform 1s var(--ease);
+    }
+    .statement-pullquote.in-view { opacity: 1; transform: translateY(0); }
+    .statement-pullquote .accent-word { color: var(--accent); }
+    
+    .statement-body { display: flex; flex-direction: column; gap: clamp(1.6rem, 3vh, 2.2rem); max-width: 880px; margin: 0 auto; }
+    .statement-para {
+      font-size: clamp(0.86rem, 1.7vw, 0.98rem); line-height: 2.25;
+      color: rgba(233,229,223,0.72); letter-spacing: 0.04em; text-align: justify;
+      opacity: 0; transform: translateY(16px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+    }
+    .statement-para.in-view { opacity: 1; transform: translateY(0); }
+    .statement-para strong { color: var(--accent); font-weight: 400; }
+    
+    /* Concept Keywords Grid */
+    .concept-keywords-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+      margin-top: clamp(4rem, 8vh, 6rem); border: 0.5px solid var(--border);
+      background: var(--border); /* for 1px gap effect */
+    }
+    .concept-kw-card {
+      background: var(--bg); padding: 2.5rem 2rem;
+      opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease), background 0.4s ease;
+    }
+    .concept-kw-card.in-view { opacity: 1; transform: translateY(0); }
+    .concept-kw-card:hover { background: rgba(196,168,130,0.03); }
+    .kw-num {
+      font-family: var(--font-en); font-size: 0.65rem; letter-spacing: 0.28em;
+      color: rgba(196,168,130,0.4); text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .kw-title {
+      font-size: clamp(0.9rem, 1.5vw, 1.05rem); font-weight: 300; color: var(--fg);
+      letter-spacing: 0.06em; margin-bottom: 0.85rem;
+    }
+    .kw-desc {
+      font-size: clamp(0.78rem, 1.2vw, 0.88rem); font-weight: 300; line-height: 1.9; color: var(--muted);
+    }
+    
+    .statement-closing {
+      font-family: var(--font-en); font-style: italic; font-weight: 300;
+      font-size: clamp(0.95rem, 2vw, 1.15rem); line-height: 1.9; color: var(--accent); 
+      text-align: center; letter-spacing: 0.04em; opacity: 0; transform: translateY(16px);
+      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+      margin-top: clamp(3rem, 7vh, 5rem);
+    }
+    .statement-closing.in-view { opacity: 1; transform: translateY(0); }
 
-    /* ─── TIMELINE ─── */
-    .tl-wrap { position: relative; display: grid; grid-template-columns: 72px 2px 1fr; }
-    .tl-spine-col { grid-column: 2; position: relative; }
-    .tl-spine-track { position: absolute; top: 10px; bottom: 10px; left: 0; width: 2px; background: rgba(232,228,219,0.05); }
-    .tl-spine-fill {
-      position: absolute; top: 10px; left: 0; width: 2px; height: 0%;
-      background: linear-gradient(to bottom, transparent 0%, var(--accent) 8%, var(--accent) 92%, transparent 100%);
-      box-shadow: 0 0 14px rgba(184,149,90,0.38), 0 0 32px rgba(184,149,90,0.14); transition: height 0.06s linear; will-change: height;
+    /* ============================================================
+       GALLERY GRID (Flexbox alignment & Balanced Spacing)
+    ============================================================ */
+    .gallery-section {
+      padding: 0 var(--px) clamp(6rem, 13vh, 10rem);
+      max-width: 1600px; margin: 0 auto;
     }
-    .tl-year-col { grid-column: 1; position: relative; }
-    .tl-entries { grid-column: 3; padding-left: 40px; }
-    .tl-entry { display: flex; align-items: flex-start; gap: 2rem; margin-bottom: 4rem; position: relative; opacity: 0; transform: translateX(-12px); transition: opacity 0.85s var(--ease), transform 0.85s var(--ease); }
+    .section-label {
+      font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem);
+      letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase;
+      text-align: center; margin-bottom: clamp(3rem, 7vh, 5rem);
+    }
+    
+    .gallery-grid {
+      display: flex; flex-wrap: wrap;
+      gap: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 2.5vw, 2.5rem);
+      justify-content: center; align-items: flex-start;
+    }
+    
+    .gallery-item {
+      display: flex; flex-direction: column; align-items: center;
+      text-decoration: none; cursor: pointer; opacity: 0;
+      transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+      width: fit-content; max-width: 100%;
+    }
+    .gallery-item.in-view { opacity: 1; transform: translateY(0); }
+    
+    .gallery-item-img-wrap {
+      height: var(--item-height, var(--grid-base-h));
+      width: max-content; display: flex; justify-content: center; align-items: center;
+      background: transparent; overflow: hidden; border: 0.5px solid var(--border);
+      transition: border-color 0.4s ease, box-shadow 0.5s var(--ease);
+    }
+    .gallery-item-img-wrap img {
+      height: 100%; width: auto; display: block; object-fit: contain;
+      filter: grayscale(15%) brightness(0.85);
+      transition: transform 0.8s var(--ease), filter 0.6s ease;
+    }
+    .gallery-item:hover .gallery-item-img-wrap { border-color: rgba(196,168,130,0.35); box-shadow: 0 16px 40px rgba(0,0,0,0.5); }
+    .gallery-item:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
+    
+    .gallery-item-cap { padding-top: 1rem; text-align: left; width: 100%; }
+    .gallery-item-title {
+      font-family: var(--font-ja); font-size: clamp(0.85rem, 1.4vw, 1rem); font-weight: 300;
+      color: var(--fg); letter-spacing: 0.05em; margin-bottom: 0.3rem; display: block;
+    }
+    .gallery-item-meta {
+      font-family: var(--font-en); font-size: clamp(0.6rem, 1.1vw, 0.7rem);
+      color: var(--accent); letter-spacing: 0.14em; font-style: italic; display: block;
+    }
+
+    /* ============================================================
+       INTEGRATED CHRONOLOGY SECTION 
+    ============================================================ */
+    .chronology-section {
+      padding: clamp(5rem, 12vh, 10rem) var(--px);
+      background: var(--bg2); border-top: 0.5px solid var(--border); position: relative;
+    }
+    .timeline-container { max-width: 1200px; margin: 0 auto; position: relative; }
+    .timeline-spine-wrapper {
+      position: absolute; top: 0; bottom: 0; left: 50%; width: 1px;
+      background: rgba(233,229,223,0.06); transform: translateX(-50%);
+    }
+    .timeline-spine-progress {
+      position: absolute; top: 0; left: 0; width: 1px;
+      background: linear-gradient(to bottom, transparent 0%, var(--accent) 10%, var(--accent) 90%, transparent 100%);
+      height: 0%; transition: height 0.1s linear;
+    }
+    
+    .tl-entry {
+      position: relative; width: 100%; margin-bottom: clamp(7rem, 16vh, 12rem);
+      opacity: 0; transform: translateY(30px); transition: opacity 1s var(--ease), transform 1s var(--ease);
+    }
     .tl-entry:last-child { margin-bottom: 0; }
-    .tl-entry.visible { opacity: 1; transform: translateX(0); }
-    .tl-node { position: absolute; left: -49px; top: 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .tl-dot { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid rgba(232,228,219,0.18); background: var(--bg); transition: border-color 0.5s, background 0.5s, box-shadow 0.5s; position: relative; z-index: 2; }
-    .tl-entry.visible .tl-dot { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 3px rgba(184,149,90,0.12), 0 0 18px rgba(184,149,90,0.42); }
-    .tl-year-label { font-family: var(--en); font-size: clamp(0.72rem,1.2vw,0.9rem); font-weight: 300; letter-spacing: 0.06em; color: rgba(232,228,219,0.20); line-height: 1; transition: color 0.5s; text-align: center; position: absolute; left: -58px; top: 0; width: 52px; }
-    .tl-entry.visible .tl-year-label { color: var(--accent); }
-    .tl-thumb { width: 120px; flex-shrink: 0; overflow: hidden; border: 0.5px solid rgba(232,228,219,0.07); transition: border-color 0.4s; cursor: pointer; }
-    .tl-thumb:hover { border-color: rgba(184,149,90,0.38); }
-    .tl-thumb img { width: 100%; height: auto; display: block; filter: brightness(0.72) grayscale(45%); transition: transform 0.8s var(--ease), filter 0.5s; }
-    .tl-thumb:hover img { transform: scale(1.05); filter: brightness(0.95) grayscale(0%); }
-    .tl-info { flex: 1; min-width: 0; }
-    .tl-series-label { font-family: var(--en); font-size: 8px; letter-spacing: 0.28em; color: rgba(184,149,90,0.38); text-transform: uppercase; margin-bottom: 0.5rem; }
-    .tl-title { font-family: var(--jp); font-size: clamp(0.9rem,1.8vw,1.2rem); font-weight: 300; color: var(--text); line-height: 1.3; margin-bottom: 0.2rem; letter-spacing: 0.03em; }
-    .tl-title-en-sm { font-family: var(--en); font-size: 11px; color: var(--muted-col); letter-spacing: 0.14em; margin-bottom: 0.7rem; font-style: italic; }
-    .tl-spec-sm { font-family: var(--en); font-size: 10px; color: rgba(232,228,219,0.24); letter-spacing: 0.1em; line-height: 1.7; }
+    .tl-entry.in-view { opacity: 1; transform: translateY(0); }
+    
+    .tl-year-display {
+      font-family: var(--font-en); font-size: clamp(3.5rem, 7vw, 5.5rem); font-weight: 300;
+      color: var(--accent); letter-spacing: 0.02em; line-height: 1;
+      margin-bottom: clamp(1rem, 2vh, 2rem); padding-left: 2%; opacity: 0.85;
+    }
+    .tl-entry:nth-child(even) .tl-year-display { text-align: left; }
 
-    /* ─── STATEMENT ─── */
-    .statement-blockquote { font-family: var(--jp); font-weight: 200; font-size: clamp(1.1rem,2.8vw,1.7rem); letter-spacing: 0.03em; line-height: 1.9; color: rgba(237,233,228,0.84); border-left: 1px solid rgba(184,149,90,0.32); padding-left: 2.2rem; max-width: 780px; margin-bottom: 3rem; font-style: italic; }
-    .statement-text { font-size: clamp(0.88rem,1.7vw,1.0rem); font-weight: 300; line-height: 2.2; color: var(--text-muted); letter-spacing: 0.035em; margin-bottom: 1.6rem; max-width: 720px; }
-    .statement-text em { font-style: normal; color: var(--accent); border-bottom: 0.5px solid var(--border-mid); padding-bottom: 2px; }
+    .tl-content-wrap {
+      display: flex; justify-content: space-between; align-items: center; gap: clamp(2rem, 5vw, 6rem);
+    }
+    .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
+    
+    .tl-figure {
+      width: 54%; position: relative; border: 0.5px solid var(--border);
+      overflow: hidden; background: var(--bg); cursor: zoom-in; transition: width 0.4s ease;
+    }
+    .tl-body { width: 42%; position: relative; z-index: 2; transition: width 0.4s ease; }
+    
+    /* Layout Variants based on Image Ratio */
+    .tl-entry.is-vertical .tl-figure { width: 42%; }
+    .tl-entry.is-vertical .tl-body   { width: 50%; }
+    
+    .tl-figure img {
+      width: 100%; height: auto; display: block; filter: grayscale(12%) brightness(0.85);
+      transition: transform 1s var(--ease), filter 0.6s ease;
+    }
+    .tl-figure:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
+    
+    .tl-title {
+      font-family: var(--font-ja); font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 300;
+      color: var(--fg); line-height: 1.4; margin-bottom: 0.8rem;
+    }
+    .tl-meta {
+      font-family: var(--font-en); font-size: clamp(0.6rem, 1.2vw, 0.75rem); color: var(--accent);
+      letter-spacing: 0.15em; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border-md);
+    }
+    .tl-desc {
+      font-size: clamp(0.85rem, 1.6vw, 0.95rem); line-height: 2.1; color: rgba(233,229,223,0.7); text-align: justify;
+    }
+    .tl-desc p { margin-bottom: 1.2em; }
+    .tl-desc p:last-child { margin-bottom: 0; }
+    
+    /* Tags styling added to Chronology */
+    .work-detail-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.8rem; }
+    .work-tag {
+      font-family: var(--font-en); font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--accent); border: 0.5px solid rgba(196,168,130,0.3); padding: 0.35rem 0.8rem; border-radius: 2px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    .work-tag:hover { background: rgba(196,168,130,0.1); color: var(--fg); }
 
-    /* ─── BACK LINK ─── */
-    .back-wrap { text-align: center; padding: clamp(40px,7vh,80px) var(--px) clamp(20px,4vh,40px); }
-    .back-link { display: inline-flex; align-items: center; gap: 1rem; font-family: var(--en); font-size: 0.64rem; letter-spacing: 0.25em; color: var(--muted-col); text-transform: uppercase; text-decoration: none; transition: color 0.3s; }
-    .back-link-arrow { font-size: 1rem; transition: transform 0.3s; }
-    .back-link:hover { color: var(--accent); }
-    .back-link:hover .back-link-arrow { transform: translateX(-5px); }
+    /* Typewriter Style */
+    .tw-char { opacity: 0; display: inline-block; transition: opacity 0.3s ease; }
+    .tw-cursor {
+      display: inline-block; width: 1.5px; height: 1.1em; background-color: var(--accent);
+      margin-left: 2px; vertical-align: middle; animation: tw-blink 0.8s infinite;
+    }
+    @keyframes tw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .fade-out { opacity: 0; transition: opacity 0.8s ease; }
 
-    /* ─── LIGHTBOX ─── */
-    .lb { position: fixed; inset: 0; z-index: 800; background: rgba(4,3,3,0.98); display: none; align-items: center; justify-content: center; cursor: zoom-out; padding: clamp(20px,5vw,60px); opacity: 0; transition: opacity 0.35s ease; }
-    .lb.open { display: flex; }
-    .lb.vis { opacity: 1; }
-    .lb-img-wrap { position: relative; max-width: 100%; max-height: 90vh; }
-    .lb img { max-width: 100%; max-height: 88vh; object-fit: contain; display: block; transform: scale(0.96); transition: transform 0.45s var(--ease); }
-    .lb.vis img { transform: scale(1); }
-    .lb-caption { position: absolute; bottom: -2rem; left: 0; right: 0; text-align: center; font-family: var(--en); font-size: 0.6rem; letter-spacing: 0.2em; color: rgba(237,233,228,0.38); text-transform: uppercase; }
-    .lb-close { position: absolute; top: 1.5rem; right: 2rem; font-family: var(--en); font-size: 0.6rem; letter-spacing: 0.22em; color: rgba(237,233,228,0.38); text-transform: uppercase; background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: color 0.2s; }
-    .lb-close:hover { color: var(--fg); }
-    .lb-close-x { font-size: 1.5rem; font-weight: 100; line-height: 1; }
+    /* ============================================================
+       CONTACT & FOOTER
+    ============================================================ */
+    .contact-section {
+      padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center;
+      border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(196,168,130,0.06) 0%, var(--bg) 70%);
+    }
+    .contact-heading {
+      font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200;
+      line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em;
+    }
+    .contact-body-text {
+      font-family: var(--font-ja); font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+      color: rgba(233,229,223,0.55); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2;
+    }
+    .contact-btn {
+      display: inline-block; padding: 1.2rem 3.5rem; background: var(--accent); color: var(--bg);
+      font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500;
+      letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none;
+      transition: all 0.4s var(--ease); border-radius: 2px;
+    }
+    .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3); }
 
-    /* ─── CONTACT & FOOTER ─── */
-    .contact-section { padding: 7rem 2.5rem; text-align: center; border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); background: var(--bg); position: relative; z-index: 2; }
-    .section-label-center { font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem); letter-spacing: 0.28em; color: var(--muted-col); text-transform: uppercase; margin-bottom: 3.5rem; display: flex; align-items: center; justify-content: center; gap: 1rem; }
-    .section-label-center::before, .section-label-center::after { content: ''; width: 48px; height: 0.5px; background: rgba(232,228,219,0.18); }
-    .contact-heading { font-family: var(--jp); font-size: clamp(1.75rem,4vw,3.25rem); font-weight: 300; line-height: 1.2; color: var(--text); margin-bottom: 2rem; letter-spacing: -0.01em; text-align: center; }
-    .contact-body { font-size: 14px; color: var(--text-muted); margin: 0 auto 2.75rem; max-width: 400px; line-height: 1.9; }
-    .contact-btn { display: inline-block; font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem); letter-spacing: 0.22em; text-transform: uppercase; border: 0.5px solid rgba(184,149,90,0.40); padding: 0.9rem 2.75rem; color: var(--accent); text-decoration: none; transition: background 0.2s, color 0.2s; }
-    .contact-btn:hover { background: rgba(184,149,90,0.07); color: var(--fg); }
-    footer { padding: 2.75rem 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; background: var(--bg); position: relative; z-index: 2; }
-    .footer-logo { font-family: var(--jp); font-size: 15px; font-weight: 300; color: rgba(232,228,219,0.28); letter-spacing: 0.06em; }
-    .footer-copy { font-family: var(--en); font-size: 10px; color: rgba(232,228,219,0.18); letter-spacing: 0.14em; }
+    footer {
+      padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); background: var(--bg);
+    }
+    .footer-logo { font-family: var(--font-ja); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.28); letter-spacing: 0.08em; }
+    .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
 
-    /* ─── KEYFRAMES ─── */
-    @keyframes clipUp     { to { opacity:1; transform:translateY(0); } }
-    @keyframes charReveal { to { opacity:1; transform:translateY(0) skewY(0deg); } }
-    @keyframes ghostRise  { to { opacity:1; transform:translateY(0); } }
-    @keyframes fadeOnly   { to { opacity:1; } }
-    @keyframes drawLine   { to { width: clamp(48px,12vw,160px); } }
-    @keyframes pulseBar   { 0%,100% { opacity:0.3; } 50% { opacity:1; } }
+    /* ============================================================
+       LIGHTBOX (MODAL) & BACK TO TOP
+    ============================================================ */
+    .image-modal {
+      position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center;
+      opacity: 0; visibility: hidden; transition: opacity 0.55s var(--ease), visibility 0.55s;
+    }
+    .image-modal.is-active { opacity: 1; visibility: visible; }
+    .modal-bg { position: absolute; inset: 0; background: rgba(6,6,5,0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); cursor: zoom-out; }
+    .modal-close {
+      position: fixed; top: clamp(1rem, 3vh, 2rem); right: var(--px); z-index: 10001;
+      background: none; border: none; color: var(--muted); cursor: pointer; padding: 0.5rem;
+      transition: color 0.3s ease, transform 0.3s var(--ease);
+    }
+    .modal-close:hover { color: var(--fg); transform: scale(1.1) rotate(90deg); }
+    .modal-content {
+      position: relative; z-index: 10000; max-width: 90vw; margin: auto;
+      display: flex; flex-direction: column; align-items: center; gap: clamp(1rem, 2vh, 1.5rem);
+      opacity: 0; transform: scale(0.96) translateY(12px);
+      transition: opacity 0.55s var(--ease) 0.08s, transform 0.55s var(--ease) 0.08s;
+    }
+    .image-modal.is-active .modal-content { opacity: 1; transform: scale(1) translateY(0); }
+    .modal-content img { max-width: 100%; max-height: 75svh; object-fit: contain; box-shadow: 0 32px 80px rgba(0,0,0,0.75); border: 0.5px solid var(--border); cursor: zoom-out; }
+    .modal-caption { text-align: center; width: 100%; padding: 0 1rem; }
+    .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 200; color: var(--fg); margin-bottom: 0.3rem; }
+    .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.72rem, 1.2vw, 0.85rem); font-style: italic; color: var(--accent); letter-spacing: 0.15em; }
 
-    /* ─── RESPONSIVE ─── */
-    @media (max-width: 1100px) { .concept-keywords { grid-template-columns: 1fr 1fr; } .page-nav { display: none; } }
-    @media (max-width: 900px) {
-      .section-head { grid-template-columns: 1fr; gap: 1.5rem; }
-      .work-card img { filter: grayscale(15%) brightness(0.82); }
-      .work-card-zoom { opacity: 1; }
-      .work-detail { grid-template-columns: 1fr; gap: 0.6rem; }
+    .back-to-top {
+      position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px);
+      z-index: 9000; width: clamp(64px, 10vw, 90px); height: clamp(64px, 10vw, 90px); border-radius: 50%;
+      background: rgba(196, 168, 130, 0.85); border: 1px solid var(--accent);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--bg);
+      opacity: 0; visibility: hidden; transform: translateY(20px);
+      transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
+    }
+    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
+    .back-to-top:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-6px); }
+    .back-to-top svg { width: clamp(20px, 3vw, 32px); height: clamp(20px, 3vw, 32px); margin-bottom: 2px; }
+    .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.9rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
+
+    /* ============================================================
+       RESPONSIVE DESIGN
+    ============================================================ */
+    @media (max-width: 1024px) {
+      .concept-keywords-grid { grid-template-columns: 1fr; background: transparent; gap: 1rem; }
+      .concept-kw-card { border: 0.5px solid var(--border); padding: 2rem; }
+    }
+    @media (max-width: 860px) {
+      .timeline-container { padding-left: 36px; } 
+      .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2rem; }
+      .tl-figure, .tl-body, .tl-entry.is-vertical .tl-figure, .tl-entry.is-vertical .tl-body { width: 100%; }
+      .timeline-spine-wrapper { left: 16px; transform: none; }
+      .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; font-size: clamp(2.5rem, 8vw, 3.5rem); }
     }
     @media (max-width: 768px) {
-      nav#top-nav { padding: 1rem 1.25rem; }
+      nav#top-nav { padding: 1rem 1.25rem; justify-content: space-between; align-items: center; }
       .nav-links { display: none !important; }
-      #works-gallery { display: none !important; }
-      .mobile-top-btn { display: flex; }
-      .concept-keywords { grid-template-columns: 1fr; }
-      .tl-wrap { grid-template-columns: 48px 1.5px 1fr; } .tl-entries { padding-left: 24px; }
-      .tl-node { left: -33px; } .tl-year-label { left: -44px; width: 38px; font-size: 0.7rem; }
-      .tl-thumb { width: 80px; } .tl-entry { gap: 1rem; margin-bottom: 3rem; }
-      .scroll-cue { display: none; } .contact-section { padding: 5rem 1.5rem; } footer { padding: 2rem 1.5rem; }
+      .nav-hamburger { display: none !important; }
+      .gallery-section { display: none !important; }
+      .page-nav.visible { right: 8px; opacity: 0.5; }
+      .page-nav.visible:hover { opacity: 1; }
+      .page-nav-label { display: none; }
     }
-    @media (max-width: 480px) { .series-hero { min-height: 85vh; } .tl-entry { flex-direction: column; gap: 1rem; } .tl-thumb { width: 100%; } }
-    @media (hover: none) { .work-card img { filter: grayscale(15%) brightness(0.82); } .work-card-zoom { opacity: 1; } }
-    @media (prefers-reduced-motion: reduce) { .hero-bg-img img { animation: none; } *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
-    @media (min-width: 2000px) { :root { --px: 120px; } }
+    @media (max-width: 480px) {
+      .hero-scroll { display: none; }
+      .modal-content img { max-height: 60svh; }
+      .statement-para { text-align: left; }
+      .statement-section { padding-left: 1.25rem; padding-right: 1.25rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+      .gallery-item, .tl-entry, .reveal-fade, .concept-kw-card { opacity: 1 !important; transform: none !important; }
+    }
   </style>
 </head>
-<body>
-  <a href="#main" class="skip-nav">メインコンテンツへスキップ</a>
-  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+<body id="top">
 
-  <div class="works-video-bg" aria-hidden="true">
-    <video autoplay loop muted playsinline preload="metadata">
-      <source src="images/mov1.mp4" type="video/mp4">
-    </video>
-    <div class="works-video-overlay"></div>
-  </div>
+  <nav id="top-nav">
+    <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html#statement" onclick="closeMenu()">Statement</a></li>
+      <li><a href="works.html"           onclick="closeMenu()">Works</a></li>
+      <li><a href="index.html#profile"   onclick="closeMenu()">Profile</a></li>
+      <li><a href="index.html#news"      onclick="closeMenu()">News</a></li>
+    </ul>
+    <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="index.html#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
+  </nav>
 
   <nav class="page-nav" id="pageNav" aria-label="ページ内ナビゲーション">
-    <button class="page-nav-item" data-target="intro"        aria-label="Introductionへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Intro</span>
+    <button class="page-nav-item" data-target="gallery" aria-label="Galleryへ">
+      <div class="page-nav-dot"></div><span class="page-nav-label">Gallery</span>
     </button>
-    <button class="page-nav-item" data-target="works-gallery" aria-label="Worksへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Works</span>
-    </button>
-    <button class="page-nav-item" data-target="timeline"     aria-label="Timelineへ">
+    <button class="page-nav-item" data-target="chronology" aria-label="Timelineへ">
       <div class="page-nav-dot"></div><span class="page-nav-label">Timeline</span>
     </button>
-    <button class="page-nav-item" data-target="statement"    aria-label="Statementへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Statement</span>
-    </button>
   </nav>
 
-  <!-- モバイル専用: ページ最上部（タイトルが見える位置）へ戻るボタン -->
-  <button class="mobile-top-btn" id="mobileTopBtn" aria-label="ページの先頭へ戻る">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-      <line x1="12" y1="19" x2="12" y2="5"></line>
-      <polyline points="6 11 12 5 18 11"></polyline>
-    </svg>
-  </button>
-
-  <nav id="top-nav" role="navigation" aria-label="サイトナビゲーション">
-    <a href="index.html" class="nav-logo">Tsuda Shoichi</a>
-    <ul class="nav-links" id="nav-links">
-      <li><a href="index.html#statement">Statement</a></li>
-      <li><a href="works.html">Works</a></li>
-      <li><a href="index.html#profile">Profile</a></li>
-      <li><a href="index.html#news">News</a></li>
-    </ul>
-    <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
-  </nav>
-
-  <main id="main">
-    <section class="series-hero" aria-labelledby="hero-title">
-      <div class="hero-bg-img" aria-hidden="true">
-        <img src="images/black-period/hero.jpg" onerror="this.src='images/【F120縦】早春圖-改.jpg'" alt="" loading="eager" decoding="async">
-      </div>
-      <div class="hero-bg-overlay" aria-hidden="true"></div>
-      <div class="hero-gold-line" aria-hidden="true"></div>
-      <div class="hero-ghost" aria-hidden="true">BLACK</div>
+  <main>
+    <section class="hero">
+      <div class="hero-divider" aria-hidden="true"></div>
       <div class="hero-inner">
-        <p class="hero-eyebrow"><span>Series &nbsp;·&nbsp; The Black Period &nbsp;·&nbsp; Oil on Canvas</span></p>
-        <h1 id="hero-title">
-          <div class="hero-title-en"><span>The</span><span>Black</span><span>Period</span></div>
-          <p class="hero-title-jp"><span>黒の時代</span></p>
+        <p class="hero-eyebrow" id="heroEyebrow">Series — The Black Period &nbsp;·&nbsp; Oil on Canvas</p>
+        <h1 class="hero-title" id="heroTitle" aria-label="黒の時代">
+          <span class="char">黒</span><span class="char">の</span><span class="char">時</span><span class="char">代</span>
         </h1>
-        <p class="hero-sub"><span>黒は不在ではない。すべての色が沈んでいく場所だ。</span></p>
-        <div class="hero-rule"></div>
-      </div>
-      <div class="scroll-cue" aria-hidden="true">
-        <div class="scroll-cue-line"></div><span>Scroll</span>
-      </div>
-    </section>
-
-    <!-- ════════ INTRODUCTION（最初にコンセプト文） ════════ -->
-    <section class="page-section" id="intro" aria-labelledby="intro-title">
-      <div class="section-head">
-        <div>
-          <p class="section-sidebar-label reveal">Introduction</p>
-          <p class="section-sidebar-num reveal" style="transition-delay:.1s">黒</p>
+        <p class="hero-title-en" id="heroEn">The Black Period</p>
+        <div class="hero-meta" id="heroMeta">
+          <div class="hero-meta-line"></div>
+          <span class="hero-meta-text">The Depths of Silence</span>
         </div>
-        <div>
-          <h2 id="intro-title">
-            <p class="section-title-en reveal" style="transition-delay:.08s">The Black Period</p>
-            <p class="section-title-jp reveal" style="transition-delay:.14s">シリーズ概要</p>
-          </h2>
-          <p class="section-credit reveal" style="transition-delay:.18s">Series Commentary — Tsuda Shoichi</p>
-          <p class="intro-lead reveal" style="transition-delay:.22s">黒とは、色の終わりではなく、色の始まりだ。</p>
-          <p class="intro-text reveal" style="transition-delay:.30s">
-            「黒の時代（The Black Period）」という命名は、ピカソが精神の傷を青一色で塗り込めた「青の時代」を、どこかで意識している。あの時代における青が絶望の<em>濃度</em>であったように、津田翔一の黒もまた、感情の飽和点——なにかが燃え尽きた後に残る、静かで重い色調として機能する。ただし津田の黒は追悼ではなく、<em>密度の探求</em>だ。黒の内側に、どれだけの世界を封じ込められるか。
-          </p>
-          <p class="intro-text reveal" style="transition-delay:.38s">
-            このシリーズを貫くのは、「黒」という色の両義性だ。黒は光を吸収し、奥行きを作り、他のいかなる色よりも<em>多くを隠す</em>。同時に黒は、画面の中で最も正直な色でもある——何も足さず、何も言い訳せず、ただそこにある。油彩の黒は、キャンバスに塗り重ねるごとに固有の表情を持つ。艶、マット、引っかき傷、滲み——黒と言っても、二枚として同じ黒はない。
-          </p>
-          <p class="intro-text reveal" style="transition-delay:.44s">
-            「黒の時代」とは、津田が<em>沈黙に向き合った時間</em>の記録だ。それは閉塞でも停滞でもなく、より深い場所へ降りていくための必要な暗闇として、この作品群に刻まれている。
-          </p>
-          <div class="concept-keywords">
-            <div class="concept-kw reveal" style="transition-delay:.05s">
-              <p class="concept-kw-num">01</p><p class="concept-kw-title">黒の密度</p>
-              <p class="concept-kw-desc">同じ「黒」は存在しない。重ねるほど固有になる黒の表情を、油彩の物質性として追求する。</p>
-            </div>
-            <div class="concept-kw reveal" style="transition-delay:.12s">
-              <p class="concept-kw-num">02</p><p class="concept-kw-title">隠蔽と開示</p>
-              <p class="concept-kw-desc">黒は隠す。しかし完璧には隠せない。その隙間から漏れ出す色と形が、絵画の本質に触れる。</p>
-            </div>
-            <div class="concept-kw reveal" style="transition-delay:.20s">
-              <p class="concept-kw-num">03</p><p class="concept-kw-title">沈黙の時間</p>
-              <p class="concept-kw-desc">「青の時代」が感情の傷を青で封じたように、この時代の黒は津田の内的な沈黙の堆積だ。</p>
-            </div>
-          </div>
+      </div>
+      <div class="hero-scroll" id="heroScroll" aria-hidden="true">
+        <div class="hero-scroll-track">
+          <div class="hero-scroll-fill"></div>
         </div>
+        <span class="hero-scroll-label">Scroll</span>
       </div>
     </section>
 
-    <!-- ════════ WORKS GALLERY（作品サイズに合わせた均整グリッド／スマホ非表示） ════════ -->
-    <section class="page-section" id="works-gallery" aria-labelledby="works-title">
-      <h2 id="works-title" class="sr-only">作品一覧</h2>
-      <div class="works-header-row reveal">
-        <span class="works-header-label">Individual Works &nbsp;— &nbsp;The Black Period</span>
-        <span class="works-header-count">07</span>
+    <section class="concept-section">
+      <p class="concept-text reveal-fade">
+        黒とは、色の終わりではなく、色の始まりだ。<br>
+        すべての色が沈んでいく場所であり、何かが燃え尽きた後に残る、静かで重い色調。<br>
+        黒は不在ではない。
+      </p>
+    </section>
+
+    <section class="statement-section">
+      <p class="statement-label">Series Statement</p>
+
+      <p class="statement-pullquote reveal-fade">
+        黒を塗るたびに、下の層が生き始める。<br>消すことで、初めて<span class="accent-word">「見えるもの」</span>がある。
+      </p>
+
+      <div class="statement-body">
+        <p class="statement-para reveal-fade">
+          「黒の時代（The Black Period）」という命名は、ピカソが精神の傷を青一色で塗り込めた「青の時代」を、どこかで意識しています。あの時代における青が絶望の濃度であったように、私の黒もまた、感情の飽和点——言葉になる手前で何かが凝固した状態として機能しています。
+        </p>
+        <p class="statement-para reveal-fade">
+          ただし、この黒は追悼ではなく、<strong>「密度の探求」</strong>です。黒の内側に、どれだけの世界を封じ込められるか。油彩の黒は、キャンバスに塗り重ねるごとに固有の表情を持ちます。艶、マット、引っかき傷、滲み——二枚として同じ黒はありません。
+        </p>
+        <p class="statement-para reveal-fade">
+          黒を使い切った後、私の絵画は変わりました。黒という極限値を経験したことで、他の色が別の重さを持つようになったのです。「黒の時代」は終わりましたが、黒は今もどこかに残っています。それはすべての絵画の底に、見えない層として沈んでいます。
+        </p>
       </div>
 
-      <div class="works-grid">
-        <div class="work-card reveal" style="aspect-ratio:0.666;"
-             onclick="openLB('images/【F120縦】早春圖-改.jpg','早春圖-改')"
-             role="button" tabindex="0" aria-label="作品を拡大表示" onkeydown="if(event.key==='Enter')this.click()">
-          <span class="work-card-year">2013</span>
-          <span class="work-card-zoom">Expand ↗</span>
-          <img src="images/【F120縦】早春圖-改.jpg" alt="早春圖-改" loading="lazy" decoding="async">
-          <div class="work-card-info">
-            <p class="work-card-num">BLK-01</p>
-            <p class="work-card-title">早春圖-改</p>
-            <p class="work-card-en">Soshunzu - Revised</p>
-          </div>
+      <div class="concept-keywords-grid">
+        <div class="concept-kw-card reveal-fade" style="transition-delay: 0.1s;">
+          <div class="kw-num">01</div>
+          <div class="kw-title">黒の密度</div>
+          <div class="kw-desc">同じ「黒」は存在しない。重ねるほど固有になる黒の表情を、油彩の物質性として追求する。</div>
         </div>
-
-        <div class="work-card reveal" style="aspect-ratio:1.403;" style="transition-delay:.05s"
-             onclick="openLB('images/【くにうみ】.jpg','くにうみ')"
-             role="button" tabindex="0" aria-label="作品を拡大表示" onkeydown="if(event.key==='Enter')this.click()">
-          <span class="work-card-year">2012</span>
-          <span class="work-card-zoom">Expand ↗</span>
-          <img src="images/【くにうみ】.jpg" alt="くにうみ" loading="lazy" decoding="async">
-          <div class="work-card-info">
-            <p class="work-card-num">BLK-02</p>
-            <p class="work-card-title">くにうみ</p>
-            <p class="work-card-en">Kuniumi</p>
-          </div>
+        <div class="concept-kw-card reveal-fade" style="transition-delay: 0.2s;">
+          <div class="kw-num">02</div>
+          <div class="kw-title">隠蔽と開示</div>
+          <div class="kw-desc">黒は隠す。しかし完璧には隠せない。その隙間から漏れ出す色と形が、絵画の本質に触れる。</div>
         </div>
-
-        <div class="work-card reveal" style="aspect-ratio:1.287;" style="transition-delay:.08s"
-             onclick="openLB('images/【常世の国(浦島太郎)】.jpg','常世の国 - 浦島太郎 -')"
-             role="button" tabindex="0" aria-label="作品を拡大表示" onkeydown="if(event.key==='Enter')this.click()">
-          <span class="work-card-year">2012</span>
-          <span class="work-card-zoom">Expand ↗</span>
-          <img src="images/【常世の国(浦島太郎)】.jpg" alt="常世の国 - 浦島太郎 -" loading="lazy" decoding="async">
-          <div class="work-card-info">
-            <p class="work-card-num">BLK-03</p>
-            <p class="work-card-title">常世の国 - 浦島太郎 -</p>
-            <p class="work-card-en">Tokoyo - Urashima Taro -</p>
-          </div>
-        </div>
-
-        <div class="work-card reveal" style="aspect-ratio:1.251;" style="transition-delay:.10s"
-             onclick="openLB('images/【岩戸隠れ】.jpg','岩戸隠れ')"
-             role="button" tabindex="0" aria-label="作品を拡大表示" onkeydown="if(event.key==='Enter')this.click()">
-          <span class="work-card-year">2012</span>
-          <span class="work-card-zoom">Expand ↗</span>
-          <img src="images/【岩戸隠れ】.jpg" alt="岩戸隠れ" loading="lazy" decoding="async">
-          <div class="work-card-info">
-            <p class="work-card-num">BLK-04</p>
-            <p class="work-card-title">岩戸隠れ</p>
-            <p class="work-card-en">Amano-Iwato</p>
-          </div>
-        </div>
-
-        <div class="work-card reveal" style="aspect-ratio:1.201;" style="transition-delay:.12s"
-             onclick="openLB('images/before_clouds_are_captured.jpg','before clouds are captured')"
-             role="button" tabindex="0" aria-label="作品を拡大表示" onkeydown="if(event.key==='Enter')this.click()">
-          <span class="work-card-year">2012</span>
-          <span class="work-card-zoom">Expand ↗</span>
-          <img src="images/before_clouds_are_captured.jpg" alt="before clouds are captured" loading="lazy" decoding="async">
-          <div class="work-card-info">
-            <p class="work-card-num">BLK-05</p>
-            <p class="work-card-title">before clouds are captured</p>
-            <p class="work-card-en">before clouds are captured</p>
-          </div>
-        </div>
-
-        <div class="work-card reveal" style="aspect-ratio:1.436;" style="transition-delay:.14s"
-             onclick="openLB('images/乙姫.jpg','乙姫')"
-             role="button" tabindex="0" aria-label="作品を拡大表示" onkeydown="if(event.key==='Enter')this.click()">
-          <span class="work-card-year">2012</span>
-          <span class="work-card-zoom">Expand ↗</span>
-          <img src="images/乙姫.jpg" alt="乙姫" loading="lazy" decoding="async">
-          <div class="work-card-info">
-            <p class="work-card-num">BLK-06</p>
-            <p class="work-card-title">乙姫</p>
-            <p class="work-card-en">Otohime</p>
-          </div>
-        </div>
-
-        <div class="work-card reveal" style="aspect-ratio:0.709;" style="transition-delay:.16s"
-             onclick="openLB('images/baby(dragon).jpg','baby(dragon)')"
-             role="button" tabindex="0" aria-label="作品を拡大表示" onkeydown="if(event.key==='Enter')this.click()">
-          <span class="work-card-year">—</span>
-          <span class="work-card-zoom">Expand ↗</span>
-          <img src="images/baby(dragon).jpg" alt="baby(dragon)" loading="lazy" decoding="async">
-          <div class="work-card-info">
-            <p class="work-card-num">BLK-07</p>
-            <p class="work-card-title">baby (dragon)</p>
-            <p class="work-card-en">baby (dragon)</p>
-          </div>
+        <div class="concept-kw-card reveal-fade" style="transition-delay: 0.3s;">
+          <div class="kw-num">03</div>
+          <div class="kw-title">沈黙の時間</div>
+          <div class="kw-desc">「青の時代」が感情の傷を青で封じたように、この時代の黒は内的な沈黙の堆積である。</div>
         </div>
       </div>
 
-      <!-- ════ 各作品コメンタリー ════ -->
-      <div class="works-detail-list">
-        <article class="work-detail reveal">
-          <div>
-            <p class="work-detail-year">2013</p>
-            <span class="work-detail-num">BLK-01</span>
-          </div>
-          <div>
-            <h3 class="work-detail-title-ja">早春圖-改</h3>
-            <span class="work-detail-title-en">Soshunzu - Revised</span>
-            <div class="work-detail-commentary">
-              <p>古典山水画における「早春」という季節の機微を、黒の堆積として描き直す。冬の終わりに兆す気配は、明るさとしてではなく、闇の密度がわずかに緩む瞬間として現れる。</p>
-            </div>
-            <div class="work-detail-tags">
-              <span class="work-tag">山水</span><span class="work-tag">季節の機微</span><span class="work-tag">古典の再解釈</span>
-            </div>
-          </div>
-        </article>
+      <p class="statement-closing reveal-fade">— Tsuda Shoichi</p>
+    </section>
 
-        <article class="work-detail reveal" style="transition-delay:.04s">
-          <div>
-            <p class="work-detail-year">2012</p>
-            <span class="work-detail-num">BLK-02</span>
+    <section class="gallery-section" id="gallery">
+      <div class="section-label">Works Index</div>
+      <div class="gallery-grid">
+        <a href="#work-blk01" class="gallery-item" style="--item-height: 400px;">
+          <div class="gallery-item-img-wrap"><img src="images/【F120縦】早春圖-改.jpg" alt="早春圖-改" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">早春圖-改</span><span class="gallery-item-meta">2013 / Oil on canvas</span>
           </div>
-          <div>
-            <h3 class="work-detail-title-ja">くにうみ</h3>
-            <span class="work-detail-title-en">Kuniumi</span>
-            <div class="work-detail-commentary">
-              <p>混沌から秩序が立ち現れる神話の原点。幾重にも塗り重ねられた黒の層の奥底に、物理的な力の衝突と、大地が形成される力強い胎動を記録している。</p>
-            </div>
-            <div class="work-detail-tags">
-              <span class="work-tag">神話</span><span class="work-tag">秩序の誕生</span><span class="work-tag">物理的衝突</span>
-            </div>
+        </a>
+        <a href="#work-blk02" class="gallery-item" style="--item-height: 250px;">
+          <div class="gallery-item-img-wrap"><img src="images/【くにうみ】.jpg" alt="くにうみ" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">くにうみ</span><span class="gallery-item-meta">2012 / Oil on canvas</span>
           </div>
-        </article>
-
-        <article class="work-detail reveal" style="transition-delay:.06s">
-          <div>
-            <p class="work-detail-year">2012</p>
-            <span class="work-detail-num">BLK-03</span>
+        </a>
+        <a href="#work-blk03" class="gallery-item" style="--item-height: 250px;">
+          <div class="gallery-item-img-wrap"><img src="images/【常世の国(浦島太郎)】.jpg" alt="常世の国 - 浦島太郎 -" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">常世の国 - 浦島太郎 -</span><span class="gallery-item-meta">2012 / Oil on canvas</span>
           </div>
-          <div>
-            <h3 class="work-detail-title-ja">常世の国 - 浦島太郎 -</h3>
-            <span class="work-detail-title-en">Tokoyo - Urashima Taro -</span>
-            <div class="work-detail-commentary">
-              <p>時間を超越した永遠の理想郷、常世。不可逆な時間の流れと人間の記憶の不確かさを、深い沈黙と無数の色が潜む黒の空間として立ち上げた。</p>
-            </div>
-            <div class="work-detail-tags">
-              <span class="work-tag">永遠</span><span class="work-tag">時間の超越</span><span class="work-tag">記憶</span>
-            </div>
+        </a>
+        <a href="#work-blk04" class="gallery-item" style="--item-height: 250px;">
+          <div class="gallery-item-img-wrap"><img src="images/【岩戸隠れ】.jpg" alt="岩戸隠れ" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">岩戸隠れ</span><span class="gallery-item-meta">2012 / Oil on canvas</span>
           </div>
-        </article>
-
-        <article class="work-detail reveal" style="transition-delay:.08s">
-          <div>
-            <p class="work-detail-year">2012</p>
-            <span class="work-detail-num">BLK-04</span>
+        </a>
+        <a href="#work-blk05" class="gallery-item" style="--item-height: 250px;">
+          <div class="gallery-item-img-wrap"><img src="images/before_clouds_are_captured.jpg" alt="before clouds are captured" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">before clouds are captured</span><span class="gallery-item-meta">2012 / Oil on canvas</span>
           </div>
-          <div>
-            <h3 class="work-detail-title-ja">岩戸隠れ</h3>
-            <span class="work-detail-title-en">Amano-Iwato</span>
-            <div class="work-detail-commentary">
-              <p>太陽神の隠遁により世界が闇に包まれた原初の暗黒。単なる光の喪失ではなく、岩戸の向こうに蓄積されるエネルギーと、夜明けに向けた静かなる緊迫感を表現している。</p>
-            </div>
-            <div class="work-detail-tags">
-              <span class="work-tag">暗黒</span><span class="work-tag">エネルギーの蓄積</span><span class="work-tag">夜明け前</span>
-            </div>
+        </a>
+        <a href="#work-blk06" class="gallery-item" style="--item-height: 250px;">
+          <div class="gallery-item-img-wrap"><img src="images/乙姫.jpg" alt="乙姫" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">乙姫</span><span class="gallery-item-meta">2012 / Oil on canvas</span>
           </div>
-        </article>
-
-        <article class="work-detail reveal" style="transition-delay:.10s">
-          <div>
-            <p class="work-detail-year">2012</p>
-            <span class="work-detail-num">BLK-05</span>
+        </a>
+        <a href="#work-blk07" class="gallery-item" style="--item-height: 380px;">
+          <div class="gallery-item-img-wrap"><img src="images/baby(dragon).jpg" alt="baby(dragon)" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">baby (dragon)</span><span class="gallery-item-meta">— / Oil on canvas</span>
           </div>
-          <div>
-            <h3 class="work-detail-title-ja">before clouds are captured</h3>
-            <span class="work-detail-title-en">before clouds are captured</span>
-            <div class="work-detail-commentary">
-              <p>雲が定義される前の、まだ形を持たない大気の状態。輪郭が確定する直前の漂う気配を、黒の濃淡が織りなす層として捉えた一作。</p>
-            </div>
-            <div class="work-detail-tags">
-              <span class="work-tag">未確定の形</span><span class="work-tag">大気</span><span class="work-tag">漂う気配</span>
-            </div>
-          </div>
-        </article>
-
-        <article class="work-detail reveal" style="transition-delay:.12s">
-          <div>
-            <p class="work-detail-year">2012</p>
-            <span class="work-detail-num">BLK-06</span>
-          </div>
-          <div>
-            <h3 class="work-detail-title-ja">乙姫</h3>
-            <span class="work-detail-title-en">Otohime</span>
-            <div class="work-detail-commentary">
-              <p>常世の国を統べる存在として、浦島太郎の物語にもう一つの視座を与える。黒い水底に沈む宮殿の気配は、招くものであると同時に、決して戻れない不可逆の象徴でもある。</p>
-            </div>
-            <div class="work-detail-tags">
-              <span class="work-tag">水底の宮殿</span><span class="work-tag">不可逆性</span><span class="work-tag">招くもの</span>
-            </div>
-          </div>
-        </article>
-
-        <article class="work-detail reveal" style="transition-delay:.14s">
-          <div>
-            <p class="work-detail-year">—</p>
-            <span class="work-detail-num">BLK-07</span>
-          </div>
-          <div>
-            <h3 class="work-detail-title-ja">baby (dragon)</h3>
-            <span class="work-detail-title-en">baby (dragon)</span>
-            <div class="work-detail-commentary">
-              <p>原初の闇の中からまさに形を成そうとする、未分化のエネルギー。神話的生命の幼生を通じて、無から有が生み出される瞬間の静かな躍動を閉じ込めている。</p>
-            </div>
-            <div class="work-detail-tags">
-              <span class="work-tag">原初の生命</span><span class="work-tag">未分化</span><span class="work-tag">静かな躍動</span>
-            </div>
-          </div>
-        </article>
+        </a>
       </div>
     </section>
 
-    <!-- ════════ TIMELINE（制作年譜） ════════ -->
-    <section class="page-section" id="timeline" aria-labelledby="tl-title">
-      <div class="section-head">
-        <div>
-          <p class="section-sidebar-label reveal">Timeline</p>
-          <p class="section-sidebar-num reveal" style="transition-delay:.1s">年譜</p>
+    <section class="chronology-section" id="chronology">
+      <div class="timeline-container">
+        <div class="timeline-spine-wrapper">
+          <div class="timeline-spine-progress" id="tl-spine-fill"></div>
         </div>
-        <div>
-          <h2 id="tl-title">
-            <p class="section-title-en reveal" style="transition-delay:.08s">Chronology</p>
-            <p class="section-title-jp reveal" style="transition-delay:.14s">黒の時代 制作年譜</p>
-          </h2>
-        </div>
-      </div>
-      <div class="tl-wrap" id="tl-wrap">
-        <div class="tl-year-col" aria-hidden="true"></div>
-        <div class="tl-spine-col" aria-hidden="true">
-          <div class="tl-spine-track"></div>
-          <div class="tl-spine-fill" id="tl-spine-fill"></div>
-        </div>
-        <div class="tl-entries" id="tl-entries">
-          <div class="tl-entry" data-year="2013">
-            <div class="tl-node" aria-hidden="true"><div class="tl-dot"></div><span class="tl-year-label">2013</span></div>
-            <div class="tl-thumb" onclick="openLB('images/【F120縦】早春圖-改.jpg','早春圖-改')" role="button" tabindex="0" aria-label="拡大">
-              <img src="images/【F120縦】早春圖-改.jpg" alt="" loading="lazy">
+
+        <article class="tl-entry is-vertical" id="work-blk01">
+          <div class="tl-year-display">2013</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F120縦】早春圖-改.jpg">
+              <img src="images/【F120縦】早春圖-改.jpg" alt="早春圖-改" loading="lazy">
             </div>
-            <div class="tl-info">
-              <p class="tl-series-label">The Black Period</p>
-              <p class="tl-title">早春圖-改</p>
-              <p class="tl-title-en-sm">Soshunzu - Revised</p>
-              <p class="tl-spec-sm">油彩・キャンバス / Oil on canvas</p>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">早春圖-改</h3>
+              <p class="tl-meta">Soshunzu - Revised / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>古典山水画における「早春」という季節の機微を、黒の堆積として描き直す。冬の終わりに兆す気配は、明るさとしてではなく、闇の密度がわずかに緩む瞬間として現れる。</p>
+                <div class="work-detail-tags">
+                  <span class="work-tag">山水</span><span class="work-tag">季節の機微</span><span class="work-tag">古典の再解釈</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="tl-entry" data-year="2012">
-            <div class="tl-node" aria-hidden="true"><div class="tl-dot"></div><span class="tl-year-label">2012</span></div>
-            <div class="tl-thumb" onclick="openLB('images/【くにうみ】.jpg','くにうみ')" role="button" tabindex="0" aria-label="拡大">
-              <img src="images/【くにうみ】.jpg" alt="" loading="lazy">
+        </article>
+
+        <article class="tl-entry" id="work-blk02">
+          <div class="tl-year-display">2012</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【くにうみ】.jpg">
+               <img src="images/【くにうみ】.jpg" alt="くにうみ" loading="lazy">
             </div>
-            <div class="tl-info">
-              <p class="tl-series-label">The Black Period</p>
-              <p class="tl-title">くにうみ</p>
-              <p class="tl-title-en-sm">Kuniumi</p>
-              <p class="tl-spec-sm">油彩・キャンバス / Oil on canvas</p>
-            </div>
-          </div>
-          <div class="tl-entry" data-year="2012">
-            <div class="tl-node" aria-hidden="true"><div class="tl-dot"></div><span class="tl-year-label">2012</span></div>
-            <div class="tl-thumb" onclick="openLB('images/【常世の国(浦島太郎)】.jpg','常世の国 - 浦島太郎 -')" role="button" tabindex="0" aria-label="拡大">
-              <img src="images/【常世の国(浦島太郎)】.jpg" alt="" loading="lazy">
-            </div>
-            <div class="tl-info">
-              <p class="tl-series-label">The Black Period</p>
-              <p class="tl-title">常世の国 - 浦島太郎 -</p>
-              <p class="tl-title-en-sm">Tokoyo - Urashima Taro -</p>
-              <p class="tl-spec-sm">油彩・キャンバス / Oil on canvas</p>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">くにうみ</h3>
+              <p class="tl-meta">Kuniumi / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>混沌から秩序が立ち現れる神話の原点。幾重にも塗り重ねられた黒の層の奥底に、物理的な力の衝突と、大地が形成される力強い胎動を記録している。</p>
+                <div class="work-detail-tags">
+                  <span class="work-tag">神話</span><span class="work-tag">秩序の誕生</span><span class="work-tag">物理的衝突</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="tl-entry" data-year="2012">
-            <div class="tl-node" aria-hidden="true"><div class="tl-dot"></div><span class="tl-year-label">2012</span></div>
-            <div class="tl-thumb" onclick="openLB('images/【岩戸隠れ】.jpg','岩戸隠れ')" role="button" tabindex="0" aria-label="拡大">
-              <img src="images/【岩戸隠れ】.jpg" alt="" loading="lazy">
+        </article>
+
+        <article class="tl-entry" id="work-blk03">
+          <div class="tl-year-display">2012</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【常世の国(浦島太郎)】.jpg">
+              <img src="images/【常世の国(浦島太郎)】.jpg" alt="常世の国 - 浦島太郎 -" loading="lazy">
             </div>
-            <div class="tl-info">
-              <p class="tl-series-label">The Black Period</p>
-              <p class="tl-title">岩戸隠れ</p>
-              <p class="tl-title-en-sm">Amano-Iwato</p>
-              <p class="tl-spec-sm">油彩・キャンバス / Oil on canvas</p>
-            </div>
-          </div>
-          <div class="tl-entry" data-year="2012">
-            <div class="tl-node" aria-hidden="true"><div class="tl-dot"></div><span class="tl-year-label">2012</span></div>
-            <div class="tl-thumb" onclick="openLB('images/before_clouds_are_captured.jpg','before clouds are captured')" role="button" tabindex="0" aria-label="拡大">
-              <img src="images/before_clouds_are_captured.jpg" alt="" loading="lazy">
-            </div>
-            <div class="tl-info">
-              <p class="tl-series-label">The Black Period</p>
-              <p class="tl-title">before clouds are captured</p>
-              <p class="tl-title-en-sm">before clouds are captured</p>
-              <p class="tl-spec-sm">油彩・キャンバス / Oil on canvas</p>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">常世の国 - 浦島太郎 -</h3>
+              <p class="tl-meta">Tokoyo - Urashima Taro - / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>時間を超越した永遠の理想郷、常世。不可逆な時間の流れと人間の記憶の不確かさを、深い沈黙と無数の色が潜む黒の空間として立ち上げた。</p>
+                <div class="work-detail-tags">
+                  <span class="work-tag">永遠</span><span class="work-tag">時間の超越</span><span class="work-tag">記憶</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="tl-entry" data-year="2012">
-            <div class="tl-node" aria-hidden="true"><div class="tl-dot"></div><span class="tl-year-label">2012</span></div>
-            <div class="tl-thumb" onclick="openLB('images/乙姫.jpg','乙姫')" role="button" tabindex="0" aria-label="拡大">
-              <img src="images/乙姫.jpg" alt="" loading="lazy">
+        </article>
+
+        <article class="tl-entry" id="work-blk04">
+          <div class="tl-year-display">2012</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【岩戸隠れ】.jpg">
+              <img src="images/【岩戸隠れ】.jpg" alt="岩戸隠れ" loading="lazy">
             </div>
-            <div class="tl-info">
-              <p class="tl-series-label">The Black Period</p>
-              <p class="tl-title">乙姫</p>
-              <p class="tl-title-en-sm">Otohime</p>
-              <p class="tl-spec-sm">油彩・キャンバス / Oil on canvas</p>
-            </div>
-          </div>
-          <div class="tl-entry" data-year="—">
-            <div class="tl-node" aria-hidden="true"><div class="tl-dot"></div><span class="tl-year-label">—</span></div>
-            <div class="tl-thumb" onclick="openLB('images/baby(dragon).jpg','baby(dragon)')" role="button" tabindex="0" aria-label="拡大">
-              <img src="images/baby(dragon).jpg" alt="" loading="lazy">
-            </div>
-            <div class="tl-info">
-              <p class="tl-series-label">The Black Period</p>
-              <p class="tl-title">baby (dragon)</p>
-              <p class="tl-title-en-sm">baby (dragon)</p>
-              <p class="tl-spec-sm">油彩・キャンバス / Oil on canvas</p>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">岩戸隠れ</h3>
+              <p class="tl-meta">Amano-Iwato / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>太陽神の隠遁により世界が闇に包まれた原初の暗黒。単なる光の喪失ではなく、岩戸の向こうに蓄積されるエネルギーと、夜明けに向けた静かなる緊迫感を表現している。</p>
+                <div class="work-detail-tags">
+                  <span class="work-tag">暗黒</span><span class="work-tag">エネルギーの蓄積</span><span class="work-tag">夜明け前</span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </article>
+
+        <article class="tl-entry" id="work-blk05">
+          <div class="tl-year-display">2012</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/before_clouds_are_captured.jpg">
+              <img src="images/before_clouds_are_captured.jpg" alt="before clouds are captured" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">before clouds are captured</h3>
+              <p class="tl-meta">before clouds are captured / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>雲が定義される前の、まだ形を持たない大気の状態。輪郭が確定する直前の漂う気配を、黒の濃淡が織りなす層として捉えた一作。</p>
+                <div class="work-detail-tags">
+                  <span class="work-tag">未確定の形</span><span class="work-tag">大気</span><span class="work-tag">漂う気配</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry" id="work-blk06">
+          <div class="tl-year-display">2012</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/乙姫.jpg">
+              <img src="images/乙姫.jpg" alt="乙姫" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">乙姫</h3>
+              <p class="tl-meta">Otohime / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>常世の国を統べる存在として、浦島太郎の物語にもう一つの視座を与える。黒い水底に沈む宮殿の気配は、招くものであると同時に、決して戻れない不可逆の象徴でもある。</p>
+                <div class="work-detail-tags">
+                  <span class="work-tag">水底の宮殿</span><span class="work-tag">不可逆性</span><span class="work-tag">招くもの</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry is-vertical" id="work-blk07">
+          <div class="tl-year-display">—</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/baby(dragon).jpg">
+              <img src="images/baby(dragon).jpg" alt="baby(dragon)" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">baby (dragon)</h3>
+              <p class="tl-meta">baby (dragon) / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>原初の闇の中からまさに形を成そうとする、未分化のエネルギー。神話的生命の幼生を通じて、無から有が生み出される瞬間の静かな躍動を閉じ込めている。</p>
+                <div class="work-detail-tags">
+                  <span class="work-tag">原初の生命</span><span class="work-tag">未分化</span><span class="work-tag">静かな躍動</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
       </div>
     </section>
 
-    <section class="page-section" id="statement" aria-labelledby="stmt-title">
-      <div class="section-head">
-        <div>
-          <p class="section-sidebar-label reveal">Statement</p>
-          <p class="section-sidebar-num reveal" style="transition-delay:.1s">声明</p>
-        </div>
-        <div>
-          <h2 id="stmt-title">
-            <p class="section-title-en reveal" style="transition-delay:.08s">Artist Statement</p>
-            <p class="section-title-jp reveal" style="transition-delay:.14s">作家のことば</p>
-          </h2>
-          <blockquote class="statement-blockquote reveal" style="transition-delay:.22s">
-            黒を塗るたびに、下の層が生き始める。<br>消すことで、初めて見えるものがある。
-          </blockquote>
-          <p class="statement-text reveal" style="transition-delay:.30s">
-            「黒の時代」と名づけたのは、後からだ。描いているあいだ、それが「時代」になるとは思っていなかった。ただ黒を重ねることが、他のどんな色よりも<em>正直に感じた</em>時期があった。それだけだ。
-          </p>
-          <p class="statement-text reveal" style="transition-delay:.38s">
-            ピカソの「青の時代」について考えることがある。あの青は感情の<em>色温度</em>だったと思う。私の黒も、感情の温度として機能している——ただし、より低く、より密度が高い場所で。青が冷たさと悲しみを帯びるとすれば、黒はその先の<em>沈黙</em>だ。言葉になる手前で何かが凝固した状態。
-          </p>
-          <p class="statement-text reveal" style="transition-delay:.44s">
-            黒を使い切った後、私の絵画は変わった。黒という<em>極限値を経験した</em>ことで、他の色が別の重さを持つようになった。「黒の時代」は終わったが、黒は今もどこかに残っている。それはすべての絵画の底に、見えない層として沈んでいる。
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <div class="back-wrap reveal">
-      <a href="works.html" class="back-link"><span class="back-link-arrow">←</span>Back to Works Index</a>
-    </div>
   </main>
 
-  <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="作品拡大表示" onclick="closeLB()">
-    <button class="lb-close" onclick="closeLB()" aria-label="閉じる"><span class="lb-close-x" aria-hidden="true">×</span> Close</button>
-    <div class="lb-img-wrap" onclick="event.stopPropagation()">
-      <img id="lb-img" src="" alt="">
-      <p class="lb-caption" id="lb-caption"></p>
-    </div>
-  </div>
-
-  <section class="contact-section" id="contact" aria-labelledby="contact-title">
-    <p class="section-label-center" aria-hidden="true">Contact</p>
-    <h2 id="contact-title" class="contact-heading">お問い合わせ</h2>
-    <p class="contact-body">展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。</p>
-    <a href="contact.html" class="contact-btn">問い合わせフォームへ →</a>
+  <section class="contact-section" id="contact">
+    <p class="section-label" style="text-align: center; margin-bottom: 1.5rem;">Contact</p>
+    <h2 class="contact-heading">お問い合わせ</h2>
+    <p class="contact-body-text">
+      展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。
+    </p>
+    <a href="contact.html" class="contact-btn">
+      問い合わせフォームへ
+    </a>
   </section>
 
   <footer>
     <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
-    <p class="footer-copy">© 2026 Tsuda Shoichi. All Rights Reserved.</p>
+    <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
+  <a href="#gallery" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+    <span class="back-to-top-text">TOP</span>
+  </a>
+
+  <div class="image-modal" id="imageModal" aria-hidden="true" role="dialog">
+    <div class="modal-bg" id="modalBg"></div>
+    <button class="modal-close" id="modalClose" aria-label="閉じる">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square">
+        <line x1="4" y1="4" x2="20" y2="20"/>
+        <line x1="20" y1="4" x2="4" y2="20"/>
+      </svg>
+    </button>
+    <div class="modal-content">
+      <img src="" alt="拡大画像" id="modalImg">
+      <div class="modal-caption">
+        <p class="modal-caption-jp" id="modalTitleJp"></p>
+        <p class="modal-caption-en" id="modalTitleEn"></p>
+      </div>
+    </div>
+  </div>
+
   <script>
-    'use strict';
-
-    /* ── スクロールプログレスバー ── */
-    var progressBar = document.getElementById('scrollProgress');
-    function updateProgress() {
-      var scrolled = window.scrollY;
-      var total    = document.documentElement.scrollHeight - window.innerHeight;
-      progressBar.style.width = (total > 0 ? (scrolled / total * 100) : 0) + '%';
+    /* ── ナビゲーション & メニュー ── */
+    function toggleMenu() {
+      const links = document.getElementById('nav-links');
+      const cta = document.getElementById('nav-cta-btn');
+      const hamburger = document.getElementById('hamburger');
+      links.classList.toggle('open');
+      hamburger.classList.toggle('is-active');
+      if(cta) cta.style.display = links.classList.contains('open') ? 'none' : '';
+      if (links.classList.contains('open')) {
+        document.body.classList.add('is-locked');
+      } else {
+        document.body.classList.remove('is-locked');
+      }
+    }
+    
+    function closeMenu() {
+      const links = document.getElementById('nav-links');
+      const cta = document.getElementById('nav-cta-btn');
+      const hamburger = document.getElementById('hamburger');
+      links.classList.remove('open');
+      hamburger.classList.remove('is-active');
+      if(cta) cta.style.display = '';
+      document.body.classList.remove('is-locked');
     }
 
-    /* ── タイムライン縦線 ── */
-    var spineFill = document.getElementById('tl-spine-fill');
-    var tlWrap    = document.getElementById('tl-wrap');
-    function updateSpine() {
-      if (!tlWrap || !spineFill) return;
-      var rect   = tlWrap.getBoundingClientRect();
-      var totalH = tlWrap.offsetHeight;
-      if (totalH <= 0) return;
-      var pct = (window.innerHeight * 0.55 - rect.top) / totalH * 100;
-      spineFill.style.height = Math.max(0, Math.min(100, pct)) + '%';
-    }
-
-    /* ── ページ内ナビ アクティブ制御（PC） ── */
-    var pageNav  = document.getElementById('pageNav');
-    var navItems = Array.from(document.querySelectorAll('.page-nav-item'));
-    var sections = ['intro','works-gallery','timeline','statement'].map(function(id) {
-      return document.getElementById(id);
-    });
-    function updatePageNav() {
-      var scrollY = window.scrollY + window.innerHeight * 0.4;
-      var active  = null;
-      sections.forEach(function(sec) {
-        if (sec && sec.offsetTop <= scrollY) active = sec;
-      });
-      navItems.forEach(function(item) {
-        var target = document.getElementById(item.dataset.target);
-        item.classList.toggle('active', target === active);
-      });
-      pageNav.classList.toggle('visible', window.scrollY > window.innerHeight * 0.6);
-    }
-
-    /* ── モバイル: ページ先頭（タイトルが見える位置）へ戻るボタン ── */
-    var mobileTopBtn = document.getElementById('mobileTopBtn');
-    function updateMobileTopBtn() {
-      if (!mobileTopBtn) return;
-      mobileTopBtn.classList.toggle('visible', window.scrollY > window.innerHeight * 0.6);
-    }
-    mobileTopBtn.addEventListener('click', function() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    /* ── ファーストビュー アニメーション ── */
+    window.addEventListener('load', () => {
+      setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 150);
+      setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'),   350);
+      setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'),      680);
+      setTimeout(() => document.getElementById('heroMeta')?.classList.add('revealed'),    980);
+      setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1700);
     });
 
-    /* ── Reveal ── */
-    var revealObs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
+    /* ── Observer (Fade Up & Grid Animation) ── */
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
       });
-    }, { threshold: 0.08 });
-    document.querySelectorAll('.reveal').forEach(function(el) { revealObs.observe(el); });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.gallery-item, .tl-entry, .reveal-fade, .concept-kw-card').forEach(el => io.observe(el));
 
-    /* ── タイムラインエントリ ── */
-    var tlEntryObs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        if (e.isIntersecting) { e.target.classList.add('visible'); tlEntryObs.unobserve(e.target); }
-      });
-    }, { threshold: 0.15, rootMargin: '-5% 0px -20% 0px' });
-    document.querySelectorAll('.tl-entry').forEach(function(el) { tlEntryObs.observe(el); });
+    /* ── Typewriter Engine ── */
+    function prepareTypewriterDOM(el) {
+      if (el.dataset.twPrepared === "true") return;
+      const txt = el.textContent.trim();
+      el.textContent = '';
+      for (let i = 0; i < txt.length; i++) {
+        const span = document.createElement('span');
+        span.className = 'tw-char';
+        span.textContent = txt[i];
+        el.appendChild(span);
+      }
+      const cursor = document.createElement('span');
+      cursor.className = 'tw-cursor';
+      el.appendChild(cursor);
+      el.dataset.twPrepared = "true";
+    }
 
-    /* ── ページ内ナビ クリック（PC） ── */
-    navItems.forEach(function(item) {
-      item.addEventListener('click', function() {
-        var target = document.getElementById(item.dataset.target);
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
+    function runTypewriter(el) {
+      if (el.dataset.twDone === "true") return;
+      const chars = el.querySelectorAll('.tw-char');
+      const cursor = el.querySelector('.tw-cursor');
+      let idx = 0;
+      function nextChar() {
+        if (idx < chars.length) {
+          chars[idx].style.opacity = '1';
+          idx++;
+          setTimeout(() => requestAnimationFrame(nextChar), 45);
+        } else {
+          el.dataset.twDone = "true";
+          if (cursor) {
+            cursor.classList.add('fade-out');
+            setTimeout(() => cursor.remove(), 800);
+          }
+        }
+      }
+      requestAnimationFrame(nextChar);
+    }
+
+    document.querySelectorAll('[data-typewriter="true"]').forEach(el => {
+      prepareTypewriterDOM(el);
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            obs.unobserve(el);
+            setTimeout(() => requestAnimationFrame(() => runTypewriter(el)), 300);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
+      obs.observe(el);
     });
 
-    /* ── スクロールイベント（RAF） ── */
-    var ticking = false;
-    window.addEventListener('scroll', function() {
+    /* ── Scroll Interactions (Spine, Nav, Page-Nav) ── */
+    const topNav = document.getElementById('top-nav');
+    const pageNav = document.getElementById('pageNav');
+    const navItems = document.querySelectorAll('.page-nav-item');
+    const sections = ['gallery', 'chronology'].map(id => document.getElementById(id));
+    const spineFill = document.getElementById('tl-spine-fill');
+    const tlWrap = document.querySelector('.timeline-container');
+    let ticking = false;
+
+    window.addEventListener('scroll', () => {
       if (!ticking) {
-        requestAnimationFrame(function() {
-          updateProgress(); updateSpine(); updatePageNav(); updateMobileTopBtn();
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          
+          /* Top Nav Glassmorphism */
+          if (scrollY > 50) topNav.classList.add('scrolled');
+          else topNav.classList.remove('scrolled');
+
+          /* Page Nav Visibility & Active State */
+          const checkY = scrollY + window.innerHeight * 0.4;
+          let activeSec = null;
+          sections.forEach(sec => {
+            if (sec && sec.offsetTop <= checkY) activeSec = sec;
+          });
+          navItems.forEach(item => {
+            const target = document.getElementById(item.getAttribute('data-target'));
+            item.classList.toggle('active', target === activeSec);
+          });
+          if (pageNav) {
+            pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.6);
+          }
+
+          /* Timeline Spine Progress */
+          if (tlWrap && spineFill) {
+            const rect = tlWrap.getBoundingClientRect();
+            const totalH = tlWrap.offsetHeight;
+            if (totalH > 0) {
+              const pct = (window.innerHeight * 0.55 - rect.top) / totalH * 100;
+              spineFill.style.height = Math.max(0, Math.min(100, pct)) + '%';
+            }
+          }
+
+          /* Back to Top */
+          const b2t = document.getElementById('backToTop');
+          if (scrollY > 400) b2t.classList.add('is-visible');
+          else b2t.classList.remove('is-visible');
+
           ticking = false;
         });
         ticking = true;
       }
     }, { passive: true });
-    updateProgress(); updateSpine(); updatePageNav(); updateMobileTopBtn();
 
-    /* ── Lightbox ── */
-    function openLB(src, caption) {
-      var lb  = document.getElementById('lb');
-      var img = document.getElementById('lb-img');
-      var cap = document.getElementById('lb-caption');
-      img.src = src; img.alt = caption || '';
-      if (cap) cap.textContent = caption || '';
-      lb.classList.add('open');
-      document.body.style.overflow = 'hidden';
-      requestAnimationFrame(function() { requestAnimationFrame(function() { lb.classList.add('vis'); }); });
-    }
-    function closeLB() {
-      var lb = document.getElementById('lb');
-      lb.classList.remove('vis');
-      setTimeout(function() {
-        lb.classList.remove('open');
-        document.body.style.overflow = '';
-        document.getElementById('lb-img').src = '';
-      }, 360);
-    }
-    document.getElementById('lb').addEventListener('click', function(e) { if (e.target === this) closeLB(); });
-    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeLB(); });
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const target = document.getElementById(item.getAttribute('data-target'));
+        if (target) {
+          const offset = topNav?.offsetHeight || 0;
+          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+        }
+      });
+    });
+
+    /* ★ スマホとPCでスクロール先を動的に切り替える再設定 */
+    document.getElementById('backToTop').addEventListener('click', (e) => {
+      e.preventDefault();
+      if (window.innerWidth <= 768) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        const target = document.getElementById('gallery');
+        if (target) {
+          const offset = topNav?.offsetHeight || 80;
+          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+        }
+      }
+    });
+
+    /* ── Lightbox (Modal) ── */
+    const modal      = document.getElementById('imageModal');
+    const modalImg   = document.getElementById('modalImg');
+    const modalBg    = document.getElementById('modalBg');
+    const modalClose = document.getElementById('modalClose');
+    const titleJpEl  = document.getElementById('modalTitleJp');
+    const titleEnEl  = document.getElementById('modalTitleEn');
+
+    const openModal = (src, jp, en) => {
+      modalImg.src = src;
+      titleJpEl.textContent = jp || '';
+      titleEnEl.textContent = en || '';
+      modal.classList.add('is-active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('is-locked');
+    };
+
+    const closeModal = () => {
+      modal.classList.remove('is-active');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('is-locked');
+      setTimeout(() => { modalImg.src = ''; titleJpEl.textContent = ''; titleEnEl.textContent = ''; }, 560);
+    };
+
+    document.querySelectorAll('.js-modal-open').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const src = btn.getAttribute('data-img-src');
+        const block = btn.closest('.tl-entry');
+        let jp = '';
+        if (block) {
+          const jpTitleEl = block.querySelector('.tl-title');
+          jp = jpTitleEl ? jpTitleEl.textContent : '';
+        } else {
+          /* Gallery Grid items */
+          const galleryItem = btn.closest('.gallery-item');
+          if (galleryItem) {
+             const jpTitleEl = galleryItem.querySelector('.gallery-item-title');
+             jp = jpTitleEl ? jpTitleEl.textContent : '';
+          }
+        }
+        if (src) openModal(src, jp, '');
+      });
+    });
+
+    modalBg.addEventListener('click', closeModal);
+    modalClose.addEventListener('click', closeModal);
+    modalImg.addEventListener('click', closeModal);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('is-active')) closeModal(); });
+
   </script>
 </body>
 </html>
