@@ -82,24 +82,14 @@
       text-transform: uppercase; transition: opacity 0.4s ease;
     }
     .nav-logo-unified:hover { opacity: 0.5; }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a {
-      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
-      letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase; transition: color 0.3s ease;
-    }
-    .nav-links a:hover, .nav-links a.is-current { color: var(--accent); }
     .nav-cta {
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
       letter-spacing: 0.25em; text-transform: uppercase;
       border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem;
       color: var(--accent); transition: background 0.25s, color 0.25s;
+      flex-shrink: 0; white-space: nowrap; background: none; cursor: pointer;
     }
     .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
-    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
-    .nav-hamburger span {
-      display: block; width: 22px; height: 0.5px;
-      background: var(--accent); margin: 6px 0; transition: all 0.25s;
-    }
 
     .page-nav {
       position: fixed; right: clamp(20px, 4vw, 40px); top: 50%;
@@ -296,6 +286,72 @@
     }
 
     /* ============================================================
+       STUDIO GALLERY (irokoto.co.jp/recruit inspired editorial grid)
+    ============================================================ */
+    .studio-section {
+      padding: clamp(3rem, 7vh, 5rem) var(--px) clamp(7rem, 14vh, 10rem);
+      max-width: 1300px; margin: 0 auto;
+    }
+    .studio-intro {
+      max-width: 640px; margin: 0 auto clamp(3rem, 7vh, 5rem); text-align: center;
+    }
+    .studio-intro-text {
+      font-size: clamp(0.84rem, 1.7vw, 0.95rem); font-weight: 300; line-height: 2.2;
+      color: rgba(233,229,223,0.62); letter-spacing: 0.06em;
+    }
+    .studio-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: clamp(0.6rem, 1.4vw, 1.1rem);
+    }
+    .studio-cell {
+      position: relative; overflow: hidden; background: var(--bg2);
+      border: 0.5px solid var(--border); cursor: zoom-in;
+      opacity: 0; transform: translateY(28px);
+      transition: opacity 1s var(--ease), transform 1s var(--ease), border-color 0.4s ease;
+    }
+    .studio-cell.in-view { opacity: 1; transform: translateY(0); }
+    .studio-cell img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: grayscale(12%) brightness(0.92);
+      transition: transform 1.2s var(--ease), filter 0.6s ease;
+    }
+    .studio-cell:hover { border-color: rgba(196,168,130,0.35); }
+    .studio-cell:hover img { transform: scale(1.045); filter: grayscale(0%) brightness(1.0); }
+    .studio-cell-num {
+      position: absolute; top: 0.8rem; left: 1rem; z-index: 2;
+      font-family: var(--font-en); font-style: italic; font-weight: 300;
+      font-size: clamp(1.6rem, 3.2vw, 2.6rem); color: rgba(233,229,223,0.5);
+      -webkit-text-stroke: 0.5px rgba(233,229,223,0.7); color: transparent;
+      pointer-events: none; line-height: 1; user-select: none;
+    }
+    .studio-cell-cap {
+      position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+      padding: 0.9rem 1.1rem;
+      background: linear-gradient(to top, rgba(6,6,5,0.82), transparent);
+      font-family: var(--font-en); font-size: 0.6rem; letter-spacing: 0.14em;
+      color: var(--dim); text-transform: uppercase; pointer-events: none;
+    }
+    /* Asymmetric placement, editorial-style */
+    .studio-cell.c1 { grid-column: span 7; aspect-ratio: 4 / 5; }
+    .studio-cell.c2 { grid-column: span 5; aspect-ratio: 4 / 5; }
+    .studio-cell.c3 { grid-column: span 4; aspect-ratio: 3 / 4; }
+    .studio-cell.c4 { grid-column: span 4; aspect-ratio: 3 / 4; }
+    .studio-cell.c5 { grid-column: span 4; aspect-ratio: 3 / 4; }
+    .studio-cell.c6 { grid-column: span 5; aspect-ratio: 5 / 4; }
+    .studio-cell.c7 { grid-column: span 7; aspect-ratio: 16 / 9; }
+    .studio-cell.c8 { grid-column: span 6; aspect-ratio: 4 / 5; }
+    .studio-cell.c9 { grid-column: span 6; aspect-ratio: 4 / 5; }
+    @media (max-width: 768px) {
+      .studio-grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+      .studio-cell.c1, .studio-cell.c2, .studio-cell.c3, .studio-cell.c4,
+      .studio-cell.c5, .studio-cell.c6, .studio-cell.c7, .studio-cell.c8, .studio-cell.c9 {
+        grid-column: span 1; aspect-ratio: 3 / 4;
+      }
+      .studio-cell.c1, .studio-cell.c7 { grid-column: span 2; aspect-ratio: 16 / 11; }
+    }
+
+    /* ============================================================
        CAREER / EXHIBITIONS SECTION
     ============================================================ */
     .career-section {
@@ -431,10 +487,6 @@
     }
     @media (max-width: 768px) {
       nav#top-nav { padding: 1rem 1.25rem; }
-      .nav-links { display: none; }
-      .nav-hamburger { display: block; }
-      .nav-links.open { display: flex; flex-direction: row; flex-wrap: nowrap; position: fixed; inset: 0; background: rgba(10,10,9,0.98); align-items: center; justify-content: center; gap: 0.6rem; z-index: 300; padding: 1rem; overflow-x: auto; }
-      .nav-links.open li a { font-size: 0.9rem; padding: 0.6rem 0.5rem; white-space: nowrap; }
       .page-nav.visible { right: 8px; opacity: 0.5; }
       .page-nav.visible:hover { opacity: 1; }
       .page-nav-label { display: none; }
@@ -457,21 +509,15 @@
 
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
-    <ul class="nav-links" id="nav-links">
-      <li><a href="index.html#statement" onclick="closeMenu()">Statement</a></li>
-      <li><a href="index.html#works"     onclick="closeMenu()">Works</a></li>
-      <li><a href="profile.html" class="is-current" onclick="closeMenu()">Profile</a></li>
-      <li><a href="index.html#news"      onclick="closeMenu()">News</a></li>
-    </ul>
-    <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
-      <span></span><span></span><span></span>
-    </button>
-    <a href="index.html#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
+    <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
   </nav>
 
   <nav class="page-nav" id="pageNav" aria-label="ページ内ナビゲーション">
     <button class="page-nav-item" data-target="profile" aria-label="Profileへ">
       <div class="page-nav-dot"></div><span class="page-nav-label">Profile</span>
+    </button>
+    <button class="page-nav-item" data-target="studio" aria-label="Studioへ">
+      <div class="page-nav-dot"></div><span class="page-nav-label">Studio</span>
     </button>
     <button class="page-nav-item" data-target="career" aria-label="Careerへ">
       <div class="page-nav-dot"></div><span class="page-nav-label">Career</span>
@@ -547,6 +593,63 @@
       </div>
     </section>
 
+    <section class="studio-section" id="studio">
+      <div class="section-label">In the Studio</div>
+      <div class="studio-intro">
+        <p class="studio-intro-text">
+          巨大なキャンバスに向き合い、左美都の記憶を一筆ずつ重ねていく。<br>
+          制作の現場は、思考と身体が交差する〈洞窟〉そのものでもある。
+        </p>
+      </div>
+      <div class="studio-grid">
+        <figure class="studio-cell c1 js-modal-open" data-img-src="images/IMG_7819.JPG" data-cap-jp="制作風景" data-cap-en="In the studio">
+          <span class="studio-cell-num">01</span>
+          <img src="images/IMG_7819.JPG" alt="津田翔一 制作風景" loading="lazy">
+          <figcaption class="studio-cell-cap">Working on the canvas</figcaption>
+        </figure>
+        <figure class="studio-cell c2 js-modal-open" data-img-src="images/IMG_7836.JPG" data-cap-jp="制作風景" data-cap-en="In the studio">
+          <span class="studio-cell-num">02</span>
+          <img src="images/IMG_7836.JPG" alt="津田翔一 制作風景" loading="lazy">
+          <figcaption class="studio-cell-cap">Brush in hand</figcaption>
+        </figure>
+        <figure class="studio-cell c3 js-modal-open" data-img-src="images/IMG_7653.JPG" data-cap-jp="制作風景" data-cap-en="In the studio">
+          <span class="studio-cell-num">03</span>
+          <img src="images/IMG_7653.JPG" alt="津田翔一 制作風景" loading="lazy">
+          <figcaption class="studio-cell-cap">Detail of the gesture</figcaption>
+        </figure>
+        <figure class="studio-cell c4 js-modal-open" data-img-src="images/IMG_3151.JPG" data-cap-jp="制作風景" data-cap-en="In the studio">
+          <span class="studio-cell-num">04</span>
+          <img src="images/IMG_3151.JPG" alt="津田翔一 制作風景" loading="lazy">
+          <figcaption class="studio-cell-cap">A pause mid-stroke</figcaption>
+        </figure>
+        <figure class="studio-cell c5 js-modal-open" data-img-src="images/IMG_3157.JPG" data-cap-jp="制作風景" data-cap-en="In the studio">
+          <span class="studio-cell-num">05</span>
+          <img src="images/IMG_3157.JPG" alt="津田翔一 制作風景" loading="lazy">
+          <figcaption class="studio-cell-cap">Mixing color</figcaption>
+        </figure>
+        <figure class="studio-cell c6 js-modal-open" data-img-src="images/IMG_3153.JPG" data-cap-jp="制作風景" data-cap-en="In the studio">
+          <span class="studio-cell-num">06</span>
+          <img src="images/IMG_3153.JPG" alt="津田翔一 制作風景" loading="lazy">
+          <figcaption class="studio-cell-cap">Standing before the work</figcaption>
+        </figure>
+        <figure class="studio-cell c7 js-modal-open" data-img-src="images/IMG_7683.JPG" data-cap-jp="制作風景" data-cap-en="In the studio">
+          <span class="studio-cell-num">07</span>
+          <img src="images/IMG_7683.JPG" alt="津田翔一 制作風景" loading="lazy">
+          <figcaption class="studio-cell-cap">A large-scale work in progress</figcaption>
+        </figure>
+        <figure class="studio-cell c8 js-modal-open" data-img-src="images/_MG_3167.JPG" data-cap-jp="トークイベント" data-cap-en="Artist talk">
+          <span class="studio-cell-num">08</span>
+          <img src="images/_MG_3167.JPG" alt="津田翔一 トークイベント" loading="lazy">
+          <figcaption class="studio-cell-cap">Artist talk</figcaption>
+        </figure>
+        <figure class="studio-cell c9 js-modal-open" data-img-src="images/_MG_3171.JPG" data-cap-jp="トークイベント" data-cap-en="Artist talk">
+          <span class="studio-cell-num">09</span>
+          <img src="images/_MG_3171.JPG" alt="津田翔一 トークイベント" loading="lazy">
+          <figcaption class="studio-cell-cap">Behind the work</figcaption>
+        </figure>
+      </div>
+    </section>
+
     <section class="career-section" id="career">
       <div class="career-container">
         <div class="section-label">Career</div>
@@ -567,7 +670,7 @@
             <div class="career-row">
               <span class="career-year">2021</span>
               <div>
-                <span class="career-detail-title">「油彩画展 ～明るい洞窟～」</span>
+                <span class="career-detail-title">油彩画展 ～明るい洞窟～</span>
                 <span class="career-detail-venue">長野県立美術館（長野）</span>
               </div>
             </div>
@@ -583,53 +686,53 @@
             <div class="career-row">
               <span class="career-year">2025</span>
               <div>
-                <span class="career-detail-title">「ふうけいのまにまに」</span>
+                <span class="career-detail-title">ふうけいのまにまに</span>
                 <span class="career-detail-venue">信州高頭美術館（長野）</span>
               </div>
             </div>
             <div class="career-row">
               <span class="career-year">2024</span>
               <div>
-                <span class="career-detail-title">「長野県ゆかりのアーティストステージ」</span>
+                <span class="career-detail-title">長野県ゆかりのアーティストステージ</span>
                 <span class="career-detail-venue">キッセイ文化ホール（長野）</span>
               </div>
             </div>
             <div class="career-row">
               <span class="career-year">2023</span>
               <div>
-                <span class="career-detail-title">「若手作家公募個展トライアル・ギャラリー」</span>
+                <span class="career-detail-title">若手作家公募個展トライアル・ギャラリー</span>
                 <span class="career-detail-venue">長野県伊那文化会館（長野）</span>
               </div>
             </div>
             <div class="career-row">
               <span class="career-year">2022</span>
               <div>
-                <span class="career-detail-title">「市内作家によるアートグループ展」</span>
+                <span class="career-detail-title">市内作家によるアートグループ展</span>
                 <span class="career-detail-venue">長野市役所展示サロン（長野）</span>
               </div>
             </div>
             <div class="career-row">
               <span class="career-year">2021</span>
               <div>
-                <span class="career-detail-title">「シェル美術賞展」</span>
+                <span class="career-detail-title">シェル美術賞展</span>
               </div>
             </div>
             <div class="career-row">
               <span class="career-year">2021</span>
               <div>
-                <span class="career-detail-title">「第23回雪梁舎フィレンツェ賞展」</span>
+                <span class="career-detail-title">第23回雪梁舎フィレンツェ賞展</span>
               </div>
             </div>
             <div class="career-row">
               <span class="career-year">2015</span>
               <div>
-                <span class="career-detail-title">「群馬青年ビエンナーレ」</span>
+                <span class="career-detail-title">群馬青年ビエンナーレ</span>
               </div>
             </div>
             <div class="career-row">
               <span class="career-year">2014</span>
               <div>
-                <span class="career-detail-title">「トーキョーワンダーウォール」</span>
+                <span class="career-detail-title">トーキョーワンダーウォール</span>
               </div>
             </div>
           </div>
@@ -680,19 +783,14 @@
   </div>
 
   <script>
-    /* ── ナビゲーション & メニュー ── */
-    function toggleMenu() {
-      const links = document.getElementById('nav-links');
-      const cta = document.getElementById('nav-cta-btn');
-      links.classList.toggle('open');
-      if(cta) cta.style.display = links.classList.contains('open') ? 'none' : '';
-    }
-    function closeMenu() {
-      const links = document.getElementById('nav-links');
-      const cta = document.getElementById('nav-cta-btn');
-      links.classList.remove('open');
-      if(cta) cta.style.display = '';
-    }
+    /* ── Contact ボタン：同一ページ内スムーススクロール（ヘッダー分オフセット） ── */
+    document.getElementById('nav-cta-btn')?.addEventListener('click', (e) => {
+      const target = document.getElementById('contact');
+      if (!target) return;
+      e.preventDefault();
+      const offset = document.getElementById('top-nav')?.offsetHeight || 0;
+      window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset + 1, behavior: 'smooth' });
+    });
 
     /* ── ファーストビュー アニメーション ── */
     window.addEventListener('load', () => {
@@ -711,13 +809,13 @@
         io.unobserve(entry.target);
       });
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.profile-portrait, .profile-facts, .career-row').forEach(el => io.observe(el));
+    document.querySelectorAll('.profile-portrait, .profile-facts, .studio-cell, .career-row').forEach(el => io.observe(el));
 
     /* ── Scroll Interactions (Nav, Page-Nav, Back to Top) ── */
     const topNav = document.getElementById('top-nav');
     const pageNav = document.getElementById('pageNav');
     const navItems = document.querySelectorAll('.page-nav-item');
-    const sections = ['profile', 'career'].map(id => document.getElementById(id));
+    const sections = ['profile', 'studio', 'career'].map(id => document.getElementById(id));
 
     let ticking = false;
     window.addEventListener('scroll', () => {
