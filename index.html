@@ -608,7 +608,11 @@
       .news-popup { top: auto; left: auto;
         bottom: 1rem; right: 1rem; transform: translateY(16px) scale(0.96); width: calc(100% - 2rem); max-width: none; }
       .news-popup.show { transform: translateY(0) scale(1); }
-      .news-popup-content { padding: 2rem 2rem 1.8rem; border-radius: 10px; }
+      
+      /* ★ 改善：×ボタンが左上にくるため、上部のパディングを増やしてテキストとの被りを防止 */
+      .news-popup-content { padding: 3.5rem 2rem 1.8rem; border-radius: 10px; }
+      /* ★ 改善：×ボタンを左上に配置 */
+      .news-popup-close { right: auto; left: 0.8rem; top: 0.8rem; }
     }
 
     /* ════════════════════════════════════════
@@ -1302,7 +1306,7 @@ document.getElementById('modal-overlay').addEventListener('click', closeNewsPopu
   if (!hasSeenPopup) {
     // まだ見ていない場合、ページ読み込み後に最優先で表示
     window.addEventListener('load', function() {
-      // 画面描画直後にフワッと出すために少しだけ遅延させる（400ms）
+      // ★ 修正：画面描画直後にすぐ出すために遅延を短縮（400ms -> 50ms）
       setTimeout(function () {
         var popup   = document.getElementById('news-popup');
         var overlay = document.getElementById('modal-overlay');
@@ -1315,7 +1319,7 @@ document.getElementById('modal-overlay').addEventListener('click', closeNewsPopu
           // 表示したことをブラウザに記憶させる
           sessionStorage.setItem('newsPopupShown', 'true');
         }
-      }, 400);
+      }, 50); 
     });
   }
 })();
