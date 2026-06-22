@@ -176,6 +176,55 @@
     .hero-scroll-line { width: 36px; height: 0.5px; background: rgba(232,228,219,0.25); }
 
     /* ════════════════════════════════════════
+       HERO NOTICE BOX (ファーストビューのお知らせ)
+    ════════════════════════════════════════ */
+    .hero-notice-box {
+      align-self: flex-start;
+      margin-top: 3rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1rem 1.8rem;
+      background: rgba(255,255,255,0.015);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 0.5px solid rgba(232,228,219,0.08);
+      border-radius: 4px;
+      text-decoration: none;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 2.0s forwards;
+      transition: transform 0.6s var(--ease-expo), background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+      max-width: 100%;
+    }
+    .hero-notice-box:hover {
+      transform: translateY(-4px);
+      background: rgba(255,255,255,0.035);
+      border-color: rgba(203,191,176,0.25);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+    }
+    .hero-notice-en {
+      font-family: var(--en);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .hero-notice-text {
+      font-family: var(--jp);
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: rgba(232,228,219,0.75);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: color 0.4s ease;
+    }
+    .hero-notice-box:hover .hero-notice-text {
+      color: var(--fg);
+    }
+
+    /* ════════════════════════════════════════
        SECTION BASE
     ════════════════════════════════════════ */
     .section { padding: 8rem 2.5rem; border-bottom: 0.5px solid var(--border); }
@@ -230,7 +279,7 @@
     #top-of-concept { scroll-margin-top: 120px; }
 
     /* ════════════════════════════════════════
-       ★オープニングステージ（明度固定・タイピング対応版）
+       オープニングステージ
     ════════════════════════════════════════ */
     .opening-stage {
       position: relative;
@@ -435,7 +484,7 @@
     .tl-img-link:hover .tl-img-wrap { border-color: rgba(203,191,176,0.3); box-shadow: 0 12px 48px rgba(0,0,0,0.7); }
     .tl-img-wrap img { width: 100%; height: auto; display: block; transition: transform 1.4s var(--ease-expo); }
     .tl-img-link:hover .tl-img-wrap img { transform: scale(1.03); }
-    /* ★ バッジのクラス名を tl-img-year-badge から tl-img-page-badge に変更しました */
+    
     .tl-img-page-badge { position: absolute; top: 0;
       left: 0; padding: 12px 16px; font-family: var(--en); font-size: 12px; letter-spacing: 0.22em; color: rgba(232,228,219,0.75); background: linear-gradient(135deg, rgba(8,8,8,0.85), transparent); opacity: 0;
       transition: opacity 0.4s ease; pointer-events: none; }
@@ -531,18 +580,38 @@
       border-bottom: 0.5px solid var(--border-mid); padding-bottom: 2px; transition: color 0.2s; text-transform: uppercase; }
     .goal-link:hover { color: var(--accent); }
 
-    .news-list { margin-top: 3rem; list-style: none; }
-    .news-item { display: flex; gap: 3rem;
-      padding: 1.8rem 0; border-bottom: 0.5px solid var(--border); align-items: flex-start; }
-    .news-date { font-family: var(--en); font-size: 12px;
-      color: var(--muted-col); letter-spacing: 0.1em; min-width: 90px; padding-top: 0.15rem; white-space: nowrap; }
-    .news-body { font-size: 15px; color: rgba(232,228,219,0.85);
-      line-height: 1.8; }
-    .news-tag { display: inline-block; font-family: var(--en); font-size: 10px; letter-spacing: 0.18em; border: 0.5px solid rgba(184,168,152,0.3);
-      padding: 3px 10px; margin-bottom: 0.6rem; color: var(--muted-col); text-transform: uppercase; vertical-align: top; }
-    .news-body a { color: rgba(232,228,219,0.8);
-      transition: color 0.2s; }
-    .news-body a:hover { color: var(--accent); }
+    .news-list { margin-top: 3rem; list-style: none; border-top: 0.5px solid var(--border); }
+    .news-item { border-bottom: 0.5px solid var(--border); transition: background 0.4s ease; }
+    .news-item.has-link:hover { background: rgba(255,255,255,0.02); }
+
+    .news-item-inner, .news-item-link { 
+      display: flex; gap: 3rem; padding: 1.8rem 1rem; align-items: flex-start; text-decoration: none; color: inherit; width: 100%; box-sizing: border-box; position: relative;
+    }
+    
+    .news-item-link::after {
+      content: '→';
+      position: absolute;
+      right: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--en);
+      font-size: 1.2rem;
+      color: var(--accent);
+      opacity: 0;
+      transition: all 0.4s var(--ease-expo);
+    }
+    .news-item.has-link:hover .news-item-link::after {
+      opacity: 1;
+      transform: translate(6px, -50%);
+    }
+
+    .news-date { font-family: var(--en); font-size: 12px; color: var(--muted-col); letter-spacing: 0.1em; min-width: 90px; padding-top: 0.15rem; white-space: nowrap; transition: color 0.3s; }
+    .news-body { font-size: 15px; color: rgba(232,228,219,0.85); line-height: 1.8; transition: color 0.3s; padding-right: 2rem; }
+    .news-tag { display: inline-block; font-family: var(--en); font-size: 10px; letter-spacing: 0.18em; border: 0.5px solid rgba(184,168,152,0.3); padding: 3px 10px; margin-bottom: 0.6rem; color: var(--muted-col); text-transform: uppercase; vertical-align: top; transition: all 0.3s; }
+
+    .news-item.has-link:hover .news-date { color: var(--accent); }
+    .news-item.has-link:hover .news-tag { border-color: var(--accent); color: var(--accent); }
+    .news-item.has-link:hover .news-body { color: var(--fg); }
 
     .contact-section { padding: 9rem 2.5rem; text-align: center; border-bottom: 0.5px solid var(--border); }
     .contact-section .section-label { justify-content: center; }
@@ -561,54 +630,7 @@
     .footer-copy { font-family: var(--en); font-size: 11px; color: rgba(232,228,219,0.32); letter-spacing: 0.14em; }
 
     /* ════════════════════════════════════════
-       NEWS POPUP
-    ════════════════════════════════════════ */
-    .modal-overlay {
-      position: fixed;
-      inset: 0; z-index: 998; background: rgba(8, 8, 7, 0.62);
-      backdrop-filter: blur(6px) saturate(0.8); -webkit-backdrop-filter: blur(6px) saturate(0.8);
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.55s var(--ease-expo); }
-    .modal-overlay.active { opacity: 1; pointer-events: auto; }
-
-    .news-popup {
-      position: fixed; top: 50%; left: 50%;
-      transform: translate(-50%, -44%) scale(0.94);
-      width: min(560px, calc(100vw - 3rem)); z-index: 999; opacity: 0; pointer-events: none;
-      transition: opacity 0.55s var(--ease-expo), transform 0.55s var(--ease-expo); }
-    .news-popup.show { opacity: 1; transform: translate(-50%, -50%) scale(1);
-      pointer-events: auto; }
-    .news-popup-content {
-      background: rgba(13,13,11,0.92); backdrop-filter: blur(24px) saturate(1.15);
-      -webkit-backdrop-filter: blur(24px) saturate(1.15);
-      border: 0.5px solid rgba(203,191,176,0.35); border-radius: 14px; padding: 3rem 3.2rem 2.6rem; position: relative;
-      box-shadow: 0 32px 80px rgba(0,0,0,0.85), 0 0 0 0.5px rgba(203,191,176,0.12);
-    }
-    .news-popup-close {
-      position: absolute; top: 1.1rem; right: 1.3rem; background: none;
-      border: none; color: var(--muted-col);
-      font-size: 1.3rem; cursor: pointer; transition: color 0.3s; width: 44px; height: 44px;
-      display: flex; align-items: center;
-      justify-content: center; border-radius: 50%; }
-    .news-popup-close:hover { color: var(--accent); background: rgba(255,255,255,0.04); }
-    .news-popup-label { font-family: var(--en); font-size: 11px; letter-spacing: 0.28em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.8rem; }
-    .news-popup-date { font-family: var(--en); font-size: 14px; color: var(--text); margin-bottom: 1rem; letter-spacing: 0.08em; }
-    .news-popup-text { font-size: 15px; color: var(--text-muted); line-height: 1.85; margin-bottom: 2rem; }
-    .news-popup-link { font-family: var(--jp); font-size: 13px; color: var(--accent); text-decoration: none; border-bottom: 0.5px solid rgba(203,191,176,0.4); padding-bottom: 2px;
-      transition: all 0.3s; }
-    .news-popup-link:hover { color: var(--fg); border-color: var(--fg); }
-
-    @media (max-width: 768px) {
-      .news-popup { top: auto; left: auto;
-        bottom: 1rem; right: 1rem; transform: translateY(16px) scale(0.96); width: calc(100% - 2rem); max-width: none; }
-      .news-popup.show { transform: translateY(0) scale(1); }
-      
-      .news-popup-content { padding: 3.5rem 2rem 1.8rem; border-radius: 10px; }
-      .news-popup-close { right: auto; left: 0.8rem; top: 0.8rem; }
-    }
-
-    /* ════════════════════════════════════════
-       タイピングアニメーション 完全刷新 (JS連携)
+       タイピングアニメーション
     ════════════════════════════════════════ */
     .tw-wrap { transition: opacity 1.2s ease; }
     .tw-wrap.tw-done { opacity: 0.92; }
@@ -652,6 +674,20 @@
         align-items: center; justify-content: center; gap: 0.6rem; z-index: 300; padding: 1rem; overflow-x: auto; }
       .nav-links.open a { font-size: 0.9rem; padding: 0.6rem 0.5rem; display: block; white-space: nowrap; }
       .hero { padding: 5rem 1.5rem 4rem; min-height: 70vh; }
+      
+      .hero-notice-box {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.6rem;
+        padding: 1.2rem 1.5rem;
+        margin-top: 2.5rem;
+        width: 100%;
+      }
+      .hero-notice-text {
+        white-space: normal;
+        line-height: 1.8;
+      }
+
       .section { padding: 5rem 1.5rem; }
       #statement { padding: 7rem 1.5rem; }
       .statement-bg-word { font-size: 40vw; }
@@ -706,7 +742,12 @@
       .goals-column { flex-direction: column; }
       .goal-card { border-left: none; padding: 1.5rem 0; border-bottom: 0.5px solid var(--border); }
       .goal-card:last-child { border-bottom: none; }
-      .news-item { flex-direction: column; gap: 0.8rem; padding: 1.5rem 0; }
+      
+      .news-item-inner, .news-item-link { flex-direction: column; gap: 0.8rem; padding: 1.5rem 0.5rem; }
+      .news-item-link::after { top: 1.5rem; right: 0.5rem; transform: none; }
+      .news-item.has-link:hover .news-item-link::after { transform: translateX(4px); }
+      .news-body { padding-right: 1rem; }
+
       .contact-section { padding: 6rem 1.5rem; }
       .contact-btn { padding: 1.2rem 2.4rem; font-size: 0.8rem; width: 100%; max-width: 340px; justify-content: center; }
       footer { padding: 2.5rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
@@ -729,8 +770,6 @@
   </style>
 </head>
 <body>
-
-<div id="modal-overlay" class="modal-overlay" aria-hidden="true"></div>
 
 <div class="works-video-bg" id="works-video-bg" aria-hidden="true">
   <video autoplay loop muted playsinline>
@@ -775,7 +814,14 @@
     油彩を起点に、映像・立体・インスタレーションへと展開する多層的な制作。<br>
     土地の記憶から、存在の根源を問い続ける。
   </p>
+  
   <div class="hero-scroll"><span class="hero-scroll-line"></span>Scroll</div>
+
+  <a href="#news" class="hero-notice-box" aria-label="お知らせへスクロール">
+    <span class="hero-notice-en">Latest News — 2026.06.17</span>
+    <span class="hero-notice-text">新しいホームページを制作中です。意見・感想をお待ちしています。</span>
+  </a>
+
 </section>
 
 <section id="statement">
@@ -913,26 +959,37 @@
 <section class="section" id="news">
   <p class="section-label">News</p>
   <h2 class="section-heading">お知らせ</h2>
+  
   <ul class="news-list">
     <li class="news-item">
-      <span class="news-date">2026.06.17</span>
-      <div class="news-body"><span class="news-tag">Media</span><br>新しいホームページを制作中です。意見・感想をお待ちしています。お気軽にお問い合わせください。</div>
+      <div class="news-item-inner">
+        <span class="news-date">2026.06.17</span>
+        <div class="news-body"><span class="news-tag">Media</span><br>新しいホームページを制作中です。意見・感想をお待ちしています。お気軽にお問い合わせください。</div>
+      </div>
     </li>
     <li class="news-item">
-      <span class="news-date">2026.02.10</span>
-      <div class="news-body"><span class="news-tag">Exhibition</span><br>ホクト文化ホール 1 階ギャラリーにて、グループ展「next × N-ART 展」を開催いたしました。</div>
+      <div class="news-item-inner">
+        <span class="news-date">2026.02.10</span>
+        <div class="news-body"><span class="news-tag">Exhibition</span><br>ホクト文化ホール 1 階ギャラリーにて、グループ展「next × N-ART 展」を開催いたしました。</div>
+      </div>
     </li>
     <li class="news-item">
-      <span class="news-date">2025.06.29</span>
-      <div class="news-body"><span class="news-tag">Exhibition</span><br>信州高遠美術館にてグループ展「ふうけいのまにまに」を開催いたしました。</div>
+      <div class="news-item-inner">
+        <span class="news-date">2025.06.29</span>
+        <div class="news-body"><span class="news-tag">Exhibition</span><br>信州高遠美術館にてグループ展「ふうけいのまにまに」を開催いたしました。</div>
+      </div>
+    </li>
+    <li class="news-item has-link">
+      <a href="https://note.com/art_walk_repo/n/n78e9b9f3804a" target="_blank" class="news-item-link">
+        <span class="news-date">2024.06.13</span>
+        <div class="news-body"><span class="news-tag">Media</span><br>インタビュー記事が掲載されています。</div>
+      </a>
     </li>
     <li class="news-item">
-      <span class="news-date">2024.06.13</span>
-      <div class="news-body"><span class="news-tag">Media</span><br><a href="https://note.com/art_walk_repo/n/n78e9b9f3804a" target="_blank">インタビュー記事</a>が掲載されています。</div>
-    </li>
-    <li class="news-item">
-      <span class="news-date">2024.02.04</span>
-      <div class="news-body"><span class="news-tag">Event</span><br>長野県松本市・キッセイ文化ホールにて２月４日（日）のイベントに出演しました。</div>
+      <div class="news-item-inner">
+        <span class="news-date">2024.02.04</span>
+        <div class="news-body"><span class="news-tag">Event</span><br>長野県松本市・キッセイ文化ホールにて２月４日（日）のイベントに出演しました。</div>
+      </div>
     </li>
   </ul>
 </section>
@@ -958,27 +1015,10 @@
   <span class="back-to-top-text">TOP</span>
 </a>
 
-<div id="news-popup" class="news-popup" aria-hidden="true">
-  <div class="news-popup-content">
-    <button class="news-popup-close" aria-label="閉じる" onclick="closeNewsPopup()">✕</button>
-    <p class="news-popup-label">Latest News</p>
-    <p class="news-popup-date">2026.06.17</p>
-    <p class="news-popup-text">新しいホームページを制作中です。意見・感想をお待ちしています。お気軽にお問い合わせください。</p>
-    <a href="#news" class="news-popup-link" onclick="closeNewsPopup()">詳細を見る →</a>
-  </div>
-</div>
-
 <script>
 /* ════════════════════════════════════════════════════════
    WORKS DATA
 ════════════════════════════════════════════════════════ */
-
-// ★ ページを追加・変更する際の具体的な方法：
-// 1. 新しいページ（例: 'new-page.html'）へのリンクにしたい場合、
-//    [ link: 'new-page.html' ] に変更します。
-// 2. 画像左上に表示されるタイトルを変えたい場合、
-//    新しく追加した [ pageTitle: '表示したいタイトル' ] を変更します。
-
 var WORKS_DATA = [
   {
     year: 2025, series: 'Cave Series', titleJa: '森 20251217', titleEn: 'Forest',
@@ -1053,7 +1093,7 @@ var WORKS_DATA = [
   {
     year: 2015, series: 'Cave Series', titleJa: 'Acid Attack Victim [ソナリ・ムカジー]', titleEn: 'Acid Attack Victim (Sonali Mukherjee)',
     spec: '130.3 × 162 cm ／ 油彩・キャンバス', imgSrc: 'images/【F100横】Acid Attack Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg', imgWidth: 720,
-    link: 'work-refugees.html', pageTitle: 'Refugees', // ★ リンクとタイトルを変更
+    link: 'work-refugees.html', pageTitle: 'Refugees',
     desc: 'インドで酸攻撃という卑劣な暴力に直面した女性の姿を、F100という巨大なキャンバスに克明に描き出しています。彼女を包む青いヒジャブは、傷を隠すためではなく、<em>彼女の失われない尊厳と美しさ</em>を強調しているかのようです。',
     tags: ['酸攻撃被害者(AAV)', '証言']
   },
@@ -1278,48 +1318,6 @@ document.querySelectorAll('.goal-card, .news-item').forEach(function (el) {
   el.style.transition = 'opacity 0.65s ease, transform 0.65s ease';
   fadeObs.observe(el);
 });
-
-/* ════════════════════════════════════════════════════════
-   ポップアップ + オーバーレイ制御（★修正・改善ポイント）
-════════════════════════════════════════════════════════ */
-function closeNewsPopup() {
-  var popup   = document.getElementById('news-popup');
-  var overlay = document.getElementById('modal-overlay');
-  popup.classList.remove('show');
-  popup.setAttribute('aria-hidden', 'true');
-  overlay.classList.remove('active');
-  document.body.classList.remove('no-scroll');
-  window.dispatchEvent(new Event('app:newsPopupClosed'));
-}
-
-document.getElementById('modal-overlay').addEventListener('click', closeNewsPopup);
-
-// ★ 改善・修正部分：最優先表示 ＆ 再訪問時の非表示制御
-(function () {
-  // sessionStorageを使って、同じタブ内での再訪問時はポップアップを出さない
-  var hasSeenPopup = sessionStorage.getItem('newsPopupShown');
-
-  if (!hasSeenPopup) {
-    // ★ 修正：loadイベント(画像の読み込み待ち)ではなく、DOMContentLoaded(HTML解析直後)に発火させることでスマホ表示を高速化。
-    document.addEventListener('DOMContentLoaded', function() {
-      // ★ 修正：遅延もゼロに設定し、描画可能になった瞬間に表示させる
-      setTimeout(function () {
-        var popup   = document.getElementById('news-popup');
-        var overlay = document.getElementById('modal-overlay');
-        if(popup && overlay) {
-          popup.classList.add('show');
-          popup.setAttribute('aria-hidden', 'false');
-          overlay.classList.add('active');
-          document.body.classList.add('no-scroll');
-          
-          // 表示したことをブラウザに記憶させる
-          sessionStorage.setItem('newsPopupShown', 'true');
-        }
-      }, 0); 
-    });
-  }
-})();
-
 
 /* ════════════════════════════════════════════════════════
    タイピングアニメーション 完全版エンジン（DOM解析型）
