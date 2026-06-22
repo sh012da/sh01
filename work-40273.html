@@ -8,13 +8,13 @@
   gtag('js', new Date());
   gtag('config', 'G-5RF8JPF5D8');
 </script>
-  <link rel="icon" type="image/jpeg" href="images/【FSM横】IMG_7730.jpg">
+  <link rel="icon" type="image/jpeg" href="images/【play_with_shadow】.jpg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>40273 | Tsuda Shoichi</title>
   <meta name="description" content="津田翔一 作品シリーズ「40273」— 日常の風景や記憶の断片を、輪郭線と空白によって抽出・再構築したシリーズ。">
   <meta property="og:title" content="40273 | Tsuda Shoichi">
   <meta property="og:image" content="images/【play_with_shadow】.jpg">
-  <title>40273 | Tsuda Shoichi</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,38 +22,46 @@
 
   <style>
     /* ════════════════════════════════════════
-       DESIGN TOKENS
+       DESIGN TOKENS & BASE
     ════════════════════════════════════════ */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
       --bg:          #080808;
+      --bg2:         #0c0c0b;
       --fg:          #ede9e4;
       --text:        #e8e4db;
       --text-muted:  rgba(232,228,219,0.55);
       --text-dim:    rgba(232,228,219,0.35);
       --border:      rgba(232,228,219,0.12);
-      --border-mid:  rgba(232,228,219,0.25);
+      --border-md:   rgba(232,228,219,0.25);
       --accent:      #cbbfb0;
-      --accent-dim:  rgba(203,191,176,0.35);
+      --accent2:     #7c9aa0;
       --muted-col:   #7a746e;
-      --en: 'Cormorant Garamond', serif;
-      --jp: 'Noto Serif JP', serif;
+      --font-en:     'Cormorant Garamond', serif;
+      --font-ja:     'Noto Serif JP', serif;
       --ease-expo:   cubic-bezier(0.16, 1, 0.3, 1);
-      --ease-img:    cubic-bezier(0.165, 0.84, 0.44, 1);
+      --ease:        cubic-bezier(0.16, 1, 0.3, 1);
       --px:          clamp(20px, 5vw, 64px);
+      --grid-base-h: 320px;
     }
 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
 
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: var(--jp);
-      line-height: 1.7;
+      font-family: var(--font-ja);
+      line-height: 2.1;
+      letter-spacing: 0.06em;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
     }
+    body.is-locked { overflow: hidden; }
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
+    a:hover { opacity: 0.45; }
 
     /* ─── VIDEO BG ─── */
     .works-video-bg {
@@ -71,449 +79,227 @@
     }
 
     /* ════════════════════════════════════════
-       NAV
+       NAVIGATION
     ════════════════════════════════════════ */
-    nav {
-      position: sticky; top: 0; z-index: 200;
+    nav#top-nav {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 300;
       display: flex; align-items: center; justify-content: space-between;
-      padding: clamp(14px,3vw,36px) var(--px);
-      border-bottom: 0.5px solid var(--border);
-      background: rgba(13,13,11,0.94);
-      backdrop-filter: blur(8px);
+      padding: clamp(14px, 3vw, 36px) var(--px);
+      background: transparent;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 0.5px solid transparent;
+      transition: background 0.4s ease, border-color 0.4s ease;
     }
-    .nav-logo {
-      font-family: var(--en);
-      font-size: clamp(0.7rem,2.5vw,0.9rem);
-      letter-spacing: 0.3em; font-weight: 300;
-      color: var(--accent); text-decoration: none;
+    nav#top-nav.scrolled {
+      background: rgba(13,13,11,0.94);
+      border-color: var(--border);
+    }
+    .nav-logo-unified {
+      font-family: var(--font-en); font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+      letter-spacing: 0.3em; font-weight: 300; color: var(--accent);
       text-transform: uppercase; transition: opacity 0.4s ease;
     }
-    .nav-logo:hover { opacity: 0.5; }
+    .nav-logo-unified:hover { opacity: 0.5; }
     .nav-links { display: flex; gap: 2rem; list-style: none; }
     .nav-links a {
-      font-family: var(--en);
-      font-size: clamp(0.55rem,1.5vw,0.72rem);
-      letter-spacing: 0.25em; color: var(--muted-col);
-      text-decoration: none; text-transform: uppercase;
-      transition: color 0.3s ease;
+      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
+      letter-spacing: 0.25em; color: var(--muted-col); text-transform: uppercase; transition: color 0.3s ease;
     }
     .nav-links a:hover { color: var(--accent); }
     .nav-cta {
-      font-family: var(--en);
-      font-size: clamp(0.55rem,1.5vw,0.65rem);
+      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
       letter-spacing: 0.25em; text-transform: uppercase;
-      border: 0.5px solid rgba(184,168,152,0.4);
-      padding: 0.55rem 1.4rem; color: var(--accent);
-      text-decoration: none; transition: background 0.25s, color 0.25s;
+      border: 0.5px solid rgba(203,191,176,0.35); padding: 0.55rem 1.4rem;
+      color: var(--accent); transition: background 0.25s, color 0.25s;
     }
-    .nav-cta:hover { background: rgba(184,168,152,0.08); color: var(--fg); }
+    .nav-cta:hover { background: rgba(203,191,176,0.08); color: var(--fg); }
     
-    /* PCでもスマホでも非表示に */
-    .nav-hamburger {
-      display: none;
+    /* ハンバーガーメニューは完全に非表示 */
+    .nav-hamburger { display: none !important; }
+
+    /* PAGE NAV (Right dots) */
+    .page-nav {
+      position: fixed; right: clamp(20px, 4vw, 40px); top: 50%;
+      transform: translateY(-50%); z-index: 200;
+      display: flex; flex-direction: column; gap: 24px;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.6s var(--ease), visibility 0.6s;
     }
+    .page-nav.visible { opacity: 1; visibility: visible; }
+    .page-nav-item {
+      display: flex; align-items: center; gap: 12px; flex-direction: row-reverse;
+      cursor: pointer; background: none; border: none; padding: 8px 0;
+    }
+    .page-nav-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(232,228,219,0.3); transition: all 0.35s; flex-shrink: 0; }
+    .page-nav-label { font-family: var(--font-en); font-size: 12px; letter-spacing: 0.15em; color: rgba(232,228,219,0.3); text-transform: uppercase; transition: color 0.35s; white-space: nowrap; }
+    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot { background: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px rgba(203,191,176,0.6); }
+    .page-nav-item:hover .page-nav-label { color: rgba(232,228,219,0.85); }
+    .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ════════════════════════════════════════
-       SERIES HERO
+       HERO
     ════════════════════════════════════════ */
     .series-hero {
-      position: relative; overflow: hidden;
-      min-height: 90vh; min-height: 90svh;
-      display: flex; flex-direction: column;
-      justify-content: flex-end;
+      position: relative; overflow: hidden; height: 100svh; min-height: 580px;
+      display: flex; flex-direction: column; justify-content: flex-end;
       padding: clamp(80px,12vh,140px) var(--px) clamp(52px,9vh,100px);
     }
-
-    /* 背景にゴーストテキスト */
     .series-hero-ghost {
       position: absolute; inset: 0; z-index: 0;
-      display: flex; align-items: center; justify-content: flex-end;
-      padding-right: var(--px);
-      pointer-events: none; user-select: none;
-      font-family: var(--en);
-      font-size: clamp(7rem,22vw,24rem);
-      font-weight: 300; letter-spacing: 0.05em;
-      color: transparent;
-      -webkit-text-stroke: 1px rgba(255,255,255,0.035);
-      white-space: nowrap; line-height: 1;
-      opacity: 0; transform: translateY(12px);
-      animation: ghostRise 2.2s var(--ease-expo) 1.2s forwards;
+      display: flex; align-items: center; justify-content: flex-end; padding-right: var(--px);
+      pointer-events: none; user-select: none; font-family: var(--font-en);
+      font-size: clamp(7rem,22vw,24rem); font-weight: 300; letter-spacing: 0.05em; color: transparent;
+      -webkit-text-stroke: 1px rgba(255,255,255,0.035); white-space: nowrap; line-height: 1;
+      opacity: 0; transform: translateY(12px); animation: ghostRise 2.2s var(--ease-expo) 1.2s forwards;
     }
-
     .series-hero-inner { position: relative; z-index: 1; max-width: 900px; }
-
     .series-eyebrow {
-      font-family: var(--en);
-      font-size: clamp(0.55rem,1.6vw,0.68rem);
-      letter-spacing: 0.42em; color: var(--muted-col);
-      text-transform: uppercase; margin-bottom: clamp(14px,3vh,36px);
-      overflow: hidden;
+      font-family: var(--font-en); font-size: clamp(0.55rem,1.6vw,0.68rem);
+      letter-spacing: 0.42em; color: var(--muted-col); text-transform: uppercase; margin-bottom: clamp(14px,3vh,36px); overflow: hidden;
     }
-    .series-eyebrow span {
-      display: inline-block; opacity: 0; transform: translateY(100%);
-      animation: clipUp 0.9s var(--ease-expo) 0.4s forwards;
-    }
-
+    .series-eyebrow span { display: inline-block; opacity: 0; transform: translateY(100%); animation: clipUp 0.9s var(--ease-expo) 0.4s forwards; }
     .series-title-en {
-      font-family: var(--en);
-      font-size: clamp(4rem,12vw,11rem);
-      font-weight: 300; letter-spacing: 0.08em; line-height: 0.9;
-      color: var(--fg); overflow: hidden;
+      font-family: var(--font-en); font-size: clamp(4rem,12vw,11rem);
+      font-weight: 300; letter-spacing: 0.08em; line-height: 0.9; color: var(--fg); overflow: hidden;
     }
-    .series-title-en span {
-      display: block; opacity: 0; transform: translateY(0.65em) skewY(2.5deg);
-      animation: charReveal 1s var(--ease-expo) 0.6s forwards;
-    }
+    .series-title-en span { display: block; opacity: 0; transform: translateY(0.65em) skewY(2.5deg); animation: charReveal 1s var(--ease-expo) 0.6s forwards; }
     .series-title-jp {
-      font-family: var(--jp); font-weight: 200;
-      font-size: clamp(1rem,3vw,2rem);
-      letter-spacing: 0.22em; color: rgba(237,233,228,0.45);
-      margin-top: 0.6em; overflow: hidden;
+      font-family: var(--font-ja); font-weight: 200; font-size: clamp(1rem,3vw,2rem);
+      letter-spacing: 0.22em; color: rgba(237,233,228,0.45); margin-top: 0.6em; overflow: hidden;
     }
-    .series-title-jp span {
-      display: block; opacity: 0; transform: translateY(0.5em);
-      animation: charReveal 0.9s var(--ease-expo) 0.85s forwards;
-    }
-
+    .series-title-jp span { display: block; opacity: 0; transform: translateY(0.5em); animation: charReveal 0.9s var(--ease-expo) 0.85s forwards; }
     .series-sub {
-      margin-top: clamp(18px,3.5vh,52px);
-      font-family: var(--jp); font-weight: 200;
-      font-size: clamp(0.78rem,2vw,1rem);
-      letter-spacing: 0.2em; color: var(--muted-col);
-      overflow: hidden;
+      margin-top: clamp(18px,3.5vh,52px); font-family: var(--font-ja); font-weight: 200;
+      font-size: clamp(0.78rem,2vw,1rem); letter-spacing: 0.2em; color: var(--muted-col); overflow: hidden;
     }
-    .series-sub span {
-      display: inline-block; opacity: 0; transform: translateY(100%);
-      animation: clipUp 1s var(--ease-expo) 1.1s forwards;
-    }
-
+    .series-sub span { display: inline-block; opacity: 0; transform: translateY(100%); animation: clipUp 1s var(--ease-expo) 1.1s forwards; }
     .series-rule {
-      margin-top: clamp(14px,2.5vh,32px);
-      width: 0; height: 1px; background: rgba(255,255,255,0.14);
+      margin-top: clamp(14px,2.5vh,32px); width: 0; height: 1px; background: rgba(255,255,255,0.14);
       animation: drawLine 1.2s var(--ease-expo) 1.5s forwards;
     }
-
     .scroll-cue {
       position: absolute; bottom: clamp(24px,5vh,60px); right: var(--px);
-      display: flex; flex-direction: column; align-items: center; gap: 10px;
-      opacity: 0; animation: fadeOnly 1s ease 2.2s forwards;
+      display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: 0; animation: fadeOnly 1s ease 2.2s forwards;
     }
     .scroll-cue-line {
-      width: 1px; height: 52px;
-      background: linear-gradient(to bottom, var(--muted-col), transparent);
-      animation: pulseBar 2.5s ease-in-out 2.5s infinite;
+      width: 1px; height: 52px; background: linear-gradient(to bottom, var(--muted-col), transparent); animation: pulseBar 2.5s ease-in-out 2.5s infinite;
     }
-    .scroll-cue span {
-      font-family: var(--en); font-size: 0.54rem;
-      letter-spacing: 0.38em; color: var(--muted-col);
-      text-transform: uppercase; writing-mode: vertical-rl;
-    }
+    .scroll-cue span { font-family: var(--font-en); font-size: 0.54rem; letter-spacing: 0.38em; color: var(--muted-col); text-transform: uppercase; writing-mode: vertical-rl; }
 
     /* ════════════════════════════════════════
-       CONCEPT
+       CONCEPT SECTION
     ════════════════════════════════════════ */
     .concept-section {
-      display: grid; grid-template-columns: clamp(80px,14vw,180px) 1fr;
-      gap: clamp(2rem,4vw,6rem);
-      padding: clamp(60px,10vh,120px) var(--px);
-      border-top: 0.5px solid var(--border);
-      align-items: start;
+      display: grid; grid-template-columns: clamp(80px,14vw,180px) 1fr; gap: clamp(2rem,4vw,6rem);
+      padding: clamp(60px,10vh,120px) var(--px); border-top: 0.5px solid var(--border); align-items: start;
     }
-    .concept-sidebar {
-      display: flex; flex-direction: column; gap: 1.2rem;
-      padding-top: 0.3rem;
-    }
-    .concept-sidebar-label {
-      font-family: var(--en); font-size: clamp(0.55rem,1.3vw,0.66rem);
-      letter-spacing: 0.38em; color: var(--muted-col);
-      text-transform: uppercase; line-height: 1;
-    }
-    .concept-sidebar-num {
-      font-family: var(--en); font-size: clamp(2.5rem,6vw,5rem);
-      font-weight: 300; line-height: 1;
-      color: rgba(255,255,255,0.04); letter-spacing: -0.02em;
-    }
-    .concept-main {}
-    .concept-credit {
-      font-family: var(--en); font-size: 0.62rem; letter-spacing: 0.22em;
-      color: rgba(237,233,228,0.26); text-transform: uppercase;
-      margin-bottom: 2rem;
-    }
-    .concept-lead {
-      font-family: var(--jp); font-weight: 200;
-      font-size: clamp(1.15rem,2.8vw,1.65rem);
-      letter-spacing: 0.04em; line-height: 1.85;
-      color: rgba(237,233,228,0.88); margin-bottom: 2.5rem;
-    }
-    .concept-text {
-      font-size: clamp(0.88rem,1.7vw,1.02rem); font-weight: 300;
-      line-height: 2.2; color: var(--text-muted);
-      letter-spacing: 0.035em; margin-bottom: 1.8rem;
-    }
+    .concept-sidebar { display: flex; flex-direction: column; gap: 1.2rem; padding-top: 0.3rem; }
+    .concept-sidebar-label { font-family: var(--font-en); font-size: clamp(0.55rem,1.3vw,0.66rem); letter-spacing: 0.38em; color: var(--muted-col); text-transform: uppercase; line-height: 1; }
+    .concept-sidebar-num { font-family: var(--font-en); font-size: clamp(2.5rem,6vw,5rem); font-weight: 300; line-height: 1; color: rgba(255,255,255,0.04); letter-spacing: -0.02em; }
+    .concept-credit { font-family: var(--font-en); font-size: 0.62rem; letter-spacing: 0.22em; color: rgba(237,233,228,0.26); text-transform: uppercase; margin-bottom: 2rem; }
+    .concept-lead { font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.15rem,2.8vw,1.65rem); letter-spacing: 0.04em; line-height: 1.85; color: rgba(237,233,228,0.88); margin-bottom: 2.5rem; }
+    .concept-text { font-size: clamp(0.88rem,1.7vw,1.02rem); font-weight: 300; line-height: 2.2; color: var(--text-muted); letter-spacing: 0.035em; margin-bottom: 1.8rem; }
     .concept-text:last-child { margin-bottom: 0; }
-    .concept-text em {
-      font-style: normal; color: var(--accent);
-      border-bottom: 0.5px solid var(--border-mid); padding-bottom: 2px;
-    }
+    .concept-text em { font-style: normal; color: var(--accent); border-bottom: 0.5px solid var(--border-md); padding-bottom: 2px; }
 
-    /* ─── コンセプト内 キーワードパネル ─── */
-    .concept-keywords {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 1px; margin-top: 4rem; border: 0.5px solid var(--border);
-    }
-    .concept-kw {
-      padding: 2rem 1.75rem; background: rgba(255,255,255,0.015);
-      transition: background 0.35s ease, transform 0.35s var(--ease-expo);
-    }
-    .concept-kw:hover {
-      background: rgba(255,255,255,0.04); transform: translateY(-3px);
-    }
-    .concept-kw-num {
-      font-family: var(--en); font-size: 0.62rem; letter-spacing: 0.28em;
-      color: rgba(237,233,228,0.2); text-transform: uppercase; margin-bottom: 1rem;
-    }
-    .concept-kw-title {
-      font-size: clamp(0.88rem,1.5vw,1rem); font-weight: 300;
-      color: var(--fg); letter-spacing: 0.06em; margin-bottom: 0.8rem;
-    }
-    .concept-kw-desc {
-      font-size: clamp(0.76rem,1.2vw,0.86rem); font-weight: 300;
-      line-height: 1.85; color: var(--text-muted);
-    }
+    .concept-keywords { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 4rem; border: 0.5px solid var(--border); }
+    .concept-kw { padding: 2rem 1.75rem; background: rgba(255,255,255,0.015); transition: background 0.35s ease, transform 0.35s var(--ease-expo); }
+    .concept-kw:hover { background: rgba(255,255,255,0.04); transform: translateY(-3px); }
+    .concept-kw-num { font-family: var(--font-en); font-size: 0.62rem; letter-spacing: 0.28em; color: rgba(237,233,228,0.2); text-transform: uppercase; margin-bottom: 1rem; }
+    .concept-kw-title { font-size: clamp(0.88rem,1.5vw,1rem); font-weight: 300; color: var(--fg); letter-spacing: 0.06em; margin-bottom: 0.8rem; }
+    .concept-kw-desc { font-size: clamp(0.76rem,1.2vw,0.86rem); font-weight: 300; line-height: 1.85; color: var(--text-muted); }
 
     /* ════════════════════════════════════════
-       WORKS — 個別作品
+       GALLERY GRID
     ════════════════════════════════════════ */
-    .works-section { padding: 0 var(--px) clamp(80px,12vh,160px); }
-
-    /* セクション見出し */
-    .works-header {
-      display: flex; align-items: flex-end; justify-content: space-between;
-      padding-bottom: clamp(18px,3vw,40px);
-      border-bottom: 0.5px solid var(--border);
-      margin-bottom: clamp(48px,8vh,96px);
-    }
-    .works-header-label {
-      font-family: var(--en); font-size: clamp(0.55rem,1.4vw,0.68rem);
-      letter-spacing: 0.4em; color: var(--muted-col); text-transform: uppercase;
-    }
-    .works-header-count {
-      font-family: var(--en); font-size: clamp(2rem,5vw,4.5rem);
-      font-weight: 300; letter-spacing: -0.03em;
-      color: rgba(255,255,255,0.04); line-height: 1;
-    }
-
-    /* 作品アイテム */
-    .work-item {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: clamp(2rem,5vw,6rem); padding: clamp(48px,8vh,100px) 0;
-      border-bottom: 0.5px solid var(--border); align-items: center;
-    }
-    .work-item:last-child { border-bottom: none; }
-    .work-item.reverse .work-img-col  { order: 2; }
-    .work-item.reverse .work-text-col { order: 1; }
-
-    /* ─── 画像カラム ─── */
-    .work-img-col {}
-    .work-img-frame {
-      position: relative; overflow: hidden; background: #0c0c0b; cursor: zoom-in;
-    }
-    .work-img-frame.portrait  { aspect-ratio: 3/4; }
-    .work-img-frame.landscape { aspect-ratio: 4/3; }
-    .work-img-frame.square    { aspect-ratio: 1/1; }
-
-    .work-img-frame img {
-      width: 100%; height: 100%; object-fit: cover; display: block;
-      filter: grayscale(30%) brightness(0.78); transform: scale(1.03);
-      transition: filter 1.1s var(--ease-img), transform 1.4s var(--ease-img);
-    }
-    .work-img-frame:hover img {
-      filter: grayscale(0%) brightness(0.96); transform: scale(1.0);
-    }
-
-    /* グラデオーバーレイ */
-    .work-img-frame::after {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(8,8,8,0.72) 0%, rgba(8,8,8,0.12) 40%, transparent 100%);
-      opacity: 0; transition: opacity 0.45s ease;
-    }
-    .work-img-frame:hover::after { opacity: 1; }
-
-    /* アクセントライン（左辺） */
-    .work-img-frame::before {
-      content: ''; position: absolute; left: 0; bottom: 0; z-index: 2;
-      width: 2px; height: 0; background: var(--accent);
-      transition: height 0.6s var(--ease-expo);
-    }
-    .work-img-frame:hover::before { height: 50%; }
-
-    /* ズームヒント */
-    .work-zoom-hint {
-      position: absolute; bottom: 1.2rem; right: 1.2rem; z-index: 3;
-      font-family: var(--en); font-size: 0.56rem; letter-spacing: 0.22em;
-      color: rgba(237,233,228,0.65); text-transform: uppercase;
-      opacity: 0; transform: translateY(5px);
-      transition: opacity 0.4s ease, transform 0.4s var(--ease-expo);
-      pointer-events: none;
-    }
-    .work-img-frame:hover .work-zoom-hint { opacity: 1; transform: translateY(0); }
-
-    /* ─── テキストカラム ─── */
-    .work-text-col {}
-
-    .work-index {
-      font-family: var(--en); font-size: 0.62rem;
-      letter-spacing: 0.32em; color: rgba(237,233,228,0.25);
-      text-transform: uppercase; margin-bottom: 1.8rem;
-      display: flex; align-items: center; gap: 1rem;
-    }
-    .work-index::after {
-      content: ''; width: 40px; height: 0.5px; background: rgba(255,255,255,0.1);
-    }
-
-    .work-year {
-      font-family: var(--en); font-size: clamp(0.65rem,1.5vw,0.8rem);
-      letter-spacing: 0.28em; color: var(--muted-col);
-      display: block; margin-bottom: 0.8rem;
-    }
-
-    .work-title-ja {
-      font-family: var(--jp); font-weight: 200;
-      font-size: clamp(1.6rem,4vw,3rem);
-      letter-spacing: 0.06em; line-height: 1.2;
-      color: var(--fg); margin-bottom: 0.35rem;
-    }
-    .work-title-en {
-      font-family: var(--en); font-style: italic;
-      font-size: clamp(0.9rem,2.2vw,1.4rem);
-      letter-spacing: 0.12em; color: var(--accent);
-      display: block; margin-bottom: 2rem;
-    }
-
-    .work-spec {
-      font-family: var(--en); font-size: clamp(0.58rem,1.2vw,0.68rem);
-      letter-spacing: 0.18em; color: rgba(237,233,228,0.3);
-      text-transform: uppercase; line-height: 2;
-      border-left: 1px solid rgba(255,255,255,0.1);
-      padding-left: 1.1rem; margin-bottom: 2.5rem;
-    }
-
-    .work-commentary-label {
-      font-family: var(--en); font-size: 0.58rem; letter-spacing: 0.3em;
-      color: var(--muted-col); text-transform: uppercase; margin-bottom: 1.2rem;
-      display: flex; align-items: center; gap: 0.8rem;
-    }
-    .work-commentary-label::after {
-      content: ''; flex: 1; height: 0.5px; background: rgba(255,255,255,0.08); max-width: 56px;
-    }
-
-    .work-commentary {
-      font-size: clamp(0.86rem,1.6vw,0.98rem); font-weight: 300;
-      line-height: 2.15; color: var(--text-muted); letter-spacing: 0.03em;
-    }
-    .work-commentary p + p { margin-top: 1.2em; }
-    .work-commentary em {
-      font-style: normal; color: var(--accent);
-      border-bottom: 0.5px solid var(--border-mid); padding-bottom: 1px;
-    }
-
-    /* ─── LIGHTBOX ─── */
-    .lb {
-      position: fixed; inset: 0; z-index: 500;
-      background: rgba(5,5,5,0.97);
-      display: none; align-items: center; justify-content: center;
-      cursor: zoom-out; padding: clamp(20px,5vw,60px); opacity: 0;
-      transition: opacity 0.35s ease;
-    }
-    .lb.open  { display: flex; }
-    .lb.vis   { opacity: 1; }
-    .lb img {
-      max-width: 100%; max-height: 90vh; object-fit: contain;
-      transform: scale(0.96); transition: transform 0.45s var(--ease-expo);
-    }
-    .lb.vis img { transform: scale(1); }
-    .lb-close {
-      position: absolute; top: 1.5rem; right: 2rem;
-      font-family: var(--en); font-size: 0.6rem; letter-spacing: 0.22em;
-      color: rgba(237,233,228,0.4); text-transform: uppercase;
-      background: none; border: none; cursor: pointer;
-      display: flex; align-items: center; gap: 0.5rem; transition: color 0.2s;
-    }
-    .lb-close:hover { color: var(--fg); }
-    .lb-close-x { font-size: 1.5rem; font-weight: 100; line-height: 1; }
+    .gallery-section { padding: 0 var(--px) clamp(6rem, 13vh, 10rem); max-width: 1600px; margin: 0 auto; border-top: 0.5px solid var(--border); }
+    .section-label-center { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem); letter-spacing: 0.44em; color: var(--muted-col); text-transform: uppercase; text-align: center; margin-bottom: clamp(3rem, 7vh, 5rem); margin-top: clamp(3rem, 7vh, 5rem); }
+    
+    .gallery-grid { display: flex; flex-wrap: wrap; gap: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 2.5vw, 2.5rem); justify-content: center; align-items: flex-start; }
+    .gallery-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; cursor: pointer; opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); width: fit-content; max-width: 100%; }
+    .gallery-item.in-view { opacity: 1; transform: translateY(0); }
+    
+    .gallery-item-img-wrap { height: var(--item-height, var(--grid-base-h)); width: max-content; display: flex; justify-content: center; align-items: center; background: transparent; overflow: hidden; border: 0.5px solid var(--border); transition: border-color 0.4s ease, box-shadow 0.5s var(--ease); background: #111; }
+    .gallery-item.is-portrait { --item-height: calc(var(--grid-base-h) * 0.9); }
+    .gallery-item.is-landscape { --item-height: calc(var(--grid-base-h) * 0.7); }
+    
+    .gallery-item-img-wrap img { height: 100%; width: auto; display: block; object-fit: contain; filter: grayscale(15%) brightness(0.85); transition: transform 0.8s var(--ease), filter 0.6s ease; }
+    .gallery-item:hover .gallery-item-img-wrap { border-color: rgba(203,191,176,0.35); box-shadow: 0 16px 40px rgba(0,0,0,0.5); }
+    .gallery-item:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
+    
+    .gallery-item-cap { padding-top: 1rem; text-align: left; width: 100%; }
+    .gallery-item-title { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.4vw, 1rem); font-weight: 300; color: var(--fg); letter-spacing: 0.05em; margin-bottom: 0.3rem; display: block; }
+    .gallery-item-meta { font-family: var(--font-en); font-size: clamp(0.6rem, 1.1vw, 0.7rem); color: var(--accent); letter-spacing: 0.14em; font-style: italic; display: block; }
 
     /* ════════════════════════════════════════
-       BACK LINK
+       CHRONOLOGY TIMELINE
     ════════════════════════════════════════ */
-    .back-wrap {
-      text-align: center; padding: clamp(40px,7vh,80px) var(--px) clamp(20px,4vh,40px);
-    }
-    .back-link {
-      display: inline-flex; align-items: center; gap: 1rem;
-      font-family: var(--en); font-size: 0.64rem;
-      letter-spacing: 0.25em; color: var(--muted-col);
-      text-transform: uppercase; text-decoration: none; transition: color 0.3s;
-    }
-    .back-link-arrow { font-size: 1rem; transition: transform 0.3s; }
-    .back-link:hover { color: var(--accent); }
-    .back-link:hover .back-link-arrow { transform: translateX(-4px); }
+    .chronology-section { padding: clamp(5rem, 12vh, 10rem) var(--px); background: var(--bg2); border-top: 0.5px solid var(--border); position: relative; }
+    .timeline-container { max-width: 1200px; margin: 0 auto; position: relative; }
+    .timeline-spine-wrapper { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(233,229,223,0.06); transform: translateX(-50%); }
+    .timeline-spine-progress { position: absolute; top: 0; left: 0; width: 1px; background: linear-gradient(to bottom, transparent 0%, var(--accent) 10%, var(--accent) 90%, transparent 100%); height: 0%; transition: height 0.1s linear; }
+    
+    .tl-entry { position: relative; width: 100%; margin-bottom: clamp(7rem, 16vh, 12rem); opacity: 0; transform: translateY(30px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+    .tl-entry:last-child { margin-bottom: 0; }
+    .tl-entry.in-view { opacity: 1; transform: translateY(0); }
+    
+    .tl-year-display { font-family: var(--font-en); font-size: clamp(3.5rem, 7vw, 5.5rem); font-weight: 300; color: var(--accent); letter-spacing: 0.02em; line-height: 1; margin-bottom: clamp(1rem, 2vh, 2rem); padding-left: 2%; opacity: 0.85; }
+    .tl-entry:nth-child(even) .tl-year-display { text-align: left; }
+
+    .tl-content-wrap { display: flex; justify-content: space-between; align-items: center; gap: clamp(2rem, 5vw, 6rem); }
+    .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
+    
+    .tl-figure { width: 54%; position: relative; border: 0.5px solid var(--border); overflow: hidden; background: #0c0c0b; cursor: zoom-in; transition: width 0.4s ease; display: flex; align-items: center; justify-content: center; }
+    .tl-body { width: 42%; position: relative; z-index: 2; transition: width 0.4s ease; }
+    
+    .tl-figure img { width: 100%; height: auto; max-height: 600px; display: block; object-fit: contain; filter: grayscale(12%) brightness(0.85); transition: transform 1s var(--ease), filter 0.6s ease; }
+    .tl-figure:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
+    
+    .tl-title { font-family: var(--font-ja); font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 300; color: var(--fg); line-height: 1.4; margin-bottom: 0.8rem; }
+    .tl-meta { font-family: var(--font-en); font-size: clamp(0.6rem, 1.2vw, 0.75rem); color: var(--accent); letter-spacing: 0.15em; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border-md); }
+    .tl-desc { font-size: clamp(0.85rem, 1.6vw, 0.95rem); line-height: 2.1; color: var(--text-muted); text-align: justify; }
+    .tl-desc p { margin-bottom: 1.2em; }
+    .tl-desc p:last-child { margin-bottom: 0; }
+
+    /* Typewriter Style */
+    .tw-char { opacity: 0; display: inline-block; transition: opacity 0.3s ease; }
+    .tw-cursor { display: inline-block; width: 1.5px; height: 1.1em; background-color: var(--accent); margin-left: 2px; vertical-align: middle; animation: tw-blink 0.8s infinite; }
+    @keyframes tw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .fade-out { opacity: 0; transition: opacity 0.8s ease; }
 
     /* ════════════════════════════════════════
        CONTACT & FOOTER
     ════════════════════════════════════════ */
-    .contact-section {
-      padding: 7rem 2.5rem; text-align: center;
-      border-bottom: 0.5px solid var(--border); border-top: 0.5px solid var(--border);
-      background: var(--bg); position: relative; z-index: 2;
-    }
-    .section-label {
-      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
-      letter-spacing: 0.28em; color: var(--muted-col); text-transform: uppercase; margin-bottom: 3.5rem;
-      display: flex; align-items: center; justify-content: center; gap: 1rem;
-    }
-    .section-label::after, .section-label::before {
-      content: ''; width: 48px; height: 0.5px; background: rgba(232,228,219,0.2);
-    }
-    .section-heading {
-      font-family: var(--jp); font-size: clamp(1.75rem,4vw,3.25rem);
-      font-weight: 300; line-height: 1.2; color: var(--text);
-      margin-bottom: 2rem; letter-spacing: -0.01em;
-    }
-    .contact-body-text {
-      font-size: 14px; color: var(--text-muted);
-      margin: 0 auto 2.75rem; max-width: 400px; line-height: 1.9;
-    }
-    .contact-btn {
-      display: inline-block; font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
-      letter-spacing: 0.22em; text-transform: uppercase;
-      border: 0.5px solid rgba(184,168,152,0.45);
-      padding: 0.9rem 2.75rem; color: var(--accent);
-      text-decoration: none; transition: background 0.2s, color 0.2s;
-    }
-    .contact-btn:hover { background: rgba(184,168,152,0.07); color: var(--fg); }
+    .contact-section { padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center; border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(203,191,176,0.06) 0%, var(--bg) 70%); }
+    .contact-heading { font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em; }
+    .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.8vw, 0.95rem); color: var(--text-muted); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2; }
+    .contact-btn { display: inline-block; padding: 1.2rem 3.5rem; background: var(--accent); color: var(--bg); font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none; transition: all 0.4s var(--ease); border-radius: 2px; }
+    .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(203,191,176,0.3); }
 
-    footer {
-      padding: 2.75rem 2.5rem; display: flex; justify-content: space-between;
-      align-items: center; flex-wrap: wrap; gap: 1rem;
-      background: var(--bg); position: relative; z-index: 2;
-    }
-    .footer-logo {
-      font-family: var(--jp); font-size: 16px; font-weight: 300;
-      color: rgba(232,228,219,0.35); letter-spacing: 0.05em;
-    }
-    .footer-copy {
-      font-family: var(--en); font-size: 10px;
-      color: rgba(232,228,219,0.2); letter-spacing: 0.14em;
-    }
+    footer { padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); background: var(--bg); }
+    .footer-logo { font-family: var(--font-ja); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.28); letter-spacing: 0.08em; }
+    .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--text-dim); }
 
     /* ════════════════════════════════════════
-       REVEAL
+       LIGHTBOX (MODAL) & BACK TO TOP
     ════════════════════════════════════════ */
-    .reveal {
-      opacity: 0; transform: translateY(24px);
-      transition: opacity 1s var(--ease-expo), transform 1s var(--ease-expo);
-    }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .image-modal { position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.55s var(--ease), visibility 0.55s; }
+    .image-modal.is-active { opacity: 1; visibility: visible; }
+    .modal-bg { position: absolute; inset: 0; background: rgba(6,6,5,0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); cursor: zoom-out; }
+    .modal-close { position: fixed; top: clamp(1rem, 3vh, 2rem); right: var(--px); z-index: 10001; background: none; border: none; color: var(--text-dim); cursor: pointer; padding: 0.5rem; transition: color 0.3s ease, transform 0.3s var(--ease); }
+    .modal-close:hover { color: var(--fg); transform: scale(1.1) rotate(90deg); }
+    .modal-content { position: relative; z-index: 10000; max-width: 90vw; margin: auto; display: flex; flex-direction: column; align-items: center; gap: clamp(1rem, 2vh, 1.5rem); opacity: 0; transform: scale(0.96) translateY(12px); transition: opacity 0.55s var(--ease) 0.08s, transform 0.55s var(--ease) 0.08s; }
+    .image-modal.is-active .modal-content { opacity: 1; transform: scale(1) translateY(0); }
+    .modal-content img { max-width: 100%; max-height: 75svh; object-fit: contain; box-shadow: 0 32px 80px rgba(0,0,0,0.75); border: 0.5px solid var(--border); cursor: zoom-out; }
+    .modal-caption { text-align: center; width: 100%; padding: 0 1rem; }
+    .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 200; color: var(--fg); margin-bottom: 0.3rem; }
+    .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.72rem, 1.2vw, 0.85rem); font-style: italic; color: var(--accent); letter-spacing: 0.15em; }
+
+    .back-to-top { position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px); z-index: 9000; width: clamp(64px, 10vw, 90px); height: clamp(64px, 10vw, 90px); border-radius: 50%; background: rgba(203, 191, 176, 0.85); border: 1px solid var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--bg); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6); }
+    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
+    .back-to-top:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-6px); }
+    .back-to-top svg { width: clamp(20px, 3vw, 32px); height: clamp(20px, 3vw, 32px); margin-bottom: 2px; }
+    .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.9rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
 
     /* ════════════════════════════════════════
        KEYFRAMES
@@ -526,20 +312,21 @@
     @keyframes pulseBar   { 0%,100% { opacity:0.3; } 50% { opacity:1; } }
 
     /* ════════════════════════════════════════
-       RESPONSIVE
+       RESPONSIVE DESIGN
     ════════════════════════════════════════ */
     @media (max-width: 1024px) {
       .concept-keywords { grid-template-columns: 1fr 1fr; }
     }
-    @media (max-width: 900px) {
-      .work-item, .work-item.reverse { grid-template-columns: 1fr; gap: 2.5rem; }
-      .work-item.reverse .work-img-col, .work-item.reverse .work-text-col { order: unset; }
-      .work-img-frame img { filter: grayscale(10%) brightness(0.85); }
-      .work-zoom-hint { opacity: 1; transform: translateY(0); }
+    @media (max-width: 860px) {
+      .timeline-container { padding-left: 36px; } 
+      .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2rem; }
+      .tl-figure, .tl-body { width: 100%; }
+      .timeline-spine-wrapper { left: 16px; transform: none; }
+      .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; font-size: clamp(2.5rem, 8vw, 3.5rem); }
     }
     @media (max-width: 768px) {
-      /* ★ スマホ版: ヘッダーからメニューリンクを非表示にし、左右に綺麗に配置 */
-      nav { padding: 1rem 1.25rem; justify-content: space-between; align-items: center; }
+      /* ★ スマホ版: ヘッダーからメニューリンクを完全に非表示にし、左右に綺麗に配置 */
+      nav#top-nav { padding: 1rem 1.25rem; justify-content: space-between; align-items: center; }
       .nav-links { display: none !important; }
       .nav-hamburger { display: none !important; }
       
@@ -547,345 +334,559 @@
       .concept-sidebar { flex-direction: row; align-items: baseline; gap: 1.5rem; }
       .concept-sidebar-num { font-size: 2.5rem; }
       .concept-keywords { grid-template-columns: 1fr; }
-      .works-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-      .scroll-cue { display: none; }
-      .contact-section { padding: 5rem 1.5rem; }
-      footer { padding: 2rem 1.5rem; }
+      
+      /* --- スマホで最初の作品紹介グリッドを完全に非表示にする --- */
+      .gallery-section { display: none !important; }
+      
+      .page-nav.visible { right: 8px; opacity: 0.5; }
+      .page-nav.visible:hover { opacity: 1; }
+      .page-nav-label { display: none; }
     }
     @media (max-width: 480px) {
-      .series-hero { min-height: 80vh; }
-    }
-    @media (hover: none) {
-      .work-img-frame img { filter: grayscale(10%) brightness(0.88); }
-      .work-zoom-hint { opacity: 1; transform: translateY(0); }
+      .hero-scroll { display: none; }
+      .modal-content img { max-height: 60svh; }
     }
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important; transition-duration: 0.01ms !important;
-      }
+      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+      .gallery-item, .tl-entry, .reveal { opacity: 1 !important; transform: none !important; }
     }
   </style>
 </head>
-<body>
+<body id="top">
 
-<div class="works-video-bg" aria-hidden="true">
-  <video autoplay loop muted playsinline preload="metadata">
-    <source src="images/mov1.mp4" type="video/mp4">
-  </video>
-  <div class="works-video-overlay"></div>
-</div>
+  <div class="works-video-bg" aria-hidden="true">
+    <video autoplay loop muted playsinline preload="metadata">
+      <source src="images/mov1.mp4" type="video/mp4">
+    </video>
+    <div class="works-video-overlay"></div>
+  </div>
 
-<nav id="top-nav">
-  <a href="index.html" class="nav-logo">Tsuda Shoichi</a>
-  <ul class="nav-links" id="nav-links">
-    <li><a href="index.html#statement">Statement</a></li>
-    <li><a href="works.html">Works</a></li>
-    <li><a href="index.html#profile">Profile</a></li>
-    <li><a href="index.html#news">News</a></li>
-  </ul>
-  <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
-</nav>
+  <nav id="top-nav">
+    <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html#statement">Statement</a></li>
+      <li><a href="works.html">Works</a></li>
+      <li><a href="index.html#profile">Profile</a></li>
+      <li><a href="index.html#news">News</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
+  </nav>
 
-<main>
+  <nav class="page-nav" id="pageNav" aria-label="ページ内ナビゲーション">
+    <button class="page-nav-item" data-target="gallery" aria-label="Galleryへ">
+      <div class="page-nav-dot"></div><span class="page-nav-label">Gallery</span>
+    </button>
+    <button class="page-nav-item" data-target="chronology" aria-label="Timelineへ">
+      <div class="page-nav-dot"></div><span class="page-nav-label">Timeline</span>
+    </button>
+  </nav>
 
-  <section class="series-hero">
-    <div class="series-hero-ghost" aria-hidden="true">40273</div>
-    <div class="series-hero-inner">
-      <p class="series-eyebrow">
-        <span>Series &nbsp;·&nbsp; 40273 &nbsp;·&nbsp; Traces</span>
-      </p>
-      <h1 class="series-title-en">
-        <span>40273</span>
-      </h1>
-      <p class="series-title-jp">
-        <span>40273</span>
-      </p>
-      <p class="series-sub">
-        <span>日常の輪郭。空白に沈殿する記憶の断片。</span>
-      </p>
-      <div class="series-rule"></div>
+  <main>
+    <section class="series-hero">
+      <div class="series-hero-ghost" aria-hidden="true">40273</div>
+      <div class="series-hero-inner">
+        <p class="series-eyebrow"><span>Series &nbsp;·&nbsp; 40273 &nbsp;·&nbsp; Traces</span></p>
+        <h1 class="series-title-en"><span>40273</span></h1>
+        <p class="series-title-jp"><span>40273</span></p>
+        <p class="series-sub"><span>日常の輪郭。空白に沈殿する記憶の断片。</span></p>
+        <div class="series-rule"></div>
+      </div>
+      <div class="scroll-cue" aria-hidden="true">
+        <div class="scroll-cue-line"></div>
+        <span>Scroll</span>
+      </div>
+    </section>
+
+    <div class="concept-section">
+      <div class="concept-sidebar reveal">
+        <p class="concept-sidebar-label">Concept</p>
+        <p class="concept-sidebar-num">06</p>
+      </div>
+      <div class="concept-main reveal" style="transition-delay:0.12s">
+        <p class="concept-credit">Series Commentary — Tsuda Shoichi</p>
+        <p class="concept-lead">見慣れたはずの光景は、輪郭線を抽出されることで、全く新しい「余白」を生み出す。</p>
+        <p class="concept-text">本シリーズ「40273」は、日常の中に存在する人物や風景、そして彼らが落とす影を、限定された色彩と<em>ゆらぐ輪郭線</em>によって再構築する試みである。過剰な情報に溢れた現実の風景から、色彩の大部分を剥ぎ取ることで、そこに残された「線」と「空白」が、かえって強い実在感を放ち始める。</p>
+        <p class="concept-text">画面の大半を占める白い空白は、単なる未完成の領域ではない。それは鑑賞者の記憶や無意識が投影されるスクリーンであり、ノイズから解放された<em>純粋な視覚体験</em>への入り口として機能する。</p>
+
+        <div class="concept-keywords">
+          <div class="concept-kw reveal" style="transition-delay:0.05s">
+            <p class="concept-kw-num">01</p>
+            <p class="concept-kw-title">線の抽出とゆらぎ</p>
+            <p class="concept-kw-desc">被写体を規定する境界線のみを残す。震えるような線描は、対象の不確かさと、そこに宿る生命の律動を同時に表現する。</p>
+          </div>
+          <div class="concept-kw reveal" style="transition-delay:0.12s">
+            <p class="concept-kw-num">02</p>
+            <p class="concept-kw-title">色彩の再定義</p>
+            <p class="concept-kw-desc">現実の固有色から離れ、シアンやマゼンタ、イエローといった原色に近いノイズのような色彩を配置することで、現実と虚構の境界を曖昧にする。</p>
+          </div>
+          <div class="concept-kw reveal" style="transition-delay:0.20s">
+            <p class="concept-kw-num">03</p>
+            <p class="concept-kw-title">空白の雄弁さ</p>
+            <p class="concept-kw-desc">描かれないことで立ち上がる空間。情報を削ぎ落とすことで、鑑賞者は自らの記憶を補完し、作品との対話を深めていく。</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="scroll-cue" aria-hidden="true">
-      <div class="scroll-cue-line"></div>
-      <span>Scroll</span>
-    </div>
+
+    <section class="gallery-section" id="gallery">
+      <p class="section-label-center">Works Index</p>
+      <div class="gallery-grid">
+        <a href="#work-09" class="gallery-item is-landscape">
+          <div class="gallery-item-img-wrap"><img src="images/【風力発電所のイマージュ(銚子)】.jpg" alt="風力発電所のイマージュ(銚子)" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">風力発電所のイマージュ（銚子）</span><span class="gallery-item-meta">201X / Oil on canvas</span>
+          </div>
+        </a>
+        <a href="#work-08" class="gallery-item is-landscape">
+          <div class="gallery-item-img-wrap"><img src="images/【波のイマージュ(銚子、君ヶ浜)】.jpg" alt="波のイマージュ(銚子、君ヶ浜)" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">波のイマージュ（銚子、君ヶ浜）</span><span class="gallery-item-meta">201X / Oil on canvas</span>
+          </div>
+        </a>
+        <a href="#work-07" class="gallery-item is-landscape">
+          <div class="gallery-item-img-wrap"><img src="images/【灯台のイマージュ(銚子、犬吠)】.jpg" alt="灯台のイマージュ(銚子、犬吠)" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">灯台のイマージュ（銚子、犬吠）</span><span class="gallery-item-meta">201X / Oil on canvas</span>
+          </div>
+        </a>
+        <a href="#work-06" class="gallery-item is-landscape">
+          <div class="gallery-item-img-wrap"><img src="images/【室内のイマージュ(2)】.jpg" alt="室内のイマージュ(2)" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">室内のイマージュ(2)</span><span class="gallery-item-meta">201X / Oil on canvas</span>
+          </div>
+        </a>
+        <a href="#work-05" class="gallery-item is-landscape">
+          <div class="gallery-item-img-wrap"><img src="images/【室内のイマージュ】.jpg" alt="室内のイマージュ" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">室内のイマージュ</span><span class="gallery-item-meta">201X / Oil on canvas</span>
+          </div>
+        </a>
+        <a href="#work-04" class="gallery-item is-portrait">
+          <div class="gallery-item-img-wrap"><img src="images/【play_with_shadow】.jpg" alt="影と遊ぶ" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">影と遊ぶ</span><span class="gallery-item-meta">201X / Oil on canvas</span>
+          </div>
+        </a>
+        <a href="#work-03" class="gallery-item is-landscape">
+          <div class="gallery-item-img-wrap"><img src="images/IMG_4325.jpg" alt="無題" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">無題</span><span class="gallery-item-meta">201X / Oil on canvas</span>
+          </div>
+        </a>
+        <a href="#work-02" class="gallery-item is-portrait">
+          <div class="gallery-item-img-wrap"><img src="images/in_front_of_Shinagawa_Station.jpg" alt="品川駅前" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">品川駅前</span><span class="gallery-item-meta">201X / Oil on canvas</span>
+          </div>
+        </a>
+        <a href="#work-01" class="gallery-item is-portrait">
+          <div class="gallery-item-img-wrap"><img src="images/@_the_beach.jpg" alt="ビーチにて" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">ビーチにて</span><span class="gallery-item-meta">2010 / Oil on canvas</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="chronology-section" id="chronology">
+      <div class="timeline-container">
+        <div class="timeline-spine-wrapper">
+          <div class="timeline-spine-progress" id="tl-spine-fill"></div>
+        </div>
+
+        <article class="tl-entry" id="work-09">
+          <div class="tl-year-display">201X</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【風力発電所のイマージュ(銚子)】.jpg">
+              <img src="images/【風力発電所のイマージュ(銚子)】.jpg" alt="風力発電所のイマージュ(銚子)" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">風力発電所のイマージュ（銚子）</h3>
+              <p class="tl-meta">Image of Wind Farm (Choshi)</p>
+              <div class="tl-desc">
+                <p>銚子の海岸線に立ち並ぶ巨大な風力発電のプロペラ群。人工的な直線と自然の有機的な境界線が交錯する光景を、限定的な色彩の線で抽出している。</p>
+                <p>風景から質量を抜き取り、骨格だけを残すことで、現代のランドスケープが持つ異化効果とシュルレアリスムを浮き彫りにする作品である。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry" id="work-08">
+          <div class="tl-year-display">201X</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【波のイマージュ(銚子、君ヶ浜)】.jpg">
+              <img src="images/【波のイマージュ(銚子、君ヶ浜)】.jpg" alt="波のイマージュ(銚子、君ヶ浜)" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">波のイマージュ（銚子、君ヶ浜）</h3>
+              <p class="tl-meta">Image of Waves (Choshi, Kimigahama)</p>
+              <div class="tl-desc">
+                <p>君ヶ浜に打ち寄せる波のフラクタルな輪郭。絶えず形を変え続ける水面の瞬間を、シアンやマゼンタのノイズのような線で捉えている。</p>
+                <p>固定化不可能な自然のエネルギーを、視覚的なバグのようにキャンバスへ定着させ、私たちが「見ている」はずの風景の不確かさを問いかける。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry" id="work-07">
+          <div class="tl-year-display">201X</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【灯台のイマージュ(銚子、犬吠)】.jpg">
+              <img src="images/【灯台のイマージュ(銚子、犬吠)】.jpg" alt="灯台のイマージュ(銚子、犬吠)" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">灯台のイマージュ（銚子、犬吠）</h3>
+              <p class="tl-meta">Image of Lighthouse (Choshi, Inubo)</p>
+              <div class="tl-desc">
+                <p>犬吠埼灯台の屹立するシルエット。空と海の境界が白い余白に完全に溶け込み、微細な線描だけが潮風のざわめきや光の瞬きを暗示している。</p>
+                <p>具体的な風景描写を削ぎ落とした果てに、風景の持つ「記憶の芯」だけがキャンバスに定着されたような、静謐な存在感を放つ一枚。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry" id="work-06">
+          <div class="tl-year-display">201X</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【室内のイマージュ(2)】.jpg">
+              <img src="images/【室内のイマージュ(2)】.jpg" alt="室内のイマージュ(2)" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">室内のイマージュ(2)</h3>
+              <p class="tl-meta">Image in the room (2)</p>
+              <div class="tl-desc">
+                <p>人物の視線や姿勢の断片が、淡いピンクとシアンの微細な線で空間に刻み込まれている室内風景のイマージュ。</p>
+                <p>まるで古い写真が光で飛んでしまったかのような、あるいはデジタルデータが破損してアウトラインだけが残ったかのような脆弱さ。存在の不確かさと儚さが、抑制された色彩を通して静かに語りかけてくる。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry" id="work-05">
+          <div class="tl-year-display">201X</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【室内のイマージュ】.jpg">
+              <img src="images/【室内のイマージュ】.jpg" alt="室内のイマージュ" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">室内のイマージュ</h3>
+              <p class="tl-meta">Image in the room</p>
+              <div class="tl-desc">
+                <p>机、椅子、そしてそこに佇む人物らしき輪郭。見慣れた室内の風景が、断片的な線描によって解体され、再構成されている。</p>
+                <p>画面右側のテクスチャの集積と、左側に広がる余白のコントラストが、空間のパースペクティブを歪ませる。物理的な空間を描くのではなく、空間に対する心理的な感覚をキャンバス上にマッピングしたような作品。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry" id="work-04">
+          <div class="tl-year-display">201X</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【play_with_shadow】.jpg">
+              <img src="images/【play_with_shadow】.jpg" alt="影と遊ぶ" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">影と遊ぶ</h3>
+              <p class="tl-meta">play with shadow</p>
+              <div class="tl-desc">
+                <p>明るい路地を歩く少女と、路面に反射するその影。実体である少女の衣服にはピンクや紫が施されているが、足元の影は荒々しい青と黒のピクセルのようなテクスチャで描かれている。</p>
+                <p>光と影の反転、そして実像と虚像のコントラスト。現実の世界よりも影の世界の方が濃密な物質感を持っているという逆転現象が、日常の何気ない風景を異化させる。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry" id="work-03">
+          <div class="tl-year-display">201X</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/IMG_4325.jpg">
+              <img src="images/IMG_4325.jpg" alt="無題" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">無題</h3>
+              <p class="tl-meta">Untitled</p>
+              <div class="tl-desc">
+                <p>風景の一部、あるいは水面の反射や地形の俯瞰図のようにも見える抽象度の高い作品。</p>
+                <p>細かな線の集積と、所々に現れる滲んだような色彩が、無機質なキャンバスに有機的な広がりを与えている。具体的な対象物の暗示を避けることで、鑑賞者の純粋な視覚的探索を誘う構成となっている。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry" id="work-02">
+          <div class="tl-year-display">201X</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/in_front_of_Shinagawa_Station.jpg">
+              <img src="images/in_front_of_Shinagawa_Station.jpg" alt="品川駅前" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">品川駅前</h3>
+              <p class="tl-meta">in_front_of_Shinagawa_Station</p>
+              <div class="tl-desc">
+                <p>都市の雑踏の一角、駅前に立つ人々のシルエットを抽出した作品。床のタイルのパターンが赤い線で細かく描かれる一方で、人物や建物のディテールは徹底して白く抜かれている。</p>
+                <p>無数の人々が行き交うターミナル駅という空間を、これほどまでに静謐で空虚な空間として提示することで、現代都市における個人の匿名性と孤独感が浮き彫りになる。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry" id="work-01">
+          <div class="tl-year-display">2010</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/@_the_beach.jpg">
+              <img src="images/@_the_beach.jpg" alt="ビーチにて" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">ビーチにて</h3>
+              <p class="tl-meta">@_the_beach</p>
+              <div class="tl-desc">
+                <p>水着姿の人物が立つ海辺の情景。背景の広がりや質感を大胆に省略し、人物のフォルムと砂浜に落ちる色彩の飛沫だけが残されている。</p>
+                <p>輪郭線を構成する青、赤、黄の線は、まるで印刷の版ズレのように重なり合い、被写体の存在をデジタルノイズのように揺るがせる。記憶の中の夏の陽炎のような、実体と幻影の狭間を描き出している。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <section class="contact-section" id="contact">
+    <p class="section-label" style="text-align: center; margin-bottom: 1.5rem;">Contact</p>
+    <h2 class="contact-heading">お問い合わせ</h2>
+    <p class="contact-body-text">
+      展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。
+    </p>
+    <a href="contact.html" class="contact-btn">問い合わせフォームへ</a>
   </section>
 
-  <div class="concept-section">
-    <div class="concept-sidebar reveal">
-      <p class="concept-sidebar-label">Concept</p>
-      <p class="concept-sidebar-num">06</p>
-    </div>
-    <div class="concept-main reveal" style="transition-delay:0.12s">
-      <p class="concept-credit">Series Commentary — Tsuda Shoichi</p>
-      <p class="concept-lead">
-        見慣れたはずの光景は、輪郭線を抽出されることで、全く新しい「余白」を生み出す。
-      </p>
-      <p class="concept-text">
-        本シリーズ「40273」は、日常の中に存在する人物や風景、そして彼らが落とす影を、限定された色彩と<em>ゆらぐ輪郭線</em>によって再構築する試みである。過剰な情報に溢れた現実の風景から、色彩の大部分を剥ぎ取ることで、そこに残された「線」と「空白」が、かえって強い実在感を放ち始める。
-      </p>
-      <p class="concept-text">
-        画面の大半を占める白い空白は、単なる未完成の領域ではない。それは鑑賞者の記憶や無意識が投影されるスクリーンであり、ノイズから解放された<em>純粋な視覚体験</em>への入り口として機能する。
-      </p>
+  <footer>
+    <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
+    <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
+  </footer>
 
-      <div class="concept-keywords">
-        <div class="concept-kw reveal" style="transition-delay:0.05s">
-          <p class="concept-kw-num">01</p>
-          <p class="concept-kw-title">線の抽出とゆらぎ</p>
-          <p class="concept-kw-desc">被写体を規定する境界線のみを残す。震えるような線描は、対象の不確かさと、そこに宿る生命の律動を同時に表現する。</p>
-        </div>
-        <div class="concept-kw reveal" style="transition-delay:0.12s">
-          <p class="concept-kw-num">02</p>
-          <p class="concept-kw-title">色彩の再定義</p>
-          <p class="concept-kw-desc">現実の固有色から離れ、シアンやマゼンタ、イエローといった原色に近いノイズのような色彩を配置することで、現実と虚構の境界を曖昧にする。</p>
-        </div>
-        <div class="concept-kw reveal" style="transition-delay:0.20s">
-          <p class="concept-kw-num">03</p>
-          <p class="concept-kw-title">空白の雄弁さ</p>
-          <p class="concept-kw-desc">描かれないことで立ち上がる空間。情報を削ぎ落とすことで、鑑賞者は自らの記憶を補完し、作品との対話を深めていく。</p>
-        </div>
+  <a href="#gallery" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+    <span class="back-to-top-text">TOP</span>
+  </a>
+
+  <div class="image-modal" id="imageModal" aria-hidden="true" role="dialog">
+    <div class="modal-bg" id="modalBg"></div>
+    <button class="modal-close" id="modalClose" aria-label="閉じる">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square">
+        <line x1="4" y1="4" x2="20" y2="20"/>
+        <line x1="20" y1="4" x2="4" y2="20"/>
+      </svg>
+    </button>
+    <div class="modal-content">
+      <img src="" alt="拡大画像" id="modalImg">
+      <div class="modal-caption">
+        <p class="modal-caption-jp" id="modalTitleJp"></p>
+        <p class="modal-caption-en" id="modalTitleEn"></p>
       </div>
     </div>
   </div>
 
-  <section class="works-section">
+  <script>
+    /* ── ファーストビュー アニメーション ── */
+    window.addEventListener('load', () => {
+      setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 150);
+      setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'),   350);
+      setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'),      680);
+      setTimeout(() => document.getElementById('heroMeta')?.classList.add('revealed'),    980);
+      setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1700);
+    });
 
-    <div class="works-header reveal">
-      <span class="works-header-label">Individual Works &nbsp;— &nbsp;40273</span>
-      <span class="works-header-count">06</span>
-    </div>
+    /* ── Observer (Fade Up & Grid Animation) ── */
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('in-view');
+        entry.target.classList.add('visible'); // For .reveal compatibility
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.gallery-item, .tl-entry, .reveal').forEach(el => io.observe(el));
 
-    <article class="work-item reveal">
-      <div class="work-img-col">
-        <div class="work-img-frame portrait" onclick="openLB(this)">
-          <img src="images/@_the_beach.jpg" onerror="this.onerror=null; this.src='images/@_the_beach.jpg';" alt="ビーチにて" loading="lazy">
-          <span class="work-zoom-hint">Expand ↗</span>
-        </div>
-      </div>
-      <div class="work-text-col">
-        <p class="work-index">Work 01</p>
-        <span class="work-year">2010</span>
-        <h2 class="work-title-ja">ビーチにて</h2>
-        <span class="work-title-en">@_the_beach</span>
-        <div class="work-spec">
-          油彩・キャンバス / Oil on canvas<br>
-        </div>
-        <p class="work-commentary-label">Commentary</p>
-        <div class="work-commentary">
-          <p>
-            水着姿の人物が立つ海辺の情景。背景の広がりや質感を大胆に省略し、人物のフォルムと砂浜に落ちる色彩の飛沫だけが残されている。
-          </p>
-          <p>
-            輪郭線を構成する青、赤、黄の線は、まるで印刷の版ズレのように重なり合い、被写体の存在をデジタルノイズのように揺るがせる。<em>記憶の中の夏</em>の陽炎のような、実体と幻影の狭間を描き出している。
-          </p>
-        </div>
-      </div>
-    </article>
+    /* ── Typewriter Engine ── */
+    function prepareTypewriterDOM(el) {
+      if (el.dataset.twPrepared === "true") return;
+      const txt = el.textContent.trim();
+      el.textContent = '';
+      for (let i = 0; i < txt.length; i++) {
+        const span = document.createElement('span');
+        span.className = 'tw-char';
+        span.textContent = txt[i];
+        el.appendChild(span);
+      }
+      const cursor = document.createElement('span');
+      cursor.className = 'tw-cursor';
+      el.appendChild(cursor);
+      el.dataset.twPrepared = "true";
+    }
 
-    <article class="work-item reverse reveal" style="transition-delay:0.08s">
-      <div class="work-img-col">
-        <div class="work-img-frame portrait" onclick="openLB(this)">
-          <img src="images/in_front_of_Shinagawa_Station.jpg" onerror="this.onerror=null; this.src='images/in_front_of_Shinagawa_Station.jpg';" alt="品川駅前" loading="lazy">
-          <span class="work-zoom-hint">Expand ↗</span>
-        </div>
-      </div>
-      <div class="work-text-col">
-        <p class="work-index">Work 02</p>
-        <span class="work-year">201X</span>
-        <h2 class="work-title-ja">品川駅前</h2>
-        <span class="work-title-en">in_front_of_Shinagawa_Station</span>
-        <div class="work-spec">
-          油彩・キャンバス / Oil on canvas<br>
-        </div>
-        <p class="work-commentary-label">Commentary</p>
-        <div class="work-commentary">
-          <p>
-            都市の雑踏の一角、駅前に立つ人々のシルエットを抽出した作品。床のタイルのパターンが赤い線で細かく描かれる一方で、人物や建物のディテールは徹底して白く抜かれている。
-          </p>
-          <p>
-            無数の人々が行き交うターミナル駅という空間を、これほどまでに<em>静謐で空虚な空間</em>として提示することで、現代都市における個人の匿名性と孤独感が浮き彫りになる。
-          </p>
-        </div>
-      </div>
-    </article>
+    function runTypewriter(el) {
+      if (el.dataset.twDone === "true") return;
+      const chars = el.querySelectorAll('.tw-char');
+      const cursor = el.querySelector('.tw-cursor');
+      let idx = 0;
+      function nextChar() {
+        if (idx < chars.length) {
+          chars[idx].style.opacity = '1';
+          idx++;
+          setTimeout(() => requestAnimationFrame(nextChar), 45);
+        } else {
+          el.dataset.twDone = "true";
+          if (cursor) {
+            cursor.classList.add('fade-out');
+            setTimeout(() => cursor.remove(), 800);
+          }
+        }
+      }
+      requestAnimationFrame(nextChar);
+    }
 
-    <article class="work-item reveal">
-      <div class="work-img-col">
-        <div class="work-img-frame landscape" onclick="openLB(this)">
-          <img src="images/【室内のイマージュ Ⅰ】.jpg" onerror="this.onerror=null; this.src='images/【室内のイマージュ Ⅰ】.jpg';" alt="室内のイマージュ Ⅰ" loading="lazy">
-          <span class="work-zoom-hint">Expand ↗</span>
-        </div>
-      </div>
-      <div class="work-text-col">
-        <p class="work-index">Work 03</p>
-        <span class="work-year">201X</span>
-        <h2 class="work-title-ja">室内のイマージュ Ⅰ</h2>
-        <span class="work-title-en">Image in the room I</span>
-        <div class="work-spec">
-          油彩・キャンバス / Oil on canvas<br>
-        </div>
-        <p class="work-commentary-label">Commentary</p>
-        <div class="work-commentary">
-          <p>
-            机、椅子、そしてそこに佇む人物らしき輪郭。見慣れた室内の風景が、断片的な線描によって解体され、再構成されている。
-          </p>
-          <p>
-            画面右側のテクスチャの集積と、左側に広がる余白のコントラストが、空間のパースペクティブを歪ませる。物理的な空間を描くのではなく、<em>空間に対する心理的な感覚</em>をキャンバス上にマッピングしたような作品。
-          </p>
-        </div>
-      </div>
-    </article>
+    document.querySelectorAll('[data-typewriter="true"]').forEach(el => {
+      prepareTypewriterDOM(el);
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            obs.unobserve(el);
+            setTimeout(() => requestAnimationFrame(() => runTypewriter(el)), 300);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
+      obs.observe(el);
+    });
 
-    <article class="work-item reverse reveal" style="transition-delay:0.08s">
-      <div class="work-img-col">
-        <div class="work-img-frame landscape" onclick="openLB(this)">
-          <img src="images/【室内のイマージュ ＃２】.jpg" onerror="this.onerror=null; this.src='images/【室内のイマージュ ＃２】.jpg';" alt="室内のイマージュ ＃２" loading="lazy">
-          <span class="work-zoom-hint">Expand ↗</span>
-        </div>
-      </div>
-      <div class="work-text-col">
-        <p class="work-index">Work 04</p>
-        <span class="work-year">201X</span>
-        <h2 class="work-title-ja">室内のイマージュ ＃２</h2>
-        <span class="work-title-en">Image in the room #2</span>
-        <div class="work-spec">
-          油彩・キャンバス / Oil on canvas<br>
-        </div>
-        <p class="work-commentary-label">Commentary</p>
-        <div class="work-commentary">
-          <p>
-            「室内のイマージュ」シリーズの連作。人物の視線や姿勢の断片が、淡いピンクとシアンの微細な線で空間に刻まれている。
-          </p>
-          <p>
-            まるで古い写真が光で飛んでしまったかのような、あるいはデジタルデータが破損してアウトラインだけが残ったかのような脆弱さ。存在の<em>不確かさと儚さ</em>が、抑制された色彩を通して静かに語りかけてくる。
-          </p>
-        </div>
-      </div>
-    </article>
+    /* ── Scroll Interactions (Spine, Nav, Page-Nav) ── */
+    const topNav = document.getElementById('top-nav');
+    const pageNav = document.getElementById('pageNav');
+    const navItems = document.querySelectorAll('.page-nav-item');
+    const sections = ['gallery', 'chronology'].map(id => document.getElementById(id));
+    const spineFill = document.getElementById('tl-spine-fill');
+    const tlWrap = document.querySelector('.timeline-container');
+    let ticking = false;
 
-    <article class="work-item reveal">
-      <div class="work-img-col">
-        <div class="work-img-frame landscape" onclick="openLB(this)">
-          <img src="images/IMG_4325.jpg" onerror="this.onerror=null; this.src='images/IMG_4325.jpg';" alt="Untitled" loading="lazy">
-          <span class="work-zoom-hint">Expand ↗</span>
-        </div>
-      </div>
-      <div class="work-text-col">
-        <p class="work-index">Work 05</p>
-        <span class="work-year">201X</span>
-        <h2 class="work-title-ja">無題</h2>
-        <span class="work-title-en">Untitled</span>
-        <div class="work-spec">
-          油彩・キャンバス / Oil on canvas<br>
-        </div>
-        <p class="work-commentary-label">Commentary</p>
-        <div class="work-commentary">
-          <p>
-            風景の一部、あるいは水面の反射や地形の俯瞰図のようにも見える抽象度の高い作品。
-          </p>
-          <p>
-            細かな線の集積と、所々に現れる滲んだような色彩が、無機質なキャンバスに有機的な広がりを与えている。具体的な対象物の暗示を避けることで、鑑賞者の<em>純粋な視覚的探索</em>を誘う構成となっている。
-          </p>
-        </div>
-      </div>
-    </article>
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          
+          /* Top Nav */
+          if (scrollY > 50) topNav.classList.add('scrolled');
+          else topNav.classList.remove('scrolled');
 
-    <article class="work-item reverse reveal" style="transition-delay:0.08s">
-      <div class="work-img-col">
-        <div class="work-img-frame portrait" onclick="openLB(this)">
-          <img src="images/【play_with_shadow】.jpg" onerror="this.onerror=null; this.src='images/【play_with_shadow】.jpg';" alt="play with shadow" loading="lazy">
-          <span class="work-zoom-hint">Expand ↗</span>
-        </div>
-      </div>
-      <div class="work-text-col">
-        <p class="work-index">Work 06</p>
-        <span class="work-year">201X</span>
-        <h2 class="work-title-ja">影と遊ぶ</h2>
-        <span class="work-title-en">play with shadow</span>
-        <div class="work-spec">
-          油彩・キャンバス / Oil on canvas<br>
-        </div>
-        <p class="work-commentary-label">Commentary</p>
-        <div class="work-commentary">
-          <p>
-            明るい路地を歩く少女と、水溜りか路面に反射するその影。実体である少女の衣服にはピンクや紫の色彩が施されているが、足元の影は荒々しい青と黒のピクセルのようなテクスチャで描かれている。
-          </p>
-          <p>
-            光と影の反転、そして実像と虚像のコントラスト。<em>現実の世界よりも影の世界の方が濃密な物質感</em>を持っているという逆転現象が、日常の何気ない風景を異化し、不思議な物語性を帯びさせている。
-          </p>
-        </div>
-      </div>
-    </article>
+          /* Page Nav Visibility & Active State */
+          const checkY = scrollY + window.innerHeight * 0.4;
+          let activeSec = null;
+          sections.forEach(sec => {
+            if (sec && sec.offsetTop <= checkY) activeSec = sec;
+          });
+          navItems.forEach(item => {
+            const target = document.getElementById(item.getAttribute('data-target'));
+            item.classList.toggle('active', target === activeSec);
+          });
+          if (pageNav) {
+            pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.6);
+          }
 
-  </section>
+          /* Timeline Spine Progress */
+          if (tlWrap && spineFill) {
+            const rect = tlWrap.getBoundingClientRect();
+            const totalH = tlWrap.offsetHeight;
+            if (totalH > 0) {
+              const pct = (window.innerHeight * 0.55 - rect.top) / totalH * 100;
+              spineFill.style.height = Math.max(0, Math.min(100, pct)) + '%';
+            }
+          }
 
-  <div class="back-wrap reveal">
-    <a href="works.html" class="back-link">
-      <span class="back-link-arrow">←</span>
-      Back to Works Index
-    </a>
-  </div>
+          /* Back to Top */
+          const b2t = document.getElementById('backToTop');
+          if (scrollY > 400) b2t.classList.add('is-visible');
+          else b2t.classList.remove('is-visible');
 
-</main>
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
 
-<div class="lb" id="lb" role="dialog" aria-modal="true" onclick="closeLB()">
-  <button class="lb-close" onclick="closeLB()">
-    <span class="lb-close-x">×</span> Close
-  </button>
-  <img id="lb-img" src="" alt="">
-</div>
-
-<section class="contact-section" id="contact">
-  <p class="section-label"><span>Contact</span></p>
-  <h2 class="section-heading">お問い合わせ</h2>
-  <p class="contact-body-text">
-    展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。
-  </p>
-  <a href="contact.html" class="contact-btn">問い合わせフォームへ →</a>
-</section>
-
-<footer>
-  <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
-  <p class="footer-copy">© 2026 Tsuda Shoichi. All Rights Reserved.</p>
-</footer>
-
-<script>
-  /* ── Reveal ── */
-  document.addEventListener('DOMContentLoaded', function() {
-    var io = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          io.unobserve(e.target);
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const target = document.getElementById(item.getAttribute('data-target'));
+        if (target) {
+          const offset = topNav?.offsetHeight || 0;
+          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
         }
       });
-    }, { threshold: 0.08 });
-    document.querySelectorAll('.reveal').forEach(function(el) { io.observe(el); });
-  });
-
-  /* ── Lightbox ── */
-  function openLB(frame) {
-    var img = frame.querySelector('img');
-    var lb  = document.getElementById('lb');
-    document.getElementById('lb-img').src = img.src;
-    document.getElementById('lb-img').alt = img.alt;
-    lb.classList.add('open');
-    document.body.style.overflow = 'hidden';
-    requestAnimationFrame(function() {
-      requestAnimationFrame(function() { lb.classList.add('vis'); });
     });
-  }
-  function closeLB() {
-    var lb = document.getElementById('lb');
-    lb.classList.remove('vis');
-    setTimeout(function() {
-      lb.classList.remove('open');
-      document.body.style.overflow = '';
-    }, 350);
-  }
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeLB();
-  });
-</script>
+
+    /* ★ スマホとPCでTOPに戻るスクロール先を動的に切り替える */
+    document.getElementById('backToTop').addEventListener('click', (e) => {
+      e.preventDefault();
+      if (window.innerWidth <= 768) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        const target = document.getElementById('gallery');
+        if (target) {
+          const offset = topNav?.offsetHeight || 80;
+          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+        }
+      }
+    });
+
+    /* ── Lightbox (Modal) ── */
+    const modal      = document.getElementById('imageModal');
+    const modalImg   = document.getElementById('modalImg');
+    const modalBg    = document.getElementById('modalBg');
+    const modalClose = document.getElementById('modalClose');
+    const titleJpEl  = document.getElementById('modalTitleJp');
+    const titleEnEl  = document.getElementById('modalTitleEn');
+
+    const openModal = (src, jp, en) => {
+      modalImg.src = src;
+      titleJpEl.textContent = jp || '';
+      titleEnEl.textContent = en || '';
+      modal.classList.add('is-active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('is-locked');
+    };
+
+    const closeModal = () => {
+      modal.classList.remove('is-active');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('is-locked');
+      setTimeout(() => { modalImg.src = ''; titleJpEl.textContent = ''; titleEnEl.textContent = ''; }, 560);
+    };
+
+    document.querySelectorAll('.js-modal-open').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const src = btn.getAttribute('data-img-src');
+        const block = btn.closest('.tl-entry');
+        let jp = '';
+        if (block) {
+          const jpTitleEl = block.querySelector('.tl-title');
+          jp = jpTitleEl ? jpTitleEl.textContent : '';
+        } else {
+          const galleryItem = btn.closest('.gallery-item');
+          if (galleryItem) {
+             const jpTitleEl = galleryItem.querySelector('.gallery-item-title');
+             jp = jpTitleEl ? jpTitleEl.textContent : '';
+          }
+        }
+        if (src) openModal(src, jp, '');
+      });
+    });
+
+    modalBg.addEventListener('click', closeModal);
+    modalClose.addEventListener('click', closeModal);
+    modalImg.addEventListener('click', closeModal);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('is-active')) closeModal(); });
+
+  </script>
 </body>
 </html>
