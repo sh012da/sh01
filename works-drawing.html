@@ -217,10 +217,15 @@
        GALLERY GRID SECTION (PC ONLY)
     ============================================================ */
     .gallery-section { padding: clamp(4rem, 9vh, 8rem) var(--px); max-width: 1600px; margin: 0 auto; border-bottom: 0.5px solid var(--border); }
-    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 2.5rem; }
+    
+    /* align-items: start を指定し、枠が縦に伸びるのを防ぐ */
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 2.5rem; align-items: start; }
     .gallery-item { display: block; text-decoration: none; cursor: pointer; }
-    .gallery-item-img-wrap { aspect-ratio: 4/5; overflow: hidden; background: var(--bg2); border: 0.5px solid var(--border); transition: border-color 0.4s ease; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; }
-    .gallery-item-img-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 1rem; filter: grayscale(15%) brightness(0.85); transition: transform 0.8s var(--ease), filter 0.6s ease; }
+    
+    /* 背景色やpadding、aspect-ratioを削除し、画像サイズにぴったりフィットさせる */
+    .gallery-item-img-wrap { overflow: hidden; background: transparent; border: 0.5px solid var(--border); transition: border-color 0.4s ease; margin-bottom: 1rem; display: block; }
+    .gallery-item-img-wrap img { width: 100%; height: auto; display: block; filter: grayscale(15%) brightness(0.85); transition: transform 0.8s var(--ease), filter 0.6s ease; }
+    
     .gallery-item:hover .gallery-item-img-wrap { border-color: rgba(196,168,130,0.35); box-shadow: 0 16px 40px rgba(0,0,0,0.5); }
     .gallery-item:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
     .gallery-item-title { font-family: var(--font-ja); font-size: 0.85rem; font-weight: 300; color: var(--fg); letter-spacing: 0.05em; display: block; margin-bottom: 0.2rem; }
@@ -852,3 +857,109 @@
             item.classList.toggle('active', target === activeSec);
           });
           if (pageNav) {
+            pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.6);
+          }
+
+          /* Back to Top */
+          const b2t = document.getElementById('backToTop');
+          if (scrollY > 400) b2t.classList.add('is-visible');
+          else b2t.classList.remove('is-visible');
+
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    /* ページ内リンクのスムーズスクロール */
+    document.querySelectorAll('a[href^="#"], .page-nav-item').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const targetId = this.getAttribute('data-target') || this.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        
+        if (targetElement) {
+          e.preventDefault();
+          const offset = topNav?.offsetHeight || 0;
+          window.scrollTo({
+            top: targetElement.getBoundingClientRect().top + window.scrollY - offset,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    /* スマホ・PCでのBackToTopスクロール挙動 */
+    document.getElementById('backToTop').addEventListener('click', (e) => {
+      e.preventDefault();
+      if (window.innerWidth <= 768) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        const target = document.getElementById('gallery');
+        if (target) {
+          const offset = topNav?.offsetHeight || 80;
+          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+        }
+      }
+    });
+
+    /* ── モーダル展開ロジック ── */
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImg');
+    const modalBg = document.getElementById('modalBg');
+    const modalClose = document.getElementById('modalClose');
+    const modalTitleJp = document.getElementById('modalTitleJp');
+    const modalTitleEn = document.getElementById('modalTitleEn');
+    const modalTriggers = document.querySelectorAll('.js-modal-open');
+
+    const openModal = (src, jp, en) => {
+      modalImg.src = src;
+      modalTitleJp.textContent = jp || '';
+      modalTitleEn.textContent = en || '';
+      
+      modal.classList.add('is-active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('is-locked');
+    };
+
+    const closeModal = () => {
+      modal.classList.remove('is-active');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('is-locked');
+      setTimeout(() => { 
+        modalImg.src = ''; 
+        modalTitleJp.textContent = ''; 
+        modalTitleEn.textContent = ''; 
+      }, 560);
+    };
+
+    modalTriggers.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const src = btn.getAttribute('data-img-src');
+        const block = btn.closest('.artwork-block');
+        let jp = '';
+        let en = '';
+        
+        if (block) {
+          const titleJpEl = block.querySelector('.artwork-title-jp');
+          const titleEnEl = block.querySelector('.artwork-title-en');
+          jp = titleJpEl ? titleJpEl.textContent : '';
+          en = titleEnEl ? titleEnEl.textContent : '';
+        }
+        
+        if(src) openModal(src, jp, en);
+      });
+    });
+
+    modalBg.addEventListener('click', closeModal);
+    modalClose.addEventListener('click', closeModal);
+    modalImg.addEventListener('click', closeModal);
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('is-active')) {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>
