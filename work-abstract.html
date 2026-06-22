@@ -241,7 +241,8 @@
     ============================================================ */
     .concept-section {
       padding: clamp(6rem, 13vh, 10rem) var(--px);
-      max-width: 900px; margin: 0 auto; text-align: center;
+      max-width: 640px; /* 適切なテキスト幅に制限して読みやすさを向上 */
+      margin: 0 auto; text-align: center;
     }
     .concept-text {
       font-size: clamp(0.9rem, 2vw, 1.05rem);
@@ -314,26 +315,31 @@
     .gallery-grid {
       display: flex; flex-wrap: wrap; justify-content: center;
       align-items: flex-start;
-      /* ★ 上辺を完璧に揃える */
       gap: clamp(1.5rem, 3vw, 3rem);
     }
     .gallery-item {
       display: flex; flex-direction: column; text-decoration: none;
       cursor: pointer;
+      align-items: flex-start; /* コンテナを左上に揃え、無駄な引き伸ばしを防ぐ */
       opacity: 0; transform: translateY(20px);
       transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
     }
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
     
     .gallery-item-img-wrap {
-      /* ★ HTMLに記述した各作品の物理サイズ(号数の高さ)から直接描画サイズを計算 */
-      height: calc(var(--h-mm, 400) * var(--scale-desktop) * 1px);
-      display: flex; justify-content: center; align-items: center;
+      /* 枠サイズを中の画像（img）に完全に依存させ、黒い余白を一切出さない */
+      display: inline-block;
+      max-width: 100%;
       background: transparent; overflow: hidden; border: 0.5px solid var(--border);
-      transition: border-color 0.4s ease, box-shadow 0.5s var(--ease), height 0.4s ease;
+      transition: border-color 0.4s ease, box-shadow 0.5s var(--ease);
     }
     .gallery-item-img-wrap img {
-      height: 100%; width: auto; max-width: none; object-fit: contain;
+      display: block;
+      width: auto;
+      height: auto;
+      /* 実寸スケールの計算結果を max-height に適用し、元画像の比率をそのまま反映させる */
+      max-height: calc(var(--h-mm, 400) * var(--scale-desktop) * 1px);
+      max-width: 100%;
       filter: grayscale(15%) brightness(0.85);
       transition: transform 0.8s var(--ease), filter 0.6s ease;
     }
@@ -552,7 +558,7 @@
       
       /* モバイルでも縦並びにせず比率を保つ */
       .gallery-grid { flex-direction: row; } 
-      .gallery-item-img-wrap { height: calc(var(--h-mm, 400) * var(--scale-mobile) * 1px); }
+      .gallery-item-img-wrap img { max-height: calc(var(--h-mm, 400) * var(--scale-mobile) * 1px); }
     }
     @media (max-width: 480px) {
       .hero-scroll { display: none; }
@@ -633,7 +639,7 @@
         <p class="statement-para reveal-fade">
           具体的な対象を持たず、あるいは対象を持ちながらも、その形が絵画行為の中で次第に溶解し、別の何かへと変容していきます。油彩という物質の重さ、筆の痕跡、絵の具の層。描き、削り、重ねていく行為の蓄積が、具象を解体し、新たな感覚の地平を開いていくのです。抽象絵画は「何を描くか」ではなく「<strong>いかに存在するか</strong>」を問うものです。
         </p>
-   
+    
         <p class="statement-para reveal-fade">
           本シリーズには、初期の実験的なドローイングから、現在進行形の大画面油彩まで、私の形態変容への問いが連続しています。それは単なる様式の変化ではなく、「左美都という土地の感覚をどこまで絵具の層として蓄積できるか」という持続的な探求の記録でもあります。
         </p>
