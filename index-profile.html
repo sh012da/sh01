@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -22,7 +21,7 @@
 
   <style>
     /* ============================================================
-       DESIGN TOKENS (Matched to work-abstract.html / works-variant.html)
+       DESIGN TOKENS
     ============================================================ */
     :root {
       --bg:        #060605;
@@ -61,7 +60,7 @@
     a:hover { opacity: 0.45; }
 
     /* ============================================================
-       NAVIGATION (Transparent Top Nav & Page Nav)
+       NAVIGATION
     ============================================================ */
     nav#top-nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 300;
@@ -117,22 +116,32 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       HERO FIRST VIEW (Matched to work-abstract.html)
+       HERO FIRST VIEW (Video Background)
     ============================================================ */
     .hero {
       position: relative; height: 100svh; min-height: 580px;
       display: flex; flex-direction: column; justify-content: flex-end;
       padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); overflow: hidden;
-      background:
-        radial-gradient(ellipse 70% 60% at 30% 30%, rgba(124,154,160,0.05) 0%, transparent 55%),
-        radial-gradient(ellipse 55% 80% at 72% 25%, rgba(196,168,130,0.04) 0%, transparent 55%),
-        var(--bg);
+      background: var(--bg);
+    }
+    .hero-video-wrap {
+      position: absolute; inset: 0; z-index: 1; overflow: hidden;
+    }
+    .hero-video-wrap video {
+      width: 100%; height: 100%; object-fit: cover;
+      /* 明るめ・コントラスト高めに調整 */
+      filter: brightness(1.1) contrast(1.05);
+    }
+    .hero-video-overlay {
+      position: absolute; inset: 0; z-index: 2;
+      /* 上部は明るさを活かし、テキストがある下部にかけて暗くするグラデーション */
+      background: linear-gradient(to top, rgba(6,6,5,0.92) 0%, rgba(6,6,5,0.4) 30%, rgba(196,168,130,0.1) 100%);
     }
     .hero-divider {
-      position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+      position: absolute; left: 0; right: 0; bottom: 0; height: 1px; z-index: 4;
       background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%);
     }
-    .hero-inner { position: relative; z-index: 2; }
+    .hero-inner { position: relative; z-index: 3; }
     .hero-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem);
       letter-spacing: 0.5em; color: var(--dim); text-transform: uppercase;
@@ -160,7 +169,7 @@
     .hero-title.revealed .char { opacity: 1; transform: translateX(0); }
     .hero-title-en {
       font-family: var(--font-en); font-size: clamp(0.95rem, 3vw, 2rem);
-      font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.55);
+      font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.65);
       clip-path: inset(0 100% 0 0); transition: clip-path 1.4s var(--ease) 0.7s;
     }
     .hero-title-en.revealed { clip-path: inset(0 0% 0 0); }
@@ -180,7 +189,7 @@
     }
     .hero-scroll {
       position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px);
-      z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 12px;
+      z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 12px;
       opacity: 0; transition: opacity 0.9s ease 1.8s;
     }
     .hero-scroll.revealed { opacity: 1; }
@@ -207,6 +216,7 @@
        CONCEPT / INTRO SECTION
     ============================================================ */
     .concept-section {
+      position: relative; z-index: 3;
       padding: clamp(6rem, 13vh, 10rem) var(--px) clamp(3rem, 7vh, 5rem);
       max-width: 900px; margin: 0 auto;
       text-align: center;
@@ -217,7 +227,7 @@
     }
 
     /* ============================================================
-       PROFILE SPLIT (Portrait + Facts)
+       PROFILE SPLIT
     ============================================================ */
     .profile-section {
       padding: clamp(3rem, 7vh, 5rem) var(--px) clamp(7rem, 14vh, 10rem);
@@ -286,7 +296,7 @@
     }
 
     /* ============================================================
-       STUDIO GALLERY (irokoto.co.jp/recruit inspired editorial grid)
+       STUDIO & PERFORMANCE GALLERY
     ============================================================ */
     .studio-section {
       padding: clamp(3rem, 7vh, 5rem) var(--px) clamp(7rem, 14vh, 10rem);
@@ -332,23 +342,29 @@
       font-family: var(--font-en); font-size: 0.6rem; letter-spacing: 0.14em;
       color: var(--dim); text-transform: uppercase; pointer-events: none;
     }
-    /* Asymmetric placement, editorial-style */
-    .studio-cell.c1 { grid-column: span 7; aspect-ratio: 4 / 5; }
-    .studio-cell.c2 { grid-column: span 5; aspect-ratio: 4 / 5; }
-    .studio-cell.c3 { grid-column: span 4; aspect-ratio: 3 / 4; }
-    .studio-cell.c4 { grid-column: span 4; aspect-ratio: 3 / 4; }
-    .studio-cell.c5 { grid-column: span 4; aspect-ratio: 3 / 4; }
-    .studio-cell.c6 { grid-column: span 5; aspect-ratio: 5 / 4; }
-    .studio-cell.c7 { grid-column: span 7; aspect-ratio: 16 / 9; }
-    .studio-cell.c8 { grid-column: span 6; aspect-ratio: 4 / 5; }
-    .studio-cell.c9 { grid-column: span 6; aspect-ratio: 4 / 5; }
+    
+    /* 14 cells layout (Calculated for perfect alignment) */
+    .studio-cell.c1 { grid-column: span 7; aspect-ratio: 7 / 5; }
+    .studio-cell.c2 { grid-column: span 5; aspect-ratio: 1 / 1; }
+    .studio-cell.c3 { grid-column: span 6; aspect-ratio: 4 / 3; }
+    .studio-cell.c4 { grid-column: span 6; aspect-ratio: 4 / 3; }
+    .studio-cell.c5 { grid-column: span 12; aspect-ratio: 21 / 9; }
+    .studio-cell.c6 { grid-column: span 5; aspect-ratio: 5 / 6; }
+    .studio-cell.c7 { grid-column: span 7; aspect-ratio: 7 / 6; }
+    .studio-cell.c8 { grid-column: span 8; aspect-ratio: 8 / 5; }
+    .studio-cell.c9 { grid-column: span 4; aspect-ratio: 4 / 5; }
+    .studio-cell.c10 { grid-column: span 4; aspect-ratio: 3 / 4; }
+    .studio-cell.c11 { grid-column: span 4; aspect-ratio: 3 / 4; }
+    .studio-cell.c12 { grid-column: span 4; aspect-ratio: 3 / 4; }
+    .studio-cell.c13 { grid-column: span 6; aspect-ratio: 4 / 3; }
+    .studio-cell.c14 { grid-column: span 6; aspect-ratio: 4 / 3; }
+
     @media (max-width: 768px) {
       .studio-grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
-      .studio-cell.c1, .studio-cell.c2, .studio-cell.c3, .studio-cell.c4,
-      .studio-cell.c5, .studio-cell.c6, .studio-cell.c7, .studio-cell.c8, .studio-cell.c9 {
-        grid-column: span 1; aspect-ratio: 3 / 4;
+      .studio-cell { grid-column: span 1 !important; aspect-ratio: 1 !important; }
+      .studio-cell.c5, .studio-cell.c7, .studio-cell.c8, .studio-cell.c13, .studio-cell.c14 {
+        grid-column: span 2 !important; aspect-ratio: 16 / 10 !important;
       }
-      .studio-cell.c1, .studio-cell.c7 { grid-column: span 2; aspect-ratio: 16 / 11; }
     }
 
     /* ============================================================
@@ -517,7 +533,7 @@
       <div class="page-nav-dot"></div><span class="page-nav-label">Profile</span>
     </button>
     <button class="page-nav-item" data-target="studio" aria-label="Studioへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Studio</span>
+      <div class="page-nav-dot"></div><span class="page-nav-label">Activities</span>
     </button>
     <button class="page-nav-item" data-target="career" aria-label="Careerへ">
       <div class="page-nav-dot"></div><span class="page-nav-label">Career</span>
@@ -526,6 +542,12 @@
 
   <main>
     <section class="hero">
+      <div class="hero-video-wrap" aria-hidden="true">
+        <video autoplay loop muted playsinline>
+          <source src="mov1.mp4" type="video/mp4">
+        </video>
+        <div class="hero-video-overlay"></div>
+      </div>
       <div class="hero-divider" aria-hidden="true"></div>
       <div class="hero-inner">
         <p class="hero-eyebrow" id="heroEyebrow">Artist Profile &nbsp;·&nbsp; b.1984, Nagano</p>
@@ -569,11 +591,11 @@
             <tbody>
               <tr>
                 <th scope="row">Born</th>
-                <td>1984年　長野県生まれ</td>
+                <td>1984年 長野県生まれ</td>
               </tr>
               <tr>
                 <th scope="row">Education</th>
-                <td>2013年　東京藝術大学美術学部絵画科油画専攻卒業</td>
+                <td>2013年 東京藝術大学美術学部絵画科油画専攻卒業</td>
               </tr>
               <tr>
                 <th scope="row">Base</th>
@@ -594,58 +616,90 @@
     </section>
 
     <section class="studio-section" id="studio">
-      <div class="section-label">In the Studio</div>
+      <div class="section-label">Studio & Performance</div>
       <div class="studio-intro">
         <p class="studio-intro-text">
           巨大なキャンバスに向き合い、左美都の記憶を一筆ずつ重ねていく。<br>
-          制作の現場は、思考と身体が交差する〈洞窟〉そのものでもある。
+          思考と身体が交差する静寂の〈洞窟〉から、<br>
+          音楽や他者と響き合うパブリックな舞台へと展開する軌跡。
         </p>
       </div>
       <div class="studio-grid">
-        <figure class="studio-cell c1 js-modal-open" data-img-src="images/IMG_7819.JPG" data-cap-jp="制作風景" data-cap-en="In the studio">
+        <figure class="studio-cell c1 js-modal-open" data-img-src="images/IMG_7653.jpg" data-cap-jp="制作風景" data-cap-en="Spreading the canvas">
           <span class="studio-cell-num">01</span>
-          <img src="images/IMG_7819.JPG" alt="津田翔一 制作風景" loading="lazy">
-          <figcaption class="studio-cell-cap">Working on the canvas</figcaption>
+          <img src="images/IMG_7653.jpg" alt="津田翔一 制作風景" loading="lazy">
+          <figcaption class="studio-cell-cap">Spreading the canvas</figcaption>
         </figure>
-        <figure class="studio-cell c2 js-modal-open" data-img-src="images/IMG_7836.JPG" data-cap-jp="制作風景" data-cap-en="In the studio">
+        <figure class="studio-cell c2 js-modal-open" data-img-src="images/IMG_3153.jpg" data-cap-jp="制作風景" data-cap-en="Facing the canvas">
           <span class="studio-cell-num">02</span>
-          <img src="images/IMG_7836.JPG" alt="津田翔一 制作風景" loading="lazy">
-          <figcaption class="studio-cell-cap">Brush in hand</figcaption>
+          <img src="images/IMG_3153.jpg" alt="津田翔一 制作風景" loading="lazy">
+          <figcaption class="studio-cell-cap">Facing the canvas</figcaption>
         </figure>
-        <figure class="studio-cell c3 js-modal-open" data-img-src="images/IMG_7653.JPG" data-cap-jp="制作風景" data-cap-en="In the studio">
+
+        <figure class="studio-cell c3 js-modal-open" data-img-src="images/IMG_7606.jpg" data-cap-jp="制作風景" data-cap-en="Broad red strokes">
           <span class="studio-cell-num">03</span>
-          <img src="images/IMG_7653.JPG" alt="津田翔一 制作風景" loading="lazy">
-          <figcaption class="studio-cell-cap">Detail of the gesture</figcaption>
+          <img src="images/IMG_7606.jpg" alt="津田翔一 制作風景" loading="lazy">
+          <figcaption class="studio-cell-cap">Broad red strokes</figcaption>
         </figure>
-        <figure class="studio-cell c4 js-modal-open" data-img-src="images/IMG_3151.JPG" data-cap-jp="制作風景" data-cap-en="In the studio">
+        <figure class="studio-cell c4 js-modal-open" data-img-src="images/IMG_7645.jpg" data-cap-jp="制作風景" data-cap-en="Creating depth">
           <span class="studio-cell-num">04</span>
-          <img src="images/IMG_3151.JPG" alt="津田翔一 制作風景" loading="lazy">
+          <img src="images/IMG_7645.jpg" alt="津田翔一 制作風景" loading="lazy">
+          <figcaption class="studio-cell-cap">Creating depth</figcaption>
+        </figure>
+
+        <figure class="studio-cell c5 js-modal-open" data-img-src="images/IMG_7683.jpg" data-cap-jp="制作風景" data-cap-en="Large-scale work">
+          <span class="studio-cell-num">05</span>
+          <img src="images/IMG_7683.jpg" alt="津田翔一 制作風景" loading="lazy">
+          <figcaption class="studio-cell-cap">Large-scale work</figcaption>
+        </figure>
+
+        <figure class="studio-cell c6 js-modal-open" data-img-src="images/IMG_7834.jpg" data-cap-jp="ライブペイント" data-cap-en="Painting on stage">
+          <span class="studio-cell-num">06</span>
+          <img src="images/IMG_7834.jpg" alt="津田翔一 ライブペイント" loading="lazy">
+          <figcaption class="studio-cell-cap">Painting on stage</figcaption>
+        </figure>
+        <figure class="studio-cell c7 js-modal-open" data-img-src="images/IMG_7837.jpg" data-cap-jp="ライブペイント" data-cap-en="Illuminated performance">
+          <span class="studio-cell-num">07</span>
+          <img src="images/IMG_7837.jpg" alt="津田翔一 ライブペイント" loading="lazy">
+          <figcaption class="studio-cell-cap">Illuminated performance</figcaption>
+        </figure>
+
+        <figure class="studio-cell c8 js-modal-open" data-img-src="images/IMG_7823.jpg" data-cap-jp="ステージ" data-cap-en="Harmony of art and music">
+          <span class="studio-cell-num">08</span>
+          <img src="images/IMG_7823.jpg" alt="津田翔一 ステージ" loading="lazy">
+          <figcaption class="studio-cell-cap">Harmony of art and music</figcaption>
+        </figure>
+        <figure class="studio-cell c9 js-modal-open" data-img-src="images/IMG_7819.jpg" data-cap-jp="トーク" data-cap-en="Artist's voice">
+          <span class="studio-cell-num">09</span>
+          <img src="images/IMG_7819.jpg" alt="津田翔一 トーク" loading="lazy">
+          <figcaption class="studio-cell-cap">Artist's voice</figcaption>
+        </figure>
+
+        <figure class="studio-cell c10 js-modal-open" data-img-src="images/IMG_3157.jpg" data-cap-jp="制作風景" data-cap-en="Mixing colors">
+          <span class="studio-cell-num">10</span>
+          <img src="images/IMG_3157.jpg" alt="津田翔一 制作風景" loading="lazy">
+          <figcaption class="studio-cell-cap">Mixing colors</figcaption>
+        </figure>
+        <figure class="studio-cell c11 js-modal-open" data-img-src="images/IMG_3151.jpg" data-cap-jp="制作風景" data-cap-en="A pause mid-stroke">
+          <span class="studio-cell-num">11</span>
+          <img src="images/IMG_3151.jpg" alt="津田翔一 制作風景" loading="lazy">
           <figcaption class="studio-cell-cap">A pause mid-stroke</figcaption>
         </figure>
-        <figure class="studio-cell c5 js-modal-open" data-img-src="images/IMG_3157.JPG" data-cap-jp="制作風景" data-cap-en="In the studio">
-          <span class="studio-cell-num">05</span>
-          <img src="images/IMG_3157.JPG" alt="津田翔一 制作風景" loading="lazy">
-          <figcaption class="studio-cell-cap">Mixing color</figcaption>
+        <figure class="studio-cell c12 js-modal-open" data-img-src="images/_MG_3167.jpg" data-cap-jp="笑顔" data-cap-en="Warm interactions">
+          <span class="studio-cell-num">12</span>
+          <img src="images/_MG_3167.jpg" alt="津田翔一 イベント風景" loading="lazy">
+          <figcaption class="studio-cell-cap">Warm interactions</figcaption>
         </figure>
-        <figure class="studio-cell c6 js-modal-open" data-img-src="images/IMG_3153.JPG" data-cap-jp="制作風景" data-cap-en="In the studio">
-          <span class="studio-cell-num">06</span>
-          <img src="images/IMG_3153.JPG" alt="津田翔一 制作風景" loading="lazy">
-          <figcaption class="studio-cell-cap">Standing before the work</figcaption>
+
+        <figure class="studio-cell c13 js-modal-open" data-img-src="images/image_50374657.jpg" data-cap-jp="ギャラリートーク" data-cap-en="Gallery talk">
+          <span class="studio-cell-num">13</span>
+          <img src="images/image_50374657.jpg" alt="津田翔一 ギャラリートーク" loading="lazy">
+          <figcaption class="studio-cell-cap">Gallery talk</figcaption>
         </figure>
-        <figure class="studio-cell c7 js-modal-open" data-img-src="images/IMG_7683.JPG" data-cap-jp="制作風景" data-cap-en="In the studio">
-          <span class="studio-cell-num">07</span>
-          <img src="images/IMG_7683.JPG" alt="津田翔一 制作風景" loading="lazy">
-          <figcaption class="studio-cell-cap">A large-scale work in progress</figcaption>
-        </figure>
-        <figure class="studio-cell c8 js-modal-open" data-img-src="images/_MG_3167.JPG" data-cap-jp="トークイベント" data-cap-en="Artist talk">
-          <span class="studio-cell-num">08</span>
-          <img src="images/_MG_3167.JPG" alt="津田翔一 トークイベント" loading="lazy">
-          <figcaption class="studio-cell-cap">Artist talk</figcaption>
-        </figure>
-        <figure class="studio-cell c9 js-modal-open" data-img-src="images/_MG_3171.JPG" data-cap-jp="トークイベント" data-cap-en="Artist talk">
-          <span class="studio-cell-num">09</span>
-          <img src="images/_MG_3171.JPG" alt="津田翔一 トークイベント" loading="lazy">
-          <figcaption class="studio-cell-cap">Behind the work</figcaption>
+        <figure class="studio-cell c14 js-modal-open" data-img-src="images/image_6487327%20(1).JPG" data-cap-jp="アーティストトーク" data-cap-en="Panel discussion">
+          <span class="studio-cell-num">14</span>
+          <img src="images/image_6487327%20(1).JPG" alt="津田翔一 トークイベント" loading="lazy">
+          <figcaption class="studio-cell-cap">Panel discussion</figcaption>
         </figure>
       </div>
     </section>
