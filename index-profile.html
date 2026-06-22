@@ -2,13 +2,12 @@
 <html lang="ja">
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-5RF8JPF5D8');
-</script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5RF8JPF5D8');
+  </script>
   <link rel="icon" type="image/jpeg" href="images/【S100】so far.jpg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -116,7 +115,7 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       HERO FIRST VIEW (Video Background)
+       HERO
     ============================================================ */
     .hero {
       position: relative; height: 100svh; min-height: 580px;
@@ -132,7 +131,6 @@
     }
     .hero-video-overlay {
       position: absolute; inset: 0; z-index: 2;
-      /* 全体の暗さを取り除き、最下部の境界部分にだけ極薄い影を配置 */
       background: linear-gradient(to top, rgba(6,6,5,0.6) 0%, transparent 15%);
       pointer-events: none;
     }
@@ -140,9 +138,7 @@
       position: absolute; left: 0; right: 0; bottom: 0; height: 1px; z-index: 4;
       background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%);
     }
-    /* 文字が明るい背景でも読めるようにシャドウを追加 */
     .hero-inner { position: relative; z-index: 3; text-shadow: 0 2px 12px rgba(0,0,0,0.5); }
-    
     .hero-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem);
       letter-spacing: 0.5em; color: var(--fg); text-transform: uppercase;
@@ -151,7 +147,6 @@
     }
     .hero-eyebrow::before {
       content: ''; width: 24px; height: 1px; background: var(--accent); flex-shrink: 0; opacity: 0.8;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.5);
     }
     .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
     .hero-title {
@@ -184,7 +179,6 @@
     .hero-meta.revealed { opacity: 1; transform: translateY(0); }
     .hero-meta-line {
       width: 40px; height: 1px; background: linear-gradient(to right, var(--accent), transparent); flex-shrink: 0;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.5);
     }
     .hero-meta-text {
       font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.62rem);
@@ -194,7 +188,6 @@
       position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px);
       z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 12px;
       opacity: 0; transition: opacity 0.9s ease 1.8s;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
     }
     .hero-scroll.revealed { opacity: 1; }
     .hero-scroll-label {
@@ -217,7 +210,7 @@
     }
 
     /* ============================================================
-       CONCEPT / INTRO SECTION
+       CONCEPT
     ============================================================ */
     .concept-section {
       position: relative; z-index: 3;
@@ -231,7 +224,7 @@
     }
 
     /* ============================================================
-       PROFILE SPLIT
+       PROFILE SECTION
     ============================================================ */
     .profile-section {
       padding: clamp(3rem, 7vh, 5rem) var(--px) clamp(7rem, 14vh, 10rem);
@@ -300,79 +293,277 @@
     }
 
     /* ============================================================
-       STUDIO & PERFORMANCE GALLERY
+       NUMBERS BAR
     ============================================================ */
-    .studio-section {
-      padding: clamp(3rem, 7vh, 5rem) var(--px) clamp(7rem, 14vh, 10rem);
-      max-width: 1300px; margin: 0 auto;
+    .numbers-bar {
+      background: var(--bg2); border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border);
+      padding: clamp(3rem, 7vh, 5rem) var(--px);
     }
-    .studio-intro {
-      max-width: 640px; margin: 0 auto clamp(3rem, 7vh, 5rem); text-align: center;
+    .numbers-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
     }
-    .studio-intro-text {
-      font-size: clamp(0.84rem, 1.7vw, 0.95rem); font-weight: 300; line-height: 2.2;
+    .numbers-item {
+      text-align: center; padding: clamp(1.5rem, 4vh, 3rem) 1rem;
+      border-right: 0.5px solid var(--border);
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+    }
+    .numbers-item:last-child { border-right: none; }
+    .numbers-item.in-view { opacity: 1; transform: translateY(0); }
+    .numbers-item:nth-child(2).in-view { transition-delay: 0.1s; }
+    .numbers-item:nth-child(3).in-view { transition-delay: 0.2s; }
+    .numbers-item:nth-child(4).in-view { transition-delay: 0.3s; }
+    .numbers-num {
+      font-family: var(--font-en); font-weight: 300; font-style: italic;
+      font-size: clamp(2.8rem, 7vw, 5.5rem); color: var(--accent);
+      line-height: 1; margin-bottom: 0.6rem; letter-spacing: -0.02em;
+    }
+    .numbers-label {
+      font-family: var(--font-en); font-size: clamp(0.58rem, 1.2vw, 0.66rem);
+      letter-spacing: 0.28em; color: var(--muted); text-transform: uppercase;
+    }
+    .numbers-label-ja {
+      font-family: var(--font-ja); font-size: clamp(0.72rem, 1.4vw, 0.82rem);
+      color: rgba(233,229,223,0.5); font-weight: 300; margin-top: 0.25rem;
+    }
+
+    /* ============================================================
+       MAKING-OF NARRATIVE SECTION
+    ============================================================ */
+    .making-section {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    /* Section-wide header */
+    .making-header {
+      padding: clamp(6rem, 13vh, 10rem) var(--px) clamp(4rem, 9vh, 7rem);
+      max-width: 900px; margin: 0 auto; text-align: center;
+    }
+    .making-header-eyebrow {
+      font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.62rem);
+      letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+    .making-header-title {
+      font-family: var(--font-ja); font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 200; color: var(--fg); line-height: 1.5; letter-spacing: 0.06em;
+      margin-bottom: 2rem;
+    }
+    .making-header-body {
+      font-size: clamp(0.85rem, 1.7vw, 0.95rem); font-weight: 300; line-height: 2.3;
       color: rgba(233,229,223,0.62); letter-spacing: 0.06em;
     }
-    .studio-grid {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: clamp(0.6rem, 1.4vw, 1.1rem);
+
+    /* ── ACT (Chapter) ── */
+    .act {
+      border-top: 0.5px solid var(--border);
     }
-    .studio-cell {
+
+    /* Act header: full-bleed image with overlay text */
+    .act-opener {
+      position: relative;
+      width: 100vw;
+      left: 50%; transform: translateX(-50%);
+      aspect-ratio: 21 / 9;
+      overflow: hidden;
+      min-height: 320px;
+    }
+    @media (max-width: 768px) {
+      .act-opener { aspect-ratio: 4 / 3; }
+    }
+    .act-opener img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: brightness(0.6);
+      transition: transform 10s ease;
+    }
+    .act-opener:hover img { transform: scale(1.03); }
+    .act-opener-overlay {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; z-index: 2;
+      text-align: center; padding: 2rem var(--px);
+      background: linear-gradient(to top, rgba(6,6,5,0.65) 0%, rgba(6,6,5,0.1) 50%, transparent 100%);
+    }
+    .act-num {
+      font-family: var(--font-en); font-weight: 300; font-style: italic;
+      font-size: clamp(5rem, 15vw, 12rem); color: transparent;
+      -webkit-text-stroke: 1px rgba(196,168,130,0.4);
+      line-height: 1; margin-bottom: 0.5rem; letter-spacing: -0.02em;
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 1.2s var(--ease), transform 1.2s var(--ease);
+    }
+    .act-opener.in-view .act-num { opacity: 1; transform: translateY(0); }
+    .act-title-ja {
+      font-family: var(--font-ja); font-size: clamp(1.6rem, 4vw, 3.2rem);
+      font-weight: 200; color: #fff; letter-spacing: 0.15em;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.7);
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 1s var(--ease) 0.15s, transform 1s var(--ease) 0.15s;
+    }
+    .act-opener.in-view .act-title-ja { opacity: 1; transform: translateY(0); }
+    .act-title-en {
+      font-family: var(--font-en); font-style: italic; font-size: clamp(0.8rem, 2vw, 1.1rem);
+      letter-spacing: 0.3em; color: var(--accent); margin-top: 0.5rem;
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 1s var(--ease) 0.28s, transform 1s var(--ease) 0.28s;
+    }
+    .act-opener.in-view .act-title-en { opacity: 1; transform: translateY(0); }
+
+    /* Act body content */
+    .act-body {
+      padding: clamp(5rem, 10vh, 8rem) var(--px);
+      max-width: 1300px; margin: 0 auto;
+    }
+
+    /* Act intro prose */
+    .act-intro {
+      display: grid; grid-template-columns: 1fr 1fr; gap: clamp(3rem, 6vw, 6rem);
+      align-items: end; margin-bottom: clamp(5rem, 10vh, 8rem);
+    }
+    .act-intro-quote {
+      font-family: var(--font-ja); font-size: clamp(1.3rem, 2.6vw, 2rem);
+      font-weight: 200; color: var(--fg); line-height: 1.7; letter-spacing: 0.05em;
+      border-left: 2px solid var(--accent); padding-left: 2rem;
+      opacity: 0; transform: translateX(-24px);
+      transition: opacity 1s var(--ease), transform 1s var(--ease);
+    }
+    .act-intro-quote.in-view { opacity: 1; transform: translateX(0); }
+    .act-intro-text {
+      font-size: clamp(0.84rem, 1.7vw, 0.95rem); font-weight: 300; line-height: 2.3;
+      color: rgba(233,229,223,0.6); letter-spacing: 0.06em;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 1s var(--ease) 0.15s, transform 1s var(--ease) 0.15s;
+    }
+    .act-intro-text.in-view { opacity: 1; transform: translateY(0); }
+
+    /* Magazine grid for images */
+    .act-grid {
+      display: grid;
+      gap: clamp(0.8rem, 1.6vw, 1.4rem);
+    }
+    .act-grid.grid-a {
+      /* 3-col: large left, two stacked right */
+      grid-template-columns: 58% 1fr 1fr;
+      grid-template-rows: auto auto;
+    }
+    .act-grid.grid-b {
+      /* 2-col large + 2 smaller below */
+      grid-template-columns: 1fr 1fr;
+    }
+    .act-grid.grid-c {
+      /* 3 equal */
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .act-cell {
       position: relative; overflow: hidden; background: var(--bg2);
       border: 0.5px solid var(--border); cursor: zoom-in;
       opacity: 0; transform: translateY(28px);
       transition: opacity 1s var(--ease), transform 1s var(--ease), border-color 0.4s ease;
     }
-    .studio-cell.in-view { opacity: 1; transform: translateY(0); }
-    .studio-cell img {
+    .act-cell.in-view { opacity: 1; transform: translateY(0); }
+    .act-cell:nth-child(2) { transition-delay: 0.08s; }
+    .act-cell:nth-child(3) { transition-delay: 0.16s; }
+    .act-cell:nth-child(4) { transition-delay: 0.22s; }
+    .act-cell:nth-child(5) { transition-delay: 0.28s; }
+
+    .act-cell img {
       width: 100%; height: 100%; object-fit: cover;
-      filter: grayscale(12%) brightness(0.92);
+      filter: grayscale(8%) brightness(0.9);
       transition: transform 1.2s var(--ease), filter 0.6s ease;
     }
-    .studio-cell:hover { border-color: rgba(196,168,130,0.35); }
-    .studio-cell:hover img { transform: scale(1.045); filter: grayscale(0%) brightness(1.0); }
-    .studio-cell-num {
-      position: absolute; top: 0.8rem; left: 1rem; z-index: 2;
-      font-family: var(--font-en); font-style: italic; font-weight: 300;
-      font-size: clamp(1.6rem, 3.2vw, 2.6rem); color: rgba(233,229,223,0.5);
-      -webkit-text-stroke: 0.5px rgba(233,229,223,0.7); color: transparent;
-      pointer-events: none; line-height: 1; user-select: none;
-    }
-    .studio-cell-cap {
-      position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
-      padding: 0.9rem 1.1rem;
+    .act-cell:hover { border-color: rgba(196,168,130,0.4); }
+    .act-cell:hover img { transform: scale(1.04); filter: grayscale(0%) brightness(1.02); }
+
+    /* Specific span helpers */
+    .act-cell.tall-left { grid-row: span 2; }
+    .act-cell.span2 { grid-column: span 2; }
+    .act-cell.wide { grid-column: 1 / -1; }
+
+    /* Aspect ratios */
+    .act-cell.ar-land { aspect-ratio: 4 / 3; }
+    .act-cell.ar-port { aspect-ratio: 3 / 4; }
+    .act-cell.ar-sq   { aspect-ratio: 1 / 1; }
+    .act-cell.ar-wide { aspect-ratio: 16 / 7; }
+    .act-cell.ar-cinema { aspect-ratio: 21 / 9; }
+    .act-cell.ar-auto  { aspect-ratio: unset; }
+    /* tall-left with row-span: let image fill naturally */
+    .act-cell.tall-left { aspect-ratio: unset; min-height: 100%; }
+
+    .act-cell-cap {
+      position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
+      padding: 0.8rem 1rem;
       background: linear-gradient(to top, rgba(6,6,5,0.82), transparent);
       font-family: var(--font-en); font-size: 0.6rem; letter-spacing: 0.14em;
       color: var(--dim); text-transform: uppercase; pointer-events: none;
     }
-    
-    /* 14 cells layout */
-    .studio-cell.c1 { grid-column: span 7; aspect-ratio: 7 / 5; }
-    .studio-cell.c2 { grid-column: span 5; aspect-ratio: 1 / 1; }
-    .studio-cell.c3 { grid-column: span 6; aspect-ratio: 4 / 3; }
-    .studio-cell.c4 { grid-column: span 6; aspect-ratio: 4 / 3; }
-    .studio-cell.c5 { grid-column: span 12; aspect-ratio: 21 / 9; }
-    .studio-cell.c6 { grid-column: span 5; aspect-ratio: 5 / 6; }
-    .studio-cell.c7 { grid-column: span 7; aspect-ratio: 7 / 6; }
-    .studio-cell.c8 { grid-column: span 8; aspect-ratio: 8 / 5; }
-    .studio-cell.c9 { grid-column: span 4; aspect-ratio: 4 / 5; }
-    .studio-cell.c10 { grid-column: span 4; aspect-ratio: 3 / 4; }
-    .studio-cell.c11 { grid-column: span 4; aspect-ratio: 3 / 4; }
-    .studio-cell.c12 { grid-column: span 4; aspect-ratio: 3 / 4; }
-    .studio-cell.c13 { grid-column: span 6; aspect-ratio: 4 / 3; }
-    .studio-cell.c14 { grid-column: span 6; aspect-ratio: 4 / 3; }
 
-    @media (max-width: 768px) {
-      .studio-grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
-      .studio-cell { grid-column: span 1 !important; aspect-ratio: 1 !important; }
-      .studio-cell.c5, .studio-cell.c7, .studio-cell.c8, .studio-cell.c13, .studio-cell.c14 {
-        grid-column: span 2 !important; aspect-ratio: 16 / 10 !important;
-      }
+    /* ── Pull Quote between acts ── */
+    .pull-quote-block {
+      padding: clamp(5rem, 12vh, 9rem) var(--px);
+      text-align: center; position: relative;
+    }
+    .pull-quote-block::before {
+      content: ''; display: block; width: 1px; height: 60px;
+      background: linear-gradient(to bottom, transparent, rgba(196,168,130,0.4));
+      margin: 0 auto 3rem;
+    }
+    .pull-quote-text {
+      font-family: var(--font-ja); font-size: clamp(1.1rem, 2.6vw, 1.9rem);
+      font-weight: 200; color: var(--fg); line-height: 1.9;
+      letter-spacing: 0.08em; max-width: 800px; margin: 0 auto;
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 1.2s var(--ease), transform 1.2s var(--ease);
+    }
+    .pull-quote-text.in-view { opacity: 1; transform: translateY(0); }
+    .pull-quote-attr {
+      margin-top: 2rem; font-family: var(--font-en); font-style: italic;
+      font-size: clamp(0.7rem, 1.4vw, 0.8rem); color: var(--accent); letter-spacing: 0.2em;
+    }
+    .pull-quote-block::after {
+      content: ''; display: block; width: 1px; height: 60px;
+      background: linear-gradient(to top, transparent, rgba(196,168,130,0.4));
+      margin: 3rem auto 0;
     }
 
+    /* ── Horizontal filmstrip for dialogue images ── */
+    .filmstrip {
+      width: 100vw; left: 50%; transform: translateX(-50%);
+      position: relative; overflow: hidden;
+      display: flex; gap: clamp(0.6rem, 1.2vw, 1rem);
+      padding: 0 var(--px);
+    }
+    .filmstrip-cell {
+      flex-shrink: 0; position: relative; overflow: hidden;
+      border: 0.5px solid var(--border); cursor: zoom-in;
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 1s var(--ease), transform 1s var(--ease);
+    }
+    .filmstrip-cell.in-view { opacity: 1; transform: translateY(0); }
+    .filmstrip-cell:nth-child(2) { transition-delay: 0.1s; }
+    .filmstrip-cell:nth-child(3) { transition-delay: 0.2s; }
+    .filmstrip-cell img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: grayscale(10%) brightness(0.88);
+      transition: transform 1.2s var(--ease), filter 0.6s ease;
+    }
+    .filmstrip-cell:hover img { transform: scale(1.04); filter: grayscale(0%) brightness(1.0); }
+    .filmstrip-cell-cap {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 0.8rem 1rem;
+      background: linear-gradient(to top, rgba(6,6,5,0.8), transparent);
+      font-family: var(--font-en); font-size: 0.6rem; letter-spacing: 0.14em;
+      color: var(--dim); text-transform: uppercase; pointer-events: none;
+    }
+    /* filmstrip sizing */
+    .filmstrip-cell.fs-wide { width: clamp(400px, 45vw, 700px); aspect-ratio: 3 / 2; }
+    .filmstrip-cell.fs-port { width: clamp(260px, 28vw, 440px); aspect-ratio: 2 / 3; }
+    .filmstrip-cell.fs-sq   { width: clamp(280px, 30vw, 480px); aspect-ratio: 1 / 1; }
+
     /* ============================================================
-       CAREER / EXHIBITIONS SECTION
+       CAREER SECTION
     ============================================================ */
     .career-section {
       padding: clamp(5rem, 12vh, 9rem) var(--px) clamp(6rem, 13vh, 10rem);
@@ -410,8 +601,7 @@
       font-size: clamp(1.1rem, 2.2vw, 1.6rem); color: var(--accent); letter-spacing: 0.02em;
     }
     .career-detail-title {
-      font-size: clamp(0.86rem, 1.6vw, 0.96rem); color: var(--fg); line-height: 1.9;
-      font-weight: 300;
+      font-size: clamp(0.86rem, 1.6vw, 0.96rem); color: var(--fg); line-height: 1.9; font-weight: 300;
     }
     .career-detail-venue {
       display: block; margin-top: 0.25rem;
@@ -446,9 +636,7 @@
       letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none;
       transition: all 0.4s var(--ease); border-radius: 2px;
     }
-    .contact-btn:hover {
-      background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3);
-    }
+    .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3); }
 
     footer {
       padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between;
@@ -458,7 +646,7 @@
     .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
 
     /* ============================================================
-       LIGHTBOX (MODAL)
+       LIGHTBOX
     ============================================================ */
     .image-modal {
       position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center;
@@ -499,18 +687,31 @@
     .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.9rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
 
     /* ============================================================
-       RESPONSIVE DESIGN
+       RESPONSIVE
     ============================================================ */
     @media (max-width: 860px) {
       .profile-split { grid-template-columns: 1fr; gap: 2.2rem; }
       .profile-portrait { max-width: 320px; margin: 0 auto; }
+      .numbers-inner { grid-template-columns: repeat(2, 1fr); }
+      .numbers-item { border-bottom: 0.5px solid var(--border); }
+      .numbers-item:nth-child(odd) { border-right: 0.5px solid var(--border); }
+      .numbers-item:nth-child(even) { border-right: none; }
+      .numbers-item:nth-child(3), .numbers-item:nth-child(4) { border-bottom: none; }
+      .act-intro { grid-template-columns: 1fr; gap: 2rem; }
+      .act-grid.grid-a { grid-template-columns: 1fr 1fr; }
+      .act-cell.tall-left { grid-row: span 1; aspect-ratio: 4/3; }
+      .act-grid.grid-c { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 768px) {
       nav#top-nav { padding: 1rem 1.25rem; }
       .page-nav.visible { right: 8px; opacity: 0.5; }
-      .page-nav.visible:hover { opacity: 1; }
       .page-nav-label { display: none; }
       .career-row { grid-template-columns: 60px 1fr; gap: 1rem; }
+      .act-grid.grid-a, .act-grid.grid-b, .act-grid.grid-c { grid-template-columns: 1fr; }
+      .act-cell.span2, .act-cell.wide { grid-column: span 1; }
+      .act-cell.tall-left { aspect-ratio: 4/3; grid-row: span 1; }
+      .filmstrip { flex-direction: column; width: 100%; left: 0; transform: none; padding: 0 var(--px); }
+      .filmstrip-cell.fs-wide, .filmstrip-cell.fs-port, .filmstrip-cell.fs-sq { width: 100%; }
     }
     @media (max-width: 480px) {
       .hero-scroll { display: none; }
@@ -521,7 +722,8 @@
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
-      .profile-portrait, .profile-facts, .career-row { opacity: 1 !important; transform: none !important; }
+      .profile-portrait, .profile-facts, .career-row, .act-cell, .filmstrip-cell,
+      .numbers-item, .act-intro-quote, .act-intro-text, .pull-quote-text { opacity: 1 !important; transform: none !important; }
     }
   </style>
 </head>
@@ -536,8 +738,8 @@
     <button class="page-nav-item" data-target="profile" aria-label="Profileへ">
       <div class="page-nav-dot"></div><span class="page-nav-label">Profile</span>
     </button>
-    <button class="page-nav-item" data-target="studio" aria-label="Studioへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Activities</span>
+    <button class="page-nav-item" data-target="making" aria-label="Makingへ">
+      <div class="page-nav-dot"></div><span class="page-nav-label">Making</span>
     </button>
     <button class="page-nav-item" data-target="career" aria-label="Careerへ">
       <div class="page-nav-dot"></div><span class="page-nav-label">Career</span>
@@ -545,6 +747,7 @@
   </nav>
 
   <main>
+    <!-- ═══════════════ HERO ═══════════════ -->
     <section class="hero">
       <div class="hero-video-wrap" aria-hidden="true">
         <video src="images/mov1.mp4" autoplay loop muted playsinline preload="metadata"></video>
@@ -570,6 +773,7 @@
       </div>
     </section>
 
+    <!-- ═══════════════ CONCEPT ═══════════════ -->
     <section class="concept-section">
       <p class="concept-text">
         1984年、長野県生まれ。2013年、東京藝術大学美術学部絵画科油画専攻卒業。<br>
@@ -578,11 +782,14 @@
       </p>
     </section>
 
+    <!-- ═══════════════ PROFILE ═══════════════ -->
     <section class="profile-section" id="profile">
       <div class="section-label">Profile</div>
       <div class="profile-split">
-        <figure class="profile-portrait js-modal-open" data-img-src="images/IMG_7685.JPG" data-cap-jp="津田 翔一" data-cap-en="Tsuda Shoichi, in the studio">
-          <img src="images/IMG_7685.JPG" alt="津田翔一 制作風景" loading="lazy">
+        <figure class="profile-portrait js-modal-open"
+          data-img-src="images/IMG_7683.JPG"
+          data-cap-jp="津田 翔一" data-cap-en="Tsuda Shoichi, at work">
+          <img src="images/IMG_7683.JPG" alt="津田翔一 制作風景" loading="lazy">
           <figcaption class="profile-portrait-cap">Tsuda Shoichi — at work</figcaption>
         </figure>
 
@@ -617,95 +824,229 @@
       </div>
     </section>
 
-    <section class="studio-section" id="studio">
-      <div class="section-label">Studio & Performance</div>
-      <div class="studio-intro">
-        <p class="studio-intro-text">
-          巨大なキャンバスに向き合い、左美都の記憶を一筆ずつ重ねていく。<br>
-          思考と身体が交差する静寂の〈洞窟〉から、<br>
-          音楽や他者と響き合うパブリックな舞台へと展開する軌跡。
+    <!-- ═══════════════ NUMBERS BAR ═══════════════ -->
+    <div class="numbers-bar">
+      <div class="numbers-inner">
+        <div class="numbers-item">
+          <p class="numbers-num">13+</p>
+          <p class="numbers-label">Years</p>
+          <p class="numbers-label-ja">制作年数</p>
+        </div>
+        <div class="numbers-item">
+          <p class="numbers-num">2</p>
+          <p class="numbers-label">Solo Exhibitions</p>
+          <p class="numbers-label-ja">個展</p>
+        </div>
+        <div class="numbers-item">
+          <p class="numbers-num">8+</p>
+          <p class="numbers-label">Group Shows</p>
+          <p class="numbers-label-ja">グループ展</p>
+        </div>
+        <div class="numbers-item">
+          <p class="numbers-num">∞</p>
+          <p class="numbers-label">Layers of Paint</p>
+          <p class="numbers-label-ja">重ねた筆の跡</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ MAKING-OF SECTION ═══════════════ -->
+    <section class="making-section" id="making">
+
+      <div class="making-header">
+        <p class="making-header-eyebrow">Studio &amp; Performance</p>
+        <h2 class="making-header-title">制作の軌跡<br><span style="font-size:0.6em; font-family:var(--font-en); font-style:italic; letter-spacing:0.2em; color:var(--accent);">Traces of Making</span></h2>
+        <p class="making-header-body">
+          左美都の土地の記憶が、ひとつの筆触から始まる。<br>
+          孤独な制作の洞窟から舞台へ、そして観客との対話へ。<br>
+          三つの「場」を通じて浮かび上がる、津田翔一の制作の全体像。
         </p>
       </div>
-      <div class="studio-grid">
-        <figure class="studio-cell c1 js-modal-open" data-img-src="images/IMG_7653.jpg" data-cap-jp="制作風景" data-cap-en="Spreading the canvas">
-          <span class="studio-cell-num">01</span>
-          <img src="images/IMG_7653.jpg" alt="津田翔一 制作風景" loading="lazy">
-          <figcaption class="studio-cell-cap">Spreading the canvas</figcaption>
-        </figure>
-        <figure class="studio-cell c2 js-modal-open" data-img-src="images/IMG_3153.jpg" data-cap-jp="制作風景" data-cap-en="Facing the canvas">
-          <span class="studio-cell-num">02</span>
-          <img src="images/IMG_3153.jpg" alt="津田翔一 制作風景" loading="lazy">
-          <figcaption class="studio-cell-cap">Facing the canvas</figcaption>
-        </figure>
 
-        <figure class="studio-cell c3 js-modal-open" data-img-src="images/IMG_7606.jpg" data-cap-jp="制作風景" data-cap-en="Broad red strokes">
-          <span class="studio-cell-num">03</span>
-          <img src="images/IMG_7606.jpg" alt="津田翔一 制作風景" loading="lazy">
-          <figcaption class="studio-cell-cap">Broad red strokes</figcaption>
-        </figure>
-        <figure class="studio-cell c4 js-modal-open" data-img-src="images/IMG_7645.jpg" data-cap-jp="制作風景" data-cap-en="Creating depth">
-          <span class="studio-cell-num">04</span>
-          <img src="images/IMG_7645.jpg" alt="津田翔一 制作風景" loading="lazy">
-          <figcaption class="studio-cell-cap">Creating depth</figcaption>
-        </figure>
+      <!-- ── ACT I : 洞窟 ── -->
+      <div class="act">
+        <div class="act-opener js-modal-open"
+          data-img-src="images/IMG_7653.JPG"
+          data-cap-jp="制作風景 — 大型カンヴァス"
+          data-cap-en="Large-scale work in progress">
+          <img src="images/IMG_7653.JPG" alt="大型カンヴァスと制作風景" loading="lazy">
+          <div class="act-opener-overlay">
+            <span class="act-num">I</span>
+            <h3 class="act-title-ja">洞　窟</h3>
+            <p class="act-title-en">The Cave — Studio Practice</p>
+          </div>
+        </div>
 
-        <figure class="studio-cell c5 js-modal-open" data-img-src="images/IMG_7683.jpg" data-cap-jp="制作風景" data-cap-en="Large-scale work">
-          <span class="studio-cell-num">05</span>
-          <img src="images/IMG_7683.jpg" alt="津田翔一 制作風景" loading="lazy">
-          <figcaption class="studio-cell-cap">Large-scale work</figcaption>
-        </figure>
+        <div class="act-body">
+          <div class="act-intro">
+            <p class="act-intro-quote">
+              キャンバスに向き合うとき、<br>
+              そこはすでに別の宇宙だ。<br>
+              左美都の地層が手を動かす。
+            </p>
+            <p class="act-intro-text">
+              ひとつの大作は、時として床いっぱいに広がるキャンバスから始まる。縦横数メートルに及ぶ画面の前に蹲り、全身で絵具を重ねていく。思考と身体が同期する瞬間——それが津田翔一の言う〈洞窟〉だ。外部から切り離された静寂の中で、左美都の地質と記憶が絵の深層に堆積してゆく。
+            </p>
+          </div>
 
-        <figure class="studio-cell c6 js-modal-open" data-img-src="images/IMG_7834.jpg" data-cap-jp="ライブペイント" data-cap-en="Painting on stage">
-          <span class="studio-cell-num">06</span>
-          <img src="images/IMG_7834.jpg" alt="津田翔一 ライブペイント" loading="lazy">
-          <figcaption class="studio-cell-cap">Painting on stage</figcaption>
-        </figure>
-        <figure class="studio-cell c7 js-modal-open" data-img-src="images/IMG_7837.jpg" data-cap-jp="ライブペイント" data-cap-en="Illuminated performance">
-          <span class="studio-cell-num">07</span>
-          <img src="images/IMG_7837.jpg" alt="津田翔一 ライブペイント" loading="lazy">
-          <figcaption class="studio-cell-cap">Illuminated performance</figcaption>
-        </figure>
+          <!-- 5-image magazine grid: large left, 4 stacked right 2x2 -->
+          <div class="act-grid grid-a">
+            <!-- tall left: IMG_7653 already used as opener, use next best -->
+            <div class="act-cell tall-left js-modal-open"
+              data-img-src="images/IMG_3157.JPG"
+              data-cap-jp="制作風景" data-cap-en="Facing the large canvas">
+              <img src="images/IMG_3157.JPG" alt="制作風景" loading="lazy">
+              <figcaption class="act-cell-cap">Facing the canvas</figcaption>
+            </div>
+            <div class="act-cell ar-land js-modal-open"
+              data-img-src="images/IMG_3153.JPG"
+              data-cap-jp="制作風景" data-cap-en="Brush detail, close-up">
+              <img src="images/IMG_3153.JPG" alt="制作風景" loading="lazy">
+              <figcaption class="act-cell-cap">Brush detail</figcaption>
+            </div>
+            <div class="act-cell ar-land js-modal-open"
+              data-img-src="images/IMG_7606.JPG"
+              data-cap-jp="制作風景" data-cap-en="Broad red strokes">
+              <img src="images/IMG_7606.JPG" alt="制作風景" loading="lazy">
+              <figcaption class="act-cell-cap">Broad red strokes</figcaption>
+            </div>
+            <div class="act-cell ar-land js-modal-open"
+              data-img-src="images/IMG_7645.JPG"
+              data-cap-jp="制作風景" data-cap-en="Creating depth, two panels">
+              <img src="images/IMG_7645.JPG" alt="制作風景" loading="lazy">
+              <figcaption class="act-cell-cap">Creating depth</figcaption>
+            </div>
+            <div class="act-cell ar-land js-modal-open"
+              data-img-src="images/IMG_3151.JPG"
+              data-cap-jp="制作風景" data-cap-en="A pause mid-stroke">
+              <img src="images/IMG_3151.JPG" alt="制作風景" loading="lazy">
+              <figcaption class="act-cell-cap">A pause mid-stroke</figcaption>
+            </div>
+          </div>
+        </div>
+      </div><!-- /act I -->
 
-        <figure class="studio-cell c8 js-modal-open" data-img-src="images/IMG_7823.jpg" data-cap-jp="ステージ" data-cap-en="Harmony of art and music">
-          <span class="studio-cell-num">08</span>
-          <img src="images/IMG_7823.jpg" alt="津田翔一 ステージ" loading="lazy">
-          <figcaption class="studio-cell-cap">Harmony of art and music</figcaption>
-        </figure>
-        <figure class="studio-cell c9 js-modal-open" data-img-src="images/IMG_7819.jpg" data-cap-jp="トーク" data-cap-en="Artist's voice">
-          <span class="studio-cell-num">09</span>
-          <img src="images/IMG_7819.jpg" alt="津田翔一 トーク" loading="lazy">
-          <figcaption class="studio-cell-cap">Artist's voice</figcaption>
-        </figure>
-
-        <figure class="studio-cell c10 js-modal-open" data-img-src="images/IMG_3157.jpg" data-cap-jp="制作風景" data-cap-en="Mixing colors">
-          <span class="studio-cell-num">10</span>
-          <img src="images/IMG_3157.jpg" alt="津田翔一 制作風景" loading="lazy">
-          <figcaption class="studio-cell-cap">Mixing colors</figcaption>
-        </figure>
-        <figure class="studio-cell c11 js-modal-open" data-img-src="images/IMG_3151.jpg" data-cap-jp="制作風景" data-cap-en="A pause mid-stroke">
-          <span class="studio-cell-num">11</span>
-          <img src="images/IMG_3151.jpg" alt="津田翔一 制作風景" loading="lazy">
-          <figcaption class="studio-cell-cap">A pause mid-stroke</figcaption>
-        </figure>
-        <figure class="studio-cell c12 js-modal-open" data-img-src="images/_MG_3167.jpg" data-cap-jp="笑顔" data-cap-en="Warm interactions">
-          <span class="studio-cell-num">12</span>
-          <img src="images/_MG_3167.jpg" alt="津田翔一 イベント風景" loading="lazy">
-          <figcaption class="studio-cell-cap">Warm interactions</figcaption>
-        </figure>
-
-        <figure class="studio-cell c13 js-modal-open" data-img-src="images/image_50374657.jpg" data-cap-jp="ギャラリートーク" data-cap-en="Gallery talk">
-          <span class="studio-cell-num">13</span>
-          <img src="images/image_50374657.jpg" alt="津田翔一 ギャラリートーク" loading="lazy">
-          <figcaption class="studio-cell-cap">Gallery talk</figcaption>
-        </figure>
-        <figure class="studio-cell c14 js-modal-open" data-img-src="images/image_6487327%20(1).JPG" data-cap-jp="アーティストトーク" data-cap-en="Panel discussion">
-          <span class="studio-cell-num">14</span>
-          <img src="images/image_6487327%20(1).JPG" alt="津田翔一 トークイベント" loading="lazy">
-          <figcaption class="studio-cell-cap">Panel discussion</figcaption>
-        </figure>
+      <!-- ── PULL QUOTE ── -->
+      <div class="pull-quote-block">
+        <p class="pull-quote-text">
+          「絵を描くことは、土地の記憶を身体で翻訳する行為だ。<br>
+          筆が動くたびに、左美都の地層が一枚ずつ剥がれてくる」
+        </p>
+        <p class="pull-quote-attr">— Tsuda Shoichi, artist statement</p>
       </div>
-    </section>
 
+      <!-- ── ACT II : 舞台 ── -->
+      <div class="act">
+        <div class="act-opener js-modal-open"
+          data-img-src="images/IMG_7837.JPG"
+          data-cap-jp="ライブペイント — ステージ"
+          data-cap-en="Live painting, illuminated performance">
+          <img src="images/IMG_7837.JPG" alt="ライブペイント 照明演出" loading="lazy">
+          <div class="act-opener-overlay">
+            <span class="act-num">II</span>
+            <h3 class="act-title-ja">舞　台</h3>
+            <p class="act-title-en">The Stage — Live Painting</p>
+          </div>
+        </div>
+
+        <div class="act-body">
+          <div class="act-intro">
+            <p class="act-intro-quote">
+              音楽が鳴り、照明が変わる。<br>
+              筆は観客の呼吸と<br>
+              同期しはじめる。
+            </p>
+            <p class="act-intro-text">
+              孤独な制作の場から飛び出し、津田翔一はステージ上でもキャンバスに向かう。音楽家とともに舞台に立ち、観客の目の前でリアルタイムに絵を完成させるライブペインティング。はしごを上り下りしながら、数メートルの大画面に筆を走らせるその姿は、絵画というものが「完成品の展示」だけでないことを示す。時間と身体が刻まれる、もうひとつの作品だ。
+            </p>
+          </div>
+
+          <!-- 4-image grid: wide top, 3 below -->
+          <div class="act-grid grid-b">
+            <div class="act-cell span2 ar-wide js-modal-open"
+              data-img-src="images/IMG_7823.JPG"
+              data-cap-jp="ステージ" data-cap-en="Harmony of art and music">
+              <img src="images/IMG_7823.JPG" alt="ステージ 音楽と絵画" loading="lazy">
+              <figcaption class="act-cell-cap">Harmony of art and music</figcaption>
+            </div>
+            <div class="act-cell ar-port js-modal-open"
+              data-img-src="images/IMG_7834.JPG"
+              data-cap-jp="ライブペイント" data-cap-en="Painting on stage, by night">
+              <img src="images/IMG_7834.JPG" alt="ライブペイント" loading="lazy">
+              <figcaption class="act-cell-cap">Painting on stage</figcaption>
+            </div>
+            <div class="act-cell ar-port js-modal-open"
+              data-img-src="images/IMG_7819.JPG"
+              data-cap-jp="アーティストトーク" data-cap-en="Artist's voice, on stage">
+              <img src="images/IMG_7819.JPG" alt="アーティストトーク" loading="lazy">
+              <figcaption class="act-cell-cap">Artist's voice</figcaption>
+            </div>
+          </div>
+        </div>
+      </div><!-- /act II -->
+
+      <!-- ── PULL QUOTE ── -->
+      <div class="pull-quote-block">
+        <p class="pull-quote-text">
+          制作とは〈単独者の行為〉から始まり、<br>
+          いつか〈場との共鳴〉へと開かれていく。
+        </p>
+        <p class="pull-quote-attr">— 枠組みを越え、空間と共鳴する</p>
+      </div>
+
+      <!-- ── ACT III : 対話 ── -->
+      <div class="act">
+        <div class="act-opener js-modal-open"
+          data-img-src="images/image_50374657.JPG"
+          data-cap-jp="ギャラリートーク"
+          data-cap-en="Gallery talk, solo exhibition">
+          <img src="images/image_50374657.JPG" alt="ギャラリートーク" loading="lazy">
+          <div class="act-opener-overlay">
+            <span class="act-num">III</span>
+            <h3 class="act-title-ja">対　話</h3>
+            <p class="act-title-en">The Dialogue — Exchange & Community</p>
+          </div>
+        </div>
+
+        <div class="act-body">
+          <div class="act-intro">
+            <p class="act-intro-quote">
+              作品は展示されたとき、<br>
+              はじめて「他者の目」を<br>
+              手に入れる。
+            </p>
+            <p class="act-intro-text">
+              ギャラリーでのトーク、パネルディスカッション、そして観客との笑顔の交流。津田翔一の制作は、内なる洞窟から外の世界へと絶えず往来する。作品について語る言葉も、制作の一部だ。他者と対話することで、左美都の記憶はより普遍的な問いへと変容してゆく。
+            </p>
+          </div>
+
+          <!-- 3-image filmstrip -->
+          <div class="filmstrip">
+            <figure class="filmstrip-cell fs-wide js-modal-open"
+              data-img-src="images/image_50374657.JPG"
+              data-cap-jp="ギャラリートーク" data-cap-en="Gallery talk, solo exhibition">
+              <img src="images/image_50374657.JPG" alt="ギャラリートーク" loading="lazy">
+              <figcaption class="filmstrip-cell-cap">Gallery talk</figcaption>
+            </figure>
+            <figure class="filmstrip-cell fs-port js-modal-open"
+              data-img-src="images/_MG_3167.JPG"
+              data-cap-jp="笑顔の交流" data-cap-en="Warm interactions at the gallery">
+              <img src="images/_MG_3167.JPG" alt="ギャラリー交流" loading="lazy">
+              <figcaption class="filmstrip-cell-cap">Warm interactions</figcaption>
+            </figure>
+            <figure class="filmstrip-cell fs-wide js-modal-open"
+              data-img-src="images/image_6487327__1_.JPG"
+              data-cap-jp="パネルディスカッション" data-cap-en="Panel discussion">
+              <img src="images/image_6487327__1_.JPG" alt="パネルディスカッション" loading="lazy">
+              <figcaption class="filmstrip-cell-cap">Panel discussion</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div><!-- /act III -->
+
+    </section><!-- /making-section -->
+
+    <!-- ═══════════════ CAREER ═══════════════ -->
     <section class="career-section" id="career">
       <div class="career-container">
         <div class="section-label">Career</div>
@@ -798,15 +1139,14 @@
     </section>
   </main>
 
+  <!-- ═══════════════ CONTACT ═══════════════ -->
   <section class="contact-section" id="contact">
-    <p class="section-label" style="text-align: center; margin-bottom: 1.5rem;">Contact</p>
+    <p class="section-label" style="text-align:center; margin-bottom:1.5rem;">Contact</p>
     <h2 class="contact-heading">お問い合わせ</h2>
     <p class="contact-body-text">
       展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。
     </p>
-    <a href="contact.html" class="contact-btn">
-      問い合わせフォームへ
-    </a>
+    <a href="contact.html" class="contact-btn">問い合わせフォームへ</a>
   </section>
 
   <footer>
@@ -821,6 +1161,7 @@
     <span class="back-to-top-text">TOP</span>
   </a>
 
+  <!-- LIGHTBOX MODAL -->
   <div class="image-modal" id="imageModal" aria-hidden="true" role="dialog">
     <div class="modal-bg" id="modalBg"></div>
     <button class="modal-close" id="modalClose" aria-label="閉じる">
@@ -839,7 +1180,7 @@
   </div>
 
   <script>
-    /* ── Contact ボタン：同一ページ内スムーススクロール（ヘッダー分オフセット） ── */
+    /* ── Contact smooth scroll ── */
     document.getElementById('nav-cta-btn')?.addEventListener('click', (e) => {
       const target = document.getElementById('contact');
       if (!target) return;
@@ -848,7 +1189,7 @@
       window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset + 1, behavior: 'smooth' });
     });
 
-    /* ── ファーストビュー アニメーション ── */
+    /* ── Hero animation ── */
     window.addEventListener('load', () => {
       setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 150);
       setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'),   350);
@@ -857,51 +1198,42 @@
       setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1700);
     });
 
-    /* ── Observer (Fade Up) ── */
+    /* ── IntersectionObserver ── */
     const io = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
         entry.target.classList.add('in-view');
         io.unobserve(entry.target);
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.profile-portrait, .profile-facts, .studio-cell, .career-row').forEach(el => io.observe(el));
+    }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
 
-    /* ── Scroll Interactions (Nav, Page-Nav, Back to Top) ── */
-    const topNav = document.getElementById('top-nav');
-    const pageNav = document.getElementById('pageNav');
+    document.querySelectorAll(
+      '.profile-portrait, .profile-facts, .career-row, ' +
+      '.numbers-item, .act-cell, .filmstrip-cell, ' +
+      '.act-opener, .act-intro-quote, .act-intro-text, .pull-quote-text'
+    ).forEach(el => io.observe(el));
+
+    /* ── Scroll interactions ── */
+    const topNav   = document.getElementById('top-nav');
+    const pageNav  = document.getElementById('pageNav');
     const navItems = document.querySelectorAll('.page-nav-item');
-    const sections = ['profile', 'studio', 'career'].map(id => document.getElementById(id));
-
+    const sections = ['profile', 'making', 'career'].map(id => document.getElementById(id));
     let ticking = false;
+
     window.addEventListener('scroll', () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const scrollY = window.scrollY;
-
-          /* Top Nav Glassmorphism */
-          if (scrollY > 50) topNav.classList.add('scrolled');
-          else topNav.classList.remove('scrolled');
-
-          /* Page Nav Visibility & Active State */
+          topNav.classList.toggle('scrolled', scrollY > 50);
           const checkY = scrollY + window.innerHeight * 0.4;
           let activeSec = null;
-          sections.forEach(sec => {
-            if (sec && sec.offsetTop <= checkY) activeSec = sec;
-          });
+          sections.forEach(sec => { if (sec && sec.offsetTop <= checkY) activeSec = sec; });
           navItems.forEach(item => {
-            const target = document.getElementById(item.getAttribute('data-target'));
-            item.classList.toggle('active', target === activeSec);
+            const tgt = document.getElementById(item.getAttribute('data-target'));
+            item.classList.toggle('active', tgt === activeSec);
           });
-          if (pageNav) {
-            pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.6);
-          }
-
-          /* Back to Top */
-          const b2t = document.getElementById('backToTop');
-          if (scrollY > 400) b2t.classList.add('is-visible');
-          else b2t.classList.remove('is-visible');
-
+          pageNav?.classList.toggle('visible', scrollY > window.innerHeight * 0.6);
+          document.getElementById('backToTop')?.classList.toggle('is-visible', scrollY > 400);
           ticking = false;
         });
         ticking = true;
@@ -918,7 +1250,7 @@
       });
     });
 
-    /* ── Lightbox (Modal) ── */
+    /* ── Lightbox ── */
     const modal      = document.getElementById('imageModal');
     const modalImg   = document.getElementById('modalImg');
     const modalBg    = document.getElementById('modalBg');
@@ -934,7 +1266,6 @@
       modal.setAttribute('aria-hidden', 'false');
       document.body.classList.add('is-locked');
     };
-
     const closeModal = () => {
       modal.classList.remove('is-active');
       modal.setAttribute('aria-hidden', 'true');
@@ -945,12 +1276,9 @@
     document.querySelectorAll('.js-modal-open').forEach(el => {
       el.addEventListener('click', () => {
         const src = el.getAttribute('data-img-src');
-        const jp  = el.getAttribute('data-cap-jp') || '';
-        const en  = el.getAttribute('data-cap-en') || '';
-        if (src) openModal(src, jp, en);
+        if (src) openModal(src, el.getAttribute('data-cap-jp') || '', el.getAttribute('data-cap-en') || '');
       });
     });
-
     modalBg.addEventListener('click', closeModal);
     modalClose.addEventListener('click', closeModal);
     modalImg.addEventListener('click', closeModal);
