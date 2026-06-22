@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -1281,7 +1280,7 @@ document.querySelectorAll('.goal-card, .news-item').forEach(function (el) {
 });
 
 /* ════════════════════════════════════════════════════════
-   ポップアップ + オーバーレイ制御
+   ポップアップ + オーバーレイ制御（★修正・改善ポイント）
 ════════════════════════════════════════════════════════ */
 function closeNewsPopup() {
   var popup   = document.getElementById('news-popup');
@@ -1294,29 +1293,33 @@ function closeNewsPopup() {
 }
 
 document.getElementById('modal-overlay').addEventListener('click', closeNewsPopup);
+
+// ★ 改善・修正部分：最優先表示 ＆ 再訪問時の非表示制御
 (function () {
-  var popupShown  = false;
-  var statementSec = document.getElementById('statement');
-  if (!statementSec) return;
-  var popupObs = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (e.isIntersecting && !popupShown) {
-        popupShown = true;
-        setTimeout(function () {
-          var popup   = document.getElementById('news-popup');
-          var overlay = document.getElementById('modal-overlay');
+  // sessionStorageを使って、同じタブ内での再訪問時はポップアップを出さない
+  var hasSeenPopup = sessionStorage.getItem('newsPopupShown');
+
+  if (!hasSeenPopup) {
+    // まだ見ていない場合、ページ読み込み後に最優先で表示
+    window.addEventListener('load', function() {
+      // 画面描画直後にフワッと出すために少しだけ遅延させる（400ms）
+      setTimeout(function () {
+        var popup   = document.getElementById('news-popup');
+        var overlay = document.getElementById('modal-overlay');
+        if(popup && overlay) {
           popup.classList.add('show');
- 
           popup.setAttribute('aria-hidden', 'false');
           overlay.classList.add('active');
           document.body.classList.add('no-scroll');
-        }, 500);
-        popupObs.disconnect();
-      }
+          
+          // 表示したことをブラウザに記憶させる
+          sessionStorage.setItem('newsPopupShown', 'true');
+        }
+      }, 400);
     });
-  }, { threshold: 0.1 });
-  popupObs.observe(statementSec);
+  }
 })();
+
 
 /* ════════════════════════════════════════════════════════
    タイピングアニメーション 完全版エンジン（DOM解析型）
