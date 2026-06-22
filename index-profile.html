@@ -115,7 +115,7 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       HERO
+       HERO (明るい動画背景＋文字のドロップシャドウ)
     ============================================================ */
     .hero {
       position: relative; height: 100svh; min-height: 580px;
@@ -131,14 +131,17 @@
     }
     .hero-video-overlay {
       position: absolute; inset: 0; z-index: 2;
-      background: linear-gradient(to top, rgba(6,6,5,0.6) 0%, transparent 15%);
+      /* スクロール文字の部分のみを薄く暗くする */
+      background: linear-gradient(to top, rgba(6,6,5,0.5) 0%, transparent 15%);
       pointer-events: none;
     }
     .hero-divider {
       position: absolute; left: 0; right: 0; bottom: 0; height: 1px; z-index: 4;
       background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%);
     }
-    .hero-inner { position: relative; z-index: 3; text-shadow: 0 2px 12px rgba(0,0,0,0.5); }
+    /* 文字が明るい背景でも読めるようにシャドウを追加 */
+    .hero-inner { position: relative; z-index: 3; text-shadow: 0 2px 14px rgba(0,0,0,0.7); }
+    
     .hero-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem);
       letter-spacing: 0.5em; color: var(--fg); text-transform: uppercase;
@@ -146,7 +149,8 @@
       clip-path: inset(0 100% 0 0); transition: clip-path 1.2s var(--ease) 0.2s;
     }
     .hero-eyebrow::before {
-      content: ''; width: 24px; height: 1px; background: var(--accent); flex-shrink: 0; opacity: 0.8;
+      content: ''; width: 24px; height: 1px; background: var(--accent); flex-shrink: 0; opacity: 0.9;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.6);
     }
     .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
     .hero-title {
@@ -179,15 +183,17 @@
     .hero-meta.revealed { opacity: 1; transform: translateY(0); }
     .hero-meta-line {
       width: 40px; height: 1px; background: linear-gradient(to right, var(--accent), transparent); flex-shrink: 0;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.5);
     }
     .hero-meta-text {
       font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.62rem);
-      letter-spacing: 0.24em; color: var(--fg); text-transform: uppercase;
+      letter-spacing: 0.24em; color: #fff; text-transform: uppercase;
     }
     .hero-scroll {
       position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px);
       z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 12px;
       opacity: 0; transition: opacity 0.9s ease 1.8s;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
     }
     .hero-scroll.revealed { opacity: 1; }
     .hero-scroll-label {
@@ -608,11 +614,6 @@
       font-family: var(--font-en); font-size: clamp(0.66rem, 1.2vw, 0.74rem);
       color: var(--muted); letter-spacing: 0.06em; font-style: italic;
     }
-    .career-note {
-      margin-top: clamp(2rem, 5vh, 3rem); text-align: center;
-      font-family: var(--font-en); font-style: italic; font-size: clamp(0.75rem, 1.5vw, 0.85rem);
-      color: var(--dim); letter-spacing: 0.1em;
-    }
 
     /* ============================================================
        CONTACT & FOOTER
@@ -747,10 +748,9 @@
   </nav>
 
   <main>
-    <!-- ═══════════════ HERO ═══════════════ -->
     <section class="hero">
       <div class="hero-video-wrap" aria-hidden="true">
-        <video src="images/mov1.mp4" autoplay loop muted playsinline preload="metadata"></video>
+        <video src="images/mov1.mp4" autoplay loop muted playsinline preload="metadata" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"></video>
         <div class="hero-video-overlay"></div>
       </div>
       <div class="hero-divider" aria-hidden="true"></div>
@@ -773,23 +773,22 @@
       </div>
     </section>
 
-    <!-- ═══════════════ CONCEPT ═══════════════ -->
     <section class="concept-section">
       <p class="concept-text">
-        1984年、長野県生まれ。2013年、東京藝術大学美術学部絵画科油画専攻卒業。<br>
-        出生の地である左美都（長野県長野市信更町三水）の記憶・地質・感覚を起点に、<br>
-        油彩を中心とした多層的な制作を続けている。
+        1984年、長野県長野市生まれ。2013年、東京藝術大学美術学部絵画科油画専攻卒業。<br>
+        事物の存在に纏わるあらゆる傾向を、世界を構成する最小の要素〈いと〉と捉え制作を行う。<br>
+        自身の生まれ育った「左美都（長野県長野市信更町三水）」の地質や深く根ざした記憶と向き合い、<br>
+        油彩による描画を起点としながら、映像・立体・インスタレーションへと展開し、多層的な「洞窟」の根源を探求している。
       </p>
     </section>
 
-    <!-- ═══════════════ PROFILE ═══════════════ -->
     <section class="profile-section" id="profile">
       <div class="section-label">Profile</div>
       <div class="profile-split">
         <figure class="profile-portrait js-modal-open"
-          data-img-src="images/IMG_7683.JPG"
+          data-img-src="images/IMG_7683.jpg"
           data-cap-jp="津田 翔一" data-cap-en="Tsuda Shoichi, at work">
-          <img src="images/IMG_7683.JPG" alt="津田翔一 制作風景" loading="lazy">
+          <img src="images/IMG_7683.jpg" alt="津田翔一 制作風景" loading="lazy">
           <figcaption class="profile-portrait-cap">Tsuda Shoichi — at work</figcaption>
         </figure>
 
@@ -800,7 +799,7 @@
             <tbody>
               <tr>
                 <th scope="row">Born</th>
-                <td>1984年 長野県生まれ</td>
+                <td>1984年 長野県長野市生まれ</td>
               </tr>
               <tr>
                 <th scope="row">Education</th>
@@ -818,13 +817,16 @@
                 <th scope="row">Theme</th>
                 <td>〈いと〉と〈洞窟（単位世界）〉。土地の記憶・地質・神話・伝承を通じた存在の根源の探求。</td>
               </tr>
+              <tr>
+                <th scope="row">Contact</th>
+                <td><a href="mailto:sh012da@gmail.com" style="color:var(--accent); text-decoration:underline;">sh012da@gmail.com</a></td>
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- ═══════════════ NUMBERS BAR ═══════════════ -->
     <div class="numbers-bar">
       <div class="numbers-inner">
         <div class="numbers-item">
@@ -833,14 +835,14 @@
           <p class="numbers-label-ja">制作年数</p>
         </div>
         <div class="numbers-item">
-          <p class="numbers-num">2</p>
+          <p class="numbers-num">3</p>
           <p class="numbers-label">Solo Exhibitions</p>
           <p class="numbers-label-ja">個展</p>
         </div>
         <div class="numbers-item">
-          <p class="numbers-num">8+</p>
-          <p class="numbers-label">Group Shows</p>
-          <p class="numbers-label-ja">グループ展</p>
+          <p class="numbers-num">10+</p>
+          <p class="numbers-label">Shows & Awards</p>
+          <p class="numbers-label-ja">グループ展・受賞等</p>
         </div>
         <div class="numbers-item">
           <p class="numbers-num">∞</p>
@@ -850,7 +852,6 @@
       </div>
     </div>
 
-    <!-- ═══════════════ MAKING-OF SECTION ═══════════════ -->
     <section class="making-section" id="making">
 
       <div class="making-header">
@@ -863,16 +864,15 @@
         </p>
       </div>
 
-      <!-- ── ACT I : 洞窟 ── -->
       <div class="act">
         <div class="act-opener js-modal-open"
-          data-img-src="images/IMG_7653.JPG"
+          data-img-src="images/IMG_7653.jpg"
           data-cap-jp="制作風景 — 大型カンヴァス"
           data-cap-en="Large-scale work in progress">
-          <img src="images/IMG_7653.JPG" alt="大型カンヴァスと制作風景" loading="lazy">
+          <img src="images/IMG_7653.jpg" alt="大型カンヴァスと制作風景" loading="lazy">
           <div class="act-opener-overlay">
             <span class="act-num">I</span>
-            <h3 class="act-title-ja">洞　窟</h3>
+            <h3 class="act-title-ja">洞 窟</h3>
             <p class="act-title-en">The Cave — Studio Practice</p>
           </div>
         </div>
@@ -889,45 +889,40 @@
             </p>
           </div>
 
-          <!-- 5-image magazine grid: large left, 4 stacked right 2x2 -->
           <div class="act-grid grid-a">
-            <!-- tall left: IMG_7653 already used as opener, use next best -->
             <div class="act-cell tall-left js-modal-open"
-              data-img-src="images/IMG_3157.JPG"
+              data-img-src="images/IMG_3157.jpg"
               data-cap-jp="制作風景" data-cap-en="Facing the large canvas">
-              <img src="images/IMG_3157.JPG" alt="制作風景" loading="lazy">
+              <img src="images/IMG_3157.jpg" alt="制作風景" loading="lazy">
               <figcaption class="act-cell-cap">Facing the canvas</figcaption>
             </div>
             <div class="act-cell ar-land js-modal-open"
-              data-img-src="images/IMG_3153.JPG"
+              data-img-src="images/IMG_3153.jpg"
               data-cap-jp="制作風景" data-cap-en="Brush detail, close-up">
-              <img src="images/IMG_3153.JPG" alt="制作風景" loading="lazy">
+              <img src="images/IMG_3153.jpg" alt="制作風景" loading="lazy">
               <figcaption class="act-cell-cap">Brush detail</figcaption>
             </div>
             <div class="act-cell ar-land js-modal-open"
-              data-img-src="images/IMG_7606.JPG"
+              data-img-src="images/IMG_7606.jpg"
               data-cap-jp="制作風景" data-cap-en="Broad red strokes">
-              <img src="images/IMG_7606.JPG" alt="制作風景" loading="lazy">
+              <img src="images/IMG_7606.jpg" alt="制作風景" loading="lazy">
               <figcaption class="act-cell-cap">Broad red strokes</figcaption>
             </div>
             <div class="act-cell ar-land js-modal-open"
-              data-img-src="images/IMG_7645.JPG"
+              data-img-src="images/IMG_7645.jpg"
               data-cap-jp="制作風景" data-cap-en="Creating depth, two panels">
-              <img src="images/IMG_7645.JPG" alt="制作風景" loading="lazy">
+              <img src="images/IMG_7645.jpg" alt="制作風景" loading="lazy">
               <figcaption class="act-cell-cap">Creating depth</figcaption>
             </div>
             <div class="act-cell ar-land js-modal-open"
-              data-img-src="images/IMG_3151.JPG"
+              data-img-src="images/IMG_3151.jpg"
               data-cap-jp="制作風景" data-cap-en="A pause mid-stroke">
-              <img src="images/IMG_3151.JPG" alt="制作風景" loading="lazy">
+              <img src="images/IMG_3151.jpg" alt="制作風景" loading="lazy">
               <figcaption class="act-cell-cap">A pause mid-stroke</figcaption>
             </div>
           </div>
         </div>
-      </div><!-- /act I -->
-
-      <!-- ── PULL QUOTE ── -->
-      <div class="pull-quote-block">
+      </div><div class="pull-quote-block">
         <p class="pull-quote-text">
           「絵を描くことは、土地の記憶を身体で翻訳する行為だ。<br>
           筆が動くたびに、左美都の地層が一枚ずつ剥がれてくる」
@@ -935,16 +930,15 @@
         <p class="pull-quote-attr">— Tsuda Shoichi, artist statement</p>
       </div>
 
-      <!-- ── ACT II : 舞台 ── -->
       <div class="act">
         <div class="act-opener js-modal-open"
-          data-img-src="images/IMG_7837.JPG"
+          data-img-src="images/IMG_7837.jpg"
           data-cap-jp="ライブペイント — ステージ"
           data-cap-en="Live painting, illuminated performance">
-          <img src="images/IMG_7837.JPG" alt="ライブペイント 照明演出" loading="lazy">
+          <img src="images/IMG_7837.jpg" alt="ライブペイント 照明演出" loading="lazy">
           <div class="act-opener-overlay">
             <span class="act-num">II</span>
-            <h3 class="act-title-ja">舞　台</h3>
+            <h3 class="act-title-ja">舞 台</h3>
             <p class="act-title-en">The Stage — Live Painting</p>
           </div>
         </div>
@@ -961,32 +955,28 @@
             </p>
           </div>
 
-          <!-- 4-image grid: wide top, 3 below -->
           <div class="act-grid grid-b">
             <div class="act-cell span2 ar-wide js-modal-open"
-              data-img-src="images/IMG_7823.JPG"
+              data-img-src="images/IMG_7823.jpg"
               data-cap-jp="ステージ" data-cap-en="Harmony of art and music">
-              <img src="images/IMG_7823.JPG" alt="ステージ 音楽と絵画" loading="lazy">
+              <img src="images/IMG_7823.jpg" alt="ステージ 音楽と絵画" loading="lazy">
               <figcaption class="act-cell-cap">Harmony of art and music</figcaption>
             </div>
             <div class="act-cell ar-port js-modal-open"
-              data-img-src="images/IMG_7834.JPG"
+              data-img-src="images/IMG_7834.jpg"
               data-cap-jp="ライブペイント" data-cap-en="Painting on stage, by night">
-              <img src="images/IMG_7834.JPG" alt="ライブペイント" loading="lazy">
+              <img src="images/IMG_7834.jpg" alt="ライブペイント" loading="lazy">
               <figcaption class="act-cell-cap">Painting on stage</figcaption>
             </div>
             <div class="act-cell ar-port js-modal-open"
-              data-img-src="images/IMG_7819.JPG"
+              data-img-src="images/IMG_7819.jpg"
               data-cap-jp="アーティストトーク" data-cap-en="Artist's voice, on stage">
-              <img src="images/IMG_7819.JPG" alt="アーティストトーク" loading="lazy">
+              <img src="images/IMG_7819.jpg" alt="アーティストトーク" loading="lazy">
               <figcaption class="act-cell-cap">Artist's voice</figcaption>
             </div>
           </div>
         </div>
-      </div><!-- /act II -->
-
-      <!-- ── PULL QUOTE ── -->
-      <div class="pull-quote-block">
+      </div><div class="pull-quote-block">
         <p class="pull-quote-text">
           制作とは〈単独者の行為〉から始まり、<br>
           いつか〈場との共鳴〉へと開かれていく。
@@ -994,16 +984,15 @@
         <p class="pull-quote-attr">— 枠組みを越え、空間と共鳴する</p>
       </div>
 
-      <!-- ── ACT III : 対話 ── -->
       <div class="act">
         <div class="act-opener js-modal-open"
-          data-img-src="images/image_50374657.JPG"
+          data-img-src="images/image_50374657.jpg"
           data-cap-jp="ギャラリートーク"
           data-cap-en="Gallery talk, solo exhibition">
-          <img src="images/image_50374657.JPG" alt="ギャラリートーク" loading="lazy">
+          <img src="images/image_50374657.jpg" alt="ギャラリートーク" loading="lazy">
           <div class="act-opener-overlay">
             <span class="act-num">III</span>
-            <h3 class="act-title-ja">対　話</h3>
+            <h3 class="act-title-ja">対 話</h3>
             <p class="act-title-en">The Dialogue — Exchange & Community</p>
           </div>
         </div>
@@ -1020,7 +1009,6 @@
             </p>
           </div>
 
-          <!-- 3-image filmstrip -->
           <div class="filmstrip">
             <figure class="filmstrip-cell fs-wide js-modal-open"
               data-img-src="images/image_50374657.JPG"
@@ -1030,23 +1018,20 @@
             </figure>
             <figure class="filmstrip-cell fs-port js-modal-open"
               data-img-src="images/_MG_3167.JPG"
-              data-cap-jp="笑顔の交流" data-cap-en="Warm interactions at the gallery">
-              <img src="images/_MG_3167.JPG" alt="ギャラリー交流" loading="lazy">
+              data-cap-jp="制作中！" data-cap-en="Warm interactions at the gallery">
+              <img src="images/_MG_3167.jpg" alt="制作中！" loading="lazy">
               <figcaption class="filmstrip-cell-cap">Warm interactions</figcaption>
             </figure>
             <figure class="filmstrip-cell fs-wide js-modal-open"
-              data-img-src="images/image_6487327__1_.JPG"
+              data-img-src="images/image_6487327 (1).JPG"
               data-cap-jp="パネルディスカッション" data-cap-en="Panel discussion">
-              <img src="images/image_6487327__1_.JPG" alt="パネルディスカッション" loading="lazy">
+              <img src="images/image_6487327 (1).JPG" alt="パネルディスカッション" loading="lazy">
               <figcaption class="filmstrip-cell-cap">Panel discussion</figcaption>
             </figure>
           </div>
         </div>
-      </div><!-- /act III -->
+      </div></section>
 
-    </section><!-- /making-section -->
-
-    <!-- ═══════════════ CAREER ═══════════════ -->
     <section class="career-section" id="career">
       <div class="career-container">
         <div class="section-label">Career</div>
@@ -1058,17 +1043,24 @@
           </div>
           <div class="career-list">
             <div class="career-row">
-              <span class="career-year">2023</span>
+              <span class="career-year">2024</span>
               <div>
                 <span class="career-detail-title">文化庁メディア芸術クリエイター育成支援事業採択企画展示</span>
-                <span class="career-detail-venue">長野, 東京</span>
+                <span class="career-detail-venue">北野カルチュラルセンター（長野県長野市） / 2nen Gallery（東京都中央区）</span>
+              </div>
+            </div>
+            <div class="career-row">
+              <span class="career-year">2022</span>
+              <div>
+                <span class="career-detail-title">油彩画展 ～＋覚知ka～</span>
+                <span class="career-detail-venue">長野県立美術館（長野県長野市）</span>
               </div>
             </div>
             <div class="career-row">
               <span class="career-year">2021</span>
               <div>
                 <span class="career-detail-title">油彩画展 ～明るい洞窟～</span>
-                <span class="career-detail-venue">長野県立美術館（長野）</span>
+                <span class="career-detail-venue">長野県立美術館（長野県長野市）</span>
               </div>
             </div>
           </div>
@@ -1076,70 +1068,103 @@
 
         <div class="career-group">
           <div class="career-group-head">
-            <span class="career-group-title">グループ展</span>
-            <span class="career-group-title-en">Group Exhibitions</span>
+            <span class="career-group-title">グループ展・参加プロジェクト</span>
+            <span class="career-group-title-en">Group Exhibitions & Projects</span>
           </div>
           <div class="career-list">
             <div class="career-row">
               <span class="career-year">2025</span>
               <div>
                 <span class="career-detail-title">ふうけいのまにまに</span>
-                <span class="career-detail-venue">信州高頭美術館（長野）</span>
+                <span class="career-detail-venue">信州高遠美術館（長野県伊那市）</span>
               </div>
             </div>
             <div class="career-row">
               <span class="career-year">2024</span>
               <div>
                 <span class="career-detail-title">長野県ゆかりのアーティストステージ</span>
-                <span class="career-detail-venue">キッセイ文化ホール（長野）</span>
+                <span class="career-detail-venue">キッセイ文化ホール（長野県松本市）</span>
+              </div>
+            </div>
+            <div class="career-row">
+              <span class="career-year">2024</span>
+              <div>
+                <span class="career-detail-title">ikibase Artist In Residence autumn session 2024</span>
+                <span class="career-detail-venue">壱岐島（長崎県壱岐市）</span>
               </div>
             </div>
             <div class="career-row">
               <span class="career-year">2023</span>
               <div>
-                <span class="career-detail-title">若手作家公募個展トライアル・ギャラリー</span>
-                <span class="career-detail-venue">長野県伊那文化会館（長野）</span>
+                <span class="career-detail-title">若手作家公募個展 トライアル・ギャラリー</span>
+                <span class="career-detail-venue">長野県伊那文化会館（長野県伊那市）</span>
               </div>
             </div>
             <div class="career-row">
               <span class="career-year">2022</span>
               <div>
-                <span class="career-detail-title">市内作家によるアートグループ展</span>
-                <span class="career-detail-venue">長野市役所展示サロン（長野）</span>
+                <span class="career-detail-title">市内作家によるアートグループ展 2022</span>
+                <span class="career-detail-venue">長野市芸術館（長野県長野市）</span>
               </div>
             </div>
-            <div class="career-row">
-              <span class="career-year">2021</span>
-              <div>
-                <span class="career-detail-title">シェル美術賞展</span>
-              </div>
-            </div>
+          </div>
+        </div>
+
+        <div class="career-group">
+          <div class="career-group-head">
+            <span class="career-group-title">受賞・入選等</span>
+            <span class="career-group-title-en">Awards & Selections</span>
+          </div>
+          <div class="career-list">
             <div class="career-row">
               <span class="career-year">2021</span>
               <div>
                 <span class="career-detail-title">第23回雪梁舎フィレンツェ賞展</span>
+                <span class="career-detail-venue">雪梁舎美術館（新潟県） / 東京都美術館（東京都）</span>
+              </div>
+            </div>
+            <div class="career-row">
+              <span class="career-year">2021</span>
+              <div>
+                <span class="career-detail-title">シェル美術賞展 2021</span>
+                <span class="career-detail-venue">国立新美術館（東京都）</span>
               </div>
             </div>
             <div class="career-row">
               <span class="career-year">2015</span>
               <div>
-                <span class="career-detail-title">群馬青年ビエンナーレ</span>
+                <span class="career-detail-title">群馬青年ビエンナーレ 2015</span>
+                <span class="career-detail-venue">群馬県立近代美術館（群馬県高崎市）</span>
               </div>
             </div>
             <div class="career-row">
               <span class="career-year">2014</span>
               <div>
-                <span class="career-detail-title">トーキョーワンダーウォール</span>
+                <span class="career-detail-title">トーキョーワンダーウォール 2014</span>
+                <span class="career-detail-venue">東京都現代美術館（東京都江東区）</span>
+              </div>
+            </div>
+            <div class="career-row">
+              <span class="career-year">2011</span>
+              <div>
+                <span class="career-detail-title">第5回 V.A.A.Dビジュアルアート大賞 最優秀賞</span>
+                <span class="career-detail-venue">（福島県郡山市）</span>
+              </div>
+            </div>
+            <div class="career-row">
+              <span class="career-year">2009</span>
+              <div>
+                <span class="career-detail-title">サンフランシスコ号漂着400周年記念公募展 大賞</span>
+                <span class="career-detail-venue">（千葉県夷隅郡御宿町）</span>
               </div>
             </div>
           </div>
-          <p class="career-note">— その他個展グループ展多数 —</p>
         </div>
+
       </div>
     </section>
   </main>
 
-  <!-- ═══════════════ CONTACT ═══════════════ -->
   <section class="contact-section" id="contact">
     <p class="section-label" style="text-align:center; margin-bottom:1.5rem;">Contact</p>
     <h2 class="contact-heading">お問い合わせ</h2>
@@ -1161,7 +1186,6 @@
     <span class="back-to-top-text">TOP</span>
   </a>
 
-  <!-- LIGHTBOX MODAL -->
   <div class="image-modal" id="imageModal" aria-hidden="true" role="dialog">
     <div class="modal-bg" id="modalBg"></div>
     <button class="modal-close" id="modalClose" aria-label="閉じる">
