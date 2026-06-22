@@ -126,35 +126,37 @@
     }
     .hero-video-wrap {
       position: absolute; inset: 0; z-index: 1; overflow: hidden;
-      background: #000;
     }
     .hero-video-wrap video {
       width: 100%; height: 100%; object-fit: cover;
-      /* 元の映像の明るさをそのまま活かすため、フィルターを削除 */
     }
     .hero-video-overlay {
       position: absolute; inset: 0; z-index: 2;
-      /* 全体を暗くするのをやめ、下部のテキスト背景のみを薄く暗くする */
-      background: linear-gradient(to top, rgba(6,6,5,0.85) 0%, rgba(6,6,5,0) 25%);
+      /* 全体の暗さを取り除き、最下部の境界部分にだけ極薄い影を配置 */
+      background: linear-gradient(to top, rgba(6,6,5,0.6) 0%, transparent 15%);
+      pointer-events: none;
     }
     .hero-divider {
       position: absolute; left: 0; right: 0; bottom: 0; height: 1px; z-index: 4;
       background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%);
     }
-    .hero-inner { position: relative; z-index: 3; }
+    /* 文字が明るい背景でも読めるようにシャドウを追加 */
+    .hero-inner { position: relative; z-index: 3; text-shadow: 0 2px 12px rgba(0,0,0,0.5); }
+    
     .hero-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem);
-      letter-spacing: 0.5em; color: var(--dim); text-transform: uppercase;
+      letter-spacing: 0.5em; color: var(--fg); text-transform: uppercase;
       margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.2rem;
       clip-path: inset(0 100% 0 0); transition: clip-path 1.2s var(--ease) 0.2s;
     }
     .hero-eyebrow::before {
-      content: ''; width: 24px; height: 0.5px; background: var(--accent2); flex-shrink: 0; opacity: 0.6;
+      content: ''; width: 24px; height: 1px; background: var(--accent); flex-shrink: 0; opacity: 0.8;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.5);
     }
     .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
     .hero-title {
       font-family: var(--font-ja); font-size: clamp(2.6rem, 9.5vw, 7.2rem); font-weight: 200;
-      line-height: 1.05; letter-spacing: -0.01em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem);
+      line-height: 1.05; letter-spacing: -0.01em; color: #fff; margin-bottom: clamp(0.8rem, 2vh, 1.8rem);
       display: flex; flex-wrap: wrap; gap: 0.05em; overflow: visible;
     }
     .hero-title .char {
@@ -169,7 +171,7 @@
     .hero-title.revealed .char { opacity: 1; transform: translateX(0); }
     .hero-title-en {
       font-family: var(--font-en); font-size: clamp(0.95rem, 3vw, 2rem);
-      font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.65);
+      font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: var(--accent);
       clip-path: inset(0 100% 0 0); transition: clip-path 1.4s var(--ease) 0.7s;
     }
     .hero-title-en.revealed { clip-path: inset(0 0% 0 0); }
@@ -181,33 +183,35 @@
     }
     .hero-meta.revealed { opacity: 1; transform: translateY(0); }
     .hero-meta-line {
-      width: 40px; height: 0.5px; background: linear-gradient(to right, var(--accent), var(--accent2)); flex-shrink: 0;
+      width: 40px; height: 1px; background: linear-gradient(to right, var(--accent), transparent); flex-shrink: 0;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.5);
     }
     .hero-meta-text {
       font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.62rem);
-      letter-spacing: 0.24em; color: var(--dim); text-transform: uppercase;
+      letter-spacing: 0.24em; color: var(--fg); text-transform: uppercase;
     }
     .hero-scroll {
       position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px);
       z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 12px;
       opacity: 0; transition: opacity 0.9s ease 1.8s;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
     }
     .hero-scroll.revealed { opacity: 1; }
     .hero-scroll-label {
       font-family: var(--font-en); font-size: 0.52rem; letter-spacing: 0.38em;
-      color: var(--whisper); text-transform: uppercase; writing-mode: vertical-rl;
+      color: #fff; text-transform: uppercase; writing-mode: vertical-rl;
     }
     .hero-scroll-track {
-      width: 1px; height: 48px; background: var(--border); position: relative; overflow: hidden;
+      width: 1px; height: 48px; background: rgba(255,255,255,0.2); position: relative; overflow: hidden;
     }
     .hero-scroll-fill {
       position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(to bottom, var(--accent), transparent);
+      background: linear-gradient(to bottom, #fff, transparent);
       animation: scrollDrop 2.2s ease-in-out 2s infinite;
     }
     @keyframes scrollDrop {
       0%   { top: -100%; opacity: 1; }
-      70%  { top: 100%;  opacity: 0.4; }
+      70%  { top: 100%;  opacity: 0.6; }
       71%  { top: -100%; opacity: 0; }
       100% { top: -100%; opacity: 0; }
     }
@@ -343,7 +347,7 @@
       color: var(--dim); text-transform: uppercase; pointer-events: none;
     }
     
-    /* 14 cells layout (Calculated for perfect alignment) */
+    /* 14 cells layout */
     .studio-cell.c1 { grid-column: span 7; aspect-ratio: 7 / 5; }
     .studio-cell.c2 { grid-column: span 5; aspect-ratio: 1 / 1; }
     .studio-cell.c3 { grid-column: span 6; aspect-ratio: 4 / 3; }
@@ -543,9 +547,7 @@
   <main>
     <section class="hero">
       <div class="hero-video-wrap" aria-hidden="true">
-        <video id="heroVideo" autoplay loop muted playsinline>
-          <source src="mov1.mp4" type="video/mp4">
-        </video>
+        <video src="mov1.mp4" autoplay loop muted playsinline preload="metadata"></video>
         <div class="hero-video-overlay"></div>
       </div>
       <div class="hero-divider" aria-hidden="true"></div>
@@ -837,17 +839,6 @@
   </div>
 
   <script>
-    /* ── Video Fallback for Loop/Autoplay ── */
-    const heroVideo = document.getElementById('heroVideo');
-    if (heroVideo) {
-      // 念のため再生をトリガーし、終了時に再度再生させるイベントを登録
-      heroVideo.play().catch(() => {});
-      heroVideo.addEventListener('ended', () => {
-        heroVideo.currentTime = 0;
-        heroVideo.play();
-      });
-    }
-
     /* ── Contact ボタン：同一ページ内スムーススクロール（ヘッダー分オフセット） ── */
     document.getElementById('nav-cta-btn')?.addEventListener('click', (e) => {
       const target = document.getElementById('contact');
