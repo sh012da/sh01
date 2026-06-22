@@ -21,7 +21,7 @@
   <style>
     /* ============================================================
        DESIGN TOKENS
-    ============================================================ */
+    =========================================================== */
     :root {
       --bg:        #060605;
       --bg2:       #0c0c0a;
@@ -62,7 +62,7 @@
 
     /* ============================================================
        NAVIGATION
-    ============================================================ */
+    =========================================================== */
     nav#top-nav {
       position: fixed;
       top: 0; left: 0; width: 100%; z-index: 300;
@@ -100,7 +100,7 @@
     }
     .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
     
-    /* Hamburger (PCでは非表示、スマホ版も今回はCSSで打ち消し) */
+    /* Hamburger */
     .nav-hamburger { display: none;
       background: none;
       border: none; cursor: pointer; padding: 4px; position: relative; z-index: 301; width: 30px; height: 20px;
@@ -117,7 +117,7 @@
     .nav-hamburger.is-active span:nth-child(2) { opacity: 0; }
     .nav-hamburger.is-active span:nth-child(3) { top: 9px; transform: rotate(-45deg); }
 
-    /* Page Nav (Right fixed) */
+    /* Page Nav */
     .page-nav {
       position: fixed;
       right: clamp(20px, 4vw, 40px); top: 50%;
@@ -150,7 +150,7 @@
 
     /* ============================================================
        HERO FIRST VIEW
-    ============================================================ */
+    =========================================================== */
     .hero {
       position: relative;
       height: 100svh; min-height: 580px;
@@ -233,7 +233,7 @@
 
     /* ============================================================
        CONCEPT SECTION
-    ============================================================ */
+    =========================================================== */
     .concept-section {
       padding: clamp(6rem, 13vh, 10rem) var(--px);
       max-width: 900px; margin: 0 auto; text-align: center;
@@ -246,10 +246,11 @@
 
     /* ============================================================
        SERIES STATEMENT
-    ============================================================ */
+    =========================================================== */
     .statement-section {
       padding: clamp(4rem, 9vh, 7rem) var(--px) clamp(6rem, 13vh, 10rem);
-      max-width: 880px; margin: 0 auto; border-top: 0.5px solid var(--border);
+      /* ★ 適度に幅を広げて見やすくリデザイン */
+      max-width: 1080px; margin: 0 auto; border-top: 0.5px solid var(--border);
     }
     .statement-label {
       font-family: var(--font-en);
@@ -258,9 +259,14 @@
       text-align: center; margin-bottom: clamp(2.5rem, 6vh, 4rem);
     }
     .statement-pullquote {
-      font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.3rem, 3.2vw, 2.1rem);
-      line-height: 1.75; color: var(--fg); text-align: center; letter-spacing: 0.03em;
-      margin-bottom: clamp(3rem, 7vh, 5rem);
+      font-family: var(--font-ja); font-weight: 200; 
+      /* ★ 文字サイズを微調整し、1行に入る文字数を増やすことで改行を自然に */
+      font-size: clamp(1.15rem, 2.6vw, 1.7rem);
+      line-height: 1.85; color: var(--fg); text-align: center; letter-spacing: 0.06em;
+      margin-bottom: clamp(3.5rem, 8vh, 5rem);
+      width: 100%; /* 全幅を使用 */
+      /* ★ 単語の途中での不自然な改行を防ぐ最新の最適化 */
+      word-break: auto-phrase;
       opacity: 0; transform: translateY(20px);
       transition: opacity 1s var(--ease), transform 1s var(--ease);
     }
@@ -268,7 +274,7 @@
     .statement-pullquote .accent-word { color: var(--accent); }
     
     .statement-body { display: flex;
-      flex-direction: column; gap: clamp(1.6rem, 3vh, 2.2rem); }
+      flex-direction: column; gap: clamp(1.6rem, 3vh, 2.2rem); max-width: 880px; margin: 0 auto; }
     .statement-para {
       font-size: clamp(0.86rem, 1.7vw, 0.98rem);
       line-height: 2.25;
@@ -295,8 +301,8 @@
     .statement-closing.in-view { opacity: 1; transform: translateY(0); }
 
     /* ============================================================
-       GALLERY GRID (Flexbox alignment & Balanced Spacing)
-    ============================================================ */
+       GALLERY GRID
+    =========================================================== */
     .gallery-section {
       padding: 0 var(--px) clamp(6rem, 13vh, 10rem);
       max-width: 1600px; margin: 0 auto;
@@ -313,40 +319,39 @@
       flex-wrap: wrap;
       gap: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 2.5vw, 2.5rem);
       justify-content: center;
-      align-items: flex-start; /* ★ すべてのアイテムの上辺を統一 */
+      align-items: flex-start;
     }
     
     .gallery-item {
       display: flex;
       flex-direction: column;
-      align-items: center; /* ★ キャプション幅に引っ張られず画像中央基準で整列させる */
+      align-items: center; 
       text-decoration: none; cursor: pointer;
       opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
-      width: fit-content; /* ★ max-contentからfit-contentへ改善。画像幅に枠幅を同期 */
+      width: fit-content; 
       max-width: 100%;
     }
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
     
     .gallery-item-img-wrap {
-      /* ★ 100号作品の基準高さ */
       height: var(--item-height, var(--grid-base-h));
-      width: max-content; /* 画像の本来の幅にぴったりと寄り添う */
+      width: max-content; 
       display: flex; justify-content: center; align-items: center;
       background: transparent; overflow: hidden;
       border: 0.5px solid var(--border);
       transition: border-color 0.4s ease, box-shadow 0.5s var(--ease);
     }
     
-    /* ★ リリス3作品用の専用高さを設定 (100号の0.72倍) */
-    .gallery-item.is-lilith {
+    /* ★ リリスやNáströndなど F50縦（派生）作品用の高さを汎用化して設定 */
+    .gallery-item.is-f50-height {
       --item-height: calc(var(--grid-base-h) * 0.72);
     }
     
     .gallery-item-img-wrap img {
       height: 100%;
-      width: auto; /* 高さに合わせて自然な比率を保つ */
+      width: auto; 
       display: block; 
-      object-fit: contain; /* はみ出し・切り抜きなし */
+      object-fit: contain; 
       filter: grayscale(15%) brightness(0.85);
       transition: transform 0.8s var(--ease), filter 0.6s ease;
     }
@@ -370,7 +375,7 @@
 
     /* ============================================================
        INTEGRATED CHRONOLOGY SECTION 
-    ============================================================ */
+    =========================================================== */
     .chronology-section {
       padding: clamp(5rem, 12vh, 10rem) var(--px);
       background: var(--bg2); border-top: 0.5px solid var(--border); position: relative;
@@ -425,6 +430,28 @@
     
     .tl-entry.is-f50-ratio .tl-figure { width: 38%; aspect-ratio: 91 / 116.7; }
     .tl-entry.is-f50-ratio .tl-body { width: 54%; }
+
+    /* ★ Náströnd 専用レイアウト（リリスと高さを完全に同期） */
+    .tl-entry.is-nastrond .tl-content-wrap {
+      flex-direction: column; /* 超横長のため縦積みに */
+      align-items: center;
+      gap: clamp(2.5rem, 6vw, 4.5rem);
+    }
+    .tl-entry.is-nastrond .tl-year-display { text-align: center; padding-left: 0; }
+    .tl-entry.is-nastrond .tl-figure {
+      /* リリス幅(38%) × (Náströnd幅290 / リリス幅91) ≒ 121% にすることで高さを数学的に一致させる */
+      width: 121%; 
+      max-width: 100vw; /* 画面外への突き抜け（横スクロール）を防止 */
+      margin-left: 50%;
+      transform: translateX(-50%);
+      aspect-ratio: 290 / 116.7; 
+      border: 0.5px solid var(--border);
+    }
+    .tl-entry.is-nastrond .tl-figure img { width: 100%; height: 100%; object-fit: cover; }
+    .tl-entry.is-nastrond .tl-body {
+      width: 100%;
+      max-width: 880px;
+    }
     
     .tl-figure img {
       width: 100%;
@@ -463,7 +490,7 @@
 
     /* ============================================================
        CONTACT & FOOTER
-    ============================================================ */
+    =========================================================== */
     .contact-section {
       padding: clamp(7rem, 15vh, 11rem) var(--px);
       text-align: center;
@@ -497,7 +524,7 @@
 
     /* ============================================================
        LIGHTBOX (MODAL) & BACK TO TOP
-    ============================================================ */
+    =========================================================== */
     .image-modal {
       position: fixed;
       inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center;
@@ -550,23 +577,26 @@
 
     /* ============================================================
        RESPONSIVE DESIGN
-    ============================================================ */
+    =========================================================== */
     @media (max-width: 860px) {
       .timeline-container { padding-left: 36px; } 
       .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2rem; }
       .tl-figure, .tl-body, .tl-entry.is-featured .tl-figure, .tl-entry.is-featured .tl-body, 
       .tl-entry.is-f50-ratio .tl-figure, .tl-entry.is-f50-ratio .tl-body { width: 100%; }
+      
+      /* Náströnd もモバイルでは全幅にリセット */
+      .tl-entry.is-nastrond .tl-figure { width: 100%; margin-left: 0; transform: none; }
+      .tl-entry.is-nastrond .tl-year-display { text-align: left !important; }
+
       .timeline-spine-wrapper { left: 16px; transform: none; }
       .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; font-size: clamp(2.5rem, 8vw, 3.5rem); }
     }
     @media (max-width: 768px) {
-      /* ★ スマホ版: ヘッダーからメニューリンクと三本線を非表示にし、左右に綺麗に配置 */
       nav#top-nav { padding: 1rem 1.25rem;
       justify-content: space-between; align-items: center; }
       .nav-links { display: none !important; }
       .nav-hamburger { display: none !important; }
       
-      /* ★ スマホ版: 最初のギャラリーを完全に非表示 */
       .gallery-section { display: none !important; }
       
       .page-nav.visible { right: 8px; opacity: 0.5; }
@@ -702,19 +732,19 @@
             <span class="gallery-item-title">スズラン</span><span class="gallery-item-meta">2022 / Oil on canvas</span>
           </div>
         </a>
-        <a href="#work-lilith2" class="gallery-item is-lilith">
+        <a href="#work-lilith2" class="gallery-item is-f50-height">
           <div class="gallery-item-img-wrap"><img src="images/【F50縦】リリス（胸部）Lilith Remnants-2.jpg" alt="リリス胸部" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">リリス（胸部）</span><span class="gallery-item-meta">2020 / Oil on canvas</span>
           </div>
         </a>
-        <a href="#work-lilith3" class="gallery-item is-lilith">
+        <a href="#work-lilith3" class="gallery-item is-f50-height">
           <div class="gallery-item-img-wrap"><img src="images/【F50縦】リリス（腰部）Lilith Remnants-3.jpg" alt="リリス腰部" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">リリス（腰部）</span><span class="gallery-item-meta">2020 / Oil on canvas</span>
           </div>
         </a>
-        <a href="#work-lilith1" class="gallery-item is-lilith">
+        <a href="#work-lilith1" class="gallery-item is-f50-height">
           <div class="gallery-item-img-wrap"><img src="images/【F50縦】リリス（臀部）Lilith Remnants-1.jpg" alt="リリス臀部" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">リリス（臀部）</span><span class="gallery-item-meta">2020 / Oil on canvas</span>
@@ -726,7 +756,7 @@
             <span class="gallery-item-title">上に溶ける...</span><span class="gallery-item-meta">2018 / Oil on canvas</span>
           </div>
         </a>
-        <a href="#work-nastrond" class="gallery-item">
+        <a href="#work-nastrond" class="gallery-item is-f50-height">
           <div class="gallery-item-img-wrap"><img src="images/【F50縦×3】Náströnd.jpg" alt="Náströnd" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">Náströnd</span><span class="gallery-item-meta">2018 / Oil on canvas</span>
@@ -894,7 +924,7 @@
           </div>
         </article>
 
-        <article class="tl-entry" id="work-nastrond">
+        <article class="tl-entry is-nastrond" id="work-nastrond">
           <div class="tl-year-display">2018</div>
           <div class="tl-content-wrap">
              <div class="tl-figure js-modal-open" data-img-src="images/【F50縦×3】Náströnd.jpg">
@@ -1115,14 +1145,11 @@
       });
     });
 
-    /* ★ スマホとPCでスクロール先を動的に切り替える再設定 */
     document.getElementById('backToTop').addEventListener('click', (e) => {
       e.preventDefault();
       if (window.innerWidth <= 768) {
-        // スマホ表示時：ページのタイトル（Heroセクション）が見える最上部へスクロール
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        // PC表示時：既存通り作品ギャラリー（#gallery）の先頭へスクロール
         const target = document.getElementById('gallery');
         if (target) {
           const offset = topNav?.offsetHeight || 80;
