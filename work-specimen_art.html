@@ -40,6 +40,7 @@
       --en: 'Cormorant Garamond', serif;
       --jp: 'Noto Serif JP', serif;
       --px:          clamp(20px, 5vw, 64px);
+      --ease:        cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     html { scroll-behavior: smooth; }
@@ -124,7 +125,7 @@
 
     /* ─── ARCHIVE GRID ─── */
     .archive-section { padding: 80px var(--px) clamp(80px,12vh,160px);
-      max-width: 1600px; margin: 0 auto; }
+      max-width: 1600px; margin: 0 auto; scroll-margin-top: 100px; }
     .archive-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -218,10 +219,33 @@
       letter-spacing: 0.18em; color: var(--muted-col); 
     }
 
+    /* ─── BACK TO TOP BUTTON ─── */
+    .back-to-top { 
+      position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px); z-index: 9000; 
+      width: clamp(64px, 10vw, 90px); height: clamp(64px, 10vw, 90px); border-radius: 50%; 
+      background: rgba(203, 191, 176, 0.85); border: 1px solid var(--accent); 
+      display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--bg); 
+      opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.4s var(--ease); 
+      cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6); text-decoration: none; 
+    }
+    .back-to-top.is-visible { 
+      opacity: 1; visibility: visible; transform: translateY(0); 
+    }
+    .back-to-top:hover { 
+      background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-6px); 
+    }
+    .back-to-top svg { 
+      width: clamp(20px, 3vw, 32px); height: clamp(20px, 3vw, 32px); margin-bottom: 2px; 
+    }
+    .back-to-top-text { 
+      font-family: var(--en); font-size: clamp(0.65rem, 1.5vw, 0.9rem); font-weight: 600; 
+      text-transform: uppercase; line-height: 1; 
+    }
+
     /* ─── LIGHTBOX ─── */
     .lb {
       position: fixed;
-      inset: 0; z-index: 500; background: rgba(5,5,5,0.97);
+      inset: 0; z-index: 9999; background: rgba(5,5,5,0.97);
       display: none; align-items: center; justify-content: center;
       cursor: zoom-out; padding: 40px;
     }
@@ -233,7 +257,7 @@
 </head>
 <body>
 
-<nav>
+<nav id="topNav">
   <a href="index.html" class="nav-logo">Tsuda Shoichi</a>
   <a href="#contact" class="nav-cta">Contact</a>
 </nav>
@@ -245,7 +269,7 @@
     <p class="db-desc">生命と死、愛着と喪失。油彩と鉛筆が交差する標本的表現の記録。</p>
   </section>
 
-  <section class="archive-section">
+  <section class="archive-section" id="gallery">
     <div class="archive-grid">
       
       <div class="specimen-card" onclick="openLB('images/【縦89mm×横148mm】アカギツネ(Vulpes vulpes).jpg')">
@@ -278,8 +302,8 @@
         <span class="specimen-title">子猫(16)(マンチカン_Munchkin)</span>
       </div>
 
-      <div class="specimen-card" onclick="openLB('images/【縦118mm×横96mm】クーズー(Tragelaphus strepsiceros)(2).jpg.jpg')">
-        <div class="specimen-mount"><img src="images/【縦118mm×横96mm】クーズー(Tragelaphus strepsiceros)(2).jpg" alt="クーズー(Tragelaphus strepsiceros)(2)"></div>
+      <div class="specimen-card" onclick="openLB('images/【縦118mm×横96mm】クーズー(Tragelaphus strepsiceros)#2.jpg')">
+        <div class="specimen-mount"><img src="images/【縦118mm×横96mm】クーズー(Tragelaphus strepsiceros)#2.jpg" alt="クーズー(Tragelaphus strepsiceros)(2)"></div>
         <span class="specimen-title">クーズー(Tragelaphus strepsiceros)(2)</span>
       </div>
 
@@ -472,6 +496,13 @@
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
+  <a href="#gallery" class="back-to-top" id="backToTop" aria-label="画像先頭に戻る">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+    <span class="back-to-top-text">TOP</span>
+  </a>
+
 </main>
 
 <div class="lb" id="lb" onclick="closeLB()">
@@ -479,6 +510,39 @@
 </div>
 
 <script>
+  /* ── スクロールによるボタンの表示/非表示 ── */
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        const b2t = document.getElementById('backToTop');
+        if (window.scrollY > 400) {
+          b2t.classList.add('is-visible');
+        } else {
+          b2t.classList.remove('is-visible');
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  /* ── ボタンクリックで画像グリッドの先頭へスクロール ── */
+  document.getElementById('backToTop').addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.getElementById('gallery');
+    if (target) {
+      const topNav = document.getElementById('topNav');
+      const offset = topNav ? topNav.offsetHeight : 0;
+      // ヘッダーの高さ＋少し余裕（20px）を持たせてピッタリ画像の先頭に戻る
+      window.scrollTo({
+        top: target.getBoundingClientRect().top + window.scrollY - offset - 20,
+        behavior: 'smooth'
+      });
+    }
+  });
+
+  /* ── 画像の拡大表示 (Lightbox) ── */
   function openLB(src) {
     document.getElementById('lb-img').src = src;
     document.getElementById('lb').classList.add('open');
