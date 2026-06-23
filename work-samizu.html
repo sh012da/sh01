@@ -207,46 +207,67 @@
     }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Scroll Cue - UPDATED FOR ELEGANCE & CLARITY */
+    /* Scroll Cue - FIXED FOR PC VISIBILITY & INTERACTIVITY */
     .hero-scroll {
       position: absolute;
-      bottom: clamp(1.5rem, 4.5vh, 3rem);
+      bottom: clamp(30px, 8vh, 60px); /* Safely lifted to avoid clipping on PC */
       left: 50%;
       transform: translateX(-50%);
-      z-index: 10;
+      z-index: 50; /* Ensuring it sits securely in front */
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: clamp(12px, 2vh, 18px);
       opacity: 0;
       animation: fadeUpCenter 1.2s var(--ease) 1.2s forwards;
+      text-decoration: none; /* Removed link underline */
+      cursor: pointer; /* Interaction hint */
     }
     @keyframes fadeUpCenter {
       from { opacity: 0; transform: translate(-50%, 20px); }
       to { opacity: 1; transform: translate(-50%, 0); }
     }
+    
+    /* PCでのホバー（マウスオーバー）エフェクト */
+    .hero-scroll:hover .hero-scroll-label {
+      color: #fff;
+      text-shadow: 0 0 12px rgba(196,168,130,0.6);
+    }
+    .hero-scroll:hover .hero-scroll-track {
+      background: rgba(233,229,223,0.4);
+    }
+
     .hero-scroll-label {
       font-family: var(--font-en);
-      font-size: 0.58rem;
+      font-size: clamp(0.65rem, 1.2vw, 0.85rem); /* PCでしっかり視認できるサイズに拡大 */
       letter-spacing: 0.35em;
-      color: rgba(233,229,223,0.65);
+      color: rgba(233,229,223,0.9); /* ベース色を明るく調整 */
       text-transform: uppercase;
-      margin-left: 0.35em; /* 文字のカーニング調整で完全中央に配置 */
+      margin-left: 0.35em;
+      transition: all 0.4s ease;
+      animation: textBreathe 3s ease-in-out infinite alternate; /* ページが生きていることを示す明滅アニメーション */
     }
+    @keyframes textBreathe {
+      0% { opacity: 0.4; }
+      100% { opacity: 1; }
+    }
+
     .hero-scroll-track {
       width: 1px;
-      height: 54px;
-      background: rgba(233,229,223,0.15);
+      height: clamp(50px, 12vh, 100px); /* PC画面の広さに合わせて長く調整 */
+      background: rgba(233,229,223,0.25);
       position: relative;
       overflow: hidden;
+      transition: background 0.4s ease;
     }
+
     .hero-scroll-fill {
       position: absolute;
       top: -100%;
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(to bottom, transparent, var(--accent) 60%, var(--accent));
+      background: linear-gradient(to bottom, transparent 0%, var(--accent) 60%, #fff 100%);
       animation: scrollDropCentered 2.2s cubic-bezier(0.77, 0, 0.175, 1) infinite;
     }
     @keyframes scrollDropCentered {
@@ -258,7 +279,9 @@
     /* ============================================================
        GENERAL SECTION STYLING
     ================================================================ */
-    section { padding: clamp(6rem, 14vh, 11rem) var(--px); position: relative; }
+    /* リンク先へスムーズに飛んだ際、上部ヘッダーと被らないように余白（scroll-margin-top）を設定 */
+    section { padding: clamp(6rem, 14vh, 11rem) var(--px); position: relative; scroll-margin-top: 80px; }
+    
     .eyebrow {
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.2vw, 0.65rem);
       letter-spacing: 0.35em; color: var(--accent); margin-bottom: 16px; display: block; text-transform: uppercase;
@@ -526,10 +549,11 @@
       </h1>
       <p class="hero-lead">長野県長野市信更町三水（左美都）。土蔵の奥底で沈黙を続ける木簡群——文字という暴力を受肉した者たちの伝承を、油彩の地層として再構築する展示の記録。</p>
     </div>
-    <div class="hero-scroll" aria-hidden="true">
+    
+    <a href="#statement" class="hero-scroll" aria-label="Scroll to Explore">
       <span class="hero-scroll-label">Scroll to Explore</span>
       <div class="hero-scroll-track"><div class="hero-scroll-fill"></div></div>
-    </div>
+    </a>
   </header>
 
   <main>
