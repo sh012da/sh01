@@ -1,46 +1,81 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Exhibition — 左美都の記憶と地脈 | 津田翔一</title>
-  <meta name="description" content="文化庁メディア芸術クリエイター育成支援事業採択企画展示「左美都の記憶と地脈」長野・銀座巡回展 — 津田翔一" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5RF8JPF5D8');
+  </script>
+  <link rel="icon" type="image/jpeg" href="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(12).jpg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>左美都の記憶と地脈 | Tsuda Shoichi</title>
+  <meta name="description" content="文化庁メディア芸術クリエイター育成支援事業採択企画展示「左美都の記憶と地脈」長野・銀座巡回展 — 津田翔一">
+  <meta property="og:title" content="左美都の記憶と地脈 | Tsuda Shoichi">
+  <meta property="og:description" content="土地の記憶から、存在の根源を問い続ける——左美都の記憶と地脈 展示記録。">
+  <meta property="og:type" content="website">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Noto+Serif+JP:wght@200;300;400;500&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400;600&display=swap" rel="stylesheet">
 
   <style>
-    /* ─── Design Tokens ─────────────────────────────── */
+    /* ============================================================
+       DESIGN TOKENS (Matched to Site System)
+    ================================================================ */
     :root {
-      --bg:        #080808;
-      --surface:   #0f0f0f;
-      --border:    rgba(184,149,90,0.18);
-      --gold:      #b8955a;
-      --gold-dim:  rgba(184,149,90,0.45);
-      --text:      rgba(240,235,225,0.88);
-      --text-dim:  rgba(240,235,225,0.48);
-      --text-faint:rgba(240,235,225,0.28);
-      --serif-en:  'Cormorant Garamond', Georgia, serif;
-      --serif-jp:  'Noto Serif JP', serif;
+      --bg:        #050505; /* 画廊の暗闇を模した深い黒 */
+      --bg2:       #0a0a09;
+      --bg3:       #0f0f0e;
+      --fg:        #e9e5df;
+      --muted:     rgba(233,229,223,0.44);
+      --dim:       rgba(233,229,223,0.22);
+      --whisper:   rgba(233,229,223,0.10);
+      --accent:    #c4a882;
+      --accent-soft:#7c9aa0;
+      --border:    rgba(233,229,223,0.08);
+      --border-md: rgba(233,229,223,0.18);
+      --font-en:   'Cormorant Garamond', serif;
+      --font-ja:   'Noto Serif JP', serif;
       --ease:      cubic-bezier(0.16, 1, 0.3, 1);
-      --px:        clamp(24px, 5vw, 48px);
+      --px:        clamp(1.25rem, 6vw, 5rem);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; overflow-x: hidden; }
+    html { scroll-behavior: smooth; }
     body {
-      background: var(--bg); color: var(--text);
-      font-family: var(--serif-jp); font-weight: 300; line-height: 1.8;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-ja);
+      line-height: 2.1;
+      letter-spacing: 0.06em;
       -webkit-font-smoothing: antialiased;
-      padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right);
       overflow-x: hidden;
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
     }
     body.is-locked { overflow: hidden; }
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
+    a:hover { opacity: 0.5; }
+    ::selection { background: var(--accent); color: var(--bg); }
 
-    /* ─── Header ────────────────────────────────────── */
+    /* ---------- Progress Bar ---------- */
+    .progress {
+      position: fixed;
+      top: 0; left: 0; height: 2px; width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+      z-index: 1000; transition: width 0.1s linear;
+    }
+
+    /* ============================================================
+       NAVIGATION (Transparent Top Nav & Page Nav)
+    ================================================================ */
     nav#top-nav {
-      position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+      position: fixed;
+      top: 0; left: 0; width: 100%; z-index: 300;
       display: flex; align-items: center; justify-content: space-between;
       padding: clamp(14px, 3vw, 36px) var(--px);
       background: transparent;
@@ -49,668 +84,772 @@
       transition: background 0.4s ease, border-color 0.4s ease, padding 0.4s ease;
     }
     nav#top-nav.scrolled {
-      background: rgba(8, 8, 8, 0.93);
+      background: rgba(5, 5, 5, 0.95);
       border-color: var(--border);
       padding: clamp(10px, 2vw, 24px) var(--px);
     }
     .nav-logo-unified {
-      font-family: var(--serif-en); font-size: clamp(0.75rem, 2.5vw, 0.95rem);
-      letter-spacing: 0.3em; font-weight: 300; color: var(--gold);
-      text-transform: uppercase; text-decoration: none; transition: opacity 0.4s ease;
-      position: relative; z-index: 1001;
+      font-family: var(--font-en);
+      font-size: clamp(0.75rem, 2.5vw, 0.95rem);
+      letter-spacing: 0.3em; font-weight: 300; color: var(--accent);
+      text-transform: uppercase; transition: opacity 0.4s ease;
     }
     .nav-logo-unified:hover { opacity: 0.6; }
     .nav-links { display: flex; gap: 2.2rem; list-style: none; }
     .nav-links a {
-      font-family: var(--serif-en); font-size: clamp(0.6rem, 1.5vw, 0.75rem);
-      letter-spacing: 0.25em; text-decoration: none; color: var(--text-dim);
-      text-transform: uppercase; transition: color 0.3s ease;
+      font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.75rem);
+      letter-spacing: 0.25em;
+      color: var(--muted); text-transform: uppercase;
+      transition: color 0.3s ease;
     }
-    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover { color: var(--accent); }
     .nav-cta {
-      font-family: var(--serif-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
-      letter-spacing: 0.25em; text-decoration: none; text-transform: uppercase;
-      border: 0.5px solid rgba(184,149,90,0.35); padding: 0.55rem 1.4rem;
-      color: var(--gold); transition: background 0.25s, color 0.25s; border-radius: 2px;
+      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
+      letter-spacing: 0.25em; text-transform: uppercase;
+      border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem;
+      color: var(--accent); transition: background 0.25s, color 0.25s;
     }
-    .nav-cta:hover { background: rgba(184,149,90,0.08); color: var(--text); }
+    .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
     
-    .nav-hamburger {
-      display: none; background: none; border: none; cursor: pointer;
-      z-index: 1001; width: 30px; height: 20px; position: relative; padding: 0;
+    /* Page Nav (Right fixed) */
+    .page-nav {
+      position: fixed;
+      right: clamp(15px, 3vw, 30px); top: 50%;
+      transform: translateY(-50%); z-index: 200;
+      display: flex; flex-direction: column; gap: 24px;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.6s var(--ease), visibility 0.6s;
     }
-    .nav-hamburger span {
-      display: block; position: absolute; left: 0; width: 100%; height: 1px;
-      background: var(--gold);
-      transition: transform 0.4s var(--ease), opacity 0.4s var(--ease), top 0.4s var(--ease);
-    }
-    .nav-hamburger span:nth-child(1) { top: 0px; }
-    .nav-hamburger span:nth-child(2) { top: 9px; }
-    .nav-hamburger span:nth-child(3) { top: 18px; }
-    .nav-hamburger.is-active span:nth-child(1) { top: 9px; transform: rotate(45deg); }
-    .nav-hamburger.is-active span:nth-child(2) { opacity: 0; }
-    .nav-hamburger.is-active span:nth-child(3) { top: 9px; transform: rotate(-45deg); }
-
-    /* ─── Page Navigation (Tour Spy) ────────────────── */
-    .page-nav { position: fixed; right: clamp(16px, 3vw, 40px); top: 50%; transform: translateY(-50%); z-index: 200; display: flex; flex-direction: column; gap: 20px; opacity: 0; visibility: hidden; transition: opacity 0.6s var(--ease), visibility 0.6s; }
     .page-nav.visible { opacity: 1; visibility: visible; }
-    .page-nav-item { display: flex; align-items: center; gap: 12px; flex-direction: row-reverse; cursor: pointer; background: none; border: none; padding: 6px 0; }
-    .page-nav-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(240,235,225,0.2); transition: all 0.35s; flex-shrink: 0; }
-    .page-nav-label { font-family: var(--serif-en); font-size: 10px; letter-spacing: 0.15em; color: rgba(240,235,225,0.4); text-transform: uppercase; transition: color 0.35s; white-space: nowrap; }
-    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot { background: var(--gold); transform: scale(1.4); box-shadow: 0 0 10px rgba(184,149,90,0.6); }
-    .page-nav-item:hover .page-nav-label { color: rgba(240,235,225,0.85); }
-    .page-nav-item.active .page-nav-label { color: var(--gold); }
+    .page-nav-item {
+      display: flex; align-items: center; gap: 12px; flex-direction: row-reverse;
+      cursor: pointer; background: none; border: none; padding: 8px 0;
+    }
+    .page-nav-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(233,229,223,0.3); transition: all 0.35s; flex-shrink: 0;
+    }
+    .page-nav-label {
+      font-family: var(--font-en); font-size: 11px; letter-spacing: 0.18em;
+      color: rgba(233,229,223,0.4); text-transform: uppercase; transition: color 0.35s; white-space: nowrap;
+    }
+    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot {
+      background: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px rgba(196,168,130,0.6);
+    }
+    .page-nav-item:hover .page-nav-label { color: rgba(233,229,223,0.85); }
+    .page-nav-item.active .page-nav-label { color: var(--accent); }
 
-    /* ─── Hero ───────────────────────────────────────── */
-    .hero { position: relative; width: 100%; height: 100svh; min-height: 600px; overflow: hidden; display: flex; align-items: flex-end; }
-    /* ★ 絶対パスに変更 */
-    .hero__bg { position: absolute; inset: 0; background-image: url('https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(9).jpg'); background-size: cover; background-position: center 30%; transform: scale(1.04); transition: transform 12s ease; }
-    .hero__bg.loaded { transform: scale(1.0); }
-    .hero__veil { position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,8,8,0.96) 0%, rgba(8,8,8,0.55) 40%, rgba(8,8,8,0.15) 70%, rgba(8,8,8,0.05) 100%); }
-    .hero__content { position: relative; z-index: 2; padding: 0 var(--px) 80px; max-width: 980px; }
-
-    @keyframes textBlurReveal { 0% { opacity: 0; filter: blur(12px); transform: translateY(12px) scale(1.02); } 100% { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); } }
-    .hero__eyebrow { font-family: var(--serif-en); font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; display: flex; align-items: center; gap: 16px; opacity: 0; animation: textBlurReveal 2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s forwards; }
-    .hero__eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--gold-dim); }
-    .hero__title-jp { font-family: var(--serif-jp); font-weight: 200; font-size: clamp(2.2rem, 4.5vw, 3.5rem); letter-spacing: 0.1em; line-height: 1.3; color: rgba(240,235,225,0.95); margin-bottom: 10px; opacity: 0; animation: textBlurReveal 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s forwards; }
-    .hero__title-en { font-family: var(--serif-en); font-weight: 300; font-style: italic; font-size: clamp(1rem, 1.8vw, 1.4rem); color: var(--text-dim); letter-spacing: 0.05em; margin-bottom: 32px; opacity: 0; animation: textBlurReveal 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) 0.9s forwards; }
-    .hero__meta { display: flex; flex-wrap: wrap; gap: 20px 40px; opacity: 0; animation: textBlurReveal 2s cubic-bezier(0.2, 0.8, 0.2, 1) 1.2s forwards; }
-    .hero__meta-item { display: flex; flex-direction: column; gap: 4px; }
-    .hero__meta-label { font-family: var(--serif-en); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-dim); }
-    .hero__meta-value { font-family: var(--serif-jp); font-size: 0.82rem; font-weight: 300; color: var(--text-dim); letter-spacing: 0.06em; }
-
-    .scroll-cue { position: absolute; bottom: 36px; right: var(--px); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: 0; animation: textBlurReveal 2s ease 1.8s forwards; }
-    .scroll-cue__label { font-family: var(--serif-en); font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-faint); writing-mode: vertical-rl; }
-    .scroll-cue__line { width: 1px; height: 48px; background: linear-gradient(to bottom, var(--gold-dim), transparent); animation: scrollPulse 2.2s ease infinite; }
-    @keyframes scrollPulse { 0%,100% { opacity: 0.3; transform: scaleY(1); } 50% { opacity: 0.9; transform: scaleY(1.1); } }
-
-    /* ─── Shared Styles ──────────────────────────────── */
-    .container { max-width: 1216px; margin: 0 auto; padding: 0 var(--px); }
-    .container--narrow { max-width: 900px; margin: 0 auto; padding: 0 var(--px); }
-    .floor-section { padding: 140px 0; border-bottom: 1px solid var(--border); position: relative; }
-    .floor-header { display: flex; align-items: flex-start; gap: 48px; margin-bottom: 80px; }
-    .floor-number { font-family: var(--serif-en); font-weight: 300; font-size: clamp(4rem, 8vw, 7rem); line-height: 1; color: rgba(184,149,90,0.12); letter-spacing: -0.02em; flex-shrink: 0; user-select: none; position: relative; top: -8px; }
-    .floor-label { font-family: var(--serif-en); font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; display: flex; align-items: center; gap: 14px; }
-    .floor-label::after { content: ''; display: block; flex: 1; max-width: 48px; height: 1px; background: var(--gold-dim); }
-    .floor-title { font-family: var(--serif-jp); font-weight: 200; font-size: clamp(1.4rem, 2.8vw, 2.2rem); letter-spacing: 0.06em; color: rgba(240,235,225,0.95); margin-bottom: 20px; line-height: 1.4; }
-    .floor-desc { font-size: 0.95rem; line-height: 2; color: var(--text-dim); letter-spacing: 0.04em; max-width: 680px; }
-
-    /* ─── Overview (Optimized Layout) ────────────────── */
-    .overview { padding: 120px 0 100px; border-bottom: 1px solid var(--border); }
-    .overview__badge { display: inline-flex; align-items: center; gap: 10px; border: 1px solid rgba(184,149,90,0.3); padding: 6px 18px; margin-bottom: 60px; font-family: var(--serif-jp); font-size: 0.65rem; font-weight: 300; color: rgba(184,149,90,0.8); letter-spacing: 0.1em; }
-    .overview__badge svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+    /* ============================================================
+       HERO SECTION (Deep Cinematic Blur Reveal)
+    ================================================================ */
+    .hero {
+      position: relative; height: 100svh; min-height: 580px;
+      display: flex; align-items: flex-end; overflow: hidden;
+      background: var(--bg2);
+    }
+    .hero-media { position: absolute; inset: 0; z-index: 0; }
+    .hero-media img {
+      width: 100%; height: 100%; object-fit: cover;
+      transform: scale(1.08); animation: heroZoom 18s ease-out forwards;
+      filter: saturate(1.02) brightness(0.45);
+    }
+    @keyframes heroZoom { to { transform: scale(1); } }
     
-    .overview__body { display: grid; grid-template-columns: 1.8fr 1fr; gap: 60px 100px; }
-    .overview__text-block p { font-size: 0.85rem; line-height: 2.2; color: rgba(240,235,225,0.4); letter-spacing: 0.08em; margin-bottom: 1.5em; text-align: justify; word-break: auto-phrase; }
-    .overview__text-block p.lead { font-size: 0.95rem; color: rgba(240,235,225,0.65); font-weight: 300; margin-bottom: 2em; line-height: 2.1; }
+    .hero::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(to top, var(--bg) 2%, rgba(5,5,5,0.2) 45%, rgba(5,5,5,0.6) 100%);
+      z-index: 1;
+    }
+    .hero-divider {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 1px; z-index: 3;
+      background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.2) 20%, rgba(124,154,160,0.3) 50%, rgba(196,168,130,0.2) 80%, transparent 100%);
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); width: 100%;
+    }
+
+    @keyframes textBlurReveal { 
+      0% { opacity: 0; filter: blur(20px); transform: translateY(12px) scale(1.05); } 
+      100% { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); } 
+    }
+    @keyframes textBlurRevealCenter { 
+      0% { opacity: 0; filter: blur(20px); transform: translate(-50%, 12px) scale(1.05); } 
+      100% { opacity: 1; filter: blur(0); transform: translate(-50%, 0) scale(1); } 
+    }
+    @keyframes lineScale { 0% { transform: scaleX(0); } 100% { transform: scaleX(1); } }
+
+    .hero-eyebrow {
+      font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.65rem);
+      letter-spacing: 0.3em; color: var(--accent-soft); text-transform: uppercase;
+      margin-bottom: 18px; display: flex; align-items: center; gap: 1rem;
+      opacity: 0; animation: textBlurReveal 2s var(--ease) 0.3s both;
+    }
+    .hero__eyebrow-line { 
+      width: 24px; height: 1px; background: var(--accent-soft); 
+      transform-origin: left; transform: scaleX(0);
+      animation: lineScale 1.2s var(--ease) 0.8s both;
+    }
     
-    .overview__specs { display: flex; flex-direction: column; gap: 0; border-left: 1px solid var(--border); padding-left: 50px; }
-    .spec-row { display: grid; grid-template-columns: 80px 1fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid rgba(184,149,90,0.08); }
-    .spec-row:last-child { border-bottom: none; }
-    .spec-label { font-family: var(--serif-en); font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold-dim); padding-top: 4px; }
-    .spec-value { font-family: var(--serif-jp); font-size: 0.78rem; font-weight: 300; color: rgba(240,235,225,0.45); line-height: 1.8; letter-spacing: 0.08em; }
+    .hero-title {
+      font-family: var(--font-ja); font-weight: 200;
+      font-size: clamp(28px, 5.5vw, 64px); line-height: 1.3; margin: 0 0 14px;
+      color: var(--fg); opacity: 0;
+      animation: textBlurReveal 2.5s var(--ease) 0.6s both;
+    }
+    .hero-title small {
+      display: block; font-family: var(--font-en); font-size: 0.42em; letter-spacing: 0.18em;
+      font-weight: 300; font-style: italic; color: var(--accent); margin-top: 8px;
+    }
+    .hero-lead {
+      max-width: 620px; font-size: clamp(0.85rem, 1.5vw, 0.95rem); color: rgba(233,229,223,0.7);
+      line-height: 2.1; opacity: 0;
+      animation: textBlurReveal 2s var(--ease) 1.2s both;
+    }
 
-    /* ─── Pull Quote ──────────────────────────────────── */
-    .pull-quote { padding: 140px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); text-align: center; }
-    .pull-quote__mark { font-family: var(--serif-en); font-size: 4rem; line-height: 0.6; color: var(--gold-dim); margin-bottom: 32px; }
-    .pull-quote__text { font-family: var(--serif-jp); font-weight: 200; font-size: clamp(1.2rem, 2.4vw, 1.7rem); line-height: 2.2; color: rgba(240,235,225,0.9); letter-spacing: 0.06em; max-width: 100%; margin: 0 auto; overflow-wrap: break-word; word-break: auto-phrase; display: inline-block; text-align: center; }
-    .pull-quote__text span { display: inline-block; }
+    /* Scroll Indicator */
+    .hero-scroll {
+      position: absolute; bottom: clamp(30px, 8vh, 60px); left: 50%; z-index: 100;
+      display: flex; flex-direction: column; align-items: center; gap: clamp(12px, 2vh, 18px);
+      text-decoration: none; cursor: pointer; pointer-events: auto; opacity: 0;
+      animation: textBlurRevealCenter 2s ease 1.8s both; 
+    }
+    .hero-scroll:hover .hero-scroll-label { color: #ffffff; text-shadow: 0 0 12px rgba(196,168,130,0.6); }
+    .hero-scroll-label {
+      font-family: var(--font-en); font-size: clamp(0.68rem, 1.3vw, 0.85rem); 
+      font-weight: 600; letter-spacing: 0.35em; color: rgba(233,229,223,0.9);
+      text-transform: uppercase; margin-left: 0.35em;
+      animation: textBreathe 3s ease-in-out infinite alternate;
+    }
+    @keyframes textBreathe { 0% { opacity: 0.5; } 100% { opacity: 1; } }
+    .hero-scroll-track { width: 2px; height: clamp(50px, 12vh, 100px); background: rgba(233,229,223,0.3); position: relative; overflow: hidden; border-radius: 2px; }
+    .hero-scroll-fill {
+      position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(to bottom, transparent 0%, var(--accent) 50%, #ffffff 100%);
+      animation: scrollDropCentered 2.2s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+    }
+    @keyframes scrollDropCentered { 0% { top: -100%; opacity: 1; } 70% { top: 100%; opacity: 0.4; } 71% { top: -100%; opacity: 0; } 100% { top: -100%; opacity: 0; } }
 
-    /* ─── Story Blocks (Editorial) ────────────────────── */
-    .full-bleed { width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; margin-bottom: 120px; }
-    .full-bleed .photo-frame { height: clamp(400px, 55vw, 850px); width: 100%; border-radius: 0; }
+    /* ============================================================
+       GENERAL SECTION STYLING & MEDIA FRAMES (Gallery Refinement)
+    ================================================================ */
+    section { padding: clamp(5rem, 12vh, 9rem) var(--px); position: relative; scroll-margin-top: 80px; }
+    
+    .eyebrow {
+      font-family: var(--font-en); font-size: clamp(0.55rem, 1.2vw, 0.65rem);
+      letter-spacing: 0.35em; color: var(--accent); margin-bottom: 16px; display: block; text-transform: uppercase;
+    }
+    h2.section-title {
+      font-family: var(--font-ja); font-weight: 300;
+      font-size: clamp(24px, 3.5vw, 38px); line-height: 1.4; margin: 0 0 24px; color: var(--fg);
+    }
+    .lead-text { max-width: 780px; color: rgba(233,229,223,0.72); font-size: clamp(0.88rem, 1.6vw, 0.98rem); line-height: 2.2; }
 
-    .asym-grid { display: grid; grid-template-columns: 6fr 5fr; gap: 6vw; align-items: center; margin: 120px 0; }
-    .asym-grid--rev { grid-template-columns: 5fr 6fr; }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
 
-    .overlap-block { position: relative; margin: 140px 0; display: flex; flex-direction: column; align-items: flex-end; }
-    .overlap-block--rev { align-items: flex-start; }
-    .overlap-media { width: 75%; height: clamp(350px, 45vw, 600px); z-index: 1; }
-    .overlap-text { width: 50%; background: rgba(12,12,12,0.96); backdrop-filter: blur(8px); padding: clamp(32px, 5vw, 64px); border: 1px solid var(--border); position: relative; margin-top: -140px; z-index: 2; align-self: flex-start; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
+    /* --- 写真フレームの立体感・臨場感の向上 --- */
+    .photo-frame {
+      overflow: hidden; background: #0b0b0a; position: relative;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 0.5px solid var(--border);
+      transition: border-color 0.5s ease, box-shadow 0.5s var(--ease);
+    }
+    .photo-frame img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 1.2s var(--ease); }
+    .photo-frame:hover img { transform: scale(1.025); }
+    .photo-frame:hover { border-color: rgba(196,168,130,0.3); box-shadow: 0 40px 80px rgba(0,0,0,0.9); }
+
+    .full-bleed { width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; margin-bottom: 100px; }
+    .full-bleed .photo-frame { box-shadow: none; border: none; border-radius: 0; }
+
+    /* 各種グリッドシステム */
+    .asym-grid { display: grid; grid-template-columns: 5fr 6fr; gap: 5vw; align-items: center; margin: 100px 0; }
+    .asym-grid--rev { grid-template-columns: 6fr 5fr; }
+    
+    .overlap-block { position: relative; margin: 120px 0; display: flex; flex-direction: column; align-items: flex-end; }
+    .overlap-media { width: 75%; height: clamp(340px, 42vw, 580px); z-index: 1; }
+    .overlap-text { 
+      width: 48%; background: rgba(10,10,9,0.96); padding: clamp(36px, 5vw, 64px); 
+      border: 0.5px solid var(--border-md); position: relative; margin-top: -140px; 
+      z-index: 2; align-self: flex-start; box-shadow: 0 30px 70px rgba(0,0,0,0.9); 
+    }
     .overlap-block--rev .overlap-text { align-self: flex-end; margin-top: -100px; }
+    
+    .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin: 80px 0; }
+    .block-title { font-family: var(--font-ja); font-size: clamp(1.2rem, 2vw, 1.5rem); font-weight: 300; color: var(--fg); margin-bottom: 20px; letter-spacing: 0.05em; }
+    .block-text { font-size: 0.9rem; line-height: 2.2; color: var(--muted); margin-bottom: 1.2em; text-align: justify; }
 
-    .block-title { font-family: var(--serif-jp); font-size: clamp(1.2rem, 2vw, 1.6rem); font-weight: 200; color: var(--text); margin-bottom: 24px; letter-spacing: 0.05em; line-height: 1.4; }
-    .block-text { font-size: 0.92rem; line-height: 2.1; color: var(--text-dim); margin-bottom: 1.2em; letter-spacing: 0.04em; }
+    .caption-row { display: flex; justify-content: flex-end; padding-top: 16px; margin-top: 60px; border-top: 1px solid var(--border); }
+    .caption-row__text { font-family: var(--font-ja); font-size: 0.68rem; color: var(--dim); letter-spacing: 0.1em; }
 
-    .photo-frame { overflow: hidden; cursor: zoom-in; background: var(--surface); position: relative; }
-    .photo-frame img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.8s var(--ease); }
-    .photo-frame:hover img { transform: scale(1.04); }
-    .photo-frame::after { content: ''; position: absolute; inset: 0; border: 1px solid rgba(184,149,90,0); transition: border-color 0.3s; pointer-events: none; z-index: 1; }
-    .photo-frame:hover::after { border-color: rgba(184,149,90,0.3); }
-
-    .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .caption-row { display: flex; justify-content: space-between; align-items: baseline; padding-top: 24px; margin-top: 40px; border-top: 1px solid rgba(184,149,90,0.08); }
-    .caption-row__text { font-family: var(--serif-jp); font-size: 0.72rem; font-weight: 300; color: var(--text-faint); letter-spacing: 0.06em; }
-    .caption-row__count { font-family: var(--serif-en); font-size: 0.6rem; letter-spacing: 0.15em; color: var(--gold-dim); }
-
-    /* ─── Venue Summary Block ───────────────────── */
-    .venue-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); margin-top: 80px; border: 1px solid var(--border); }
-    .venue-item { background: var(--bg); padding: 60px 40px; text-align: center; transition: background 0.4s; text-decoration: none; display: flex; flex-direction: column; align-items: center; }
-    .venue-item:hover { background: var(--surface); }
-    .venue-item__label { font-family: var(--serif-en); font-size: 0.65rem; color: var(--gold); letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 20px; display: block; }
-    .venue-item__title { font-family: var(--serif-jp); font-size: 1.4rem; color: var(--text); margin-bottom: 16px; font-weight: 200; }
-    .venue-item__desc { font-size: 0.82rem; color: var(--text-dim); max-width: 320px; margin: 0 auto 20px; }
-    .venue-item__link { font-family: var(--serif-en); font-size: 11px; color: var(--gold); letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    /* ============================================================
+       ★ リデザインされた VENUE SUMMARY (長野・銀座案内)
+    ================================================================ */
+    .venue-summary { 
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 80px;
+    }
+    .venue-item { 
+      background: var(--bg3); padding: clamp(40px, 5vw, 64px) clamp(30px, 4vw, 48px); 
+      border: 0.5px solid var(--border-md); position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: space-between; min-height: 240px;
+      transition: transform 0.4s var(--ease), border-color 0.4s ease;
+    }
+    /* 背景の発光グラデーション（Variantの手法をインスパイア） */
+    .venue-item::before {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(196,168,130,0.08) 0%, transparent 100%);
+      opacity: 0; transition: opacity 0.5s var(--ease); pointer-events: none; z-index: 0;
+    }
+    /* 底部のアクセントライン */
+    .venue-item::after {
+      content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px;
+      background: var(--accent); transform: scaleX(0); transition: transform 0.5s var(--ease); z-index: 1;
+    }
+    .venue-item:hover { border-color: rgba(196,168,130,0.4); transform: translateY(-4px); }
+    .venue-item:hover::before { opacity: 1; }
+    .venue-item:hover::after { transform: scaleX(1); }
+    
+    .venue-item__info { position: relative; z-index: 2; }
+    .venue-item__label { font-family: var(--font-en); font-size: 0.65rem; color: var(--accent); letter-spacing: 0.2em; text-transform: uppercase; display: block; margin-bottom: 12px; }
+    .venue-item__title { font-family: var(--font-ja); font-size: clamp(1.15rem, 2vw, 1.4rem); color: var(--fg); font-weight: 300; margin-bottom: 12px; }
+    .venue-item__desc { font-size: 0.85rem; color: var(--muted); line-height: 1.8; text-align: justify; }
+    
+    .venue-item__link { 
+      position: relative; z-index: 2; margin-top: 24px;
+      font-family: var(--font-en); font-size: 0.72rem; color: var(--fg); letter-spacing: 0.15em; text-transform: uppercase;
+      display: inline-flex; align-items: center; gap: 8px; transition: color 0.3s;
+    }
     .venue-item__link svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.5; transition: transform 0.3s; }
-    .venue-item:hover .venue-item__link svg { transform: translateX(4px); }
+    .venue-item:hover .venue-item__link { color: #ffffff; }
+    .venue-item:hover .venue-item__link svg { transform: translateX(6px); }
 
-    /* ─── Series Navigation ──────────────────────────── */
-    .series-nav {
-      display: flex; justify-content: space-between; border-top: 0.5px solid var(--border); background: var(--surface);
+    /* ============================================================
+       CONTACT & FOOTER & SERIES NAV
+    ================================================================ */
+    .contact-section {
+      padding: clamp(6rem, 14vh, 10rem) var(--px); text-align: center;
+      border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(196,168,130,0.05) 0%, var(--bg) 70%);
+    }
+    .contact-heading { font-family: var(--font-ja); font-size: clamp(1.8rem, 4.5vw, 3rem); font-weight: 200; line-height: 1.3; color: var(--fg); margin-bottom: 1.5rem; letter-spacing: 0.05em; }
+    .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.6vw, 0.95rem); color: var(--muted); margin: 0 auto 2.5rem; max-width: 480px; line-height: 2.1; }
+    .contact-btn {
+      display: inline-block; padding: 1.1rem 3.2rem; background: var(--accent); color: var(--bg);
+      font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.7rem); font-weight: 600;
+      letter-spacing: 0.25em; text-transform: uppercase; transition: all 0.4s var(--ease); border-radius: 2px; box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3); }
+
+    footer {
+      padding: clamp(2rem, 5vh, 4rem) var(--px); display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 1.2rem; border-top: 0.5px solid var(--border); background: var(--bg2);
+    }
+    .footer-logo { font-family: var(--font-ja); font-size: clamp(0.78rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.3); text-decoration: none; letter-spacing: 0.08em; }
+    .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase; }
+
+    /* ★ 目立つように完全リデザインされた Series Nav ★ */
+    .series-nav { 
+      display: flex; justify-content: space-between; border-top: 0.5px solid var(--border); background: var(--bg3); 
       position: relative; z-index: 10;
     }
-    .series-nav a {
-      flex: 1; padding: clamp(40px, 5vw, 60px) var(--px);
-      display: flex; flex-direction: column; gap: 12px;
-      transition: all 0.5s var(--ease); position: relative; overflow: hidden; text-decoration: none;
+    .series-nav a { 
+      flex: 1; padding: clamp(45px, 6vw, 70px) var(--px); display: flex; flex-direction: column; gap: 10px; 
+      transition: all 0.5s var(--ease); position: relative; overflow: hidden;
     }
     .series-nav a:first-child { border-right: 0.5px solid var(--border); }
     .series-nav a::before {
       content: ""; position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(184,149,90,0.15) 0%, transparent 100%);
+      background: linear-gradient(to top, rgba(196,168,130,0.14) 0%, transparent 100%);
       opacity: 0; transition: opacity 0.5s var(--ease); pointer-events: none; z-index: 0;
     }
     .series-nav a::after {
       content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px;
-      background: var(--gold); transform: scaleX(0); transition: transform 0.6s var(--ease); z-index: 1;
+      background: var(--accent); transform: scaleX(0); transition: transform 0.6s var(--ease); z-index: 1;
     }
     .series-nav a:first-child::after { transform-origin: left; }
     .series-nav a.next::after { transform-origin: right; }
     .series-nav a:hover::before { opacity: 1; }
     .series-nav a:hover::after { transform: scaleX(1); }
     .series-nav .dir, .series-nav .ttl { position: relative; z-index: 2; }
-    .series-nav .dir {
-      font-family: var(--serif-en); font-size: 0.7rem; letter-spacing: 0.35em; color: var(--text-dim); text-transform: uppercase;
+    .series-nav .dir { 
+      font-family: var(--font-en); font-size: 0.68rem; letter-spacing: 0.35em; color: var(--muted); text-transform: uppercase; 
       transition: color 0.4s var(--ease), transform 0.4s var(--ease); display: inline-block; font-weight: 600;
     }
-    .series-nav .ttl {
-      font-family: var(--serif-jp); font-size: clamp(1.2rem, 2.5vw, 1.6rem); font-weight: 300; color: var(--text);
+    .series-nav .ttl { 
+      font-family: var(--font-ja); font-size: clamp(1.15rem, 2.4vw, 1.5rem); font-weight: 300; color: var(--fg); 
       transition: color 0.4s var(--ease), transform 0.4s var(--ease), text-shadow 0.4s var(--ease); display: inline-block;
     }
     .series-nav a.next { text-align: right; align-items: flex-end; }
-    .series-nav a:hover .dir { color: var(--gold); }
-    .series-nav a:hover .ttl { color: #ffffff; transform: translateY(-4px); text-shadow: 0 4px 12px rgba(184,149,90,0.4); }
-    .series-nav a:first-child:hover .dir { transform: translateX(-8px); }
-    .series-nav a.next:hover .dir { transform: translateX(8px); }
+    .series-nav a:hover .dir { color: var(--accent); }
+    .series-nav a:hover .ttl { color: #ffffff; transform: translateY(-4px); text-shadow: 0 4px 12px rgba(196,168,130,0.4); }
+    .series-nav a:first-child:hover .dir { transform: translateX(-6px); }
+    .series-nav a.next:hover .dir { transform: translateX(6px); }
 
-    /* ─── Contact ─────────────────────────────────────── */
-    .contact-section { padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center; border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(184,149,90,0.06) 0%, var(--bg) 70%); }
-    .contact-label { font-family: var(--serif-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem); letter-spacing: 0.44em; color: var(--text-dim); text-transform: uppercase; margin-bottom: 1.5rem; }
-    .contact-heading { font-family: var(--serif-jp); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200; line-height: 1.2; color: var(--text); margin-bottom: 1.8rem; letter-spacing: 0.05em; }
-    .contact-body-text { font-family: var(--serif-jp); font-size: clamp(0.85rem, 1.8vw, 0.95rem); color: var(--text-dim); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2; }
-    .contact-btn { display: inline-block; padding: 1.2rem 3.5rem; background: var(--gold); color: var(--bg); font-family: var(--serif-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none; transition: all 0.4s var(--ease); border-radius: 2px; }
-    .contact-btn:hover { background: var(--text); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(184,149,90,0.3); }
-
-    /* ─── Footer & TOP Button ─────────────────────────── */
-    footer {
-      padding: clamp(2.5rem, 5vh, 5rem) var(--px); display: flex; justify-content: space-between;
-      align-items: center; flex-wrap: wrap; gap: 1.5rem; border-top: 0.5px solid var(--border); background: var(--bg);
-    }
-    .footer-logo { font-family: var(--serif-jp); font-size: clamp(0.8rem, 1.8vw, 0.9rem); font-weight: 200; color: rgba(240,235,225,0.35); letter-spacing: 0.08em; text-decoration: none; }
-    .footer-copy { font-family: var(--serif-en); font-size: clamp(0.55rem, 1.3vw, 0.65rem); letter-spacing: 0.2em; color: var(--text-dim); text-transform: uppercase; margin-top: 0; }
-
+    /* ============================================================
+       ★ BACK TO TOP BUTTON (確実に上部へ戻るボタン)
+    ================================================================ */
     .back-to-top {
-      position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px);
-      z-index: 9000; width: clamp(60px, 9vw, 84px); height: clamp(60px, 9vw, 84px);
-      border-radius: 50%;
-      background: rgba(184, 149, 90, 0.88); border: 1px solid var(--gold);
+      position: fixed; bottom: clamp(1.5rem, 5vh, 3.5rem); right: clamp(15px, 4vw, 45px);
+      z-index: 9000; width: clamp(56px, 8vw, 76px); height: clamp(56px, 8vw, 76px);
+      border-radius: 50%; background: rgba(196, 168, 130, 0.9); border: 1px solid var(--accent);
       display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--bg);
-      opacity: 0; visibility: hidden; transform: translateY(20px);
-      transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6); text-decoration: none;
+      opacity: 0; visibility: hidden; transform: translateY(16px);
+      transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
     }
     .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
-    .back-to-top:hover { background: var(--text); color: var(--bg); border-color: var(--text); transform: translateY(-6px); }
-    .back-to-top svg { width: clamp(18px, 2.5vw, 28px); height: clamp(18px, 2.5vw, 28px); margin-bottom: 2px; }
-    .back-to-top-text { font-family: var(--serif-en); font-size: clamp(0.6rem, 1.4vw, 0.85rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
+    .back-to-top:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-5px); }
+    .back-to-top svg { width: clamp(18px, 2.5vw, 26px); height: clamp(18px, 2.5vw, 26px); margin-bottom: 1px; }
+    .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.58rem, 1.3vw, 0.75rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
 
-    /* ─── Lightbox ────────────────────────────────────── */
-    .lightbox { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(4,4,4,0.96); justify-content: center; align-items: center; }
+    /* Lightbox Modal */
+    .lightbox { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(5,5,5,0.97); justify-content: center; align-items: center; }
     .lightbox.active { display: flex; }
     .lightbox__inner { position: relative; max-width: 92vw; max-height: 90vh; }
-    .lightbox__img { max-width: 92vw; max-height: 86vh; object-fit: contain; display: block; }
-    .lightbox__close { position: absolute; top: -44px; right: 0; background: none; border: none; cursor: pointer; color: var(--text-dim); font-family: var(--serif-en); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
-    .lightbox__close:hover { color: var(--gold); }
-    .lightbox__close svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.5; }
-    .lightbox__nav { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: 1px solid var(--border); padding: 12px; cursor: pointer; color: var(--text-dim); transition: border-color 0.3s, color 0.3s; }
-    .lightbox__nav:hover { border-color: var(--gold-dim); color: var(--gold); }
-    .lightbox__nav svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.2; display: block; }
-    .lightbox__prev { left: -56px; }
-    .lightbox__next { right: -56px; }
-    .lightbox__caption { position: absolute; bottom: -36px; left: 0; right: 0; text-align: center; font-family: var(--serif-jp); font-size: 0.7rem; color: var(--text-faint); letter-spacing: 0.06em; }
+    .lightbox__img { max-width: 92vw; max-height: 84vh; object-fit: contain; box-shadow: 0 30px 70px rgba(0,0,0,0.9); border: 0.5px solid var(--border); }
 
-    /* ─── Responsive & Overlay ─── */
+    /* ============================================================
+       RESPONSIVE DESIGN (完璧なスマホ表示制御)
+    ================================================================ */
     @media (max-width: 900px) {
-      .overview__body { grid-template-columns: 1fr; gap: 48px; }
-      .overview__specs { padding-left: 0; border-left: none; border-top: 1px solid var(--border); padding-top: 32px; }
-      .asym-grid, .asym-grid--rev { grid-template-columns: 1fr; gap: 48px; margin: 80px 0; }
-      .asym-grid--rev .asym-content { grid-row: 1; }
-      .overlap-block { align-items: center; margin: 100px 0; }
-      .overlap-media { width: 100%; }
-      .overlap-text { width: 90%; margin-top: -60px; padding: 32px 24px; align-self: center; }
-      .venue-summary { grid-template-columns: 1fr; }
+      .asym-grid { grid-template-columns: 1fr; gap: 40px; margin: 60px 0; }
+      .overlap-text { width: 92%; margin-top: -60px; padding: 32px 24px; align-self: center; }
+      .venue-summary { grid-template-columns: 1fr; gap: 16px; }
+    }
+    @media (max-width: 768px) {
+      /* ★ スマホでは名前とコンタクトのみの表示にする究極の制御 */
+      nav#top-nav { padding: 1.1rem 1.25rem; justify-content: space-between; }
+      .nav-links { display: none !important; }
+      .nav-hamburger { display: none !important; } /* ハンバーガーも完全に不要化 */
+      .nav-cta { padding: 0.45rem 1.1rem; font-size: 0.62rem; }
+      
+      .grid-2-col { grid-template-columns: 1fr; gap: 20px; margin: 40px 0; }
+      .page-nav.visible { right: 8px; opacity: 0.4; }
+      .page-nav-label { display: none; }
       .series-nav { flex-direction: column; }
       .series-nav a:first-child { border-right: none; border-bottom: 0.5px solid var(--border); }
       .series-nav a.next { align-items: flex-start; text-align: left; }
-      .series-nav a.next::after { transform-origin: left; }
-      .series-nav a.next:hover .dir { transform: translateX(8px); }
     }
-    @media (max-width: 768px) {
-      nav#top-nav { padding: 1rem 1.25rem; }
-      .nav-hamburger { display: block !important; }
-      .nav-cta { display: none; }
-      .nav-links { display: none; }
-      .nav-links.open {
-        display: flex !important; flex-direction: row; flex-wrap: nowrap;
-        position: fixed; inset: 0; background: rgba(8,8,8,0.98);
-        align-items: center; justify-content: center; gap: 0.6rem;
-        z-index: 1000; padding: 1rem; overflow-x: auto;
-        opacity: 1; visibility: visible; pointer-events: auto;
-      }
-      .nav-links.open li { opacity: 1; transform: none; transition: none; }
-      .nav-links.open a { font-size: 0.9rem; letter-spacing: 0.15em; padding: 0.6rem 0.5rem; display: block; white-space: nowrap; }
-      .page-nav { right: 8px; opacity: 0.6; }
-      .page-nav-label { display: none; }
-      .floor-header { flex-direction: column; gap: 24px; }
-      .caption-row { flex-direction: column; gap: 8px; }
-    }
-
-    [data-reveal] { opacity: 0; transform: translateY(28px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
-    [data-reveal].revealed { opacity: 1; transform: none; }
-    [data-reveal-delay="1"] { transition-delay: 0.15s; }
-    [data-reveal-delay="2"] { transition-delay: 0.3s; }
   </style>
 </head>
-
 <body id="top">
 
+  <div class="progress" id="progress"></div>
+
   <nav id="top-nav">
-    <a href="https://sh012da.github.io/sh01/index.html" class="nav-logo-unified">Tsuda Shoichi</a>
+    <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="https://sh012da.github.io/sh01/index.html#statement" onclick="closeMenu()">Statement</a></li>
-      <li><a href="https://sh012da.github.io/sh01/index.html#works"     onclick="closeMenu()">Works</a></li>
-      <li><a href="https://sh012da.github.io/sh01/index.html#profile"   onclick="closeMenu()">Profile</a></li>
-      <li><a href="https://sh012da.github.io/sh01/index.html#news"      onclick="closeMenu()">News</a></li>
+      <li><a href="https://sh012da.github.io/sh01/index.html#statement">Statement</a></li>
+      <li><a href="https://sh012da.github.io/sh01/index.html#works">Works</a></li>
+      <li><a href="https://sh012da.github.io/sh01/index.html#profile">Profile</a></li>
+      <li><a href="https://sh012da.github.io/sh01/index.html#news">News</a></li>
     </ul>
-    <button class="nav-hamburger" id="hamburger" aria-label="メニューを開閉" onclick="toggleMenu()">
-      <span></span><span></span><span></span>
-    </button>
     <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
   </nav>
 
-  <nav class="page-nav" id="pageNav">
-    <button class="page-nav-item" data-target="kitano-1f">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Nagano 1F</span>
-    </button>
-    <button class="page-nav-item" data-target="kitano-3f">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Nagano 3F</span>
-    </button>
-    <button class="page-nav-item" data-target="ginza">
-      <div class="page-nav-dot"></div><span class="page-nav-label">GINZA</span>
-    </button>
+  <nav class="page-nav" id="pageNav" aria-label="ページ内案内">
+    <button class="page-nav-item" data-target="kitano-1f"><div class="page-nav-dot"></div><span class="page-nav-label">Nagano 1F</span></button>
+    <button class="page-nav-item" data-target="kitano-3f"><div class="page-nav-dot"></div><span class="page-nav-label">Nagano 3F</span></button>
+    <button class="page-nav-item" data-target="ginza"><div class="page-nav-dot"></div><span class="page-nav-label">GINZA</span></button>
   </nav>
 
-  <section class="hero">
-    <div class="hero__bg" id="heroBg"></div>
-    <div class="hero__veil"></div>
-    <div class="hero__content">
-      <p class="hero__eyebrow">Nagano & Ginza Tour</p>
-      <h1 class="hero__title-jp">左美都の記憶と地脈<br><span style="font-size:0.65em; opacity:0.75; font-weight:300; letter-spacing:0.15em;">津田翔一 個展</span></h1>
-      <p class="hero__title-en">Memory and Ley Lines of Samizu — Shoichi Tsuda Solo Exhibition</p>
-      <div class="hero__meta">
-        <div class="hero__meta-item"><span class="hero__meta-label">Nagano</span><span class="hero__meta-value">北野カルチュラルセンター<br>/ 1F・3F</span></div>
-        <div class="hero__meta-item"><span class="hero__meta-label">Ginza</span><span class="hero__meta-value">銀座</span></div>
-        <div class="hero__meta-item"><span class="hero__meta-label">Year</span><span class="hero__meta-value">2025</span></div>
-      </div>
+  <header class="hero">
+    <div class="hero-media">
+      <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(1).jpg" alt="左美都の記憶と地脈 展示風景" loading="eager">
     </div>
-    <div class="scroll-cue" aria-hidden="true"><span class="scroll-cue__label">Scroll</span><div class="scroll-cue__line"></div></div>
-  </section>
+    <div class="hero-divider" aria-hidden="true"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow"><span class="hero__eyebrow-line"></span>Nagano & Ginza Tour</p>
+      <h1 class="hero-title">左美都の記憶と地脈
+        <small>Memory and Ley Lines of Samizu</small>
+      </h1>
+      <p class="hero-lead">文化庁メディア芸術クリエイター育成支援事業 採択企画展示。失われゆく土地の記憶と、それぞれの場が抱く地脈が交錯する長野・銀座巡回展の記録。</p>
+    </div>
+    
+    <a href="#overview" class="hero-scroll" aria-label="Scroll to Explore">
+      <span class="hero-scroll-label">Scroll to Explore</span>
+      <div class="hero-scroll-track"><div class="hero-scroll-fill"></div></div>
+    </a>
+  </header>
 
-  <section class="overview" id="overview">
-    <div class="container">
-      <div class="overview__badge" data-reveal>
-        <svg viewBox="0 0 16 16"><path d="M8 1l1.8 3.6L14 5.6l-3 2.9.7 4.1L8 10.5l-3.7 2.1.7-4.1L2 5.6l4.2-.6z" stroke-width="1.2" stroke-linejoin="round"/></svg>
+  <main>
+    <section id="overview" style="border-bottom: 0.5px solid var(--border);">
+      <span class="eyebrow reveal">Overview</span>
+      <div class="overview__badge reveal">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M8 1l1.8 3.6L14 5.6l-3 2.9.7 4.1L8 10.5l-3.7 2.1.7-4.1L2 5.6l4.2-.6z" stroke-linejoin="round"/></svg>
         文化庁メディア芸術クリエイター育成支援事業 採択企画展示
       </div>
       <div class="overview__body">
-        <div class="overview__text-block" data-reveal data-reveal-delay="1">
-          <p class="lead">失われつつある土地の記憶を巡る、長野・銀座の巡回展。</p>
-          <p>北野カルチュラルセンターから始まり、東京・銀座へと展開された巡回展。津田翔一が描出する油彩の「異体」や土地の記録が、それぞれの場所が持つ地脈と交差します。大規模な展示空間から、都市の濃密なホワイトキューブへ。異なる時空で展開された展示風景を記録します。</p>
+        <div class="overview__text-block reveal">
+          <p class="lead-text" style="margin-bottom: 24px;">失われつつある土地の記憶を巡る、長野・銀座の巡回展。</p>
+          <p style="font-size: 0.9rem; color: var(--muted); text-align: justify;">津田翔一が描出する油彩の「異体」や土地の記録が、それぞれの場所が持つ地脈と交差します。大規模な公的展示空間から、都市の濃密なホワイトキューブへ。異なる時空で変編・展開された展示風景を網羅的に記録します。</p>
         </div>
-        <div class="overview__specs" data-reveal data-reveal-delay="2">
+        <div class="overview__specs reveal">
           <div class="spec-row"><span class="spec-label">Artist</span><span class="spec-value">津田翔一 / Shoichi Tsuda</span></div>
           <div class="spec-row"><span class="spec-label">Nagano</span><span class="spec-value">北野カルチュラルセンター / 1F・3F</span></div>
-          <div class="spec-row"><span class="spec-label">Ginza</span><span class="spec-value">銀座</span></div>
-          <div class="spec-row"><span class="spec-label">Support</span><span class="spec-value">文化庁メディア芸術<br>クリエイター育成支援事業</span></div>
+          <div class="spec-row"><span class="spec-label">Ginza</span><span class="spec-value">銀座巡回ギャラリー</span></div>
         </div>
       </div>
 
-      <div class="venue-summary" data-reveal>
+      <div class="venue-summary reveal">
         <a href="#kitano-1f" class="venue-item">
-          <span class="venue-item__label">Nagano</span>
-          <h3 class="venue-item__title">長野の地、記憶の深度</h3>
-          <p class="venue-item__desc">大型油彩と陶芸、映像が織りなす多層的な記憶の風景。</p>
+          <div class="venue-item__info">
+            <span class="venue-item__label">Nagano Space</span>
+            <h3 class="venue-item__title">長野の地、記憶の深度</h3>
+            <p class="venue-item__desc">大型油彩のうねるマチエールと、民俗学的なコンセプト書籍『左美都の神話と伝承』が響き合う重層的な記憶の風景。</p>
+          </div>
           <span class="venue-item__link">Explore Nagano <svg viewBox="0 0 12 12"><path d="M2 6h8m-3-3l3 3-3 3"/></svg></span>
         </a>
         <a href="#ginza" class="venue-item">
-          <span class="venue-item__label">Ginza</span>
-          <h3 class="venue-item__title">銀座、再編される地脈</h3>
-          <p class="venue-item__desc">都市のホワイトキューブに凝縮された油彩画と研究資料。</p>
+          <div class="venue-item__info">
+            <span class="venue-item__label">Ginza Space</span>
+            <h3 class="venue-item__title">銀座、再編される地脈</h3>
+            <p class="venue-item__desc">都市のホワイトキューブに凝縮され、グリッドと強い照明の中で生々しい気配を放つ油彩画とプロジェクトアーカイブ。</p>
+          </div>
           <span class="venue-item__link">Explore GINZA <svg viewBox="0 0 12 12"><path d="M2 6h8m-3-3l3 3-3 3"/></svg></span>
         </a>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <div class="pull-quote">
-    <div class="container--narrow">
-      <p class="pull-quote__mark" aria-hidden="true">&ldquo;</p>
-      <h2 class="pull-quote__text" data-reveal>
-        <span>土地には記憶がある。</span><span>左美都の泉は涸れても、</span><span>その水脈は絵の具の中を流れ続ける。</span><br>
-        <span>私が描くのは風景ではなく、</span><span>地そのものが抱いてきた〈いと〉である。</span>
-      </h2>
-    </div>
-  </div>
-
-  <section class="floor-section" id="kitano-1f">
-    <div class="container">
-      <div class="floor-header" data-reveal>
-        <div class="floor-number" aria-hidden="true">1F</div>
-        <div class="floor-intro">
-          <p class="floor-label">Nagano — Main Gallery</p>
-          <h2 class="floor-title">大型油彩・陶芸作品群<br>——土と絵具が交差する地脈</h2>
-          <p class="floor-desc">北野カルチュラルセンターの1階。壁面を覆う大型油彩群と、土の手触りを残す陶器が響き合います。磨かれた石床が作品を映し出し、観者を左美都の深淵へと誘います。</p>
-        </div>
+    <div class="pull-quote">
+      <div class="container--narrow">
+        <p class="pull-quote__mark" aria-hidden="true">&ldquo;</p>
+        <h2 class="pull-quote__text reveal">
+          <span>土地には記憶がある。</span><span>左美都の泉は涸れても、</span><span>その水脈は絵の具の中を流れ続ける。</span><br>
+          <span>私が描くのは風景ではなく、</span><span>地そのものが抱いてきた〈いと〉である。</span>
+        </h2>
       </div>
+    </div>
 
-      <div class="full-bleed" data-reveal>
-        <div class="photo-frame" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(1).jpg">
-          <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(1).jpg" alt="Nagano 1Fギャラリー全景" loading="lazy" />
-        </div>
-      </div>
-
-      <div class="overlap-block overlap-block--rev" data-reveal>
-        <div class="overlap-media photo-frame" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(5).jpg">
-          <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(5).jpg" alt="Nagano 1F陶芸展示と空間" loading="lazy" />
-        </div>
-        <div class="overlap-text">
-          <h3 class="block-title">物質としての記憶</h3>
-          <p class="block-text">土を焼き、絵具を重ねる。対象の輪郭を溶かすような筆致が、陶器の釉薬の流動性と呼応し、平面と立体の境界を曖昧にします。</p>
-          
-          <div class="grid-2-col" style="margin-top: 24px;">
-            <div class="photo-frame" style="height: 180px;" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(2).jpg"><img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(2).jpg" alt="Nagano 1F 展示風景" loading="lazy" /></div>
-            <div class="photo-frame" style="height: 180px;" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(3).jpg"><img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(3).jpg" alt="Nagano 1F 展示風景" loading="lazy" /></div>
+    <section class="floor-section" id="kitano-1f">
+      <div class="container">
+        <div class="floor-header" data-reveal>
+          <div class="floor-number">1F</div>
+          <div class="floor-intro">
+            <p class="floor-label">Nagano — Main Gallery</p>
+            <h2 class="floor-title">空間を呑み込む色彩と、<br>その基盤となる「左美都の神話」</h2>
+            <p class="floor-desc">北野カルチュラルセンター1階。広大な空間を覆い尽くすのは、土地の記憶を内包したダイナミックな大型油彩群です。それらは単なる絵画にとどまらず、奥に展示された「左美都」の神話や伝承というコンテクストの地層の上に立ち現れています。</p>
           </div>
         </div>
-      </div>
 
-      <div class="asym-grid" data-reveal>
-        <div class="asym-content">
-          <h3 class="block-title">空間と絵画の共鳴</h3>
-          <p class="block-text">静謐な空間に浮かび上がる色彩のうねり。床面に反射する光が、絵画の持つ「異体」の気配を空間全体へと拡張させます。</p>
-        </div>
-        <div class="asym-media">
-          <div class="photo-frame" style="height: 480px;" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(13).jpg"><img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(13).jpg" alt="Nagano 1F 大型油彩画" loading="lazy" /></div>
-        </div>
-      </div>
-
-      <div class="grid-2-col" data-reveal style="margin-bottom: 120px;">
-        <div class="photo-frame" style="height: 400px;" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(7).jpg"><img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(7).jpg" alt="Nagano 1F 油彩画アングル" loading="lazy" /></div>
-        <div class="photo-frame" style="height: 400px;" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(8).jpg"><img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(8).jpg" alt="Nagano 1F 作品群" loading="lazy" /></div>
-      </div>
-
-      <div class="asym-grid asym-grid--rev" data-reveal>
-        <div class="asym-content">
-          <h3 class="block-title">左美都の神話と伝承</h3>
-          <p class="block-text">会場には左美都研究会による書籍「左美都の神話と伝承」や調査資料も展示。視覚的な表現の背後にある、膨大なリサーチと土地の記憶が鑑賞者に提示されます。</p>
-        </div>
-        <div class="asym-media">
-          <div class="photo-frame" style="height: 420px;" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(10).jpg"><img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(10).jpg" alt="左美都の神話と伝承 書籍" loading="lazy" /></div>
-        </div>
-      </div>
-
-      <div class="grid-2-col" data-reveal>
-         <div class="photo-frame" style="height: 300px;" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(4).jpg"><img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(4).jpg" alt="Nagano 1F 資料パネル" loading="lazy" /></div>
-         <div class="photo-frame" style="height: 300px;" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(9).jpg"><img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(9).jpg" alt="Nagano 1F 全景" loading="lazy" /></div>
-      </div>
-
-      <div class="caption-row" data-reveal>
-        <span class="caption-row__text">展示風景 ／ 長野 1F — 大型油彩・陶芸・研究資料</span>
-        <span class="caption-row__count">10 photographs</span>
-      </div>
-    </div>
-  </section>
-
-  <section class="floor-section" id="kitano-3f">
-    <div class="container">
-      <div class="floor-header" data-reveal>
-        <div class="floor-number" aria-hidden="true">3F</div>
-        <div class="floor-intro">
-          <p class="floor-label">Nagano — Special Gallery</p>
-          <h2 class="floor-title">映像インスタレーション<br>——流動する大地の記憶</h2>
-          <p class="floor-desc">3階では「光」による没入体験が展開。暗闇に明滅する水脈のイメージが、土地が抱く非物質的な「気配」を立ち上がらせます。</p>
-        </div>
-      </div>
-
-      <div class="asym-grid" data-reveal>
-        <div class="asym-content">
-          <h3 class="block-title">闇に沈む水脈</h3>
-          <p class="block-text">かつて左美都に存在した沢や草むらのイメージが映像として空間を満たします。鑑賞者の身体そのものが影となり、風景の一部として溶け込んでいきます。</p>
-        </div>
-        <div class="asym-media">
-          <div class="photo-frame" style="height: 520px;" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano3f(1).jpg"><img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano3f(1).jpg" alt="Nagano 3F映像インスタレーション" loading="lazy" /></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="floor-section" id="ginza" style="background: #0b0b0b; border-bottom: none;">
-    <div class="container">
-      <div class="floor-header" data-reveal>
-        <div class="floor-number" aria-hidden="true" style="color: rgba(184,149,90,0.06);">GZ</div>
-        <div class="floor-intro">
-          <p class="floor-label">Ginza</p>
-          <h2 class="floor-title">都市の空白に、地脈を再構築する</h2>
-          <p class="floor-desc">巡回展の最終地、東京・銀座。都心のギャラリー空間において、大型油彩画とプロジェクトの膨大なアーカイブが再編されました。インダストリアルな要素が残る白い壁面が、左美都の流動的な色彩を鮮明に浮き彫りにします。</p>
-        </div>
-      </div>
-
-      <div class="asym-grid asym-grid--rev" data-reveal>
-        <div class="asym-content">
-          <h3 class="block-title">銀座の路地奥、2階へ</h3>
-          <p class="block-text">銀座のビル、階段を上がった先に現れるホワイトキューブ。長野の広大な自然から抽出された記憶の断片が、都市のグリッドの中に持ち込まれます。</p>
-        </div>
-        <div class="asym-media">
-          <div class="photo-frame" style="height: 480px;" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(1).jpg"><img src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(1).jpg" alt="銀座ギャラリー入口" loading="lazy" /></div>
-        </div>
-      </div>
-
-      <div class="full-bleed" data-reveal>
-        <div class="photo-frame" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(2).jpg">
-          <img src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(2).jpg" alt="銀座展 展示風景全景" loading="lazy" />
-        </div>
-      </div>
-
-      <div class="overlap-block" data-reveal>
-        <div class="overlap-media photo-frame" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(4).jpg">
-          <img src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(4).jpg" alt="銀座展 油彩画" loading="lazy" />
-        </div>
-        <div class="overlap-text">
-          <h3 class="block-title">空間を呼吸する油彩</h3>
-          <p class="block-text">ホワイトキューブ特有の強い照明と露出した配管。無機質な空間において、油彩の物質感と「異体」の生々しい気配がより一層際立ちます。画面を縦断する線は、地下から這い上がる水脈のように空間を繋ぎます。</p>
-          
-          <div class="grid-2-col" style="margin-top: 24px;">
-            <div class="photo-frame" style="height: 180px;" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(5).jpg"><img src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(5).jpg" alt="銀座展 油彩画 別角" loading="lazy" /></div>
-            <div class="photo-frame" style="height: 180px;" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(6).jpg"><img src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(6).jpg" alt="銀座展 油彩画並び" loading="lazy" /></div>
+        <div class="full-bleed reveal">
+          <div class="photo-frame" style="aspect-ratio: 21 / 9; max-height: 70vh;">
+            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(1).jpg" alt="Nagano 1Fギャラリー全景" loading="lazy" />
           </div>
         </div>
-      </div>
 
-      <div class="asym-grid" data-reveal>
-        <div class="asym-content">
-          <h3 class="block-title">知覚の地層を解く</h3>
-          <p class="block-text">展示の奥には、左美都研究会の調査パネルと、記録映像が並びます。油彩として定着した「イメージ」の裏側にある、膨大な「事実」と「語り」。これらが一体となり、巡回展としての思想的奥行きを形成します。</p>
+        <div class="overlap-block overlap-block--rev reveal">
+          <div class="overlap-media photo-frame">
+            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(13).jpg" alt="Nagano 1F 大型油彩画" loading="lazy" />
+          </div>
+          <div class="overlap-text">
+            <h3 class="block-title">空間と絵画の共鳴</h3>
+            <p class="block-text">対象の輪郭を溶かすような特異な筆致。磨き上げられた石床がその色彩を鏡のように反射し、鑑賞者はいつしか作品と空間の境界を見失い、巨大な絵画空間そのものに取り込まれていきます。傍らには、その土地の土を用いた陶芸作品もひっそりと添えられ、かすかな土地の痕跡を残しています。</p>
+          </div>
         </div>
-        <div class="asym-media">
-          <div class="photo-frame" style="height: 420px;" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(8).jpg"><img src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(8).jpg" alt="銀座展 資料パネル" loading="lazy" /></div>
+
+        <div class="grid-2-col reveal">
+          <div class="photo-frame" style="aspect-ratio: 4 / 3;">
+            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(2).jpg" alt="Nagano 1F 展示風景 側面アングル" loading="lazy" />
+          </div>
+          <div class="photo-frame" style="aspect-ratio: 4 / 3;">
+            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(3).jpg" alt="Nagano 1F 展示風景 正面対峙" loading="lazy" />
+          </div>
+        </div>
+
+        <div class="asym-grid reveal">
+          <div class="photo-frame" style="aspect-ratio: 3 / 4; max-height: 600px;">
+            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(11).jpg" alt="Nagano 1F パネルと絵画の呼応" loading="lazy" />
+          </div>
+          <div class="asym-content" style="padding-left: 20px;">
+            <h3 class="block-title">創造の源泉としての「伝承」</h3>
+            <p class="block-text">展示空間の奥へと進むと、左美都研究会による書籍『左美都の神話と伝承』やリサーチ資料の数々が立ち現れます。大蛇伝説や楯の城の攻防、名もなき人々の物語など、この地域に息づく伝承がテキストとして提示されています。<br><br>絵画群は単なる抽象表現ではなく、この民俗学的なコンテクストという深い地層を基盤にしています。アートとリサーチが交差することで、ハイブリッドな歴史の全貌が浮かび上がります。</p>
+          </div>
+        </div>
+
+        <div class="grid-2-col reveal" style="margin-top: 60px;">
+          <div class="photo-frame" style="aspect-ratio: 4 / 3;">
+            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(10).jpg" alt="左美都の神話と伝承 書籍現物展示" loading="lazy" />
+          </div>
+          <div class="photo-frame" style="aspect-ratio: 4 / 3;">
+            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(12).jpg" alt="Nagano 1F 詳細リサーチ資料パネル" loading="lazy" />
+          </div>
+        </div>
+
+        <div class="asym-grid asym-grid--rev reveal" style="margin-top: 100px;">
+          <div class="asym-content" style="padding-right: 20px;">
+            <h3 class="block-title">地脈を辿るドキュメンテーション</h3>
+            <p class="block-text">空間に点在するパネルや古文書のレプリカは、かつて閉ざされた村落で反復されていた行為の痕跡であり、カンヴァスの上に流れる水脈のパレイドリアを論理的に支える構造として機能しています。</p>
+          </div>
+          <div class="photo-frame" style="aspect-ratio: 16 / 10;">
+            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(4).jpg" alt="Nagano 1F アーカイブ什器展示" loading="lazy" />
+          </div>
+        </div>
+
+        <div class="caption-row reveal">
+          <span class="caption-row__text">展示風景 ／ 長野 1F — 大型油彩・プロジェクトアーカイブ</span>
         </div>
       </div>
+    </section>
+    <section class="floor-section" id="kitano-3f">
+      <div class="container">
+        <div class="floor-header" data-reveal>
+          <div class="floor-number">3F</div>
+          <div class="floor-intro">
+            <p class="floor-label">Nagano — Special Gallery</p>
+            <h2 class="floor-title">映像インスタレーション<br>——流動する大地の記憶</h2>
+            <p class="floor-desc">3階の深い暗室に足を踏み入れると、かつて左美都に存在した沢や草むらのイメージが巨大な壁面に投影されています。それは風景の再現ではなく、土地が抱く非物質的な「気配」そのものです。</p>
+          </div>
+        </div>
 
-      <div class="grid-2-col" data-reveal style="margin-top: 60px;">
-        <div class="photo-frame" style="height: 400px;" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(3).jpg"><img src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(3).jpg" alt="銀座展 全景2" loading="lazy" /></div>
-        <div class="photo-frame" style="height: 400px;" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(7).jpg"><img src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(7).jpg" alt="銀座展 隅の作品" loading="lazy" /></div>
-      </div>
+        <div class="full-bleed reveal">
+          <div class="photo-frame" style="aspect-ratio: 21 / 9; max-height: 65vh;">
+            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano3f(4).jpg" alt="3F映像展示空間全景" loading="lazy" />
+          </div>
+          <span class="video-atmosphere">空間を満たす「気配」としての映像展示</span>
+        </div>
 
-      <div class="caption-row" data-reveal>
-        <span class="caption-row__text">展示風景 ／ 銀座 — 大型油彩・プロジェクトアーカイブ</span>
-        <span class="caption-row__count">10 photographs</span>
+        <div class="asym-grid asym-grid--rev reveal">
+          <div class="asym-content">
+            <h3 class="block-title">身体と風景の境界</h3>
+            <p class="block-text">プロジェクターの光と、そこを横切る鑑賞者の身体。自身の影が投影された風景の一部となり、見る者と見られる対象の境界が緩やかに溶け出していきます。</p>
+            <div class="grid-2-col" style="margin: 32px 0 0 0;">
+              <div class="photo-frame" style="aspect-ratio: 4 / 3;"><img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano3f(2).jpg" alt="鑑賞体験 映像と影" loading="lazy" /></div>
+              <div class="photo-frame" style="aspect-ratio: 4 / 3;"><img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano3f(3).jpg" alt="鑑賞体験 空間の明滅" loading="lazy" /></div>
+            </div>
+          </div>
+          <div class="asym-media">
+            <div class="photo-frame" style="aspect-ratio: 3 / 4; max-height: 540px;">
+              <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano3f(1).jpg" alt="闇に沈む水脈のイメージ" loading="lazy" />
+            </div>
+            <p class="block-text" style="margin-top:24px; font-style: italic; font-size: 0.85rem;">かつて左美都に溢れていた水脈。その流動性は、デジタル映像という現代の筆致によって、再び空間へと溢れ出します。</p>
+          </div>
+        </div>
+
+        <div class="caption-row reveal">
+          <span class="caption-row__text">展示風景 ／ 長野 3F — 映像インスタレーション</span>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+    <section class="floor-section" id="ginza" style="background: #050505; border-bottom: none;">
+      <div class="container">
+        <div class="floor-header" data-reveal>
+          <div class="floor-number" style="color: rgba(196,168,130,0.06);">GZ</div>
+          <div class="floor-intro">
+            <p class="floor-label">Ginza</p>
+            <h2 class="floor-title">都市の空白に、地脈を再構築する</h2>
+            <p class="floor-desc">巡回展の最終地、東京・銀座。都心のホワイトキューブにおいて、インダストリアルな要素が残る白い壁面が、左美都の流動的な色彩を鮮明に浮き彫りにします。</p>
+          </div>
+        </div>
+
+        <div class="asym-grid reveal">
+          <div class="photo-frame" style="aspect-ratio: 4 / 3;">
+            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(1).jpg" alt="銀座ギャラリー入口 階段アプローチ" loading="lazy" />
+          </div>
+          <div class="asym-content">
+            <h3 class="block-title">銀座の路地奥、2階へ</h3>
+            <p class="block-text">銀座のビル、階段を上がった先に現れるクリーンな展示空間。長野の広大な公的空間から抽出された記憶の断片が、都市のミニマルなグリッドの中に持ち込まれ、再領土化されます。</p>
+          </div>
+        </div>
+
+        <div class="full-bleed reveal">
+          <div class="photo-frame" style="aspect-ratio: 21 / 9; max-height: 65vh;">
+            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(2).jpg" alt="銀座展 展示風景全景ホワイトキューブ" loading="lazy" />
+          </div>
+        </div>
+
+        <div class="overlap-block reveal" style="align-items: flex-start;">
+          <div class="overlap-media photo-frame" style="width: 80%; align-self: flex-end;">
+            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(4).jpg" alt="銀座展 壁面油彩画クローズアップ" loading="lazy" />
+          </div>
+          <div class="overlap-text" style="align-self: flex-start;">
+            <h3 class="block-title">空間を呼吸する油彩</h3>
+            <p class="block-text">ホワイトキューブ特有の強い照明と露出した配管。無機質な都心の空間において、油彩の強固な物質感と「異体」の生々しい気配がより一層際立ちます。画面を縦断する線は、地下から這い上がる水脈のように空間を繋ぎます。</p>
+            <div class="grid-2-col" style="margin: 24px 0 0 0;">
+              <div class="photo-frame" style="height: 160px;" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(5).jpg"><img src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(5).jpg" alt="銀座展 別アングル作品並び" loading="lazy" /></div>
+              <div class="photo-frame" style="height: 160px;" data-src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(6).jpg"><img src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(6).jpg" alt="銀座展 正面スポットライト" loading="lazy" /></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="asym-grid asym-grid--rev reveal" style="margin-top: 100px;">
+          <div class="asym-content">
+            <h3 class="block-title">知覚の地層を解く</h3>
+            <p class="block-text">展示の奥壁には、左美都研究会の調査パネルと記録映像が整然と並びます。油彩として定着したイメージの裏側にある、膨大な「事実」と「語り」。これらが一体となり、都市の空白において思想的奥行きを形成します。</p>
+          </div>
+          <div class="photo-frame" style="aspect-ratio: 16 / 10;">
+            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(8).jpg" alt="銀座展 アーカイブパネル資料展示" loading="lazy" />
+          </div>
+        </div>
+
+        <div class="grid-2-col reveal">
+          <div class="photo-frame" style="aspect-ratio: 4 / 3;">
+            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(3).jpg" alt="銀座展 奥壁全景" loading="lazy" />
+          </div>
+          <div class="photo-frame" style="aspect-ratio: 4 / 3;">
+            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(7).jpg" alt="銀座展 コーナー小品展示" loading="lazy" />
+          </div>
+        </div>
+
+        <div class="caption-row reveal">
+          <span class="caption-row__text">展示風景 ／ 銀座 — 都市空間における再構成</span>
+        </div>
+      </div>
+    </section>
+    </main>
 
   <nav class="series-nav">
     <a href="https://sh012da.github.io/sh01/works-cave.html">
       <span class="dir">← Prev Series</span>
       <span class="ttl">洞窟 Cave</span>
     </a>
-    <a class="next" href="https://sh012da.github.io/sh01/works-variant.html">
+    <a href="https://sh012da.github.io/sh01/works-variant.html" class="next">
       <span class="dir">Next Series →</span>
       <span class="ttl">異体 Variant Forms</span>
     </a>
   </nav>
 
-  <section class="contact-section" id="contact" data-reveal>
-    <p class="contact-label">Contact</p>
+  <section class="contact-section" id="contact">
+    <p class="eyebrow" style="text-align: center; margin-bottom: 1.5rem;">Contact</p>
     <h2 class="contact-heading">お問い合わせ</h2>
-    <p class="contact-body-text">作品・展覧会に関するお問い合わせは、<br>下記フォームよりお気軽にご連絡ください。</p>
-    <a href="https://sh012da.github.io/sh01/#contact" class="contact-btn">問い合わせフォームへ</a>
+    <p class="contact-body-text">個展「左美都の記憶と地脈」巡回展、作品、または取材等に関するお問い合わせは、下記フォームよりお気軽にご連絡ください。</p>
+    <a class="contact-btn" href="https://sh012da.github.io/sh01/contact.html"><span>問い合わせフォームへ</span></a>
   </section>
 
   <footer>
-    <a href="https://sh012da.github.io/sh01/index.html" class="footer-logo">Tsuda Shoichi</a>
+    <a href="index.html" class="footer-logo">津田 翔一 / Tsuda Shoichi</a>
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
-  <a href="#top" class="back-to-top" id="backToTop" aria-label="先頭に戻る">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+  <a href="#top" class="back-to-top" id="backToTop" aria-label="ページの先頭へ戻る">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
     <span class="back-to-top-text">TOP</span>
   </a>
 
-  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog">
     <div class="lightbox__inner">
-      <button class="lightbox__close" id="lbClose"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Close</button>
-      <button class="lightbox__nav lightbox__prev" id="lbPrev"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <img src="" alt="" class="lightbox__img" id="lbImg" />
-      <button class="lightbox__nav lightbox__next" id="lbNext"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-      <p class="lightbox__caption" id="lbCaption"></p>
+      <img src="" alt="拡大表示" id="lbImg" />
     </div>
   </div>
 
   <script>
-    /* ── Header Scroll ── */
-    const topNav = document.getElementById('top-nav');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 50) topNav.classList.add('scrolled');
-      else topNav.classList.remove('scrolled');
-    }, { passive: true });
-
-    /* ── Menu ── */
-    function toggleMenu() {
-      const links = document.getElementById('nav-links');
-      const cta = document.getElementById('nav-cta-btn');
-      const hamburger = document.getElementById('hamburger');
-      links.classList.toggle('open');
-      hamburger.classList.toggle('is-active');
-      if(cta) cta.style.display = links.classList.contains('open') ? 'none' : '';
-      if (links.classList.contains('open')) {
-        document.body.classList.add('is-locked');
-      } else {
-        document.body.classList.remove('is-locked');
-      }
-    }
-    
+    /* ── メニュー管理（PCリンク用スムーススクロール） ── */
     function closeMenu() {
-      const links = document.getElementById('nav-links');
-      const cta = document.getElementById('nav-cta-btn');
-      const hamburger = document.getElementById('hamburger');
-      links.classList.remove('open');
-      hamburger.classList.remove('is-active');
-      if(cta) cta.style.display = '';
-      document.body.classList.remove('is-locked');
+      // 本ページではスマホメニューはシンプル化のため常時畳まれます
     }
-    document.getElementById('hamburger').addEventListener('click', toggleMenu);
 
-    /* ── Page Nav (Tour Spy) ── */
-    const pageNav = document.getElementById('pageNav');
-    const sections = ['kitano-1f', 'kitano-3f', 'ginza'].map(id => document.getElementById(id));
-    const navItems = document.querySelectorAll('.page-nav-item');
-    
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      const checkY = scrollY + window.innerHeight * 0.45;
-      let activeSec = null;
-      sections.forEach(sec => { if (sec && sec.offsetTop <= checkY) activeSec = sec; });
-      navItems.forEach(item => {
-        const target = document.getElementById(item.getAttribute('data-target'));
-        item.classList.toggle('active', target === activeSec);
-      });
-      if (pageNav) pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.8);
+    (function(){
+      const header = document.getElementById('top-nav');
+      const progress = document.getElementById('progress');
       const b2t = document.getElementById('backToTop');
-      if (b2t) b2t.classList.toggle('is-visible', scrollY > 600);
-    }, { passive: true });
+      const pageNav = document.getElementById('pageNav');
+      const navItems = document.querySelectorAll('.page-nav-item');
+      const targets = ['kitano-1f', 'kitano-3f', 'ginza'].map(id => document.getElementById(id));
 
-    navItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const target = document.getElementById(item.getAttribute('data-target'));
-        if (target) window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+      function onScroll() {
+        const y = window.scrollY || document.documentElement.scrollTop;
+        
+        // ヘッダー背景ガラスモルフィズム
+        if(header) header.classList.toggle('scrolled', y > 50);
+        
+        // 進捗バー
+        const h = document.documentElement.scrollHeight - window.innerHeight;
+        if(progress) progress.style.width = (h > 0 ? (y / h) * 100 : 0) + '%';
+        
+        // ★ トップに戻るボタンの表示・非表示（400px以上スクロールで出現）
+        if(b2t) b2t.classList.toggle('is-visible', y > 400);
+
+        // スパイナビゲーションの連動
+        const checkY = y + window.innerHeight * 0.45;
+        let currentSec = null;
+        targets.forEach(sec => {
+          if (sec && sec.offsetTop <= checkY) currentSec = sec;
+        });
+        navItems.forEach(item => {
+          const t = document.getElementById(item.getAttribute('data-target'));
+          item.classList.toggle('active', t === currentSec);
+        });
+        if(pageNav) pageNav.classList.toggle('visible', y > window.innerHeight * 0.5);
+      }
+
+      document.addEventListener('scroll', onScroll, {passive: true});
+      onScroll();
+
+      // ナビゲーションアイテムクリック時のスクロール
+      navItems.forEach(item => {
+        item.addEventListener('click', () => {
+          const t = document.getElementById(item.getAttribute('data-target'));
+          if(t) {
+            const offset = header ? header.offsetHeight : 70;
+            window.scrollTo({ top: t.offsetTop - offset, behavior: 'smooth' });
+          }
+        });
       });
-    });
 
-    /* ── Hero Loading ── */
-    const heroBg = document.getElementById('heroBg');
-    const heroImg = new Image();
-    // ★ 絶対パスに変更
-    heroImg.src = 'https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(9).jpg';
-    heroImg.onload = () => heroBg.classList.add('loaded');
-
-    /* ── Reveal ── */
-    const revealEls = document.querySelectorAll('[data-reveal]');
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('revealed');
-          revealObserver.unobserve(e.target);
-        }
+      // ★ トップに戻るボタンをクリックした際のスムーススクロール処理
+      b2t.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-    revealEls.forEach(el => revealObserver.observe(el));
 
-    /* ── Lightbox ── */
-    const lightbox = document.getElementById('lightbox');
-    const lbImg    = document.getElementById('lbImg');
-    const lbCaption = document.getElementById('lbCaption');
-    const allFrames = Array.from(document.querySelectorAll('[data-src]'));
-    function openLightbox(idx) {
-      const frame = allFrames[idx];
-      lbImg.src = frame.dataset.src;
-      lbCaption.textContent = frame.querySelector('img')?.alt || '';
-      lightbox.classList.add('active');
-      document.body.classList.add('is-locked');
-    }
-    allFrames.forEach((frame, i) => frame.addEventListener('click', () => openLightbox(i)));
-    document.getElementById('lbClose').addEventListener('click', () => {
-      lightbox.classList.remove('active');
-      document.body.classList.remove('is-locked');
-    });
-    document.getElementById('lbPrev').addEventListener('click', () => {
-      let currentIdx = allFrames.findIndex(f => f.dataset.src === lbImg.getAttribute('src'));
-      currentIdx = (currentIdx - 1 + allFrames.length) % allFrames.length;
-      openLightbox(currentIdx);
-    });
-    document.getElementById('lbNext').addEventListener('click', () => {
-      let currentIdx = allFrames.findIndex(f => f.dataset.src === lbImg.getAttribute('src'));
-      currentIdx = (currentIdx + 1) % allFrames.length;
-      openLightbox(currentIdx);
-    });
+      // スムーススクロール（Contactボタン等、ハッシュリンク用共通処理）
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          const href = this.getAttribute('href');
+          if(href === '#') return;
+          const target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            const offset = header ? header.offsetHeight : 70;
+            window.scrollTo({
+              top: target.offsetTop - offset,
+              behavior: 'smooth'
+            });
+          }
+        });
+      });
+
+      // スクロールフェードイン（Revealシステム）
+      const revealEls = document.querySelectorAll('.reveal, [data-reveal]');
+      if('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(entries => {
+          entries.forEach(en => {
+            if(en.isIntersecting) {
+              en.target.classList.add('is-visible');
+              en.target.classList.add('revealed'); // 旧指定の互換
+              io.unobserve(en.target);
+            }
+          });
+        }, {threshold: 0.05, rootMargin: '0px 0px -40px 0px'});
+        revealEls.forEach(el => io.observe(el));
+      } else {
+        revealEls.forEach(el => el.classList.add('is-visible'));
+      }
+
+      /* ── ライトボックスモジュール（src/data-src共通処理） ── */
+      const lightbox = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lbImg');
+
+      document.querySelectorAll('.photo-frame, [data-src]').forEach(trigger => {
+        trigger.addEventListener('click', () => {
+          const img = trigger.querySelector('img');
+          const targetSrc = trigger.getAttribute('data-src') || (img ? img.src : null);
+          if(targetSrc) {
+            lbImg.src = targetSrc;
+            lightbox.classList.add('active');
+            lightbox.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('is-locked');
+          }
+        });
+      });
+
+      lightbox.addEventListener('click', () => {
+        lightbox.classList.remove('active');
+        lightbox.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('is-locked');
+        setTimeout(() => { lbImg.src = ''; }, 400);
+      });
+      document.addEventListener('keydown', e => { if(e.key === 'Escape' && lightbox.classList.contains('active')) lightbox.click(); });
+    })();
   </script>
 </body>
 </html>
