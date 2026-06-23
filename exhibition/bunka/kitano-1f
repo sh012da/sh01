@@ -1,1 +1,1054 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exhibition — 左美都の記憶と地脈 | 津田翔一</title>
+  <meta name="description" content="文化庁メディア芸術クリエイター育成支援事業採択企画展示「左美都の記憶と地脈」長野展 — 津田翔一" />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Noto+Serif+JP:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Design Tokens ─────────────────────────────── */
+    :root {
+      --bg:        #080808;
+      --surface:   #0f0f0f;
+      --border:    rgba(184,149,90,0.18);
+      --gold:      #b8955a;
+      --gold-dim:  rgba(184,149,90,0.45);
+      --text:      rgba(240,235,225,0.88);
+      --text-dim:  rgba(240,235,225,0.48);
+      --text-faint:rgba(240,235,225,0.28);
+      --serif-en:  'Cormorant Garamond', Georgia, serif;
+      --serif-jp:  'Noto Serif JP', serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--serif-jp);
+      font-weight: 300;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Header ─────────────────────────────────────── */
+    .site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 900;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 64px;
+      background: rgba(8,8,8,0.82);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .site-header__logo {
+      font-family: var(--serif-en);
+      font-weight: 400;
+      font-size: 1rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .site-header__nav {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+    .site-header__nav a {
+      font-family: var(--serif-en);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .site-header__nav a:hover { color: var(--gold); }
+
+    /* ─── Hero ───────────────────────────────────────── */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 600px;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+    }
+    .hero__bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('img/exhibition-nagano/0003.jpg');
+      background-size: cover;
+      background-position: center 30%;
+      transform: scale(1.04);
+      transition: transform 12s ease;
+    }
+    .hero__bg.loaded { transform: scale(1.0); }
+    .hero__veil {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(8,8,8,0.96) 0%,
+        rgba(8,8,8,0.55) 40%,
+        rgba(8,8,8,0.15) 70%,
+        rgba(8,8,8,0.05) 100%
+      );
+    }
+    .hero__content {
+      position: relative;
+      z-index: 2;
+      padding: 0 80px 80px;
+      max-width: 900px;
+    }
+
+    /* Hero Text Reveal Animation (にじむエフェクト) */
+    @keyframes textBlurReveal {
+      0% {
+        opacity: 0;
+        filter: blur(12px);
+        transform: translateY(12px) scale(1.02);
+      }
+      100% {
+        opacity: 1;
+        filter: blur(0);
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .hero__eyebrow {
+      font-family: var(--serif-en);
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      opacity: 0;
+      animation: textBlurReveal 2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s forwards;
+    }
+    .hero__eyebrow::before {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: var(--gold-dim);
+    }
+    .hero__title-jp {
+      font-family: var(--serif-jp);
+      font-weight: 200;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      letter-spacing: 0.08em;
+      line-height: 1.3;
+      color: rgba(240,235,225,0.95);
+      margin-bottom: 10px;
+      opacity: 0;
+      animation: textBlurReveal 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s forwards;
+    }
+    .hero__title-en {
+      font-family: var(--serif-en);
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(1rem, 1.8vw, 1.4rem);
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: textBlurReveal 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) 0.9s forwards;
+    }
+    .hero__meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px 40px;
+      opacity: 0;
+      animation: textBlurReveal 2s cubic-bezier(0.2, 0.8, 0.2, 1) 1.2s forwards;
+    }
+    .hero__meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .hero__meta-label {
+      font-family: var(--serif-en);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+    }
+    .hero__meta-value {
+      font-family: var(--serif-jp);
+      font-size: 0.82rem;
+      font-weight: 300;
+      color: var(--text-dim);
+      letter-spacing: 0.06em;
+    }
+
+    /* ─── Scroll cue ──────────────────────────────────── */
+    .scroll-cue {
+      position: absolute;
+      bottom: 36px;
+      right: 56px;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      animation: textBlurReveal 2s ease 1.8s forwards;
+    }
+    .scroll-cue__label {
+      font-family: var(--serif-en);
+      font-size: 0.55rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      writing-mode: vertical-rl;
+    }
+    .scroll-cue__line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, var(--gold-dim), transparent);
+      animation: scrollPulse 2.2s ease infinite;
+    }
+    @keyframes scrollPulse {
+      0%,100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 0.9; transform: scaleY(1.1); }
+    }
+
+    /* ─── Layout ──────────────────────────────────────── */
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+    .container--narrow {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    /* ─── Overview ────────────────────────────────────── */
+    .overview {
+      padding: 120px 0 80px;
+      border-bottom: 1px solid var(--border);
+    }
+    .overview__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--gold-dim);
+      padding: 6px 18px;
+      margin-bottom: 52px;
+      font-family: var(--serif-jp);
+      font-size: 0.7rem;
+      font-weight: 300;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+    }
+    .overview__badge svg {
+      width: 14px; height: 14px;
+      fill: none;
+      stroke: var(--gold);
+      stroke-width: 1.5;
+    }
+    .overview__body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px 80px;
+    }
+    .overview__text-block p {
+      font-size: 0.9rem;
+      line-height: 2;
+      color: var(--text-dim);
+      letter-spacing: 0.04em;
+      margin-bottom: 1.2em;
+    }
+    .overview__text-block p:last-child { margin-bottom: 0; }
+    .overview__text-block p.lead {
+      font-size: 1rem;
+      color: var(--text);
+      font-weight: 400;
+    }
+    .overview__specs {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border-left: 1px solid var(--border);
+      padding-left: 40px;
+    }
+    .spec-row {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 12px;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(184,149,90,0.08);
+    }
+    .spec-row:last-child { border-bottom: none; }
+    .spec-label {
+      font-family: var(--serif-en);
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      padding-top: 3px;
+    }
+    .spec-value {
+      font-family: var(--serif-jp);
+      font-size: 0.82rem;
+      font-weight: 300;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+
+    /* ─── Floor section ───────────────────────────────── */
+    .floor-section {
+      padding: 100px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .floor-section + .floor-section {
+      border-top: none;
+    }
+    .floor-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 48px;
+      margin-bottom: 64px;
+    }
+    .floor-number {
+      font-family: var(--serif-en);
+      font-weight: 300;
+      font-size: clamp(4rem, 8vw, 7rem);
+      line-height: 1;
+      color: rgba(184,149,90,0.12);
+      letter-spacing: -0.02em;
+      flex-shrink: 0;
+      user-select: none;
+      position: relative;
+      top: -8px;
+    }
+    .floor-intro { flex: 1; }
+    .floor-label {
+      font-family: var(--serif-en);
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .floor-label::after {
+      content: '';
+      display: block;
+      flex: 1;
+      max-width: 48px;
+      height: 1px;
+      background: var(--gold-dim);
+    }
+    .floor-title {
+      font-family: var(--serif-jp);
+      font-weight: 200;
+      font-size: clamp(1.3rem, 2.5vw, 1.9rem);
+      letter-spacing: 0.06em;
+      color: rgba(240,235,225,0.9);
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+    .floor-desc {
+      font-size: 0.88rem;
+      line-height: 1.95;
+      color: var(--text-dim);
+      letter-spacing: 0.04em;
+      max-width: 560px;
+    }
+
+    /* ─── Photo grids ─────────────────────────────────── */
+    .photo-grid-main {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 6px;
+    }
+    .photo-grid-main .photo-main { grid-row: 1 / 3; }
+    .photo-grid-sub {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .photo-frame {
+      overflow: hidden;
+      cursor: zoom-in;
+      background: var(--surface);
+      position: relative;
+    }
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  opacity 0.4s ease;
+      opacity: 0;
+    }
+    .photo-frame img.loaded { opacity: 1; }
+    .photo-frame:hover img { transform: scale(1.04); }
+    .photo-frame::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(184,149,90,0);
+      transition: border-color 0.3s;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .photo-frame:hover::after { border-color: rgba(184,149,90,0.3); }
+
+    /* Fixed heights for frames */
+    .photo-frame--tall { height: 520px; }
+    .photo-frame--mid  { height: 255px; }
+    .photo-frame--sq   { height: 340px; }
+    .photo-frame--sm   { height: 220px; }
+
+    /* ─── Caption row ─────────────────────────────────── */
+    .caption-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-top: 24px;
+    }
+    .caption-row__text {
+      font-family: var(--serif-jp);
+      font-size: 0.72rem;
+      font-weight: 300;
+      color: var(--text-faint);
+      letter-spacing: 0.06em;
+    }
+    .caption-row__count {
+      font-family: var(--serif-en);
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: var(--gold-dim);
+    }
+
+    /* ─── Pull quote ──────────────────────────────────── */
+    .pull-quote {
+      padding: 80px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+    .pull-quote__mark {
+      font-family: var(--serif-en);
+      font-size: 4rem;
+      line-height: 0.6;
+      color: var(--gold-dim);
+      margin-bottom: 24px;
+    }
+    .pull-quote__text {
+      font-family: var(--serif-jp);
+      font-weight: 200;
+      font-size: clamp(1rem, 2vw, 1.4rem);
+      line-height: 2.2;
+      color: rgba(240,235,225,0.75);
+      letter-spacing: 0.1em;
+      max-width: 680px;
+      margin: 0 auto 24px;
+    }
+    .pull-quote__source {
+      font-family: var(--serif-en);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+    }
+
+    /* ─── Feature pair / Ceramics ─────────────────────── */
+    .feature-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .feature-pair__frame {
+      height: 400px;
+      overflow: hidden;
+      cursor: zoom-in;
+      position: relative;
+    }
+    .feature-pair__frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.4s;
+      opacity: 0;
+    }
+    .feature-pair__frame img.loaded { opacity: 1; }
+    .feature-pair__frame:hover img { transform: scale(1.04); }
+    .feature-pair__frame::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(184,149,90,0);
+      transition: border-color 0.3s;
+      pointer-events: none;
+    }
+    .feature-pair__frame:hover::after { border-color: rgba(184,149,90,0.3); }
+
+    .ceramics-triple {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .ceramics-triple__right {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* ─── Back nav ────────────────────────────────────── */
+    .back-nav {
+      padding: 80px 0;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .back-nav__link {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--serif-en);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .back-nav__link svg {
+      width: 20px; height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.2;
+      transition: transform 0.3s;
+    }
+    .back-nav__link:hover { color: var(--gold); }
+    .back-nav__link:hover svg { transform: translateX(-4px); }
+
+    /* ─── Footer ──────────────────────────────────────── */
+    .site-footer {
+      padding: 48px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-footer__logo {
+      font-family: var(--serif-en);
+      font-size: 0.8rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+    }
+    .site-footer__copy {
+      font-family: var(--serif-en);
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      color: var(--text-faint);
+    }
+
+    /* ─── Lightbox ────────────────────────────────────── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(4,4,4,0.96);
+      justify-content: center;
+      align-items: center;
+    }
+    .lightbox.active { display: flex; }
+    .lightbox__inner {
+      position: relative;
+      max-width: 92vw;
+      max-height: 90vh;
+    }
+    .lightbox__img {
+      max-width: 92vw;
+      max-height: 86vh;
+      object-fit: contain;
+      display: block;
+    }
+    .lightbox__close {
+      position: absolute;
+      top: -44px;
+      right: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-dim);
+      font-family: var(--serif-en);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+    .lightbox__close:hover { color: var(--gold); }
+    .lightbox__close svg {
+      width: 16px; height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+    }
+    .lightbox__nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: 1px solid var(--border);
+      padding: 12px;
+      cursor: pointer;
+      color: var(--text-dim);
+      transition: border-color 0.3s, color 0.3s;
+    }
+    .lightbox__nav:hover { border-color: var(--gold-dim); color: var(--gold); }
+    .lightbox__nav svg {
+      width: 20px; height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.2;
+      display: block;
+    }
+    .lightbox__prev { left: -56px; }
+    .lightbox__next { right: -56px; }
+    .lightbox__caption {
+      position: absolute;
+      bottom: -36px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-family: var(--serif-jp);
+      font-size: 0.7rem;
+      color: var(--text-faint);
+      letter-spacing: 0.06em;
+    }
+
+    /* ─── Responsive ──────────────────────────────────── */
+    @media (max-width: 900px) {
+      .site-header { padding: 0 24px; }
+      .site-header__nav { display: none; }
+      .hero__content { padding: 0 28px 64px; }
+      .container, .container--narrow { padding: 0 24px; }
+      .overview__body { grid-template-columns: 1fr; gap: 48px; }
+      .overview__specs { border-left: none; padding-left: 0; border-top: 1px solid var(--border); padding-top: 40px; }
+      .floor-header { flex-direction: column; gap: 20px; }
+      .floor-number { font-size: 4rem; }
+      .photo-grid-main { grid-template-columns: 1fr; }
+      .photo-grid-main .photo-main { grid-row: auto; }
+      .photo-grid-sub { grid-template-columns: 1fr 1fr; }
+      .feature-pair { grid-template-columns: 1fr; }
+      .ceramics-triple { grid-template-columns: 1fr; }
+      .ceramics-triple__right { flex-direction: row; }
+      .photo-frame--tall { height: 280px; }
+      .photo-frame--mid { height: 200px; }
+      .photo-frame--sq { height: 240px; }
+      .photo-frame--sm { height: 200px; }
+      .feature-pair__frame { height: 260px; }
+      .site-footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 24px; }
+      .lightbox__prev { left: -36px; }
+      .lightbox__next { right: -36px; }
+    }
+
+    /* ─── Reveal animation ────────────────────────────── */
+    [data-reveal] {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.9s cubic-bezier(0.25,0.46,0.45,0.94),
+                  transform 0.9s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    [data-reveal].revealed {
+      opacity: 1;
+      transform: none;
+    }
+    [data-reveal-delay="1"] { transition-delay: 0.1s; }
+    [data-reveal-delay="2"] { transition-delay: 0.2s; }
+    [data-reveal-delay="3"] { transition-delay: 0.35s; }
+  </style>
+</head>
+
+<body>
+
+  <header class="site-header">
+    <a href="index.html" class="site-header__logo">Shoichi Tsuda</a>
+    <nav>
+      <ul class="site-header__nav">
+        <li><a href="works.html">Works</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero__bg" id="heroBg"></div>
+    <div class="hero__veil"></div>
+
+    <div class="hero__content">
+      <p class="hero__eyebrow">Exhibition — Nagano</p>
+      <h1 class="hero__title-jp">左美都の記憶と地脈<br><span style="font-size:0.65em; opacity:0.7;">津田翔一 個展</span></h1>
+      <p class="hero__title-en">Memory and Ley Lines of Samizu — Shoichi Tsuda Solo Exhibition</p>
+      <div class="hero__meta">
+        <div class="hero__meta-item">
+          <span class="hero__meta-label">Venue</span>
+          <span class="hero__meta-value">長野県立美術館<br>/ 1F・3F ギャラリー</span>
+        </div>
+        <div class="hero__meta-item">
+          <span class="hero__meta-label">Support</span>
+          <span class="hero__meta-value">文化庁メディア芸術<br>クリエイター育成支援事業</span>
+        </div>
+        <div class="hero__meta-item">
+          <span class="hero__meta-label">Year</span>
+          <span class="hero__meta-value">2025</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-cue" aria-hidden="true">
+      <span class="scroll-cue__label">Scroll</span>
+      <div class="scroll-cue__line"></div>
+    </div>
+  </section>
+
+  <section class="overview">
+    <div class="container">
+
+      <div class="overview__badge" data-reveal>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1l1.8 3.6L14 5.6l-3 2.9.7 4.1L8 10.5l-3.7 2.1.7-4.1L2 5.6l4.2-.6z" stroke-width="1.2" stroke-linejoin="round"/></svg>
+        文化庁メディア芸術クリエイター育成支援事業 採択企画展示
+      </div>
+
+      <div class="overview__body">
+        <div class="overview__text-block" data-reveal data-reveal-delay="1">
+          <p class="lead">
+            この展覧会は、津田翔一が長年にわたり探求してきた「左美都」——長野市北部に実在した地名であり、失われつつある土地の記憶——を軸に、絵画・陶芸・映像を通じて〈場所〉が持つ力を問い直す試みである。
+          </p>
+          <p>
+            文化庁メディア芸術クリエイター育成支援事業の採択を受け、地域に根ざした制作活動の成果として開催。長野の地で育まれた身体感覚と、脱領土化（deterritorialization）の思想が交差する場として構想された。
+          </p>
+          <p>
+            展示は建物の二層にわたり展開した。1階の主展示室では大型油彩群とそれに呼応する陶芸作品が空間を満たし、3階のギャラリーでは映像インスタレーションが展開された。両フロアは物質と非物質の境界を超え、ひとつの地脈として観者を包み込んだ。
+          </p>
+        </div>
+
+        <div class="overview__specs" data-reveal data-reveal-delay="2">
+          <div class="spec-row">
+            <span class="spec-label">Exhibition</span>
+            <span class="spec-value">左美都の記憶と地脈<br><em style="font-style:italic; font-family:var(--serif-en);">Memory and Ley Lines of Samizu</em></span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-label">Artist</span>
+            <span class="spec-value">津田翔一 / Shoichi Tsuda</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-label">Medium</span>
+            <span class="spec-value">油彩・陶芸・映像インスタレーション・書籍</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-label">Floors</span>
+            <span class="spec-value">1F — 油彩・陶芸・文献展示<br>3F — 映像インスタレーション</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-label">Support</span>
+            <span class="spec-value">文化庁メディア芸術<br>クリエイター育成支援事業</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="pull-quote">
+    <div class="container--narrow">
+      <p class="pull-quote__mark" aria-hidden="true">&ldquo;</p>
+      <p class="pull-quote__text" data-reveal>
+        土地には記憶がある。左美都の泉は涸れても、その水脈は絵の具の中を流れ続ける。
+        私が描くのは風景ではなく、地そのものが抱いてきた〈いと〉——語りの最小の糸——である。
+      </p>
+      <p class="pull-quote__source">— 津田翔一 / Shoichi Tsuda</p>
+    </div>
+  </div>
+
+  <section class="floor-section">
+    <div class="container">
+
+      <div class="floor-header" data-reveal>
+        <div class="floor-number" aria-hidden="true">1F</div>
+        <div class="floor-intro">
+          <p class="floor-label">Main Gallery — 1st Floor</p>
+          <h2 class="floor-title">大型油彩・陶芸作品群<br>——土と絵具が交差する地脈</h2>
+          <p class="floor-desc">
+            1階のメインギャラリーでは、油彩画を中心に、世界観を立体的に補う陶芸作品や文献が展示された。
+            F50〜F100号の大型油彩作品が壁面を埋め尽くし、そこから連続するように配置された陶器には、
+            まるで油彩の色彩が焼き物に転写されたかのような響き合いがある。
+            有機的に流れる線と物質としての土が共鳴し、左美都の記憶を空間全体に立ち上がらせた。
+          </p>
+        </div>
+      </div>
+
+      <div data-reveal data-reveal-delay="1">
+        <div class="photo-grid-main">
+          <div class="photo-frame photo-frame--tall photo-main" data-src="img/exhibition-nagano/0003.jpg" data-index="0">
+            <img src="img/exhibition-nagano/0003.jpg" alt="1Fギャラリー全景" loading="lazy" />
+          </div>
+          <div class="photo-frame photo-frame--mid" data-src="img/exhibition-nagano/0001.jpg" data-index="1">
+            <img src="img/exhibition-nagano/0001.jpg" alt="1Fギャラリー側面" loading="lazy" />
+          </div>
+          <div class="photo-frame photo-frame--mid" data-src="img/exhibition-nagano/0005.jpg" data-index="2">
+            <img src="img/exhibition-nagano/0005.jpg" alt="1Fギャラリー左翼" loading="lazy" />
+          </div>
+        </div>
+
+        <div class="photo-grid-sub">
+          <div class="photo-frame photo-frame--sq" data-src="img/exhibition-nagano/0010.jpg" data-index="3">
+            <img src="img/exhibition-nagano/0010.jpg" alt="1Fギャラリー奥壁面" loading="lazy" />
+          </div>
+          <div class="photo-frame photo-frame--sq" data-src="img/exhibition-nagano/0008.jpg" data-index="4">
+            <img src="img/exhibition-nagano/0008.jpg" alt="1Fギャラリー縦断" loading="lazy" />
+          </div>
+          <div class="photo-frame photo-frame--sq" data-src="img/exhibition-nagano/0007.jpg" data-index="5">
+            <img src="img/exhibition-nagano/0007.jpg" alt="1Fギャラリー別角" loading="lazy" />
+          </div>
+        </div>
+      </div>
+
+      <div data-reveal data-reveal-delay="2" style="margin-top: 48px;">
+        <div class="ceramics-triple">
+          <div class="photo-frame photo-frame--tall" data-src="img/exhibition-nagano/0016.jpg" data-index="6">
+            <img src="img/exhibition-nagano/0016.jpg" alt="1F陶芸展示棚" loading="lazy" />
+          </div>
+          <div class="ceramics-triple__right">
+            <div class="photo-frame" style="height:244px;" data-src="img/exhibition-nagano/0029.jpg" data-index="7">
+              <img src="img/exhibition-nagano/0029.jpg" alt="陶芸作品 棚並び" loading="lazy" />
+            </div>
+            <div class="photo-frame" style="height:244px;" data-src="img/exhibition-nagano/0050.jpg" data-index="8">
+              <img src="img/exhibition-nagano/0050.jpg" alt="陶芸碗 クローズアップ" loading="lazy" />
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:6px;">
+          <div class="feature-pair">
+            <div class="feature-pair__frame" data-src="img/exhibition-nagano/0027.jpg" data-index="9">
+              <img src="img/exhibition-nagano/0027.jpg" alt="左美都の神話と伝承 書籍" loading="lazy" />
+            </div>
+            <div style="display:flex; flex-direction:column; justify-content:center; padding:32px 40px; background:var(--surface);">
+              <p style="font-family:var(--serif-en); font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold-dim); margin-bottom:16px;">Publication</p>
+              <p style="font-family:var(--serif-jp); font-weight:200; font-size:1.2rem; letter-spacing:0.08em; color:var(--text); margin-bottom:20px; line-height:1.5;">左美都の神話と伝承</p>
+              <p style="font-family:var(--serif-jp); font-size:0.78rem; color:var(--text-dim); line-height:1.9; margin-bottom:24px;">
+                左美都研究会 編・著。長野市北部の地名「左美都」にまつわる伝承・自然・暮らしを記録した書籍。本展に合わせて制作・頒布され、絵画作品の思想的背景を補完する。失われつつある土地の語りを、文字と図版によって留める試みである。
+              </p>
+              <p style="font-family:var(--serif-en); font-size:0.65rem; letter-spacing:0.14em; color:var(--text-faint);">Samizu Research Group, ed. — 2025</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="caption-row" data-reveal>
+        <span class="caption-row__text">展示風景 ／ 1Fメインギャラリー — 油彩作品群・陶芸・書籍展示</span>
+        <span class="caption-row__count">10 photographs</span>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="floor-section">
+    <div class="container">
+
+      <div class="floor-header" data-reveal>
+        <div class="floor-number" aria-hidden="true">3F</div>
+        <div class="floor-intro">
+          <p class="floor-label">Installation Gallery — 3rd Floor</p>
+          <h2 class="floor-title">映像インスタレーション<br>——流動する大地の記憶</h2>
+          <p class="floor-desc">
+            3階のギャラリーでは、1階の物質的な展示（絵具・土）とは対照的に、光と音による映像インスタレーションが展開された。
+            左美都の沢や地中の水脈を思わせる流動的なイメージが空間全体に投影され、鏡面磨きの床に反射することで、
+            観者の身体感覚を揺さぶる。絵画や土に込められた〈いと（糸）〉が、ここでは非物質的な体験として再構築されている。
+          </p>
+        </div>
+      </div>
+
+      <div data-reveal data-reveal-delay="1">
+        <div class="feature-pair">
+          <div class="feature-pair__frame" style="height: 520px;" data-src="img/exhibition-nagano/0008.jpg" data-index="10">
+            <img src="img/exhibition-nagano/0008.jpg" alt="3Fインスタレーション投影風景" loading="lazy" />
+          </div>
+          <div class="feature-pair__frame" style="height: 520px;" data-src="img/exhibition-nagano/0010.jpg" data-index="11">
+            <img src="img/exhibition-nagano/0010.jpg" alt="3Fインスタレーション床面反射" loading="lazy" />
+          </div>
+        </div>
+      </div>
+
+      <div class="caption-row" data-reveal>
+        <span class="caption-row__text">展示風景 ／ 3Fギャラリー — 映像インスタレーション</span>
+        <span class="caption-row__count">2 photographs</span>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="back-nav" data-reveal>
+      <a href="index.html" class="back-nav__link">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="19 12 5 12"/><polyline points="12 5 5 12 12 19"/></svg>
+        Back to Home
+      </a>
+      <span style="width:1px; height:20px; background:var(--border);"></span>
+      <a href="profile.html" class="back-nav__link">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="5 12 19 12"/><polyline points="12 5 19 12 12 19"/></svg>
+        Profile &amp; Exhibitions
+      </a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <a href="index.html" class="site-footer__logo">Shoichi Tsuda</a>
+    <p class="site-footer__copy">&copy; 2025 Shoichi Tsuda. All rights reserved.</p>
+  </footer>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="画像拡大表示">
+    <div class="lightbox__inner">
+      <button class="lightbox__close" id="lbClose" aria-label="閉じる">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Close
+      </button>
+      <button class="lightbox__nav lightbox__prev" id="lbPrev" aria-label="前の画像">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <img src="" alt="" class="lightbox__img" id="lbImg" />
+      <button class="lightbox__nav lightbox__next" id="lbNext" aria-label="次の画像">
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <p class="lightbox__caption" id="lbCaption"></p>
+    </div>
+  </div>
+
+  <script>
+    /* ── Hero bg fade-in ── */
+    const heroBg = document.getElementById('heroBg');
+    const heroImg = new Image();
+    heroImg.src = heroBg.style.backgroundImage.replace(/url\(['"]?(.*?)['"]?\)/, '$1')
+                  || 'img/exhibition-nagano/0003.jpg';
+    heroImg.onload = () => heroBg.classList.add('loaded');
+    if (!heroBg.style.backgroundImage) {
+      heroBg.style.backgroundImage = "url('img/exhibition-nagano/0003.jpg')";
+    }
+
+    /* ── Lazy load images with fade ── */
+    const lazyImgs = document.querySelectorAll('.photo-frame img, .feature-pair__frame img');
+    const imgObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const img = e.target;
+          img.onload = () => img.classList.add('loaded');
+          if (img.complete) img.classList.add('loaded');
+          imgObserver.unobserve(img);
+        }
+      });
+    }, { rootMargin: '200px' });
+    lazyImgs.forEach(img => imgObserver.observe(img));
+
+    /* ── Scroll reveal ── */
+    const revealEls = document.querySelectorAll('[data-reveal]');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('revealed');
+          revealObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    revealEls.forEach(el => revealObserver.observe(el));
+
+    /* ── Lightbox ── */
+    const lightbox = document.getElementById('lightbox');
+    const lbImg    = document.getElementById('lbImg');
+    const lbCaption = document.getElementById('lbCaption');
+    const lbClose  = document.getElementById('lbClose');
+    const lbPrev   = document.getElementById('lbPrev');
+    const lbNext   = document.getElementById('lbNext');
+
+    const allFrames = Array.from(document.querySelectorAll('[data-src]'));
+    let currentIdx = 0;
+
+    function openLightbox(idx) {
+      currentIdx = idx;
+      const frame = allFrames[idx];
+      lbImg.src = frame.dataset.src;
+      lbImg.alt = frame.querySelector('img')?.alt || '';
+      lbCaption.textContent = frame.querySelector('img')?.alt || '';
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      lbImg.focus();
+    }
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    function navigate(dir) {
+      currentIdx = (currentIdx + dir + allFrames.length) % allFrames.length;
+      openLightbox(currentIdx);
+    }
+
+    allFrames.forEach((frame, i) => {
+      frame.addEventListener('click', () => openLightbox(i));
+      frame.setAttribute('tabindex', '0');
+      frame.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openLightbox(i); });
+      // Lightbox index update just in case DOM order matches
+      frame.dataset.index = i;
+    });
+    lbClose.addEventListener('click', closeLightbox);
+    lbPrev.addEventListener('click', () => navigate(-1));
+    lbNext.addEventListener('click', () => navigate(1));
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', e => {
+      if (!lightbox.classList.contains('active')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') navigate(-1);
+      if (e.key === 'ArrowRight') navigate(1);
+    });
+
+    /* ── Reduced motion ── */
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('[data-reveal], .hero__eyebrow, .hero__title-jp, .hero__title-en, .hero__meta, .scroll-cue').forEach(el => {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+        el.style.animation = 'none';
+        el.style.transition = 'none';
+        el.style.filter = 'none';
+      });
+    }
+  </script>
+</body>
+</html>
