@@ -42,26 +42,48 @@
     nav#top-nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
       display: flex; align-items: center; justify-content: space-between;
-      padding: clamp(16px, 3vw, 32px) var(--px);
-      background: transparent; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      padding: clamp(14px, 3vw, 36px) var(--px);
+      background: transparent;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
       border-bottom: 0.5px solid transparent;
       transition: background 0.4s ease, border-color 0.4s ease, padding 0.4s ease;
     }
-    nav#top-nav.scrolled { background: rgba(8, 8, 8, 0.85); border-color: var(--border); padding: clamp(12px, 2vw, 24px) var(--px); }
+    nav#top-nav.scrolled {
+      background: rgba(8, 8, 8, 0.93);
+      border-color: var(--border);
+      padding: clamp(10px, 2vw, 24px) var(--px);
+    }
     .nav-logo-unified {
-      font-family: var(--serif-en); font-size: clamp(0.75rem, 2.5vw, 0.9rem);
-      letter-spacing: 0.25em; font-weight: 300; color: var(--gold);
+      font-family: var(--serif-en); font-size: clamp(0.75rem, 2.5vw, 0.95rem);
+      letter-spacing: 0.3em; font-weight: 300; color: var(--gold);
       text-transform: uppercase; text-decoration: none; transition: opacity 0.4s ease;
       position: relative; z-index: 1001;
     }
     .nav-logo-unified:hover { opacity: 0.6; }
-    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
-    .nav-links a { font-family: var(--serif-en); font-size: clamp(0.6rem, 1.2vw, 0.72rem); letter-spacing: 0.2em; text-decoration: none; color: var(--text); opacity: 0.6; text-transform: uppercase; transition: opacity 0.3s ease, color 0.3s ease; }
-    .nav-links a:hover { opacity: 1; color: var(--gold); }
-    .nav-cta { font-family: var(--serif-en); font-size: clamp(0.6rem, 1.2vw, 0.65rem); letter-spacing: 0.2em; text-decoration: none; text-transform: uppercase; border: 0.5px solid rgba(184,149,90,0.35); padding: 0.6rem 1.6rem; color: var(--gold); transition: background 0.3s, color 0.3s; border-radius: 2px; }
-    .nav-cta:hover { background: var(--gold); color: var(--bg); }
-    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; position: relative; z-index: 1001; width: 32px; height: 20px; }
-    .nav-hamburger span { display: block; position: absolute; left: 0; width: 100%; height: 1px; background: var(--gold); transition: transform 0.4s var(--ease), opacity 0.4s var(--ease), top 0.4s var(--ease); }
+    .nav-links { display: flex; gap: 2.2rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--serif-en); font-size: clamp(0.6rem, 1.5vw, 0.75rem);
+      letter-spacing: 0.25em; text-decoration: none; color: var(--text-dim);
+      text-transform: uppercase; transition: color 0.3s ease;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      font-family: var(--serif-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
+      letter-spacing: 0.25em; text-decoration: none; text-transform: uppercase;
+      border: 0.5px solid rgba(184,149,90,0.35); padding: 0.55rem 1.4rem;
+      color: var(--gold); transition: background 0.25s, color 0.25s; border-radius: 2px;
+    }
+    .nav-cta:hover { background: rgba(184,149,90,0.08); color: var(--text); }
+    
+    .nav-hamburger {
+      display: none; background: none; border: none; cursor: pointer;
+      z-index: 1001; width: 30px; height: 20px; position: relative; padding: 0;
+    }
+    .nav-hamburger span {
+      display: block; position: absolute; left: 0; width: 100%; height: 1px;
+      background: var(--gold);
+      transition: transform 0.4s var(--ease), opacity 0.4s var(--ease), top 0.4s var(--ease);
+    }
     .nav-hamburger span:nth-child(1) { top: 0px; }
     .nav-hamburger span:nth-child(2) { top: 9px; }
     .nav-hamburger span:nth-child(3) { top: 18px; }
@@ -172,6 +194,45 @@
     .venue-item__link svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.5; transition: transform 0.3s; }
     .venue-item:hover .venue-item__link svg { transform: translateX(4px); }
 
+    /* ─── Series Navigation ──────────────────────────── */
+    .series-nav {
+      display: flex; justify-content: space-between; border-top: 0.5px solid var(--border); background: var(--surface);
+      position: relative; z-index: 10;
+    }
+    .series-nav a {
+      flex: 1; padding: clamp(40px, 5vw, 60px) var(--px);
+      display: flex; flex-direction: column; gap: 12px;
+      transition: all 0.5s var(--ease); position: relative; overflow: hidden; text-decoration: none;
+    }
+    .series-nav a:first-child { border-right: 0.5px solid var(--border); }
+    .series-nav a::before {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(184,149,90,0.15) 0%, transparent 100%);
+      opacity: 0; transition: opacity 0.5s var(--ease); pointer-events: none; z-index: 0;
+    }
+    .series-nav a::after {
+      content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px;
+      background: var(--gold); transform: scaleX(0); transition: transform 0.6s var(--ease); z-index: 1;
+    }
+    .series-nav a:first-child::after { transform-origin: left; }
+    .series-nav a.next::after { transform-origin: right; }
+    .series-nav a:hover::before { opacity: 1; }
+    .series-nav a:hover::after { transform: scaleX(1); }
+    .series-nav .dir, .series-nav .ttl { position: relative; z-index: 2; }
+    .series-nav .dir {
+      font-family: var(--serif-en); font-size: 0.7rem; letter-spacing: 0.35em; color: var(--text-dim); text-transform: uppercase;
+      transition: color 0.4s var(--ease), transform 0.4s var(--ease); display: inline-block; font-weight: 600;
+    }
+    .series-nav .ttl {
+      font-family: var(--serif-jp); font-size: clamp(1.2rem, 2.5vw, 1.6rem); font-weight: 300; color: var(--text);
+      transition: color 0.4s var(--ease), transform 0.4s var(--ease), text-shadow 0.4s var(--ease); display: inline-block;
+    }
+    .series-nav a.next { text-align: right; align-items: flex-end; }
+    .series-nav a:hover .dir { color: var(--gold); }
+    .series-nav a:hover .ttl { color: #ffffff; transform: translateY(-4px); text-shadow: 0 4px 12px rgba(184,149,90,0.4); }
+    .series-nav a:first-child:hover .dir { transform: translateX(-8px); }
+    .series-nav a.next:hover .dir { transform: translateX(8px); }
+
     /* ─── Contact ─────────────────────────────────────── */
     .contact-section { padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center; border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(184,149,90,0.06) 0%, var(--bg) 70%); }
     .contact-label { font-family: var(--serif-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem); letter-spacing: 0.44em; color: var(--text-dim); text-transform: uppercase; margin-bottom: 1.5rem; }
@@ -181,18 +242,26 @@
     .contact-btn:hover { background: var(--text); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(184,149,90,0.3); }
 
     /* ─── Footer & TOP Button ─────────────────────────── */
-    footer { padding: clamp(4rem, 8vh, 6rem) var(--px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.8rem; border-top: 0.5px solid var(--border); background: var(--bg); }
-    .footer-logo { font-family: var(--serif-en); font-size: clamp(0.9rem, 2vw, 1.1rem); font-weight: 300; color: var(--gold); letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none; }
-    .footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(1.5rem, 4vw, 3rem); list-style: none; }
-    .footer-nav a { font-family: var(--serif-en); font-size: clamp(0.6rem, 1.2vw, 0.7rem); letter-spacing: 0.2em; color: var(--text-dim); text-transform: uppercase; transition: color 0.3s; text-decoration: none; }
-    .footer-nav a:hover { color: var(--gold); }
-    .footer-copy { font-family: var(--serif-en); font-size: clamp(0.55rem, 1.2vw, 0.65rem); letter-spacing: 0.15em; color: var(--text-faint); margin-top: 1rem; }
+    footer {
+      padding: clamp(2.5rem, 5vh, 5rem) var(--px); display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 1.5rem; border-top: 0.5px solid var(--border); background: var(--bg);
+    }
+    .footer-logo { font-family: var(--serif-jp); font-size: clamp(0.8rem, 1.8vw, 0.9rem); font-weight: 200; color: rgba(240,235,225,0.35); letter-spacing: 0.08em; text-decoration: none; }
+    .footer-copy { font-family: var(--serif-en); font-size: clamp(0.55rem, 1.3vw, 0.65rem); letter-spacing: 0.2em; color: var(--text-dim); text-transform: uppercase; margin-top: 0; }
 
-    .back-to-top { position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px); z-index: 9000; width: clamp(56px, 8vw, 76px); height: clamp(56px, 8vw, 76px); border-radius: 50%; background: rgba(184,149,90, 0.85); border: 1px solid var(--gold); backdrop-filter: blur(8px); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--bg); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6); text-decoration: none; }
+    .back-to-top {
+      position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px);
+      z-index: 9000; width: clamp(60px, 9vw, 84px); height: clamp(60px, 9vw, 84px);
+      border-radius: 50%;
+      background: rgba(184, 149, 90, 0.88); border: 1px solid var(--gold);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--bg);
+      opacity: 0; visibility: hidden; transform: translateY(20px);
+      transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6); text-decoration: none;
+    }
     .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
     .back-to-top:hover { background: var(--text); color: var(--bg); border-color: var(--text); transform: translateY(-6px); }
-    .back-to-top svg { width: clamp(18px, 3vw, 24px); height: clamp(18px, 3vw, 24px); margin-bottom: 2px; }
-    .back-to-top-text { font-family: var(--serif-en); font-size: clamp(0.55rem, 1.2vw, 0.7rem); font-weight: 600; text-transform: uppercase; line-height: 1; letter-spacing: 0.1em; }
+    .back-to-top svg { width: clamp(18px, 2.5vw, 28px); height: clamp(18px, 2.5vw, 28px); margin-bottom: 2px; }
+    .back-to-top-text { font-family: var(--serif-en); font-size: clamp(0.6rem, 1.4vw, 0.85rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
 
     /* ─── Lightbox ────────────────────────────────────── */
     .lightbox { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(4,4,4,0.96); justify-content: center; align-items: center; }
@@ -219,13 +288,26 @@
       .overlap-media { width: 100%; }
       .overlap-text { width: 90%; margin-top: -60px; padding: 32px 24px; align-self: center; }
       .venue-summary { grid-template-columns: 1fr; }
+      .series-nav { flex-direction: column; }
+      .series-nav a:first-child { border-right: none; border-bottom: 0.5px solid var(--border); }
+      .series-nav a.next { align-items: flex-start; text-align: left; }
+      .series-nav a.next::after { transform-origin: left; }
+      .series-nav a.next:hover .dir { transform: translateX(8px); }
     }
     @media (max-width: 768px) {
-      nav#top-nav { padding: 1rem var(--px); }
+      nav#top-nav { padding: 1rem 1.25rem; }
       .nav-hamburger { display: block !important; }
       .nav-cta { display: none; }
-      .nav-links { position: fixed; top: 0; left: 0; width: 100%; height: 100svh; background: rgba(8, 8, 8, 0.98); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); flex-direction: column; justify-content: center; align-items: center; gap: 3rem; opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s; z-index: 1000; }
-      .nav-links.open { opacity: 1; visibility: visible; display: flex !important; }
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex !important; flex-direction: row; flex-wrap: nowrap;
+        position: fixed; inset: 0; background: rgba(8,8,8,0.98);
+        align-items: center; justify-content: center; gap: 0.6rem;
+        z-index: 1000; padding: 1rem; overflow-x: auto;
+        opacity: 1; visibility: visible; pointer-events: auto;
+      }
+      .nav-links.open li { opacity: 1; transform: none; transition: none; }
+      .nav-links.open a { font-size: 0.9rem; letter-spacing: 0.15em; padding: 0.6rem 0.5rem; display: block; white-space: nowrap; }
       .page-nav { right: 8px; opacity: 0.6; }
       .page-nav-label { display: none; }
       .floor-header { flex-direction: column; gap: 24px; }
@@ -242,14 +324,14 @@
 <body id="top">
 
   <nav id="top-nav">
-    <a href="https://sh012da.github.io/sh01/" class="nav-logo-unified">Tsuda Shoichi</a>
+    <a href="https://sh012da.github.io/sh01/index.html" class="nav-logo-unified">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="#overview" onclick="closeMenu()">Overview</a></li>
-      <li><a href="#kitano-1f" onclick="closeMenu()">Nagano</a></li>
-      <li><a href="#ginza"     onclick="closeMenu()">GINZA</a></li>
-      <li><a href="#contact"   onclick="closeMenu()">Contact</a></li>
+      <li><a href="https://sh012da.github.io/sh01/index.html#statement" onclick="closeMenu()">Statement</a></li>
+      <li><a href="https://sh012da.github.io/sh01/index.html#works"     onclick="closeMenu()">Works</a></li>
+      <li><a href="https://sh012da.github.io/sh01/index.html#profile"   onclick="closeMenu()">Profile</a></li>
+      <li><a href="https://sh012da.github.io/sh01/index.html#news"      onclick="closeMenu()">News</a></li>
     </ul>
-    <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
+    <button class="nav-hamburger" id="hamburger" aria-label="メニューを開閉" onclick="toggleMenu()">
       <span></span><span></span><span></span>
     </button>
     <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
@@ -445,6 +527,17 @@
     </div>
   </section>
 
+  <nav class="series-nav">
+    <a href="https://sh012da.github.io/sh01/works-cave.html">
+      <span class="dir">← Prev Series</span>
+      <span class="ttl">洞窟 Cave</span>
+    </a>
+    <a class="next" href="https://sh012da.github.io/sh01/works-variant.html">
+      <span class="dir">Next Series →</span>
+      <span class="ttl">異体 Variant Forms</span>
+    </a>
+  </nav>
+
   <section class="contact-section" id="contact" data-reveal>
     <p class="contact-label">Contact</p>
     <h2 class="contact-heading">お問い合わせ</h2>
@@ -453,18 +546,12 @@
   </section>
 
   <footer>
-    <a href="https://sh012da.github.io/sh01/" class="footer-logo">Tsuda Shoichi</a>
-    <ul class="footer-nav">
-      <li><a href="https://sh012da.github.io/sh01/#statement">Statement</a></li>
-      <li><a href="https://sh012da.github.io/sh01/works.html">Works</a></li>
-      <li><a href="https://sh012da.github.io/sh01/profile.html">Profile</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
+    <a href="https://sh012da.github.io/sh01/index.html" class="footer-logo">Tsuda Shoichi</a>
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
   <a href="#top" class="back-to-top" id="backToTop" aria-label="先頭に戻る">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
     <span class="back-to-top-text">TOP</span>
   </a>
 
@@ -489,16 +576,25 @@
     /* ── Menu ── */
     function toggleMenu() {
       const links = document.getElementById('nav-links');
+      const cta = document.getElementById('nav-cta-btn');
       const hamburger = document.getElementById('hamburger');
       links.classList.toggle('open');
       hamburger.classList.toggle('is-active');
-      document.body.classList.toggle('is-locked', links.classList.contains('open'));
+      if(cta) cta.style.display = links.classList.contains('open') ? 'none' : '';
+      if (links.classList.contains('open')) {
+        document.body.classList.add('is-locked');
+      } else {
+        document.body.classList.remove('is-locked');
+      }
     }
+    
     function closeMenu() {
       const links = document.getElementById('nav-links');
+      const cta = document.getElementById('nav-cta-btn');
       const hamburger = document.getElementById('hamburger');
       links.classList.remove('open');
       hamburger.classList.remove('is-active');
+      if(cta) cta.style.display = '';
       document.body.classList.remove('is-locked');
     }
     document.getElementById('hamburger').addEventListener('click', toggleMenu);
