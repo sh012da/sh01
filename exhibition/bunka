@@ -1,1 +1,592 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Exhibition — 左美都の記憶と地脈 | 津田翔一</title>
+  <meta name="description" content="文化庁メディア芸術クリエイター育成支援事業採択企画展示「左美都の記憶と地脈」長野・銀座巡回展 — 津田翔一" />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Noto+Serif+JP:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Design Tokens ─────────────────────────────── */
+    :root {
+      --bg:        #080808;
+      --surface:   #0f0f0f;
+      --border:    rgba(184,149,90,0.18);
+      --gold:      #b8955a;
+      --gold-dim:  rgba(184,149,90,0.45);
+      --text:      rgba(240,235,225,0.88);
+      --text-dim:  rgba(240,235,225,0.48);
+      --text-faint:rgba(240,235,225,0.28);
+      --serif-en:  'Cormorant Garamond', Georgia, serif;
+      --serif-jp:  'Noto Serif JP', serif;
+      --ease:      cubic-bezier(0.16, 1, 0.3, 1);
+      --px:        clamp(24px, 5vw, 48px);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: var(--serif-jp); font-weight: 300; line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+      padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right);
+      overflow-x: hidden;
+    }
+    body.is-locked { overflow: hidden; }
+
+    /* ─── Header ────────────────────────────────────── */
+    nav#top-nav {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: clamp(16px, 3vw, 32px) var(--px);
+      background: transparent; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 0.5px solid transparent;
+      transition: background 0.4s ease, border-color 0.4s ease, padding 0.4s ease;
+    }
+    nav#top-nav.scrolled { background: rgba(8, 8, 8, 0.85); border-color: var(--border); padding: clamp(12px, 2vw, 24px) var(--px); }
+    .nav-logo-unified {
+      font-family: var(--serif-en); font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+      letter-spacing: 0.25em; font-weight: 300; color: var(--gold);
+      text-transform: uppercase; text-decoration: none; transition: opacity 0.4s ease;
+      position: relative; z-index: 1001;
+    }
+    .nav-logo-unified:hover { opacity: 0.6; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a { font-family: var(--serif-en); font-size: clamp(0.6rem, 1.2vw, 0.72rem); letter-spacing: 0.2em; text-decoration: none; color: var(--text); opacity: 0.6; text-transform: uppercase; transition: opacity 0.3s ease, color 0.3s ease; }
+    .nav-links a:hover { opacity: 1; color: var(--gold); }
+    .nav-cta { font-family: var(--serif-en); font-size: clamp(0.6rem, 1.2vw, 0.65rem); letter-spacing: 0.2em; text-decoration: none; text-transform: uppercase; border: 0.5px solid rgba(184,149,90,0.35); padding: 0.6rem 1.6rem; color: var(--gold); transition: background 0.3s, color 0.3s; border-radius: 2px; }
+    .nav-cta:hover { background: var(--gold); color: var(--bg); }
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; position: relative; z-index: 1001; width: 32px; height: 20px; }
+    .nav-hamburger span { display: block; position: absolute; left: 0; width: 100%; height: 1px; background: var(--gold); transition: transform 0.4s var(--ease), opacity 0.4s var(--ease), top 0.4s var(--ease); }
+    .nav-hamburger span:nth-child(1) { top: 0px; }
+    .nav-hamburger span:nth-child(2) { top: 9px; }
+    .nav-hamburger span:nth-child(3) { top: 18px; }
+    .nav-hamburger.is-active span:nth-child(1) { top: 9px; transform: rotate(45deg); }
+    .nav-hamburger.is-active span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.is-active span:nth-child(3) { top: 9px; transform: rotate(-45deg); }
+
+    /* ─── Page Navigation (Tour Spy) ────────────────── */
+    .page-nav { position: fixed; right: clamp(16px, 3vw, 40px); top: 50%; transform: translateY(-50%); z-index: 200; display: flex; flex-direction: column; gap: 20px; opacity: 0; visibility: hidden; transition: opacity 0.6s var(--ease), visibility 0.6s; }
+    .page-nav.visible { opacity: 1; visibility: visible; }
+    .page-nav-item { display: flex; align-items: center; gap: 12px; flex-direction: row-reverse; cursor: pointer; background: none; border: none; padding: 6px 0; }
+    .page-nav-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(240,235,225,0.2); transition: all 0.35s; flex-shrink: 0; }
+    .page-nav-label { font-family: var(--serif-en); font-size: 10px; letter-spacing: 0.15em; color: rgba(240,235,225,0.4); text-transform: uppercase; transition: color 0.35s; white-space: nowrap; }
+    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot { background: var(--gold); transform: scale(1.4); box-shadow: 0 0 10px rgba(184,149,90,0.6); }
+    .page-nav-item:hover .page-nav-label { color: rgba(240,235,225,0.85); }
+    .page-nav-item.active .page-nav-label { color: var(--gold); }
+
+    /* ─── Hero ───────────────────────────────────────── */
+    .hero { position: relative; width: 100%; height: 100svh; min-height: 600px; overflow: hidden; display: flex; align-items: flex-end; }
+    .hero__bg { position: absolute; inset: 0; background-image: url('img/exhibition-nagano/0003.jpg'); background-size: cover; background-position: center 30%; transform: scale(1.04); transition: transform 12s ease; }
+    .hero__bg.loaded { transform: scale(1.0); }
+    .hero__veil { position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,8,8,0.96) 0%, rgba(8,8,8,0.55) 40%, rgba(8,8,8,0.15) 70%, rgba(8,8,8,0.05) 100%); }
+    .hero__content { position: relative; z-index: 2; padding: 0 var(--px) 80px; max-width: 980px; }
+
+    @keyframes textBlurReveal { 0% { opacity: 0; filter: blur(12px); transform: translateY(12px) scale(1.02); } 100% { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); } }
+    .hero__eyebrow { font-family: var(--serif-en); font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; display: flex; align-items: center; gap: 16px; opacity: 0; animation: textBlurReveal 2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s forwards; }
+    .hero__eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--gold-dim); }
+    .hero__title-jp { font-family: var(--serif-jp); font-weight: 200; font-size: clamp(2.2rem, 4.5vw, 3.5rem); letter-spacing: 0.1em; line-height: 1.3; color: rgba(240,235,225,0.95); margin-bottom: 10px; opacity: 0; animation: textBlurReveal 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s forwards; }
+    .hero__title-en { font-family: var(--serif-en); font-weight: 300; font-style: italic; font-size: clamp(1rem, 1.8vw, 1.4rem); color: var(--text-dim); letter-spacing: 0.05em; margin-bottom: 32px; opacity: 0; animation: textBlurReveal 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) 0.9s forwards; }
+    .hero__meta { display: flex; flex-wrap: wrap; gap: 20px 40px; opacity: 0; animation: textBlurReveal 2s cubic-bezier(0.2, 0.8, 0.2, 1) 1.2s forwards; }
+    .hero__meta-item { display: flex; flex-direction: column; gap: 4px; }
+    .hero__meta-label { font-family: var(--serif-en); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-dim); }
+    .hero__meta-value { font-family: var(--serif-jp); font-size: 0.82rem; font-weight: 300; color: var(--text-dim); letter-spacing: 0.06em; }
+
+    .scroll-cue { position: absolute; bottom: 36px; right: var(--px); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: 0; animation: textBlurReveal 2s ease 1.8s forwards; }
+    .scroll-cue__label { font-family: var(--serif-en); font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-faint); writing-mode: vertical-rl; }
+    .scroll-cue__line { width: 1px; height: 48px; background: linear-gradient(to bottom, var(--gold-dim), transparent); animation: scrollPulse 2.2s ease infinite; }
+    @keyframes scrollPulse { 0%,100% { opacity: 0.3; transform: scaleY(1); } 50% { opacity: 0.9; transform: scaleY(1.1); } }
+
+    /* ─── Shared Styles ──────────────────────────────── */
+    .container { max-width: 1216px; margin: 0 auto; padding: 0 var(--px); }
+    .container--narrow { max-width: 900px; margin: 0 auto; padding: 0 var(--px); }
+    .floor-section { padding: 140px 0; border-bottom: 1px solid var(--border); position: relative; }
+    .floor-header { display: flex; align-items: flex-start; gap: 48px; margin-bottom: 80px; }
+    .floor-number { font-family: var(--serif-en); font-weight: 300; font-size: clamp(4rem, 8vw, 7rem); line-height: 1; color: rgba(184,149,90,0.12); letter-spacing: -0.02em; flex-shrink: 0; user-select: none; position: relative; top: -8px; }
+    .floor-label { font-family: var(--serif-en); font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; display: flex; align-items: center; gap: 14px; }
+    .floor-label::after { content: ''; display: block; flex: 1; max-width: 48px; height: 1px; background: var(--gold-dim); }
+    .floor-title { font-family: var(--serif-jp); font-weight: 200; font-size: clamp(1.4rem, 2.8vw, 2.2rem); letter-spacing: 0.06em; color: rgba(240,235,225,0.95); margin-bottom: 20px; line-height: 1.4; }
+    .floor-desc { font-size: 0.95rem; line-height: 2; color: var(--text-dim); letter-spacing: 0.04em; max-width: 680px; }
+
+    /* ─── Overview (Optimized Layout) ────────────────── */
+    .overview { padding: 120px 0 100px; border-bottom: 1px solid var(--border); }
+    .overview__badge { display: inline-flex; align-items: center; gap: 10px; border: 1px solid rgba(184,149,90,0.3); padding: 6px 18px; margin-bottom: 60px; font-family: var(--serif-jp); font-size: 0.65rem; font-weight: 300; color: rgba(184,149,90,0.8); letter-spacing: 0.1em; }
+    .overview__badge svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+    
+    .overview__body { display: grid; grid-template-columns: 1.8fr 1fr; gap: 60px 100px; }
+    .overview__text-block p { font-size: 0.85rem; line-height: 2.2; color: rgba(240,235,225,0.4); letter-spacing: 0.08em; margin-bottom: 1.5em; text-align: justify; word-break: auto-phrase; }
+    .overview__text-block p.lead { font-size: 0.95rem; color: rgba(240,235,225,0.65); font-weight: 300; margin-bottom: 2em; line-height: 2.1; }
+    
+    .overview__specs { display: flex; flex-direction: column; gap: 0; border-left: 1px solid var(--border); padding-left: 50px; }
+    .spec-row { display: grid; grid-template-columns: 80px 1fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid rgba(184,149,90,0.08); }
+    .spec-row:last-child { border-bottom: none; }
+    .spec-label { font-family: var(--serif-en); font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold-dim); padding-top: 4px; }
+    .spec-value { font-family: var(--serif-jp); font-size: 0.78rem; font-weight: 300; color: rgba(240,235,225,0.45); line-height: 1.8; letter-spacing: 0.08em; }
+
+    /* ─── Pull Quote ──────────────────────────────────── */
+    .pull-quote { padding: 140px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); text-align: center; }
+    .pull-quote__mark { font-family: var(--serif-en); font-size: 4rem; line-height: 0.6; color: var(--gold-dim); margin-bottom: 32px; }
+    .pull-quote__text { font-family: var(--serif-jp); font-weight: 200; font-size: clamp(1.2rem, 2.4vw, 1.7rem); line-height: 2.2; color: rgba(240,235,225,0.9); letter-spacing: 0.06em; max-width: 100%; margin: 0 auto; overflow-wrap: break-word; word-break: auto-phrase; display: inline-block; text-align: center; }
+    .pull-quote__text span { display: inline-block; }
+
+    /* ─── Story Blocks (Editorial) ────────────────────── */
+    .full-bleed { width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; margin-bottom: 120px; }
+    .full-bleed .photo-frame { height: clamp(400px, 55vw, 850px); width: 100%; border-radius: 0; }
+
+    .asym-grid { display: grid; grid-template-columns: 6fr 5fr; gap: 6vw; align-items: center; margin: 120px 0; }
+    .asym-grid--rev { grid-template-columns: 5fr 6fr; }
+
+    .overlap-block { position: relative; margin: 140px 0; display: flex; flex-direction: column; align-items: flex-end; }
+    .overlap-block--rev { align-items: flex-start; }
+    .overlap-media { width: 75%; height: clamp(350px, 45vw, 600px); z-index: 1; }
+    .overlap-text { width: 50%; background: rgba(12,12,12,0.96); backdrop-filter: blur(8px); padding: clamp(32px, 5vw, 64px); border: 1px solid var(--border); position: relative; margin-top: -140px; z-index: 2; align-self: flex-start; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
+    .overlap-block--rev .overlap-text { align-self: flex-end; margin-top: -100px; }
+
+    .block-title { font-family: var(--serif-jp); font-size: clamp(1.2rem, 2vw, 1.6rem); font-weight: 200; color: var(--text); margin-bottom: 24px; letter-spacing: 0.05em; line-height: 1.4; }
+    .block-text { font-size: 0.92rem; line-height: 2.1; color: var(--text-dim); margin-bottom: 1.2em; letter-spacing: 0.04em; }
+
+    .photo-frame { overflow: hidden; cursor: zoom-in; background: var(--surface); position: relative; }
+    .photo-frame img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.8s var(--ease), opacity 0.6s ease; opacity: 0; }
+    .photo-frame img.loaded { opacity: 1; }
+    .photo-frame:hover img { transform: scale(1.04); }
+    .photo-frame::after { content: ''; position: absolute; inset: 0; border: 1px solid rgba(184,149,90,0); transition: border-color 0.3s; pointer-events: none; z-index: 1; }
+    .photo-frame:hover::after { border-color: rgba(184,149,90,0.3); }
+
+    .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .caption-row { display: flex; justify-content: space-between; align-items: baseline; padding-top: 24px; margin-top: 40px; border-top: 1px solid rgba(184,149,90,0.08); }
+    .caption-row__text { font-family: var(--serif-jp); font-size: 0.72rem; font-weight: 300; color: var(--text-faint); letter-spacing: 0.06em; }
+    .caption-row__count { font-family: var(--serif-en); font-size: 0.6rem; letter-spacing: 0.15em; color: var(--gold-dim); }
+
+    /* ─── Venue Summary Block ───────────────────── */
+    .venue-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); margin-top: 80px; border: 1px solid var(--border); }
+    .venue-item { background: var(--bg); padding: 60px 40px; text-align: center; transition: background 0.4s; text-decoration: none; display: flex; flex-direction: column; align-items: center; }
+    .venue-item:hover { background: var(--surface); }
+    .venue-item__label { font-family: var(--serif-en); font-size: 0.65rem; color: var(--gold); letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 20px; display: block; }
+    .venue-item__title { font-family: var(--serif-jp); font-size: 1.4rem; color: var(--text); margin-bottom: 16px; font-weight: 200; }
+    .venue-item__desc { font-size: 0.82rem; color: var(--text-dim); max-width: 320px; margin: 0 auto 20px; }
+    .venue-item__link { font-family: var(--serif-en); font-size: 11px; color: var(--gold); letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .venue-item__link svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.5; transition: transform 0.3s; }
+    .venue-item:hover .venue-item__link svg { transform: translateX(4px); }
+
+    /* ─── Contact ─────────────────────────────────────── */
+    .contact-section { padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center; border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(184,149,90,0.06) 0%, var(--bg) 70%); }
+    .contact-label { font-family: var(--serif-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem); letter-spacing: 0.44em; color: var(--text-dim); text-transform: uppercase; margin-bottom: 1.5rem; }
+    .contact-heading { font-family: var(--serif-jp); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200; line-height: 1.2; color: var(--text); margin-bottom: 1.8rem; letter-spacing: 0.05em; }
+    .contact-body-text { font-family: var(--serif-jp); font-size: clamp(0.85rem, 1.8vw, 0.95rem); color: var(--text-dim); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2; }
+    .contact-btn { display: inline-block; padding: 1.2rem 3.5rem; background: var(--gold); color: var(--bg); font-family: var(--serif-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none; transition: all 0.4s var(--ease); border-radius: 2px; }
+    .contact-btn:hover { background: var(--text); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(184,149,90,0.3); }
+
+    /* ─── Footer & TOP Button ─────────────────────────── */
+    footer { padding: clamp(4rem, 8vh, 6rem) var(--px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.8rem; border-top: 0.5px solid var(--border); background: var(--bg); }
+    .footer-logo { font-family: var(--serif-en); font-size: clamp(0.9rem, 2vw, 1.1rem); font-weight: 300; color: var(--gold); letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none; }
+    .footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(1.5rem, 4vw, 3rem); list-style: none; }
+    .footer-nav a { font-family: var(--serif-en); font-size: clamp(0.6rem, 1.2vw, 0.7rem); letter-spacing: 0.2em; color: var(--text-dim); text-transform: uppercase; transition: color 0.3s; text-decoration: none; }
+    .footer-nav a:hover { color: var(--gold); }
+    .footer-copy { font-family: var(--serif-en); font-size: clamp(0.55rem, 1.2vw, 0.65rem); letter-spacing: 0.15em; color: var(--text-faint); margin-top: 1rem; }
+
+    .back-to-top { position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px); z-index: 9000; width: clamp(56px, 8vw, 76px); height: clamp(56px, 8vw, 76px); border-radius: 50%; background: rgba(184,149,90, 0.85); border: 1px solid var(--gold); backdrop-filter: blur(8px); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--bg); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6); text-decoration: none; }
+    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
+    .back-to-top:hover { background: var(--text); color: var(--bg); border-color: var(--text); transform: translateY(-6px); }
+    .back-to-top svg { width: clamp(18px, 3vw, 24px); height: clamp(18px, 3vw, 24px); margin-bottom: 2px; }
+    .back-to-top-text { font-family: var(--serif-en); font-size: clamp(0.55rem, 1.2vw, 0.7rem); font-weight: 600; text-transform: uppercase; line-height: 1; letter-spacing: 0.1em; }
+
+    /* ─── Lightbox ────────────────────────────────────── */
+    .lightbox { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(4,4,4,0.96); justify-content: center; align-items: center; }
+    .lightbox.active { display: flex; }
+    .lightbox__inner { position: relative; max-width: 92vw; max-height: 90vh; }
+    .lightbox__img { max-width: 92vw; max-height: 86vh; object-fit: contain; display: block; }
+    .lightbox__close { position: absolute; top: -44px; right: 0; background: none; border: none; cursor: pointer; color: var(--text-dim); font-family: var(--serif-en); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
+    .lightbox__close:hover { color: var(--gold); }
+    .lightbox__close svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+    .lightbox__nav { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: 1px solid var(--border); padding: 12px; cursor: pointer; color: var(--text-dim); transition: border-color 0.3s, color 0.3s; }
+    .lightbox__nav:hover { border-color: var(--gold-dim); color: var(--gold); }
+    .lightbox__nav svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.2; display: block; }
+    .lightbox__prev { left: -56px; }
+    .lightbox__next { right: -56px; }
+    .lightbox__caption { position: absolute; bottom: -36px; left: 0; right: 0; text-align: center; font-family: var(--serif-jp); font-size: 0.7rem; color: var(--text-faint); letter-spacing: 0.06em; }
+
+    /* ─── Responsive & Overlay ─── */
+    @media (max-width: 900px) {
+      .overview__body { grid-template-columns: 1fr; gap: 48px; }
+      .overview__specs { padding-left: 0; border-left: none; border-top: 1px solid var(--border); padding-top: 32px; }
+      .asym-grid, .asym-grid--rev { grid-template-columns: 1fr; gap: 48px; margin: 80px 0; }
+      .asym-grid--rev .asym-content { grid-row: 1; }
+      .overlap-block { align-items: center; margin: 100px 0; }
+      .overlap-media { width: 100%; }
+      .overlap-text { width: 90%; margin-top: -60px; padding: 32px 24px; align-self: center; }
+      .venue-summary { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      nav#top-nav { padding: 1rem var(--px); }
+      .nav-hamburger { display: block !important; }
+      .nav-cta { display: none; }
+      .nav-links { position: fixed; top: 0; left: 0; width: 100%; height: 100svh; background: rgba(8, 8, 8, 0.98); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); flex-direction: column; justify-content: center; align-items: center; gap: 3rem; opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s; z-index: 1000; }
+      .nav-links.open { opacity: 1; visibility: visible; display: flex !important; }
+      .page-nav { right: 8px; opacity: 0.6; }
+      .page-nav-label { display: none; }
+      .floor-header { flex-direction: column; gap: 24px; }
+      .caption-row { flex-direction: column; gap: 8px; }
+    }
+
+    [data-reveal] { opacity: 0; transform: translateY(28px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+    [data-reveal].revealed { opacity: 1; transform: none; }
+    [data-reveal-delay="1"] { transition-delay: 0.15s; }
+    [data-reveal-delay="2"] { transition-delay: 0.3s; }
+  </style>
+</head>
+
+<body id="top">
+
+  <nav id="top-nav">
+    <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#overview" onclick="closeMenu()">Overview</a></li>
+      <li><a href="#kitano-1f" onclick="closeMenu()">Nagano</a></li>
+      <li><a href="#ginza"     onclick="closeMenu()">GINZA</a></li>
+      <li><a href="#contact"   onclick="closeMenu()">Contact</a></li>
+    </ul>
+    <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
+  </nav>
+
+  <nav class="page-nav" id="pageNav">
+    <button class="page-nav-item" data-target="kitano-1f">
+      <div class="page-nav-dot"></div><span class="page-nav-label">Nagano 1F</span>
+    </button>
+    <button class="page-nav-item" data-target="kitano-3f">
+      <div class="page-nav-dot"></div><span class="page-nav-label">Nagano 3F</span>
+    </button>
+    <button class="page-nav-item" data-target="ginza">
+      <div class="page-nav-dot"></div><span class="page-nav-label">GINZA</span>
+    </button>
+  </nav>
+
+  <section class="hero">
+    <div class="hero__bg" id="heroBg"></div>
+    <div class="hero__veil"></div>
+    <div class="hero__content">
+      <p class="hero__eyebrow">Nagano & Ginza Tour</p>
+      <h1 class="hero__title-jp">左美都の記憶と地脈<br><span style="font-size:0.65em; opacity:0.75; font-weight:300; letter-spacing:0.15em;">津田翔一 個展</span></h1>
+      <p class="hero__title-en">Memory and Ley Lines of Samizu — Shoichi Tsuda Solo Exhibition</p>
+      <div class="hero__meta">
+        <div class="hero__meta-item"><span class="hero__meta-label">Nagano</span><span class="hero__meta-value">北野カルチュラルセンター<br>/ 1F・3F</span></div>
+        <div class="hero__meta-item"><span class="hero__meta-label">Ginza</span><span class="hero__meta-value">銀座</span></div>
+        <div class="hero__meta-item"><span class="hero__meta-label">Year</span><span class="hero__meta-value">2025</span></div>
+      </div>
+    </div>
+    <div class="scroll-cue" aria-hidden="true"><span class="scroll-cue__label">Scroll</span><div class="scroll-cue__line"></div></div>
+  </section>
+
+  <section class="overview" id="overview">
+    <div class="container">
+      <div class="overview__badge" data-reveal>
+        <svg viewBox="0 0 16 16"><path d="M8 1l1.8 3.6L14 5.6l-3 2.9.7 4.1L8 10.5l-3.7 2.1.7-4.1L2 5.6l4.2-.6z" stroke-width="1.2" stroke-linejoin="round"/></svg>
+        文化庁メディア芸術クリエイター育成支援事業 採択企画展示
+      </div>
+      <div class="overview__body">
+        <div class="overview__text-block" data-reveal data-reveal-delay="1">
+          <p class="lead">失われつつある土地の記憶を巡る、長野・銀座の巡回展。</p>
+          <p>北野カルチュラルセンターから始まり、東京・銀座へと展開された巡回展。津田翔一が描出する油彩の「異体」や土地の記録が、それぞれの場所が持つ地脈と交差します。大規模な展示空間から、都市の濃密なホワイトキューブへ。異なる時空で展開された展示風景を記録します。</p>
+        </div>
+        <div class="overview__specs" data-reveal data-reveal-delay="2">
+          <div class="spec-row"><span class="spec-label">Artist</span><span class="spec-value">津田翔一 / Shoichi Tsuda</span></div>
+          <div class="spec-row"><span class="spec-label">Nagano</span><span class="spec-value">北野カルチュラルセンター / 1F・3F</span></div>
+          <div class="spec-row"><span class="spec-label">Ginza</span><span class="spec-value">銀座</span></div>
+          <div class="spec-row"><span class="spec-label">Support</span><span class="spec-value">文化庁メディア芸術<br>クリエイター育成支援事業</span></div>
+        </div>
+      </div>
+
+      <div class="venue-summary" data-reveal>
+        <a href="#kitano-1f" class="venue-item">
+          <span class="venue-item__label">Nagano</span>
+          <h3 class="venue-item__title">長野の地、記憶の深度</h3>
+          <p class="venue-item__desc">大型油彩と陶芸、映像が織りなす多層的な記憶の風景。</p>
+          <span class="venue-item__link">Explore Nagano <svg viewBox="0 0 12 12"><path d="M2 6h8m-3-3l3 3-3 3"/></svg></span>
+        </a>
+        <a href="#ginza" class="venue-item">
+          <span class="venue-item__label">Ginza</span>
+          <h3 class="venue-item__title">銀座、再編される地脈</h3>
+          <p class="venue-item__desc">都市のホワイトキューブに凝縮された油彩画と研究資料。</p>
+          <span class="venue-item__link">Explore GINZA <svg viewBox="0 0 12 12"><path d="M2 6h8m-3-3l3 3-3 3"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="pull-quote">
+    <div class="container--narrow">
+      <p class="pull-quote__mark" aria-hidden="true">&ldquo;</p>
+      <h2 class="pull-quote__text" data-reveal>
+        <span>土地には記憶がある。</span><span>左美都の泉は涸れても、</span><span>その水脈は絵の具の中を流れ続ける。</span><br>
+        <span>私が描くのは風景ではなく、</span><span>地そのものが抱いてきた〈いと〉である。</span>
+      </h2>
+    </div>
+  </div>
+
+  <section class="floor-section" id="kitano-1f">
+    <div class="container">
+      <div class="floor-header" data-reveal>
+        <div class="floor-number" aria-hidden="true">1F</div>
+        <div class="floor-intro">
+          <p class="floor-label">Nagano — Main Gallery</p>
+          <h2 class="floor-title">大型油彩・陶芸作品群<br>——土と絵具が交差する地脈</h2>
+          <p class="floor-desc">北野カルチュラルセンターの1階。壁面を覆う大型油彩群と、土の手触りを残す陶器が響き合います。磨かれた石床が作品を映し出し、観者を左美都の深淵へと誘います。</p>
+        </div>
+      </div>
+
+      <div class="full-bleed" data-reveal>
+        <div class="photo-frame" data-src="img/exhibition-nagano/0003.jpg">
+          <img src="img/exhibition-nagano/0003.jpg" alt="Nagano 1Fギャラリー全景" loading="lazy" />
+        </div>
+      </div>
+
+      <div class="overlap-block overlap-block--rev" data-reveal>
+        <div class="overlap-media photo-frame" data-src="img/exhibition-nagano/0016.jpg">
+          <img src="img/exhibition-nagano/0016.jpg" alt="Nagano 1F陶芸展示" loading="lazy" />
+        </div>
+        <div class="overlap-text">
+          <h3 class="block-title">物質としての記憶</h3>
+          <p class="block-text">土を焼き、絵具を重ねる。対象の輪郭を溶かすような筆致が、陶器の釉薬の流動性と呼応し、平面と立体の境界を曖昧にします。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="floor-section" id="kitano-3f">
+    <div class="container">
+      <div class="floor-header" data-reveal>
+        <div class="floor-number" aria-hidden="true">3F</div>
+        <div class="floor-intro">
+          <p class="floor-label">Nagano — Special Gallery</p>
+          <h2 class="floor-title">映像インスタレーション<br>——流動する大地の記憶</h2>
+          <p class="floor-desc">3階では「光」による没入体験が展開。暗闇に明滅する水脈のイメージが、土地が抱く非物質的な「気配」を立ち上がらせます。</p>
+        </div>
+      </div>
+
+      <div class="asym-grid" data-reveal>
+        <div class="asym-content">
+          <h3 class="block-title">闇に沈む水脈</h3>
+          <p class="block-text">かつて左美都に存在した沢や草むらのイメージが映像として空間を満たします。鑑賞者の身体そのものが影となり、風景の一部として溶け込んでいきます。</p>
+        </div>
+        <div class="asym-media">
+          <div class="photo-frame" style="height: 520px;" data-src="img/exhibition-nagano/installation_01.jpg"><img src="img/exhibition-nagano/installation_01.jpg" alt="Nagano 3F映像インスタレーション" loading="lazy" /></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="floor-section" id="ginza" style="background: #0b0b0b; border-bottom: none;">
+    <div class="container">
+      <div class="floor-header" data-reveal>
+        <div class="floor-number" aria-hidden="true" style="color: rgba(184,149,90,0.06);">GZ</div>
+        <div class="floor-intro">
+          <p class="floor-label">Ginza</p>
+          <h2 class="floor-title">都市の空白に、地脈を再構築する</h2>
+          <p class="floor-desc">巡回展の最終地、東京・銀座。都心のギャラリー空間において、大型油彩画とプロジェクトの膨大なアーカイブが再編されました。インダストリアルな要素が残る白い壁面が、左美都の流動的な色彩を鮮明に浮き彫りにします。</p>
+        </div>
+      </div>
+
+      <div class="asym-grid asym-grid--rev" data-reveal>
+        <div class="asym-content">
+          <h3 class="block-title">銀座の路地奥、2階へ</h3>
+          <p class="block-text">銀座2丁目のビル、階段を上がった先に現れるホワイトキューブ。長野の広大な自然から抽出された記憶の断片が、都市のグリッドの中に持ち込まれます。</p>
+        </div>
+        <div class="asym-media">
+          <div class="photo-frame" style="height: 480px;" data-src="img/exhibition-ginza/01.jpg"><img src="img/exhibition-ginza/01.jpg" alt="銀座ギャラリー入口" loading="lazy" /></div>
+        </div>
+      </div>
+
+      <div class="full-bleed" data-reveal>
+        <div class="photo-frame" data-src="img/exhibition-ginza/02.jpg">
+          <img src="img/exhibition-ginza/02.jpg" alt="銀座展 展示風景全景" loading="lazy" />
+        </div>
+      </div>
+
+      <div class="overlap-block" data-reveal>
+        <div class="overlap-media photo-frame" data-src="img/exhibition-ginza/06.jpg">
+          <img src="img/exhibition-ginza/06.jpg" alt="銀座展 油彩画" loading="lazy" />
+        </div>
+        <div class="overlap-text">
+          <h3 class="block-title">空間を呼吸する油彩</h3>
+          <p class="block-text">ホワイトキューブ特有の強い照明と露出した配管。無機質な空間において、油彩の物質感と「異体」の生々しい気配がより一層際立ちます。画面を縦断する線は、地下から這い上がる水脈のように空間を繋ぎます。</p>
+          
+          <div class="grid-2-col" style="margin-top: 24px;">
+            <div class="photo-frame" style="height: 180px;" data-src="img/exhibition-ginza/05.jpg"><img src="img/exhibition-ginza/05.jpg" alt="銀座展 油彩画 別角" loading="lazy" /></div>
+            <div class="photo-frame" style="height: 180px;" data-src="img/exhibition-ginza/07.jpg"><img src="img/exhibition-ginza/07.jpg" alt="銀座展 油彩画並び" loading="lazy" /></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="asym-grid" data-reveal>
+        <div class="asym-content">
+          <h3 class="block-title">知覚の地層を解く</h3>
+          <p class="block-text">展示の奥には、左美都研究会の調査パネルと、記録映像が並びます。油彩として定着した「イメージ」の裏側にある、膨大な「事実」と「語り」。これらが一体となり、巡回展としての思想的奥行きを形成します。</p>
+        </div>
+        <div class="asym-media">
+          <div class="photo-frame" style="height: 420px;" data-src="img/exhibition-ginza/08.jpg"><img src="img/exhibition-ginza/08.jpg" alt="銀座展 資料パネル" loading="lazy" /></div>
+        </div>
+      </div>
+
+      <div class="grid-2-col" data-reveal style="margin-top: 60px;">
+        <div class="photo-frame" style="height: 400px;" data-src="img/exhibition-ginza/09.jpg"><img src="img/exhibition-ginza/09.jpg" alt="銀座展 全景2" loading="lazy" /></div>
+        <div class="photo-frame" style="height: 400px;" data-src="img/exhibition-ginza/04.jpg"><img src="img/exhibition-ginza/04.jpg" alt="銀座展 隅の作品" loading="lazy" /></div>
+      </div>
+
+      <div class="caption-row" data-reveal>
+        <span class="caption-row__text">展示風景 ／ 銀座 — 大型油彩・プロジェクトアーカイブ</span>
+        <span class="caption-row__count">10 photographs</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact-section" id="contact" data-reveal>
+    <p class="contact-label">Contact</p>
+    <h2 class="contact-heading">お問い合わせ</h2>
+    <p class="contact-body-text">作品・展覧会に関するお問い合わせは、<br>下記フォームよりお気軽にご連絡ください。</p>
+    <a href="contact.html" class="contact-btn">問い合わせフォームへ</a>
+  </section>
+
+  <footer>
+    <a href="index.html" class="footer-logo">Tsuda Shoichi</a>
+    <ul class="footer-nav">
+      <li><a href="index.html#statement">Statement</a></li>
+      <li><a href="works.html">Works</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
+  </footer>
+
+  <a href="#top" class="back-to-top" id="backToTop" aria-label="先頭に戻る">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
+    <span class="back-to-top-text">TOP</span>
+  </a>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+    <div class="lightbox__inner">
+      <button class="lightbox__close" id="lbClose"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Close</button>
+      <button class="lightbox__nav lightbox__prev" id="lbPrev"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <img src="" alt="" class="lightbox__img" id="lbImg" />
+      <button class="lightbox__nav lightbox__next" id="lbNext"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+      <p class="lightbox__caption" id="lbCaption"></p>
+    </div>
+  </div>
+
+  <script>
+    /* ── Header Scroll ── */
+    const topNav = document.getElementById('top-nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) topNav.classList.add('scrolled');
+      else topNav.classList.remove('scrolled');
+    }, { passive: true });
+
+    /* ── Menu ── */
+    function toggleMenu() {
+      const links = document.getElementById('nav-links');
+      const hamburger = document.getElementById('hamburger');
+      links.classList.toggle('open');
+      hamburger.classList.toggle('is-active');
+      document.body.classList.toggle('is-locked', links.classList.contains('open'));
+    }
+    function closeMenu() {
+      const links = document.getElementById('nav-links');
+      const hamburger = document.getElementById('hamburger');
+      links.classList.remove('open');
+      hamburger.classList.remove('is-active');
+      document.body.classList.remove('is-locked');
+    }
+    document.getElementById('hamburger').addEventListener('click', toggleMenu);
+
+    /* ── Page Nav (Tour Spy) ── */
+    const pageNav = document.getElementById('pageNav');
+    const sections = ['kitano-1f', 'kitano-3f', 'ginza'].map(id => document.getElementById(id));
+    const navItems = document.querySelectorAll('.page-nav-item');
+    
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      const checkY = scrollY + window.innerHeight * 0.45;
+      let activeSec = null;
+      sections.forEach(sec => { if (sec && sec.offsetTop <= checkY) activeSec = sec; });
+      navItems.forEach(item => {
+        const target = document.getElementById(item.getAttribute('data-target'));
+        item.classList.toggle('active', target === activeSec);
+      });
+      if (pageNav) pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.8);
+      const b2t = document.getElementById('backToTop');
+      if (b2t) b2t.classList.toggle('is-visible', scrollY > 600);
+    }, { passive: true });
+
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const target = document.getElementById(item.getAttribute('data-target'));
+        if (target) window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+      });
+    });
+
+    /* ── Hero Loading ── */
+    const heroBg = document.getElementById('heroBg');
+    const heroImg = new Image();
+    heroImg.src = 'img/exhibition-nagano/0003.jpg';
+    heroImg.onload = () => heroBg.classList.add('loaded');
+
+    /* ── Reveal & Lazy Load ── */
+    const revealEls = document.querySelectorAll('[data-reveal]');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('revealed');
+          revealObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    revealEls.forEach(el => revealObserver.observe(el));
+
+    const lazyImgs = document.querySelectorAll('.photo-frame img');
+    const imgObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const img = e.target;
+          img.onload = () => img.classList.add('loaded');
+          if (img.complete) img.classList.add('loaded');
+          imgObserver.unobserve(img);
+        }
+      });
+    }, { rootMargin: '200px' });
+    lazyImgs.forEach(img => imgObserver.observe(img));
+
+    /* ── Lightbox ── */
+    const lightbox = document.getElementById('lightbox');
+    const lbImg    = document.getElementById('lbImg');
+    const lbCaption = document.getElementById('lbCaption');
+    const allFrames = Array.from(document.querySelectorAll('[data-src]'));
+    function openLightbox(idx) {
+      const frame = allFrames[idx];
+      lbImg.src = frame.dataset.src;
+      lbCaption.textContent = frame.querySelector('img')?.alt || '';
+      lightbox.classList.add('active');
+      document.body.classList.add('is-locked');
+    }
+    allFrames.forEach((frame, i) => frame.addEventListener('click', () => openLightbox(i)));
+    document.getElementById('lbClose').addEventListener('click', () => {
+      lightbox.classList.remove('active');
+      document.body.classList.remove('is-locked');
+    });
+    document.getElementById('lbPrev').addEventListener('click', () => {
+      let currentIdx = allFrames.findIndex(f => f.dataset.src === lbImg.getAttribute('src'));
+      currentIdx = (currentIdx - 1 + allFrames.length) % allFrames.length;
+      openLightbox(currentIdx);
+    });
+    document.getElementById('lbNext').addEventListener('click', () => {
+      let currentIdx = allFrames.findIndex(f => f.dataset.src === lbImg.getAttribute('src'));
+      currentIdx = (currentIdx + 1) % allFrames.length;
+      openLightbox(currentIdx);
+    });
+  </script>
+</body>
+</html>
