@@ -111,7 +111,7 @@
     }
     .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
     
-    /* Hamburger Button (Desktop Hidden, Mobile Animated) */
+    /* Hamburger Button */
     .nav-hamburger { 
       display: none; background: none; border: none; cursor: pointer; 
       z-index: 301; width: 30px; height: 20px; position: relative; padding: 0;
@@ -124,7 +124,6 @@
     .nav-hamburger span:nth-child(1) { top: 0px; }
     .nav-hamburger span:nth-child(2) { top: 9px; }
     .nav-hamburger span:nth-child(3) { top: 18px; }
-
     .nav-hamburger.is-active span:nth-child(1) { top: 9px; transform: rotate(45deg); }
     .nav-hamburger.is-active span:nth-child(2) { opacity: 0; }
     .nav-hamburger.is-active span:nth-child(3) { top: 9px; transform: rotate(-45deg); }
@@ -158,7 +157,7 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       HERO SECTION
+       HERO SECTION (Updated for Reference Blur Reveal)
     ================================================================ */
     .hero {
       position: relative; height: 100svh; min-height: 580px;
@@ -172,6 +171,7 @@
       filter: saturate(1.05) brightness(0.55);
     }
     @keyframes heroZoom { to { transform: scale(1); } }
+    
     .hero::after {
       content: ""; position: absolute; inset: 0;
       background: linear-gradient(to top, var(--bg) 2%, rgba(6,6,5,0.2) 45%, rgba(6,6,5,0.6) 100%);
@@ -185,101 +185,115 @@
       position: relative; z-index: 2;
       padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); width: 100%;
     }
+
+    /* --- 参照用アニメーションの完全移植 --- */
+    @keyframes textBlurReveal { 
+      0% { opacity: 0; filter: blur(12px); transform: translateY(12px) scale(1.02); } 
+      100% { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); } 
+    }
+    
+    /* スクロールキュー用の中央配置を維持した特殊版 */
+    @keyframes textBlurRevealCenter { 
+      0% { opacity: 0; filter: blur(12px); transform: translate(-50%, 12px) scale(1.02); } 
+      100% { opacity: 1; filter: blur(0); transform: translate(-50%, 0) scale(1); } 
+    }
+
+    @keyframes lineScale {
+      0% { transform: scaleX(0); }
+      100% { transform: scaleX(1); }
+    }
+
+    /* 各要素への適用 (タイミングも参照用に準拠) */
     .hero-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.65rem);
       letter-spacing: 0.4em; color: var(--accent-soft); text-transform: uppercase;
-      margin-bottom: 18px; opacity: 0; animation: fadeUp 0.9s var(--ease) 0.3s forwards;
-      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 18px; display: flex; align-items: center; gap: 1rem;
+      opacity: 0;
+      /* opacity:0 の状態からスタートし、ディレイ後に実行される安全な both 指定 */
+      animation: textBlurReveal 2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s both;
     }
-    .hero-eyebrow::before { content: ''; width: 24px; height: 0.5px; background: var(--accent-soft); }
+    .hero-eyebrow::before { 
+      content: ''; width: 24px; height: 1px; background: var(--accent-soft); 
+      transform-origin: left;
+      transform: scaleX(0);
+      animation: lineScale 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both;
+    }
+    
     .hero-title {
       font-family: var(--font-ja); font-weight: 300;
       font-size: clamp(32px, 7vw, 86px); line-height: 1.25; margin: 0 0 14px;
-      color: var(--fg); opacity: 0; animation: fadeUp 1s var(--ease) 0.5s forwards;
+      color: var(--fg);
+      opacity: 0;
+      animation: textBlurReveal 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s both;
     }
+    
     .hero-title small {
       display: block; font-family: var(--font-en); font-size: 0.38em; letter-spacing: 0.2em;
       font-weight: 300; font-style: italic; color: var(--accent); margin-top: 12px;
+      opacity: 0;
+      animation: textBlurReveal 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) 0.9s both;
     }
+    
     .hero-lead {
       max-width: 580px; font-size: clamp(0.85rem, 1.5vw, 0.95rem); color: rgba(233,229,223,0.75);
-      opacity: 0; animation: fadeUp 1s var(--ease) 0.75s forwards; line-height: 2.1;
+      line-height: 2.1;
+      opacity: 0;
+      animation: textBlurReveal 2s cubic-bezier(0.2, 0.8, 0.2, 1) 1.2s both;
     }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Scroll Cue - FIXED FOR PC VISIBILITY & INTERACTIVITY */
+    /* Scroll Indicator */
     .hero-scroll {
       position: absolute;
-      bottom: clamp(30px, 8vh, 60px); /* Safely lifted to avoid clipping on PC */
+      bottom: clamp(30px, 8vh, 60px);
       left: 50%;
-      transform: translateX(-50%);
-      z-index: 50; /* Ensuring it sits securely in front */
+      /* ここで translateX を上書きしないよう、専用のアニメーションを適用 */
+      z-index: 100;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: clamp(12px, 2vh, 18px);
+      text-decoration: none;
+      cursor: pointer;
+      pointer-events: auto;
       opacity: 0;
-      animation: fadeUpCenter 1.2s var(--ease) 1.2s forwards;
-      text-decoration: none; /* Removed link underline */
-      cursor: pointer; /* Interaction hint */
-    }
-    @keyframes fadeUpCenter {
-      from { opacity: 0; transform: translate(-50%, 20px); }
-      to { opacity: 1; transform: translate(-50%, 0); }
+      animation: textBlurRevealCenter 2s ease 1.8s both; 
     }
     
-    /* PCでのホバー（マウスオーバー）エフェクト */
     .hero-scroll:hover .hero-scroll-label {
-      color: #fff;
+      color: #ffffff;
       text-shadow: 0 0 12px rgba(196,168,130,0.6);
     }
     .hero-scroll:hover .hero-scroll-track {
-      background: rgba(233,229,223,0.4);
+      background: rgba(233,229,223,0.5);
     }
 
     .hero-scroll-label {
-      font-family: var(--font-en);
-      font-size: clamp(0.65rem, 1.2vw, 0.85rem); /* PCでしっかり視認できるサイズに拡大 */
-      letter-spacing: 0.35em;
-      color: rgba(233,229,223,0.9); /* ベース色を明るく調整 */
-      text-transform: uppercase;
-      margin-left: 0.35em;
+      font-family: var(--font-en); font-size: clamp(0.68rem, 1.3vw, 0.85rem); 
+      font-weight: 600; letter-spacing: 0.35em; color: rgba(233,229,223,0.9);
+      text-transform: uppercase; margin-left: 0.35em;
       transition: all 0.4s ease;
-      animation: textBreathe 3s ease-in-out infinite alternate; /* ページが生きていることを示す明滅アニメーション */
+      animation: textBreathe 3s ease-in-out infinite alternate;
     }
     @keyframes textBreathe {
-      0% { opacity: 0.4; }
+      0% { opacity: 0.5; }
       100% { opacity: 1; }
     }
 
     .hero-scroll-track {
-      width: 1px;
-      height: clamp(50px, 12vh, 100px); /* PC画面の広さに合わせて長く調整 */
-      background: rgba(233,229,223,0.25);
-      position: relative;
-      overflow: hidden;
-      transition: background 0.4s ease;
+      width: 2px; height: clamp(50px, 12vh, 100px); 
+      background: rgba(233,229,223,0.3); position: relative;
+      overflow: hidden; transition: background 0.4s ease; border-radius: 2px;
     }
 
     .hero-scroll-fill {
-      position: absolute;
-      top: -100%;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(to bottom, transparent 0%, var(--accent) 60%, #fff 100%);
+      position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(to bottom, transparent 0%, var(--accent) 50%, #ffffff 100%);
       animation: scrollDropCentered 2.2s cubic-bezier(0.77, 0, 0.175, 1) infinite;
-    }
-    @keyframes scrollDropCentered {
-      0% { top: -100%; }
-      50% { top: 100%; }
-      100% { top: 100%; }
     }
 
     /* ============================================================
        GENERAL SECTION STYLING
     ================================================================ */
-    /* リンク先へスムーズに飛んだ際、上部ヘッダーと被らないように余白（scroll-margin-top）を設定 */
     section { padding: clamp(6rem, 14vh, 11rem) var(--px); position: relative; scroll-margin-top: 80px; }
     
     .eyebrow {
@@ -470,15 +484,11 @@
     .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.7rem, 1.2vw, 0.85rem); font-style: italic; color: var(--accent); letter-spacing: 0.15em; }
 
     /* ============================================================
-       MOBILE OPTIMIZATION (Perfectly Responsive Header)
+       MOBILE & SYSTEM OPTIMIZATION
     ================================================================ */
     @media (max-width: 768px) {
       nav#top-nav { padding: 1rem 1.25rem; }
-      
-      /* Hamburger Button */
       .nav-hamburger { display: block; }
-
-      /* 横に広がるスクロール可能なメニュー (インデックスページと統一) */
       .nav-links { display: none; }
       .nav-links.open {
         display: flex; flex-direction: row; flex-wrap: nowrap;
@@ -487,23 +497,21 @@
         z-index: 300; padding: 1rem; overflow-x: auto;
         opacity: 1; visibility: visible; pointer-events: auto;
       }
-      
-      .nav-links.open li {
-        opacity: 1; transform: none; transition: none;
-      }
-      .nav-links.open a {
-        font-size: 0.9rem; letter-spacing: 0.15em; padding: 0.6rem 0.5rem; display: block; white-space: nowrap;
-      }
-
-      /* ページ内ナビゲーション（Page Nav）のモバイル最適化 */
+      .nav-links.open li { opacity: 1; transform: none; transition: none; }
+      .nav-links.open a { font-size: 0.9rem; letter-spacing: 0.15em; padding: 0.6rem 0.5rem; display: block; white-space: nowrap; }
       .page-nav.visible { right: 8px; opacity: 0.5; }
       .page-nav.visible:hover { opacity: 1; }
       .page-nav-label { display: none; }
     }
     
+    /* アニメーション無効化設定のOS環境でも、要素が消滅しないための超強力な安全網 */
     @media (prefers-reduced-motion: reduce) { 
-      * { animation: none !important; transition: none !important; } 
-      .reveal { opacity: 1 !important; transform: none !important; } 
+      *, *::before, *::after { animation: none !important; transition: none !important; } 
+      .reveal, .hero-eyebrow, .hero-eyebrow::before, .hero-title, .hero-title small, .hero-lead, .hero-scroll { 
+        opacity: 1 !important; transform: none !important; filter: blur(0) !important;
+      } 
+      /* スクロールキューのセンタリングだけは保持 */
+      .hero-scroll { transform: translateX(-50%) !important; }
     }
   </style>
 </head>
@@ -807,7 +815,6 @@
       
       if(cta) cta.style.display = links.classList.contains('open') ? 'none' : '';
       
-      // 背景のスクロールをロックしてネイティブアプリのような心地よさに
       if (links.classList.contains('open')) {
         document.body.classList.add('is-locked');
       } else {
@@ -827,7 +834,6 @@
     }
 
     (function(){
-      // 1. スクロール連動UI (トップナビ、プログレスバー、戻るボタン、ページナビ)
       const header = document.getElementById('top-nav');
       const progress = document.getElementById('progress');
       const b2t = document.getElementById('backToTop');
@@ -838,17 +844,13 @@
       function onScroll() {
         const y = window.scrollY || document.documentElement.scrollTop;
         
-        // Header Glassmorphism
         if(header) header.classList.toggle('scrolled', y > 50);
         
-        // Progress Bar
         const h = document.documentElement.scrollHeight - window.innerHeight;
         if(progress) progress.style.width = (h > 0 ? (y / h) * 100 : 0) + '%';
         
-        // Back To Top
         if(b2t) b2t.classList.toggle('is-visible', y > 500);
 
-        // Page Nav 自動ハイライト
         const checkY = y + window.innerHeight * 0.4;
         let currentSec = null;
         targets.forEach(sec => {
@@ -863,7 +865,6 @@
       document.addEventListener('scroll', onScroll, {passive: true});
       onScroll();
 
-      // Page Nav スムーズスクロールイベント
       navItems.forEach(item => {
         item.addEventListener('click', () => {
           const t = document.getElementById(item.getAttribute('data-target'));
@@ -874,7 +875,6 @@
         });
       });
 
-      // 2. フェードイン表示 (Intersection Observer)
       const revealEls = document.querySelectorAll('.reveal');
       if('IntersectionObserver' in window) {
         const io = new IntersectionObserver(entries => {
@@ -890,7 +890,6 @@
         revealEls.forEach(el => el.classList.add('is-visible'));
       }
 
-      // 3. モーダルライトボックス機能
       const modal = document.getElementById('imageModal');
       const mImg = document.getElementById('modalImg');
       const mJp = document.getElementById('modalTitleJp');
