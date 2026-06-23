@@ -134,7 +134,7 @@
     .hero-slide.active { opacity: 1; }
     .hero-overlay { position: absolute; inset: 0; z-index: 1;
       background: rgba(10,10,8,0.65); }
-    .hero > *:not(.hero-slideshow):not(.hero-overlay) { position: relative; z-index: 2; }
+    .hero > *:not(.hero-slideshow):not(.hero-overlay):not(.hero-notice-box) { position: relative; z-index: 2; }
 
     @keyframes fadeUp  { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
     @keyframes fadeIn  { from { opacity:0; } to { opacity:1; } }
@@ -176,11 +176,13 @@
     .hero-scroll-line { width: 36px; height: 0.5px; background: rgba(232,228,219,0.25); }
 
     /* ════════════════════════════════════════
-       HERO NOTICE BOX (ファーストビューのお知らせ)
+       HERO NOTICE BOX (ファーストビューのお知らせ - 右下固定)
     ════════════════════════════════════════ */
     .hero-notice-box {
-      align-self: flex-start;
-      margin-top: 3rem;
+      position: absolute;
+      bottom: clamp(2.5rem, 6vh, 4.5rem);
+      right: clamp(1.5rem, 5vw, 3rem);
+      z-index: 10;
       display: inline-flex;
       align-items: center;
       gap: 1.5rem;
@@ -191,10 +193,11 @@
       border: 0.5px solid rgba(232,228,219,0.08);
       border-radius: 4px;
       text-decoration: none;
+      text-align: left; /* テキストは左寄せを明示 */
       opacity: 0;
       animation: fadeUp 0.8s ease 2.0s forwards;
       transition: transform 0.6s var(--ease-expo), background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
-      max-width: 100%;
+      max-width: calc(100% - 3rem);
     }
     .hero-notice-box:hover {
       transform: translateY(-4px);
@@ -705,12 +708,17 @@
       .hero { padding: 5rem 1.5rem 4rem; min-height: 70vh; }
       
       .hero-notice-box {
+        position: relative;
+        bottom: auto;
+        right: auto;
+        align-self: flex-end;
         flex-direction: column;
         align-items: flex-start;
         gap: 0.6rem;
         padding: 1.2rem 1.5rem;
-        margin-top: 2.5rem;
+        margin-top: 3rem;
         width: 100%;
+        max-width: 340px;
       }
       .hero-notice-text {
         white-space: normal;
