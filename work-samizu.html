@@ -157,7 +157,7 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       HERO SECTION (Updated for Deep Cinematic Blur Reveal)
+       HERO SECTION (Deep Cinematic Blur Reveal)
     ================================================================ */
     .hero {
       position: relative; height: 100svh; min-height: 580px;
@@ -186,13 +186,12 @@
       padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); width: 100%;
     }
 
-    /* ─── スライドショーから移植した「深くぶわーっとにじむ」アニメーション ─── */
+    /* --- 深くぶわーっとにじむアニメーション --- */
     @keyframes textBlurReveal { 
       0% { opacity: 0; filter: blur(20px); transform: translateY(12px) scale(1.05); } 
       100% { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); } 
     }
     
-    /* スクロールキュー用（中央配置のレイアウトを維持） */
     @keyframes textBlurRevealCenter { 
       0% { opacity: 0; filter: blur(20px); transform: translate(-50%, 12px) scale(1.05); } 
       100% { opacity: 1; filter: blur(0); transform: translate(-50%, 0) scale(1); } 
@@ -203,7 +202,6 @@
       100% { transform: scaleX(1); }
     }
 
-    /* 各要素への適用タイミングの最適化 */
     .hero-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.65rem);
       letter-spacing: 0.3em; color: var(--accent-soft); text-transform: uppercase;
@@ -405,15 +403,61 @@
     .closing p { font-family: var(--font-ja); font-weight: 200; font-size: clamp(22px, 2.8vw, 36px); max-width: 800px; margin: 0 auto; line-height: 2; color: var(--fg); }
     .closing .sign { margin-top: 40px; font-family: var(--font-en); color: var(--accent); font-size: 0.95rem; letter-spacing: 0.15em; font-style: italic; }
 
-    /* ---------- Series Navigation ---------- */
-    .series-nav { display: flex; justify-content: space-between; border-top: 0.5px solid var(--border); background: var(--bg2); }
-    .series-nav a { flex: 1; padding: clamp(30px, 5vw, 50px) var(--px); display: flex; flex-direction: column; gap: 10px; transition: background 0.35s; }
+    /* ============================================================
+       SERIES NAVIGATION (UPDATED: High Affordance Hover Effects)
+    ================================================================ */
+    .series-nav { 
+      display: flex; justify-content: space-between; border-top: 0.5px solid var(--border); background: var(--bg2); 
+      position: relative; z-index: 10;
+    }
+    .series-nav a { 
+      flex: 1; padding: clamp(40px, 5vw, 60px) var(--px); display: flex; flex-direction: column; gap: 12px; 
+      transition: all 0.5s var(--ease); position: relative; overflow: hidden; text-decoration: none;
+    }
     .series-nav a:first-child { border-right: 0.5px solid var(--border); }
-    .series-nav a:hover { background: var(--bg3); }
-    .series-nav .dir { font-family: var(--font-en); font-size: 0.65rem; letter-spacing: 0.3em; color: var(--muted); text-transform: uppercase; }
-    .series-nav .ttl { font-family: var(--font-ja); font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 300; color: var(--fg); }
+    
+    /* Background light and bottom line for clear affordance */
+    .series-nav a::before {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(196,168,130,0.15) 0%, transparent 100%);
+      opacity: 0; transition: opacity 0.5s var(--ease); pointer-events: none; z-index: 0;
+    }
+    .series-nav a::after {
+      content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px;
+      background: var(--accent);
+      transform: scaleX(0); transition: transform 0.6s var(--ease); z-index: 1;
+    }
+    .series-nav a:first-child::after { transform-origin: left; }
+    .series-nav a.next::after { transform-origin: right; }
+
+    .series-nav a:hover::before { opacity: 1; }
+    .series-nav a:hover::after { transform: scaleX(1); }
+    
+    .series-nav .dir, .series-nav .ttl { position: relative; z-index: 2; }
+    
+    .series-nav .dir { 
+      font-family: var(--font-en); font-size: 0.7rem; letter-spacing: 0.35em; color: rgba(233,229,223,0.6); text-transform: uppercase; 
+      transition: color 0.4s var(--ease), transform 0.4s var(--ease); display: inline-block; font-weight: 600;
+    }
+    .series-nav .ttl { 
+      font-family: var(--font-ja); font-size: clamp(1.2rem, 2.5vw, 1.6rem); font-weight: 300; color: var(--fg); 
+      transition: color 0.4s var(--ease), transform 0.4s var(--ease), text-shadow 0.4s var(--ease); display: inline-block;
+    }
     .series-nav a.next { text-align: right; align-items: flex-end; }
-    @media(max-width: 700px) { .series-nav { flex-direction: column; } .series-nav a:first-child { border-right: none; border-bottom: 0.5px solid var(--border); } }
+    
+    /* Interactive Hover States */
+    .series-nav a:hover .dir { color: var(--accent); }
+    .series-nav a:hover .ttl { color: #ffffff; transform: translateY(-4px); text-shadow: 0 4px 12px rgba(196,168,130,0.4); }
+    .series-nav a:first-child:hover .dir { transform: translateX(-8px); }
+    .series-nav a.next:hover .dir { transform: translateX(8px); }
+    
+    @media(max-width: 700px) { 
+      .series-nav { flex-direction: column; } 
+      .series-nav a:first-child { border-right: none; border-bottom: 0.5px solid var(--border); } 
+      .series-nav a.next { align-items: flex-start; text-align: left; }
+      .series-nav a.next::after { transform-origin: left; }
+      .series-nav a.next:hover .dir { transform: translateX(8px); }
+    }
 
     /* ============================================================
        CONTACT & FOOTER (Matched to Site System)
