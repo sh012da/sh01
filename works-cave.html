@@ -90,7 +90,8 @@
     .nav-links a:hover { color: var(--accent); }
     .nav-cta {
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
-      letter-spacing: 0.25em; text-transform: uppercase;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
       border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem;
       color: var(--accent); transition: background 0.25s, color 0.25s;
     }
@@ -182,37 +183,49 @@
       display: grid;
       grid-template-columns: repeat(24, 1fr);
       gap: clamp(1.5rem, 2.5vw, 3rem) clamp(1rem, 2vw, 2.5rem);
-      align-items: start; /* 上辺を同じ高さに美しく統一 */
+      align-items: start;
     }
     .gallery-item {
-      display: flex; flex-direction: column; text-decoration: none; cursor: pointer;
+      display: flex;
+      flex-direction: column; text-decoration: none; cursor: pointer;
       opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
     }
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
 
-    /* --- 24カラム グリッド比率設定（バランス再調整版） --- */
+    /* --- 24カラム グリッド比率設定 --- */
 
-    /* 1行目：山脈と左美都 */
-    .gi-sanmyaku   { grid-column: 2 / span 10; }
-    .gi-samizu     { grid-column: 14 / span 10; }
+    /* 1・2行目：往路・復路 — 単独で一行、画面端から端までフルブリード表示 */
+    .gi-ouro, .gi-fukuro {
+      grid-column: 1 / -1;
+      width: 100vw; max-width: 100vw;
+      position: relative; left: 50%; right: 50%;
+      margin-left: -50vw; margin-right: -50vw;
+    }
+    .gi-ouro .gallery-item-img-wrap,
+    .gi-fukuro .gallery-item-img-wrap { border-left: none; border-right: none; }
+    .gi-ouro .gallery-item-cap,
+    .gi-fukuro .gallery-item-cap { padding-left: var(--px); padding-right: var(--px); }
 
-    /* 2行目：高さ同期グループ */
+    /* 3行目：左美都と山脈（左美都=左／山脈=右） */
+    .gi-samizu     { grid-column: 2 / span 10; }
+    .gi-sanmyaku   { grid-column: 14 / span 10; }
+
+    /* 4行目：高さ同期グループ */
     .gi-kakuchi    { grid-column: 3 / span 6; }
     .gi-asayake    { grid-column: 10 / span 8; }
     .gi-yuyake     { grid-column: 19 / span 6; }
 
-    /* 3行目：正方形シリーズ */
+    /* 5行目：正方形シリーズ */
     .gi-suiheisen  { grid-column: 4 / span 8; }
     .gi-sofar      { grid-column: 14 / span 8; }
 
-    /* 4行目：Vol'e, ritornello */
+    /* 6行目：Vol'e, ritornello */
     .gi-vole       { grid-column: 4 / span 8; }
     .gi-ritornello { grid-column: 14 / span 7; }
 
-    /* 5行目：Untitled, 門, into_cave 
-       ※門(F30縦)の縦の長さをinto_cave(F15横)の短辺の1.32倍にするため、スパン比率を最適化 */
+    /* 7行目：Untitled, 門, into_cave */
     .gi-untitled   { grid-column: 3 / span 6; }
-    .gi-mon        { grid-column: 11 / span 5; } /* 縮小スパン(5)によりinto_cave(6)に対し高さ1.32倍を具現化 */
+    .gi-mon        { grid-column: 11 / span 5; } 
     .gi-intocave   { grid-column: 17 / span 6; }
 
     .gallery-item-img-wrap {
@@ -257,11 +270,8 @@
     .tl-entry.is-featured .tl-body   { width: 32%; }
 
     /* --- 年譜 個別図版の微調整スタイル --- */
-    /* ritornello：わずかに小さく再実装 */
     #work-ritornello .tl-figure { width: 48%; }
     #work-ritornello .tl-body   { width: 46%; }
-
-    /* 門：into_caveの短辺の1.32倍の高さになるよう縮尺幅(46%)を再計算 */
     #work-mon .tl-figure { width: 46%; }
     #work-mon .tl-body   { width: 48%; }
 
@@ -270,6 +280,16 @@
     .tl-entry.is-full-figure .tl-figure { width: 100%; max-height: 75vh; border: 0.5px solid var(--border); background: var(--bg); display: flex; justify-content: center; align-items: center; }
     .tl-entry.is-full-figure .tl-figure img { width: 100%; max-height: 75vh; object-fit: contain; }
     .tl-entry.is-full-figure .tl-body { width: 100%; max-width: 1000px; margin: 0 auto; }
+
+    /* 往路・復路 専用：画面端から端までフルブリード表示（PC・スマホ共通） */
+    .tl-entry.is-bleed .tl-figure {
+      width: 100vw; max-width: 100vw; max-height: none;
+      position: relative; left: 50%; right: 50%;
+      margin-left: -50vw; margin-right: -50vw;
+      border-left: none; border-right: none;
+    }
+    .tl-entry.is-bleed .tl-figure img { max-height: none; }
+    .tl-entry.is-bleed .tl-body { padding-left: var(--px); padding-right: var(--px); }
 
     /* Dual Figure */
     .tl-entry.is-dual-figure .tl-figure { border: none; background: none; overflow: visible; cursor: default; position: relative; display: block; padding-bottom: clamp(2.5rem, 7vw, 5rem); padding-right: clamp(2rem, 6vw, 4rem); }
@@ -351,17 +371,20 @@
       .tl-figure, .tl-body, .tl-entry.is-featured .tl-figure, .tl-entry.is-featured .tl-body { width: 100% !important; }
       .timeline-spine-wrapper { left: 16px; transform: none; }
       .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; font-size: clamp(2.5rem, 8vw, 3.5rem); }
+      .tl-entry.is-bleed .tl-figure {
+        width: 100vw !important; max-width: 100vw !important;
+        position: relative; left: 50%; right: 50%;
+        margin-left: -50vw; margin-right: -50vw;
+      }
+      .tl-entry.is-bleed .tl-body { width: 100% !important; padding-left: 1.25rem; padding-right: 1.25rem; }
     }
     @media (max-width: 768px) {
       nav#top-nav { padding: 1rem 1.25rem; }
-      .nav-links { display: none; } /* スマホでは中間メニューを完全に削除・非表示 */
-      
+      .nav-links { display: none; }
       .page-nav.visible { right: 8px; opacity: 0.5; }
       .page-nav.visible:hover { opacity: 1; }
       .page-nav-label { display: none; }
-      
-      /* --- スマホで最初の作品紹介グリッドを完全に削除・非表示にする --- */
-      .gallery-section { display: none !important; }
+      /* スマホ用のグリッド非表示を削除し、モバイルでもしっかり表示されるように改善 */
     }
     @media (max-width: 480px) {
       .hero-scroll { display: none; }
@@ -387,7 +410,7 @@
       <li><a href="index.html#profile">Profile</a></li>
       <li><a href="index.html#news">News</a></li>
     </ul>
-    <a href="index.html#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
+    <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
   </nav>
 
   <nav class="page-nav" id="pageNav" aria-label="ページ内ナビゲーション">
@@ -452,17 +475,30 @@
     <section class="gallery-section" id="works">
       <div class="section-label" id="gallery">Works Index</div>
       <div class="gallery-grid">
-        
-        <a href="#work-sanmyaku" class="gallery-item gi-sanmyaku">
-          <div class="gallery-item-img-wrap"><img src="images/【縦5×横6m】山脈.jpg" alt="山脈" loading="lazy"></div>
+
+        <a href="#work-ouro" class="gallery-item gi-ouro">
+          <div class="gallery-item-img-wrap"><img src="images/往路（左美都から善光寺平へ ）.jpg" alt="往路（左美都から善光寺平へ）" loading="lazy"></div>
           <div class="gallery-item-cap">
-            <span class="gallery-item-title">山脈</span><span class="gallery-item-meta">2024 / 縦5m×横6m</span>
+            <span class="gallery-item-title">往路<br>（左美都から善光寺平へ）</span><span class="gallery-item-meta">2025 / 162cm×可変</span>
           </div>
         </a>
+        <a href="#work-fukuro" class="gallery-item gi-fukuro">
+          <div class="gallery-item-img-wrap"><img src="images/復路（善光寺平から左美都へ ）.jpg" alt="復路（善光寺平から左美都へ）" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">復路<br>（善光寺平から左美都へ）</span><span class="gallery-item-meta">2025 / 162cm×可変</span>
+          </div>
+        </a>
+        
         <a href="#work-samizu" class="gallery-item gi-samizu">
           <div class="gallery-item-img-wrap"><img src="images/【F100縦×3】左美都.jpg" alt="左美都" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">左美都</span><span class="gallery-item-meta">2023 / F100×3</span>
+          </div>
+        </a>
+        <a href="#work-sanmyaku" class="gallery-item gi-sanmyaku">
+          <div class="gallery-item-img-wrap"><img src="images/【縦5×横6m】山脈.jpg" alt="山脈" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">山脈</span><span class="gallery-item-meta">2024 / 縦5m×横6m</span>
           </div>
         </a>
 
@@ -539,23 +575,35 @@
           <div class="timeline-spine-progress" id="tl-spine-fill"></div>
         </div>
 
-        <article class="tl-entry is-featured is-dual-figure" id="work-sanmyaku">
-          <div class="tl-year-display">2024</div>
+        <article class="tl-entry is-featured is-full-figure is-bleed" id="work-ouro">
+          <div class="tl-year-display">2025</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure">
-              <div class="tl-img-main js-modal-open" data-img-src="images/【縦5×横6m】山脈.jpg">
-                <img src="images/【縦5×横6m】山脈.jpg" alt="山脈" loading="lazy">
-              </div>
-              <div class="tl-img-sub js-modal-open" data-img-src="images/山脈.jpg">
-                <img src="images/山脈.jpg" alt="山脈（別アングル）" loading="lazy">
-              </div>
+            <div class="tl-figure js-modal-open" data-img-src="images/往路（左美都から善光寺平へ ）.jpg">
+              <img src="images/往路（左美都から善光寺平へ ）.jpg" alt="往路（左美都から善光寺平へ）" loading="lazy">
             </div>
             <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">山脈</h3>
-              <p class="tl-meta">縦5m × 横6m / Oil on canvas</p>
+              <h3 class="tl-title" data-typewriter="true">往路（左美都から善光寺平へ）</h3>
+              <p class="tl-meta">162cm × 可変 / Oil on canvas</p>
               <div class="tl-desc">
-                <p>これまでの連作の集大成として制作された大作。縦5メートル、横6メートルという圧倒的なスケールは、鑑賞者を絵画の前に立たせるのではなく、その内部へと取り込んでしまう。連なる稜線は、もはや遠景としての風景ではなく、身体ごと包み込む洞窟そのものとして立ち現れる。</p>
-                <p>分割されたパネルの継ぎ目は、地殻のひび割れのような痕跡として残され、巨大な画面に呼吸するような揺らぎを与えている。光が差し込む白い塊と、奥に沈む青や赤の層が、表層と深層の往還という《洞窟》シリーズの主題を、これまでにない密度で結晶化させている。</p>
+                <p>左美都の谷を発ち、善光寺平へと向かう道行きをそのまま画面の流れに変換した横長の連作。冷たい青と緑が支配する画面の左半分は、深い森と渓流に包まれた往路の入り口の気配を留めている。</p>
+                <p>右へ進むにつれて青は次第に温度を上げ、赤や桃色を帯びた光の塊へと変容していく。これは地理的な移動の記録であると同時に、洞窟の奥（左美都）から光の射す平地（善光寺平）へと抜けていく、シリーズそのものの主題を再演する一枚でもある。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry is-featured is-full-figure is-bleed" id="work-fukuro">
+          <div class="tl-year-display">2025</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/復路（善光寺平から左美都へ ）.jpg">
+              <img src="images/復路（善光寺平から左美都へ ）.jpg" alt="復路（善光寺平から左美都へ）" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">復路（善光寺平から左美都へ）</h3>
+              <p class="tl-meta">162cm × 可変 / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>「往路」と対をなす本作は、善光寺平から左美都へと戻る帰路を描く。画面は淡く解けるような桃色と白から始まり、進むにつれて鋭く尖った結晶状の青へと姿を変えていく——光に満ちた場所から、再び洞窟の奥深くへ沈んでいく感覚の反転である。</p>
+                <p>「往路」が光へ向かう上昇の軌跡だとすれば、「復路」はその逆運動、すなわち根源へと還っていく下降の軌跡だ。二作を並べて見るとき、《洞窟》シリーズが繰り返し描いてきた表層と深層の往還が、一対の絵画として完結する。本シリーズ現時点における最新作。</p>
               </div>
             </div>
           </div>
@@ -573,6 +621,28 @@
               <div class="tl-desc">
                 <p>三面のキャンバスを連結し、左美都の地に伝わる神話と地質的記憶を一望のもとに描き出した作品。画面を貫く赤の連なりは、地中に眠る伝承の血脈のように、三つの画面をひとつの物語として繋いでいる。</p>
                 <p>淡いベージュの余白と、内側に押し込められた赤や桃色の塊との対比は、表に語られることのない土地の記憶が、絵画の奥でなお息づいていることを示している。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry is-featured is-dual-figure" id="work-sanmyaku">
+          <div class="tl-year-display">2024</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure">
+              <div class="tl-img-main js-modal-open" data-img-src="images/【縦5×横6m】山脈.jpg">
+                <img src="images/【縦5×横6m】山脈.jpg" alt="山脈" loading="lazy">
+              </div>
+              <div class="tl-img-sub js-modal-open" data-img-src="images/山脈.jpg">
+                <img src="images/山脈.jpg" alt="山脈（別アングル）" loading="lazy">
+              </div>
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">山脈</h3>
+              <p class="tl-meta">縦5m × 横6m / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>これまでの連作の集大成として制作された大作。縦5メートル、横6メートルという圧倒的なスケールは、鑑賞者を絵画の前に立たせるのではなく、その内部へと取り込んでしまう。連なる稜線は、もはや遠景としての風景ではなく、身体ごと包み込む洞窟そのものとして立ち現れる。</p>
+                <p>分割されたパネルの継ぎ目は、地殻のひび割れのような痕跡として残され、巨大な画面に呼吸するような揺らぎを与えている。光が差し込む白い塊と、奥に沈む青や赤の層が、表層と深層の往還という《洞窟》シリーズの主題を、これまでにない密度で結晶化させている。</p>
               </div>
             </div>
           </div>
@@ -811,7 +881,7 @@
       setTimeout(() => document.getElementById('heroMeta')?.classList.add('revealed'),    980);
       setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1700);
     });
-
+    
     /* ── Observer (Fade Up & Grid Animation) ── */
     const io = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -897,7 +967,7 @@
           });
           navItems.forEach(item => {
             const target = document.getElementById(item.getAttribute('data-target'));
-            item.classList.toggle('active', target === activeSec);
+             item.classList.toggle('active', target === activeSec);
           });
           if (pageNav) {
             pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.6);
@@ -934,12 +1004,17 @@
       });
     });
 
+    /* ★ スマホとPCでスクロール先を動的に切り替える */
     document.getElementById('backToTop').addEventListener('click', (e) => {
       e.preventDefault();
-      const target = document.getElementById('gallery');
-      if (target) {
-        const offset = topNav?.offsetHeight || 80;
-        window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+      if (window.innerWidth <= 768) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        const target = document.getElementById('gallery');
+        if (target) {
+          const offset = topNav?.offsetHeight || 80;
+          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+        }
       }
     });
 
@@ -976,7 +1051,7 @@
           const jpTitleEl = block.querySelector('.tl-title');
           jp = jpTitleEl ? jpTitleEl.textContent : '';
         } else {
-          const galleryItem = btn.closest('.gallery-item');
+           const galleryItem = btn.closest('.gallery-item');
           if (galleryItem) {
              const jpTitleEl = galleryItem.querySelector('.gallery-item-title');
              jp = jpTitleEl ? jpTitleEl.textContent : '';
