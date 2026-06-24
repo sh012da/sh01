@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -21,15 +20,15 @@
     /* ─── TOKENS ─── */
     :root {
       --bg:        #080808;
-      --fg:        #ede9e4;          /* ★ 明度UP: #e8e4df → #ede9e4 */
-      --muted:     #7a746e;          /* ★ 明度UP: #5a5650 → #7a746e */
-      --accent:    #cbbfb0;          /* ★ 明度UP: #b8a898 → #cbbfb0 */
+      --fg:        #ede9e4;
+      --muted:     #7a746e;
+      --accent:    #cbbfb0;
       --border:    rgba(255,255,255,0.10);
       --en: 'Cormorant Garamond', serif;
       --jp: 'Noto Serif JP', serif;
       --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
       --ease-img:  cubic-bezier(0.165, 0.84, 0.44, 1);
-      --px: clamp(16px, 5vw, 64px); /* ★ index.html と統一 */
+      --px: clamp(16px, 5vw, 64px);
     }
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     html { scroll-behavior: smooth; }
@@ -40,6 +39,7 @@
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
+    body.is-locked { overflow: hidden; }
 
     /* ─── VIDEO BG ─── */
     .bg-layer {
@@ -79,16 +79,21 @@
     }
 
     /* ════════════════════════════════════════
-       ★ HEADER — ホームと統一
+       ★ HEADER
     ════════════════════════════════════════ */
-    nav {
-      position: sticky;
-      top: 0; z-index: 200;
+    nav#top-nav {
+      position: fixed;
+      top: 0; left: 0; width: 100%;
+      z-index: 200;
       display: flex; align-items: center; justify-content: space-between;
       padding: clamp(14px, 3vw, 36px) var(--px);
       border-bottom: 0.5px solid var(--border);
       background: rgba(13,13,11,0.94);
       backdrop-filter: blur(8px);
+      transition: background 0.4s ease;
+    }
+    nav#top-nav.scrolled {
+      background: rgba(13,13,11,0.98);
     }
     .nav-logo {
       font-family: var(--en);
@@ -131,6 +136,53 @@
     .nav-hamburger span {
       display: block; width: 22px; height: 0.5px;
       background: var(--accent); margin: 6px 0; transition: all 0.25s;
+    }
+
+    /* ════════════════════════════════════════
+       ★ SIDE LINK NAVIGATION (RIGHT SIDE)
+    ════════════════════════════════════════ */
+    .side-link-nav {
+      position: fixed;
+      right: clamp(16px, 3vw, 36px);
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 150;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 16px;
+    }
+    .side-link-nav a {
+      font-family: var(--jp);
+      font-size: clamp(12px, 1.2vw, 14px); /* TOPボタンに近いやや大きめのサイズ感 */
+      font-weight: 300;
+      color: rgba(237,233,228, 0.85); /* わかりやすい明度 */
+      text-decoration: none;
+      letter-spacing: 0.15em;
+      transition: all 0.4s var(--ease-expo);
+      position: relative;
+      padding-right: 18px;
+    }
+    .side-link-nav a::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 4px;
+      background: rgba(237,233,228,0.4);
+      border-radius: 50%;
+      transition: all 0.4s var(--ease-expo);
+    }
+    .side-link-nav a:hover {
+      color: var(--accent);
+      transform: translateX(-4px); /* 押したくなるような浮き出るアニメーション */
+    }
+    .side-link-nav a:hover::after {
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+      transform: translateY(-50%) scale(1.5);
     }
 
     /* ─── HERO ─── */
@@ -217,7 +269,7 @@
     .gallery {
       position:relative;
       z-index:1;
-      padding: 0 var(--px) clamp(60px,12vh,160px);
+      padding: clamp(60px,12vh,100px) var(--px) clamp(60px,12vh,160px);
     }
     .section-header {
       display:flex; align-items:flex-end; justify-content:space-between;
@@ -240,11 +292,7 @@
       letter-spacing:0.05em;
     }
 
-    /* ─── GRID ───
-       ★ デスクトップではJSが毎回ランダムに列幅・縦横比・並び順を
-         決定するため、固定の nth-child 指定は持たせない。
-         grid-auto-flow:dense でアイテムを隙間なく詰める。
-    */
+    /* ─── GRID ─── */
     .grid {
       display:grid;
       grid-template-columns: repeat(12, 1fr);
@@ -253,7 +301,6 @@
       gap: clamp(4px,1.2vw,18px);
       row-gap: clamp(4px,1.6vw,24px);
     }
-    /* JS適用前のフォールバック（FOUC防止用の暫定サイズ） */
     .gi { grid-column: span 4; aspect-ratio: 4/3; }
 
     /* ─── CARD ─── */
@@ -336,87 +383,88 @@
     .gi:hover .gi-num { opacity:1; transform:translateY(0); }
 
     /* ════════════════════════════════════════
-       ★ CONTACT セクション — ホームと統一
+       ★ CONTACT セクション (最新のindex.htmlに準拠)
     ════════════════════════════════════════ */
-    .contact-section {
+    .contact-section { 
       position: relative;
-      z-index:1;
-      padding: 7rem var(--px);
-      text-align: center;
-      border-top: 0.5px solid rgba(255,255,255,0.08);
+      z-index: 1;
+      padding: 9rem 2.5rem; 
+      text-align: center; 
+      border-top: 0.5px solid var(--border); 
     }
-    .contact-label {
-      font-family: var(--en);
-      font-size: 10px; letter-spacing: 0.28em; color: var(--muted);
-      text-transform: uppercase; margin-bottom: 2rem;
-      display: flex; align-items: center; justify-content: center; gap: 1rem;
+    .contact-section .section-label {
+      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
+      letter-spacing: 0.28em; color: var(--muted); text-transform: uppercase;
+      margin-bottom: 3.5rem; display: flex; align-items: center; justify-content: center; gap: 1rem;
     }
-    .contact-label::before,
-    .contact-label::after {
-      content: ''; width: 32px;
-      height: 0.5px;
-      background: rgba(255,255,255,0.15);
+    .contact-section .section-label::after { 
+      content:""; width: 48px; height: 0.5px; background: rgba(237,233,228,0.2); 
     }
-    .contact-heading {
+    .contact-section .section-heading {
+      font-family: var(--jp); font-size: clamp(1.75rem,4vw,3.25rem);
+      font-weight: 300; line-height: 1.2; color: var(--fg); margin-bottom: 2rem; letter-spacing: -0.01em;
+    }
+    .contact-body-text { 
       font-family: var(--jp);
-      font-size: clamp(1.6rem,4vw,3rem);
-      font-weight: 200; line-height: 1.2;
-      color: var(--fg); margin-bottom: 1.5rem;
-      letter-spacing: -0.01em;
+      font-size: 15px; color: rgba(237,233,228,0.68); margin: 0 auto 3.5rem; max-width: 440px; line-height: 2; 
     }
-    .contact-body {
-      font-family: var(--jp);
-      font-size: 14px; color: rgba(237,233,228,0.55);
-      margin: 0 auto 2.5rem; max-width: 400px; line-height: 1.95;
+    .contact-btn { 
+      display: inline-flex; align-items: center; gap: 0.7em; font-family: var(--en); 
+      font-size: clamp(0.7rem, 1.5vw, 0.85rem); letter-spacing: 0.25em; text-transform: uppercase; 
+      border: 1px solid rgba(203,191,176,0.5); border-radius: 40px; padding: 1.1rem 3rem; 
+      color: var(--accent); background: rgba(203,191,176,0.04); text-decoration: none; 
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: all 0.4s var(--ease-expo); 
     }
-    .contact-btn {
-      display: inline-block;
-      border: 0.5px solid rgba(237,233,228,0.40);
-      padding: 0.9rem 2.75rem;
-      font-family: var(--en);
-      font-size: clamp(0.6rem,1.5vw,0.7rem);
-      letter-spacing: 0.18em; color: var(--fg);
-      text-decoration: none; text-transform: uppercase;
-      transition: background 0.2s;
-    }
-    .contact-btn:hover { background: rgba(237,233,228,0.07); }
-
-    /* ─── FOOTER ─── */
-    footer {
-      position:relative;
-      z-index:1;
-      padding: clamp(32px,6vh,72px) var(--px);
-      display:flex; justify-content:space-between; align-items:center;
-      flex-wrap:wrap; gap:1rem;
-      border-top: 1px solid rgba(255,255,255,0.06);
-    }
-    .footer-logo {
-      font-family: var(--jp);
-      font-size: 14px; font-weight:200;
-      color: rgba(237,233,228,0.30); letter-spacing:0.08em;
-    }
-    .footer-copy {
-      font-family: var(--en);
-      font-size: clamp(0.55rem,1.5vw,0.65rem);
-      letter-spacing:0.18em; color: var(--muted);
+    .contact-btn:hover { 
+      color: var(--bg); background: var(--accent); border-color: var(--accent); 
+      box-shadow: 0 10px 30px rgba(203,191,176,0.22); transform: translateY(-3px); 
     }
 
-    /* ─── KEYFRAMES ─── */
-    @keyframes charReveal { to { opacity:1; transform:translateY(0) skewY(0deg); } }
-    @keyframes clipUp     { to { opacity:1; transform:translateY(0); } }
-    @keyframes ghostRise  { to { opacity:1; transform:translateY(0); } }
-    @keyframes fadeOnly   { to { opacity:1; } }
-    @keyframes slideRight { to { opacity:1; transform:translateX(0); } }
-    @keyframes drawLine   { to { width: clamp(48px,10vw,140px); } }
-    @keyframes pulseBar   {
-      0%,100% { opacity:0.35; transform:scaleY(1); }
-      50%     { opacity:1;    transform:scaleY(1.25); transform-origin:top; }
+    /* ─── FOOTER (最新のindex.htmlに準拠) ─── */
+    footer { 
+      position: relative; z-index: 1;
+      padding: 3.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; 
+    }
+    .footer-logo { font-family: var(--jp); font-size: 16px; font-weight: 300; color: rgba(237,233,228,0.5); letter-spacing: 0.05em; }
+    .footer-copy { font-family: var(--en); font-size: 11px; color: rgba(237,233,228,0.32); letter-spacing: 0.14em; }
+
+    /* ════════════════════════════════════════
+       ★ BACK TO TOP BUTTON
+    ════════════════════════════════════════ */
+    .back-to-top {
+      position: fixed; 
+      bottom: clamp(1.5rem, 5vh, 4rem);
+      right: clamp(15px, 4vw, 50px);
+      z-index: 160; 
+      width: clamp(56px, 8vw, 76px); 
+      height: clamp(56px, 8vw, 76px); 
+      border-radius: 50%;
+      background: rgba(203,191,176, 0.85); 
+      border: 1px solid var(--accent);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: var(--bg);
+      opacity: 0; visibility: hidden; transform: translateY(20px);
+      transition: all 0.4s var(--ease-expo); 
+      cursor: pointer; 
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
+      text-decoration: none;
+    }
+    .back-to-top.is-visible { 
+      opacity: 1; visibility: visible; transform: translateY(0); 
+    }
+    .back-to-top:hover { 
+      background: var(--fg); color: var(--bg); border-color: var(--fg); 
+      transform: translateY(-6px); 
+    }
+    .back-to-top svg { 
+      width: clamp(20px, 3vw, 26px); height: clamp(20px, 3vw, 26px); margin-bottom: 2px; 
+    }
+    .back-to-top-text { 
+      font-family: var(--en); font-size: clamp(0.55rem, 1.2vw, 0.75rem); 
+      font-weight: 600; text-transform: uppercase; line-height: 1; 
     }
 
-    /* ─── RESPONSIVE ───
-       ★ スマホ／タブレットはランダム化の対象外。
-         常に固定の2カラム・縦長レイアウトに統一する。
-    */
+    /* ─── RESPONSIVE ─── */
     @media (max-width: 900px) {
       .grid { grid-template-columns:1fr 1fr; gap:8px; }
       .gi { grid-column:auto !important; grid-row:auto !important; aspect-ratio:4/5 !important; }
@@ -425,8 +473,7 @@
       .gi img { filter:grayscale(15%) brightness(0.78); }
     }
     @media (max-width: 768px) {
-      /* ★ スマホ版メニューも index.html と統一 */
-      nav { padding: 1rem 1.25rem; }
+      nav#top-nav { padding: 1rem 1.25rem; }
       .nav-links { display: none; }
       .nav-hamburger { display: block; }
       .nav-links.open {
@@ -441,6 +488,12 @@
         font-size: 0.9rem; padding: 0.6rem 0.5rem; display: block; white-space: nowrap;
       }
       .scroll-cue { display: none; }
+      
+      /* Mobile adjustment for navigation & Top button */
+      .side-link-nav { display: none; } /* スマホ閲覧時は作品一覧の邪魔になるため非表示 */
+      .back-to-top { bottom: 1.5rem; right: 1.2rem; width: 50px; height: 50px; }
+      .back-to-top-text { display: none; }
+      .back-to-top svg { margin-bottom: 0; }
     }
     @media (max-width: 480px) {
       .grid { grid-template-columns:1fr; gap:6px; }
@@ -448,6 +501,8 @@
       .gi:nth-child(1) { grid-column:auto !important; aspect-ratio:3/2 !important; }
       .hero-title { font-size:clamp(2.5rem,14vw,4rem); }
       .header-index { display:none; }
+      .contact-btn { padding: 1.2rem 2.4rem; font-size: 0.8rem; width: 100%; max-width: 340px; justify-content: center; }
+      footer { padding: 2.5rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
     }
     @media (hover:none) {
       .gi-title,.gi-en { opacity:1 !important; transform:translateY(0) !important; }
@@ -459,7 +514,7 @@
     }
   </style>
 </head>
-<body>
+<body id="top">
 
   <video id="bgLayer" class="bg-layer"
     src="images/mov1.mp4"
@@ -482,7 +537,20 @@
     <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
   </nav>
 
-  <section class="hero">
+  <nav class="side-link-nav" aria-label="シリーズ別リンク">
+    <a href="work-forest.html" target="_blank">森</a>
+    <a href="work-samizu.html" target="_blank">左美都の神話と伝承</a>
+    <a href="works-variant.html" target="_blank">異体</a>
+    <a href="works-cave.html" target="_blank">洞窟</a>
+    <a href="works-drawing.html" target="_blank">素描</a>
+    <a href="work-abstract.html" target="_blank">抽象</a>
+    <a href="work-refugees.html" target="_blank">難民</a>
+    <a href="work-tiny_soldier.html" target="_blank">子ども兵士</a>
+    <a href="work-40273.html" target="_blank">40273</a>
+    <a href="work-specimen_art.html" target="_blank">標本美術</a>
+  </nav>
+
+  <section class="hero" id="hero">
     <div class="hero-inner">
       <p class="hero-eyebrow"><span>Site-specific &nbsp;·&nbsp; Story-driven</span></p>
       <h1 class="hero-title" id="heroTitle">
@@ -497,17 +565,28 @@
     </div>
   </section>
 
-  <main class="gallery">
+  <main class="gallery" id="gallery">
     <div class="section-header" id="secHeader">
       <span class="section-label">Selected Works &nbsp;— &nbsp;Series</span>
-      <span class="section-count">10</span>
+      <span class="section-count">11</span>
     </div>
     <div class="grid" id="grid">
 
       <article class="gi">
-        <img src="images/416A0035.jpg" alt="左美都の神話と伝承">
+        <img src="images/【F100横】森20251217.jpg" alt="森">
         <div class="gi-overlay"></div>
         <span class="gi-num">01</span>
+        <div class="gi-label">
+          <span class="gi-title">森</span>
+          <span class="gi-en">Fragmented Forest</span>
+        </div>
+        <a href="work-forest.html" target="_blank" aria-label="森"></a>
+      </article>
+
+      <article class="gi">
+        <img src="images/416A0035.jpg" alt="左美都の神話と伝承">
+        <div class="gi-overlay"></div>
+        <span class="gi-num">02</span>
         <div class="gi-label">
           <span class="gi-title">左美都の神話と伝承</span>
           <span class="gi-en">Myth and Tradition</span>
@@ -518,7 +597,7 @@
       <article class="gi">
         <img src="images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg" alt="異体">
         <div class="gi-overlay"></div>
-        <span class="gi-num">02</span>
+        <span class="gi-num">03</span>
         <div class="gi-label">
           <span class="gi-title">異体</span>
           <span class="gi-en">Variant Forms</span>
@@ -529,7 +608,7 @@
       <article class="gi">
         <img src="images/【S100】so far.jpg" alt="洞窟">
         <div class="gi-overlay"></div>
-        <span class="gi-num">03</span>
+        <span class="gi-num">04</span>
         <div class="gi-label">
           <span class="gi-title">洞窟</span>
           <span class="gi-en">The Cave</span>
@@ -540,7 +619,7 @@
       <article class="gi">
         <img src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg" alt="素描">
         <div class="gi-overlay"></div>
-        <span class="gi-num">04</span>
+        <span class="gi-num">05</span>
         <div class="gi-label">
           <span class="gi-title">素描</span>
           <span class="gi-en">Drawings</span>
@@ -551,7 +630,7 @@
       <article class="gi">
         <img src="images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG" alt="抽象">
         <div class="gi-overlay"></div>
-        <span class="gi-num">05</span>
+        <span class="gi-num">06</span>
         <div class="gi-label">
           <span class="gi-title">抽象</span>
           <span class="gi-en">Abstract</span>
@@ -562,7 +641,7 @@
       <article class="gi">
         <img src="images/【F100号横】今、シリア.jpg" alt="難民(子ども)">
         <div class="gi-overlay"></div>
-        <span class="gi-num">06</span>
+        <span class="gi-num">07</span>
         <div class="gi-label">
           <span class="gi-title">難民(子ども)</span>
           <span class="gi-en">Refugees</span>
@@ -573,7 +652,7 @@
       <article class="gi">
         <img src="images/【F25縦】少年兵（アフリカ）.jpg" alt="子ども兵士">
         <div class="gi-overlay"></div>
-        <span class="gi-num">07</span>
+        <span class="gi-num">08</span>
         <div class="gi-label">
           <span class="gi-title">子ども兵士</span>
           <span class="gi-en">Tiny Soldiers</span>
@@ -584,7 +663,7 @@
       <article class="gi">
         <img src="images/before_clouds_are_captured.jpg" alt="黒の時代">
         <div class="gi-overlay"></div>
-        <span class="gi-num">08</span>
+        <span class="gi-num">09</span>
         <div class="gi-label">
           <span class="gi-title">黒の時代</span>
           <span class="gi-en">The Black Period</span>
@@ -595,7 +674,7 @@
       <article class="gi">
         <img src="images/@_the_beach.jpg" alt="40273">
         <div class="gi-overlay"></div>
-        <span class="gi-num">09</span>
+        <span class="gi-num">10</span>
         <div class="gi-label">
           <span class="gi-title">40273</span>
           <span class="gi-en">20100405</span>
@@ -606,7 +685,7 @@
       <article class="gi">
         <img src="images/子猫4（スコティッシュフォールド）.jpg" alt="標本美術">
         <div class="gi-overlay"></div>
-        <span class="gi-num">10</span>
+        <span class="gi-num">11</span>
         <div class="gi-label">
           <span class="gi-title">標本美術</span>
           <span class="gi-en">Specimen Art</span>
@@ -614,16 +693,17 @@
         <a href="work-specimen_art.html" target="_blank" aria-label="標本美術"></a>
       </article>
 
-    </div></main>
+    </div>
+  </main>
 
   <section class="contact-section" id="contact">
-    <p class="contact-label">Contact</p>
-    <h2 class="contact-heading">お問い合わせ</h2>
-    <p class="contact-body">
+    <p class="section-label">Contact</p>
+    <h2 class="section-heading">お問い合わせ</h2>
+    <p class="contact-body-text">
       展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。
     </p>
     <a href="https://sh012da.github.io/sh01/contact.html" class="contact-btn">
-      問い合わせフォームへ →
+      問い合わせフォームへ&ensp;→
     </a>
   </section>
 
@@ -632,20 +712,30 @@
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
+  <a href="#top" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+    <span class="back-to-top-text">TOP</span>
+  </a>
+
   <script>
-    /* ── ナビゲーション ── */
+    /* ── ナビゲーションメニューの開閉 ── */
     function toggleMenu() {
       const links = document.getElementById('nav-links');
       const btn   = document.getElementById('nav-cta-btn');
       links.classList.toggle('open');
       btn.style.display = links.classList.contains('open') ? 'none' : '';
+      if(links.classList.contains('open')) document.body.classList.add('is-locked');
+      else document.body.classList.remove('is-locked');
     }
     function closeMenu() {
       document.getElementById('nav-links').classList.remove('open');
       document.getElementById('nav-cta-btn').style.display = '';
+      document.body.classList.remove('is-locked');
     }
 
-    /* ── 文字スプリット ── */
+    /* ── 文字スプリットアニメーション ── */
     const TITLE_TEXT = 'WORKS';
     const BASE_DELAY = 0.70;
     const CHAR_STEP  = 0.09;
@@ -680,43 +770,56 @@
       requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('run')));
     });
 
-    /* ── パララックス背景 ── */
+    /* ════════════════════════════════════════
+       ★ スクロールイベントの統合（パララックス、ナビゲーション等）
+    ════════════════════════════════════════ */
     const bg = document.getElementById('bgLayer');
-    if (bg) {
-      let ticking = false;
-      window.addEventListener('scroll', () => {
-        if (!ticking) {
-          requestAnimationFrame(() => {
-            bg.style.transform = `translateY(${window.scrollY * 0.12}px)`;
-            ticking = false;
-          });
-          ticking = true;
-        }
-      }, { passive: true });
+    const topNav = document.getElementById('top-nav');
+    const b2t = document.getElementById('backToTop');
+    let ticking = false;
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+
+          /* 1. パララックス背景 */
+          if (bg) bg.style.transform = `translateY(${scrollY * 0.12}px)`;
+
+          /* 2. Top Nav の背景切り替え */
+          if (scrollY > 50) topNav.classList.add('scrolled');
+          else topNav.classList.remove('scrolled');
+
+          /* 3. TOPに戻るボタンの表示切り替え */
+          if (b2t) {
+            if (scrollY > window.innerHeight * 0.5) b2t.classList.add('is-visible');
+            else b2t.classList.remove('is-visible');
+          }
+
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    /* ── TOPに戻るボタンのクリックイベント ── */
+    if (b2t) {
+      b2t.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
     }
 
-    /* ════════════════════════════════════════
-       ★ ランダムグリッド（デスクトップのみ）
-       ページ読込のたびに「並び順」と「各カードの
-       列幅・縦横比」をランダムに決定する。
-       重い処理は一切行わない（O(n)・画像は再読込しない）ため
-       読み込み速度への影響はほぼゼロ。
-       スマホ／タブレット（900px以下）は対象外。
-    ════════════════════════════════════════ */
+    /* ── ランダムグリッド（デスクトップのみ） ── */
     (function randomizeGrid() {
       const grid = document.getElementById('grid');
       if (!grid) return;
-      if (!window.matchMedia('(min-width: 901px)').matches) return; // スマホは触らない
+      if (!window.matchMedia('(min-width: 901px)').matches) return; 
 
-      // 列幅（12カラム中）の候補。複数サイズを混在させて
-      // 規則的に見えすぎないようにする。
       const SPANS = [3, 4, 4, 5, 5, 6, 6, 7, 8];
-      // アスペクト比の候補
       const RATIOS = ['4/3', '1/1', '3/4', '16/9', '5/4', '9/16', '2/1', '3/2'];
-
       function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-      // Fisher–Yates で表示順をシャッフル
       const items = Array.from(grid.children);
       for (let i = items.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -726,19 +829,17 @@
       items.forEach(el => frag.appendChild(el));
       grid.appendChild(frag);
 
-      // 各カードに毎回ランダムなサイズ・比率を割り当て
       items.forEach((el, i) => {
         const span = pick(SPANS);
         el.style.gridColumn = `span ${span}`;
         el.style.gridRow = 'auto';
         el.style.aspectRatio = pick(RATIOS);
-        // 出現アニメーションのずれ（多すぎない範囲でランダム性を持たせる）
         const delay = (i % 5) * 70 + Math.floor(Math.random() * 60);
         el.style.setProperty('--delay', `${delay}ms`);
       });
     })();
 
-    /* ── Intersection Observer ── */
+    /* ── Intersection Observer (フェードイン) ── */
     const io = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
