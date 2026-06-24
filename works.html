@@ -27,6 +27,7 @@
       --jp: 'Noto Serif JP', serif;
       --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
       --ease-img:  cubic-bezier(0.165, 0.84, 0.44, 1);
+      --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1); /* ボタンのクリック感用 */
       --px: clamp(16px, 5vw, 64px);
     }
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -164,7 +165,7 @@
     }
 
     /* ════════════════════════════════════════
-       ★ SIDE LINK NAVIGATION
+       ★ SIDE LINK NAVIGATION (再洗練版)
     ════════════════════════════════════════ */
     .side-link-nav {
       position: fixed;
@@ -175,39 +176,75 @@
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 16px;
+      gap: 12px;
     }
     .side-link-nav a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      min-width: 140px; /* ある程度幅を揃えて整然と見せる */
       font-family: var(--jp);
-      font-size: clamp(12px, 1.2vw, 14px);
+      font-size: clamp(11px, 1.1vw, 13px);
       font-weight: 300;
-      color: rgba(237,233,228, 0.85);
+      color: rgba(237,233,228, 0.75); /* デフォルトは少し控えめに */
       text-decoration: none;
       letter-spacing: 0.15em;
+      padding: 0.6rem 1.2rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 40px;
+      background: rgba(13,13,11,0.4);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       transition: all 0.4s var(--ease-expo);
       position: relative;
-      padding-right: 18px;
+      overflow: hidden;
     }
-    .side-link-nav a::after {
+    
+    /* ホバー時の背景用レイヤー（左からスライドイン） */
+    .side-link-nav a::before {
       content: '';
       position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 4px;
-      height: 4px;
-      background: rgba(237,233,228,0.4);
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--accent);
+      transform: translateX(-101%);
+      transition: transform 0.5s var(--ease-expo);
+      z-index: -1;
+      border-radius: 40px;
+    }
+
+    /* 右端のインジケーター（通常時はドット） */
+    .side-link-nav a::after {
+      content: '';
+      display: block;
+      width: 4px; height: 4px;
       border-radius: 50%;
+      background: rgba(237,233,228,0.3);
+      margin-left: 12px;
       transition: all 0.4s var(--ease-expo);
     }
+
+    /* --- ホバーアクション --- */
     .side-link-nav a:hover {
-      color: var(--accent);
-      transform: translateX(-4px);
+      color: var(--bg);
+      border-color: transparent;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+      transform: translateX(-4px); /* 軽く浮き出る */
+    }
+    .side-link-nav a:hover::before {
+      transform: translateX(0);
     }
     .side-link-nav a:hover::after {
-      background: var(--accent);
-      box-shadow: 0 0 10px var(--accent);
-      transform: translateY(-50%) scale(1.5);
+      /* ドットが伸びてラインになるギミック */
+      width: 12px;
+      border-radius: 2px;
+      background: var(--bg);
+    }
+
+    /* --- クリックアクション（沈み込みの快感） --- */
+    .side-link-nav a:active {
+      transform: translateX(-2px) scale(0.94);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      transition: transform 0.1s var(--ease-bounce), box-shadow 0.1s;
     }
 
     /* ─── HERO ─── */
@@ -234,7 +271,7 @@
       animation: clipUp 0.9s var(--ease-expo) 0.5s forwards;
     }
     
-    /* ─── タイトル構造の改修 ─── */
+    /* ─── TITLE WRAPPER ─── */
     .hero-title-wrapper {
       display: flex;
       flex-direction: column;
