@@ -24,7 +24,7 @@
 
   <style>
     /* ============================================================
-       DESIGN TOKENS (Matched to Site System)
+       DESIGN TOKENS
     ================================================================ */
     :root {
       --bg:        #060605;
@@ -72,7 +72,7 @@
     }
 
     /* ============================================================
-       NAVIGATION (Transparent Top Nav & Page Nav)
+       NAVIGATION
     ================================================================ */
     nav#top-nav {
       position: fixed;
@@ -141,7 +141,7 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       HERO SECTION (Deep Cinematic Blur Reveal)
+       HERO SECTION
     ================================================================ */
     .hero {
       position: relative; height: 100svh; min-height: 580px;
@@ -167,97 +167,67 @@
     }
     .hero-content {
       position: relative; z-index: 2;
-      padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); width: 100%;
+      width: 100%;
+      padding: 0 var(--px) clamp(100px, 16vh, 160px);
     }
 
-    /* --- アニメーション定義 --- */
+    /* --- アニメーション定義（スマホ専用） --- */
     @keyframes textBlurReveal { 
       0% { opacity: 0; filter: blur(20px); transform: translateY(12px) scale(1.05); } 
       100% { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); } 
     }
-    
-    @keyframes textBlurRevealCenter { 
-      0% { opacity: 0; filter: blur(20px); transform: translate(-50%, 12px) scale(1.05); } 
-      100% { opacity: 1; filter: blur(0); transform: translate(-50%, 0) scale(1); } 
-    }
-
     @keyframes lineScale {
       0% { transform: scaleX(0); }
       100% { transform: scaleX(1); }
     }
 
-    /* 【修正のポイント】
-      以前は `opacity: 0` + `both` を指定していましたが、ホバーアニメーションの妨げになるため、
-      `opacity: 1` + `backwards` に変更し、終了後に要素のプロパティを解放するように直しました。
+    /* 【PC環境（デフォルト）のヒーローテキスト設定】
+      アニメーションによるカクつきを完全に防ぐため、PCでは即時表示（アニメーションなし）に設定。
     */
     .hero-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.65rem);
       letter-spacing: 0.3em; color: var(--accent-soft); text-transform: uppercase;
       margin-bottom: 18px; display: flex; align-items: center; gap: 1rem;
-      opacity: 1;
-      animation: textBlurReveal 2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s backwards;
+      opacity: 1; /* PCは最初から表示 */
     }
     .hero-eyebrow::before { 
       content: ''; width: 24px; height: 1px; background: var(--accent-soft); 
-      transform-origin: left;
-      transform: scaleX(1);
-      animation: lineScale 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s backwards;
+      transform-origin: left; transform: scaleX(1);
     }
     
     .hero-title {
       font-family: var(--font-ja); font-weight: 300;
       font-size: clamp(32px, 7vw, 86px); line-height: 1.25; margin: 0 0 14px;
-      color: var(--fg);
-      opacity: 1;
-      animation: textBlurReveal 2.5s cubic-bezier(0.16, 1, 0.3, 1) 0.6s backwards;
+      color: var(--fg); opacity: 1; letter-spacing: 0.05em;
     }
     
     .hero-title small {
       display: block; font-family: var(--font-en); font-size: 0.38em; letter-spacing: 0.2em;
       font-weight: 300; font-style: italic; color: var(--accent); margin-top: 12px;
-      opacity: 1;
-      animation: textBlurReveal 2.5s cubic-bezier(0.16, 1, 0.3, 1) 0.9s backwards;
-    }
-
-    /* ============================================================
-       PC環境（マウス操作）向けのタイトル追加アニメーション
-    ================================================================ */
-    @media (hover: hover) and (pointer: fine) {
-      .hero-title {
-        transition: letter-spacing 0.8s var(--ease), text-shadow 0.8s var(--ease), transform 0.8s var(--ease);
-        cursor: default;
-      }
-      
-      .hero-title:hover {
-        /* ホバー時、文字間が僅かに広がり、深淵から光が漏れるような発光効果 */
-        letter-spacing: 0.05em;
-        text-shadow: 0 0 30px rgba(196,168,130,0.6), 0 0 60px rgba(124,154,160,0.2);
-        transform: translateY(-2px);
-      }
-
-      .hero-title small {
-        transition: color 0.6s var(--ease), letter-spacing 0.6s var(--ease), transform 0.6s var(--ease);
-      }
-
-      .hero-title:hover small {
-        color: #ffffff;
-        letter-spacing: 0.28em;
-        transform: translateY(4px);
-      }
+      opacity: 0.8;
     }
     
     .hero-lead {
       max-width: 580px; font-size: clamp(0.85rem, 1.5vw, 0.95rem); color: rgba(233,229,223,0.75);
-      line-height: 2.1;
-      opacity: 1;
-      animation: textBlurReveal 2s cubic-bezier(0.16, 1, 0.3, 1) 1.2s backwards;
+      line-height: 2.1; opacity: 1; margin-top: 16px;
     }
 
-    /* Scroll Indicator */
+    /* 【スマホ環境でのみアニメーションを実行】
+      画面幅768px以下の環境では、従来通りの美しいアニメーションを適用します。
+    */
+    @media (max-width: 768px) {
+      .hero-eyebrow { opacity: 0; animation: textBlurReveal 2s var(--ease) 0.3s both; }
+      .hero-eyebrow::before { transform: scaleX(0); animation: lineScale 1.2s var(--ease) 0.8s both; }
+      .hero-title { opacity: 0; animation: textBlurReveal 2.5s var(--ease) 0.6s both; }
+      .hero-title small { opacity: 0; animation: textBlurReveal 2.5s var(--ease) 0.9s both; }
+      .hero-lead { opacity: 0; animation: textBlurReveal 2s var(--ease) 1.2s both; }
+    }
+
+    /* Scroll Indicator - タイトル被り防止のため右側(75%位置)へ配置 */
     .hero-scroll {
       position: absolute;
       bottom: clamp(30px, 8vh, 60px);
-      left: 50%;
+      left: 75%; /* 中央から大きく右に移動 */
       z-index: 100;
       display: flex;
       flex-direction: column;
@@ -266,9 +236,8 @@
       text-decoration: none;
       cursor: pointer;
       pointer-events: auto;
-      opacity: 1;
-      transform: translate(-50%, 0) scale(1);
-      animation: textBlurRevealCenter 2s ease 1.8s backwards; 
+      opacity: 1; /* PC環境では即時表示 */
+      transform: translateX(10%);
     }
     
     .hero-scroll:hover .hero-scroll-label {
@@ -302,6 +271,7 @@
       background: linear-gradient(to bottom, transparent 0%, var(--accent) 50%, #ffffff 100%);
       animation: scrollDropCentered 2.2s cubic-bezier(0.77, 0, 0.175, 1) infinite;
     }
+    @keyframes scrollDropCentered { 0% { top: -100%; opacity: 1; } 70% { top: 100%; opacity: 0.4; } 71% { top: -100%; opacity: 0; } 100% { top: -100%; opacity: 0; } }
 
     /* ============================================================
        GENERAL SECTION STYLING
@@ -559,6 +529,8 @@
       .page-nav.visible { right: 8px; opacity: 0.5; }
       .page-nav.visible:hover { opacity: 1; }
       .page-nav-label { display: none; }
+      
+      /* スマホ表示ではScrollインジケーターを非表示（レイアウト被り防止のため） */
       .hero-scroll { display: none; }
     }
     
@@ -567,7 +539,6 @@
       .reveal, .hero-eyebrow, .hero-eyebrow::before, .hero-title, .hero-title small, .hero-lead, .hero-scroll { 
         opacity: 1 !important; transform: none !important; filter: blur(0) !important;
       } 
-      .hero-scroll { transform: translateX(-50%) !important; }
     }
   </style>
 </head>
@@ -604,8 +575,8 @@
     </div>
     <div class="hero-divider" aria-hidden="true"></div>
     <div class="hero-content">
-      <span class="hero-eyebrow">グループ展「ふうけいのまにまに」発表作品 &nbsp;/&nbsp; Series 01</span>
-      <h1 class="hero-title">左美都の神話と伝承
+      <p class="hero-eyebrow"><span class="hero__eyebrow-line"></span>グループ展「ふうけいのまにまに」発表作品 &nbsp;/&nbsp; Series 01</p>
+      <h1 class="hero-title">左美都の神話と伝承<br>
         <small>Myth and Tradition of Samizu</small>
       </h1>
       <p class="hero-lead">長野県長野市信更町三水（左美都）。土蔵の奥底で沈黙を続ける木簡群——文字という暴力を受肉した者たちの伝承を、油彩の地層として再構築する展示の記録。</p>
@@ -828,7 +799,7 @@
   </section>
 
   <footer>
-    <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
+    <a href="index.html" class="footer-logo">津田 翔一 / Tsuda Shoichi</a>
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
