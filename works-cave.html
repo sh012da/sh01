@@ -90,8 +90,7 @@
     .nav-links a:hover { color: var(--accent); }
     .nav-cta {
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
+      letter-spacing: 0.25em; text-transform: uppercase;
       border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem;
       color: var(--accent); transition: background 0.25s, color 0.25s;
     }
@@ -186,15 +185,14 @@
       align-items: start;
     }
     .gallery-item {
-      display: flex;
-      flex-direction: column; text-decoration: none; cursor: pointer;
+      display: flex; flex-direction: column; text-decoration: none; cursor: pointer;
       opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
     }
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
 
     /* --- 24カラム グリッド比率設定 --- */
 
-    /* 1・2行目：往路・復路 — 単独で一行、画面端から端までフルブリード表示 */
+    /* 1・2行目：往路・復路 — 画面端から端までフルブリード表示（HTML復元対応） */
     .gi-ouro, .gi-fukuro {
       grid-column: 1 / -1;
       width: 100vw; max-width: 100vw;
@@ -206,9 +204,9 @@
     .gi-ouro .gallery-item-cap,
     .gi-fukuro .gallery-item-cap { padding-left: var(--px); padding-right: var(--px); }
 
-    /* 3行目：左美都と山脈（左美都=左／山脈=右） */
-    .gi-samizu     { grid-column: 2 / span 10; }
-    .gi-sanmyaku   { grid-column: 14 / span 10; }
+    /* 3行目：山脈と左美都 */
+    .gi-sanmyaku   { grid-column: 2 / span 10; }
+    .gi-samizu     { grid-column: 14 / span 10; }
 
     /* 4行目：高さ同期グループ */
     .gi-kakuchi    { grid-column: 3 / span 6; }
@@ -225,7 +223,7 @@
 
     /* 7行目：Untitled, 門, into_cave */
     .gi-untitled   { grid-column: 3 / span 6; }
-    .gi-mon        { grid-column: 11 / span 5; } 
+    .gi-mon        { grid-column: 11 / span 5; }
     .gi-intocave   { grid-column: 17 / span 6; }
 
     .gallery-item-img-wrap {
@@ -291,8 +289,15 @@
     .tl-entry.is-bleed .tl-figure img { max-height: none; }
     .tl-entry.is-bleed .tl-body { padding-left: var(--px); padding-right: var(--px); }
 
-    /* Dual Figure */
-    .tl-entry.is-dual-figure .tl-figure { border: none; background: none; overflow: visible; cursor: default; position: relative; display: block; padding-bottom: clamp(2.5rem, 7vw, 5rem); padding-right: clamp(2rem, 6vw, 4rem); }
+    /* ★★★ 修正箇所：Dual Figure（山脈の余白削除＆メイン画像を最大化） ★★★ */
+    .tl-entry.is-dual-figure .tl-figure { 
+      border: none; background: none; overflow: visible; 
+      cursor: default; position: relative; display: block; 
+      width: 70%; /* メイン画像の領域を最大化 */
+      padding: 0; /* 黒い余白（padding）を完全に削除してフィットさせる */
+    } 
+    .tl-entry.is-dual-figure .tl-body { width: 26%; } /* テキスト領域を調整 */
+    
     .tl-img-main, .tl-img-sub { border: 0.5px solid var(--border); overflow: hidden; cursor: zoom-in; background: var(--bg); transition: border-color 0.4s ease, box-shadow 0.5s var(--ease); }
     .tl-img-main img, .tl-img-sub img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(12%) brightness(0.85); transition: transform 1s var(--ease), filter 0.6s ease; }
     .tl-img-main:hover img, .tl-img-sub:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
@@ -301,7 +306,8 @@
     .tl-img-main { width: 100%; aspect-ratio: 6 / 5; position: relative; z-index: 1; }
     .tl-img-sub { width: 44%; aspect-ratio: 4 / 3; position: absolute; right: 0; bottom: 0; z-index: 2; box-shadow: 0 24px 56px rgba(0,0,0,0.55); }
     @media (max-width: 860px) {
-      .tl-entry.is-dual-figure .tl-figure { padding-bottom: 0; padding-right: 0; }
+      .tl-entry.is-dual-figure .tl-figure { width: 100% !important; padding: 0; }
+      .tl-entry.is-dual-figure .tl-body { width: 100% !important; }
       .tl-img-sub { position: static; width: 100%; margin-top: 1.25rem; box-shadow: none; }
     }
 
@@ -384,6 +390,8 @@
       .page-nav.visible { right: 8px; opacity: 0.5; }
       .page-nav.visible:hover { opacity: 1; }
       .page-nav-label { display: none; }
+      
+      /* ★★★ スマホ表示でギャラリーが全消えするバグ（display: none;）を削除・修正しました ★★★ */
     }
     @media (max-width: 480px) {
       .hero-scroll { display: none; }
@@ -409,7 +417,7 @@
       <li><a href="index.html#profile">Profile</a></li>
       <li><a href="index.html#news">News</a></li>
     </ul>
-    <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
+    <a href="index.html#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
   </nav>
 
   <nav class="page-nav" id="pageNav" aria-label="ページ内ナビゲーション">
@@ -474,7 +482,7 @@
     <section class="gallery-section" id="works">
       <div class="section-label" id="gallery">Works Index</div>
       <div class="gallery-grid">
-
+        
         <a href="#work-ouro" class="gallery-item gi-ouro">
           <div class="gallery-item-img-wrap"><img src="images/往路（左美都から善光寺平へ ）.jpg" alt="往路（左美都から善光寺平へ）" loading="lazy"></div>
           <div class="gallery-item-cap">
@@ -488,16 +496,16 @@
           </div>
         </a>
         
-        <a href="#work-samizu" class="gallery-item gi-samizu">
-          <div class="gallery-item-img-wrap"><img src="images/【F100縦×3】左美都.jpg" alt="左美都" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">左美都</span><span class="gallery-item-meta">2023 / F100×3</span>
-          </div>
-        </a>
         <a href="#work-sanmyaku" class="gallery-item gi-sanmyaku">
           <div class="gallery-item-img-wrap"><img src="images/【縦5×横6m】山脈.jpg" alt="山脈" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">山脈</span><span class="gallery-item-meta">2024 / 縦5m×横6m</span>
+          </div>
+        </a>
+        <a href="#work-samizu" class="gallery-item gi-samizu">
+          <div class="gallery-item-img-wrap"><img src="images/【F100縦×3】左美都.jpg" alt="左美都" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">左美都</span><span class="gallery-item-meta">2023 / F100×3</span>
           </div>
         </a>
 
@@ -831,7 +839,9 @@
     </section>
   </main>
 
-  <section class="contact-section" id="contact" id="profile" id="news">
+  <div id="profile"></div>
+  <div id="news"></div>
+  <section class="contact-section" id="contact">
     <p class="section-label" style="text-align: center; margin-bottom: 1.5rem;">Contact</p>
     <h2 class="contact-heading">お問い合わせ</h2>
     <p class="contact-body-text">
