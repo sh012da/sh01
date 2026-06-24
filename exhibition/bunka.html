@@ -23,7 +23,7 @@
 
   <style>
     /* ============================================================
-       DESIGN TOKENS (Matched to Site System)
+       DESIGN TOKENS
     ================================================================ */
     :root {
       --bg:        #050505; 
@@ -40,24 +40,17 @@
       --font-en:   'Cormorant Garamond', serif;
       --font-ja:   'Noto Serif JP', serif;
       --ease:      cubic-bezier(0.16, 1, 0.3, 1);
-      --px:        clamp(24px, 5vw, 48px);
-
-      --v-bg:        #060605;
-      --v-bg2:       #0c0c0a;
-      --v-fg:        #e9e5df;
-      --v-muted:     rgba(233,229,223,0.44);
-      --v-dim:       rgba(233,229,223,0.22);
-      --v-whisper:   rgba(233,229,223,0.10);
-      --v-accent:    #c4a882;
-      --v-accent2:   #7c9aa0;
-      --v-border:    rgba(233,229,223,0.08);
-      --v-border-md: rgba(233,229,223,0.20);
-      --v-font-en:   'Cormorant Garamond', serif;
-      --v-font-ja:   'Noto Serif JP', serif;
-      --v-ease:      cubic-bezier(0.16, 1, 0.3, 1);
-      --v-px:        clamp(1.25rem, 6vw, 5rem);
+      --px:        clamp(24px, 5vw, 64px);
+      --max-width: 1560px; 
     }
 
+    /* スマホ等での横揺れ・はみ出しを確実に防止 */
+    html, body { 
+      overflow-x: hidden; 
+      width: 100%; 
+      position: relative;
+    }
+    
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
@@ -67,7 +60,6 @@
       line-height: 2.1;
       letter-spacing: 0.06em;
       -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
       padding-left: env(safe-area-inset-left);
       padding-right: env(safe-area-inset-right);
     }
@@ -86,13 +78,30 @@
     }
 
     /* ============================================================
-       NAVIGATION (Transparent Top Nav & Page Nav)
+       LAYOUT CONTAINERS
+    ================================================================ */
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--px);
+    }
+    .container--narrow {
+      width: 100%;
+      max-width: 840px;
+      margin: 0 auto;
+      padding: 0 var(--px);
+    }
+
+    /* ============================================================
+       NAVIGATION
     ================================================================ */
     nav#top-nav {
       position: fixed;
       top: 0; left: 0; width: 100%; z-index: 1000;
       display: flex; align-items: center; justify-content: space-between;
-      padding: clamp(14px, 3vw, 36px) var(--px);
+      /* 背景は全幅、コンテンツはmax-widthに揃える計算式 */
+      padding: clamp(14px, 3vw, 36px) max(var(--px), calc((100vw - var(--max-width)) / 2 + var(--px)));
       background: transparent;
       backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
       border-bottom: 0.5px solid transparent;
@@ -101,7 +110,7 @@
     nav#top-nav.scrolled {
       background: rgba(5, 5, 5, 0.95);
       border-color: var(--border);
-      padding: clamp(10px, 2vw, 24px) var(--px);
+      padding: clamp(10px, 2vw, 24px) max(var(--px), calc((100vw - var(--max-width)) / 2 + var(--px)));
     }
     .nav-logo-unified {
       font-family: var(--font-en);
@@ -129,7 +138,7 @@
     /* Page Nav (Right fixed) */
     .page-nav {
       position: fixed;
-      right: clamp(15px, 3vw, 30px); top: 50%;
+      right: clamp(10px, 2vw, 24px); top: 50%;
       transform: translateY(-50%); z-index: 200;
       display: flex; flex-direction: column; gap: 24px;
       opacity: 0; visibility: hidden;
@@ -155,7 +164,7 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       HERO SECTION (Deep Cinematic Blur Reveal)
+       HERO SECTION
     ================================================================ */
     .hero {
       position: relative; height: 100svh; min-height: 600px;
@@ -179,9 +188,13 @@
       position: absolute; left: 0; right: 0; bottom: 0; height: 1px; z-index: 3;
       background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.2) 20%, rgba(124,154,160,0.3) 50%, rgba(196,168,130,0.2) 80%, transparent 100%);
     }
+
+    /* タイトルコンテナ：元の要望通り、コンテナ幅に縛られず画面端(var(--px))を基準に配置 */
     .hero-content {
       position: relative; z-index: 2;
-      padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); width: 100%;
+      width: 100%;
+      /* SCROLL表示と絶対被らないよう下部余白を多く確保 */
+      padding: 0 var(--px) clamp(100px, 16vh, 160px); 
     }
 
     @keyframes textBlurReveal { 
@@ -212,7 +225,6 @@
       color: var(--fg); opacity: 0; letter-spacing: 0.05em;
       animation: textBlurReveal 2.5s var(--ease) 0.6s both;
     }
-    /* ★ 津田翔一 個展 の表記を元に戻しました */
     .hero-title small {
       display: inline-block; font-family: var(--font-ja); font-size: 0.45em; letter-spacing: 0.15em;
       font-weight: 300; opacity: 0.8; margin-top: 12px;
@@ -224,17 +236,17 @@
       animation: textBlurReveal 2s var(--ease) 0.9s both;
     }
 
-    /* ★ メタ情報を元に戻しました */
     .hero-meta { display: flex; flex-wrap: wrap; gap: 20px 40px; opacity: 0; margin-top: 32px; animation: textBlurReveal 2s var(--ease) 1.2s both; }
     .hero-meta-item { display: flex; flex-direction: column; gap: 4px; }
-    .hero-meta-label { font-family: var(--font-en); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-dim); }
-    .hero-meta-value { font-family: var(--font-ja); font-size: 0.82rem; font-weight: 300; color: var(--text-dim); letter-spacing: 0.06em; line-height: 1.4; }
+    .hero-meta-label { font-family: var(--font-en); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); opacity: 0.8;}
+    .hero-meta-value { font-family: var(--font-ja); font-size: 0.82rem; font-weight: 300; color: rgba(233,229,223,0.8); letter-spacing: 0.06em; line-height: 1.4; }
 
-    /* Scroll Indicator */
+    /* Scroll Indicator - 中央固定 */
     .hero-scroll {
-      position: absolute; bottom: clamp(30px, 8vh, 60px); left: 50%; z-index: 100;
+      position: absolute; bottom: clamp(30px, 8vh, 50px); left: 50%; z-index: 100;
       display: flex; flex-direction: column; align-items: center; gap: clamp(12px, 2vh, 18px);
       text-decoration: none; cursor: pointer; pointer-events: auto; opacity: 0;
+      transform: translateX(-50%);
       animation: textBlurRevealCenter 2s ease 1.8s both; 
     }
     .hero-scroll:hover .hero-scroll-label { color: #ffffff; text-shadow: 0 0 12px rgba(196,168,130,0.6); }
@@ -245,7 +257,7 @@
       animation: textBreathe 3s ease-in-out infinite alternate;
     }
     @keyframes textBreathe { 0% { opacity: 0.5; } 100% { opacity: 1; } }
-    .hero-scroll-track { width: 2px; height: clamp(50px, 12vh, 100px); background: rgba(233,229,223,0.3); position: relative; overflow: hidden; border-radius: 2px; }
+    .hero-scroll-track { width: 2px; height: clamp(50px, 12vh, 80px); background: rgba(233,229,223,0.3); position: relative; overflow: hidden; border-radius: 2px; }
     .hero-scroll-fill {
       position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
       background: linear-gradient(to bottom, transparent 0%, var(--accent) 50%, #ffffff 100%);
@@ -256,7 +268,7 @@
     /* ============================================================
        GENERAL SECTION STYLING & MEDIA FRAMES
     ================================================================ */
-    section { padding: clamp(5rem, 12vh, 9rem) var(--px); position: relative; scroll-margin-top: 80px; }
+    section { padding: clamp(5rem, 12vh, 9rem) 0; position: relative; scroll-margin-top: 80px; }
     
     .eyebrow {
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.2vw, 0.65rem);
@@ -271,7 +283,7 @@
     .reveal { opacity: 0; transform: translateY(24px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
     .reveal.is-visible { opacity: 1; transform: translateY(0); }
 
-    /* --- Overview (元のテキスト・スペックに完全復元) --- */
+    /* --- Overview --- */
     .overview { padding: 120px 0 100px; border-bottom: 1px solid var(--border); }
     .overview__badge { display: inline-flex; align-items: center; gap: 10px; border: 1px solid rgba(184,149,90,0.3); padding: 6px 18px; margin-bottom: 60px; font-family: var(--font-ja); font-size: 0.65rem; font-weight: 300; color: rgba(184,149,90,0.8); letter-spacing: 0.1em; }
     .overview__badge svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; }
@@ -280,28 +292,64 @@
     .overview__text-block p.lead { font-size: 0.95rem; color: rgba(240,235,225,0.85); font-weight: 300; margin-bottom: 2em; line-height: 2.1; }
     .overview__specs { display: flex; flex-direction: column; gap: 0; border-left: 1px solid var(--border); padding-left: 50px; }
     .spec-row { display: grid; grid-template-columns: 80px 1fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid rgba(184,149,90,0.08); }
-    .spec-label { font-family: var(--font-en); font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold-dim); padding-top: 4px; }
+    .spec-label { font-family: var(--font-en); font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); opacity: 0.7; padding-top: 4px; }
     .spec-value { font-family: var(--font-ja); font-size: 0.78rem; font-weight: 300; color: rgba(240,235,225,0.65); line-height: 1.8; letter-spacing: 0.08em; }
 
     /* Pull Quote */
     .pull-quote { padding: 140px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); text-align: center; }
-    .pull-quote__mark { font-family: var(--font-en); font-size: 4rem; line-height: 0.6; color: var(--gold-dim); margin-bottom: 32px; }
+    .pull-quote__mark { font-family: var(--font-en); font-size: 4rem; line-height: 0.6; color: var(--accent); opacity: 0.4; margin-bottom: 32px; }
     .pull-quote__text { font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.2rem, 2.4vw, 1.7rem); line-height: 2.4; color: rgba(240,235,225,0.9); letter-spacing: 0.08em; display: inline-block; }
 
-    /* --- 写真フレームの立体感・臨場感の向上 --- */
+    /* --- Photo Frame --- */
     .photo-frame {
       overflow: hidden; background: #0b0b0a; position: relative;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 0.5px solid var(--border);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.7); border: 0.5px solid var(--border);
       transition: border-color 0.5s ease, box-shadow 0.5s var(--ease);
     }
     .photo-frame img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 1.2s var(--ease); }
     .photo-frame:hover img { transform: scale(1.025); }
-    .photo-frame:hover { border-color: rgba(196,168,130,0.3); box-shadow: 0 40px 80px rgba(0,0,0,0.9); }
+    .photo-frame:hover { border-color: rgba(196,168,130,0.3); box-shadow: 0 30px 70px rgba(0,0,0,0.9); }
 
-    .full-bleed { width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; margin-bottom: 100px; }
+    /* スマホで横スクロールを誘発させない、安全な全幅指定 */
+    .full-bleed { 
+      width: 100vw; 
+      max-width: 100vw;
+      position: relative; 
+      margin-left: calc(50% - 50vw); 
+      margin-bottom: clamp(60px, 10vw, 100px); 
+    }
     .full-bleed .photo-frame { box-shadow: none; border: none; border-radius: 0; }
 
-    /* 各種グリッドシステム */
+    /* ============================================================
+       CREATIVE PHOTO LAYOUTS
+    ================================================================ */
+    /* 1. モザイク・グリッド（雑誌風非対称レイアウト） */
+    .mosaic-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: clamp(20px, 4vw, 40px);
+      align-items: stretch;
+      margin: clamp(60px, 10vh, 120px) 0;
+    }
+    .mosaic-grid .col-right {
+      display: flex; flex-direction: column; gap: clamp(20px, 4vw, 40px); justify-content: space-between;
+    }
+    
+    /* 2. オーバーラップ・ギャラリー（写真をダイナミックに重ねる） */
+    .overlap-gallery {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: auto auto;
+      margin: clamp(60px, 10vh, 120px) 0;
+    }
+    .overlap-img-1 { grid-column: 1 / 9; grid-row: 1 / 3; z-index: 1; }
+    .overlap-img-2 { 
+      grid-column: 7 / 13; grid-row: 2 / 4; z-index: 2; 
+      margin-top: -15%; margin-bottom: -5%;
+      border: 6px solid var(--bg); /* 背景色で縁取りして立体感を出す */
+    }
+
+    /* 従来のグリッド */
     .asym-grid { display: grid; grid-template-columns: 5fr 6fr; gap: 5vw; align-items: center; margin: 100px 0; }
     .asym-grid--rev { grid-template-columns: 6fr 5fr; }
     
@@ -314,7 +362,9 @@
     }
     .overlap-block--rev .overlap-text { align-self: flex-end; margin-top: -100px; }
     
-    .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin: 80px 0; }
+    .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 4vw, 40px); margin: 80px 0; }
+    
+    /* テキストスタイル */
     .block-title { font-family: var(--font-ja); font-size: clamp(1.2rem, 2vw, 1.5rem); font-weight: 300; color: var(--fg); margin-bottom: 20px; letter-spacing: 0.05em; }
     .block-text { font-size: 0.9rem; line-height: 2.2; color: var(--muted); margin-bottom: 1.2em; text-align: justify; }
 
@@ -324,13 +374,13 @@
     /* Floor Header */
     .floor-header { display: flex; align-items: flex-start; gap: 48px; margin-bottom: 100px; } 
     .floor-number { font-family: var(--font-en); font-weight: 300; font-size: clamp(4rem, 8vw, 7rem); line-height: 1; color: rgba(184,149,90,0.1); letter-spacing: -0.02em; flex-shrink: 0; user-select: none; position: relative; top: -8px; }
-    .floor-label { font-family: var(--font-en); font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; display: flex; align-items: center; gap: 14px; }
-    .floor-label::after { content: ''; display: block; flex: 1; max-width: 48px; height: 1px; background: var(--gold-dim); }
+    .floor-label { font-family: var(--font-en); font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; display: flex; align-items: center; gap: 14px; }
+    .floor-label::after { content: ''; display: block; flex: 1; max-width: 48px; height: 1px; background: rgba(196,168,130,0.4); }
     .floor-title { font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.4rem, 2.8vw, 2.2rem); letter-spacing: 0.06em; color: rgba(240,235,225,0.95); margin-bottom: 20px; line-height: 1.5; }
-    .floor-desc { font-size: 0.92rem; line-height: 2.2; color: var(--text-dim); letter-spacing: 0.06em; max-width: 680px; }
+    .floor-desc { font-size: 0.92rem; line-height: 2.2; color: var(--muted); letter-spacing: 0.06em; max-width: 680px; }
 
     /* ============================================================
-       VENUE SUMMARY (長野・銀座案内)
+       VENUE SUMMARY
     ================================================================ */
     .venue-summary { 
       display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 80px;
@@ -372,7 +422,7 @@
        CONTACT & FOOTER & SERIES NAV
     ================================================================ */
     .contact-section {
-      padding: clamp(6rem, 14vh, 10rem) var(--px); text-align: center;
+      padding: clamp(6rem, 14vh, 10rem) 0; text-align: center;
       border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(196,168,130,0.05) 0%, var(--bg) 70%);
       scroll-margin-top: 80px; 
     }
@@ -386,7 +436,8 @@
     .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3); }
 
     footer {
-      padding: clamp(2rem, 5vh, 4rem) var(--px); display: flex; justify-content: space-between;
+      padding: clamp(2rem, 5vh, 4rem) max(var(--px), calc((100vw - var(--max-width)) / 2 + var(--px)));
+      display: flex; justify-content: space-between;
       align-items: center; flex-wrap: wrap; gap: 1.2rem; border-top: 0.5px solid var(--border); background: var(--bg2);
     }
     .footer-logo { font-family: var(--font-ja); font-size: clamp(0.78rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.3); text-decoration: none; letter-spacing: 0.08em; }
@@ -398,7 +449,8 @@
       position: relative; z-index: 10;
     }
     .series-nav a { 
-      flex: 1; padding: clamp(45px, 6vw, 70px) var(--px); display: flex; flex-direction: column; gap: 10px; 
+      flex: 1; padding: clamp(45px, 6vw, 70px) max(var(--px), calc((100vw - var(--max-width)) / 2 + var(--px)));
+      display: flex; flex-direction: column; gap: 10px; 
       transition: all 0.5s var(--ease); position: relative; overflow: hidden; text-decoration: none;
     }
     .series-nav a:first-child { border-right: 0.5px solid var(--border); }
@@ -457,13 +509,17 @@
     ================================================================ */
     @media (max-width: 900px) {
       .asym-grid { grid-template-columns: 1fr; gap: 40px; margin: 60px 0; }
+      .mosaic-grid { grid-template-columns: 1fr; gap: 24px; }
+      .overlap-gallery { display: flex; flex-direction: column; gap: 24px; }
+      .overlap-img-2 { margin: 0; border: none; }
+      
       .overlap-text { width: 92%; margin-top: -60px; padding: 32px 24px; align-self: center; }
       .venue-summary { grid-template-columns: 1fr; gap: 16px; }
       .overview__body { grid-template-columns: 1fr; gap: 40px; }
       .overview__specs { padding-left: 0; border-left: none; border-top: 1px solid var(--border); padding-top: 32px; }
     }
     @media (max-width: 768px) {
-      nav#top-nav { padding: 1.1rem 1.25rem; justify-content: space-between; }
+      nav#top-nav { padding: 1.1rem var(--px); justify-content: space-between; }
       .nav-links { display: none !important; }
       .nav-hamburger { display: none !important; } 
       .nav-cta { padding: 0.45rem 1.1rem; font-size: 0.62rem; }
@@ -600,9 +656,23 @@
           </div>
         </div>
 
-        <div class="overlap-block overlap-block--rev reveal">
-          <div class="overlap-media photo-frame">
-            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(13).jpg" alt="Nagano 1F 大型油彩画" loading="lazy" />
+        <div class="mosaic-grid reveal">
+          <div class="photo-frame">
+            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(13).jpg" alt="Nagano 1F 大型油彩画" loading="lazy" style="height:100%;" />
+          </div>
+          <div class="col-right">
+            <div class="photo-frame" style="aspect-ratio: 4 / 3;">
+              <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(2).jpg" alt="Nagano 1F 展示風景 側面アングル" loading="lazy" />
+            </div>
+            <div class="photo-frame" style="aspect-ratio: 4 / 3;">
+              <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(3).jpg" alt="Nagano 1F 展示風景 正面対峙" loading="lazy" />
+            </div>
+          </div>
+        </div>
+
+        <div class="overlap-block reveal">
+          <div class="overlap-media photo-frame" style="width: 85%;">
+            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(11).jpg" alt="Nagano 1F パネルと絵画の呼応" loading="lazy" />
           </div>
           <div class="overlap-text">
             <h3 class="block-title">空間と絵画の共鳴</h3>
@@ -610,22 +680,13 @@
           </div>
         </div>
 
-        <div class="grid-2-col reveal">
-          <div class="photo-frame" style="aspect-ratio: 4 / 3;">
-            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(2).jpg" alt="Nagano 1F 展示風景 側面アングル" loading="lazy" />
-          </div>
-          <div class="photo-frame" style="aspect-ratio: 4 / 3;">
-            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(3).jpg" alt="Nagano 1F 展示風景 正面対峙" loading="lazy" />
-          </div>
-        </div>
-
-        <div class="asym-grid reveal">
-          <div class="photo-frame" style="aspect-ratio: 3 / 4; max-height: 600px;">
-            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(11).jpg" alt="Nagano 1F パネルと絵画の呼応" loading="lazy" />
-          </div>
-          <div class="asym-content" style="padding-left: 20px;">
+        <div class="asym-grid asym-grid--rev reveal" style="margin-top: 100px;">
+          <div class="asym-content" style="padding-right: 20px;">
             <h3 class="block-title">創造の源泉としての「伝承」</h3>
             <p class="block-text">展示空間の奥へと進むと、左美都研究会による書籍『左美都の神話と伝承』やリサーチ資料の数々が立ち現れます。大蛇伝説や楯の城の攻防、名もなき人々の物語など、この地域に息づく伝承がテキストとして提示されています。<br><br>絵画群は単なる抽象表現ではなく、この民俗学的なコンテクストという深い地層を基盤にしています。アートとリサーチが交差することで、ハイブリッドな歴史の全貌が浮かび上がります。</p>
+          </div>
+          <div class="photo-frame" style="aspect-ratio: 16 / 10;">
+            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(4).jpg" alt="Nagano 1F アーカイブ什器展示" loading="lazy" />
           </div>
         </div>
 
@@ -635,16 +696,6 @@
           </div>
           <div class="photo-frame" style="aspect-ratio: 4 / 3;">
             <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(12).jpg" alt="Nagano 1F 詳細リサーチ資料パネル" loading="lazy" />
-          </div>
-        </div>
-
-        <div class="asym-grid asym-grid--rev reveal" style="margin-top: 100px;">
-          <div class="asym-content" style="padding-right: 20px;">
-            <h3 class="block-title">地脈を辿るドキュメンテーション</h3>
-            <p class="block-text">空間に点在するパネルや古文書のレプリカは、かつて閉ざされた村落で反復されていた行為の痕跡であり、カンヴァスの上に流れる水脈のパレイドリアを論理的に支える構造として機能しています。</p>
-          </div>
-          <div class="photo-frame" style="aspect-ratio: 16 / 10;">
-            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano1f(4).jpg" alt="Nagano 1F アーカイブ什器展示" loading="lazy" />
           </div>
         </div>
 
@@ -668,7 +719,9 @@
           <div class="photo-frame" style="aspect-ratio: 21 / 9; max-height: 65vh;">
             <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano3f(4).jpg" alt="3F映像展示空間全景" loading="lazy" />
           </div>
-          <span class="video-atmosphere">空間を満たす「気配」としての映像展示</span>
+          <div class="container" style="padding-top: 16px;">
+            <span style="display:block; text-align:right; font-size: 0.75rem; color: var(--dim);">空間を満たす「気配」としての映像展示</span>
+          </div>
         </div>
 
         <div class="asym-grid asym-grid--rev reveal">
@@ -684,7 +737,9 @@
             <div class="photo-frame" style="aspect-ratio: 3 / 4; max-height: 540px;">
               <img src="https://sh012da.github.io/sh01/images/exhi-bunka/kitano3f(1).jpg" alt="闇に沈む水脈のイメージ" loading="lazy" />
             </div>
-            <p class="block-text" style="margin-top:24px; font-style: italic; font-size: 0.85rem;">かつて左美都に溢れていた水脈。その流動性は、デジタル映像という現代の筆致によって、再び空間へと溢れ出します。</p>
+            <p class="block-text" style="position: relative; z-index: 10; margin-top: 48px;">
+              かつて左美都に溢れていた水脈。その流動性は、デジタル映像という現代の筆致によって、再び空間へと溢れ出します。
+            </p>
           </div>
         </div>
 
@@ -704,19 +759,12 @@
           </div>
         </div>
 
-        <div class="asym-grid reveal">
-          <div class="photo-frame" style="aspect-ratio: 4 / 3;">
-            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(1).jpg" alt="銀座ギャラリー入口 階段アプローチ" loading="lazy" />
-          </div>
-          <div class="asym-content">
-            <h3 class="block-title">銀座の喧騒を抜けた、路地奥の一角に</h3>
-            <p class="block-text">銀座のビル、階段を上がった先に現れるクリーンな展示空間。長野の広大な公的空間から抽出された記憶の断片が、都市のミニマルなグリッドの中に持ち込まれ、再領土化されます。</p>
-          </div>
-        </div>
-
-        <div class="full-bleed reveal">
-          <div class="photo-frame" style="aspect-ratio: 21 / 9; max-height: 65vh;">
+        <div class="overlap-gallery reveal">
+          <div class="photo-frame overlap-img-1">
             <img src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(2).jpg" alt="銀座展 展示風景全景ホワイトキューブ" loading="lazy" />
+          </div>
+          <div class="photo-frame overlap-img-2">
+            <img src="https://sh012da.github.io/sh01/images/exhi-bunka/ginza(1).jpg" alt="銀座ギャラリー入口 階段アプローチ" loading="lazy" />
           </div>
         </div>
 
@@ -758,7 +806,7 @@
         </div>
       </div>
     </section>
-    </main>
+  </main>
 
   <nav class="series-nav">
     <a href="https://sh012da.github.io/sh01/works-cave.html">
@@ -772,10 +820,12 @@
   </nav>
 
   <section class="contact-section" id="contact">
-    <p class="eyebrow" style="text-align: center; margin-bottom: 1.5rem;">Contact</p>
-    <h2 class="contact-heading">お問い合わせ</h2>
-    <p class="contact-body-text">個展「左美都の記憶と地脈」巡回展、作品、または取材等に関するお問い合わせは、下記フォームよりお気軽にご連絡ください。</p>
-    <a class="contact-btn" href="https://sh012da.github.io/sh01/contact.html"><span>問い合わせフォームへ</span></a>
+    <div class="container--narrow">
+      <p class="eyebrow" style="text-align: center; margin-bottom: 1.5rem;">Contact</p>
+      <h2 class="contact-heading">お問い合わせ</h2>
+      <p class="contact-body-text">個展「左美都の記憶と地脈」巡回展、作品、または取材等に関するお問い合わせは、下記フォームよりお気軽にご連絡ください。</p>
+      <a class="contact-btn" href="https://sh012da.github.io/sh01/contact.html"><span>問い合わせフォームへ</span></a>
+    </div>
   </section>
 
   <footer>
