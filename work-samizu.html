@@ -111,23 +111,6 @@
       color: var(--accent); transition: background 0.25s, color 0.25s;
     }
     .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
-    
-    /* Hamburger Button */
-    .nav-hamburger { 
-      display: none; background: none; border: none; cursor: pointer; 
-      z-index: 301; width: 30px; height: 20px; position: relative; padding: 0;
-    }
-    .nav-hamburger span {
-      display: block; position: absolute; left: 0; width: 100%; height: 1px;
-      background: var(--accent); 
-      transition: transform 0.4s var(--ease), opacity 0.4s var(--ease), top 0.4s var(--ease);
-    }
-    .nav-hamburger span:nth-child(1) { top: 0px; }
-    .nav-hamburger span:nth-child(2) { top: 9px; }
-    .nav-hamburger span:nth-child(3) { top: 18px; }
-    .nav-hamburger.is-active span:nth-child(1) { top: 9px; transform: rotate(45deg); }
-    .nav-hamburger.is-active span:nth-child(2) { opacity: 0; }
-    .nav-hamburger.is-active span:nth-child(3) { top: 9px; transform: rotate(-45deg); }
 
     /* Page Nav (Right fixed) */
     .page-nav {
@@ -187,7 +170,7 @@
       padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); width: 100%;
     }
 
-    /* --- 深くぶわーっとにじむアニメーション --- */
+    /* --- アニメーション定義 --- */
     @keyframes textBlurReveal { 
       0% { opacity: 0; filter: blur(20px); transform: translateY(12px) scale(1.05); } 
       100% { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); } 
@@ -203,40 +186,71 @@
       100% { transform: scaleX(1); }
     }
 
+    /* 【修正のポイント】
+      以前は `opacity: 0` + `both` を指定していましたが、ホバーアニメーションの妨げになるため、
+      `opacity: 1` + `backwards` に変更し、終了後に要素のプロパティを解放するように直しました。
+    */
     .hero-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.65rem);
       letter-spacing: 0.3em; color: var(--accent-soft); text-transform: uppercase;
       margin-bottom: 18px; display: flex; align-items: center; gap: 1rem;
-      opacity: 0;
-      animation: textBlurReveal 2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+      opacity: 1;
+      animation: textBlurReveal 2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s backwards;
     }
     .hero-eyebrow::before { 
       content: ''; width: 24px; height: 1px; background: var(--accent-soft); 
       transform-origin: left;
-      transform: scaleX(0);
-      animation: lineScale 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both;
+      transform: scaleX(1);
+      animation: lineScale 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s backwards;
     }
     
     .hero-title {
       font-family: var(--font-ja); font-weight: 300;
       font-size: clamp(32px, 7vw, 86px); line-height: 1.25; margin: 0 0 14px;
       color: var(--fg);
-      opacity: 0;
-      animation: textBlurReveal 2.5s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
+      opacity: 1;
+      animation: textBlurReveal 2.5s cubic-bezier(0.16, 1, 0.3, 1) 0.6s backwards;
     }
     
     .hero-title small {
       display: block; font-family: var(--font-en); font-size: 0.38em; letter-spacing: 0.2em;
       font-weight: 300; font-style: italic; color: var(--accent); margin-top: 12px;
-      opacity: 0;
-      animation: textBlurReveal 2.5s cubic-bezier(0.16, 1, 0.3, 1) 0.9s both;
+      opacity: 1;
+      animation: textBlurReveal 2.5s cubic-bezier(0.16, 1, 0.3, 1) 0.9s backwards;
+    }
+
+    /* ============================================================
+       PC環境（マウス操作）向けのタイトル追加アニメーション
+    ================================================================ */
+    @media (hover: hover) and (pointer: fine) {
+      .hero-title {
+        transition: letter-spacing 0.8s var(--ease), text-shadow 0.8s var(--ease), transform 0.8s var(--ease);
+        cursor: default;
+      }
+      
+      .hero-title:hover {
+        /* ホバー時、文字間が僅かに広がり、深淵から光が漏れるような発光効果 */
+        letter-spacing: 0.05em;
+        text-shadow: 0 0 30px rgba(196,168,130,0.6), 0 0 60px rgba(124,154,160,0.2);
+        transform: translateY(-2px);
+      }
+
+      .hero-title small {
+        transition: color 0.6s var(--ease), letter-spacing 0.6s var(--ease), transform 0.6s var(--ease);
+      }
+
+      .hero-title:hover small {
+        color: #ffffff;
+        letter-spacing: 0.28em;
+        transform: translateY(4px);
+      }
     }
     
     .hero-lead {
       max-width: 580px; font-size: clamp(0.85rem, 1.5vw, 0.95rem); color: rgba(233,229,223,0.75);
       line-height: 2.1;
-      opacity: 0;
-      animation: textBlurReveal 2s cubic-bezier(0.16, 1, 0.3, 1) 1.2s both;
+      opacity: 1;
+      animation: textBlurReveal 2s cubic-bezier(0.16, 1, 0.3, 1) 1.2s backwards;
     }
 
     /* Scroll Indicator */
@@ -252,8 +266,9 @@
       text-decoration: none;
       cursor: pointer;
       pointer-events: auto;
-      opacity: 0;
-      animation: textBlurRevealCenter 2s ease 1.8s both; 
+      opacity: 1;
+      transform: translate(-50%, 0) scale(1);
+      animation: textBlurRevealCenter 2s ease 1.8s backwards; 
     }
     
     .hero-scroll:hover .hero-scroll-label {
@@ -405,7 +420,7 @@
     .closing .sign { margin-top: 40px; font-family: var(--font-en); color: var(--accent); font-size: 0.95rem; letter-spacing: 0.15em; font-style: italic; }
 
     /* ============================================================
-       SERIES NAVIGATION (UPDATED: High Affordance Hover Effects)
+       SERIES NAVIGATION
     ================================================================ */
     .series-nav { 
       display: flex; justify-content: space-between; border-top: 0.5px solid var(--border); background: var(--bg2); 
@@ -417,7 +432,6 @@
     }
     .series-nav a:first-child { border-right: 0.5px solid var(--border); }
     
-    /* Background light and bottom line for clear affordance */
     .series-nav a::before {
       content: ""; position: absolute; inset: 0;
       background: linear-gradient(to top, rgba(196,168,130,0.15) 0%, transparent 100%);
@@ -446,7 +460,6 @@
     }
     .series-nav a.next { text-align: right; align-items: flex-end; }
     
-    /* Interactive Hover States */
     .series-nav a:hover .dir { color: var(--accent); }
     .series-nav a:hover .ttl { color: #ffffff; transform: translateY(-4px); text-shadow: 0 4px 12px rgba(196,168,130,0.4); }
     .series-nav a:first-child:hover .dir { transform: translateX(-8px); }
@@ -461,7 +474,7 @@
     }
 
     /* ============================================================
-       CONTACT & FOOTER (Matched to Site System)
+       CONTACT & FOOTER
     ================================================================ */
     .contact-section {
       padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center;
@@ -500,7 +513,7 @@
     .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.85rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
 
     /* ============================================================
-       MODAL LIGHTBOX (Unified System)
+       MODAL LIGHTBOX
     ================================================================ */
     .image-modal {
       position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center;
@@ -530,23 +543,22 @@
        MOBILE & SYSTEM OPTIMIZATION
     ================================================================ */
     @media (max-width: 768px) {
-      nav#top-nav { padding: 1rem 1.25rem; }
-      .nav-hamburger { display: block; }
-      .nav-links { display: none; }
-      .nav-links.open {
-        display: flex; flex-direction: row; flex-wrap: nowrap;
-        position: fixed; inset: 0; background: rgba(6,6,5,0.98);
-        align-items: center; justify-content: center; gap: 0.6rem;
-        z-index: 300; padding: 1rem; overflow-x: auto;
-        opacity: 1; visibility: visible; pointer-events: auto;
+      nav#top-nav {
+        padding: 1rem var(--px);
+        gap: 1.5rem;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
       }
-      .nav-links.open li { opacity: 1; transform: none; transition: none; }
-      .nav-links.open a { font-size: 0.9rem; letter-spacing: 0.15em; padding: 0.6rem 0.5rem; display: block; white-space: nowrap; }
+      nav#top-nav::-webkit-scrollbar { display: none; }
+      .nav-logo-unified { flex-shrink: 0; }
+      .nav-links { display: flex; gap: 1.2rem; flex-shrink: 0; }
+      .nav-links a { font-size: 0.65rem; }
+      .nav-cta { flex-shrink: 0; padding: 0.45rem 1rem; font-size: 0.6rem; }
       .page-nav.visible { right: 8px; opacity: 0.5; }
       .page-nav.visible:hover { opacity: 1; }
       .page-nav-label { display: none; }
-      
-      /* スクロールインジケーターをスマホでは非表示 */
       .hero-scroll { display: none; }
     }
     
@@ -566,14 +578,11 @@
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="https://sh012da.github.io/sh01/index.html#statement" onclick="closeMenu()">Statement</a></li>
-      <li><a href="https://sh012da.github.io/sh01/index.html#works"     onclick="closeMenu()">Works</a></li>
-      <li><a href="https://sh012da.github.io/sh01/index.html#profile"   onclick="closeMenu()">Profile</a></li>
-      <li><a href="https://sh012da.github.io/sh01/index.html#news"       onclick="closeMenu()">News</a></li>
+      <li><a href="https://sh012da.github.io/sh01/index.html#statement">Statement</a></li>
+      <li><a href="https://sh012da.github.io/sh01/index.html#works">Works</a></li>
+      <li><a href="https://sh012da.github.io/sh01/index.html#profile">Profile</a></li>
+      <li><a href="https://sh012da.github.io/sh01/index.html#news">News</a></li>
     </ul>
-    <button class="nav-hamburger" id="hamburger" aria-label="メニューを開閉" onclick="toggleMenu()">
-      <span></span><span></span><span></span>
-    </button>
     <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
   </nav>
 
@@ -848,35 +857,6 @@
   </div>
 
   <script>
-    /* ── メニュー開閉管理 ── */
-    function toggleMenu() {
-      const links = document.getElementById('nav-links');
-      const cta = document.getElementById('nav-cta-btn');
-      const hamburger = document.getElementById('hamburger');
-      
-      links.classList.toggle('open');
-      hamburger.classList.toggle('is-active');
-      
-      if(cta) cta.style.display = links.classList.contains('open') ? 'none' : '';
-      
-      if (links.classList.contains('open')) {
-        document.body.classList.add('is-locked');
-      } else {
-        document.body.classList.remove('is-locked');
-      }
-    }
-
-    function closeMenu() {
-      const links = document.getElementById('nav-links');
-      const cta = document.getElementById('nav-cta-btn');
-      const hamburger = document.getElementById('hamburger');
-      
-      links.classList.remove('open');
-      hamburger.classList.remove('is-active');
-      if(cta) cta.style.display = '';
-      document.body.classList.remove('is-locked');
-    }
-
     (function(){
       const header = document.getElementById('top-nav');
       const progress = document.getElementById('progress');
