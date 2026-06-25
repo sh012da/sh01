@@ -624,10 +624,16 @@
       font-size: 12px; text-transform: uppercase; padding-left: 0.5rem;}
     .profile-table td:last-child { color: var(--text-muted); line-height: 1.9; padding-right: 0.5rem;}
 
-    .profile-more-wrap { margin-top: 3.5rem; }
+    .profile-more-wrap { margin-top: 3.5rem; display: flex; flex-direction: column; align-items: flex-start; gap: 1.2rem; }
+    
     .profile-more-btn { display: inline-flex; align-items: center; justify-content: center; font-family: var(--jp); font-size: clamp(0.75rem, 1.5vw, 0.85rem); font-weight: 300; letter-spacing: 0.15em; color: var(--accent); text-decoration: none; border: 1px solid rgba(203,191,176,0.4); padding: 1.1rem 2.8rem; border-radius: 40px; transition: transform 0.4s var(--ease-out-back), box-shadow 0.4s ease, background 0.4s, color 0.4s, border-color 0.4s; background: rgba(203,191,176,0.03); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .profile-more-btn:hover { color: var(--bg); background: var(--accent); border-color: var(--accent); box-shadow: 0 10px 30px rgba(203,191,176,0.22); transform: translateY(-4px) scale(1.02); }
     .profile-more-btn:active { transform: translateY(0) scale(0.95); box-shadow: 0 4px 10px rgba(203,191,176,0.15); transition: transform 0.1s, box-shadow 0.1s; }
+
+    .profile-interview-btn { display: inline-flex; align-items: center; justify-content: center; font-family: var(--jp); font-size: clamp(0.7rem, 1.3vw, 0.75rem); font-weight: 300; letter-spacing: 0.1em; color: rgba(232,228,219,0.6); text-decoration: none; padding: 0.4rem 0.8rem; border-bottom: 0.5px solid rgba(232,228,219,0.2); transition: color 0.4s, border-color 0.4s, transform 0.4s var(--ease-out-back); gap: 0.5rem; position: relative; }
+    .profile-interview-btn:hover { color: var(--fg); border-color: var(--accent); transform: translateX(4px); }
+    .profile-interview-btn svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.5; fill: none; transition: transform 0.4s var(--ease-out-back); }
+    .profile-interview-btn:hover svg { transform: translate(2px, -2px); }
 
     .goals-column { display: flex; flex-direction: column; padding-top: 0.25rem; }
     .goals-header { font-family: var(--en);
@@ -644,7 +650,7 @@
     .goal-desc { font-size: 13px; color: rgba(232,228,219,0.65); line-height: 1.85; }
 
     /* ════════════════════════════════════════
-       SHOP BUTTONS (ココだけ target="_blank" 追加)
+       SHOP BUTTONS
     ════════════════════════════════════════ */
     .shop-btn {
       display: inline-flex; align-items: center; gap: 1rem;
@@ -660,9 +666,25 @@
     .shop-btn::before {
       content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
       background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
-      transform: skewX(-25deg); transition: left 0.75s cubic-bezier(0.19, 1, 0.22, 1); z-index: 0;
+      transform: skewX(-25deg); transition: left 0.75s cubic-bezier(0.19, 1, 0.22, 1); z-index: 1; /* 光沢効果を上層に */
     }
+    .shop-btn::after { /* ホバー画像表示用擬似要素 */
+      content: ''; position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 0.6s var(--ease-expo); z-index: 0; /* 背景画像は光沢の下に配置 */
+    }
+
     .shop-btn:hover::before { left: 150%; }
+
+    /* Atelier SH01 ホバー画像設定 */
+    .shop-btn.atelier-sh01:hover::after {
+      background-image: url('images/image_0.png'); /* 画像ファイルを指定 */
+      opacity: 0.15; /* うっすら */
+    }
+    /* Samizu Ware ホバー画像設定 */
+    .shop-btn.samizu-ware:hover::after {
+      background-image: url('images/image_1.png'); /* 画像ファイルを指定 */
+      opacity: 0.15; /* うっすら */
+    }
+
     .shop-btn:hover {
       background: rgba(203,191,176,0.08);
       border-color: var(--accent);
@@ -674,7 +696,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.4);
       transition: transform 0.1s, box-shadow 0.1s;
     }
-    .shop-btn > * { position: relative; z-index: 1; }
+    .shop-btn > * { position: relative; z-index: 2; /* テキストとロゴは最上層に配置 */ }
     
     .shop-btn-logo {
       width: 36px; height: 36px;
@@ -704,9 +726,12 @@
 
     .shop-btn-text-wrap { display: flex; flex-direction: column; gap: 0.1rem; }
     .shop-btn-title {
-      font-family: var(--en); font-size: 13px; color: var(--text); letter-spacing: 0.08em;
-      text-transform: uppercase; display: flex; align-items: center; gap: 0.5rem;
+      font-family: var(--jp); font-size: 13px; color: var(--text); letter-spacing: 0.05em;
+      text-transform: none; display: flex; align-items: center; gap: 0.5rem; /* 日本語タイトルに変更 */
     }
+    /* Atelier SH01とSamizu Wareのタイトル英語表記用クラス */
+    .shop-btn-title-en { font-family: var(--en); font-size: 13px; color: var(--text); letter-spacing: 0.08em; text-transform: uppercase; }
+
     .shop-btn-sub {
       font-family: var(--jp); font-size: 10px; color: rgba(232,228,219,0.5); letter-spacing: 0.05em;
     }
@@ -715,6 +740,9 @@
     }
     .shop-btn:hover .shop-btn-arrow { transform: translateX(6px); }
 
+
+    .news-heading-wrap { display: flex; align-items: baseline; gap: 1.5rem; flex-wrap: wrap; } /* 注釈追加用ラップ */
+    .news-footnote { font-family: var(--jp); font-size: 11px; color: var(--text-dim); line-height: 1.8; max-width: 320px; } /* 邪魔にならない注釈 */
 
     .news-list { margin-top: 4rem; list-style: none; border-top: 0.5px solid var(--border); }
     .news-item { border-bottom: 0.5px solid var(--border); transition: background 0.4s ease, padding-left 0.4s var(--ease-out-back); }
@@ -783,6 +811,32 @@
     @keyframes typing-cursor-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     @keyframes typing-cursor-fadeout { 0% { opacity: 1; } 100% { opacity: 0; } }
     .tw-cursor.fade-out { animation: typing-cursor-fadeout 0.8s ease forwards; }
+
+    /* ════════════════════════════════════════
+       TOOLTIP (外部サイトポップアップ)
+    ════════════════════════════════════════ */
+    .external-tooltip {
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      background: rgba(10, 10, 8, 0.95);
+      color: rgba(232, 228, 219, 0.9);
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-family: var(--jp);
+      letter-spacing: 0.05em;
+      border: 0.5px solid rgba(203, 191, 176, 0.3);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+      opacity: 0;
+      transform: translate(15px, 15px);
+      transition: opacity 0.2s ease;
+      z-index: 99999;
+      white-space: nowrap;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .external-tooltip.visible { opacity: 1; }
 
     /* ════════════════════════════════════════
        RESPONSIVE
@@ -880,7 +934,7 @@
       .profile-img { width: 160px; height: 160px; margin: 0 auto; }
       .profile-name, .profile-name-en { text-align: center; }
       
-      .profile-more-wrap { display: flex; justify-content: center; margin-top: 2.5rem; }
+      .profile-more-wrap { align-items: center; margin-top: 2.5rem; }
       .profile-more-btn { width: 100%; max-width: 340px; padding: 1.2rem; }
 
       .goals-column { flex-direction: column; }
@@ -965,9 +1019,9 @@
   
   <div class="hero-scroll"><span class="hero-scroll-line"></span>Scroll</div>
 
-  <a href="#news" class="hero-notice-box" aria-label="お知らせへスクロール">
-    <span class="hero-notice-en">Latest News — 2026.06.23</span>
-    <span class="hero-notice-text">信州高遠美術館で行われた「ふうけいのまにまに」の展示ページを公開しました。</span>
+  <a href="https://sh012da.github.io/sh01/exhibition/bunka.html" class="hero-notice-box" aria-label="文化庁展示ページへ" target="_blank" rel="noopener noreferrer">
+    <span class="hero-notice-en">Latest News — 2026.06.25</span>
+    <span class="hero-notice-text">文化庁メディア芸術クリエイター育成支援事業採択企画の展示ページを公開しました。</span>
   </a>
 
 </section>
@@ -984,7 +1038,7 @@
     </h2>
     <div class="opening-ito" id="openingIto" style="margin-top: 100px; margin-bottom: 200px;">
       <div class="concept-block ito-block" tabindex="0">
-        <p class="concept-para ito-intro" data-typewriter="true">〈いと〉とは何か。<br>例えば、生まれた土地の記憶、地質、感覚——<br>それ以上還元できない、存在の最小単位。</p>
+        <p class="concept-para ito-intro" data-typewriter="true">〈いと〉とは何か。<br>例えば, 生まれた土地の記憶, 地質, 感覚——<br>それ以上還元できない, 存在の最小単位。</p>
       </div>
     </div>
   </div>
@@ -992,17 +1046,17 @@
   <div class="concept-story">
     <div class="concept-block reveal" style="transition-delay:.20s">
       <span class="concept-block-en">Unit World</span>
-      <p class="concept-para">私は事物の存在に纏わるあらゆる傾向を、<em>〈単位世界（＝洞窟）〉</em>を構成する最小の事物（＝いと）と捉え、制作しています。〈いと〉とは、〈物語〉のそれ以上細分化できない要素です。そして〈物語〉とは、人間存在そのものです。なぜなら、私たち人間はすべてを〈物語〉として理解し、機能させて生きているからです。</p>
+      <p class="concept-para">私は事物の存在に纏わるあらゆる傾向を、<em>〈単位世界（＝洞窟）〉</em>を構成する最小の事物（＝いと）と捉え, 制作しています。〈いと〉とは, 〈物語〉のそれ以上細分化できない要素です。そして〈物語〉とは, 人間存在そのものです。なぜなら, 私たち人間はすべてを〈物語〉として理解し, 機能させて生きているからです。</p>
     </div>
 
     <div class="concept-block reveal" style="transition-delay:.30s">
       <span class="concept-block-en">Geological Memory</span>
-      <p class="concept-para">私にとっての〈いと〉は、自分が生まれ育った場所である"左美都（さみず、現在の長野県長野市信更町三水）"という地域です。ごく私的な経験を起点とし、その土地に深く根ざした記憶（歴史）や地質、感覚と向き合うことで、私はこの〈洞窟〉の根源を探ろうとしています。</p>
+      <p class="concept-para">私にとっての〈いと〉は, 自分が生まれ育った場所である"左美都（さみず, 現在の長野県長野市信更町三水）"という地域です。ごく私的な経験を起点とし, その土地に深く根ざした記憶（歴史）や地質, 感覚と向き合うことで, 私はこの〈洞窟〉の根源を探ろうとしています。</p>
     </div>
 
     <div class="concept-block reveal" style="transition-delay:.40s">
       <span class="concept-block-en">Process</span>
-      <p class="concept-para">私の制作の出発点となるのは、<em>油彩による描画</em>です。描画の過程（＝脱領土化）を通して〈いと〉が見いだされ、次に、あるいは同時にさまざまな手法による解釈・再読（＝再領土化）が始まります。再領土化される表現は、絵画にとどまらず、映像、立体、インスタレーションといった多層的な形式へと展開し、複合していきます。</p>
+      <p class="concept-para">私の制作の出発点となるのは, <em>油彩による描画</em>です。描画の過程（＝脱領土化）を通して〈いと〉が見いだされ, 次に, あるいは同時にさまざまな手法による解釈・再読（＝再領土化）が始まります。再領土化される表現は, 絵画にとどまらず, 映像, 立体, インスタレーションといった多層的な形式へと展開し, 複合していきます。</p>
     </div>
   </div>
 
@@ -1012,25 +1066,25 @@
         <span class="concept-tag-num">01</span>
         <p class="concept-tag-term">〈いと〉</p>
         <p class="concept-tag-en-label">Ito</p>
-        <p class="concept-tag-desc">"左美都"という土地の記憶・地質・感覚。物語のそれ以上細分化できない、最小の要素。</p>
+        <p class="concept-tag-desc">"左美都"という土地の記憶・地質・感覚。物語のそれ以上細分化できない, 最小の要素。</p>
       </div>
       <div class="concept-tag reveal" style="transition-delay:.30s">
         <span class="concept-tag-num">02</span>
         <p class="concept-tag-term">洞窟</p>
         <p class="concept-tag-en-label">Cave — Unit World</p>
-        <p class="concept-tag-desc">断片ともつれから成る世界の個別のひとつ。単一では無く、並存する宇宙として捉える造語的概念。</p>
+        <p class="concept-tag-desc">断片ともつれから成る世界の個別のひとつ。単一では無く, 並存する宇宙として捉える造語的概念。</p>
       </div>
       <div class="concept-tag reveal" style="transition-delay:.40s">
         <span class="concept-tag-num">03</span>
         <p class="concept-tag-term">脱領土化</p>
         <p class="concept-tag-en-label">Deterritorialization</p>
-        <p class="concept-tag-desc">油彩の描画過程において、形や意味が解体され、〈いと〉が見いだされていく運動。</p>
+        <p class="concept-tag-desc">油彩の描画過程において, 形や意味が解体され, 〈いと〉が見いだされていく運動。</p>
        </div>
       <div class="concept-tag reveal" style="transition-delay:.50s">
         <span class="concept-tag-num">04</span>
         <p class="concept-tag-term">再領土化</p>
         <p class="concept-tag-en-label">Reterritorialization</p>
-        <p class="concept-tag-desc">絵画・映像・立体・インスタレーションへと多層的に展開する、再解釈と再編成の過程。</p>
+        <p class="concept-tag-desc">絵画・映像・立体・インスタレーションへと多層的に展開する, 再解釈と再編成の過程。</p>
       </div>
     </div>
   </div>
@@ -1077,13 +1131,17 @@
       <p class="profile-name-en">Tsuda Shoichi</p>
       <table class="profile-table">
         <tr><td>Origin</td><td>長野県長野市信更町三水（左美都）</td></tr>
-        <tr><td>Practice</td><td>油彩絵画を起点に、映像・立体・インスタレーションへと展開する多層的な制作活動を行う。</td></tr>
+        <tr><td>Practice</td><td>油彩絵画を起点に, 映像・立体・インスタレーションへと展開する多層的な制作活動を行う。</td></tr>
         <tr><td>Theme</td><td>〈いと〉と〈洞窟（単位世界）〉。土地の記憶・地質・神話・伝承を通じた存在の根源の探求。</td></tr>
         <tr><td>Series</td><td>左美都の神話と伝承 / 異体（Variant）/ 洞窟（Cave）</td></tr>
       </table>
       
       <div class="profile-more-wrap">
         <a href="index-profile.html" class="profile-more-btn">プロフィールの詳細はこちら&ensp;→</a>
+        <a href="https://note.com/art_walk_repo/n/n78e9b9f3804a" class="profile-interview-btn" target="_blank" rel="noopener noreferrer">
+          インタビュー記事はこちら
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
       </div>
 
     </div>
@@ -1093,17 +1151,17 @@
       <div class="goal-card">
         <p class="goal-num">01</p>
         <p class="goal-title">ヴェネツィア・ビエンナーレへの出品・出展</p>
-        <p class="goal-desc">国際美術展への出品・出展を目指し、左美都の記憶と普遍的な人間存在への問いを世界に届ける。</p>
+        <p class="goal-desc">国際美術展への出品・出展を目指し, 左美都の記憶と普遍的な人間存在への問いを世界に届ける。</p>
       </div>
 
       <div class="goal-card">
         <p class="goal-num">02</p>
         <p class="goal-title">作品販売 Atelier SH01 での資金調達</p>
-        <p class="goal-desc">オンラインショップにて作品・グッズの販売を行っています。人文知へのささやかな投資として、お迎えいただけましたら幸いです。</p>
-        <a class="shop-btn" href="https://sh012da.base.shop/" target="_blank" rel="noopener noreferrer">
+        <p class="goal-desc">オンラインショップにて作品・グッズの販売を行っています。人文知へのささやかな投資として, お迎えいただけましたら幸いです。</p>
+        <a class="shop-btn atelier-sh01" href="https://sh012da.base.shop/" target="_blank" rel="noopener noreferrer">
           <img src="images/ロゴ.jpg" alt="Atelier SH01 Logo" class="shop-btn-logo">
           <div class="shop-btn-text-wrap">
-            <span class="shop-btn-title">sh012da.base.shop <span class="shop-btn-arrow">→</span></span>
+            <span class="shop-btn-title">油彩画販売のAtelier SH01 <span class="shop-btn-arrow">→</span></span>
             <span class="shop-btn-sub">公式オンラインショップ</span>
           </div>
         </a>
@@ -1111,9 +1169,9 @@
 
       <div class="goal-card">
         <p class="goal-num">03</p>
-        <p class="goal-title">左美都焼（さみずやき）の制作・販売</p>
-        <p class="goal-desc">左美都の土を用いた陶芸作品を制作しています。土地の記憶を内包した器を、日常の生活に取り入れてみませんか。</p>
-        <a class="shop-btn" href="https://www.iichi.com/shop/samizu_ware" target="_blank" rel="noopener noreferrer">
+        <p class="goal-title">左美都焼（さみずやき）の販売</p>
+        <p class="goal-desc">左美都の土を用いた陶芸作品を販売しています。土地の記憶を内包した器を, 日常の生活に取り入れてみませんか。</p>
+        <a class="shop-btn samizu-ware" href="https://www.iichi.com/shop/samizu_ware" target="_blank" rel="noopener noreferrer">
           <div class="shop-btn-icon">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
@@ -1122,7 +1180,7 @@
             </svg>
           </div>
           <div class="shop-btn-text-wrap">
-            <span class="shop-btn-title">iichi : Samizu Ware <span class="shop-btn-arrow">→</span></span>
+            <span class="shop-btn-title">Samizu Ware <span class="shop-btn-arrow">→</span></span>
             <span class="shop-btn-sub">左美都焼オンラインショップ</span>
           </div>
         </a>
@@ -1134,9 +1192,19 @@
 
 <section class="section" id="news">
   <p class="section-label reveal">News</p>
-  <h2 class="section-heading reveal">お知らせ</h2>
+  
+  <div class="news-heading-wrap reveal">
+    <h2 class="section-heading">お知らせ</h2>
+    <p class="news-footnote">※主要な出来事はプロフィールページの展示履歴（CAREER）等からもアクセスできます</p>
+  </div>
   
   <ul class="news-list">
+    <li class="news-item has-link">
+      <a href="https://sh012da.github.io/sh01/exhibition/bunka.html" class="news-item-link" target="_blank" rel="noopener noreferrer">
+        <span class="news-date">2026.06.25</span>
+        <div class="news-body"><span class="news-tag">Exhibition</span><br>文化庁メディア芸術クリエイター育成支援事業採択企画の展示ページを公開しました。</div>
+      </a>
+    </li>
     <li class="news-item has-link">
       <a href="https://sh012da.github.io/sh01/work-samizu.html" class="news-item-link">
         <span class="news-date">2026.06.23</span>
@@ -1145,32 +1213,8 @@
     </li>
     <li class="news-item">
       <div class="news-item-inner">
-        <span class="news-date">2026.06.17</span>
-        <div class="news-body"><span class="news-tag">Media</span><br>新しいホームページを制作中です。意見・感想をお待ちしています。お気軽にお問い合わせください。</div>
-      </div>
-    </li>
-    <li class="news-item">
-      <div class="news-item-inner">
         <span class="news-date">2026.02.10</span>
-        <div class="news-body"><span class="news-tag">Exhibition</span><br>ホクト文化ホール 1 階ギャラリーにて、グループ展「next × N-ART 展」を開催いたしました。</div>
-      </div>
-    </li>
-    <li class="news-item has-link">
-      <a href="https://sh012da.github.io/sh01/work-samizu.html" class="news-item-link">
-        <span class="news-date">2025.06.29</span>
-        <div class="news-body"><span class="news-tag">Exhibition</span><br>信州高遠美術館にてグループ展「ふうけいのまにまに」を開催いたしました。</div>
-      </a>
-    </li>
-    <li class="news-item has-link">
-      <a href="https://note.com/art_walk_repo/n/n78e9b9f3804a" class="news-item-link" target="_blank" rel="noopener noreferrer">
-        <span class="news-date">2024.06.13</span>
-        <div class="news-body"><span class="news-tag">Media</span><br>インタビュー記事が掲載されています。</div>
-      </a>
-    </li>
-    <li class="news-item">
-      <div class="news-item-inner">
-        <span class="news-date">2024.02.04</span>
-        <div class="news-body"><span class="news-tag">Event</span><br>長野県松本市・キッセイ文化ホールにて２月４日（日）のイベントに出演しました。</div>
+        <div class="news-body"><span class="news-tag">Exhibition</span><br>ホクト文化ホール 1 階ギャラリーにて, グループ展「next × N-ART 展」を開催いたしました。</div>
       </div>
     </li>
   </ul>
@@ -1179,7 +1223,7 @@
 <section class="contact-section" id="contact">
   <p class="section-label reveal" style="justify-content:center;">Contact</p>
   <h2 class="section-heading reveal">お問い合わせ</h2>
-  <p class="contact-body-text reveal">展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。</p>
+  <p class="contact-body-text reveal">展覧会・作品購入・取材・コラボレーション等,<br>お気軽にご連絡ください。</p>
   <a href="contact.html" class="contact-btn reveal">
     問い合わせフォームへ&ensp;→
   </a>
@@ -1197,7 +1241,31 @@
   <span class="back-to-top-text">TOP</span>
 </a>
 
+<div class="external-tooltip" id="external-tooltip">外部サイトが別のタブで開きます</div>
+
 <script>
+/* ════════════════════════════════════════════════════════
+   外部リンクツールチップ 完全版
+════════════════════════════════════════════════════════ */
+(function() {
+  var tooltip = document.getElementById('external-tooltip');
+  if (!tooltip) return;
+
+  var externalLinks = document.querySelectorAll('a[target="_blank"]');
+  externalLinks.forEach(function(link) {
+    link.addEventListener('mouseenter', function() {
+      tooltip.classList.add('visible');
+    });
+    link.addEventListener('mousemove', function(e) {
+      tooltip.style.left = (e.clientX + 15) + 'px';
+      tooltip.style.top = (e.clientY + 15) + 'px';
+    });
+    link.addEventListener('mouseleave', function() {
+      tooltip.classList.remove('visible');
+    });
+  });
+})();
+
 /* ════════════════════════════════════════════════════════
    WORKS DATA
 ════════════════════════════════════════════════════════ */
@@ -1206,110 +1274,113 @@ var WORKS_DATA = [
     year: 2025, series: 'Cave Series', titleJa: '森 20251217', titleEn: 'Forest',
     spec: '130.3 × 162 cm ／ 油彩・キャンバス', imgSrc: 'images/【F100横】森20251217.jpg', imgWidth: 720,
     link: 'work-forest.html', pageTitle: 'Forest Series',
-    desc: '左美都の山林を歩きながら感じた、木々の間に漂う光と沈黙。その場の<em>空気そのもの</em>を描こうとした作品です。形を明確に描くのではなく、色の重なりと筆の痕跡によって「森にいる感覚」が生まれるよう意図しました。土地の〈いと〉の記憶が、絵具の層に染み込んでいます。',
+    desc: '左美都の山林を歩きながら感じた, 木々の間に漂う光と沈黙。その場の<em>空気そのもの</em>を描こうとした作品です。形を明確に描くのではなく, 色の重なりと筆の痕跡によって「森にいる感覚」が生まれるよう意図しました。土地の〈いと〉の記憶が, 絵具の層に染み込んでいます。',
     tags: ['油彩による描画', '場の感覚への還元']
   },
   {
     year: 2024, series: 'Cave Series', titleJa: '山脈', titleEn: 'Mountain Range',
     spec: '500 × 600 cm ／ 油彩・キャンバス', imgSrc: 'images/山脈.jpg', imgWidth: 885,
     link: 'works-cave.html', pageTitle: 'Cave Series',
-    desc: '高さ5メートル、幅6メートルという圧倒的なスケールの大作。信州の山並みを「見る」のではなく、山と<em>同化する</em>ような体験を目指しました。地質と時間の堆積が、絵具の重なりとして現れています。',
+    desc: '高さ5メートル, 幅6メートルという圧倒的なスケールの大作。信州の山並みを「見る」のではなく, 山と<em>同化する</em>ような体験を目指しました。地質と時間の堆積が, 絵具の重なりとして現れています。',
     tags: ['大画面での身体的描画', '地質・時間の可視化']
   },
   {
     year: 2023, series: 'Cave Series', titleJa: '石筍 20230405', titleEn: 'Stalagmite',
     spec: '162 × 112 cm ／ 油彩・キャンバス', imgSrc: 'images/石筍20230405.jpg', imgWidth: 480,
     link: 'works-cave.html', pageTitle: 'Cave Series',
-    desc: '石筍とは、洞窟の床から水滴が積もってできる石の柱のこと。何千年もかけてほんの数センチ伸びるその姿に、<em>時間の蓄積</em>そのものを見ました。左美都の地下に眠る地層のイメージと重なり、人の記憶が層として積み重なる様子を描いています。',
+    desc: '石筍とは, 洞窟の床から水滴が積もってできる石の柱のこと。何千年もかけてほんの数センチ伸びるその姿に, <em>時間の蓄積</em>そのものを見ました。左美都の地下に眠る地層のイメージと重なり, 人の記憶が層として積み重なる様子を描いています。',
     tags: ['地質への着目', '記憶の層への変換']
   },
   {
     year: 2022, series: 'Variant Series', titleJa: 'スズラン', titleEn: 'ΑΦΡΟΔΙΤΗ（アフロディーテー）',
     spec: '162 × 130.3 cm ／ 油彩・キャンバス', imgSrc: 'images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg', imgWidth: 500,
     link: 'works-variant.html', pageTitle: 'Variant Series',
-    desc: '左美都に自生するスズランは、毒を持ちながら清楚な白い花を咲かせます。ギリシャ神話の美の女神アフロディーテーの名を副題に持つこの作品は、<em>美しさと危うさが同居する存在</em>を描いています。自然の中に潜む矛盾と、それでも咲き続けようとする力を表現しました。',
+    desc: '左美都に自生するスズランは, 毒を持ちながら清楚な白い花を咲かせます。ギリシャ神話の美の女神アフロディーテーの名を副題に持つこの作品は, <em>美しさと危うさが同居する存在</em>を描いています。自然の中に潜む矛盾と, それでも咲き続けようとする力を表現しました。',
     tags: ['植物の観察', '神話との接続', '異体化']
   },
   {
     year: 2021, series: 'Cave Series', titleJa: '夕焼け', titleEn: 'Evening Glow',
     spec: '162 × 130.3 cm ／ 油彩・キャンバス', imgSrc: 'images/【F100縦】夕焼け.jpg', imgWidth: 500,
     link: 'https://tsuda-shoichi.webnode.jp/', pageTitle: 'External Link',
-    desc: '子どもの頃に見た夕焼けの記憶。空が燃えるような赤から、夜の静けさへと変わっていく一瞬を閉じ込めました。懐かしさと切なさが混ざり合う感覚——それは<em>〈いと〉として刻まれた時間</em>の一端です。',
+    desc: '子どもの頃に見た夕焼けの記憶。空が燃えるような赤から, 夜の静けさへと変わっていく一瞬を閉じ込めました。懐かしさと切なさが混ざり合う感覚——それは<em>〈いと〉として刻まれた時間</em>の一端です。',
     tags: ['幼少期の記憶', '色彩による再構成']
   },
   {
     year: 2020, series: 'Variant Series', titleJa: 'リリス（胸部）', titleEn: 'Lilith Remnants-2',
     spec: '116.7 × 91 cm ／ 油彩・キャンバス', imgSrc: 'images/【F50縦】リリス（胸部）Lilith Remnants-2.jpg', imgWidth: 420,
     link: 'works-variant.html', pageTitle: 'Variant Series',
-    desc: 'リリスとは、旧約聖書外典に登場する「最初の女性」とも言われる存在。歴史の中で消された声、忘れられた記憶の断片を、<em>身体の部位として描く</em>シリーズです。かつて存在した何かの痕跡を絵画として残しています。',
+    desc: 'リリスとは, 旧約聖書外典に登場する「最初の女性」とも言われる存在。歴史の中で消された声, 忘れられた記憶の断片を, <em>身体の部位として描く</em>シリーズです。かつて存在した何かの痕跡を絵画として残しています。',
     tags: ['神話・伝承の調査', '身体表現への変換', '異体（Variant）化']
   },
   {
     year: 2019, series: 'Cave Series', titleJa: '明るい洞窟', titleEn: 'Bright Cave',
     spec: '162 × 162 cm ／ 油彩・キャンバス', imgSrc: 'images/【S100】so far.jpg', imgWidth: 720,
     link: 'works-cave.html', pageTitle: 'Cave Series',
-    desc: '「洞窟」といえば暗くて閉じた場所を想像しますが、この作品の洞窟は明るい。それは恐れるべき場所ではなく、<em>自分の内側に戻っていく入口</em>のようなものです。正方形の画面が、内と外の境目がないことを暗示しています。',
+    desc: '「洞窟」といえば暗くて閉じた場所を想像しますが, この作品の洞窟は明るい。それは恐れるべき場所ではなく, <em>自分の内側に戻っていく入口</em>のようなものです。正方形の画面が, 内と外の境目がないことを暗示しています。',
     tags: ['洞窟という概念の探求', '内的空間の可視化']
   },
   {
     year: 2018, series: 'Variant Series', titleJa: '上に溶ける…', titleEn: 'Dissolving Upward',
     spec: '162 × 130.3 cm ／ 油彩・キャンバス', imgSrc: 'images/【F100縦】上に溶ける・・・.jpg', imgWidth: 500,
     link: 'works-variant.html', pageTitle: 'Variant Series',
-    desc: '固いものが溶けて、上へと向かっていく。形があることと、形がないことの間を探った作品です。人間の記憶や感情が気化していくような感覚は、<em>失われることではなく、別の状態へと変化すること</em>だと気づきました。',
+    desc: '固いものが溶けて, 上へと向かっていく。形があることと, 形がないことの間を探った作品です。人間の記憶や感情が気化していくような感覚は, <em>失われることではなく, 別の状態へと変化すること</em>だと気づきました。',
     tags: ['形態の解体', '脱領土化の実験']
   },
   {
     year: 2017, series: 'Cave Series', titleJa: 'into_cave', titleEn: 'into_cave',
     spec: '53 × 65.2 cm ／ 油彩・キャンバス', imgSrc: 'images/【F15横】into_cave.jpg', imgWidth: 450,
     link: 'works-cave.html', pageTitle: 'Cave Series',
-    desc: '「洞窟へと入っていく」瞬間を描いた、Caveシリーズの出発点となった小品。暗闇の中に一歩踏み込む感覚——恐怖ではなく、<em>好奇心と静けさ</em>がそこにあります。津田翔一の核心である「洞窟（＝単位世界）」という概念が生まれはじめた作品です。',
+    desc: '「洞窟へと入っていく」瞬間を描いた, Caveシリーズの出発点となった小品。暗闇の中に一歩踏み込む感覚——恐怖ではなく, <em>好奇心と静けさ</em>がそこにあります。津田翔一の核心である「洞窟（＝単位世界）」という概念が生まれはじめた作品です。',
     tags: ['洞窟の体験', '概念の発見', 'シリーズの起点']
   },
   {
     year: 2016, series: 'Cave Series', titleJa: '傷(5)（イスラエルの少女、2008年）', titleEn: 'Scar(5) (Israeli Girl, 2008)',
     spec: '31.8 × 41 cm ／ 油彩・キャンバス', imgSrc: 'images/【F6横】傷.jpg', imgWidth: 400,
     link: 'work-refugees.html', pageTitle: 'Refugees',
-    desc: '霞がかったモノクロームの画面の向こうから、ひとりの少女が静かにこちらを見つめています。全体を覆う揺らぎは「薄れゆく記憶の危うさ」を思わせる一方で、顔の中心に刻まれた<em>「傷」</em>の存在感をより一層、生々しく浮き彫りにしています。',
+    desc: '霞がかったモノクロームの画面の向こうから, ひとりの少女が静かにこちらを見つめています。全体を覆う揺らぎは「薄れゆく記憶の危うさ」を思わせる一方で, 顔の中心に刻まれた<em>「傷」</em>の存在感をより一層, 生々しく浮き彫りにしています。',
     tags: ['傷', '子供']
   },
   {
     year: 2015, series: 'Cave Series', titleJa: 'Acid Attack Victim [ソナリ・ムカジー]', titleEn: 'Acid Attack Victim (Sonali Mukherjee)',
     spec: '130.3 × 162 cm ／ 油彩・キャンバス', imgSrc: 'images/【F100横】Acid Attack Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg', imgWidth: 720,
     link: 'work-refugees.html', pageTitle: 'Refugees',
-    desc: 'インドで酸攻撃という卑劣な暴力に直面した女性の姿を、F100という巨大なキャンバスに克明に描き出しています。彼女を包む青いヒジャブは、傷を隠すためではなく、<em>彼女の失われない尊厳と美しさ</em>を強調しているかのようです。',
+    desc: 'インドで酸攻撃という卑劣な暴力に直面した女性の姿を, F100という巨大なキャンバスに克明に描き出しています。彼女を包む青いヒジャブは, 傷を隠すためではなく, <em>彼女の失われない尊厳と美しさ</em>を強調しているかのようです。',
     tags: ['酸攻撃被害者(AAV)', '証言']
   },
   {
     year: 2014, series: 'Tiny Soldier', titleJa: '少年兵（アフリカ）', titleEn: 'Child Soldier · Africa',
     spec: '80.3 × 65.2 cm ／ 油彩・キャンバス', imgSrc: 'images/【F25縦】少年兵（アフリカ）.jpg', imgWidth: 400,
     link: 'work-tiny_soldier.html', pageTitle: 'Tiny Soldier',
-    desc: '戦禍の現実を生きるアフリカの少年兵の姿を描き出したポートレイト。彼の身体を包むオーバーサイズの白いシャツと、不釣り合いに大きな銃——<em>静寂に包まれたその表情</em>は、言葉にならない重い問いとして、見る者の心に深く沈み込んでいきます。',
+    desc: '戦禍の現実を生きるアフリカの少年兵の姿を描き出したポートレイト。彼の身体を包むオーバーサイズの白いシャツと, 不釣り合いに大きな銃——<em>静寂に包まれたその表情</em>は, 言葉にならない重い問いとして, 見る者の心に深く沈み込んでいきます。',
     tags: ['少年兵', '証言']
   },
   {
-    year: 2013, series: 'Refugees', titleJa: '今、シリア', titleEn: 'Syria, now',
-    spec: '130.3 × 162 cm ／ 油彩・キャンバス', imgSrc: 'images/【F100号横】今、シリア.jpg', imgWidth: 720,
+    year: 2013, series: 'Refugees', titleJa: '今, シリア', titleEn: 'Syria, now',
+    spec: '130.3 × 162 cm ／ 油彩・キャンバス', imgSrc: 'images/【F100号横】今, シリア.jpg', imgWidth: 720,
     link: 'work-refugees.html', pageTitle: 'Refugees',
-    desc: 'シリア内戦の報道写真をもとに制作した作品です。流れ去るニュースの映像を絵画として描き直すことで、一人の人間の存在と向き合う時間を生み出そうと試みました。傷ついた子どもの表情や仕草を通して、私たちと遠い出来事との距離を問いかけています。',
+    desc: 'シリア内戦の報道写真をもとに制作した作品です。流れ去るニュースの映像を絵画として描き直すことで, 一人の人間の存在と向き合う時間を生み出そうと試みました。傷ついた子どもの表情や仕草を通して, 私たちと遠い出来事との距離を問いかけています。',
     tags: ['難民(子ども) ', '証言']
   },
   {
     year: 2008, series: 'Cell-Graphics', titleJa: 'Cell-Graphics [apocalypse] - III', titleEn: 'Cell-Graphics [apocalypse] - III',
     spec: '21 × 29.7 cm ／ 鉛筆・紙', imgSrc: 'images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg', imgWidth: 340,
     link: 'works-drawing.html', pageTitle: 'Cell-Graphics',
-    desc: '鉛筆のみで描かれた細密なドローイングシリーズ「Cell-Graphics（CG）」。細胞（Cell）のように増殖していく形の連鎖が画面を埋め尽くします。「世界の終わり（apocalypse）」を主題とし、<em>すべての始まりとなる根源的な問い</em>を内包しています。',
+    desc: '鉛筆のみで描かれた細密なドローイングシリーズ「Cell-Graphics（CG）」。細胞（Cell）のように増殖していく形の連鎖が画面を埋め尽くします。「世界の終わり（apocalypse）」を主題とし, <em>すべての始まりとなる根源的な問い</em>を内包しています。',
     tags: ['鉛筆による細密描写', '形の増殖・連鎖']
   }
 ];
 
 /* ════════════════════════════════════════════════════════
-   タイムライン DOM 生成
+   タイムライン DOM 生成 & 表記修正
 ════════════════════════════════════════════════════════ */
 (function () {
   var entriesCol = document.getElementById('tl-entries-col');
   if (!entriesCol) return;
 
   WORKS_DATA.forEach(function (work, i) {
+    // 指示に基づき, 「左美都焼の販売」に表記を統一
+    work.desc = work.desc.replace('左美都焼（さみずやキ）の制作・販売', '左美都焼（さみずやき）の販売');
+
     var tags = work.tags.map(function (t) { return '<span tabindex="0">' + t + '</span>'; }).join('');
     var entry = document.createElement('article');
     entry.className = 'tl-entry';
@@ -1454,7 +1525,7 @@ var revealObs = new IntersectionObserver(function (entries) {
     if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
   });
 }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
-document.querySelectorAll('.reveal').forEach(function (el) { revealObs.observe(el); });
+document.querySelectorAll('.reveal, .news-heading-wrap').forEach(function (el) { revealObs.observe(el); });
 
 /* ════════════════════════════════════════════════════════
    動画背景
@@ -1530,28 +1601,20 @@ document.querySelectorAll('.goal-card, .news-item').forEach(function (el) {
 });
 
 /* ════════════════════════════════════════════════════════
-   タイピングアニメーション 完全版エンジン（DOM解析型）
+   タイピングアニメーション 完全版エンジン
 ════════════════════════════════════════════════════════ */
-
 const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-/**
- * 対象要素内のテキストノードを再帰的に走査し、
- * 1文字ずつのspanでラッピングする。
- */
 function prepareTypewriterDOM(el) {
   if (el.dataset.twPrepared) return;
   el.dataset.twPrepared = "true";
   function wrapTextNodes(node) {
-    if (node.nodeType === 3) { // テキストノード
+    if (node.nodeType === 3) {
       const text = node.nodeValue;
       if (!text.trim() && text.includes('\n')) return;
-
       const fragment = document.createDocumentFragment();
       for (let i = 0; i < text.length; i++) {
         const char = text[i];
         if (char === '\n' || char === '\r') continue;
-        
         const span = document.createElement('span');
         span.className = 'tw-char';
         span.style.opacity = '0';
@@ -1559,56 +1622,38 @@ function prepareTypewriterDOM(el) {
         fragment.appendChild(span);
       }
       node.parentNode.replaceChild(fragment, node);
-    } else if (node.nodeType === 1) { // エレメントノード
+    } else if (node.nodeType === 1) {
       if (node.classList.contains('tw-char')) return;
       Array.from(node.childNodes).forEach(wrapTextNodes);
     }
   }
-
   wrapTextNodes(el);
   el.classList.add('tw-wrap');
 }
-
-/**
- * 準備されたDOMを1文字ずつ表示(opacity:1)にする
- */
 function runTypewriter(el) {
   if (el.dataset.twRunning || el.dataset.twDone) return;
   el.dataset.twRunning = "true";
-
-  if (REDUCED_MOTION) {
-    finishTypewriter(el, []);
-    return;
-  }
-
+  if (REDUCED_MOTION) { finishTypewriter(el, []); return; }
   const chars = el.querySelectorAll('.tw-char');
   if (chars.length === 0) return;
-
   const cursor = document.createElement('span');
   cursor.className = 'tw-cursor';
   el.appendChild(cursor);
-
   let i = 0;
   function nextChar() {
     if (i < chars.length) {
       chars[i].style.opacity = '1';
       const text = chars[i].textContent;
-      
       let delay = 30;
       if (/[。．…]/.test(text)) delay = 140;
       else if (/[、，——]/.test(text)) delay = 70;
       else if (/[「」〈〉]/.test(text)) delay = 40;
-
       i++;
       setTimeout(() => requestAnimationFrame(nextChar), delay);
-    } else {
-      finishTypewriter(el, cursor);
-    }
+    } else { finishTypewriter(el, cursor); }
   }
-  
   requestAnimationFrame(nextChar);
 }
-
 function finishTypewriter(el, cursor) {
   el.dataset.twDone = "true";
   el.classList.add('tw-done');
@@ -1620,46 +1665,24 @@ function finishTypewriter(el, cursor) {
     chars.forEach(c => c.style.opacity = '1');
   }
 }
-
-/**
- * 監視と初期化
- */
 function initAllTypewriters() {
   const targets = document.querySelectorAll('[data-typewriter="true"]');
   targets.forEach(el => {
     prepareTypewriterDOM(el);
-
     const obs = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (e.isIntersecting) {
           obs.unobserve(el);
-          
           const parentEntry = el.closest('.tl-entry');
-          if (parentEntry) {
-            setTimeout(() => {
-              requestAnimationFrame(() => runTypewriter(el));
-            }, 600);
-          } else {
-            setTimeout(() => {
-              requestAnimationFrame(() => runTypewriter(el));
-            }, 200);
-          }
+          setTimeout(() => { requestAnimationFrame(() => runTypewriter(el)); }, parentEntry ? 600 : 200);
         }
       });
-    }, {
-      threshold: 0,
-      rootMargin: '0px 0px -15% 0px'
-    });
-
+    }, { threshold: 0, rootMargin: '0px 0px -15% 0px' });
     obs.observe(el);
   });
 }
-
-if (document.fonts && document.fonts.ready) {
-  document.fonts.ready.then(() => requestAnimationFrame(initAllTypewriters));
-} else {
-  window.addEventListener('load', () => requestAnimationFrame(initAllTypewriters));
-}
+if (document.fonts && document.fonts.ready) { document.fonts.ready.then(() => requestAnimationFrame(initAllTypewriters)); }
+else { window.addEventListener('load', () => requestAnimationFrame(initAllTypewriters)); }
 </script>
 </body>
 </html>
