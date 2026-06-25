@@ -16,7 +16,7 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght=0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght=200;300;400&display=swap" rel="stylesheet">
   
   <style>
     /* ============================================================
@@ -249,7 +249,6 @@
     =========================================================== */
     .statement-section {
       padding: clamp(4rem, 9vh, 7rem) var(--px) clamp(6rem, 13vh, 10rem);
-      /* ★ 適度に幅を広げて見やすくリデザイン */
       max-width: 1080px; margin: 0 auto; border-top: 0.5px solid var(--border);
     }
     .statement-label {
@@ -260,12 +259,10 @@
     }
     .statement-pullquote {
       font-family: var(--font-ja); font-weight: 200; 
-      /* ★ 文字サイズを微調整し、1行に入る文字数を増やすことで改行を自然に */
       font-size: clamp(1.15rem, 2.6vw, 1.7rem);
       line-height: 1.85; color: var(--fg); text-align: center; letter-spacing: 0.06em;
       margin-bottom: clamp(3.5rem, 8vh, 5rem);
-      width: 100%; /* 全幅を使用 */
-      /* ★ 単語の途中での不自然な改行を防ぐ最新の最適化 */
+      width: 100%;
       word-break: auto-phrase;
       opacity: 0; transform: translateY(20px);
       transition: opacity 1s var(--ease), transform 1s var(--ease);
@@ -342,7 +339,6 @@
       transition: border-color 0.4s ease, box-shadow 0.5s var(--ease);
     }
     
-    /* ★ リリスやNáströndなど F50縦（派生）作品用の高さを汎用化して設定 */
     .gallery-item.is-f50-height {
       --item-height: calc(var(--grid-base-h) * 0.72);
     }
@@ -431,26 +427,29 @@
     .tl-entry.is-f50-ratio .tl-figure { width: 38%; aspect-ratio: 91 / 116.7; }
     .tl-entry.is-f50-ratio .tl-body { width: 54%; }
 
-    /* ★ Náströnd 専用レイアウト（リリスと高さを完全に同期） */
+    /* ★ Náströnd 専用レイアウト（中央配置、全体が見えるように調整） */
     .tl-entry.is-nastrond .tl-content-wrap {
-      flex-direction: column; /* 超横長のため縦積みに */
+      flex-direction: column; /* 縦積みに */
       align-items: center;
       gap: clamp(2.5rem, 6vw, 4.5rem);
     }
     .tl-entry.is-nastrond .tl-year-display { text-align: center; padding-left: 0; }
     .tl-entry.is-nastrond .tl-figure {
-      /* リリス幅(38%) × (Náströnd幅290 / リリス幅91) ≒ 121% にすることで高さを数学的に一致させる */
-      width: 121%; 
-      max-width: 100vw; /* 画面外への突き抜け（横スクロール）を防止 */
-      margin-left: 50%;
-      transform: translateX(-50%);
+      width: 80%; /* 少し小さく */
+      max-width: 800px; /* PCでの最大幅制限 */
       aspect-ratio: 290 / 116.7; 
       border: 0.5px solid var(--border);
+      margin: 0 auto; /* 中央配置 */
     }
-    .tl-entry.is-nastrond .tl-figure img { width: 100%; height: 100%; object-fit: cover; }
+    .tl-entry.is-nastrond .tl-figure img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: contain; /* 全体が見えるように */
+    }
     .tl-entry.is-nastrond .tl-body {
       width: 100%;
       max-width: 880px;
+      text-align: center; /* テキストも中央寄せ */
     }
     
     .tl-figure img {
@@ -473,6 +472,9 @@
     .tl-desc {
       font-size: clamp(0.85rem, 1.6vw, 0.95rem); line-height: 2.1; color: rgba(233,229,223,0.7);
       text-align: justify;
+    }
+    .tl-entry.is-nastrond .tl-desc {
+      text-align: center; /* Náströndのみ中央寄せ */
     }
     .tl-desc p { margin-bottom: 1.2em; }
     .tl-desc p:last-child { margin-bottom: 0; }
@@ -584,8 +586,8 @@
       .tl-figure, .tl-body, .tl-entry.is-featured .tl-figure, .tl-entry.is-featured .tl-body, 
       .tl-entry.is-f50-ratio .tl-figure, .tl-entry.is-f50-ratio .tl-body { width: 100%; }
       
-      /* Náströnd もモバイルでは全幅にリセット */
-      .tl-entry.is-nastrond .tl-figure { width: 100%; margin-left: 0; transform: none; }
+      /* Náströnd もモバイルでは全幅にリセットし、はみ出しを防止 */
+      .tl-entry.is-nastrond .tl-figure { width: 100%; max-width: 100%; margin: 0 auto; transform: none; }
       .tl-entry.is-nastrond .tl-year-display { text-align: left !important; }
 
       .timeline-spine-wrapper { left: 16px; transform: none; }
@@ -883,7 +885,7 @@
               <h3 class="tl-title" data-typewriter="true">リリス（腰部）</h3>
               <p class="tl-meta">F50 / Lilith Remnants-3</p>
               <div class="tl-desc">
-                <p>豊穣や大地のメタファーとして古くから美術史に描かれてきた腰部・骨盤の形態が、ここでは地殻変動による渓谷の地形と重ね合わされています。</p>
+                <p>豊穣や大地のメタファーとして古くから美術史に描かれてきた腰部・骨盤の形態が,ここでは地殻変動による渓谷の地形と重ね合わされています。</p>
                 <p>画面を走るダイナミックな線の流れと、重力に従って滴る絵の具の生々しい痕跡が、生成と崩壊を繰り返す自然のサイクルと肉体の宿命を同時に表現しています。中心に向かって吸い込まれるような力強い構図が特徴的です。</p>
               </div>
             </div>
