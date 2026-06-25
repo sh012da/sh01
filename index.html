@@ -58,6 +58,20 @@
     .pc-only { display: inline; }
 
     /* ════════════════════════════════════════
+       SCROLL PROGRESS BAR
+    ════════════════════════════════════════ */
+    .scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2.5px;
+      background: var(--accent);
+      width: 0%;
+      z-index: 10000;
+      box-shadow: 0 0 10px rgba(203,191,176,0.6);
+      transition: width 0.1s ease-out;
+    }
+
+    /* ════════════════════════════════════════
        NAV
     ════════════════════════════════════════ */
     nav {
@@ -89,8 +103,15 @@
       letter-spacing: 0.25em; color: var(--muted-col);
       text-decoration: none; text-transform: uppercase; transition: color 0.3s ease, transform 0.3s ease;
       display: inline-block;
+      position: relative;
     }
-    .nav-links a:hover { color: var(--accent); transform: translateY(-2px); }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%) scaleX(0);
+      width: 12px; height: 1px; background: var(--accent); transition: transform 0.3s var(--ease-out-back);
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+    .nav-links a.active::after { transform: translateX(-50%) scaleX(1); }
+    
     .nav-cta {
       font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
       letter-spacing: 0.25em; text-transform: uppercase;
@@ -103,6 +124,58 @@
       border: none; cursor: pointer; padding: 4px; }
     .nav-hamburger span { display: block; width: 22px; height: 0.5px;
       background: var(--accent); margin: 6px 0; transition: all 0.25s; }
+
+    /* ════════════════════════════════════════
+       PAGE IN-PAGE NAVIGATION (RIGHT DOTS)
+    ════════════════════════════════════════ */
+    .page-nav {
+      position: fixed;
+      right: clamp(15px, 3vw, 30px);
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      z-index: 900;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.6s var(--ease-expo), visibility 0.6s;
+    }
+    .page-nav.is-visible {
+      opacity: 1; visibility: visible;
+    }
+    .page-nav-dot {
+      position: relative;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      border: 1px solid rgba(232,228,219,0.3);
+      background: transparent;
+      transition: all 0.4s var(--ease-out-back);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .page-nav-dot::after {
+      content: attr(data-label);
+      position: absolute; right: 24px; top: 50%;
+      transform: translateY(-50%) translateX(10px);
+      font-family: var(--en); font-size: 10px;
+      letter-spacing: 0.15em; color: var(--accent);
+      text-transform: uppercase;
+      opacity: 0; visibility: hidden;
+      transition: all 0.4s ease;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .page-nav-dot:hover {
+      border-color: var(--accent); background: rgba(203,191,176,0.2);
+    }
+    .page-nav-dot:hover::after {
+      opacity: 1; visibility: visible; transform: translateY(-50%) translateX(0);
+    }
+    .page-nav-dot.active {
+      background: var(--accent); border-color: var(--accent); transform: scale(1.4);
+      box-shadow: 0 0 10px rgba(203,191,176,0.4);
+    }
 
     /* ════════════════════════════════════════
        BACK TO TOP
@@ -662,7 +735,7 @@
       text-decoration: none;
       transition: all 0.4s var(--ease-out-back);
       position: relative; overflow: hidden;
-      max-width: 100%;
+      max-width: 100%; box-sizing: border-box;
     }
     .shop-btn::before {
       content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
@@ -705,6 +778,7 @@
       padding: 4px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.3);
       transition: transform 0.4s var(--ease-out-back);
+      flex-shrink: 0;
     }
     .shop-btn:hover .shop-btn-logo {
       transform: scale(1.05) rotate(-3deg);
@@ -718,15 +792,16 @@
       color: var(--accent);
       font-size: 18px;
       transition: transform 0.4s var(--ease-out-back);
+      flex-shrink: 0;
     }
     .shop-btn:hover .shop-btn-icon {
       transform: scale(1.05) translateY(-2px);
     }
 
-    .shop-btn-text-wrap { display: flex; flex-direction: column; gap: 0.1rem; }
+    .shop-btn-text-wrap { display: flex; flex-direction: column; gap: 0.1rem; overflow: hidden;}
     .shop-btn-title {
       font-family: var(--jp); font-size: 13px; color: var(--text); letter-spacing: 0.05em;
-      text-transform: none; display: flex; align-items: center; gap: 0.5rem;
+      text-transform: none; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;
     }
     .shop-btn-title-en { font-family: var(--en); font-size: 13px; color: var(--text); letter-spacing: 0.08em; text-transform: uppercase; }
 
@@ -743,13 +818,13 @@
        NEWS SECTION & FOOTNOTE
     ════════════════════════════════════════ */
     .news-heading-wrap { 
-      display: flex; align-items: baseline; gap: 1.8rem; width: 100%; overflow: hidden; margin-bottom: 0.5rem;
+      display: flex; align-items: baseline; gap: 1.8rem; width: 100%; margin-bottom: 0.5rem;
     }
     
     .news-footnote-link {
       display: inline-flex; align-items: center; gap: 0.5rem;
       font-family: var(--jp); font-size: 11px; color: var(--text-dim);
-      text-decoration: none; line-height: 1; white-space: nowrap;
+      text-decoration: none; line-height: 1.6; white-space: nowrap;
       transition: color 0.4s var(--ease-expo), border-color 0.4s var(--ease-expo), transform 0.4s var(--ease-out-back);
       border-bottom: 0.5px solid transparent; padding-bottom: 2px;
     }
@@ -850,6 +925,11 @@
       -webkit-backdrop-filter: blur(4px);
     }
     .external-tooltip.visible { opacity: 1; }
+    
+    /* タッチデバイスでは追従ツールチップを非表示（誤作動防止） */
+    @media (pointer: coarse) {
+      .external-tooltip { display: none !important; }
+    }
 
     /* ════════════════════════════════════════
        RESPONSIVE
@@ -956,8 +1036,13 @@
       
       .news-heading-wrap { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
       .news-footnote-link {
-        font-size: 10.5px; max-width: 100%; overflow-x: auto;
-        -webkit-overflow-scrolling: touch; padding-bottom: 6px;
+        white-space: normal; /* スマホで自然に折り返す */
+        padding-bottom: 0;
+        margin-bottom: 1rem;
+        align-items: flex-start;
+      }
+      .news-footnote-link svg {
+        margin-top: 2px; /* アイコンを1行目の高さに合わせる */
       }
       .news-item.has-link:hover { padding-left: 0; }
       .news-item-inner, .news-item-link { flex-direction: column; gap: 0.8rem; padding: 1.5rem 0.5rem; }
@@ -968,6 +1053,8 @@
       .contact-section { padding: 8rem 1.5rem; }
       .contact-btn { padding: 1.2rem 2.4rem; font-size: 0.8rem; width: 100%; max-width: 340px; justify-content: center; }
       footer { padding: 3rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+      
+      .page-nav { display: none; } /* スマホでは右端ドットナビは非表示。上のプログレスバーのみ */
     }
     @media (max-width: 480px) {
       .tl-spine-zone, .tl-dot-wrap { left: 20px; }
@@ -986,10 +1073,21 @@
       .opening-question, .back-to-top { transition: none !important; }
       .reveal { filter: none; transform: none; transition: opacity 0.5s ease; }
       .statement-bg-word { animation: none; opacity: 0.03; }
+      .page-nav, .scroll-progress { display: none !important; }
     }
   </style>
 </head>
 <body>
+
+<div class="scroll-progress" id="scroll-progress"></div>
+
+<div class="page-nav pc-only" id="page-nav">
+  <a href="#statement" class="page-nav-dot" data-label="Statement"></a>
+  <a href="#works" class="page-nav-dot" data-label="Works"></a>
+  <a href="#profile" class="page-nav-dot" data-label="Profile"></a>
+  <a href="#news" class="page-nav-dot" data-label="News"></a>
+  <a href="#contact" class="page-nav-dot" data-label="Contact"></a>
+</div>
 
 <div class="works-video-bg" id="works-video-bg" aria-hidden="true">
   <video autoplay loop muted playsinline>
@@ -1037,14 +1135,14 @@
   
   <div class="hero-scroll"><span class="hero-scroll-line"></span>Scroll</div>
 
-  <a href="https://sh012da.github.io/sh01/exhibition/bunka.html" class="hero-notice-box" aria-label="文化庁展示ページへ" target="_blank" rel="noopener noreferrer">
+  <a href="https://sh012da.github.io/sh01/exhibition/bunka.html" class="hero-notice-box" aria-label="文化庁展示ページへ">
     <span class="hero-notice-en">Latest News — 2026.06.25</span>
     <span class="hero-notice-text">文化庁メディア芸術クリエイター育成支援事業採択企画の展示ページを公開しました。</span>
   </a>
 
 </section>
 
-<section id="statement">
+<section id="statement" class="section">
   <div class="statement-bg-word" aria-hidden="true">CAVE</div>
   <div class="statement-bg-word word2" aria-hidden="true">ITO</div>
 
@@ -1108,7 +1206,7 @@
   </div>
 </section>
 
-<section id="works">
+<section id="works" class="section">
   <div class="works-content">
     <div class="works-header reveal">
       <div>
@@ -1221,7 +1319,7 @@
   
   <ul class="news-list">
     <li class="news-item has-link">
-      <a href="https://sh012da.github.io/sh01/exhibition/bunka.html" class="news-item-link" target="_blank" rel="noopener noreferrer">
+      <a href="https://sh012da.github.io/sh01/exhibition/bunka.html" class="news-item-link">
         <span class="news-date">2026.06.25</span>
         <div class="news-body"><span class="news-tag">Exhibition</span><br>文化庁メディア芸術クリエイター育成支援事業採択企画の展示ページを公開しました。</div>
       </a>
@@ -1241,7 +1339,7 @@
   </ul>
 </section>
 
-<section class="contact-section" id="contact">
+<section class="contact-section section" id="contact">
   <p class="section-label reveal" style="justify-content:center;">Contact</p>
   <h2 class="section-heading reveal">お問い合わせ</h2>
   <p class="contact-body-text reveal">展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。</p>
@@ -1448,6 +1546,57 @@ var WORKS_DATA = [
       });
     }
   });
+})();
+
+/* ════════════════════════════════════════════════════════
+   PAGE IN-PAGE NAVIGATION (SCROLL SPY & PROGRESS BAR)
+════════════════════════════════════════════════════════ */
+(function() {
+  var sections = document.querySelectorAll('.section, .hero');
+  var navLinks = document.querySelectorAll('.nav-links a, .page-nav-dot');
+  var progressBar = document.getElementById('scroll-progress');
+  var pageNav = document.getElementById('page-nav');
+  
+  function updateNav() {
+    var scrollY = window.scrollY;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var progress = (scrollY / docHeight) * 100;
+    
+    // プログレスバー更新
+    if(progressBar) {
+      progressBar.style.width = Math.min(progress, 100) + '%';
+    }
+
+    // 右側ドットナビゲーションの表示制御（Hero通過後に表示）
+    if(pageNav) {
+      if(scrollY > window.innerHeight * 0.5) {
+        pageNav.classList.add('is-visible');
+      } else {
+        pageNav.classList.remove('is-visible');
+      }
+    }
+
+    // カレントセクションのハイライト
+    var current = '';
+    sections.forEach(function(section) {
+      var sectionTop = section.offsetTop;
+      var sectionHeight = section.offsetHeight;
+      if (scrollY >= sectionTop - (window.innerHeight * 0.4)) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    navLinks.forEach(function(link) {
+      link.classList.remove('active');
+      if (current && link.getAttribute('href').includes(current)) {
+        link.classList.add('active');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', updateNav, { passive: true });
+  window.addEventListener('resize', updateNav, { passive: true });
+  updateNav(); // 初期ロード時
 })();
 
 /* ════════════════════════════════════════════════════════
