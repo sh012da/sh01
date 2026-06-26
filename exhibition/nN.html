@@ -293,9 +293,37 @@
     .spec-value { font-family: var(--font-ja); font-size: 0.78rem; font-weight: 300; color: rgba(240,235,225,0.65); line-height: 1.8; letter-spacing: 0.08em; }
 
     /* Pull Quote */
-    .pull-quote { padding: 140px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); text-align: center; }
-    .pull-quote__mark { font-family: var(--font-en); font-size: 4rem; line-height: 0.6; color: var(--accent-soft); opacity: 0.4; margin-bottom: 32px; }
-    .pull-quote__text { font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.2rem, 2.4vw, 1.7rem); line-height: 2.4; color: rgba(240,235,225,0.9); letter-spacing: 0.08em; display: inline-block; }
+    .pull-quote { 
+      padding: 120px 0; 
+      border-top: 1px solid var(--border); 
+      border-bottom: 1px solid var(--border); 
+      text-align: center; 
+    }
+    .pull-quote__mark { 
+      font-family: var(--font-en); 
+      font-size: 3.5rem; 
+      line-height: 0.6; 
+      color: var(--accent-soft); 
+      opacity: 0.4; 
+      margin-bottom: 32px; 
+    }
+    .pull-quote__text { 
+      font-family: var(--font-ja); 
+      font-weight: 300; 
+      font-size: clamp(1rem, 1.8vw, 1.35rem); 
+      line-height: 2.8; 
+      color: rgba(240,235,225,0.85); 
+      letter-spacing: 0.12em; 
+      display: inline-block; 
+      text-align: center;
+    }
+    .pull-quote__text span {
+      display: block;
+    }
+    .pull-quote__text em { 
+      font-style: normal; 
+      color: var(--accent); 
+    }
 
     /* --- Photo Frame --- */
     .photo-frame {
@@ -320,7 +348,7 @@
     /* ============================================================
        CREATIVE PHOTO LAYOUTS
     ================================================================ */
-    /* 1. モザイク・グリッド（雑誌風非対称レイアウト） */
+    /* 1. モザイク・グリッド */
     .mosaic-grid {
       display: grid;
       grid-template-columns: 1.3fr 1fr;
@@ -332,20 +360,6 @@
       display: flex; flex-direction: column; gap: clamp(20px, 4vw, 40px); justify-content: space-between;
     }
     
-    /* 2. オーバーラップ・ギャラリー（写真をダイナミックに重ねる） */
-    .overlap-gallery {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      grid-template-rows: auto auto;
-      margin: clamp(60px, 10vh, 120px) 0;
-    }
-    .overlap-img-1 { grid-column: 1 / 9; grid-row: 1 / 3; z-index: 1; }
-    .overlap-img-2 { 
-      grid-column: 7 / 13; grid-row: 2 / 4; z-index: 2; 
-      margin-top: -15%; margin-bottom: -5%;
-      border: 6px solid var(--bg);
-    }
-
     /* 従来のグリッド */
     .asym-grid { display: grid; grid-template-columns: 5fr 6fr; gap: 5vw; align-items: center; margin: 100px 0; }
     .asym-grid--rev { grid-template-columns: 6fr 5fr; }
@@ -357,6 +371,7 @@
       border: 0.5px solid var(--border-md); position: relative; margin-top: -140px; 
       z-index: 2; align-self: flex-start; box-shadow: 0 30px 70px rgba(0,0,0,0.9); 
     }
+    .overlap-block--rev { align-items: flex-start; }
     .overlap-block--rev .overlap-text { align-self: flex-end; margin-top: -100px; }
     
     .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 4vw, 40px); margin: 80px 0; }
@@ -379,7 +394,7 @@
     .floor-desc { font-size: 0.92rem; line-height: 2.2; color: var(--muted); letter-spacing: 0.06em; max-width: 680px; }
 
     /* ============================================================
-       ARTISTS GRID (from nN, adapted to bunka theme)
+       ARTISTS GRID 
     ================================================================ */
     .artists-band { margin-top: 80px; }
     .artists-band-title { font-family: var(--font-en); font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; display: block; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
@@ -481,15 +496,16 @@
     .lightbox__img { max-width: 92vw; max-height: 84vh; object-fit: contain; box-shadow: 0 30px 70px rgba(0,0,0,0.9); border: 0.5px solid var(--border); }
 
     /* ============================================================
-       RESPONSIVE DESIGN (スマホ表示制御)
+       RESPONSIVE DESIGN 
     ================================================================ */
     @media (max-width: 900px) {
       .asym-grid { grid-template-columns: 1fr; gap: 40px; margin: 60px 0; }
       .mosaic-grid { grid-template-columns: 1fr; gap: 24px; }
-      .overlap-gallery { display: flex; flex-direction: column; gap: 24px; }
-      .overlap-img-2 { margin: 0; border: none; }
       
       .overlap-text { width: 92%; margin-top: -60px; padding: 32px 24px; align-self: center; }
+      .overlap-block--rev .overlap-text { margin-top: -60px; align-self: center; }
+      .overlap-media { width: 90% !important; }
+
       .overview__body { grid-template-columns: 1fr; gap: 40px; }
       .overview__specs { padding-left: 0; border-left: none; border-top: 1px solid var(--border); padding-top: 32px; }
       .grid-3-col { grid-template-columns: 1fr; gap: 20px; }
@@ -573,9 +589,9 @@
         </div>
         <div class="overview__body">
           <div class="overview__text-block reveal">
-            <p class="lead" style="margin-bottom: 24px;">多面体は、ひとつの面では語れない。<br>11名の作家たちが長野のホールに集い、変容の現在地を問う。</p>
-            <p>「next×N-ART2026」は、制作のかたわら地域でのアート拠点づくりに取り組む作家たちを中心に、世代も表現スタイルも異なる長野ゆかりの11名が参加するグループ展だ。会場となるホクト文化ホール1Fギャラリーは、長い廊下状の空間に大小の作品が連なる構成で、鑑賞者は展示を歩くことで、個々の作家の「現在」と対話していく。</p>
-            <p>津田翔一は本展に油彩作品を複数出品。ホールの広大な壁面を活かした大型作品から精緻な小品まで、「異体」と呼ばれる結晶状の形象群が空間を占有する。アートが「変容する多面体」であるなら、その多面体は津田の絵画そのものの構造でもある——鋭角の面が衝突し、複数の視点が同一平面に折り重なる、変容し続ける形象として。</p>
+            <p class="lead" style="margin-bottom: 24px;">多面体は、ひとつの面では語れない。<br>11名の作家たちが長野のホールに集い、表現の現在地と変容を問う。</p>
+            <p>「next×N-ART2026」は、制作のかたわら地域でのアート拠点づくりに取り組む作家たちを中心に、世代も表現スタイルも異なる長野ゆかりの11名が参加するグループ展だ。会場となるホクト文化ホール1Fギャラリーの長い廊下状の空間を歩むことで、鑑賞者は個々の作家の「現在」と対話していく。</p>
+            <p>津田翔一は本展に大型の油彩作品などを複数出品。これまで「異体」と呼んできた結晶状の形象は、ホールの広大な壁面で新たな展開を見せた。それは単なる異体の集積ではない。鋭角の面が衝突し、複数の視点が同一平面に折り重なる中で、個々の形は互いに浸透し合い、ひとつの「森」のような生態系へと変容しつつある。アートを「変容する多面体」と捉える本展のテーマに呼応するように、自身の絵画構造が次のフェーズへと移行する確かな足跡がここにある。</p>
           </div>
           <div class="overview__specs reveal">
             <div class="spec-row"><span class="spec-label">Event</span><span class="spec-value">next×N-ART2026</span></div>
@@ -608,10 +624,10 @@
       <div class="container--narrow">
         <p class="pull-quote__mark" aria-hidden="true">&ldquo;</p>
         <h2 class="pull-quote__text reveal">
-          <span>多面体とは、単一の面では語れない存在のことだ。</span><br>
-          <span>私が描く「異体」も、ひとつの視点からは輪郭さえ定かでない。</span><br>
-          <span>鋭角の面が衝突し、折り重なるたびに形は別の顔を見せる——</span><br>
-          <span>変容こそが、その本質であるように。</span>
+          <span>多面体とは、単一の面では語れない存在のことだ。</span>
+          <span>かつて独立した「異体」として描かれた形は、<br>今や響き合い、連なり始めている。</span>
+          <span>鋭角の面が衝突し、折り重なるたびに生まれる新たな脈絡——</span>
+          <span>それは単なる形の集積を超え、ひとつの<em>「森」</em>へと変容する兆しである。</span>
         </h2>
       </div>
     </div>
@@ -622,8 +638,8 @@
           <div class="floor-number">01</div>
           <div class="floor-intro">
             <p class="floor-label">Works in Space</p>
-            <h2 class="floor-title">大空間を引き受ける油彩</h2>
-            <p class="floor-desc">ホクト文化ホール1Fギャラリーは、公共建築特有の長い廊下空間だ。白い壁と磨かれた床が延々と続くその空間に、津田の油彩が占拠する。大型作品の物質的な重さと、そこから放たれる色彩の密度は、建物の均質な時間を確かに裂いていた。</p>
+            <h2 class="floor-title">大空間に現れた「森」の萌芽</h2>
+            <p class="floor-desc">ホクト文化ホール1Fギャラリーは、公共建築特有の長い廊下空間だ。白い壁と磨かれた床が延々と続くその場所に、津田の油彩が展開する。大型作品の物質的な重さと、そこから放たれる色彩の密度は、建物の均質な時間を確かに裂き、無機質な空間に呼吸する森の気配を立ち上がらせていた。</p>
           </div>
         </div>
 
@@ -652,9 +668,9 @@
             <img src="https://sh012da.github.io/sh01/images/exhi-nN/nN (1).JPG" alt="左壁面 大型油彩2点と小品" loading="lazy" />
           </div>
           <div class="overlap-text">
-            <h3 class="block-title">連なる色彩の地層</h3>
-            <p class="block-text">廊下を歩くごとに、作品の見え方は変わる。正面から見れば鋭角的な構造が前景に出てくるが、斜めから見れば面と面の重なりが生み出す奥行きに引き込まれる。展示は一方向の視線を拒む——ギャラリーという「通路」を利用して、鑑賞者はおのずと複数の角度から作品と向き合うことになる。</p>
-            <p class="block-text">出品作はF100（縦・横）、P100をはじめとする大型作品が壁面を中心に展開し、それに呼応するように数点の小品が並ぶ。小品の精緻さと大作の解放感は、同じ概念の異なるスケールにおける顔である。</p>
+            <h3 class="block-title">呼応し合う色彩の生態系</h3>
+            <p class="block-text">廊下を歩くごとに、作品の見え方は変わる。正面から見れば鋭角的な構造が前景に出てくるが、斜めから見れば面と面の重なりが生み出す深い奥行きに引き込まれる。展示は一方向の視線を拒み、歩みを進める鑑賞者を森の奥へと誘うように、複数の視点と角度から絵画との対話を要求する。</p>
+            <p class="block-text">F100やP100といった大型作品が壁面を中心に連なり、そこに小品が呼応する。これらはもはや孤立した絵画ではなく、大木の根とそれに群生する植物のように、空間全体でひとつの有機的な関係性を結んでいる。</p>
           </div>
         </div>
 
@@ -681,33 +697,25 @@
         <div class="floor-header" data-reveal>
           <div class="floor-number">02</div>
           <div class="floor-intro">
-            <p class="floor-label">Entrance Installation</p>
-            <h2 class="floor-title">硝子の向こうに浮かぶ絵画</h2>
-            <p class="floor-desc">ホールのエントランスロビー、巨大な透明ガラスの仕切りの向こうに、1点の大型油彩がワイヤーで吊るされていた。屋外の光と室内の照明が交差するガラス面に、作品が反射し、透過し、幾重にも重なって見える——それは展示であると同時に、絵画が建築と光と時間の中で変貌を遂げる一瞬でもあった。</p>
+            <p class="floor-label">Entrance Display</p>
+            <h2 class="floor-title">ガラス越しの多面性</h2>
+            <p class="floor-desc">ホールのエントランスに面したガラス張りの区画。グループ展の会場構成として割り当てられたこの空間は、結果として作品の見え方に予期せぬ視覚的レイヤーをもたらすことになった。</p>
           </div>
         </div>
 
-        <div class="full-bleed reveal">
-          <div class="photo-frame" style="height: clamp(400px, 75vh, 800px);">
-            <img src="https://sh012da.github.io/sh01/images/exhi-nN/nN (5).JPG" alt="エントランスロビー 硝子越しに吊るされた大型油彩" loading="lazy" style="object-position: center 25%;" />
+        <div class="overlap-block overlap-block--rev reveal" style="margin: 60px 0;">
+          <div class="overlap-media photo-frame" style="width: clamp(280px, 65%, 680px); height: auto; align-self: flex-start;">
+            <img src="https://sh012da.github.io/sh01/images/exhi-nN/nN (8).JPG" alt="エントランスロビー 硝子越しに展示された大型油彩" loading="lazy" style="aspect-ratio: auto;" />
+          </div>
+          <div class="overlap-text" style="margin-top: -10%;">
+            <h3 class="block-title">反射と透過がもたらす必然</h3>
+            <p class="block-text">厚いガラスは物理的に鑑賞者と絵画を隔てているが、同時に周囲の光やロビーを行き交う人々の姿、外の景色をその表面に映し出している。</p>
+            <p class="block-text">キャンバス上に描かれた鋭角的な面と色彩の重なり合いに、現実空間の反射がさらに覆い被さる。ひとつの視点からは捉えきれない「多面体」としての絵画が、ガラスという環境のフィルターを通すことで外の世界と混ざり合い、見る時間や角度によって常に表情を変え続ける。与えられた展示区画でありながら、この作品がここに置かれた必然性が確かに存在していた。</p>
           </div>
         </div>
 
-        <div class="asym-grid asym-grid--rev reveal">
-          <div class="asym-content">
-            <h3 class="block-title">建築に介入する絵画</h3>
-            <p class="block-text">ガラスは本来、内と外を隔てる素材だ。しかしここでは、絵画がそのガラス面に重なることで、境界そのものが溶けはじめる。屋外の風景がガラスに映り込み、作品の色彩と混ざり合う——見る者は、絵画を見ているのか、透過した世界を見ているのか、その区別を失う。</p>
-            <p class="block-text">津田が長年追究してきた「異体」の概念——輪郭を持つが、一義的には語れない形象——は、このガラス越しの展示形式において文字通りの異体として現れた。作品はそこに確かに存在しながら、光の角度と距離によってその存在感を変え続けていた。</p>
-          </div>
-          <div class="asym-media">
-            <div class="photo-frame" style="aspect-ratio: 4 / 5;">
-              <img src="https://sh012da.github.io/sh01/images/exhi-nN/nN (6).JPG" alt="個別作品クローズアップ 結晶状の形象" loading="lazy" />
-            </div>
-          </div>
-        </div>
-
-        <div class="caption-row reveal">
-          <span class="caption-row__text">展示風景 ／ エントランスロビー — ワイヤー吊り大型油彩</span>
+        <div class="caption-row reveal" style="margin-top: 40px;">
+          <span class="caption-row__text">展示風景 ／ エントランスロビー — ガラス越しの展示</span>
         </div>
       </div>
     </section>
@@ -718,8 +726,8 @@
           <div class="floor-number" style="color: rgba(196,168,130,0.12);">03</div>
           <div class="floor-intro">
             <p class="floor-label">Individual Works</p>
-            <h2 class="floor-title">鋭角の面が語ること</h2>
-            <p class="floor-desc">津田翔一の絵画において、形体は解体された風景の残像であり、再構成された地質の断面でもある。展示された各作品は独立した世界でありながら、並べて見ることで「異体」という語り口の多様さが浮かび上がる。</p>
+            <h2 class="floor-title">孤立から共生への移行</h2>
+            <p class="floor-desc">津田翔一の絵画において、形体は解体された風景の残像であり、再構成された地質の断面でもある。展示された各作品は独立した世界を持ちながらも、並べて見ることで、それらが互いに浸透し合う「森」のプロセスが浮かび上がる。</p>
           </div>
         </div>
 
@@ -734,16 +742,16 @@
             <div class="photo-frame" style="aspect-ratio: 4 / 5; margin-bottom: 24px;">
               <img src="https://sh012da.github.io/sh01/images/exhi-nN/nN (6).JPG" alt="青緑系 単体作品クローズアップ" loading="lazy" />
             </div>
-            <h3 class="block-title" style="font-size: clamp(1rem, 1.6vw, 1.2rem);">青と灰の地層</h3>
-            <p class="block-text">白や青磁色が透けるように重なり、その下から茶・赤・黒の輪郭線が浮き出る。結晶体のような面の交差は、冬の山肌を解体した後に再組織化したもののように見える。</p>
+            <h3 class="block-title" style="font-size: clamp(1rem, 1.6vw, 1.2rem);">青と灰の脈絡</h3>
+            <p class="block-text">白や青磁色が透けるように重なり、その下から茶・赤・黒の線が地脈のように走る。結晶体のような面の交差は、もはや閉じた構造体ではなく、外へと増殖を続ける生命力のようなものを内包している。</p>
             <span class="block-meta">Oil on Canvas</span>
           </div>
           <div>
             <div class="photo-frame" style="aspect-ratio: 5 / 4; margin-bottom: 24px;">
               <img src="https://sh012da.github.io/sh01/images/exhi-nN/nN (1).JPG" alt="展示壁面 3点並びのアングル" loading="lazy" />
             </div>
-            <h3 class="block-title" style="font-size: clamp(1rem, 1.6vw, 1.2rem);">異体の集積</h3>
-            <p class="block-text">大小の作品が一つの壁面に並ぶとき、それぞれの形象の語り口の差異が際立つ。紫がかった暗色と、明るい灰・青緑の対比は、異なる季節の記憶を同時に保持しているかのようだ。</p>
+            <h3 class="block-title" style="font-size: clamp(1rem, 1.6vw, 1.2rem);">共鳴する形象群</h3>
+            <p class="block-text">大小の作品が一つの壁面に並ぶとき、単なる形の集積ではない有機的なつながりが現れる。紫がかった暗色と、明るい灰・青緑の対比は、異なる季節の記憶を同時に保持しながら、ひとつの風景を織り成しているかのようだ。</p>
             <span class="block-meta">Exhibition View</span>
           </div>
         </div>
