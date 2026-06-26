@@ -2,13 +2,13 @@
 <html lang="ja">
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-  gtag('config', 'G-5RF8JPF5D8');
-</script>
+    gtag('config', 'G-5RF8JPF5D8');
+  </script>
   <link rel="icon" type="image/jpeg" href="images/416A0128.jpg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -21,6 +21,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
   <style>
     /* ============================================================
@@ -68,7 +70,7 @@
       position: fixed;
       top: 0; left: 0; height: 2px; width: 0%;
       background: linear-gradient(90deg, var(--accent), var(--accent-soft));
-      z-index: 1000; transition: width 0.1s linear;
+      z-index: 10000; transition: width 0.1s linear;
     }
 
     /* ============================================================
@@ -76,7 +78,7 @@
     ================================================================ */
     nav#top-nav {
       position: fixed;
-      top: 0; left: 0; width: 100%; z-index: 300;
+      top: 0; left: 0; width: 100%; z-index: 5000;
       display: flex; align-items: center; justify-content: space-between;
       padding: clamp(14px, 3vw, 36px) var(--px);
       background: transparent;
@@ -116,7 +118,7 @@
     .page-nav {
       position: fixed;
       right: clamp(15px, 3vw, 30px); top: 50%;
-      transform: translateY(-50%); z-index: 200;
+      transform: translateY(-50%); z-index: 4000;
       display: flex; flex-direction: column; gap: 24px;
       opacity: 0; visibility: hidden;
       transition: opacity 0.6s var(--ease), visibility 0.6s;
@@ -141,140 +143,57 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       HERO SECTION
+       HERO SECTION (NEW DYNAMIC GSAP VERSION)
     ================================================================ */
+    .noise {
+      position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.04;
+      background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>');
+    }
+    .loader {
+      position: fixed; inset: 0; background: var(--bg); z-index: 10000;
+      display: flex; justify-content: center; align-items: center;
+    }
+    .loader-text {
+      font-family: var(--font-en); font-size: 1.5rem; letter-spacing: 0.5em; color: var(--accent);
+      animation: pulse 1.5s infinite alternate;
+    }
+    @keyframes pulse { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+
     .hero {
-      position: relative; height: 100svh; min-height: 580px;
-      display: flex; align-items: flex-end; overflow: hidden;
+      position: relative; height: 100vh; width: 100vw; overflow: hidden;
+      display: flex; justify-content: center; align-items: center;
       background: var(--bg2);
     }
-    .hero-media { position: absolute; inset: 0; z-index: 0; }
-    .hero-media img {
-      width: 100%; height: 100%; object-fit: cover;
-      transform: scale(1.08); animation: heroZoom 18s ease-out forwards;
-      filter: saturate(1.05) brightness(0.55);
+    .bg-type {
+      position: absolute; top: 10%; right: -10%; font-size: 30vw; font-family: var(--font-en);
+      font-weight: 300; color: rgba(255,255,255,0.02); pointer-events: none; white-space: nowrap;
     }
-    @keyframes heroZoom { to { transform: scale(1); } }
-    
-    .hero::after {
-      content: ""; position: absolute; inset: 0;
-      background: linear-gradient(to top, var(--bg) 2%, rgba(6,6,5,0.2) 45%, rgba(6,6,5,0.6) 100%);
-      z-index: 1;
+    .hero-img-wrap {
+      position: absolute; width: 60%; height: 80vh; 
+      clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%); overflow: hidden;
     }
-    .hero-divider {
-      position: absolute; left: 0; right: 0; bottom: 0; height: 1px; z-index: 3;
-      background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.2) 20%, rgba(124,154,160,0.3) 50%, rgba(196,168,130,0.2) 80%, transparent 100%);
+    .hero-img { 
+      width: 100%; height: 100%; object-fit: cover; transform: scale(1.2); filter: grayscale(15%) contrast(1.1); 
     }
-    .hero-content {
-      position: relative; z-index: 2;
-      width: 100%;
-      padding: 0 var(--px) clamp(100px, 16vh, 160px);
+    .hero-title-wrap { 
+      position: relative; z-index: 10; text-align: center; color: var(--fg); 
+      text-shadow: 0 4px 20px rgba(0,0,0,0.5); margin-top: 12vh; 
     }
-
-    /* --- アニメーション定義（スマホ専用） --- */
-    @keyframes textBlurReveal { 
-      0% { opacity: 0; filter: blur(20px); transform: translateY(12px) scale(1.05); } 
-      100% { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); } 
-    }
-    @keyframes lineScale {
-      0% { transform: scaleX(0); }
-      100% { transform: scaleX(1); }
-    }
-
-    /* 【PC環境（デフォルト）のヒーローテキスト設定】
-      アニメーションによるカクつきを完全に防ぐため、PCでは即時表示（アニメーションなし）に設定。
-    */
     .hero-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.65rem);
-      letter-spacing: 0.3em; color: var(--accent-soft); text-transform: uppercase;
-      margin-bottom: 18px; display: flex; align-items: center; gap: 1rem;
-      opacity: 1; /* PCは最初から表示 */
+      letter-spacing: 0.3em; color: var(--accent); text-transform: uppercase; margin-bottom: 1rem; display: block;
     }
-    .hero-eyebrow::before { 
-      content: ''; width: 24px; height: 1px; background: var(--accent-soft); 
-      transform-origin: left; transform: scaleX(1);
+    .hero-title { 
+      font-size: clamp(32px, 7vw, 86px); font-family: var(--font-ja); font-weight: 200; 
+      line-height: 1.25; letter-spacing: 0.05em; margin: 0 0 1rem; 
     }
-    
-    .hero-title {
-      font-family: var(--font-ja); font-weight: 300;
-      font-size: clamp(32px, 7vw, 86px); line-height: 1.25; margin: 0 0 14px;
-      color: var(--fg); opacity: 1; letter-spacing: 0.05em;
+    .hero-subtitle { 
+      font-family: var(--font-en); font-size: clamp(0.85rem, 2vw, 1.2rem); 
+      letter-spacing: 0.4em; font-style: italic; color: var(--accent); 
     }
-    
-    .hero-title small {
-      display: block; font-family: var(--font-en); font-size: 0.38em; letter-spacing: 0.2em;
-      font-weight: 300; font-style: italic; color: var(--accent); margin-top: 12px;
-      opacity: 0.8;
-    }
-    
-    .hero-lead {
-      max-width: 580px; font-size: clamp(0.85rem, 1.5vw, 0.95rem); color: rgba(233,229,223,0.75);
-      line-height: 2.1; opacity: 1; margin-top: 16px;
-    }
-
-    /* 【スマホ環境でのみアニメーションを実行】
-      画面幅768px以下の環境では、従来通りの美しいアニメーションを適用します。
-    */
-    @media (max-width: 768px) {
-      .hero-eyebrow { opacity: 0; animation: textBlurReveal 2s var(--ease) 0.3s both; }
-      .hero-eyebrow::before { transform: scaleX(0); animation: lineScale 1.2s var(--ease) 0.8s both; }
-      .hero-title { opacity: 0; animation: textBlurReveal 2.5s var(--ease) 0.6s both; }
-      .hero-title small { opacity: 0; animation: textBlurReveal 2.5s var(--ease) 0.9s both; }
-      .hero-lead { opacity: 0; animation: textBlurReveal 2s var(--ease) 1.2s both; }
-    }
-
-    /* Scroll Indicator - タイトル被り防止のため右側(75%位置)へ配置 */
-    .hero-scroll {
-      position: absolute;
-      bottom: clamp(30px, 8vh, 60px);
-      left: 75%; /* 中央から大きく右に移動 */
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: clamp(12px, 2vh, 18px);
-      text-decoration: none;
-      cursor: pointer;
-      pointer-events: auto;
-      opacity: 1; /* PC環境では即時表示 */
-      transform: translateX(10%);
-    }
-    
-    .hero-scroll:hover .hero-scroll-label {
-      color: #ffffff;
-      text-shadow: 0 0 12px rgba(196,168,130,0.6);
-    }
-    .hero-scroll:hover .hero-scroll-track {
-      background: rgba(233,229,223,0.5);
-    }
-
-    .hero-scroll-label {
-      font-family: var(--font-en); font-size: clamp(0.68rem, 1.3vw, 0.85rem); 
-      font-weight: 600; letter-spacing: 0.35em; color: rgba(233,229,223,0.9);
-      text-transform: uppercase; margin-left: 0.35em;
-      transition: all 0.4s ease;
-      animation: textBreathe 3s ease-in-out infinite alternate;
-    }
-    @keyframes textBreathe {
-      0% { opacity: 0.5; }
-      100% { opacity: 1; }
-    }
-
-    .hero-scroll-track {
-      width: 2px; height: clamp(50px, 12vh, 100px); 
-      background: rgba(233,229,223,0.3); position: relative;
-      overflow: hidden; transition: background 0.4s ease; border-radius: 2px;
-    }
-
-    .hero-scroll-fill {
-      position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(to bottom, transparent 0%, var(--accent) 50%, #ffffff 100%);
-      animation: scrollDropCentered 2.2s cubic-bezier(0.77, 0, 0.175, 1) infinite;
-    }
-    @keyframes scrollDropCentered { 0% { top: -100%; opacity: 1; } 70% { top: 100%; opacity: 0.4; } 71% { top: -100%; opacity: 0; } 100% { top: -100%; opacity: 0; } }
 
     /* ============================================================
-       GENERAL SECTION STYLING
+       GENERAL SECTION STYLING (Original layout restored)
     ================================================================ */
     section { padding: clamp(6rem, 14vh, 11rem) var(--px); position: relative; scroll-margin-top: 80px; }
     
@@ -510,7 +429,7 @@
     .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.7rem, 1.2vw, 0.85rem); font-style: italic; color: var(--accent); letter-spacing: 0.15em; }
 
     /* ============================================================
-       MOBILE & SYSTEM OPTIMIZATION
+       MOBILE OPTIMIZATION
     ================================================================ */
     @media (max-width: 768px) {
       nav#top-nav {
@@ -530,21 +449,19 @@
       .page-nav.visible:hover { opacity: 1; }
       .page-nav-label { display: none; }
       
-      /* スマホ表示ではScrollインジケーターを非表示（レイアウト被り防止のため） */
-      .hero-scroll { display: none; }
-    }
-    
-    @media (prefers-reduced-motion: reduce) { 
-      *, *::before, *::after { animation: none !important; transition: none !important; } 
-      .reveal, .hero-eyebrow, .hero-eyebrow::before, .hero-title, .hero-title small, .hero-lead, .hero-scroll { 
-        opacity: 1 !important; transform: none !important; filter: blur(0) !important;
-      } 
+      .hero-img-wrap { width: 80%; }
     }
   </style>
 </head>
 <body id="top">
 
+  <div class="noise"></div>
+
   <div class="progress" id="progress"></div>
+
+  <div class="loader" id="loader">
+    <div class="loader-text">SAMIZU</div>
+  </div>
 
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
@@ -570,22 +487,15 @@
   </nav>
 
   <header class="hero">
-    <div class="hero-media">
-      <img src="images/416A0035.jpg" alt="左美都の神話と伝承 展示風景" loading="eager">
+    <div class="bg-type" id="bgType">MYTHOS</div>
+    <div class="hero-img-wrap" id="heroImgWrap">
+      <img src="images/416A0035.jpg" alt="左美都の神話と伝承 展示風景" class="hero-img" id="heroImg">
     </div>
-    <div class="hero-divider" aria-hidden="true"></div>
-    <div class="hero-content">
-      <p class="hero-eyebrow"><span class="hero__eyebrow-line"></span>グループ展「ふうけいのまにまに」発表作品 &nbsp;/&nbsp; Series 01</p>
-      <h1 class="hero-title">左美都の神話と伝承<br>
-        <small>Myth and Tradition of Samizu</small>
-      </h1>
-      <p class="hero-lead">長野県長野市信更町三水（左美都）。土蔵の奥底で沈黙を続ける木簡群——文字という暴力を受肉した者たちの伝承を、油彩の地層として再構築する展示の記録。</p>
-    </div>
-    
-    <a href="#statement" class="hero-scroll" aria-label="Scroll to Explore">
-      <span class="hero-scroll-label">Scroll to Explore</span>
-      <div class="hero-scroll-track"><div class="hero-scroll-fill"></div></div>
-    </a>
+    <div class="hero-title-wrap" id="heroTitle">
+      <p class="hero-eyebrow">グループ展「ふうけいのまにまに」発表作品 / Series 01</p>
+      <h1 class="hero-title">左美都の神話と伝承</h1>
+      <div class="hero-subtitle">Myth and Tradition of Samizu</div>
+      </div>
   </header>
 
   <main>
@@ -828,6 +738,21 @@
   </div>
 
   <script>
+    // ============================================================
+    // GSAP HERO ANIMATION
+    // ============================================================
+    window.addEventListener("load", () => {
+      const tl = gsap.timeline();
+      tl.to("#loader", { opacity: 0, duration: 1, ease: "power2.inOut", onComplete: () => document.getElementById("loader").style.display = "none" })
+        .fromTo("#heroImgWrap", { clipPath: "polygon(0% 50%, 100% 50%, 100% 50%, 0% 50%)", scale: 1.1 }, { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", scale: 1, duration: 1.5, ease: "expo.out" }, "-=0.2")
+        .fromTo("#heroImg", { scale: 1.5 }, { scale: 1, duration: 2, ease: "power3.out" }, "-=1.5")
+        .fromTo("#heroTitle", { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 1.2, ease: "power3.out" }, "-=1")
+        .to("#bgType", { x: -200, duration: 10, ease: "none", repeat: -1, yoyo: true }, 0);
+    });
+
+    // ============================================================
+    // ORIGINAL PAGE SCRIPT
+    // ============================================================
     (function(){
       const header = document.getElementById('top-nav');
       const progress = document.getElementById('progress');
