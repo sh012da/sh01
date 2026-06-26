@@ -82,7 +82,14 @@
       padding: clamp(24px,4vw,40px) var(--px);
       background: transparent;
       border-bottom: 1px solid transparent;
-      transition: background 0.6s var(--ease-expo), padding 0.6s var(--ease-expo), border-color 0.6s ease, backdrop-filter 0.6s ease;
+      
+      transform: translateY(-100%);
+      opacity: 0;
+      transition: background 0.6s var(--ease-expo), padding 0.6s var(--ease-expo), border-color 0.6s ease, backdrop-filter 0.6s ease, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.5s, opacity 1.2s ease 0.5s;
+    }
+    body.is-loaded nav {
+      transform: translateY(0);
+      opacity: 1;
     }
     nav.nav-scrolled {
       padding: clamp(12px,2vw,24px) var(--px);
@@ -90,6 +97,7 @@
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 0.5px solid rgba(232,228,219,0.08);
+      transition-delay: 0s, 0s, 0s, 0s, 0s, 0s;
     }
     .nav-logo {
       font-family: var(--en); font-size: clamp(0.7rem,2.5vw,0.9rem);
@@ -227,7 +235,11 @@
 
     @keyframes fadeUp  { from { opacity:0; transform:translateY(24px) scale(0.98); filter: blur(4px); } to { opacity:1; transform:translateY(0) scale(1); filter: blur(0); } }
     @keyframes fadeIn  { from { opacity:0; } to { opacity:1; } }
-    @keyframes slideUp { from { opacity:0; transform:translateY(100%); } to { opacity:1; transform:translateY(0); } }
+
+    @keyframes inkRevealSlideUp {
+      from { opacity: 0; transform: translateY(120%) scale(0.92); filter: blur(16px); }
+      to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
 
     .hero-sub {
       font-family: var(--en); font-size: clamp(0.55rem,2vw,0.72rem);
@@ -240,13 +252,15 @@
       letter-spacing: -0.025em; color: var(--text); margin-bottom: 2rem;
     }
     .hero-title .line { display: block; overflow: hidden; }
+    
     .hero-title .line-inner {
-      display: block; opacity: 0; transform: translateY(100%);
-      animation: slideUp 1.2s cubic-bezier(0.16,1,0.3,1) forwards;
+      display: block; opacity: 0; transform: translateY(120%) scale(0.92); filter: blur(16px);
+      will-change: transform, opacity, filter;
     }
-    .hero-title .line:nth-child(1) .line-inner { animation-delay: 0.5s; }
-    .hero-title .line:nth-child(2) .line-inner { animation-delay: 0.75s; }
-    .hero-title .line:nth-child(3) .line-inner { animation-delay: 1.0s; }
+    body.is-loaded .hero-title .line:nth-child(1) .line-inner { animation: inkRevealSlideUp 1.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s forwards; }
+    body.is-loaded .hero-title .line:nth-child(2) .line-inner { animation: inkRevealSlideUp 1.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.8s forwards; }
+    body.is-loaded .hero-title .line:nth-child(3) .line-inner { animation: inkRevealSlideUp 1.6s cubic-bezier(0.2, 0.8, 0.2, 1) 1.0s forwards; }
+    
     .hero-title em { font-style: normal; color: rgba(232,228,219,0.55); }
 
     .hero-body {
@@ -882,22 +896,26 @@
     .footer-copy { font-family: var(--en); font-size: 11px; color: rgba(232,228,219,0.32); letter-spacing: 0.14em; }
 
     /* ════════════════════════════════════════
-       タイピングアニメーション
+       電脳テキストエフェクト（アレンジ版）
     ════════════════════════════════════════ */
-    .tw-wrap { transition: opacity 1.2s ease; }
-    .tw-wrap.tw-done { opacity: 0.92; }
-    .tw-char { display: inline;
-      white-space: pre-wrap; }
-
-    .tw-cursor {
-      display: inline-block; width: 1.5px; height: 1em;
-      background: var(--accent);
-      vertical-align: middle; margin-left: 2px;
-      animation: typing-cursor-blink 0.85s step-end infinite; will-change: opacity; border-radius: 1px;
+    [data-scramble="true"] {
+      visibility: hidden;
+      white-space: pre-wrap; /* 改行タグを保持するため */
     }
-    @keyframes typing-cursor-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-    @keyframes typing-cursor-fadeout { 0% { opacity: 1; } 100% { opacity: 0; } }
-    .tw-cursor.fade-out { animation: typing-cursor-fadeout 0.8s ease forwards; }
+    [data-scramble="true"].scrambling {
+      visibility: visible;
+      animation: buwabuwa-reveal 2.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      opacity: 1 !important;
+      transform: scale(1) !important;
+    }
+    @keyframes buwabuwa-reveal {
+      0% { opacity: 0; filter: blur(20px) brightness(2); transform: scale(1.05); }
+      40% { opacity: 1; filter: blur(8px) brightness(1.2); }
+      100% { filter: blur(0px) brightness(1); transform: scale(1); }
+    }
+    .scramble-dud {
+      color: rgba(232,228,219,0.4); /* 元のデザイントーンに合わせたノイズ色 */
+    }
 
     /* ════════════════════════════════════════
        TOOLTIP (マウス追従ポップアップ)
@@ -988,6 +1006,7 @@
         padding: 0 1rem; 
         width: 100%; 
         box-sizing: border-box; 
+        /* scrambleアニメーションが上書きするため、以下のopacityとfilterは無視されます */
         opacity: 0.3 !important;
         filter: blur(0px);
         transform: scale(0.98);
@@ -1067,8 +1086,6 @@
       .hero-slide.active { transform: scale(1); transition: opacity 0.5s ease-in-out; }
       .tl-entry { transition: opacity 0.3s ease; }
       .works-video-bg { transition: none; }
-      .tw-wrap.tw-done { opacity: 1 !important; transition: none !important; }
-      .tw-cursor { display: none !important; }
       .opening-question, .back-to-top { transition: none !important; }
       .reveal { filter: none; transform: none; transition: opacity 0.5s ease; }
       .statement-bg-word { animation: none; opacity: 0.03; }
@@ -1076,7 +1093,16 @@
     }
   </style>
 </head>
-<body>
+<body class="is-loading">
+
+<script>
+  (function() {
+    function start() { document.body.classList.add('is-loaded'); }
+    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(start); }
+    else { window.addEventListener('load', start); }
+    setTimeout(start, 2500); // 念のためのフォールバック
+  })();
+</script>
 
 <div class="scroll-progress" id="scroll-progress"></div>
 
@@ -1148,12 +1174,12 @@
   <div class="s-eyebrow reveal">Statement</div>
 
   <div class="opening-stage" id="top-of-concept">
-    <h2 class="concept-question opening-question" id="openingQuestion">
+    <h2 class="concept-question opening-question" id="openingQuestion" data-scramble="true">
       「なぜ私たちは、<br>別の場所で生まれ育つことが<br>できなかったのでしょうか？」
     </h2>
     <div class="opening-ito" id="openingIto" style="margin-top: 100px; margin-bottom: 200px;">
       <div class="concept-block ito-block" tabindex="0">
-        <p class="concept-para ito-intro" data-typewriter="true">〈いと〉とは何か。例えば、生まれた土地の記憶、地質、感覚——それ以上還元できない、存在の最小単位。</p>
+        <p class="concept-para ito-intro" data-scramble="true">〈いと〉とは何か。例えば、生まれた土地の記憶、地質、感覚——それ以上還元できない、存在の最小単位。</p>
       </div>
     </div>
   </div>
@@ -1375,7 +1401,6 @@
   var tooltip = document.getElementById('mouse-tooltip');
   if (!tooltip) return;
 
-  // 1. 外部サイト用のアタッチ
   var externalLinks = document.querySelectorAll('a[target="_blank"]');
   externalLinks.forEach(function(link) {
     link.addEventListener('mouseenter', function() {
@@ -1462,14 +1487,14 @@ var WORKS_DATA = [
   {
     year: 2016, series: '難民（難民系）', titleJa: '傷(5)（イスラエルの少女、2008年）', titleEn: 'Scar(5) (Israeli Girl, 2008)',
     spec: '31.8 × 41 cm ／ 油彩・キャンバス', imgSrc: 'images/【F6横】傷.jpg', imgWidth: 400,
-    link: 'work-refugees.html', pageTitle: '難民', /* ここを修正 */
+    link: 'work-refugees.html', pageTitle: '難民',
     desc: '霞がかったモノクロームの画面の向こうから、ひとりの少女が静かにこちらを見つめています。全体を覆う揺らぎは「薄れゆく記憶の危うさ」を思わせる一方で、顔の中心に刻まれた<em>「傷」</em>の存在感をより一層、生々しく浮き彫りにしています。',
     tags: ['傷', '子供']
   },
   {
     year: 2015, series: '難民（難民系）', titleJa: 'Acid Attack Victim [ソナリ・ムカジー]', titleEn: 'Acid Attack Victim (Sonali Mukherjee)',
     spec: '130.3 × 162 cm ／ 油彩・キャンバス', imgSrc: 'images/【F100横】Acid Attack Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg', imgWidth: 720,
-    link: 'work-refugees.html', pageTitle: '難民', /* ここを修正 */
+    link: 'work-refugees.html', pageTitle: '難民',
     desc: 'インドで酸攻撃という卑劣な暴力に直面した女性の姿を、F100という巨大なキャンバスに克明に描き出しています。彼女を包む青いヒジャブは、傷を隠すためではなく、<em>彼女の失われない尊厳と美しさ</em>を強調しているかのようです。',
     tags: ['酸攻撃被害者(AAV)', '証言']
   },
@@ -1483,14 +1508,14 @@ var WORKS_DATA = [
   {
     year: 2013, series: '難民（難民系）', titleJa: '今、シリア', titleEn: 'Syria, now',
     spec: '130.3 × 162 cm ／ 油彩・キャンバス', imgSrc: 'images/【F100号横】今、シリア.jpg', imgWidth: 720,
-    link: 'work-refugees.html', pageTitle: '難民', /* ここを修正 */
+    link: 'work-refugees.html', pageTitle: '難民',
     desc: 'シリア内戦の報道写真をもとに制作した作品です。流れ去るニュースの映像を絵画として描き直すことで、一人の人間の存在と向き合う時間を生み出そうと試みました。傷ついた子どもの表情や仕草を通して、私たちと遠い出来事との距離を問いかけています。',
     tags: ['難民(子ども) ', '証言']
   },
   {
     year: 2008, series: '素描（素描系）', titleJa: 'Cell-Graphics [apocalypse] - III', titleEn: 'Cell-Graphics [apocalypse] - III',
     spec: '21 × 29.7 cm ／ 鉛筆・紙', imgSrc: 'images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg', imgWidth: 340,
-    link: 'works-drawing.html', pageTitle: '素描', /* ここを修正 */
+    link: 'works-drawing.html', pageTitle: '素描',
     desc: '鉛筆のみで描かれた細密なドローイング系（シーケンス）「Cell-Graphics（CG）」。細胞（Cell）のように増殖していく形の連鎖が画面を埋め尽くします。「世界の終わり（apocalypse）」を主題とし、<em>すべての始まりとなる根源的な問い</em>を内包しています。',
     tags: ['鉛筆による細密描写', '形の増殖・連鎖']
   }
@@ -1516,6 +1541,7 @@ var WORKS_DATA = [
 
     var w = work.imgWidth || 500;
     
+    // 修正: tl-desc に data-scramble="true" を追加してエフェクトの対象にする
     entry.innerHTML =
       '<div class="tl-year-col">' +
         '<div class="tl-year-sticky">' +
@@ -1540,23 +1566,19 @@ var WORKS_DATA = [
           '<h3 class="tl-title-ja">' + work.titleJa + '</h3>' +
           '<p class="tl-title-en">' + work.titleEn + '</p>' +
           '<p class="tl-spec">' + work.spec + '</p>' +
-          '<p class="tl-desc" data-typewriter="true">' + work.desc + '</p>' +
+          '<p class="tl-desc" data-scramble="true">' + work.desc + '</p>' +
           '<div class="tl-process">' + tags + '</div>' +
         '</div>' +
       '</div>';
     
     entriesCol.appendChild(entry);
 
-    // 画像リンクへのホバー時に追従ツールチップを表示
     var imgLink = entry.querySelector('.tl-img-link');
     if (imgLink && tooltip) {
       var tText = '「' + work.pageTitle + '」系（シーケンス）へ';
-
-      // 外部サイト用フォールバック
       if (work.link.startsWith('http') && !work.link.includes('sh012da.github.io')) {
         tText = '外部サイトが別のタブで開きます';
       }
-
       imgLink.addEventListener('mouseenter', function() {
         tooltip.textContent = tText;
         tooltip.classList.add('visible');
@@ -1593,12 +1615,10 @@ var WORKS_DATA = [
     var docHeight = document.documentElement.scrollHeight - window.innerHeight;
     var progress = (scrollY / docHeight) * 100;
     
-    // プログレスバー更新
     if(progressBar) {
       progressBar.style.width = Math.min(progress, 100) + '%';
     }
 
-    // 右側ドットナビゲーションの表示制御（Hero通過後に表示）
     if(pageNav) {
       if(scrollY > window.innerHeight * 0.5) {
         pageNav.classList.add('is-visible');
@@ -1607,7 +1627,6 @@ var WORKS_DATA = [
       }
     }
 
-    // カレントセクションのハイライト
     var current = '';
     sections.forEach(function(section) {
       var sectionTop = section.offsetTop;
@@ -1627,7 +1646,7 @@ var WORKS_DATA = [
 
   window.addEventListener('scroll', updateNav, { passive: true });
   window.addEventListener('resize', updateNav, { passive: true });
-  updateNav(); // 初期ロード時
+  updateNav(); 
 })();
 
 /* ════════════════════════════════════════════════════════
@@ -1801,88 +1820,107 @@ document.querySelectorAll('.goal-card, .news-item').forEach(function (el) {
 });
 
 /* ════════════════════════════════════════════════════════
-   タイピングアニメーション 完全版エンジン
+   電脳テキストスクランブルエフェクト (ストレス軽減・改良版)
 ════════════════════════════════════════════════════════ */
-const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-function prepareTypewriterDOM(el) {
-  if (el.dataset.twPrepared) return;
-  el.dataset.twPrepared = "true";
-  function wrapTextNodes(node) {
-    if (node.nodeType === 3) {
-      const text = node.nodeValue;
-      if (!text.trim() && text.includes('\n')) return;
-      const fragment = document.createDocumentFragment();
-      for (let i = 0; i < text.length; i++) {
-        const char = text[i];
-        if (char === '\n' || char === '\r') continue;
-        const span = document.createElement('span');
-        span.className = 'tw-char';
-        span.style.opacity = '0';
-        span.textContent = char;
-        fragment.appendChild(span);
+class TextScramble {
+  constructor(el) {
+    this.el = el;
+    // DOMを破壊しない安全なノイズ文字群
+    this.chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!-_\\[]{}—=+*^?#ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ';
+    this.update = this.update.bind(this);
+  }
+  
+  setText(newText, finalHtml) {
+    this.finalHtml = finalHtml; // アニメーション終了時に復元する元のHTML(emタグ等)
+    const length = newText.length;
+    const promise = new Promise((resolve) => this.resolve = resolve);
+    this.queue = [];
+    
+    for (let i = 0; i < length; i++) {
+      const from = '';
+      const to = newText[i] || '';
+      // 【ストレス軽減の工夫】
+      // ランダムにデコードするのではなく、i(文字の位置)に依存させて、左から右(上から下)へ波のように順次デコードさせる
+      const start = Math.floor(Math.random() * 15) + Math.floor((i / length) * 20);
+      const end = start + Math.floor(Math.random() * 20) + 15;
+      this.queue.push({ from, to, start, end });
+    }
+    
+    cancelAnimationFrame(this.frameRequest);
+    this.frame = 0;
+    this.update();
+    return promise;
+  }
+  
+  update() {
+    let output = '';
+    let complete = 0;
+    for (let i = 0, n = this.queue.length; i < n; i++) {
+      let { from, to, start, end, char } = this.queue[i];
+      if (this.frame >= end) {
+        complete++;
+        // \n を <br> に変換して元の改行を維持
+        output += (to === '\n') ? '<br>' : to;
+      } else if (this.frame >= start) {
+        if (!char || Math.random() < 0.3) {
+          char = this.randomChar();
+          this.queue[i].char = char;
+        }
+        output += `<span class="scramble-dud">${char}</span>`;
+      } else {
+        output += from;
       }
-      node.parentNode.replaceChild(fragment, node);
-    } else if (node.nodeType === 1) {
-      if (node.classList.contains('tw-char')) return;
-      Array.from(node.childNodes).forEach(wrapTextNodes);
+    }
+    this.el.innerHTML = output;
+    
+    if (complete === this.queue.length) {
+      // 完了時、即座に元々のHTML(emタグや、pc-onlyクラスの付いたbrタグなど)を完全復元する
+      if (this.finalHtml) {
+        this.el.innerHTML = this.finalHtml;
+      }
+      this.resolve();
+    } else {
+      this.frameRequest = requestAnimationFrame(this.update);
+      this.frame++;
     }
   }
-  wrapTextNodes(el);
-  el.classList.add('tw-wrap');
-}
-function runTypewriter(el) {
-  if (el.dataset.twRunning || el.dataset.twDone) return;
-  el.dataset.twRunning = "true";
-  if (REDUCED_MOTION) { finishTypewriter(el, []); return; }
-  const chars = el.querySelectorAll('.tw-char');
-  if (chars.length === 0) return;
-  const cursor = document.createElement('span');
-  cursor.className = 'tw-cursor';
-  el.appendChild(cursor);
-  let i = 0;
-  function nextChar() {
-    if (i < chars.length) {
-      chars[i].style.opacity = '1';
-      const text = chars[i].textContent;
-      let delay = 30;
-      if (/[。．…]/.test(text)) delay = 140;
-      else if (/[、，——]/.test(text)) delay = 70;
-      else if (/[「」〈〉]/.test(text)) delay = 40;
-      i++;
-      setTimeout(() => requestAnimationFrame(nextChar), delay);
-    } else { finishTypewriter(el, cursor); }
-  }
-  requestAnimationFrame(nextChar);
-}
-function finishTypewriter(el, cursor) {
-  el.dataset.twDone = "true";
-  el.classList.add('tw-done');
-  if (cursor && cursor.classList) {
-    cursor.classList.add('fade-out');
-    setTimeout(() => cursor.remove(), 800);
-  } else {
-    const chars = el.querySelectorAll('.tw-char');
-    chars.forEach(c => c.style.opacity = '1');
+  
+  randomChar() {
+    return this.chars[Math.floor(Math.random() * this.chars.length)];
   }
 }
-function initAllTypewriters() {
-  const targets = document.querySelectorAll('[data-typewriter="true"]');
-  targets.forEach(el => {
-    prepareTypewriterDOM(el);
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          obs.unobserve(el);
-          const parentEntry = el.closest('.tl-entry');
-          setTimeout(() => { requestAnimationFrame(() => runTypewriter(el)); }, parentEntry ? 600 : 200);
-        }
-      });
-    }, { threshold: 0, rootMargin: '0px 0px -15% 0px' });
-    obs.observe(el);
+
+document.addEventListener("DOMContentLoaded", () => {
+  const scrambleElements = document.querySelectorAll('[data-scramble="true"]');
+  
+  // スクロールして画面に入った要素からアニメーションを開始
+  const scrambleObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const text = el.dataset.originalText;
+        const html = el.dataset.originalHtml;
+        const fx = new TextScramble(el);
+        
+        el.classList.add('scrambling');
+        fx.setText(text, html);
+        scrambleObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.2, rootMargin: '0px 0px -10% 0px' });
+
+  scrambleElements.forEach(el => {
+    // 実行前に元のHTMLを保存し、スクランブル用の純粋なテキスト(改行保持)を抽出
+    let htmlContent = el.innerHTML;
+    
+    // <br>タグ (属性付き含む 例: <br class="pc-only">) を改行コード(\n)に変換し、他のHTMLタグ(em等)は削除
+    let textWithNewlines = htmlContent.replace(/<br[^>]*>/gi, '\n').replace(/<[^>]*>?/gm, '').trim();
+    
+    el.dataset.originalText = textWithNewlines;
+    el.dataset.originalHtml = htmlContent.trim(); // アニメーション終了時の復元用
+    scrambleObserver.observe(el);
   });
-}
-if (document.fonts && document.fonts.ready) { document.fonts.ready.then(() => requestAnimationFrame(initAllTypewriters)); }
-else { window.addEventListener('load', () => requestAnimationFrame(initAllTypewriters)); }
+});
 </script>
 </body>
 </html>
