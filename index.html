@@ -72,7 +72,7 @@
     }
 
     /* ════════════════════════════════════════
-       NAV
+       NAV (修正: 上から降りてくるアニメーション)
     ════════════════════════════════════════ */
     nav {
       position: fixed;
@@ -236,6 +236,7 @@
     @keyframes fadeUp  { from { opacity:0; transform:translateY(24px) scale(0.98); filter: blur(4px); } to { opacity:1; transform:translateY(0) scale(1); filter: blur(0); } }
     @keyframes fadeIn  { from { opacity:0; } to { opacity:1; } }
 
+    /* Heroタイトルのにじみ出るアニメーション */
     @keyframes inkRevealSlideUp {
       from { opacity: 0; transform: translateY(120%) scale(0.92); filter: blur(16px); }
       to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
@@ -518,6 +519,21 @@
     }
     .reveal.visible { 
       opacity: 1; transform: translateY(0) scale(1); filter: blur(0); 
+    }
+
+    /* 追加: ステートメント段落用 にじみ出るアニメーション */
+    @keyframes inkRevealBlock {
+      from { opacity: 0; transform: translateY(60px) scale(0.92); filter: blur(16px); }
+      to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+    .ink-reveal-block {
+      opacity: 0; 
+      transform: translateY(60px) scale(0.92); 
+      filter: blur(16px);
+      will-change: transform, opacity, filter;
+    }
+    .ink-reveal-block.visible {
+      animation: inkRevealBlock 1.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
     }
 
     /* ════════════════════════════════════════
@@ -900,7 +916,7 @@
     ════════════════════════════════════════ */
     [data-scramble="true"] {
       visibility: hidden;
-      white-space: pre-wrap; /* 改行タグを保持するため */
+      white-space: pre-wrap;
     }
     [data-scramble="true"].scrambling {
       visibility: visible;
@@ -914,7 +930,7 @@
       100% { filter: blur(0px) brightness(1); transform: scale(1); }
     }
     .scramble-dud {
-      color: rgba(232,228,219,0.4); /* 元のデザイントーンに合わせたノイズ色 */
+      color: rgba(232,228,219,0.4);
     }
 
     /* ════════════════════════════════════════
@@ -1006,7 +1022,6 @@
         padding: 0 1rem; 
         width: 100%; 
         box-sizing: border-box; 
-        /* scrambleアニメーションが上書きするため、以下のopacityとfilterは無視されます */
         opacity: 0.3 !important;
         filter: blur(0px);
         transform: scale(0.98);
@@ -1073,13 +1088,6 @@
       footer { padding: 3rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
       
       .page-nav { display: none; } /* スマホでは右端ドットナビは非表示。上のプログレスバーのみ */
-    }
-    @media (max-width: 480px) {
-      .tl-spine-zone, .tl-dot-wrap { left: 20px; }
-      .tl-year-col, .tl-content-col { padding-left: 48px; }
-      .concept-para { font-size: 1rem; line-height: 2.1; }
-      .tl-desc { font-size: 14px; }
-      .works-archive-cta { padding: 2.5rem 1.5rem; }
     }
     @media (prefers-reduced-motion: reduce) {
       .hero-slide { transition: opacity 0.5s ease-in-out; }
@@ -1185,17 +1193,17 @@
   </div>
 
   <div class="concept-story">
-    <div class="concept-block reveal" style="transition-delay:.20s">
+    <div class="concept-block ink-reveal-block" style="animation-delay: 0s;">
       <span class="concept-block-en">Unit World</span>
       <p class="concept-para">私は事物の存在に纏わるあらゆる傾向を、<em>〈単位世界（＝洞窟）〉</em>を構成する最小の事物（＝いと）と捉え、制作しています。〈いと〉とは、〈物語〉のそれ以上細分化できない要素です。そして〈物語〉とは、人間存在そのものです。なぜなら、私たち人間はすべてを〈物語〉として理解し、機能させて生きているからです。</p>
     </div>
 
-    <div class="concept-block reveal" style="transition-delay:.30s">
+    <div class="concept-block ink-reveal-block" style="animation-delay: 0.2s;">
       <span class="concept-block-en">Geological Memory</span>
       <p class="concept-para">私にとっての〈いと〉は、自分が生まれ育った場所である"左美都（さみず、現在の長野県長野市信更町三水）"という地域です。ごく私的な経験を起点とし、その土地に深く根ざした記憶（歴史）や地質、感覚と向き合うことで、私はこの〈洞窟〉の根源を探ろうとしています。</p>
     </div>
 
-    <div class="concept-block reveal" style="transition-delay:.40s">
+    <div class="concept-block ink-reveal-block" style="animation-delay: 0.4s;">
       <span class="concept-block-en">Process</span>
       <p class="concept-para">私の制作の出発点となるのは、<em>油彩による描画</em>です。描画の過程（＝脱領土化）を通して〈いと〉が見いだされ、次に、あるいは同時にさまざまな手法による解釈・再読（＝再領土化）が始まります。再領土化される表現は、絵画にとどまらず、映像、立体、インスタレーションといった多層的な形式へと展開し、複合していきます。</p>
     </div>
@@ -1541,7 +1549,6 @@ var WORKS_DATA = [
 
     var w = work.imgWidth || 500;
     
-    // 修正: tl-desc に data-scramble="true" を追加してエフェクトの対象にする
     entry.innerHTML =
       '<div class="tl-year-col">' +
         '<div class="tl-year-sticky">' +
@@ -1744,7 +1751,7 @@ var revealObs = new IntersectionObserver(function (entries) {
     if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
   });
 }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
-document.querySelectorAll('.reveal, .news-heading-wrap').forEach(function (el) { revealObs.observe(el); });
+document.querySelectorAll('.reveal, .news-heading-wrap, .ink-reveal-block').forEach(function (el) { revealObs.observe(el); });
 
 /* ════════════════════════════════════════════════════════
    動画背景
@@ -1825,13 +1832,12 @@ document.querySelectorAll('.goal-card, .news-item').forEach(function (el) {
 class TextScramble {
   constructor(el) {
     this.el = el;
-    // DOMを破壊しない安全なノイズ文字群
     this.chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!-_\\[]{}—=+*^?#ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ';
     this.update = this.update.bind(this);
   }
   
   setText(newText, finalHtml) {
-    this.finalHtml = finalHtml; // アニメーション終了時に復元する元のHTML(emタグ等)
+    this.finalHtml = finalHtml;
     const length = newText.length;
     const promise = new Promise((resolve) => this.resolve = resolve);
     this.queue = [];
@@ -1839,8 +1845,6 @@ class TextScramble {
     for (let i = 0; i < length; i++) {
       const from = '';
       const to = newText[i] || '';
-      // 【ストレス軽減の工夫】
-      // ランダムにデコードするのではなく、i(文字の位置)に依存させて、左から右(上から下)へ波のように順次デコードさせる
       const start = Math.floor(Math.random() * 15) + Math.floor((i / length) * 20);
       const end = start + Math.floor(Math.random() * 20) + 15;
       this.queue.push({ from, to, start, end });
@@ -1859,7 +1863,6 @@ class TextScramble {
       let { from, to, start, end, char } = this.queue[i];
       if (this.frame >= end) {
         complete++;
-        // \n を <br> に変換して元の改行を維持
         output += (to === '\n') ? '<br>' : to;
       } else if (this.frame >= start) {
         if (!char || Math.random() < 0.3) {
@@ -1874,7 +1877,6 @@ class TextScramble {
     this.el.innerHTML = output;
     
     if (complete === this.queue.length) {
-      // 完了時、即座に元々のHTML(emタグや、pc-onlyクラスの付いたbrタグなど)を完全復元する
       if (this.finalHtml) {
         this.el.innerHTML = this.finalHtml;
       }
@@ -1893,7 +1895,6 @@ class TextScramble {
 document.addEventListener("DOMContentLoaded", () => {
   const scrambleElements = document.querySelectorAll('[data-scramble="true"]');
   
-  // スクロールして画面に入った要素からアニメーションを開始
   const scrambleObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -1910,14 +1911,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }, { threshold: 0.2, rootMargin: '0px 0px -10% 0px' });
 
   scrambleElements.forEach(el => {
-    // 実行前に元のHTMLを保存し、スクランブル用の純粋なテキスト(改行保持)を抽出
     let htmlContent = el.innerHTML;
-    
-    // <br>タグ (属性付き含む 例: <br class="pc-only">) を改行コード(\n)に変換し、他のHTMLタグ(em等)は削除
     let textWithNewlines = htmlContent.replace(/<br[^>]*>/gi, '\n').replace(/<[^>]*>?/gm, '').trim();
     
     el.dataset.originalText = textWithNewlines;
-    el.dataset.originalHtml = htmlContent.trim(); // アニメーション終了時の復元用
+    el.dataset.originalHtml = htmlContent.trim();
     scrambleObserver.observe(el);
   });
 });
