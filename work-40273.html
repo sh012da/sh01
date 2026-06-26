@@ -12,7 +12,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>40273 | Tsuda Shoichi</title>
-  <meta name="description" content="津田翔一 作品シリーズ「40273」— 日常の風景や記憶の断片を、輪郭線と空白によって抽出・再構築したシリーズ。">
+  <meta name="description" content="津田翔一 作品シリーズ「40273」— 風景のノイズを透過する。残された線と余白が織りなす、日常のイマージュ。">
   <meta property="og:title" content="40273 | Tsuda Shoichi">
   <meta property="og:image" content="images/【play_with_shadow】.jpg">
 
@@ -189,25 +189,57 @@
     /* ════════════════════════════════════════
        CONCEPT SECTION
     ════════════════════════════════════════ */
-    .concept-section {
-      display: grid; grid-template-columns: clamp(80px,14vw,180px) 1fr; gap: clamp(2rem,4vw,6rem);
-      padding: clamp(60px,10vh,120px) var(--px); border-top: 0.5px solid var(--border); align-items: start;
+    /* 全体を囲むラッパー：Gallery Gridと同じmax-width(1600px)を持たせる */
+    .concept-wrapper {
+      border-top: 0.5px solid var(--border);
+      width: 100%;
+      padding: clamp(80px, 12vh, 160px) var(--px); 
+      max-width: 1600px;
+      margin: 0 auto;
     }
-    .concept-sidebar { display: flex; flex-direction: column; gap: 1.2rem; padding-top: 0.3rem; }
-    .concept-sidebar-label { font-family: var(--font-en); font-size: clamp(0.55rem,1.3vw,0.66rem); letter-spacing: 0.38em; color: var(--muted-col); text-transform: uppercase; line-height: 1; }
-    .concept-sidebar-num { font-family: var(--font-en); font-size: clamp(2.5rem,6vw,5rem); font-weight: 300; line-height: 1; color: rgba(255,255,255,0.04); letter-spacing: -0.02em; }
-    .concept-credit { font-family: var(--font-en); font-size: 0.62rem; letter-spacing: 0.22em; color: rgba(237,233,228,0.26); text-transform: uppercase; margin-bottom: 2rem; }
-    .concept-lead { font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.15rem,2.8vw,1.65rem); letter-spacing: 0.04em; line-height: 1.85; color: rgba(237,233,228,0.88); margin-bottom: 2.5rem; }
-    .concept-text { font-size: clamp(0.88rem,1.7vw,1.02rem); font-weight: 300; line-height: 2.2; color: var(--text-muted); letter-spacing: 0.035em; margin-bottom: 1.8rem; }
+    /* 上部のテキスト領域：中央寄りで読みやすい幅に抑える */
+    .concept-top-row {
+      display: flex; 
+      justify-content: center; 
+      gap: clamp(2.5rem, 6vw, 8rem);
+      max-width: 1400px;
+      margin: 0 auto;
+      align-items: start;
+    }
+    .concept-sidebar {
+      flex: 0 0 clamp(90px, 14vw, 160px);
+      display: flex; flex-direction: column; gap: 1.5rem; padding-top: 0.4rem;
+    }
+    .concept-main {
+      flex: 1 1 auto;
+      max-width: 1060px;
+    }
+    .concept-sidebar-label { font-family: var(--font-en); font-size: clamp(0.58rem,1.4vw,0.72rem); letter-spacing: 0.4em; color: var(--muted-col); text-transform: uppercase; line-height: 1; }
+    .concept-sidebar-num { font-family: var(--font-en); font-size: clamp(3rem,7vw,6rem); font-weight: 300; line-height: 1; color: rgba(255,255,255,0.04); letter-spacing: -0.02em; }
+    .concept-credit { font-family: var(--font-en); font-size: 0.65rem; letter-spacing: 0.25em; color: rgba(237,233,228,0.26); text-transform: uppercase; margin-bottom: 2.2rem; }
+    .concept-lead { font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.2rem,3vw,1.8rem); letter-spacing: 0.05em; line-height: 1.9; color: rgba(237,233,228,0.92); margin-bottom: 3rem; }
+    .concept-text { font-size: clamp(0.92rem,1.8vw,1.06rem); font-weight: 300; line-height: 2.3; color: var(--text-muted); letter-spacing: 0.04em; margin-bottom: 2rem; }
     .concept-text:last-child { margin-bottom: 0; }
-    .concept-text em { font-style: normal; color: var(--accent); border-bottom: 0.5px solid var(--border-md); padding-bottom: 2px; }
+    .concept-text em { font-style: normal; color: var(--accent); border-bottom: 0.5px solid var(--border-md); padding-bottom: 3px; }
 
-    .concept-keywords { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 4rem; border: 0.5px solid var(--border); }
-    .concept-kw { padding: 2rem 1.75rem; background: rgba(255,255,255,0.015); transition: background 0.35s ease, transform 0.35s var(--ease-expo); }
-    .concept-kw:hover { background: rgba(255,255,255,0.04); transform: translateY(-3px); }
-    .concept-kw-num { font-family: var(--font-en); font-size: 0.62rem; letter-spacing: 0.28em; color: rgba(237,233,228,0.2); text-transform: uppercase; margin-bottom: 1rem; }
-    .concept-kw-title { font-size: clamp(0.88rem,1.5vw,1rem); font-weight: 300; color: var(--fg); letter-spacing: 0.06em; margin-bottom: 0.8rem; }
-    .concept-kw-desc { font-size: clamp(0.76rem,1.2vw,0.86rem); font-weight: 300; line-height: 1.85; color: var(--text-muted); }
+    /* 下部の解説カード領域：幅いっぱい(max-width: 1600px)に広げ、Gallery Gridの左端と完全に合わせる */
+    .concept-keywords { 
+      display: grid; 
+      grid-template-columns: repeat(3, 1fr); 
+      gap: 20px; 
+      margin-top: 5rem; 
+      width: 100%;
+    }
+    .concept-kw { 
+      padding: clamp(2.5rem, 4vw, 3.8rem) clamp(2rem, 3vw, 3rem); 
+      background: rgba(255,255,255,0.02); 
+      border: 0.5px solid var(--border);
+      transition: background 0.4s ease, border-color 0.4s ease, transform 0.4s var(--ease-expo); 
+    }
+    .concept-kw:hover { background: rgba(255,255,255,0.05); border-color: var(--border-md); transform: translateY(-4px); }
+    .concept-kw-num { font-family: var(--font-en); font-size: 0.68rem; letter-spacing: 0.3em; color: rgba(237,233,228,0.25); text-transform: uppercase; margin-bottom: 1.2rem; }
+    .concept-kw-title { font-size: clamp(1rem, 1.7vw, 1.2rem); font-weight: 300; color: var(--fg); letter-spacing: 0.07em; margin-bottom: 1.2rem; border-bottom: 0.5px solid rgba(232,228,219,0.1); padding-bottom: 0.6rem; }
+    .concept-kw-desc { font-size: clamp(0.82rem, 1.4vw, 0.92rem); font-weight: 300; line-height: 2.0; color: var(--text-muted); text-align: justify; }
 
     /* ════════════════════════════════════════
        GALLERY GRID
@@ -261,6 +293,43 @@
     .tl-desc p { margin-bottom: 1.2em; }
     .tl-desc p:last-child { margin-bottom: 0; }
 
+    /* ── CHRONOLOGY SUB-GALLERY (バリエーション等) ── */
+    .tl-sub-gallery {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(10px, 1.5vw, 20px);
+      margin-top: clamp(3rem, 6vh, 5rem);
+      width: 100%;
+      border-top: 0.5px solid var(--border-md);
+      padding-top: clamp(2rem, 4vh, 3rem);
+    }
+    .tl-sub-item {
+      aspect-ratio: 4 / 3;
+      border: 0.5px solid var(--border);
+      background: #0c0c0b;
+      overflow: hidden;
+      cursor: zoom-in;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+    .tl-sub-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: grayscale(15%) brightness(0.85);
+      transition: transform 1s var(--ease), filter 0.6s ease;
+    }
+    .tl-sub-item:hover {
+      border-color: rgba(203,191,176,0.4);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+    .tl-sub-item:hover img {
+      transform: scale(1.05);
+      filter: grayscale(0%) brightness(1.0);
+    }
+
     /* Typewriter Style */
     .tw-char { opacity: 0; display: inline-block; transition: opacity 0.3s ease; }
     .tw-cursor { display: inline-block; width: 1.5px; height: 1.1em; background-color: var(--accent); margin-left: 2px; vertical-align: middle; animation: tw-blink 0.8s infinite; }
@@ -304,7 +373,7 @@
     /* ════════════════════════════════════════
        KEYFRAMES
     ════════════════════════════════════════ */
-    @keyframes clipUp     { to { opacity:1; transform:translateY(0); } }
+    @keyframes clipUp      { to { opacity:1; transform:translateY(0); } }
     @keyframes charReveal { to { opacity:1; transform:translateY(0) skewY(0deg); } }
     @keyframes ghostRise  { to { opacity:1; transform:translateY(0); } }
     @keyframes fadeOnly   { to { opacity:1; } }
@@ -315,7 +384,7 @@
        RESPONSIVE DESIGN
     ════════════════════════════════════════ */
     @media (max-width: 1024px) {
-      .concept-keywords { grid-template-columns: 1fr 1fr; }
+      .concept-keywords { grid-template-columns: 1fr 1fr; gap: 16px; }
     }
     @media (max-width: 860px) {
       .timeline-container { padding-left: 36px; } 
@@ -323,24 +392,26 @@
       .tl-figure, .tl-body { width: 100%; }
       .timeline-spine-wrapper { left: 16px; transform: none; }
       .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; font-size: clamp(2.5rem, 8vw, 3.5rem); }
+      .tl-sub-gallery { grid-template-columns: repeat(3, 1fr); }
     }
     @media (max-width: 768px) {
-      /* ★ スマホ版: ヘッダーからメニューリンクを完全に非表示にし、左右に綺麗に配置 */
       nav#top-nav { padding: 1rem 1.25rem; justify-content: space-between; align-items: center; }
       .nav-links { display: none !important; }
       .nav-hamburger { display: none !important; }
       
-      .concept-section { grid-template-columns: 1fr; gap: 2rem; }
-      .concept-sidebar { flex-direction: row; align-items: baseline; gap: 1.5rem; }
+      .concept-wrapper { padding: 60px var(--px); }
+      .concept-top-row { flex-direction: column; gap: 2rem; }
+      .concept-sidebar { flex-direction: row; align-items: baseline; gap: 1.5rem; flex: auto; }
       .concept-sidebar-num { font-size: 2.5rem; }
-      .concept-keywords { grid-template-columns: 1fr; }
+      .concept-keywords { grid-template-columns: 1fr; margin-top: 3rem; }
       
-      /* --- スマホで最初の作品紹介グリッドを完全に非表示にする --- */
       .gallery-section { display: none !important; }
       
       .page-nav.visible { right: 8px; opacity: 0.5; }
       .page-nav.visible:hover { opacity: 1; }
       .page-nav-label { display: none; }
+
+      .tl-sub-gallery { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 480px) {
       .hero-scroll { display: none; }
@@ -388,7 +459,7 @@
         <p class="series-eyebrow"><span>Series &nbsp;·&nbsp; 40273 &nbsp;·&nbsp; Traces</span></p>
         <h1 class="series-title-en"><span>40273</span></h1>
         <p class="series-title-jp"><span>40273</span></p>
-        <p class="series-sub"><span>日常の輪郭。空白に沈殿する記憶の断片。</span></p>
+        <p class="series-sub"><span>風景のノイズを透過する。残された線と余白が織りなす、日常のイマージュ。</span></p>
         <div class="series-rule"></div>
       </div>
       <div class="scroll-cue" aria-hidden="true">
@@ -397,33 +468,35 @@
       </div>
     </section>
 
-    <div class="concept-section">
-      <div class="concept-sidebar reveal">
-        <p class="concept-sidebar-label">Concept</p>
-        <p class="concept-sidebar-num">06</p>
+    <div class="concept-wrapper">
+      <div class="concept-top-row">
+        <div class="concept-sidebar reveal">
+          <p class="concept-sidebar-label">Concept</p>
+          <p class="concept-sidebar-num">06</p>
+        </div>
+        <div class="concept-main reveal" style="transition-delay:0.12s">
+          <p class="concept-credit">Series Commentary — Tsuda Shoichi</p>
+          <p class="concept-lead">見慣れたはずの光景は、輪郭線を抽出されることで、全く新しい「余白」を生み出す。</p>
+          <p class="concept-text">本シリーズ「40273」は、日常の中に存在する人物や風景、そして彼らが落とす影を、限定された色彩と<em>ゆらぐ輪郭線</em>によって再構築する試みである。過剰な情報に溢れた現実の風景から、色彩の大部分を剥ぎ取ることで、そこに残された「線」と「空白」が、かえって強い実在感を放ち始める。</p>
+          <p class="concept-text">画面の大半を占める白い空白は、単なる未完成の領域ではない。それは鑑賞者の記憶や無意識が投影されるスクリーンであり、ノイズから解放された<em>純粋な視覚体験</em>への入り口として機能する。</p>
+        </div>
       </div>
-      <div class="concept-main reveal" style="transition-delay:0.12s">
-        <p class="concept-credit">Series Commentary — Tsuda Shoichi</p>
-        <p class="concept-lead">見慣れたはずの光景は、輪郭線を抽出されることで、全く新しい「余白」を生み出す。</p>
-        <p class="concept-text">本シリーズ「40273」は、日常の中に存在する人物や風景、そして彼らが落とす影を、限定された色彩と<em>ゆらぐ輪郭線</em>によって再構築する試みである。過剰な情報に溢れた現実の風景から、色彩の大部分を剥ぎ取ることで、そこに残された「線」と「空白」が、かえって強い実在感を放ち始める。</p>
-        <p class="concept-text">画面の大半を占める白い空白は、単なる未完成の領域ではない。それは鑑賞者の記憶や無意識が投影されるスクリーンであり、ノイズから解放された<em>純粋な視覚体験</em>への入り口として機能する。</p>
 
-        <div class="concept-keywords">
-          <div class="concept-kw reveal" style="transition-delay:0.05s">
-            <p class="concept-kw-num">01</p>
-            <p class="concept-kw-title">線の抽出とゆらぎ</p>
-            <p class="concept-kw-desc">被写体を規定する境界線のみを残す。震えるような線描は、対象の不確かさと、そこに宿る生命の律動を同時に表現する。</p>
-          </div>
-          <div class="concept-kw reveal" style="transition-delay:0.12s">
-            <p class="concept-kw-num">02</p>
-            <p class="concept-kw-title">色彩の再定義</p>
-            <p class="concept-kw-desc">現実の固有色から離れ、シアンやマゼンタ、イエローといった原色に近いノイズのような色彩を配置することで、現実と虚構の境界を曖昧にする。</p>
-          </div>
-          <div class="concept-kw reveal" style="transition-delay:0.20s">
-            <p class="concept-kw-num">03</p>
-            <p class="concept-kw-title">空白の雄弁さ</p>
-            <p class="concept-kw-desc">描かれないことで立ち上がる空間。情報を削ぎ落とすことで、鑑賞者は自らの記憶を補完し、作品との対話を深めていく。</p>
-          </div>
+      <div class="concept-keywords">
+        <div class="concept-kw reveal" style="transition-delay:0.05s">
+          <p class="concept-kw-num">01</p>
+          <p class="concept-kw-title">線の抽出とゆらぎ</p>
+          <p class="concept-kw-desc">被写体を規定する境界線のみを残す。震えるような線描は、対象の不確かさと、そこに宿る生命の律動を同時に表現する。</p>
+        </div>
+        <div class="concept-kw reveal" style="transition-delay:0.12s">
+          <p class="concept-kw-num">02</p>
+          <p class="concept-kw-title">色彩の再定義</p>
+          <p class="concept-kw-desc">現実の固有色から離れ、シアンやマゼンタ、イエローといった原色に近いノイズのような色彩を配置することで、現実と虚構の境界を曖昧にする。</p>
+        </div>
+        <div class="concept-kw reveal" style="transition-delay:0.20s">
+          <p class="concept-kw-num">03</p>
+          <p class="concept-kw-title">空白の雄弁さ</p>
+          <p class="concept-kw-desc">描かれないことで立ち上がる空間。情報を削ぎ落とすことで、鑑賞者は自らの記憶を補完し、作品との対話を深めていく。</p>
         </div>
       </div>
     </div>
@@ -455,6 +528,14 @@
             <span class="gallery-item-title">【landscape(Hiraizumi)】</span><span class="gallery-item-meta">2010 / Oil on canvas</span>
           </div>
         </a>
+        
+        <a href="#work-a-girl" class="gallery-item is-portrait">
+          <div class="gallery-item-img-wrap"><img src="images/【a_girl】 (4).jpg" alt="【a_girl】" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">【a_girl】</span><span class="gallery-item-meta">2010 / Lithograph</span>
+          </div>
+        </a>
+
         <a href="#work-05" class="gallery-item is-portrait">
           <div class="gallery-item-img-wrap"><img src="images/【play_with_shadow】.jpg" alt="影と遊ぶ" loading="lazy"></div>
           <div class="gallery-item-cap">
@@ -509,6 +590,33 @@
               </div>
             </div>
           </div>
+          
+          <div class="tl-sub-gallery">
+            <div class="tl-sub-item js-modal-open" data-img-src="images/【風力発電所のイマージュ(銚子)】(2).jpg">
+              <img src="images/【風力発電所のイマージュ(銚子)】(2).jpg" alt="風力発電所のイマージュ(銚子) (2)" loading="lazy">
+            </div>
+            <div class="tl-sub-item js-modal-open" data-img-src="images/【風力発電所のイマージュ(銚子)】(3).jpg">
+              <img src="images/【風力発電所のイマージュ(銚子)】(3).jpg" alt="風力発電所のイマージュ(銚子) (3)" loading="lazy">
+            </div>
+            <div class="tl-sub-item js-modal-open" data-img-src="images/【風力発電所のイマージュ(銚子)】(4).jpg">
+              <img src="images/【風力発電所のイマージュ(銚子)】(4).jpg" alt="風力発電所のイマージュ(銚子) (4)" loading="lazy">
+            </div>
+            <div class="tl-sub-item js-modal-open" data-img-src="images/【風力発電所のイマージュ(銚子)】(5).jpg">
+              <img src="images/【風力発電所のイマージュ(銚子)】(5).jpg" alt="風力発電所のイマージュ(銚子) (5)" loading="lazy">
+            </div>
+            <div class="tl-sub-item js-modal-open" data-img-src="images/【風力発電所のイマージュ(銚子)】(6).jpg">
+              <img src="images/【風力発電所のイマージュ(銚子)】(6).jpg" alt="風力発電所のイマージュ(銚子) (6)" loading="lazy">
+            </div>
+            <div class="tl-sub-item js-modal-open" data-img-src="images/【風力発電所のイマージュ(銚子)】(7).jpg">
+              <img src="images/【風力発電所のイマージュ(銚子)】(7).jpg" alt="風力発電所のイマージュ(銚子) (7)" loading="lazy">
+            </div>
+            <div class="tl-sub-item js-modal-open" data-img-src="images/【風力発電所のイマージュ(銚子)】(8).jpg">
+              <img src="images/【風力発電所のイマージュ(銚子)】(8).jpg" alt="風力発電所のイマージュ(銚子) (8)" loading="lazy">
+            </div>
+            <div class="tl-sub-item js-modal-open" data-img-src="images/【風力発電所のイマージュ(銚子)】(9).jpg">
+              <img src="images/【風力発電所のイマージュ(銚子)】(9).jpg" alt="風力発電所のイマージュ(銚子) (9)" loading="lazy">
+            </div>
+          </div>
         </article>
 
         <article class="tl-entry" id="work-08">
@@ -558,6 +666,35 @@
                 <p>風景の一部、あるいは水面の反射や地形の俯瞰図のようにも見える抽象度の高い作品。</p>
                 <p>細かな線の集積と、所々に現れる滲んだような色彩が、無機質なキャンバスに有機的な広がりを与えている。具体的な対象物の暗示を避けることで、鑑賞者の純粋な視覚的探索を誘う構成となっている。</p>
               </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry" id="work-a-girl">
+          <div class="tl-year-display">2010</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【a_girl】 (4).jpg">
+              <img src="images/【a_girl】 (4).jpg" alt="【a_girl】" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">【a_girl】</h3>
+              <p class="tl-meta">Lithograph</p>
+              <div class="tl-desc">
+                <p>リトグラフ（石版画）の平版プロセスを用いて制作された本作は、日常の何気ない空間に佇む少女の姿を抽出した一枚である。水と油の反発作用を利用し、版から紙へとイメージを「転写」するこの手法は、直接的な筆触をあえて手放すことを意味する。版を介することで生じるインクの微細な掠れや滲みが、シアンやイエローといった鮮烈な色彩の線描に、独特の物質感と揺らぎをもたらしている。</p>
+                <p>対象を直接描くのではなく、フィルター（版）を通してイメージを出力するプロセスそのものが、私たちが現実の光景をどう知覚し、記憶しているかという不確かさと重なり合う。不要な情報が削ぎ落とされた圧倒的な「白の余白」に、版画特有のノイズを伴った線が立ち上がる時、描かれなかった空間が鑑賞者の視覚を静かに、そして確かに刺激する。</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="tl-sub-gallery">
+            <div class="tl-sub-item js-modal-open" data-img-src="images/【a_girl】 (1).jpg">
+              <img src="images/【a_girl】 (1).jpg" alt="【a_girl】 (1)" loading="lazy">
+            </div>
+            <div class="tl-sub-item js-modal-open" data-img-src="images/【a_girl】 (2).jpg">
+              <img src="images/【a_girl】 (2).jpg" alt="【a_girl】 (2)" loading="lazy">
+            </div>
+            <div class="tl-sub-item js-modal-open" data-img-src="images/【a_girl】 (3).jpg">
+              <img src="images/【a_girl】 (3).jpg" alt="【a_girl】 (3)" loading="lazy">
             </div>
           </div>
         </article>
