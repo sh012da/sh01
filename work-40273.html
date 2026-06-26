@@ -62,19 +62,37 @@
     a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
     a:hover { opacity: 0.45; }
 
-    /* ─── VIDEO BG ─── */
-    .works-video-bg {
+    /* ─── SLIDESHOW BG (Optimized) ─── */
+    .works-slideshow-bg {
       position: fixed; inset: 0; z-index: -1;
-      pointer-events: none; opacity: 1;
+      pointer-events: none; background: #080808;
     }
-    .works-video-bg video {
-      width: 100%; height: 100%;
-      object-fit: cover; opacity: 0.13;
-      display: block; filter: grayscale(100%);
+    .slide-item {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0;
+      filter: grayscale(100%);
+      will-change: transform, opacity;
+      animation: kenBurnsFade 24s infinite;
     }
+    .slide-item:nth-child(1) { background-image: url('images/【play_with_shadow】.jpg'); animation-delay: 0s; }
+    .slide-item:nth-child(2) { background-image: url('images/in_front_of_Shinagawa_Station.jpg'); animation-delay: 6s; }
+    .slide-item:nth-child(3) { background-image: url('images/@_the_beach.jpg'); animation-delay: 12s; }
+    .slide-item:nth-child(4) { background-image: url('images/【landscape(Hiraizumi)】.jpg'); animation-delay: 18s; }
+
+    @keyframes kenBurnsFade {
+      0%   { opacity: 0; transform: scale(1); }
+      5%   { opacity: 0.15; }
+      25%  { opacity: 0.15; }
+      30%  { opacity: 0; transform: scale(1.05); }
+      100% { opacity: 0; transform: scale(1.05); }
+    }
+
     .works-video-overlay {
       position: absolute; inset: 0;
       background: linear-gradient(to bottom, rgba(8,8,8,0.6) 0%, rgba(8,8,8,0.97) 100%);
+      z-index: 1;
     }
 
     /* ════════════════════════════════════════
@@ -113,7 +131,6 @@
     }
     .nav-cta:hover { background: rgba(203,191,176,0.08); color: var(--fg); }
     
-    /* ハンバーガーメニューは完全に非表示 */
     .nav-hamburger { display: none !important; }
 
     /* PAGE NAV (Right dots) */
@@ -136,7 +153,7 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ════════════════════════════════════════
-       HERO
+       HERO (CYBER ASSEMBLE EFFECT)
     ════════════════════════════════════════ */
     .series-hero {
       position: relative; overflow: hidden; height: 100svh; min-height: 580px;
@@ -149,41 +166,60 @@
       pointer-events: none; user-select: none; font-family: var(--font-en);
       font-size: clamp(7rem,22vw,24rem); font-weight: 300; letter-spacing: 0.05em; color: transparent;
       -webkit-text-stroke: 1px rgba(255,255,255,0.035); white-space: nowrap; line-height: 1;
-      opacity: 0; transform: translateY(12px); animation: ghostRise 2.2s var(--ease-expo) 1.2s forwards;
     }
     .series-hero-inner { position: relative; z-index: 1; max-width: 900px; }
+    
     .series-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.55rem,1.6vw,0.68rem);
-      letter-spacing: 0.42em; color: var(--muted-col); text-transform: uppercase; margin-bottom: clamp(14px,3vh,36px); overflow: hidden;
+      letter-spacing: 0.42em; color: var(--muted-col); text-transform: uppercase; margin-bottom: clamp(14px,3vh,36px);
     }
-    .series-eyebrow span { display: inline-block; opacity: 0; transform: translateY(100%); animation: clipUp 0.9s var(--ease-expo) 0.4s forwards; }
     .series-title-en {
       font-family: var(--font-en); font-size: clamp(4rem,12vw,11rem);
-      font-weight: 300; letter-spacing: 0.08em; line-height: 0.9; color: var(--fg); overflow: hidden;
+      font-weight: 300; letter-spacing: 0.08em; line-height: 0.9; color: var(--fg);
     }
-    .series-title-en span { display: block; opacity: 0; transform: translateY(0.65em) skewY(2.5deg); animation: charReveal 1s var(--ease-expo) 0.6s forwards; }
     .series-title-jp {
       font-family: var(--font-ja); font-weight: 200; font-size: clamp(1rem,3vw,2rem);
-      letter-spacing: 0.22em; color: rgba(237,233,228,0.45); margin-top: 0.6em; overflow: hidden;
+      letter-spacing: 0.22em; color: rgba(237,233,228,0.45); margin-top: 0.6em;
     }
-    .series-title-jp span { display: block; opacity: 0; transform: translateY(0.5em); animation: charReveal 0.9s var(--ease-expo) 0.85s forwards; }
     .series-sub {
       margin-top: clamp(18px,3.5vh,52px); font-family: var(--font-ja); font-weight: 200;
-      font-size: clamp(0.78rem,2vw,1rem); letter-spacing: 0.2em; color: var(--muted-col); overflow: hidden;
+      font-size: clamp(0.78rem,2vw,1rem); letter-spacing: 0.2em; color: var(--muted-col);
     }
-    .series-sub span { display: inline-block; opacity: 0; transform: translateY(100%); animation: clipUp 1s var(--ease-expo) 1.1s forwards; }
+    
     .series-rule {
       margin-top: clamp(14px,2.5vh,32px); width: 0; height: 1px; background: rgba(255,255,255,0.14);
-      animation: drawLine 1.2s var(--ease-expo) 1.5s forwards;
+      animation: drawLine 0.8s var(--ease-expo) 1.5s forwards; 
     }
+
     .scroll-cue {
       position: absolute; bottom: clamp(24px,5vh,60px); right: var(--px);
-      display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: 0; animation: fadeOnly 1s ease 2.2s forwards;
+      display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: 0; 
+      animation: fadeOnly 1s ease 1.8s forwards; 
     }
     .scroll-cue-line {
       width: 1px; height: 52px; background: linear-gradient(to bottom, var(--muted-col), transparent); animation: pulseBar 2.5s ease-in-out 2.5s infinite;
     }
     .scroll-cue span { font-family: var(--font-en); font-size: 0.54rem; letter-spacing: 0.38em; color: var(--muted-col); text-transform: uppercase; writing-mode: vertical-rl; }
+
+    /* ── Cyber Assemble CSS ── */
+    .cyber-char {
+      display: inline-block;
+      opacity: 0;
+      transform: translate(var(--startX), var(--startY)) rotate(var(--startRot)) scale(var(--startScale));
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease-out, color 0.2s, text-shadow 0.2s;
+      will-change: transform, opacity;
+      white-space: pre; 
+    }
+    .cyber-char.is-assembled {
+      opacity: 1;
+      transform: translate(0, 0) rotate(0) scale(1);
+    }
+    .cyber-char.is-glitching {
+      color: var(--accent) !important;
+      text-shadow: 0 0 10px var(--accent), 0 0 20px rgba(203,191,176,0.5);
+      font-family: 'Courier New', monospace !important;
+      -webkit-text-stroke: 0px !important; 
+    }
 
     /* ════════════════════════════════════════
        CONCEPT SECTION
@@ -196,21 +232,14 @@
       margin: 0 auto;
     }
     .concept-top-row {
-      display: flex; 
-      justify-content: center; 
-      gap: clamp(2.5rem, 6vw, 8rem);
-      max-width: 1400px;
-      margin: 0 auto;
-      align-items: start;
+      display: flex; justify-content: center; gap: clamp(2.5rem, 6vw, 8rem);
+      max-width: 1400px; margin: 0 auto; align-items: start;
     }
     .concept-sidebar {
       flex: 0 0 clamp(90px, 14vw, 160px);
       display: flex; flex-direction: column; gap: 1.5rem; padding-top: 0.4rem;
     }
-    .concept-main {
-      flex: 1 1 auto;
-      max-width: 1060px;
-    }
+    .concept-main { flex: 1 1 auto; max-width: 1060px; }
     .concept-sidebar-label { font-family: var(--font-en); font-size: clamp(0.58rem,1.4vw,0.72rem); letter-spacing: 0.4em; color: var(--muted-col); text-transform: uppercase; line-height: 1; }
     .concept-sidebar-num { font-family: var(--font-en); font-size: clamp(3rem,7vw,6rem); font-weight: 300; line-height: 1; color: rgba(255,255,255,0.04); letter-spacing: -0.02em; }
     .concept-credit { font-family: var(--font-en); font-size: 0.65rem; letter-spacing: 0.25em; color: rgba(237,233,228,0.26); text-transform: uppercase; margin-bottom: 2.2rem; }
@@ -220,16 +249,11 @@
     .concept-text em { font-style: normal; color: var(--accent); border-bottom: 0.5px solid var(--border-md); padding-bottom: 3px; }
 
     .concept-keywords { 
-      display: grid; 
-      grid-template-columns: repeat(3, 1fr); 
-      gap: 20px; 
-      margin-top: 5rem; 
-      width: 100%;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 5rem; width: 100%;
     }
     .concept-kw { 
       padding: clamp(2.5rem, 4vw, 3.8rem) clamp(2rem, 3vw, 3rem); 
-      background: rgba(255,255,255,0.02); 
-      border: 0.5px solid var(--border);
+      background: rgba(255,255,255,0.02); border: 0.5px solid var(--border);
       transition: background 0.4s ease, border-color 0.4s ease, transform 0.4s var(--ease-expo); 
     }
     .concept-kw:hover { background: rgba(255,255,255,0.05); border-color: var(--border-md); transform: translateY(-4px); }
@@ -251,7 +275,7 @@
     .gallery-section { padding: 0 var(--px) clamp(6rem, 13vh, 10rem); max-width: 1600px; margin: 0 auto; border-top: 0.5px solid var(--border); }
     .section-label-center { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem); letter-spacing: 0.44em; color: var(--muted-col); text-transform: uppercase; text-align: center; margin-bottom: clamp(3rem, 7vh, 5rem); margin-top: clamp(3rem, 7vh, 5rem); }
     
-    .gallery-grid { display: flex; flex-wrap: wrap; gap: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 2.5vw, 2.5rem); justify-content: center; align-items: center; } /* センター揃えでオーガニックな起伏を出す */
+    .gallery-grid { display: flex; flex-wrap: wrap; gap: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 2.5vw, 2.5rem); justify-content: center; align-items: center; } 
     .gallery-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; cursor: pointer; opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); width: fit-content; max-width: 100%; }
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
     
@@ -297,48 +321,20 @@
     .tl-desc p { margin-bottom: 1.2em; }
     .tl-desc p:last-child { margin-bottom: 0; }
 
-    /* ── CHRONOLOGY SUB-GALLERY (バリエーション等) ── */
+    /* ── CHRONOLOGY SUB-GALLERY ── */
     .tl-sub-gallery {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: clamp(10px, 1.5vw, 20px);
-      margin-top: clamp(3rem, 6vh, 5rem);
-      width: 100%;
-      border-top: 0.5px solid var(--border-md);
-      padding-top: clamp(2rem, 4vh, 3rem);
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(10px, 1.5vw, 20px);
+      margin-top: clamp(3rem, 6vh, 5rem); width: 100%; border-top: 0.5px solid var(--border-md); padding-top: clamp(2rem, 4vh, 3rem);
     }
     .tl-sub-item {
-      aspect-ratio: 4 / 3;
-      border: 0.5px solid var(--border);
-      background: #0c0c0b;
-      overflow: hidden;
-      cursor: zoom-in;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: border-color 0.4s ease, box-shadow 0.4s ease;
+      aspect-ratio: 4 / 3; border: 0.5px solid var(--border); background: #0c0c0b; overflow: hidden;
+      cursor: zoom-in; display: flex; align-items: center; justify-content: center; transition: border-color 0.4s ease, box-shadow 0.4s ease;
     }
     .tl-sub-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      filter: grayscale(15%) brightness(0.85);
-      transition: transform 1s var(--ease), filter 0.6s ease;
+      width: 100%; height: 100%; object-fit: contain; filter: grayscale(15%) brightness(0.85); transition: transform 1s var(--ease), filter 0.6s ease;
     }
-    .tl-sub-item:hover {
-      border-color: rgba(203,191,176,0.4);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-    }
-    .tl-sub-item:hover img {
-      transform: scale(1.05);
-      filter: grayscale(0%) brightness(1.0);
-    }
-
-    /* Typewriter Style */
-    .tw-char { opacity: 0; display: inline-block; transition: opacity 0.3s ease; }
-    .tw-cursor { display: inline-block; width: 1.5px; height: 1.1em; background-color: var(--accent); margin-left: 2px; vertical-align: middle; animation: tw-blink 0.8s infinite; }
-    @keyframes tw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-    .fade-out { opacity: 0; transition: opacity 0.8s ease; }
+    .tl-sub-item:hover { border-color: rgba(203,191,176,0.4); box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+    .tl-sub-item:hover img { transform: scale(1.05); filter: grayscale(0%) brightness(1.0); }
 
     /* ════════════════════════════════════════
        CONTACT & FOOTER
@@ -377,9 +373,6 @@
     /* ════════════════════════════════════════
        KEYFRAMES
     ════════════════════════════════════════ */
-    @keyframes clipUp      { to { opacity:1; transform:translateY(0); } }
-    @keyframes charReveal { to { opacity:1; transform:translateY(0) skewY(0deg); } }
-    @keyframes ghostRise  { to { opacity:1; transform:translateY(0); } }
     @keyframes fadeOnly   { to { opacity:1; } }
     @keyframes drawLine   { to { width: clamp(48px,12vw,160px); } }
     @keyframes pulseBar   { 0%,100% { opacity:0.3; } 50% { opacity:1; } }
@@ -391,7 +384,6 @@
       .concept-keywords { grid-template-columns: 1fr 1fr; gap: 16px; }
     }
     @media (max-width: 860px) {
-      /* Timeline Responsive */
       .timeline-container { padding-left: 36px; } 
       .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2rem; }
       .tl-figure, .tl-body { width: 100% !important; }
@@ -426,15 +418,18 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
       .gallery-item, .tl-entry, .reveal { opacity: 1 !important; transform: none !important; }
+      .works-slideshow-bg .slide-item { animation: none !important; opacity: 0.15; }
+      .works-slideshow-bg .slide-item:not(:first-child) { display: none; }
     }
   </style>
 </head>
 <body id="top">
 
-  <div class="works-video-bg" aria-hidden="true">
-    <video autoplay loop muted playsinline preload="metadata">
-      <source src="images/mov1.mp4" type="video/mp4">
-    </video>
+  <div class="works-slideshow-bg" aria-hidden="true">
+    <div class="slide-item"></div>
+    <div class="slide-item"></div>
+    <div class="slide-item"></div>
+    <div class="slide-item"></div>
     <div class="works-video-overlay"></div>
   </div>
 
@@ -460,15 +455,15 @@
 
   <main>
     <section class="series-hero">
-      <div class="series-hero-ghost" aria-hidden="true">40273</div>
+      <div class="series-hero-ghost" aria-hidden="true" id="heroGhost">40273</div>
       <div class="series-hero-inner">
-        <p class="series-eyebrow"><span>Series &nbsp;·&nbsp; 40273 &nbsp;·&nbsp; Traces</span></p>
-        <h1 class="series-title-en"><span>40273</span></h1>
-        <p class="series-title-jp"><span>40273</span></p>
-        <p class="series-sub"><span>風景のノイズを透過する。残された線と余白が織りなす、日常のイマージュ。</span></p>
+        <p class="series-eyebrow" id="heroEyebrow">Series · 40273 · Traces</p>
+        <h1 class="series-title-en" id="heroTitle">40273</h1>
+        <p class="series-title-jp" id="heroTitleJp">40273</p>
+        <p class="series-sub" id="heroSub">風景のノイズを透過する。残された線と余白が織りなす、日常のイマージュ。</p>
         <div class="series-rule"></div>
       </div>
-      <div class="scroll-cue" aria-hidden="true">
+      <div class="scroll-cue" aria-hidden="true" id="heroScroll">
         <div class="scroll-cue-line"></div>
         <span>Scroll</span>
       </div>
@@ -588,7 +583,7 @@
               <img src="images/【風力発電所のイマージュ(銚子)】.jpg" alt="風力発電所のイマージュ(銚子)" loading="lazy">
             </div>
             <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">風力発電所のイマージュ（銚子）</h3>
+              <h3 class="tl-title js-cyber-title">風力発電所のイマージュ（銚子）</h3>
               <p class="tl-meta">Image of Wind Farm (Choshi) | 21.0 × 29.7 cm</p>
               <div class="tl-desc">
                 <p>銚子の海岸線に立ち並ぶ巨大な風力発電のプロペラ群。人工的な直線と自然の有機的な境界線が交錯する光景を、限定的な色彩の線で抽出している。</p>
@@ -632,7 +627,7 @@
               <img src="images/【波のイマージュ(銚子、君ヶ浜)】.jpg" alt="波のイマージュ(銚子、君ヶ浜)" loading="lazy">
             </div>
             <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">波のイマージュ（銚子、君ヶ浜）</h3>
+              <h3 class="tl-title js-cyber-title">波のイマージュ（銚子、君ヶ浜）</h3>
               <p class="tl-meta">Image of Waves (Choshi, Kimigahama) | 21.0 × 29.7 cm</p>
               <div class="tl-desc">
                 <p>君ヶ浜に打ち寄せる波のフラクタルな輪郭。絶えず形を変え続ける水面の瞬間を、シアンやマゼンタのノイズのような線で捉えている。</p>
@@ -649,7 +644,7 @@
               <img src="images/【灯台のイマージュ(銚子、犬吠)】.jpg" alt="灯台のイマージュ(銚子、犬吠)" loading="lazy">
             </div>
             <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">灯台のイマージュ（銚子、犬吠）</h3>
+              <h3 class="tl-title js-cyber-title">灯台のイマージュ（銚子、犬吠）</h3>
               <p class="tl-meta">Image of Lighthouse (Choshi, Inubo) | 21.0 × 29.7 cm</p>
               <div class="tl-desc">
                 <p>犬吠埼灯台の屹立するシルエット。空と海の境界が白い余白に完全に溶け込み、微細な線描だけが潮風のざわめきや光の瞬きを暗示している。</p>
@@ -666,7 +661,7 @@
               <img src="images/【landscape(Hiraizumi)】.jpg" alt="【landscape(Hiraizumi)】" loading="lazy">
             </div>
             <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">【landscape(Hiraizumi)】</h3>
+              <h3 class="tl-title js-cyber-title">【landscape(Hiraizumi)】</h3>
               <p class="tl-meta">Untitled | 97.0 × 130.3 cm</p>
               <div class="tl-desc">
                 <p>風景の一部、あるいは水面の反射や地形の俯瞰図のようにも見える抽象度の高い作品。</p>
@@ -683,7 +678,7 @@
               <img src="images/【a_girl】 (4).jpg" alt="【a_girl】(4)" loading="lazy">
             </div>
             <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">【a_girl】</h3>
+              <h3 class="tl-title js-cyber-title">【a_girl】</h3>
               <p class="tl-meta">Lithograph | 29.7 × 21.0 cm</p>
               <div class="tl-desc">
                 <p>リトグラフ（石版画）の平版プロセスを用いて制作された本作は、日常の何気ない空間に佇む少女の姿を抽出した一枚である。水と油の反発作用を利用し、版から紙へとイメージを「転写」するこの手法は、直接的な筆触をあえて手放すことを意味する。版を介することで生じるインクの微細な掠れや滲みが、シアンやイエローといった鮮烈な色彩の線描に、独特の物質感と揺らぎをもたらしている。</p>
@@ -712,7 +707,7 @@
               <img src="images/【play_with_shadow】.jpg" alt="影と遊ぶ" loading="lazy">
             </div>
             <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">影と遊ぶ</h3>
+              <h3 class="tl-title js-cyber-title">影と遊ぶ</h3>
               <p class="tl-meta">play with shadow | 145.5 × 97.0 cm</p>
               <div class="tl-desc">
                 <p>明るい路地を歩く少女と、路面に反射するその影。実体である少女の衣服にはピンクや紫が施されているが、足元の影は荒々しい青と黒のピクセルのようなテクスチャで描かれている。</p>
@@ -729,7 +724,7 @@
               <img src="images/in_front_of_Shinagawa_Station.jpg" alt="品川駅前" loading="lazy">
             </div>
             <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">品川駅前</h3>
+              <h3 class="tl-title js-cyber-title">品川駅前</h3>
               <p class="tl-meta">in_front_of_Shinagawa_Station | 116.7 × 91.0 cm</p>
               <div class="tl-desc">
                 <p>都市の雑踏の一角、駅前に立つ人々のシルエットを抽出した作品。床のタイルのパターンが赤い線で細かく描かれる一方で、人物や建物的ディテールは徹底して白く抜かれている。</p>
@@ -746,7 +741,7 @@
               <img src="images/@_the_beach.jpg" alt="ビーチにて" loading="lazy">
             </div>
             <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">ビーチにて</h3>
+              <h3 class="tl-title js-cyber-title">ビーチにて</h3>
               <p class="tl-meta">@_the_beach | 116.7 × 91.0 cm</p>
               <div class="tl-desc">
                 <p>水着姿の人物が立つ海辺の情景。背景の広がりや質感を大胆に省略し、人物のフォルムと砂浜に落ちる色彩の飛沫だけが残されている。</p>
@@ -763,7 +758,7 @@
               <img src="images/【室内のイマージュ(2)】.jpg" alt="室内のイマージュ(2)" loading="lazy">
             </div>
             <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">室内のイマージュ(2)</h3>
+              <h3 class="tl-title js-cyber-title">室内のイマージュ(2)</h3>
               <p class="tl-meta">Image in the room (2) | 22.0 × 27.3 cm</p>
               <div class="tl-desc">
                 <p>人物の視線や姿勢の断片が、淡いピンクとシアンの微細な線で空間に刻み込まれている室内風景のイマージュ。</p>
@@ -780,7 +775,7 @@
               <img src="images/【室内のイマージュ】.jpg" alt="室内のイマージュ" loading="lazy">
             </div>
             <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">室内のイマージュ</h3>
+              <h3 class="tl-title js-cyber-title">室内のイマージュ</h3>
               <p class="tl-meta">Image in the room | 72.7 × 91.0 cm</p>
               <div class="tl-desc">
                 <p>机、椅子、そしてそこに佇む人物らしき輪郭。見慣れた室内の風景が、断片的な線描によって解体され、再構成されている。</p>
@@ -834,76 +829,120 @@
   </div>
 
   <script>
-    /* ── ファーストビュー アニメーション ── */
+    /* ════════════════════════════════════════
+       CYBER ASSEMBLE ENGINE (高速化版)
+    ════════════════════════════════════════ */
+    class CyberAssemble {
+      constructor(el) {
+        this.el = el;
+        this.originalText = el.innerText.trim();
+        this.chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!<>-_\\/[]{}—=+*^?#ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄ甲乙丙丁';
+        this.spans = [];
+        this.init();
+      }
+
+      init() {
+        this.el.innerHTML = '';
+        [...this.originalText].forEach(char => {
+          if (char === ' ' || char === ' ') {
+            this.el.appendChild(document.createTextNode(' '));
+            return;
+          }
+          const span = document.createElement('span');
+          span.className = 'cyber-char';
+          span.dataset.char = char;
+          span.innerText = this.randomChar();
+
+          // 集まる距離を少し短くし、スナップ感を強める
+          const angle = Math.random() * Math.PI * 2;
+          const distance = 400 + Math.random() * 600; 
+          const startX = Math.cos(angle) * distance + 'px';
+          const startY = Math.sin(angle) * distance + 'px';
+          const startRot = (Math.random() - 0.5) * 1080 + 'deg';
+          const startScale = Math.random() * 3 + 1;
+
+          span.style.setProperty('--startX', startX);
+          span.style.setProperty('--startY', startY);
+          span.style.setProperty('--startRot', startRot);
+          span.style.setProperty('--startScale', startScale);
+
+          this.spans.push(span);
+          this.el.appendChild(span);
+        });
+      }
+
+      start(delayOffset = 0) {
+        this.spans.forEach((span) => {
+          // 遅延を最大400msに短縮し、一気に集束させる
+          const delay = delayOffset + Math.random() * 400; 
+
+          const scrambleInterval = setInterval(() => {
+            span.innerText = this.randomChar();
+          }, 40);
+
+          setTimeout(() => {
+            span.classList.add('is-assembled');
+            span.classList.add('is-glitching');
+          }, delay);
+
+          // アニメーション完了時間も800msに短縮
+          setTimeout(() => {
+            clearInterval(scrambleInterval);
+            span.innerText = span.dataset.char;
+            span.classList.remove('is-glitching');
+          }, delay + 800); 
+        });
+      }
+
+      randomChar() {
+        return this.chars[Math.floor(Math.random() * this.chars.length)];
+      }
+    }
+
+    /* ── ファーストビュー アニメーション起動（テンポアップ） ── */
     window.addEventListener('load', () => {
-      setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 150);
-      setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'),   350);
-      setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'),      680);
-      setTimeout(() => document.getElementById('heroMeta')?.classList.add('revealed'),    980);
-      setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1700);
+      const ghost = new CyberAssemble(document.getElementById('heroGhost'));
+      const eyebrow = new CyberAssemble(document.getElementById('heroEyebrow'));
+      const title = new CyberAssemble(document.getElementById('heroTitle'));
+      const jp = new CyberAssemble(document.getElementById('heroTitleJp'));
+      const sub = new CyberAssemble(document.getElementById('heroSub'));
+
+      // 各要素の出現インターバルを短縮し、一気に読ませる
+      setTimeout(() => ghost.start(0), 0);
+      setTimeout(() => eyebrow.start(0), 200);
+      setTimeout(() => title.start(0), 400);
+      setTimeout(() => jp.start(0), 600);
+      setTimeout(() => sub.start(0), 800);
     });
 
-    /* ── Observer (Fade Up & Grid Animation) ── */
+    /* ── CyberAssemble をタイムラインタイトル用に準備 ── */
+    const cyberTitles = new Map();
+    document.querySelectorAll('.js-cyber-title').forEach(el => {
+      cyberTitles.set(el, new CyberAssemble(el));
+    });
+
+    /* ── Observer (Fade Up & Grid Animation & Cyber Assemble for Titles) ── */
     const io = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
+        
         entry.target.classList.add('in-view');
         entry.target.classList.add('visible'); // For .reveal compatibility
+        
+        // もしタイムラインの要素なら、中のタイトルをハッカー風アニメーションで表示
+        if (entry.target.classList.contains('tl-entry')) {
+          const titleEl = entry.target.querySelector('.js-cyber-title');
+          if (titleEl && cyberTitles.has(titleEl)) {
+            setTimeout(() => {
+              cyberTitles.get(titleEl).start(0);
+            }, 200); // 親要素がフワッと出始めてから少し遅れて文字が集まる
+          }
+        }
+
         io.unobserve(entry.target);
       });
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
     document.querySelectorAll('.gallery-item, .tl-entry, .reveal').forEach(el => io.observe(el));
-
-    /* ── Typewriter Engine ── */
-    function prepareTypewriterDOM(el) {
-      if (el.dataset.twPrepared === "true") return;
-      const txt = el.textContent.trim();
-      el.textContent = '';
-      for (let i = 0; i < txt.length; i++) {
-        const span = document.createElement('span');
-        span.className = 'tw-char';
-        span.textContent = txt[i];
-        el.appendChild(span);
-      }
-      const cursor = document.createElement('span');
-      cursor.className = 'tw-cursor';
-      el.appendChild(cursor);
-      el.dataset.twPrepared = "true";
-    }
-
-    function runTypewriter(el) {
-      if (el.dataset.twDone === "true") return;
-      const chars = el.querySelectorAll('.tw-char');
-      const cursor = el.querySelector('.tw-cursor');
-      let idx = 0;
-      function nextChar() {
-        if (idx < chars.length) {
-          chars[idx].style.opacity = '1';
-          idx++;
-          setTimeout(() => requestAnimationFrame(nextChar), 45);
-        } else {
-          el.dataset.twDone = "true";
-          if (cursor) {
-            cursor.classList.add('fade-out');
-            setTimeout(() => cursor.remove(), 800);
-          }
-        }
-      }
-      requestAnimationFrame(nextChar);
-    }
-
-    document.querySelectorAll('[data-typewriter="true"]').forEach(el => {
-      prepareTypewriterDOM(el);
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            obs.unobserve(el);
-            setTimeout(() => requestAnimationFrame(() => runTypewriter(el)), 300);
-          }
-        });
-      }, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
-      obs.observe(el);
-    });
 
     /* ── Scroll Interactions (Spine, Nav, Page-Nav) ── */
     const topNav = document.getElementById('top-nav');
@@ -968,7 +1007,6 @@
       });
     });
 
-    /* ★ スマホとPCでTOPに戻るスクロール先を動的に切り替える */
     document.getElementById('backToTop').addEventListener('click', (e) => {
       e.preventDefault();
       if (window.innerWidth <= 768) {
