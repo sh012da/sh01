@@ -24,7 +24,7 @@
     ============================================================ */
     :root {
       --bg:        #060605;
-      --bg2:       #0c0c0a;
+      --bg2:       rgba(12, 12, 10, 0.85);
       --bg3:       #111110;
       --fg:        #e9e5df;
       --muted:     rgba(233,229,223,0.44);
@@ -42,7 +42,7 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      background: var(--bg);
+      background-color: var(--bg);
       color: var(--fg);
       font-family: var(--font-ja);
       line-height: 2.1;
@@ -51,14 +51,30 @@
       overflow-x: hidden;
       padding-left: env(safe-area-inset-left);
       padding-right: env(safe-area-inset-right);
+      position: relative;
     }
+    
+    /* ── ページ全体のアンビエント背景 ── */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background-image: url('images/【S100】明るい洞窟(3)20250826.jpg');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.08; /* 絵画鑑賞を妨げない極めて薄い明度 */
+      filter: blur(12px) contrast(1.1) grayscale(20%);
+      z-index: -10;
+      pointer-events: none;
+    }
+
     body.is-locked { overflow: hidden; }
     img { max-width: 100%; height: auto; display: block; }
     a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
     a:hover { opacity: 0.45; }
 
     /* ============================================================
-        NAVIGATION (Unified & Minimal for Mobile)
+        NAVIGATION
     ============================================================ */
     nav#top-nav {
       position: fixed;
@@ -121,22 +137,43 @@
       height: 100svh; min-height: 580px;
       display: flex; flex-direction: column; justify-content: flex-end;
       padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); overflow: hidden;
-      background:
-        radial-gradient(ellipse 70% 60% at 30% 30%, rgba(124,154,160,0.05) 0%, transparent 55%),
-        radial-gradient(ellipse 55% 80% at 72% 25%, rgba(196,168,130,0.04) 0%, transparent 55%),
-        var(--bg);
     }
-    .hero-divider { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%); }
+    
+    /* ── ファーストビュー専用の背景実装 ── */
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background-image: url('images/【S100】明るい洞窟(2)20250812.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed; /* 視差効果 */
+      opacity: 0.18; /* タイトルの可読性を担保 */
+      filter: brightness(0.35) saturate(0.8);
+      pointer-events: none;
+    }
+    /* 下部のグラデーションフェード */
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(to bottom, transparent 40%, var(--bg) 95%);
+      pointer-events: none;
+    }
+
+    .hero-divider { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%); z-index: 2; }
     .hero-inner { position: relative; z-index: 2; }
     .hero-eyebrow { font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem); letter-spacing: 0.5em; color: var(--dim); text-transform: uppercase; margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.2rem; clip-path: inset(0 100% 0 0); transition: clip-path 1.2s var(--ease) 0.2s; }
     .hero-eyebrow::before { content: ''; width: 24px; height: 0.5px; background: var(--accent2); flex-shrink: 0; opacity: 0.6; }
     .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
-    .hero-title { font-family: var(--font-ja); font-size: clamp(5rem, 19vw, 17rem); font-weight: 200; line-height: 0.88; letter-spacing: -0.02em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem); display: flex; gap: 0.05em; overflow: visible; }
+    .hero-title { font-family: var(--font-ja); font-size: clamp(5rem, 19vw, 17rem); font-weight: 200; line-height: 0.88; letter-spacing: -0.02em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem); display: flex; gap: 0.05em; overflow: visible; text-shadow: 0 4px 24px rgba(0,0,0,0.8); }
     .hero-title .char { display: inline-block; opacity: 0; transition: transform 1.4s var(--ease), opacity 0.9s ease; }
     .hero-title .char:nth-child(1) { transform: translateX(-60px); transition-delay: 0.2s; }
     .hero-title .char:nth-child(2) { transform: translateX(60px); transition-delay: 0.35s; }
     .hero-title.revealed .char { opacity: 1; transform: translateX(0); }
-    .hero-title-en { font-family: var(--font-en); font-size: clamp(0.95rem, 3vw, 2rem); font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.55); clip-path: inset(0 100% 0 0); transition: clip-path 1.4s var(--ease) 0.7s; }
+    .hero-title-en { font-family: var(--font-en); font-size: clamp(0.95rem, 3vw, 2rem); font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.7); clip-path: inset(0 100% 0 0); transition: clip-path 1.4s var(--ease) 0.7s; }
     .hero-title-en.revealed { clip-path: inset(0 0% 0 0); }
     .hero-meta { display: flex; align-items: center; gap: 1.8rem; margin-top: clamp(2rem, 5vh, 4.5rem); opacity: 0; transform: translateY(14px); transition: opacity 1s ease 1.1s, transform 1s var(--ease) 1.1s; }
     .hero-meta.revealed { opacity: 1; transform: translateY(0); }
@@ -153,13 +190,13 @@
     /* ============================================================
         CONCEPT SECTION
     ============================================================ */
-    .concept-section { padding: clamp(6rem, 13vh, 10rem) var(--px); max-width: 900px; margin: 0 auto; text-align: center; }
+    .concept-section { padding: clamp(6rem, 13vh, 10rem) var(--px); max-width: 900px; margin: 0 auto; text-align: center; position: relative; z-index: 5; }
     .concept-text { font-size: clamp(0.9rem, 2vw, 1.05rem); font-weight: 300; line-height: 2.3; color: rgba(233,229,223,0.85); letter-spacing: 0.08em; }
 
     /* ============================================================
         SERIES STATEMENT
     ============================================================ */
-    .statement-section { padding: clamp(4rem, 9vh, 7rem) var(--px) clamp(6rem, 13vh, 10rem); max-width: 880px; margin: 0 auto; border-top: 0.5px solid var(--border); }
+    .statement-section { padding: clamp(4rem, 9vh, 7rem) var(--px) clamp(6rem, 13vh, 10rem); max-width: 880px; margin: 0 auto; border-top: 0.5px solid var(--border); position: relative; z-index: 5; }
     .statement-label { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem); letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase; text-align: center; margin-bottom: clamp(2.5rem, 6vh, 4rem); }
     .statement-pullquote { font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.3rem, 3.2vw, 2.1rem); line-height: 1.75; color: var(--fg); text-align: center; letter-spacing: 0.03em; margin-bottom: clamp(3rem, 7vh, 5rem); opacity: 0; transform: translateY(20px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
     .statement-pullquote.in-view { opacity: 1; transform: translateY(0); }
@@ -173,9 +210,9 @@
     .statement-closing.in-view { opacity: 1; transform: translateY(0); }
 
     /* ============================================================
-        GALLERY GRID (24 Columns Custom System - Rebalanced)
+        GALLERY GRID (24 Columns Custom System)
     ============================================================ */
-    .gallery-section { padding: 0 var(--px) clamp(6rem, 13vh, 10rem); max-width: 1600px; margin: 0 auto; }
+    .gallery-section { padding: 0 var(--px) clamp(6rem, 13vh, 10rem); max-width: 1600px; margin: 0 auto; position: relative; z-index: 5; }
     .section-label { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem); letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase; text-align: center; margin-bottom: clamp(3rem, 7vh, 5rem); }
     
     .gallery-grid {
@@ -192,7 +229,11 @@
 
     /* --- 24カラム グリッド比率設定 --- */
 
-    /* 1・2行目：往路・復路 — 画面端から端までフルブリード表示（HTML復元対応） */
+    /* 1行目：最新作（明るい洞窟 3 を左、2 を右に配置） */
+    .gi-cave3      { grid-column: 4 / span 8; }
+    .gi-cave2      { grid-column: 14 / span 8; }
+
+    /* 2・3行目：往路・復路 — 画面端から端までフルブリード表示 */
     .gi-ouro, .gi-fukuro {
       grid-column: 1 / -1;
       width: 100vw; max-width: 100vw;
@@ -204,31 +245,31 @@
     .gi-ouro .gallery-item-cap,
     .gi-fukuro .gallery-item-cap { padding-left: var(--px); padding-right: var(--px); }
 
-    /* 3行目：山脈と左美都 */
+    /* 4行目：山脈と左美都 */
     .gi-sanmyaku   { grid-column: 2 / span 10; }
     .gi-samizu     { grid-column: 14 / span 10; }
 
-    /* 4行目：高さ同期グループ */
+    /* 5行目：高さ同期グループ */
     .gi-kakuchi    { grid-column: 3 / span 6; }
     .gi-asayake    { grid-column: 10 / span 8; }
     .gi-yuyake     { grid-column: 19 / span 6; }
 
-    /* 5行目：正方形シリーズ */
+    /* 6行目：正方形シリーズ */
     .gi-suiheisen  { grid-column: 4 / span 8; }
     .gi-sofar      { grid-column: 14 / span 8; }
 
-    /* 6行目：Vol'e, ritornello */
+    /* 7行目：Vol'e, ritornello */
     .gi-vole       { grid-column: 4 / span 8; }
     .gi-ritornello { grid-column: 14 / span 7; }
 
-    /* 7行目：Untitled, 門, into_cave */
+    /* 8行目：Untitled, 門, into_cave */
     .gi-untitled   { grid-column: 3 / span 6; }
     .gi-mon        { grid-column: 11 / span 5; }
     .gi-intocave   { grid-column: 17 / span 6; }
 
     .gallery-item-img-wrap {
       width: 100%; display: flex; justify-content: center; align-items: center;
-      background: transparent; overflow: hidden; border: 0.5px solid var(--border);
+      background: rgba(0,0,0,0.2); overflow: hidden; border: 0.5px solid var(--border);
       transition: border-color 0.4s ease, box-shadow 0.5s var(--ease);
     }
     .gallery-item-img-wrap img {
@@ -246,7 +287,7 @@
     /* ============================================================
         CHRONOLOGY SECTION
     ============================================================ */
-    .chronology-section { padding: clamp(5rem, 12vh, 10rem) var(--px); background: var(--bg2); border-top: 0.5px solid var(--border); position: relative; }
+    .chronology-section { padding: clamp(5rem, 12vh, 10rem) var(--px); background: var(--bg2); border-top: 0.5px solid var(--border); position: relative; z-index: 5; }
     .timeline-container { max-width: 1200px; margin: 0 auto; position: relative; }
     .timeline-spine-wrapper { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(233,229,223,0.06); transform: translateX(-50%); }
     .timeline-spine-progress { position: absolute; top: 0; left: 0; width: 1px; background: linear-gradient(to bottom, transparent 0%, var(--accent) 10%, var(--accent) 90%, transparent 100%); height: 0%; transition: height 0.1s linear; }
@@ -260,7 +301,7 @@
     .tl-content-wrap { display: flex; justify-content: space-between; align-items: center; gap: clamp(2rem, 5vw, 6rem); }
     .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
 
-    .tl-figure { width: 54%; position: relative; border: 0.5px solid var(--border); overflow: hidden; background: var(--bg); cursor: zoom-in; transition: width 0.4s ease; }
+    .tl-figure { width: 54%; position: relative; border: 0.5px solid var(--border); overflow: hidden; background: #000; cursor: zoom-in; transition: width 0.4s ease; }
     .tl-body { width: 42%; position: relative; z-index: 2; transition: width 0.4s ease; }
     
     /* 注目作・拡大指定 */
@@ -275,11 +316,11 @@
 
     /* Full Figure */
     .tl-entry.is-full-figure .tl-content-wrap { flex-direction: column; align-items: stretch; gap: clamp(2rem, 4vw, 3.5rem); }
-    .tl-entry.is-full-figure .tl-figure { width: 100%; max-height: 75vh; border: 0.5px solid var(--border); background: var(--bg); display: flex; justify-content: center; align-items: center; }
+    .tl-entry.is-full-figure .tl-figure { width: 100%; max-height: 75vh; border: 0.5px solid var(--border); background: #000; display: flex; justify-content: center; align-items: center; }
     .tl-entry.is-full-figure .tl-figure img { width: 100%; max-height: 75vh; object-fit: contain; }
     .tl-entry.is-full-figure .tl-body { width: 100%; max-width: 1000px; margin: 0 auto; }
 
-    /* 往路・復路 専用：画面端から端までフルブリード表示（PC・スマホ共通） */
+    /* 往路・復路 専用：画面端から端までフルブリード表示 */
     .tl-entry.is-bleed .tl-figure {
       width: 100vw; max-width: 100vw; max-height: none;
       position: relative; left: 50%; right: 50%;
@@ -289,16 +330,16 @@
     .tl-entry.is-bleed .tl-figure img { max-height: none; }
     .tl-entry.is-bleed .tl-body { padding-left: var(--px); padding-right: var(--px); }
 
-    /* ★★★ 修正箇所：Dual Figure（山脈の余白削除＆メイン画像を最大化） ★★★ */
+    /* Dual Figure */
     .tl-entry.is-dual-figure .tl-figure { 
       border: none; background: none; overflow: visible; 
       cursor: default; position: relative; display: block; 
-      width: 70%; /* メイン画像の領域を最大化 */
-      padding: 0; /* 黒い余白（padding）を完全に削除してフィットさせる */
+      width: 70%; 
+      padding: 0; 
     } 
-    .tl-entry.is-dual-figure .tl-body { width: 26%; } /* テキスト領域を調整 */
+    .tl-entry.is-dual-figure .tl-body { width: 26%; } 
     
-    .tl-img-main, .tl-img-sub { border: 0.5px solid var(--border); overflow: hidden; cursor: zoom-in; background: var(--bg); transition: border-color 0.4s ease, box-shadow 0.5s var(--ease); }
+    .tl-img-main, .tl-img-sub { border: 0.5px solid var(--border); overflow: hidden; cursor: zoom-in; background: #000; transition: border-color 0.4s ease, box-shadow 0.5s var(--ease); }
     .tl-img-main img, .tl-img-sub img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(12%) brightness(0.85); transition: transform 1s var(--ease), filter 0.6s ease; }
     .tl-img-main:hover img, .tl-img-sub:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
     .tl-img-main:hover, .tl-img-sub:hover { border-color: rgba(196,168,130,0.35); }
@@ -329,13 +370,13 @@
     /* ============================================================
         CONTACT & FOOTER
     ============================================================ */
-    .contact-section { padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center; border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(196,168,130,0.06) 0%, var(--bg) 70%); }
+    .contact-section { padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center; border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(196,168,130,0.06) 0%, transparent 70%); position: relative; z-index: 5; }
     .contact-heading { font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em; }
     .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.8vw, 0.95rem); color: rgba(233,229,223,0.55); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2; }
     .contact-btn { display: inline-block; padding: 1.2rem 3.5rem; background: var(--accent); color: var(--bg); font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none; transition: all 0.4s var(--ease); border-radius: 2px; }
     .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3); }
     
-    footer { padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); background: var(--bg); }
+    footer { padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); background: var(--bg); position: relative; z-index: 5; }
     .footer-logo { font-family: var(--font-ja); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.28); letter-spacing: 0.08em; }
     .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
 
@@ -366,7 +407,7 @@
     @media (max-width: 980px) {
       .gallery-grid { grid-template-columns: repeat(12, 1fr); gap: 3rem 1.5rem; }
       .gi-sanmyaku, .gi-samizu { grid-column: 1 / span 12; }
-      .gi-kakuchi, .gi-asayake, .gi-yuyake, .gi-suiheisen, .gi-sofar,
+      .gi-cave3, .gi-cave2, .gi-kakuchi, .gi-asayake, .gi-yuyake, .gi-suiheisen, .gi-sofar,
       .gi-vole, .gi-untitled, .gi-ritornello, .gi-mon, .gi-intocave {
         grid-column: auto / span 6;
       }
@@ -390,8 +431,6 @@
       .page-nav.visible { right: 8px; opacity: 0.5; }
       .page-nav.visible:hover { opacity: 1; }
       .page-nav-label { display: none; }
-      
-      /* ★★★ スマホ表示でギャラリーが全消えするバグ（display: none;）を削除・修正しました ★★★ */
     }
     @media (max-width: 480px) {
       .hero-scroll { display: none; }
@@ -440,7 +479,7 @@
         <p class="hero-title-en" id="heroEn">The Cave</p>
         <div class="hero-meta" id="heroMeta">
           <div class="hero-meta-line"></div>
-          <span class="hero-meta-text">Oil on Canvas &nbsp;·&nbsp; Works 2017 – 2024</span>
+          <span class="hero-meta-text">Oil on Canvas &nbsp;·&nbsp; Works 2017 – 2025</span>
         </div>
       </div>
       <div class="hero-scroll" id="heroScroll" aria-hidden="true">
@@ -483,6 +522,19 @@
       <div class="section-label" id="gallery">Works Index</div>
       <div class="gallery-grid">
         
+        <a href="#work-cave3" class="gallery-item gi-cave3">
+          <div class="gallery-item-img-wrap"><img src="images/【S100】明るい洞窟(3)20250826.jpg" alt="明るい洞窟(3)" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">明るい洞窟 (3)</span><span class="gallery-item-meta">2025 / S100</span>
+          </div>
+        </a>
+        <a href="#work-cave2" class="gallery-item gi-cave2">
+          <div class="gallery-item-img-wrap"><img src="images/【S100】明るい洞窟(2)20250812.jpg" alt="明るい洞窟(2)" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">明るい洞窟 (2)</span><span class="gallery-item-meta">2025 / S100</span>
+          </div>
+        </a>
+
         <a href="#work-ouro" class="gallery-item gi-ouro">
           <div class="gallery-item-img-wrap"><img src="images/往路（左美都から善光寺平へ ）.jpg" alt="往路（左美都から善光寺平へ）" loading="lazy"></div>
           <div class="gallery-item-cap">
@@ -582,7 +634,41 @@
           <div class="timeline-spine-progress" id="tl-spine-fill"></div>
         </div>
 
-        <article class="tl-entry is-featured is-full-figure is-bleed" id="work-ouro">
+        <article class="tl-entry is-featured" id="work-cave3">
+          <div class="tl-year-display">2025</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【S100】明るい洞窟(3)20250826.jpg">
+              <img src="images/【S100】明るい洞窟(3)20250826.jpg" alt="明るい洞窟(3)" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">明るい洞窟 (3)</h3>
+              <p class="tl-meta">S100 / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>(2)から続く連作であり、本シリーズの現時点での到達点の一つ。青から緑、そして桃色へと移ろう色彩のスペクトルが、深い闇の奥底で脈打つ生命の胎動を思わせる。</p>
+                <p>絵画の表面から深層へ、そして再び表面へと、鑑賞者の意識を激しく往還させる一枚である。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry is-featured" id="work-cave2">
+          <div class="tl-year-display">2025</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【S100】明るい洞窟(2)20250812.jpg">
+              <img src="images/【S100】明るい洞窟(2)20250812.jpg" alt="明るい洞窟(2)" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">明るい洞窟 (2)</h3>
+              <p class="tl-meta">S100 / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>「往路」へと連なる2025年の探求を象徴する一枚。かつての「明るい洞窟」から6年の歳月を経て、内なる空間の解釈はより複雑な光の屈折へと深化している。</p>
+                <p>画面を構成する青の結晶は、静寂の中にある鋭利な緊張感を孕み、視線を深淵へと引きずり込む。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry is-full-figure is-bleed" id="work-ouro">
           <div class="tl-year-display">2025</div>
           <div class="tl-content-wrap">
             <div class="tl-figure js-modal-open" data-img-src="images/往路（左美都から善光寺平へ ）.jpg">
@@ -599,7 +685,7 @@
           </div>
         </article>
 
-        <article class="tl-entry is-featured is-full-figure is-bleed" id="work-fukuro">
+        <article class="tl-entry is-full-figure is-bleed" id="work-fukuro">
           <div class="tl-year-display">2025</div>
           <div class="tl-content-wrap">
             <div class="tl-figure js-modal-open" data-img-src="images/復路（善光寺平から左美都へ ）.jpg">
@@ -610,7 +696,7 @@
               <p class="tl-meta">162cm × 可変 / Oil on canvas</p>
               <div class="tl-desc">
                 <p>「往路」と対をなす本作は、善光寺平から左美都へと戻る帰路を描く。画面は淡く解けるような桃色と白から始まり、進むにつれて鋭く尖った結晶状の青へと姿を変えていく——光に満ちた場所から、再び洞窟の奥深くへ沈んでいく感覚の反転である。</p>
-                <p>「往路」が光へ向かう上昇の軌跡だとすれば、「復路」はその逆運動、すなわち根源へと還っていく下降の軌跡だ。二作を並べて見るとき、《洞窟》シリーズが繰り返し描いてきた表層と深層の往還が、一対の絵画として完結する。本シリーズ現時点における最新作。</p>
+                <p>「往路」が光へ向かう上昇の軌跡だとすれば、「復路」はその逆運動、すなわち根源へと還っていく下降の軌跡だ。二作を並べて見るとき、《洞窟》シリーズが繰り返し描いてきた表層と深層の往還が、一対の絵画として完結する。</p>
               </div>
             </div>
           </div>
@@ -1013,7 +1099,7 @@
       });
     });
 
-    /* ★ スマホとPCでスクロール先を動的に切り替える */
+    /* スマホとPCでスクロール先を動的に切り替える */
     document.getElementById('backToTop').addEventListener('click', (e) => {
       e.preventDefault();
       if (window.innerWidth <= 768) {
