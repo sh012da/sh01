@@ -2,12 +2,12 @@
 <html lang="ja">
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-5RF8JPF5D8');
-</script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5RF8JPF5D8');
+  </script>
   <link rel="icon" type="image/jpeg" href="images/【F50縦】リリス（胸部）Lilith Remnants-2.jpg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -20,45 +20,61 @@
   
   <style>
     /* ============================================================
-       DESIGN TOKENS
+       DESIGN TOKENS & RESET
     =========================================================== */
     :root {
       --bg:        #060605;
       --bg2:       #0c0c0a;
-      --bg3:       #111110;
+      --bg3:       #121210;
       --fg:        #e9e5df;
-      --muted:     rgba(233,229,223,0.44);
-      --dim:       rgba(233,229,223,0.22);
-      --whisper:   rgba(233,229,223,0.10);
+      --muted:     rgba(233,229,223,0.48);
+      --dim:       rgba(233,229,223,0.25);
+      --whisper:   rgba(233,229,223,0.08);
       --accent:    #c4a882;
       --accent2:   #7c9aa0;
-      --border:    rgba(233,229,223,0.08);
-      --border-md: rgba(233,229,223,0.20);
+      --accent-red: #9e6b63; /* 作品の生々しい赤に呼応するアクセント */
+      --border:    rgba(233,229,223,0.07);
+      --border-md: rgba(233,229,223,0.18);
       --font-en:   'Cormorant Garamond', serif;
       --font-ja:   'Noto Serif JP', serif;
       --ease:      cubic-bezier(0.16, 1, 0.3, 1);
-      --px:        clamp(1.25rem, 6vw, 5rem);
-      /* ★ ギャラリーの基準高さ（100号作品用：大きすぎず見やすいサイズ） */
+      --px:        clamp(1.5rem, 6vw, 5rem);
       --grid-base-h: 320px;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    
+    /* 透過によるブラウザデフォルト（白）の貫通を完全に防ぐ */
+    html { 
+      scroll-behavior: smooth; 
+      background-color: var(--bg); 
+    }
     body {
-      background: var(--bg);
+      background-color: var(--bg);
       color: var(--fg);
       font-family: var(--font-ja);
       line-height: 2.1;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.07em;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
       padding-left: env(safe-area-inset-left);
       padding-right: env(safe-area-inset-right);
     }
     body.is-locked { overflow: hidden; }
     img { max-width: 100%; height: auto; display: block; }
-    a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
-    a:hover { opacity: 0.45; }
+    a { color: var(--fg); text-decoration: none; transition: opacity 0.4s var(--ease); }
+    a:hover { opacity: 0.5; }
+
+    /* ============================================================
+       GLOBAL ARTWORK TEXTURE (最背面の気配)
+    =========================================================== */
+    .global-texture {
+      position: fixed; inset: 0; z-index: -100; pointer-events: none;
+      background: url('images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg') center/cover no-repeat;
+      opacity: 0.03; /* 鑑賞を妨げない極小の不透明度 */
+      filter: grayscale(60%) contrast(1.3) brightness(0.8);
+    }
 
     /* ============================================================
        NAVIGATION
@@ -67,48 +83,44 @@
       position: fixed;
       top: 0; left: 0; width: 100%; z-index: 300;
       display: flex; align-items: center; justify-content: space-between;
-      padding: clamp(14px, 3vw, 36px) var(--px);
+      padding: clamp(16px, 3vw, 40px) var(--px);
       background: transparent;
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       border-bottom: 0.5px solid transparent;
-      transition: background 0.4s ease, border-color 0.4s ease;
+      transition: background 0.6s var(--ease), border-color 0.6s var(--ease), padding 0.6s var(--ease);
     }
     nav#top-nav.scrolled {
-      background: rgba(10,10,9,0.93);
+      background: rgba(6, 6, 5, 0.88);
       border-color: var(--border);
+      padding-top: clamp(12px, 2vw, 24px);
+      padding-bottom: clamp(12px, 2vw, 24px);
     }
     .nav-logo-unified {
-      font-family: var(--font-en); font-size: clamp(0.7rem, 2.5vw, 0.9rem);
-      letter-spacing: 0.3em;
+      font-family: var(--font-en); font-size: clamp(0.75rem, 2.5vw, 0.95rem);
+      letter-spacing: 0.35em;
       font-weight: 300; color: var(--accent);
-      text-transform: uppercase; transition: opacity 0.4s ease;
+      text-transform: uppercase;
     }
-    .nav-logo-unified:hover { opacity: 0.5; }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
     .nav-links a {
-      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
-      letter-spacing: 0.25em;
-      color: var(--muted); text-transform: uppercase; transition: color 0.3s ease;
+      font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.75rem);
+      letter-spacing: 0.3em;
+      color: var(--muted); text-transform: uppercase; transition: color 0.4s var(--ease);
     }
     .nav-links a:hover { color: var(--accent); }
     .nav-cta {
-      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem;
-      color: var(--accent); transition: background 0.25s, color 0.25s;
+      font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.7rem);
+      letter-spacing: 0.3em; text-transform: uppercase;
+      border: 0.5px solid rgba(196,168,130,0.3); padding: 0.6rem 1.6rem;
+      color: var(--accent); transition: all 0.4s var(--ease);
     }
-    .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
+    .nav-cta:hover { background: rgba(196,168,130,0.1); color: #fff; border-color: var(--accent); }
     
     /* Hamburger */
-    .nav-hamburger { display: none;
-      background: none;
-      border: none; cursor: pointer; padding: 4px; position: relative; z-index: 301; width: 30px; height: 20px;
-    }
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; position: relative; z-index: 301; width: 32px; height: 20px; }
     .nav-hamburger span {
-      display: block; position: absolute; left: 0; width: 100%;
-      height: 1px;
-      background: var(--accent); transition: transform 0.4s var(--ease), opacity 0.4s var(--ease), top 0.4s var(--ease);
+      display: block; position: absolute; left: 0; width: 100%; height: 1px;
+      background: var(--accent); transition: transform 0.5s var(--ease), opacity 0.5s var(--ease), top 0.5s var(--ease);
     }
     .nav-hamburger span:nth-child(1) { top: 0px; }
     .nav-hamburger span:nth-child(2) { top: 9px; }
@@ -117,183 +129,189 @@
     .nav-hamburger.is-active span:nth-child(2) { opacity: 0; }
     .nav-hamburger.is-active span:nth-child(3) { top: 9px; transform: rotate(-45deg); }
 
-    /* Page Nav */
+    /* Page Nav (Dot Indicator) */
     .page-nav {
-      position: fixed;
-      right: clamp(20px, 4vw, 40px); top: 50%;
-      transform: translateY(-50%); z-index: 200;
-      display: flex; flex-direction: column; gap: 24px;
-      opacity: 0; visibility: hidden;
-      transition: opacity 0.6s var(--ease), visibility 0.6s;
+      position: fixed; right: clamp(20px, 4vw, 40px); top: 50%; transform: translateY(-50%); z-index: 200;
+      display: flex; flex-direction: column; gap: 28px;
+      opacity: 0; visibility: hidden; transition: opacity 0.8s var(--ease), visibility 0.8s;
     }
     .page-nav.visible { opacity: 1; visibility: visible; }
-    .page-nav-item {
-      display: flex; align-items: center; gap: 12px; flex-direction: row-reverse;
-      cursor: pointer; background: none; border: none; padding: 8px 0;
-    }
+    .page-nav-item { display: flex; align-items: center; gap: 16px; flex-direction: row-reverse; cursor: pointer; background: none; border: none; padding: 8px 0; }
     .page-nav-dot {
-      width: 8px;
-      height: 8px; border-radius: 50%;
-      background: rgba(233,229,223,0.4); transition: all 0.35s; flex-shrink: 0;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--border-md); transition: all 0.4s var(--ease); flex-shrink: 0;
+      position: relative;
+    }
+    .page-nav-dot::after {
+      content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 0.5px solid transparent; transition: all 0.4s var(--ease);
     }
     .page-nav-label {
-      font-family: var(--font-en); font-size: 12px; letter-spacing: 0.15em;
-      color: rgba(233,229,223,0.4);
-      text-transform: uppercase; transition: color 0.35s; white-space: nowrap;
+      font-family: var(--font-en); font-size: 11px; letter-spacing: 0.2em;
+      color: rgba(233,229,223,0.3); text-transform: uppercase; transition: color 0.4s var(--ease); white-space: nowrap;
     }
-    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot {
-      background: var(--accent);
-      transform: scale(1.4); box-shadow: 0 0 10px rgba(196,168,130,0.6);
-    }
-    .page-nav-item:hover .page-nav-label { color: rgba(233,229,223,0.85); }
+    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot { background: var(--accent); transform: scale(1.2); }
+    .page-nav-item.active .page-nav-dot::after { border-color: rgba(196,168,130,0.4); transform: scale(1.5); }
+    .page-nav-item:hover .page-nav-label { color: rgba(233,229,223,0.9); }
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       HERO FIRST VIEW
+       HERO FIRST VIEW (環境光としての作品融合)
     =========================================================== */
     .hero {
-      position: relative;
-      height: 100svh; min-height: 580px;
+      position: relative; height: 100svh; min-height: 600px;
       display: flex; flex-direction: column; justify-content: flex-end;
-      padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); overflow: hidden;
-      background:
-        radial-gradient(ellipse 70% 60% at 30% 30%, rgba(124,154,160,0.05) 0%, transparent 55%),
-        radial-gradient(ellipse 55% 80% at 72% 25%, rgba(196,168,130,0.04) 0%, transparent 55%),
-        var(--bg);
+      padding: 0 var(--px) clamp(4rem, 10vh, 8rem); overflow: hidden;
+      background: var(--bg);
+    }
+    .hero-ambient {
+      position: absolute; inset: 0; pointer-events: none; z-index: 1;
+      background: url('images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg') center/cover no-repeat;
+      filter: brightness(0.45) saturate(1.2) contrast(1.15);
+      animation: ambientDrift 32s var(--ease) infinite alternate;
+      transform-origin: center 35%;
+    }
+    @keyframes ambientDrift {
+      0% { transform: scale(1.02) translate(0, 0); }
+      100% { transform: scale(1.08) translate(-1%, 2%); }
+    }
+    .hero-overlay {
+      position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      background: 
+        radial-gradient(ellipse at 50% 45%, transparent 0%, rgba(6,6,5,0.75) 85%),
+        linear-gradient(to bottom, rgba(6,6,5,0.1) 0%, rgba(6,6,5,0.5) 60%, var(--bg) 100%);
     }
     .hero-divider {
-      position: absolute; left: 0; right: 0; bottom: 0;
-      height: 1px;
+      position: absolute; left: 0; right: 0; bottom: 0; height: 1px; z-index: 3;
       background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%);
     }
-    .hero-inner { position: relative; z-index: 2; }
+    
+    .hero-inner { position: relative; z-index: 4; }
     .hero-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem);
-      letter-spacing: 0.5em;
-      color: var(--dim); text-transform: uppercase;
+      letter-spacing: 0.5em; color: var(--dim); text-transform: uppercase;
       margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.2rem;
-      clip-path: inset(0 100% 0 0);
-      transition: clip-path 1.2s var(--ease) 0.2s;
+      clip-path: inset(0 100% 0 0); transition: clip-path 1.2s var(--ease) 0.2s;
     }
-    .hero-eyebrow::before { content: ''; width: 24px; height: 0.5px; background: var(--accent2);
-      flex-shrink: 0; opacity: 0.6; }
+    .hero-eyebrow::before { content: ''; width: 24px; height: 0.5px; background: var(--accent2); flex-shrink: 0; opacity: 0.6; }
     .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
     
     .hero-title {
-      font-family: var(--font-ja);
-      font-size: clamp(5rem, 19vw, 17rem); font-weight: 200;
-      line-height: 0.88; letter-spacing: -0.02em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem);
-      display: flex; gap: 0.05em;
-      overflow: visible;
+      font-family: var(--font-ja); font-size: clamp(5.5rem, 19vw, 15rem); font-weight: 200;
+      line-height: 0.9; letter-spacing: -0.01em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem);
+      display: flex; gap: 0.05em; overflow: visible; text-shadow: 0 10px 40px rgba(0,0,0,0.9);
     }
-    .hero-title .char {
-      display: inline-block; opacity: 0;
-      transition: transform 1.4s var(--ease), opacity 0.9s ease;
-    }
-    .hero-title .char:nth-child(1) { transform: translateX(-60px); transition-delay: 0.2s; }
-    .hero-title .char:nth-child(2) { transform: translateX(60px);  transition-delay: 0.35s; }
+    .hero-title .char { display: inline-block; opacity: 0; transition: transform 1.5s var(--ease), opacity 1s ease; }
+    .hero-title .char:nth-child(1) { transform: translateX(-40px); transition-delay: 0.2s; }
+    .hero-title .char:nth-child(2) { transform: translateX(40px);  transition-delay: 0.35s; }
     .hero-title.revealed .char { opacity: 1; transform: translateX(0); }
     
     .hero-title-en {
-      font-family: var(--font-en);
-      font-size: clamp(0.95rem, 3vw, 2rem);
-      font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.55);
-      clip-path: inset(0 100% 0 0);
-      transition: clip-path 1.4s var(--ease) 0.7s;
+      font-family: var(--font-en); font-size: clamp(1rem, 3.2vw, 2.2rem);
+      font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.85);
+      clip-path: inset(0 100% 0 0); transition: clip-path 1.4s var(--ease) 0.7s;
     }
     .hero-title-en.revealed { clip-path: inset(0 0% 0 0); }
     
     .hero-meta {
-      display: flex; align-items: center;
-      gap: 1.8rem; margin-top: clamp(2rem, 5vh, 4.5rem); 
+      display: flex; align-items: center; gap: 1.8rem; margin-top: clamp(2rem, 5vh, 4.5rem); 
       opacity: 0; transform: translateY(14px); transition: opacity 1s ease 1.1s, transform 1s var(--ease) 1.1s;
     }
     .hero-meta.revealed { opacity: 1; transform: translateY(0); }
-    .hero-meta-line { width: 40px; height: 0.5px;
-      background: linear-gradient(to right, var(--accent), var(--accent2)); flex-shrink: 0; }
-    .hero-meta-text { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.62rem);
-      letter-spacing: 0.24em; color: var(--dim); text-transform: uppercase; }
+    .hero-meta-line { width: 40px; height: 0.5px; background: linear-gradient(to right, var(--accent), var(--accent2)); flex-shrink: 0; }
+    .hero-meta-text { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.62rem); letter-spacing: 0.24em; color: var(--fg); text-transform: uppercase; text-shadow: 0 2px 10px rgba(0,0,0,0.6); }
     
     .hero-scroll {
-      position: absolute;
-      bottom: clamp(2rem, 5vh, 4rem); right: var(--px); z-index: 2; 
-      display: flex; flex-direction: column; align-items: center; gap: 12px;
-      opacity: 0;
-      transition: opacity 0.9s ease 1.8s;
+      position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px); z-index: 4; 
+      display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0; transition: opacity 0.9s ease 1.8s;
     }
     .hero-scroll.revealed { opacity: 1; }
     .hero-scroll-label { font-family: var(--font-en); font-size: 0.52rem; letter-spacing: 0.38em; color: var(--whisper); text-transform: uppercase; writing-mode: vertical-rl; }
     .hero-scroll-track { width: 1px; height: 48px; background: var(--border); position: relative; overflow: hidden; }
-    .hero-scroll-fill {
-      position: absolute; top: -100%; left: 0; width: 100%;
-      height: 100%;
-      background: linear-gradient(to bottom, var(--accent), transparent); animation: scrollDrop 2.2s ease-in-out 2s infinite;
-    }
-    @keyframes scrollDrop { 0% { top: -100%; opacity: 1; } 70% { top: 100%; opacity: 0.4; } 71% { top: -100%; opacity: 0; } 100% { top: -100%; opacity: 0; } }
+    .hero-scroll-fill { position: absolute; top: -100%; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, var(--accent), transparent); animation: scrollDrop 2.2s ease-in-out 2s infinite; }
 
     /* ============================================================
        CONCEPT SECTION
     =========================================================== */
     .concept-section {
-      padding: clamp(6rem, 13vh, 10rem) var(--px);
-      max-width: 900px; margin: 0 auto; text-align: center;
+      padding: clamp(6rem, 14vh, 11rem) var(--px);
+      max-width: 960px; margin: 0 auto; text-align: center;
+      position: relative; z-index: 5;
     }
     .concept-text {
-      font-size: clamp(0.9rem, 2vw, 1.05rem);
-      font-weight: 300; line-height: 2.3;
-      color: rgba(233,229,223,0.85); letter-spacing: 0.08em;
+      font-size: clamp(0.95rem, 2vw, 1.1rem); font-weight: 300; line-height: 2.4;
+      color: rgba(233,229,223,0.9); letter-spacing: 0.09em; word-break: auto-phrase;
     }
 
     /* ============================================================
-       SERIES STATEMENT
+       SERIES STATEMENT (完全リデザイン：マチエール・ダーク)
     =========================================================== */
     .statement-section {
-      padding: clamp(4rem, 9vh, 7rem) var(--px) clamp(6rem, 13vh, 10rem);
-      max-width: 1080px; margin: 0 auto; border-top: 0.5px solid var(--border);
+      padding: clamp(6rem, 15vh, 12rem) var(--px);
+      background: linear-gradient(to bottom, var(--bg), var(--bg2) 30%, var(--bg2) 70%, var(--bg));
+      position: relative; border-top: 0.5px solid var(--border); overflow: hidden;
+    }
+    
+    /* 理念を視覚化する朧げな環境光のうねり（文字を邪魔しない最背面） */
+    .statement-ambient {
+      position: absolute; inset: 0; pointer-events: none; z-index: 1;
+      background: 
+        radial-gradient(circle at 20% 40%, rgba(124,154,160,0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(158,107,99,0.03) 0%, transparent 50%);
+      filter: blur(40px);
+    }
+
+    .statement-container {
+      max-width: 960px; margin: 0 auto; position: relative; z-index: 2;
     }
     .statement-label {
-      font-family: var(--font-en);
-      font-size: clamp(0.54rem, 1.2vw, 0.61rem);
-      letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase;
-      text-align: center; margin-bottom: clamp(2.5rem, 6vh, 4rem);
+      font-family: var(--font-en); font-size: clamp(0.55rem, 1.2vw, 0.65rem);
+      letter-spacing: 0.5em; color: var(--accent); text-transform: uppercase;
+      text-align: center; margin-bottom: clamp(3rem, 7vh, 5rem);
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
     }
+    .statement-label::after { content: ''; width: 24px; height: 0.5px; background: var(--border-md); }
+
+    /* 硯（すずり）のような滑らかな漆黒のテキストベール（可読性を極限まで保証） */
+    .statement-card {
+      background: rgba(6, 6, 5, 0.65);
+      border: 0.5px solid var(--border);
+      padding: clamp(2.5rem, 6vw, 5rem) clamp(2rem, 5vw, 4.5rem);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
+    }
+
     .statement-pullquote {
       font-family: var(--font-ja); font-weight: 200; 
-      font-size: clamp(1.15rem, 2.6vw, 1.7rem);
-      line-height: 1.85; color: var(--fg); text-align: center; letter-spacing: 0.06em;
-      margin-bottom: clamp(3.5rem, 8vh, 5rem);
-      width: 100%;
-      word-break: auto-phrase;
-      opacity: 0; transform: translateY(20px);
-      transition: opacity 1s var(--ease), transform 1s var(--ease);
+      font-size: clamp(1.2rem, 2.8vw, 1.8rem); line-height: 2.0;
+      color: #ffffff; text-align: center; letter-spacing: 0.08em;
+      margin-bottom: clamp(3rem, 7vh, 4.5rem); word-break: auto-phrase;
+      opacity: 0; transform: translateY(24px); transition: opacity 1.4s var(--ease), transform 1.4s var(--ease);
     }
     .statement-pullquote.in-view { opacity: 1; transform: translateY(0); }
-    .statement-pullquote .accent-word { color: var(--accent); }
+    .statement-pullquote .accent-word { color: var(--accent); position: relative; display: inline-block; }
+    .statement-pullquote .accent-word::after {
+      content: ''; position: absolute; left: 0; bottom: -2px; width: 100%; height: 0.5px; background: rgba(196,168,130,0.4);
+    }
     
-    .statement-body { display: flex;
-      flex-direction: column; gap: clamp(1.6rem, 3vh, 2.2rem); max-width: 880px; margin: 0 auto; }
+    .statement-body { display: flex; flex-direction: column; gap: clamp(1.8rem, 4vh, 2.5rem); }
     .statement-para {
-      font-size: clamp(0.86rem, 1.7vw, 0.98rem);
-      line-height: 2.25;
-      color: rgba(233,229,223,0.72); letter-spacing: 0.04em; text-align: justify;
-      opacity: 0; transform: translateY(16px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+      font-size: clamp(0.9rem, 1.6vw, 1.02rem); line-height: 2.3;
+      color: rgba(233,229,223,0.82); letter-spacing: 0.05em; text-align: justify; word-break: auto-phrase;
+      opacity: 0; transform: translateY(20px); transition: opacity 1.2s var(--ease), transform 1.2s var(--ease);
     }
     .statement-para.in-view { opacity: 1; transform: translateY(0); }
-    .statement-para strong { color: var(--accent);
-      font-weight: 400; }
+    .statement-para strong { color: var(--accent); font-weight: 300; }
     
     .statement-divider {
-      width: 40px;
-      height: 0.5px; margin: clamp(2.5rem, 5vh, 3.5rem) auto;
-      background: linear-gradient(to right, var(--accent), var(--accent2));
+      width: 32px; height: 0.5px; margin: clamp(2rem, 4vh, 3rem) auto;
+      background: linear-gradient(to right, transparent, var(--accent), transparent);
     }
     
     .statement-closing {
-      font-family: var(--font-en); font-style: italic;
-      font-weight: 300;
-      font-size: clamp(0.95rem, 2vw, 1.15rem); line-height: 1.9; color: var(--accent); 
-      text-align: center; letter-spacing: 0.04em; opacity: 0; transform: translateY(16px);
-      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+      font-family: var(--font-en); font-style: italic; font-weight: 300;
+      font-size: clamp(1rem, 2vw, 1.2rem); line-height: 1.9; color: var(--accent); 
+      text-align: center; letter-spacing: 0.06em; margin-top: clamp(3.5rem, 6vh, 4.5rem);
+      opacity: 0; transform: translateY(16px); transition: opacity 1.2s var(--ease), transform 1.2s var(--ease);
     }
     .statement-closing.in-view { opacity: 1; transform: translateY(0); }
 
@@ -301,73 +319,48 @@
        GALLERY GRID
     =========================================================== */
     .gallery-section {
-      padding: 0 var(--px) clamp(6rem, 13vh, 10rem);
+      padding: clamp(4rem, 8vh, 8rem) var(--px) clamp(6rem, 13vh, 10rem);
       max-width: 1600px; margin: 0 auto;
+      background: var(--bg);
     }
     .section-label {
-      font-family: var(--font-en);
-      font-size: clamp(0.54rem, 1.2vw, 0.61rem);
+      font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem);
       letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase;
       text-align: center; margin-bottom: clamp(3rem, 7vh, 5rem);
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
     }
+    .section-label::after { content: ''; width: 1px; height: 20px; background: var(--border-md); }
     
     .gallery-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 2.5vw, 2.5rem);
-      justify-content: center;
-      align-items: flex-start;
+      display: flex; flex-wrap: wrap; gap: clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 3vw, 3rem);
+      justify-content: center; align-items: flex-start;
     }
     
     .gallery-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center; 
-      text-decoration: none; cursor: pointer;
-      opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
-      width: fit-content; 
-      max-width: 100%;
+      display: flex; flex-direction: column; align-items: center; 
+      text-decoration: none; cursor: pointer; opacity: 0; transform: translateY(24px);
+      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); width: fit-content; max-width: 100%;
     }
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
     
     .gallery-item-img-wrap {
-      height: var(--item-height, var(--grid-base-h));
-      width: max-content; 
+      height: var(--item-height, var(--grid-base-h)); width: max-content; 
       display: flex; justify-content: center; align-items: center;
-      background: transparent; overflow: hidden;
-      border: 0.5px solid var(--border);
-      transition: border-color 0.4s ease, box-shadow 0.5s var(--ease);
+      background: transparent; overflow: hidden; border: 0.5px solid var(--border);
+      transition: border-color 0.5s ease, box-shadow 0.6s var(--ease);
     }
-    
-    .gallery-item.is-f50-height {
-      --item-height: calc(var(--grid-base-h) * 0.72);
-    }
+    .gallery-item.is-f50-height { --item-height: calc(var(--grid-base-h) * 0.72); }
     
     .gallery-item-img-wrap img {
-      height: 100%;
-      width: auto; 
-      display: block; 
-      object-fit: contain; 
-      filter: grayscale(15%) brightness(0.85);
-      transition: transform 0.8s var(--ease), filter 0.6s ease;
+      height: 100%; width: auto; display: block; object-fit: contain; 
+      filter: grayscale(12%) brightness(0.85); transition: transform 0.9s var(--ease), filter 0.6s ease;
     }
+    .gallery-item:hover .gallery-item-img-wrap { border-color: rgba(196,168,130,0.4); box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
+    .gallery-item:hover img { transform: scale(1.02); filter: grayscale(0%) brightness(1.0); }
     
-    .gallery-item:hover .gallery-item-img-wrap {
-      border-color: rgba(196,168,130,0.35);
-      box-shadow: 0 16px 40px rgba(0,0,0,0.5);
-    }
-    .gallery-item:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
-    
-    .gallery-item-cap { padding-top: 1rem; text-align: left; width: 100%; }
-    .gallery-item-title {
-      font-family: var(--font-ja); font-size: clamp(0.85rem, 1.4vw, 1rem); font-weight: 300;
-      color: var(--fg); letter-spacing: 0.05em; margin-bottom: 0.3rem; display: block;
-    }
-    .gallery-item-meta {
-      font-family: var(--font-en);
-      font-size: clamp(0.6rem, 1.1vw, 0.7rem);
-      color: var(--accent); letter-spacing: 0.14em; font-style: italic; display: block;
-    }
+    .gallery-item-cap { padding-top: 1.1rem; text-align: left; width: 100%; }
+    .gallery-item-title { font-family: var(--font-ja); font-size: clamp(0.88rem, 1.4vw, 1.02rem); font-weight: 300; color: var(--fg); letter-spacing: 0.05em; margin-bottom: 0.3rem; display: block; }
+    .gallery-item-meta { font-family: var(--font-en); font-size: clamp(0.6rem, 1.1vw, 0.7rem); color: var(--accent); letter-spacing: 0.14em; font-style: italic; display: block; }
 
     /* ============================================================
        INTEGRATED CHRONOLOGY SECTION 
@@ -376,137 +369,71 @@
       padding: clamp(5rem, 12vh, 10rem) var(--px);
       background: var(--bg2); border-top: 0.5px solid var(--border); position: relative;
     }
-    .timeline-container { max-width: 1200px; margin: 0 auto;
-      position: relative; }
-    .timeline-spine-wrapper {
-      position: absolute; top: 0; bottom: 0;
-      left: 50%; width: 1px;
-      background: rgba(233,229,223,0.06); transform: translateX(-50%);
-    }
-    .timeline-spine-progress {
-      position: absolute;
-      top: 0; left: 0; width: 1px;
-      background: linear-gradient(to bottom, transparent 0%, var(--accent) 10%, var(--accent) 90%, transparent 100%);
-      height: 0%;
-      transition: height 0.1s linear;
-    }
+    .timeline-container { max-width: 1200px; margin: 0 auto; position: relative; }
+    .timeline-spine-wrapper { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(233,229,223,0.06); transform: translateX(-50%); }
+    .timeline-spine-progress { position: absolute; top: 0; left: 0; width: 1px; background: linear-gradient(to bottom, transparent 0%, var(--accent) 10%, var(--accent) 90%, transparent 100%); height: 0%; transition: height 0.1s linear; }
     
-    .tl-entry {
-      position: relative;
-      width: 100%; margin-bottom: clamp(7rem, 16vh, 12rem);
-      opacity: 0; transform: translateY(30px); transition: opacity 1s var(--ease), transform 1s var(--ease);
-    }
+    .tl-entry { position: relative; width: 100%; margin-bottom: clamp(7rem, 16vh, 12rem); opacity: 0; transform: translateY(30px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
     .tl-entry:last-child { margin-bottom: 0; }
     .tl-entry.in-view { opacity: 1; transform: translateY(0); }
     
-    .tl-year-display {
-      font-family: var(--font-en);
-      font-size: clamp(3.5rem, 7vw, 5.5rem); font-weight: 300;
-      color: var(--accent); letter-spacing: 0.02em; line-height: 1;
-      margin-bottom: clamp(1rem, 2vh, 2rem); padding-left: 2%; opacity: 0.85;
-    }
+    .tl-year-display { font-family: var(--font-en); font-size: clamp(3.5rem, 7vw, 5.5rem); font-weight: 300; color: var(--accent); letter-spacing: 0.02em; line-height: 1; margin-bottom: clamp(1rem, 2vh, 2rem); padding-left: 2%; opacity: 0.85; text-shadow: 0 10px 30px rgba(196,168,130,0.1); }
     .tl-entry:nth-child(even) .tl-year-display { text-align: left; }
-
-    .tl-content-wrap {
-      display: flex;
-      justify-content: space-between; align-items: center; gap: clamp(2rem, 5vw, 6rem);
-    }
+    .tl-content-wrap { display: flex; justify-content: space-between; align-items: center; gap: clamp(2rem, 5vw, 6rem); }
     .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
     
-    .tl-figure {
-      width: 54%; position: relative;
-      border: 0.5px solid var(--border);
-      overflow: hidden; background: var(--bg); cursor: zoom-in; transition: width 0.4s ease;
-    }
+    .tl-figure { width: 54%; position: relative; border: 0.5px solid var(--border); overflow: hidden; background: var(--bg); cursor: zoom-in; transition: width 0.4s ease; }
     .tl-body { width: 42%; position: relative; z-index: 2; transition: width 0.4s ease; }
     
-    /* Layout Variants */
     .tl-entry.is-featured .tl-figure { width: 64%; }
     .tl-entry.is-featured .tl-body   { width: 32%; }
-    
     .tl-entry.is-f50-ratio .tl-figure { width: 38%; aspect-ratio: 91 / 116.7; }
     .tl-entry.is-f50-ratio .tl-body { width: 54%; }
 
-    /* ★ Náströnd 専用レイアウト（中央配置、全体が見えるように調整） */
-    .tl-entry.is-nastrond .tl-content-wrap {
-      flex-direction: column; /* 縦積みに */
-      align-items: center;
-      gap: clamp(2.5rem, 6vw, 4.5rem);
-    }
+    /* ★ Náströnd 専用レイアウト */
+    .tl-entry.is-nastrond .tl-content-wrap { flex-direction: column; align-items: center; gap: clamp(2.5rem, 6vw, 4.5rem); }
     .tl-entry.is-nastrond .tl-year-display { text-align: center; padding-left: 0; }
-    .tl-entry.is-nastrond .tl-figure {
-      width: 100%; /* コンテナ幅を最大限活用 */
-      max-width: 1080px; /* 前回の800pxから1080pxに拡大 */
-      aspect-ratio: 290 / 116.7; 
-      border: 0.5px solid var(--border);
-      margin: 0 auto; /* 中央配置 */
-    }
-    .tl-entry.is-nastrond .tl-figure img { 
-      width: 100%; 
-      height: 100%; 
-      object-fit: contain; /* 全体が見えるように */
-    }
-    .tl-entry.is-nastrond .tl-body {
-      width: 100%;
-      max-width: 880px;
-      text-align: center; /* テキストも中央寄せ */
-    }
+    .tl-entry.is-nastrond .tl-figure { width: 100%; max-width: 1080px; aspect-ratio: 290 / 116.7; border: 0.5px solid var(--border); margin: 0 auto; }
+    .tl-entry.is-nastrond .tl-figure img { width: 100%; height: 100%; object-fit: contain; }
+    .tl-entry.is-nastrond .tl-body { width: 100%; max-width: 880px; text-align: center; }
     
-    .tl-figure img {
-      width: 100%;
-      height: auto; display: block; filter: grayscale(12%) brightness(0.85);
-      transition: transform 1s var(--ease), filter 0.6s ease;
-    }
+    .tl-figure img { width: 100%; height: auto; display: block; filter: grayscale(12%) brightness(0.85); transition: transform 1s var(--ease), filter 0.6s ease; }
     .tl-entry.is-f50-ratio .tl-figure img { height: 100%; object-fit: cover; }
-    .tl-figure:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
+    .tl-figure:hover img { transform: scale(1.02); filter: grayscale(0%) brightness(1.0); }
     
-    .tl-title {
-      font-family: var(--font-ja);
-      font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 300;
-      color: var(--fg); line-height: 1.4; margin-bottom: 0.8rem;
-    }
-    .tl-meta {
-      font-family: var(--font-en); font-size: clamp(0.6rem, 1.2vw, 0.75rem); color: var(--accent);
-      letter-spacing: 0.15em; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border-md);
-    }
-    .tl-desc {
-      font-size: clamp(0.85rem, 1.6vw, 0.95rem); line-height: 2.1; color: rgba(233,229,223,0.7);
-      text-align: justify;
-    }
-    .tl-entry.is-nastrond .tl-desc {
-      text-align: center; /* Náströndのみ中央寄せ */
-    }
+    .tl-title { font-family: var(--font-ja); font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 300; color: var(--fg); line-height: 1.4; margin-bottom: 0.8rem; letter-spacing: 0.05em; }
+    .tl-meta { font-family: var(--font-en); font-size: clamp(0.6rem, 1.2vw, 0.75rem); color: var(--accent); letter-spacing: 0.15em; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border-md); }
+    .tl-desc { font-size: clamp(0.88rem, 1.6vw, 0.98rem); line-height: 2.2; color: rgba(233,229,223,0.74); text-align: justify; }
+    .tl-entry.is-nastrond .tl-desc { text-align: center; }
     .tl-desc p { margin-bottom: 1.2em; }
     .tl-desc p:last-child { margin-bottom: 0; }
 
     /* Typewriter Style */
-    .tw-char { opacity: 0; display: inline-block;
-      transition: opacity 0.3s ease; }
-    .tw-cursor {
-      display: inline-block; width: 1.5px;
-      height: 1.1em; background-color: var(--accent);
-      margin-left: 2px; vertical-align: middle; animation: tw-blink 0.8s infinite;
-    }
+    .tw-char { opacity: 0; display: inline-block; transition: opacity 0.3s ease; }
+    .tw-cursor { display: inline-block; width: 1.5px; height: 1.1em; background-color: var(--accent); margin-left: 2px; vertical-align: middle; animation: tw-blink 0.8s infinite; }
     @keyframes tw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     .fade-out { opacity: 0; transition: opacity 0.8s ease; }
 
     /* ============================================================
-       CONTACT & FOOTER
+       CONTACT & FOOTER (余韻としての深層投影)
     =========================================================== */
     .contact-section {
-      padding: clamp(7rem, 15vh, 11rem) var(--px);
-      text-align: center;
-      border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(196,168,130,0.06) 0%, var(--bg) 70%);
+      position: relative; padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center;
+      border-top: 0.5px solid var(--border); background: var(--bg); overflow: hidden;
     }
-    .contact-heading {
-      font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200;
-      line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em;
+    .contact-section::before {
+      content: ''; position: absolute; inset: 0; z-index: 0;
+      background: url('images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg') center/cover no-repeat;
+      opacity: 0.12; filter: blur(8px) brightness(0.45) contrast(1.2); pointer-events: none;
     }
-    .contact-body-text {
-      font-family: var(--font-ja);
-      font-size: clamp(0.85rem, 1.8vw, 0.95rem);
-      color: rgba(233,229,223,0.55); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2;
+    .contact-section::after {
+      content: ''; position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(to bottom, var(--bg) 0%, transparent 30%, transparent 70%, var(--bg) 100%); pointer-events: none;
     }
+    .contact-section > * { position: relative; z-index: 2; }
+    
+    .contact-heading { font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em; }
+    .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.8vw, 0.95rem); color: rgba(233,229,223,0.55); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2; }
     .contact-btn {
       display: inline-block; padding: 1.2rem 3.5rem; background: var(--accent); color: var(--bg);
       font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500;
@@ -515,67 +442,37 @@
     }
     .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3); }
 
-    footer {
-      padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between;
-      align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); background: var(--bg);
-    }
-    .footer-logo { font-family: var(--font-ja);
-      font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.28); letter-spacing: 0.08em; }
-    .footer-copy { font-family: var(--font-en);
-      font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
+    footer { padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); background: var(--bg); }
+    .footer-logo { font-family: var(--font-ja); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.28); letter-spacing: 0.08em; }
+    .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
 
     /* ============================================================
        LIGHTBOX (MODAL) & BACK TO TOP
     =========================================================== */
-    .image-modal {
-      position: fixed;
-      inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center;
-      opacity: 0; visibility: hidden; transition: opacity 0.55s var(--ease), visibility 0.55s;
-    }
+    .image-modal { position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.55s var(--ease), visibility 0.55s; }
     .image-modal.is-active { opacity: 1; visibility: visible; }
-    .modal-bg { position: absolute; inset: 0;
-      background: rgba(6,6,5,0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); cursor: zoom-out; }
-    .modal-close {
-      position: fixed;
-      top: clamp(1rem, 3vh, 2rem); right: var(--px); z-index: 10001;
-      background: none; border: none; color: var(--muted); cursor: pointer; padding: 0.5rem;
-      transition: color 0.3s ease, transform 0.3s var(--ease);
-    }
+    .modal-bg { position: absolute; inset: 0; background: rgba(6,6,5,0.97); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); cursor: zoom-out; }
+    .modal-close { position: fixed; top: clamp(1rem, 3vh, 2rem); right: var(--px); z-index: 10001; background: none; border: none; color: var(--muted); cursor: pointer; padding: 0.5rem; transition: color 0.3s ease, transform 0.3s var(--ease); }
     .modal-close:hover { color: var(--fg); transform: scale(1.1) rotate(90deg); }
-    .modal-content {
-      position: relative; z-index: 10000; max-width: 90vw; margin: auto;
-      display: flex; flex-direction: column; align-items: center; gap: clamp(1rem, 2vh, 1.5rem);
-      opacity: 0; transform: scale(0.96) translateY(12px);
-      transition: opacity 0.55s var(--ease) 0.08s, transform 0.55s var(--ease) 0.08s;
-    }
-    .image-modal.is-active .modal-content { opacity: 1;
-      transform: scale(1) translateY(0); }
-    .modal-content img { max-width: 100%; max-height: 75svh; object-fit: contain;
-      box-shadow: 0 32px 80px rgba(0,0,0,0.75); border: 0.5px solid var(--border); cursor: zoom-out; }
-    .modal-caption { text-align: center;
-      width: 100%; padding: 0 1rem; }
-    .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 200;
-      color: var(--fg); margin-bottom: 0.3rem; }
-    .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.72rem, 1.2vw, 0.85rem); font-style: italic; color: var(--accent);
-      letter-spacing: 0.15em; }
+    .modal-content { position: relative; z-index: 10000; max-width: 90vw; margin: auto; display: flex; flex-direction: column; align-items: center; gap: clamp(1rem, 2vh, 1.5rem); opacity: 0; transform: scale(0.96) translateY(12px); transition: opacity 0.55s var(--ease) 0.08s, transform 0.55s var(--ease) 0.08s; }
+    .image-modal.is-active .modal-content { opacity: 1; transform: scale(1) translateY(0); }
+    .modal-content img { max-width: 100%; max-height: 75svh; object-fit: contain; box-shadow: 0 32px 80px rgba(0,0,0,0.8); border: 0.5px solid var(--border); cursor: zoom-out; }
+    .modal-caption { text-align: center; width: 100%; padding: 0 1rem; }
+    .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 200; color: var(--fg); margin-bottom: 0.3rem; }
+    .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.72rem, 1.2vw, 0.85rem); font-style: italic; color: var(--accent); letter-spacing: 0.15em; }
 
     .back-to-top {
-      position: fixed; bottom: clamp(1.5rem, 5vh, 4rem);
-      right: clamp(15px, 4vw, 50px);
+      position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px);
       z-index: 9000; width: clamp(64px, 10vw, 90px); height: clamp(64px, 10vw, 90px); border-radius: 50%;
-      background: rgba(196, 168, 130, 0.85); border: 1px solid var(--accent);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      color: var(--bg);
+      background: rgba(196, 168, 130, 0.9); border: 1px solid var(--accent);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--bg);
       opacity: 0; visibility: hidden; transform: translateY(20px);
       transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
     }
     .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
-    .back-to-top:hover { background: var(--fg);
-      color: var(--bg); border-color: var(--fg); transform: translateY(-6px); }
-    .back-to-top svg { width: clamp(20px, 3vw, 32px);
-      height: clamp(20px, 3vw, 32px); margin-bottom: 2px; }
-    .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.9rem); font-weight: 600;
-      text-transform: uppercase; line-height: 1; }
+    .back-to-top:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-6px); }
+    .back-to-top svg { width: clamp(20px, 3vw, 32px); height: clamp(20px, 3vw, 32px); margin-bottom: 2px; }
+    .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.9rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
 
     /* ============================================================
        RESPONSIVE DESIGN
@@ -586,16 +483,16 @@
       .tl-figure, .tl-body, .tl-entry.is-featured .tl-figure, .tl-entry.is-featured .tl-body, 
       .tl-entry.is-f50-ratio .tl-figure, .tl-entry.is-f50-ratio .tl-body { width: 100%; }
       
-      /* Náströnd もモバイルでは全幅にリセットし、はみ出しを防止 */
       .tl-entry.is-nastrond .tl-figure { width: 100%; max-width: 100%; margin: 0 auto; transform: none; }
       .tl-entry.is-nastrond .tl-year-display { text-align: left !important; }
 
       .timeline-spine-wrapper { left: 16px; transform: none; }
       .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; font-size: clamp(2.5rem, 8vw, 3.5rem); }
+      
+      .statement-card { padding: 3rem 2rem; }
     }
     @media (max-width: 768px) {
-      nav#top-nav { padding: 1rem 1.25rem;
-      justify-content: space-between; align-items: center; }
+      nav#top-nav { padding: 1rem 1.25rem; justify-content: space-between; align-items: center; }
       .nav-links { display: none !important; }
       .nav-hamburger { display: none !important; }
       
@@ -609,16 +506,18 @@
       .hero-scroll { display: none; }
       .modal-content img { max-height: 60svh; }
       .statement-para { text-align: left; }
-      .statement-section { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .statement-section { padding-left: 1rem; padding-right: 1rem; }
     }
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { transition-duration: 0.01ms !important;
-      animation-duration: 0.01ms !important; }
+      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
       .gallery-item, .tl-entry, .reveal-fade { opacity: 1 !important; transform: none !important; }
+      .hero-ambient { animation: none; }
     }
   </style>
 </head>
 <body id="top">
+
+  <div class="global-texture" aria-hidden="true"></div>
 
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
@@ -645,7 +544,10 @@
 
   <main>
     <section class="hero">
+      <div class="hero-ambient"></div>
+      <div class="hero-overlay"></div> 
       <div class="hero-divider" aria-hidden="true"></div>
+      
       <div class="hero-inner">
         <p class="hero-eyebrow" id="heroEyebrow">Series — Variant Forms &nbsp;·&nbsp; Body & Landscape</p>
         <h1 class="hero-title" id="heroTitle" aria-label="異体">
@@ -673,32 +575,38 @@
       </p>
     </section>
 
-    <section class="statement-section">
-      <p class="statement-label">Series Statement</p>
+    <section class="statement-section" id="statement">
+      <div class="statement-ambient"></div>
+      
+      <div class="statement-container">
+        <p class="statement-label">Series Statement</p>
 
-      <p class="statement-pullquote reveal-fade">
-        《異体》と分類される作品群は、風景を描出する過程において視覚的構造が特定の形態へと収斂していく中で、結果的に<span class="accent-word">「身体としてみなされうる」</span>かたちが析出されたものです。
-      </p>
+        <div class="statement-card">
+          <p class="statement-pullquote reveal-fade">
+            《異体》と分類される作品群は、風景を描出する過程において視覚的構造が特定の形態へと収斂していく中で、結果的に<span class="accent-word">「身体としてみなされうる」</span>かたちが析出されたものです。
+          </p>
 
-      <div class="statement-body">
-        <p class="statement-para reveal-fade">
-          私はもともと、具体的な人物を描こうとしていたわけではありません。左美都の森や岩肌、あるいはそこにある光と影を描き重ねていくうちに、画面の中に予期せず人間の身体や動物のようなシルエットが現れ始めました。それはパレイドリア（壁の染みが顔に見える現象）のような、人間の根源的な知覚の働きを絵画の中でなぞる体験でした。
-        </p>
-        <p class="statement-para reveal-fade">
-          見方によってはただの森であり、別の瞬間には身体に見える。その不確かな境界で生まれる存在を、私は<strong>「異体（Variant）」</strong>と名付けました。
-        </p>
+          <div class="statement-body">
+            <p class="statement-para reveal-fade">
+              私はもともと、具体的な人物を描こうとしていたわけではありません。左美都の森や岩肌、あるいはそこにある光と影を描き重ねていくうちに、画面の中に予期せず人間の身体や動物のようなシルエットが現れ始めました。それはパレイドリア（壁の染みが顔に見える現象）のような、人間の根源的な知覚の働きを絵画の中でなぞる体験でした。
+            </p>
+            <p class="statement-para reveal-fade">
+              見方によってはただの森であり、別の瞬間には身体に見える。その不確かな境界で生まれる存在を、私は<strong>「異体（Variant）」</strong>と名付けました。
+            </p>
 
-        <div class="statement-divider" aria-hidden="true"></div>
+            <div class="statement-divider" aria-hidden="true"></div>
 
-        <p class="statement-para reveal-fade">
-          油彩の物質感と流動的な筆致は、対象の輪郭を意図的に溶かし、無機物である自然と有機的な生命体とをシームレスに繋ぎます。絵の具の層を削り、重ねる反復的な行為は、風景の深層に潜む記憶を掘り起こす作業そのものです。
-        </p>
-        <p class="statement-para reveal-fade">
-          「異体」シリーズを通じて問いかけているのは、私たちの眼がどのように世界を認識し、意味を見出しているのかということです。キャンバスに定着させたのは、形ではなく、そこに立ち現れる「気配」や「息遣い」の痕跡なのです。
-        </p>
+            <p class="statement-para reveal-fade">
+              油彩の物質感と流動的な筆致は、対象の輪郭を意図的に溶かし、無機物である自然と有機的な生命体とをシームレスに繋ぎます。絵の具の層を削り、重ねる反復的な行為は、風景の深層に潜む記憶を掘り起こす作業そのものです。
+            </p>
+            <p class="statement-para reveal-fade">
+              「異体」シリーズを通じて問いかけているのは、私たちの眼がどのように世界を認識し、意味を見出しているのかということです。キャンバスに定着させたのは、形ではなく、そこに立ち現れる「気配」や「息遣い」の痕跡なのです。
+            </p>
+          </div>
+
+          <p class="statement-closing reveal-fade">— Tsuda Shoichi</p>
+        </div>
       </div>
-
-      <p class="statement-closing reveal-fade">— Tsuda Shoichi</p>
     </section>
 
     <section class="gallery-section" id="gallery">
