@@ -136,16 +136,37 @@
       position: relative; height: 100svh; min-height: 580px;
       display: flex; flex-direction: column; justify-content: flex-end;
       padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); overflow: hidden;
-      background:
-        radial-gradient(ellipse 70% 60% at 30% 30%, rgba(124,154,160,0.05) 0%, transparent 55%),
-        radial-gradient(ellipse 55% 80% at 72% 25%, rgba(196,168,130,0.04) 0%, transparent 55%),
-        var(--bg);
+      background-color: var(--bg);
     }
+    /* 追加：背景画像演出 */
+    .hero-bg {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .hero-bg img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center 25%;
+      opacity: 0.35;
+      filter: grayscale(100%) contrast(1.1) brightness(0.9);
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 40%, transparent 85%);
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 40%, transparent 85%);
+      animation: breatheBg 25s ease-in-out infinite alternate;
+      transform-origin: center top;
+    }
+    @keyframes breatheBg {
+      0% { transform: scale(1) translateY(0); }
+      100% { transform: scale(1.05) translateY(1.5%); }
+    }
+
     .hero-divider {
       position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
       background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%);
+      z-index: 2;
     }
-    .hero-inner { position: relative; z-index: 2; }
+    .hero-inner { position: relative; z-index: 3; }
     .hero-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem); letter-spacing: 0.5em;
       color: var(--dim); text-transform: uppercase; margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.2rem;
@@ -154,7 +175,6 @@
     .hero-eyebrow::before { content: ''; width: 24px; height: 0.5px; background: var(--accent2); flex-shrink: 0; opacity: 0.6; }
     .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
     
-    /* ★ タイトルサイズを縮小しPCで一行に綺麗に収まるよう調整 */
     .hero-title {
       font-family: var(--font-ja); font-size: clamp(2.8rem, 8vw, 8rem); font-weight: 200; line-height: 0.88; letter-spacing: -0.02em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem); display: flex; gap: 0.05em; overflow: visible;
     }
@@ -166,7 +186,6 @@
     .hero-title .char:nth-child(5) { transform: translateX(60px); transition-delay: 0.4s; }
     .hero-title.revealed .char { opacity: 1; transform: translateX(0); }
     
-    /* 英語サブタイトル */
     .hero-title-en { font-family: var(--font-en); font-size: clamp(0.85rem, 2vw, 1.5rem); font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.55); clip-path: inset(0 100% 0 0); transition: clip-path 1.4s var(--ease) 0.7s; }
     .hero-title-en.revealed { clip-path: inset(0 0% 0 0); }
     
@@ -175,7 +194,7 @@
     .hero-meta-line { width: 40px; height: 0.5px; background: linear-gradient(to right, var(--accent), var(--accent2)); flex-shrink: 0; }
     .hero-meta-text { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.62rem); letter-spacing: 0.24em; color: var(--dim); text-transform: uppercase; }
     
-    .hero-scroll { position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0; transition: opacity 0.9s ease 1.8s; }
+    .hero-scroll { position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px); z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0; transition: opacity 0.9s ease 1.8s; }
     .hero-scroll.revealed { opacity: 1; }
     .hero-scroll-label { font-family: var(--font-en); font-size: 0.52rem; letter-spacing: 0.38em; color: var(--whisper); text-transform: uppercase; writing-mode: vertical-rl; }
     .hero-scroll-track { width: 1px; height: 48px; background: var(--border); position: relative; overflow: hidden; }
@@ -185,7 +204,7 @@
     /* ============================================================
        CONCEPT SECTION
     ============================================================ */
-    .concept-section { padding: clamp(6rem, 13vh, 10rem) var(--px); max-width: 900px; margin: 0 auto; text-align: center; }
+    .concept-section { padding: clamp(6rem, 13vh, 10rem) var(--px); max-width: 900px; margin: 0 auto; text-align: center; position: relative; z-index: 2; }
     .concept-text { font-size: clamp(0.9rem, 2vw, 1.05rem); font-weight: 300; line-height: 2.3; color: rgba(233,229,223,0.85); letter-spacing: 0.08em; }
 
     /* ============================================================
@@ -339,6 +358,7 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
       .gallery-item, .tl-entry, .reveal-fade { opacity: 1 !important; transform: none !important; }
+      .hero-bg img { animation: none !important; }
     }
   </style>
 </head>
@@ -369,7 +389,11 @@
 
   <main>
     <section class="hero">
+      <div class="hero-bg" aria-hidden="true">
+        <img src="images/【F25縦】少年兵（アフリカ）.jpg" alt="">
+      </div>
       <div class="hero-divider" aria-hidden="true"></div>
+      
       <div class="hero-inner">
         <p class="hero-eyebrow" id="heroEyebrow">Series — Tiny Soldier &nbsp;·&nbsp; Witness</p>
         <h1 class="hero-title" id="heroTitle" aria-label="子ども兵士">
@@ -433,7 +457,7 @@
             <span class="gallery-item-title">少年兵(12)（アフリカ）</span><span class="gallery-item-meta">2014 / Oil on canvas</span>
           </div>
         </a>
-       
+        
         <a href="#work-11" class="gallery-item is-landscape">
           <div class="gallery-item-img-wrap"><img src="images/【P30横】少年兵(11)(アフリカ).jpg" alt="少年兵(11)（アフリカ）" loading="lazy"></div>
           <div class="gallery-item-cap">
