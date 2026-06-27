@@ -117,7 +117,7 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       HERO
+       HERO & VIDEO BACKGROUND
     ============================================================ */
     .hero {
       position: relative;
@@ -127,21 +127,37 @@
       border-bottom: 0.5px solid var(--border);
     }
 
+    /* 動画がない場合のフォールバック画像 */
     .hero-bg {
       position: absolute; inset: 0;
       background-image: url('images/岩間_湘南_20230317.JPG');
       background-size: cover; background-position: center center;
       opacity: 0; filter: blur(0.5px); transform: scale(1.04);
       transition: opacity 2.8s ease;
+      z-index: 0;
     }
     .hero-bg.loaded { opacity: 0.18; }
-    .hero-bg::after {
-      content: ''; position: absolute; inset: 0;
+
+    /* 動画背景の設定 */
+    .hero-video-bg {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      filter: grayscale(100%) contrast(1.1) brightness(0.6);
+      transition: opacity 2.8s ease;
+      z-index: 1;
+    }
+    .hero-video-bg.loaded { opacity: 0.25; }
+
+    /* グラデーションオーバーレイ */
+    .hero-overlay {
+      position: absolute; inset: 0; z-index: 2;
       background: linear-gradient(to top, rgba(6,6,5,1) 0%, rgba(6,6,5,0.72) 45%, rgba(6,6,5,0.35) 100%),
                   radial-gradient(ellipse 80% 60% at 50% 80%, transparent 40%, rgba(6,6,5,0.5) 100%);
+      pointer-events: none;
     }
 
-    .hero-strokes { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+    .hero-strokes { position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
     .stroke-line {
       position: absolute; background: rgba(233,229,223,var(--op, 0.06));
       transform-origin: left center; border-radius: 1px;
@@ -150,12 +166,12 @@
     @keyframes strokeFlicker { 0%,100% { opacity: 0; } 30% { opacity: var(--op, 0.06); } 60% { opacity: calc(var(--op, 0.06) * 0.4); } 80% { opacity: var(--op, 0.06); } }
 
     .hero::before {
-      content: ''; position: absolute; inset: 0; z-index: 1;
+      content: ''; position: absolute; inset: 0; z-index: 3;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
       background-size: 180px; pointer-events: none; opacity: 0.4;
     }
 
-    .hero-inner { position: relative; z-index: 2; }
+    .hero-inner { position: relative; z-index: 4; }
     .hero-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.58rem, 1.4vw, 0.66rem); letter-spacing: 0.48em; color: var(--muted); text-transform: uppercase;
       margin-bottom: clamp(1.2rem, 3.5vh, 2.5rem); display: flex; align-items: center; gap: 1rem; clip-path: inset(0 100% 0 0); transition: clip-path 1.1s var(--ease) 0.2s;
@@ -186,11 +202,107 @@
     .hero-meta-line { width: 44px; height: 0.5px; background: var(--border-md); flex-shrink: 0; }
     .hero-meta-text { font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem); letter-spacing: 0.22em; color: var(--dim); text-transform: uppercase; }
 
-    .hero-scroll { position: absolute; bottom: clamp(1.5rem, 4vh, 3rem); right: var(--px); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: 0; transition: opacity 0.8s ease 1.8s; }
+    /* ── SCROLL INDICATOR ── */
+    .hero-scroll { position: absolute; bottom: clamp(1.5rem, 4vh, 3rem); left: var(--px); z-index: 4; display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: 0; transition: opacity 0.8s ease 1.8s; }
     .hero-scroll.revealed { opacity: 1; }
-    .hero-scroll-label { font-family: var(--font-en); font-size: 0.55rem; letter-spacing: 0.35em; color: var(--dim); text-transform: uppercase; writing-mode: vertical-rl; }
-    .hero-scroll-bar { width: 1px; height: 52px; background: linear-gradient(to bottom, var(--dim), transparent); animation: scrollPulse 2s ease-in-out 2.2s infinite; }
-    @keyframes scrollPulse { 0%,100% { transform: scaleY(1); opacity: 0.4; transform-origin: top; } 50% { transform: scaleY(1.3); opacity: 1; transform-origin: top; } }
+    .hero-scroll-label { font-family: var(--font-en); font-size: 0.55rem; letter-spacing: 0.35em; color: var(--dim); text-transform: uppercase; writing-mode: vertical-rl; transform: rotate(180deg); }
+    .hero-scroll-bar { width: 1px; height: 52px; background: linear-gradient(to top, var(--dim), transparent); animation: scrollPulse 2s ease-in-out 2.2s infinite; }
+    @keyframes scrollPulse { 0%,100% { transform: scaleY(1); opacity: 0.4; transform-origin: bottom; } 50% { transform: scaleY(1.3); opacity: 1; transform-origin: bottom; } }
+
+    /* ── TIKTOK PILL (明度UP & ツールチップ対応) ── */
+    .hero-tiktok-pill {
+      position: absolute;
+      right: var(--px);
+      bottom: clamp(1.5rem, 4vh, 3rem);
+      z-index: 10;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      width: clamp(260px, 40vw, 400px);
+      padding: 16px 32px;
+      /* 明度を上げるため、ボーダーと背景の数値を調整 */
+      border: 1px solid rgba(233, 229, 223, 0.4);
+      background: rgba(255, 255, 255, 0.08); 
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: 40px;
+      text-decoration: none;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.8s ease, transform 0.8s var(--ease), background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+    .hero-tiktok-pill.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* ホバー時のツールチップ（::before） */
+    .hero-tiktok-pill::before {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 15px);
+      right: 0; /* 画面右端での見切れ防止 */
+      width: 250px;
+      max-width: 85vw;
+      padding: 12px 16px;
+      background: rgba(10, 10, 9, 0.95);
+      border: 0.5px solid rgba(196,168,130,0.5); /* アクセントカラーの枠 */
+      border-radius: 4px;
+      font-family: var(--font-ja);
+      font-size: 0.72rem;
+      font-weight: 300;
+      line-height: 1.7;
+      letter-spacing: 0.05em;
+      color: var(--fg);
+      text-align: left;
+      white-space: normal; /* 折り返しを許可 */
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: opacity 0.4s ease, transform 0.4s var(--ease), visibility 0.4s;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 11;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .hero-tiktok-pill:hover {
+        background: rgba(196,168,130,0.2);
+        border-color: rgba(196,168,130,0.6);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.4);
+      }
+      .hero-tiktok-pill:hover svg { fill: var(--fg); }
+      .hero-tiktok-pill:hover span { color: var(--fg); letter-spacing: 0.14em; }
+      
+      /* ホバーでツールチップ表示 */
+      .hero-tiktok-pill:hover::before {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-tiktok-pill svg {
+      width: 18px;
+      height: 18px;
+      fill: var(--fg); /* 明度UP: 完全に明るい色に */
+      transition: fill 0.4s ease;
+      flex-shrink: 0;
+    }
+    .hero-tiktok-pill span {
+      font-family: var(--font-ja);
+      font-size: clamp(0.75rem, 1.4vw, 0.85rem);
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: var(--fg); /* 明度UP: 完全に明るい色に */
+      transition: color 0.4s ease, letter-spacing 0.4s ease;
+      margin-top: 1px;
+      white-space: nowrap;
+    }
 
     /* ============================================================
        CONCEPT SECTION
@@ -218,11 +330,9 @@
     ============================================================ */
     .gallery-section { padding: clamp(4rem, 9vh, 8rem) var(--px); max-width: 1600px; margin: 0 auto; border-bottom: 0.5px solid var(--border); }
     
-    /* align-items: start を指定し、枠が縦に伸びるのを防ぐ */
     .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 2.5rem; align-items: start; }
     .gallery-item { display: block; text-decoration: none; cursor: pointer; }
     
-    /* 背景色やpadding、aspect-ratioを削除し、画像サイズにぴったりフィットさせる */
     .gallery-item-img-wrap { overflow: hidden; background: transparent; border: 0.5px solid var(--border); transition: border-color 0.4s ease; margin-bottom: 1rem; display: block; }
     .gallery-item-img-wrap img { width: 100%; height: auto; display: block; filter: grayscale(15%) brightness(0.85); transition: transform 0.8s var(--ease), filter 0.6s ease; }
     
@@ -371,7 +481,7 @@
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
-      .hero-title .char, .hero-eyebrow, .hero-title-en, .hero-meta, .hero-scroll, .artwork-clip-wrap, .fade-up, .artwork-title-jp, .artwork-title-en, .artwork-year, .artwork-spec, .artwork-divider, .artwork-desc-label, .artwork-desc, .concept-tag, .hero-title-ghost, .image-modal, .modal-content { opacity: 1 !important; transform: none !important; clip-path: none !important; width: auto !important; height: auto !important; }
+      .hero-title .char, .hero-eyebrow, .hero-title-en, .hero-meta, .hero-scroll, .artwork-clip-wrap, .fade-up, .artwork-title-jp, .artwork-title-en, .artwork-year, .artwork-spec, .artwork-divider, .artwork-desc-label, .artwork-desc, .concept-tag, .hero-title-ghost, .image-modal, .modal-content, .hero-tiktok-pill { opacity: 1 !important; transform: none !important; clip-path: none !important; width: auto !important; height: auto !important; }
     }
   </style>
 </head>
@@ -397,8 +507,12 @@
 
   <main>
     <section class="hero" id="hero">
-      <div class="hero-bg" id="heroBg"></div>
-      <div class="hero-strokes" id="heroStrokes" aria-hidden="true"></div>
+      
+      <video class="hero-video-bg" id="heroVideo" autoplay loop muted playsinline>
+        <source src="images/background-movie.mp4" type="video/mp4">
+      </video>
+      <div class="hero-bg" id="heroBg"></div> <div class="hero-overlay"></div> <div class="hero-strokes" id="heroStrokes" aria-hidden="true"></div>
+      
       <p class="hero-title-ghost" id="heroGhost" aria-hidden="true">素描</p>
 
       <div class="hero-inner">
@@ -415,9 +529,16 @@
       </div>
 
       <div class="hero-scroll" id="heroScroll" aria-hidden="true">
-        <div class="hero-scroll-bar"></div>
         <span class="hero-scroll-label">Scroll</span>
+        <div class="hero-scroll-bar"></div>
       </div>
+
+      <a href="https://www.tiktok.com/@2dash01" target="_blank" rel="noopener noreferrer" class="hero-tiktok-pill" id="heroTiktok" aria-label="TikTok" data-tooltip="外部サイトが別のタブで開きます。津田が行っている日々のデジタルドローイングのSNSアカウント紹介です。">
+        <svg viewBox="0 0 448 512" aria-hidden="true">
+          <path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17h0A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/>
+        </svg>
+        <span>日々のデジタルドローイング</span>
+      </a>
     </section>
 
     <section class="concept-section" id="concept">
@@ -753,19 +874,23 @@
     /* ── HERO ENTRANCE アニメーション ── */
     window.addEventListener('load', () => {
       const bg      = get('heroBg');
+      const vid     = get('heroVideo'); // 動画用
       const ghost   = get('heroGhost');
       const eyebrow = get('heroEyebrow');
       const title   = get('heroTitle');
       const en      = get('heroEn');
       const meta    = get('heroMeta');
       const sc      = get('heroScroll');
+      const tk      = get('heroTiktok');
 
       if (bg)      setTimeout(() => bg.classList.add('loaded'), 80);
+      if (vid)     setTimeout(() => vid.classList.add('loaded'), 80);
       if (ghost)   setTimeout(() => ghost.classList.add('revealed'), 1200);
       if (eyebrow) setTimeout(() => eyebrow.classList.add('revealed'), 300);
       if (title)   setTimeout(() => title.classList.add('revealed'),   500);
       if (en)      setTimeout(() => en.classList.add('revealed'),      750);
       if (meta)    setTimeout(() => meta.classList.add('revealed'),   1050);
+      if (tk)      setTimeout(() => tk.classList.add('revealed'),     1600);
       if (sc)      setTimeout(() => sc.classList.add('revealed'),     1800);
     });
 
