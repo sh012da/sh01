@@ -37,7 +37,6 @@
       --font-en:   'Cormorant Garamond', serif;
       --font-ja:   'Noto Serif JP', serif;
       
-      /* アニメーションのイージング（より有機的で優雅な曲線に調整） */
       --ease-fluid: cubic-bezier(0.2, 0.8, 0.2, 1);
       --ease-slow:  cubic-bezier(0.16, 1, 0.3, 1);
       
@@ -48,7 +47,7 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; background: var(--bg); }
     body {
-      background: var(--bg);
+      background: transparent; /* Changed to transparent to show global texture */
       color: var(--fg);
       font-family: var(--font-ja);
       line-height: 2.1;
@@ -61,6 +60,16 @@
     img { max-width: 100%; height: auto; display: block; }
     a { color: var(--fg); text-decoration: none; transition: opacity 0.4s var(--ease-fluid); }
     a:hover { opacity: 0.6; }
+
+    /* ============================================================
+       GLOBAL ARTWORK TEXTURE (New)
+    =========================================================== */
+    .global-texture {
+      position: fixed; inset: 0; z-index: -100; pointer-events: none;
+      background: url('images/【F100横】林.jpg') center/cover no-repeat;
+      opacity: 0.04;
+      filter: grayscale(80%) contrast(1.4);
+    }
 
     /* ============================================================
        NAVIGATION
@@ -141,7 +150,7 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       HERO (REDESIGNED ANIMATION)
+       HERO (WITH ARTWORK BACKGROUND)
     =========================================================== */
     .hero {
       position: relative; height: 100svh; min-height: 600px;
@@ -150,25 +159,33 @@
       background: var(--bg);
     }
     
-    /* 波と微粒子を思わせる有機的な背景アニメーション */
+    /* 実際の作品画像を流麗な環境背景として使用 */
     .hero-ambient {
       position: absolute; inset: 0; pointer-events: none; z-index: 1;
-      background: 
-        radial-gradient(ellipse 80% 60% at 30% 40%, rgba(124,154,160,0.07) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 80% at 75% 30%, rgba(196,168,130,0.06) 0%, transparent 60%);
-      filter: blur(30px);
-      animation: ambientDrift 20s ease-in-out infinite alternate;
+      background: url('images/【F100横】林.jpg') center/cover no-repeat;
+      filter: brightness(0.65) saturate(1.1) contrast(1.05);
+      animation: ambientDrift 28s var(--ease-slow) infinite alternate;
+      transform-origin: center;
     }
     @keyframes ambientDrift {
-      0% { transform: scale(1) translate(0, 0); }
-      100% { transform: scale(1.15) translate(3%, 4%); }
+      0% { transform: scale(1.03) translate(0, 0); }
+      100% { transform: scale(1.1) translate(-1.5%, 2%); }
     }
+
+    /* 画像の鑑賞性を高めつつ、テキスト可読性と下部への繋がりを美しく処理するマスク */
+    .hero-overlay {
+      position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      background: 
+        radial-gradient(ellipse at 50% 40%, transparent 0%, rgba(6,6,5,0.6) 85%),
+        linear-gradient(to bottom, rgba(6,6,5,0.1) 0%, rgba(6,6,5,0.4) 60%, var(--bg) 100%);
+    }
+
     .hero-divider {
-      position: absolute; left: 0; right: 0; bottom: 0; height: 1px; z-index: 2;
+      position: absolute; left: 0; right: 0; bottom: 0; height: 1px; z-index: 3;
       background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%);
     }
     
-    .hero-inner { position: relative; z-index: 3; }
+    .hero-inner { position: relative; z-index: 4; }
     
     .hero-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.3vw, 0.65rem);
@@ -184,10 +201,9 @@
     .hero-title {
       font-family: var(--font-ja); font-size: clamp(5.5rem, 19vw, 15rem); font-weight: 200;
       line-height: 1.05; letter-spacing: 0.08em; color: var(--fg); margin-bottom: clamp(1rem, 2.5vh, 2rem);
-      display: flex; flex-wrap: wrap; text-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      display: flex; flex-wrap: wrap; text-shadow: 0 10px 40px rgba(0,0,0,0.8);
     }
     
-    /* タイトルの1文字ずつに適用する波動的エフェクト */
     .char-wrap {
       display: inline-block; overflow: hidden; padding-right: 0.05em; padding-bottom: 0.1em;
     }
@@ -202,7 +218,7 @@
     
     .hero-title-en {
       font-family: var(--font-en); font-size: clamp(1rem, 3.2vw, 2.2rem);
-      font-weight: 300; font-style: italic; letter-spacing: 0.35em; color: rgba(196,168,130,0.6);
+      font-weight: 300; font-style: italic; letter-spacing: 0.35em; color: rgba(196,168,130,0.8);
       opacity: 0; filter: blur(10px); transform: translateY(15px);
       transition: opacity 2s var(--ease-slow) 1.2s, filter 2s var(--ease-slow) 1.2s, transform 2s var(--ease-slow) 1.2s;
     }
@@ -214,10 +230,10 @@
     }
     .hero-meta.revealed { opacity: 1; transform: translateY(0); }
     .hero-meta-line { width: 48px; height: 0.5px; background: linear-gradient(to right, var(--accent), var(--accent2)); flex-shrink: 0; }
-    .hero-meta-text { font-family: var(--font-en); font-size: clamp(0.55rem, 1.2vw, 0.65rem); letter-spacing: 0.3em; color: var(--dim); text-transform: uppercase; }
+    .hero-meta-text { font-family: var(--font-en); font-size: clamp(0.55rem, 1.2vw, 0.65rem); letter-spacing: 0.3em; color: var(--fg); text-transform: uppercase; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
     
     .hero-scroll {
-      position: absolute; bottom: clamp(2.5rem, 6vh, 4.5rem); right: var(--px); z-index: 3; 
+      position: absolute; bottom: clamp(2.5rem, 6vh, 4.5rem); right: var(--px); z-index: 4; 
       display: flex; flex-direction: column; align-items: center; gap: 16px;
       opacity: 0; transition: opacity 1.5s var(--ease-slow) 2.4s;
     }
@@ -285,6 +301,7 @@
     .gallery-section {
       padding: clamp(4rem, 8vh, 8rem) var(--px) clamp(8rem, 15vh, 12rem);
       max-width: 1920px; margin: 0 auto;
+      background: var(--bg); /* Ensure solid background so global texture doesn't distract */
       border-top: 0.5px solid var(--border);
     }
     .section-label {
@@ -421,12 +438,32 @@
     .fade-out { opacity: 0; transition: opacity 0.8s ease; }
 
     /* ============================================================
-       CONTACT & FOOTER
+       CONTACT & FOOTER (WITH ARTWORK OVERLAY)
     =========================================================== */
     .contact-section {
+      position: relative;
       padding: clamp(8rem, 16vh, 14rem) var(--px); text-align: center;
-      border-top: 0.5px solid var(--border); background: radial-gradient(circle at 50% 0%, rgba(196,168,130,0.04) 0%, var(--bg) 60%);
+      border-top: 0.5px solid var(--border); 
+      background: var(--bg);
+      overflow: hidden;
     }
+    
+    /* コンタクトエリアの背景にも作品を仄かに投影 */
+    .contact-section::before {
+      content: ''; position: absolute; inset: 0; z-index: 0;
+      background: url('images/【F100横】林.jpg') center/cover no-repeat;
+      opacity: 0.12; filter: blur(4px) brightness(0.6) contrast(1.2);
+      pointer-events: none;
+    }
+    .contact-section::after {
+      content: ''; position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(to bottom, var(--bg) 0%, transparent 40%, transparent 60%, var(--bg) 100%);
+      pointer-events: none;
+    }
+    
+    /* Ensure content is above the background pseudo-elements */
+    .contact-section > * { position: relative; z-index: 2; }
+    
     .contact-heading { font-family: var(--font-ja); font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 2rem; letter-spacing: 0.08em; }
     .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.9rem, 1.8vw, 1.05rem); color: rgba(233,229,223,0.6); margin: 0 auto 3.5rem; max-width: 500px; line-height: 2.4; }
     .contact-btn {
@@ -518,7 +555,7 @@
       .page-nav.visible:hover { opacity: 1; }
       .page-nav-label { display: none; }
       
-      .hero-title { justify-content: center; }
+      .hero-title { justify-content: center; text-align: center; }
       .hero-eyebrow, .hero-meta { justify-content: center; }
     }
     @media (max-width: 480px) {
@@ -534,6 +571,8 @@
   </style>
 </head>
 <body id="top">
+
+  <div class="global-texture" aria-hidden="true"></div>
 
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
@@ -561,7 +600,8 @@
   <main>
     <section class="hero">
       <div class="hero-ambient"></div>
-      <div class="hero-divider" aria-hidden="true"></div>
+      <div class="hero-overlay"></div> <div class="hero-divider" aria-hidden="true"></div>
+      
       <div class="hero-inner">
         <p class="hero-eyebrow" id="heroEyebrow">Series — Forest &nbsp;·&nbsp; Tracing the Essence</p>
         <h1 class="hero-title" id="heroTitle" aria-label="森林">森林</h1>
@@ -571,6 +611,7 @@
           <span class="hero-meta-text">Oil on Canvas &nbsp;·&nbsp; Nobusato-machi, Nagano</span>
         </div>
       </div>
+      
       <div class="hero-scroll" id="heroScroll" aria-hidden="true">
         <div class="hero-scroll-track">
           <div class="hero-scroll-fill"></div>
