@@ -2,13 +2,12 @@
 <html lang="ja">
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-5RF8JPF5D8');
-</script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5RF8JPF5D8');
+  </script>
   <link rel="icon" type="image/jpeg" href="images/【S100】so far.jpg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -21,33 +20,38 @@
   
   <style>
     /* ============================================================
-       DESIGN TOKENS
+       DESIGN TOKENS & BASE
     ============================================================ */
     :root {
-      --bg:        #060605;
-      --bg2:       #0c0c0a;
-      --bg3:       #111110;
-      --fg:        #e9e5df;
-      --muted:     rgba(233,229,223,0.44);
-      --dim:       rgba(233,229,223,0.22);
-      --whisper:   rgba(233,229,223,0.10);
-      --accent:    #c4a882;
-      --accent2:   #7c9aa0;
-      --border:    rgba(233,229,223,0.08);
-      --border-md: rgba(233,229,223,0.20);
-      --font-en:   'Cormorant Garamond', serif;
-      --font-ja:   'Noto Serif JP', serif;
-      --ease:      cubic-bezier(0.16, 1, 0.3, 1);
-      --px:        clamp(1.25rem, 6vw, 5rem);
-      /* 実寸キャンバスサイズを画面上に反映するためのスケール係数 */
+      /* ベースカラーを少し透過させ、背景画と馴染ませる */
+      --bg-base:     #060605;
+      --bg:          rgba(6, 6, 5, 0.94);
+      --bg2:         rgba(12, 12, 10, 0.95);
+      --bg-glass:    rgba(6, 6, 5, 0.65);
+      
+      --fg:          #e9e5df;
+      --muted:       rgba(233,229,223,0.44);
+      --dim:         rgba(233,229,223,0.22);
+      --whisper:     rgba(233,229,223,0.10);
+      --accent:      #c4a882;
+      --accent2:     #7c9aa0;
+      --border:      rgba(233,229,223,0.08);
+      --border-md:   rgba(233,229,223,0.20);
+      
+      --font-en:     'Cormorant Garamond', serif;
+      --font-ja:     'Noto Serif JP', serif;
+      --ease:        cubic-bezier(0.16, 1, 0.3, 1);
+      --px:          clamp(1.25rem, 6vw, 5rem);
+      
       --scale-desktop: 0.40;
       --scale-mobile: 0.28;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
+    
     body {
-      background: var(--bg);
+      background-color: var(--bg-base);
       color: var(--fg);
       font-family: var(--font-ja);
       line-height: 2.1;
@@ -56,7 +60,33 @@
       overflow-x: hidden;
       padding-left: env(safe-area-inset-left);
       padding-right: env(safe-area-inset-right);
+      position: relative;
     }
+
+    /* ── 背景作品のグローバル設定 (Fixed Parallax) ── */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-image: url('images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      z-index: -2;
+      /* 背景作品が主張しすぎないよう少し明度を落とす */
+      filter: brightness(0.8) contrast(1.1);
+    }
+    
+    /* ── 全体を覆うベースオーバーレイ（スクロール時の基調） ── */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(6, 6, 5, 0.2);
+      z-index: -1;
+    }
+
     body.is-locked { overflow: hidden; }
     img { max-width: 100%; height: auto; display: block; }
     a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
@@ -70,13 +100,13 @@
       top: 0; left: 0; width: 100%; z-index: 300;
       display: flex; align-items: center; justify-content: space-between;
       padding: clamp(14px, 3vw, 36px) var(--px);
-      background: transparent;
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      background: linear-gradient(to bottom, rgba(6,6,5,0.8) 0%, transparent 100%);
       border-bottom: 0.5px solid transparent;
       transition: background 0.4s ease, border-color 0.4s ease;
     }
     nav#top-nav.scrolled {
-      background: rgba(10,10,9,0.93);
+      background: rgba(10, 10, 9, 0.85);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border-color: var(--border);
     }
     .nav-logo-unified {
@@ -84,6 +114,7 @@
       letter-spacing: 0.3em;
       font-weight: 300; color: var(--accent);
       text-transform: uppercase; transition: opacity 0.4s ease;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
     .nav-logo-unified:hover { opacity: 0.5; }
     .nav-links { display: flex; gap: 2rem; list-style: none; }
@@ -91,16 +122,19 @@
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
       letter-spacing: 0.25em;
       color: var(--muted); text-transform: uppercase; transition: color 0.3s ease;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.5);
     }
     .nav-links a:hover { color: var(--accent); }
     .nav-cta {
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
       letter-spacing: 0.25em;
       text-transform: uppercase;
-      border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem;
+      border: 0.5px solid rgba(196,168,130,0.45); padding: 0.55rem 1.4rem;
       color: var(--accent); transition: background 0.25s, color 0.25s;
+      background: rgba(6,6,5,0.4);
+      backdrop-filter: blur(4px);
     }
-    .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
+    .nav-cta:hover { background: rgba(196,168,130,0.15); color: var(--fg); }
     
     .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; position: relative; z-index: 301; width: 30px; height: 20px; }
     .nav-hamburger span {
@@ -126,20 +160,21 @@
       cursor: pointer; background: none; border: none; padding: 8px 0;
     }
     .page-nav-dot {
-      width: 8px;
-      height: 8px; border-radius: 50%;
+      width: 8px; height: 8px; border-radius: 50%;
       background: rgba(233,229,223,0.4); transition: all 0.35s; flex-shrink: 0;
+      box-shadow: 0 0 4px rgba(0,0,0,0.8);
     }
     .page-nav-label {
       font-family: var(--font-en); font-size: 12px; letter-spacing: 0.15em;
-      color: rgba(233,229,223,0.4);
+      color: rgba(233,229,223,0.6);
       text-transform: uppercase; transition: color 0.35s; white-space: nowrap;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
     }
     .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot {
       background: var(--accent);
       transform: scale(1.4); box-shadow: 0 0 10px rgba(196,168,130,0.6);
     }
-    .page-nav-item:hover .page-nav-label { color: rgba(233,229,223,0.85); }
+    .page-nav-item:hover .page-nav-label { color: rgba(233,229,223,1); }
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
@@ -150,34 +185,37 @@
       height: 100svh; min-height: 580px;
       display: flex; flex-direction: column; justify-content: flex-end;
       padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); overflow: hidden;
-      background:
-        radial-gradient(ellipse 70% 60% at 30% 30%, rgba(124,154,160,0.05) 0%, transparent 55%),
-        radial-gradient(ellipse 55% 80% at 72% 25%, rgba(196,168,130,0.04) 0%, transparent 55%),
-        var(--bg);
+      /* 背景作品を見せるため、セクション背景はグラデーションによる影のみ設定 */
+      background: linear-gradient(to top, rgba(6,6,5,1) 0%, rgba(6,6,5,0.3) 40%, rgba(6,6,5,0.1) 100%);
     }
     .hero-divider {
       position: absolute; left: 0; right: 0; bottom: 0;
       height: 1px;
-      background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%);
+      background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.25) 20%, rgba(124,154,160,0.35) 50%, rgba(196,168,130,0.25) 80%, transparent 100%);
     }
     .hero-inner { position: relative; z-index: 2; }
+    
     .hero-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem);
       letter-spacing: 0.5em;
-      color: var(--dim); text-transform: uppercase;
+      color: rgba(233,229,223,0.7); text-transform: uppercase;
       margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.2rem;
       clip-path: inset(0 100% 0 0);
       transition: clip-path 1.2s var(--ease) 0.2s;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
     }
     .hero-eyebrow::before {
       content: ''; width: 24px;
-      height: 0.5px; background: var(--accent2); flex-shrink: 0; opacity: 0.6;
+      height: 1px; background: var(--accent2); flex-shrink: 0;
+      box-shadow: 0 0 5px rgba(0,0,0,0.5);
     }
     .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
+    
     .hero-title {
       font-family: var(--font-ja); font-size: clamp(5rem, 19vw, 17rem); font-weight: 200;
       line-height: 0.88; letter-spacing: -0.02em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem);
       display: flex; gap: 0.05em; overflow: visible;
+      text-shadow: 0 8px 32px rgba(0,0,0,0.85); /* 複雑な背景から文字を浮き立たせる */
     }
     .hero-title .char {
       display: inline-block; opacity: 0;
@@ -186,12 +224,15 @@
     .hero-title .char:nth-child(1) { transform: translateX(-60px); transition-delay: 0.2s; }
     .hero-title .char:nth-child(2) { transform: translateX(60px);  transition-delay: 0.35s; }
     .hero-title.revealed .char { opacity: 1; transform: translateX(0); }
+    
     .hero-title-en {
       font-family: var(--font-en); font-size: clamp(0.95rem, 3vw, 2rem);
-      font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.55);
+      font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.85);
       clip-path: inset(0 100% 0 0); transition: clip-path 1.4s var(--ease) 0.7s;
+      text-shadow: 0 4px 16px rgba(0,0,0,0.9);
     }
     .hero-title-en.revealed { clip-path: inset(0 0% 0 0); }
+    
     .hero-meta {
       display: flex; align-items: center; gap: 1.8rem;
       margin-top: clamp(2rem, 5vh, 4.5rem); opacity: 0; transform: translateY(14px);
@@ -199,13 +240,15 @@
     }
     .hero-meta.revealed { opacity: 1; transform: translateY(0); }
     .hero-meta-line {
-      width: 40px; height: 0.5px; background: linear-gradient(to right, var(--accent), var(--accent2));
-      flex-shrink: 0;
+      width: 40px; height: 1px; background: linear-gradient(to right, var(--accent), var(--accent2));
+      flex-shrink: 0; box-shadow: 0 0 5px rgba(0,0,0,0.5);
     }
     .hero-meta-text {
       font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.62rem);
-      letter-spacing: 0.24em; color: var(--dim); text-transform: uppercase;
+      letter-spacing: 0.24em; color: rgba(233,229,223,0.6); text-transform: uppercase;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
     }
+    
     .hero-scroll {
       position: absolute;
       bottom: clamp(2rem, 5vh, 4rem); right: var(--px);
@@ -216,12 +259,13 @@
     .hero-scroll.revealed { opacity: 1; }
     .hero-scroll-label {
       font-family: var(--font-en); font-size: 0.52rem; letter-spacing: 0.38em;
-      color: var(--whisper);
+      color: rgba(233,229,223,0.4);
       text-transform: uppercase; writing-mode: vertical-rl;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
     }
     .hero-scroll-track {
       width: 1px; height: 48px;
-      background: var(--border); position: relative; overflow: hidden;
+      background: rgba(233,229,223,0.15); position: relative; overflow: hidden;
     }
     .hero-scroll-fill {
       position: absolute;
@@ -237,29 +281,34 @@
     }
 
     /* ============================================================
-       CONCEPT SECTION
+       CONTENT SECTIONS (テキスト・ギャラリー群)
+       鑑賞の妨げにならないよう、背景を濃い色でマスク
     ============================================================ */
+    .concept-section, .statement-section {
+      background: var(--bg); /* 背景を94%の黒で覆う */
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      position: relative;
+    }
     .concept-section {
       padding: clamp(6rem, 13vh, 10rem) var(--px);
-      max-width: 640px; /* 適切なテキスト幅に制限して読みやすさを向上 */
-      margin: 0 auto; text-align: center;
+      max-width: 640px; margin: 0 auto; text-align: center;
+      background: transparent; /* コンセプト部分は前セクションのグラデーションを引き継ぐ */
     }
     .concept-text {
       font-size: clamp(0.9rem, 2vw, 1.05rem);
       font-weight: 300; line-height: 2.3;
-      color: rgba(233,229,223,0.85); letter-spacing: 0.08em;
+      color: rgba(233,229,223,0.9); letter-spacing: 0.08em;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
     }
 
-    /* ============================================================
-       SERIES STATEMENT
-    ============================================================ */
     .statement-section {
       padding: clamp(4rem, 9vh, 7rem) var(--px) clamp(6rem, 13vh, 10rem);
-      max-width: 880px; margin: 0 auto; border-top: 0.5px solid var(--border);
+      border-top: 0.5px solid var(--border);
     }
+    .statement-inner { max-width: 880px; margin: 0 auto; }
+    
     .statement-label {
-      font-family: var(--font-en);
-      font-size: clamp(0.54rem, 1.2vw, 0.61rem);
+      font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem);
       letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase;
       text-align: center; margin-bottom: clamp(2.5rem, 6vh, 4rem);
     }
@@ -273,12 +322,10 @@
     .statement-pullquote.in-view { opacity: 1; transform: translateY(0); }
     .statement-pullquote .accent-word { color: var(--accent); }
     .statement-body {
-      display: flex;
-      flex-direction: column; gap: clamp(1.6rem, 3vh, 2.2rem);
+      display: flex; flex-direction: column; gap: clamp(1.6rem, 3vh, 2.2rem);
     }
     .statement-para {
-      font-size: clamp(0.86rem, 1.7vw, 0.98rem);
-      line-height: 2.25;
+      font-size: clamp(0.86rem, 1.7vw, 0.98rem); line-height: 2.25;
       color: rgba(233,229,223,0.72); letter-spacing: 0.04em; text-align: justify;
       opacity: 0; transform: translateY(16px);
       transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
@@ -286,8 +333,7 @@
     .statement-para.in-view { opacity: 1; transform: translateY(0); }
     .statement-para strong { color: var(--accent); font-weight: 400; }
     .statement-divider {
-      width: 40px; height: 0.5px;
-      margin: clamp(2.5rem, 5vh, 3.5rem) auto;
+      width: 40px; height: 0.5px; margin: clamp(2.5rem, 5vh, 3.5rem) auto;
       background: linear-gradient(to right, var(--accent), var(--accent2));
     }
     .statement-closing {
@@ -300,51 +346,44 @@
     .statement-closing.in-view { opacity: 1; transform: translateY(0); }
 
     /* ============================================================
-       PERFECT PROPORTIONAL GALLERY GRID (上辺揃え＆実寸比率)
+       PERFECT PROPORTIONAL GALLERY GRID
     ============================================================ */
     .gallery-section {
+      background: var(--bg); /* 作品鑑賞を最優先し、背景はほぼ黒にする */
       padding: 0 var(--px) clamp(6rem, 13vh, 10rem);
-      max-width: 1600px; margin: 0 auto;
+      position: relative;
     }
+    .gallery-inner { max-width: 1600px; margin: 0 auto; }
     .section-label {
-      font-family: var(--font-en);
-      font-size: clamp(0.54rem, 1.2vw, 0.61rem);
+      font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem);
       letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase;
       text-align: center; margin-bottom: clamp(3rem, 7vh, 5rem);
     }
     .gallery-grid {
       display: flex; flex-wrap: wrap; justify-content: center;
-      align-items: flex-start;
-      gap: clamp(1.5rem, 3vw, 3rem);
+      align-items: flex-start; gap: clamp(1.5rem, 3vw, 3rem);
     }
     .gallery-item {
-      display: flex; flex-direction: column; text-decoration: none;
-      cursor: pointer;
-      align-items: flex-start; /* コンテナを左上に揃え、無駄な引き伸ばしを防ぐ */
+      display: flex; flex-direction: column; text-decoration: none; cursor: pointer;
+      align-items: flex-start;
       opacity: 0; transform: translateY(20px);
       transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
     }
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
     
     .gallery-item-img-wrap {
-      /* 枠サイズを中の画像（img）に完全に依存させ、黒い余白を一切出さない */
-      display: inline-block;
-      max-width: 100%;
+      display: inline-block; max-width: 100%;
       background: transparent; overflow: hidden; border: 0.5px solid var(--border);
       transition: border-color 0.4s ease, box-shadow 0.5s var(--ease);
     }
     .gallery-item-img-wrap img {
-      display: block;
-      width: auto;
-      height: auto;
-      /* 実寸スケールの計算結果を max-height に適用し、元画像の比率をそのまま反映させる */
-      max-height: calc(var(--h-mm, 400) * var(--scale-desktop) * 1px);
-      max-width: 100%;
+      display: block; width: auto; height: auto;
+      max-height: calc(var(--h-mm, 400) * var(--scale-desktop) * 1px); max-width: 100%;
       filter: grayscale(15%) brightness(0.85);
       transition: transform 0.8s var(--ease), filter 0.6s ease;
     }
     .gallery-item:hover .gallery-item-img-wrap {
-      border-color: rgba(196,168,130,0.35); box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+      border-color: rgba(196,168,130,0.35); box-shadow: 0 16px 40px rgba(0,0,0,0.7);
     }
     .gallery-item:hover img {
       transform: scale(1.03); filter: grayscale(0%) brightness(1.0);
@@ -355,8 +394,7 @@
       color: var(--fg); letter-spacing: 0.05em; margin-bottom: 0.3rem; display: block;
     }
     .gallery-item-meta {
-      font-family: var(--font-en);
-      font-size: clamp(0.6rem, 1.1vw, 0.7rem);
+      font-family: var(--font-en); font-size: clamp(0.6rem, 1.1vw, 0.7rem);
       color: var(--accent); letter-spacing: 0.14em; font-style: italic; display: block;
     }
 
@@ -365,29 +403,28 @@
     ============================================================ */
     .chronology-section {
       padding: clamp(5rem, 12vh, 10rem) var(--px);
-      background: var(--bg2); border-top: 0.5px solid var(--border);
+      background: var(--bg2); /* さらに濃くしてコンテンツを安定させる */
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-top: 0.5px solid var(--border);
       position: relative;
     }
     .timeline-container { max-width: 1200px; margin: 0 auto; position: relative; }
     .timeline-spine-wrapper {
-      position: absolute; top: 0; bottom: 0;
-      left: 50%; width: 1px;
+      position: absolute; top: 0; bottom: 0; left: 50%; width: 1px;
       background: rgba(233,229,223,0.06); transform: translateX(-50%);
     }
     .timeline-spine-progress {
-      position: absolute;
-      top: 0; left: 0; width: 1px;
+      position: absolute; top: 0; left: 0; width: 1px;
       background: linear-gradient(to bottom, transparent 0%, var(--accent) 10%, var(--accent) 90%, transparent 100%);
-      height: 0%;
-      transition: height 0.1s linear;
+      height: 0%; transition: height 0.1s linear;
     }
     .tl-entry {
-      position: relative; width: 100%;
-      margin-bottom: clamp(7rem, 16vh, 12rem);
+      position: relative; width: 100%; margin-bottom: clamp(7rem, 16vh, 12rem);
       opacity: 0; transform: translateY(30px); transition: opacity 1s var(--ease), transform 1s var(--ease);
     }
     .tl-entry:last-child { margin-bottom: 0; }
     .tl-entry.in-view { opacity: 1; transform: translateY(0); }
+    
     .tl-year-display {
       font-family: var(--font-en); font-size: clamp(3.5rem, 7vw, 5.5rem); font-weight: 300;
       color: var(--accent); letter-spacing: 0.02em; line-height: 1;
@@ -396,14 +433,12 @@
     .tl-entry:nth-child(even) .tl-year-display { text-align: left; }
 
     .tl-content-wrap {
-      display: flex;
-      justify-content: space-between; align-items: center; gap: clamp(2rem, 5vw, 6rem);
+      display: flex; justify-content: space-between; align-items: center; gap: clamp(2rem, 5vw, 6rem);
     }
     .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
     .tl-figure {
-      width: 54%; position: relative; border: 0.5px solid var(--border);
-      overflow: hidden;
-      background: var(--bg); cursor: zoom-in; transition: width 0.4s ease;
+      width: 54%; position: relative; border: 0.5px solid var(--border); overflow: hidden;
+      background: rgba(6, 6, 5, 0.4); cursor: zoom-in; transition: width 0.4s ease;
     }
     .tl-body { width: 42%; position: relative; z-index: 2; transition: width 0.4s ease; }
     
@@ -413,34 +448,28 @@
     .tl-entry.is-compact .tl-body    { width: 52%; }
     
     .tl-figure img {
-      width: 100%; height: auto;
-      display: block; filter: grayscale(12%) brightness(0.85);
+      width: 100%; height: auto; display: block; filter: grayscale(12%) brightness(0.85);
       transition: transform 1s var(--ease), filter 0.6s ease;
     }
     .tl-figure:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
     
     .tl-title {
-      font-family: var(--font-ja);
-      font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 300;
+      font-family: var(--font-ja); font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 300;
       color: var(--fg); line-height: 1.4; margin-bottom: 0.8rem;
     }
     .tl-meta {
-      font-family: var(--font-en); font-size: clamp(0.6rem, 1.2vw, 0.75rem);
-      color: var(--accent);
-      letter-spacing: 0.15em; margin-bottom: 2rem;
-      padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border-md);
+      font-family: var(--font-en); font-size: clamp(0.6rem, 1.2vw, 0.75rem); color: var(--accent);
+      letter-spacing: 0.15em; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border-md);
     }
     .tl-desc {
       font-size: clamp(0.85rem, 1.6vw, 0.95rem); line-height: 2.1;
-      color: rgba(233,229,223,0.7);
-      text-align: justify;
+      color: rgba(233,229,223,0.7); text-align: justify;
     }
 
-    /* Typewriter Style */
+    /* Typewriter */
     .tw-char { opacity: 0; display: inline-block; transition: opacity 0.3s ease; }
     .tw-cursor {
-      display: inline-block; width: 1.5px;
-      height: 1.1em; background-color: var(--accent);
+      display: inline-block; width: 1.5px; height: 1.1em; background-color: var(--accent);
       margin-left: 2px; vertical-align: middle; animation: tw-blink 0.8s infinite;
     }
     @keyframes tw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
@@ -450,22 +479,22 @@
        CONTACT & FOOTER
     ============================================================ */
     .contact-section {
-      padding: clamp(7rem, 15vh, 11rem) var(--px);
-      text-align: center;
+      padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center;
       border-top: 0.5px solid var(--border);
-      background: radial-gradient(circle at center, rgba(196,168,130,0.06) 0%, var(--bg) 70%);
+      background: radial-gradient(circle at center, rgba(196,168,130,0.06) 0%, var(--bg) 80%);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      position: relative;
     }
     .contact-heading {
       font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200;
       line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em;
     }
     .contact-body-text {
-      font-family: var(--font-ja);
-      font-size: clamp(0.85rem, 1.8vw, 0.95rem);
-      color: rgba(233,229,223,0.55); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2;
+      font-family: var(--font-ja); font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+      color: rgba(233,229,223,0.6); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2;
     }
     .contact-btn {
-      display: inline-block; padding: 1.2rem 3.5rem; background: var(--accent); color: var(--bg);
+      display: inline-block; padding: 1.2rem 3.5rem; background: var(--accent); color: var(--bg-base);
       font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500;
       letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none;
       transition: all 0.4s var(--ease); border-radius: 2px;
@@ -474,27 +503,24 @@
 
     footer {
       padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between;
-      align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); background: var(--bg);
+      align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); 
+      background: var(--bg-base); /* フッターは完全にソリッドな黒に着地させる */
+      position: relative;
     }
-    .footer-logo { font-family: var(--font-ja);
-      font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.28); letter-spacing: 0.08em; }
-    .footer-copy { font-family: var(--font-en);
-      font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
+    .footer-logo { font-family: var(--font-ja); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.28); letter-spacing: 0.08em; }
+    .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
 
     /* ============================================================
-       LIGHTBOX (MODAL) & BACK TO TOP
+       LIGHTBOX & BACK TO TOP
     ============================================================ */
     .image-modal {
-      position: fixed;
-      inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center;
+      position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center;
       opacity: 0; visibility: hidden; transition: opacity 0.55s var(--ease), visibility 0.55s;
     }
     .image-modal.is-active { opacity: 1; visibility: visible; }
-    .modal-bg { position: absolute; inset: 0;
-      background: rgba(6,6,5,0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); cursor: zoom-out; }
+    .modal-bg { position: absolute; inset: 0; background: rgba(6,6,5,0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); cursor: zoom-out; }
     .modal-close {
-      position: fixed;
-      top: clamp(1rem, 3vh, 2rem); right: var(--px); z-index: 10001;
+      position: fixed; top: clamp(1rem, 3vh, 2rem); right: var(--px); z-index: 10001;
       background: none; border: none; color: var(--muted); cursor: pointer; padding: 0.5rem;
       transition: color 0.3s ease, transform 0.3s var(--ease);
     }
@@ -506,57 +532,40 @@
       transition: opacity 0.55s var(--ease) 0.08s, transform 0.55s var(--ease) 0.08s;
     }
     .image-modal.is-active .modal-content { opacity: 1; transform: scale(1) translateY(0); }
-    .modal-content img { max-width: 100%; max-height: 75svh; object-fit: contain;
-      box-shadow: 0 32px 80px rgba(0,0,0,0.75); border: 0.5px solid var(--border); cursor: zoom-out; }
+    .modal-content img { max-width: 100%; max-height: 75svh; object-fit: contain; box-shadow: 0 32px 80px rgba(0,0,0,0.75); border: 0.5px solid var(--border); cursor: zoom-out; }
     .modal-caption { text-align: center; width: 100%; padding: 0 1rem; }
-    .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 200;
-      color: var(--fg); margin-bottom: 0.3rem; }
-    .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.72rem, 1.2vw, 0.85rem); font-style: italic; color: var(--accent);
-      letter-spacing: 0.15em; }
+    .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 200; color: var(--fg); margin-bottom: 0.3rem; }
+    .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.72rem, 1.2vw, 0.85rem); font-style: italic; color: var(--accent); letter-spacing: 0.15em; }
 
     .back-to-top {
-      position: fixed; bottom: clamp(1.5rem, 5vh, 4rem);
-      right: clamp(15px, 4vw, 50px);
+      position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px);
       z-index: 9000; width: clamp(64px, 10vw, 90px); height: clamp(64px, 10vw, 90px);
-      border-radius: 50%;
-      background: rgba(196, 168, 130, 0.85); border: 1px solid var(--accent);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      color: var(--bg);
+      border-radius: 50%; background: rgba(196, 168, 130, 0.85); border: 1px solid var(--accent);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--bg-base);
       opacity: 0; visibility: hidden; transform: translateY(20px);
       transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
     }
     .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
-    .back-to-top:hover { background: var(--fg);
-      color: var(--bg); border-color: var(--fg); transform: translateY(-6px); }
-    .back-to-top svg { width: clamp(20px, 3vw, 32px);
-      height: clamp(20px, 3vw, 32px); margin-bottom: 2px; }
-    .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.9rem); font-weight: 600;
-      text-transform: uppercase; line-height: 1; }
+    .back-to-top:hover { background: var(--fg); color: var(--bg-base); border-color: var(--fg); transform: translateY(-6px); }
+    .back-to-top svg { width: clamp(20px, 3vw, 32px); height: clamp(20px, 3vw, 32px); margin-bottom: 2px; }
+    .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.9rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
 
     /* ============================================================
        RESPONSIVE DESIGN
     ============================================================ */
     @media (max-width: 860px) {
-      .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column;
-      align-items: flex-start; gap: 2rem; }
+      .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2rem; }
       .tl-figure, .tl-body, .tl-entry.is-featured .tl-figure, .tl-entry.is-featured .tl-body, .tl-entry.is-compact .tl-figure, .tl-entry.is-compact .tl-body { width: 100%; }
       .timeline-spine-wrapper { left: 20px; transform: none; }
       .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; }
     }
     @media (max-width: 768px) {
-      /* スマホ版: ヘッダーからメニューリンクと三本線を非表示にし、左右に綺麗に配置 */
       nav#top-nav { padding: 1rem 1.25rem; justify-content: space-between; align-items: center; }
-      .nav-links { display: none !important; }
-      .nav-hamburger { display: none !important; }
-      
-      /* スマホ版: 最初のギャラリーを完全に非表示 */
+      .nav-links, .nav-hamburger { display: none !important; }
       .gallery-section { display: none !important; }
-
       .page-nav.visible { right: 8px; opacity: 0.5; }
       .page-nav.visible:hover { opacity: 1; }
       .page-nav-label { display: none; }
-      
-      /* モバイルでも縦並びにせず比率を保つ */
       .gallery-grid { flex-direction: row; } 
       .gallery-item-img-wrap img { max-height: calc(var(--h-mm, 400) * var(--scale-mobile) * 1px); }
     }
@@ -569,6 +578,7 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
       .gallery-item, .tl-entry { opacity: 1 !important; transform: none !important; }
+      body::before { background-attachment: scroll; } /* 視差効果の停止 */
     }
   </style>
 </head>
@@ -629,118 +639,116 @@
     </section>
 
     <section class="statement-section">
-      <p class="statement-label">Series Statement</p>
-
-      <p class="statement-pullquote reveal-fade">
-        「抽象（Abstract）」シリーズは、津田翔一の制作における<span class="accent-word">脱領土化</span>——すなわち形態・意味・物語が解体されていく過程——を、最も純粋な形で体現した作品群です。
-      </p>
-
-      <div class="statement-body">
-        <p class="statement-para reveal-fade">
-          具体的な対象を持たず、あるいは対象を持ちながらも、その形が絵画行為の中で次第に溶解し、別の何かへと変容していきます。油彩という物質の重さ、筆の痕跡、絵の具の層。描き、削り、重ねていく行為の蓄積が、具象を解体し、新たな感覚の地平を開いていくのです。抽象絵画は「何を描くか」ではなく「<strong>いかに存在するか</strong>」を問うものです。
+      <div class="statement-inner">
+        <p class="statement-label">Series Statement</p>
+        <p class="statement-pullquote reveal-fade">
+          「抽象（Abstract）」シリーズは、津田翔一の制作における<span class="accent-word">脱領土化</span>——すなわち形態・意味・物語が解体されていく過程——を、最も純粋な形で体現した作品群です。
         </p>
-    
-        <p class="statement-para reveal-fade">
-          本シリーズには、初期の実験的なドローイングから、現在進行形の大画面油彩まで、私の形態変容への問いが連続しています。それは単なる様式の変化ではなく、「左美都という土地の感覚をどこまで絵具の層として蓄積できるか」という持続的な探求の記録でもあります。
-        </p>
-
-        <div class="statement-divider" aria-hidden="true"></div>
-
-        <p class="statement-para reveal-fade">
-          抽象とは、何かを描かないことではありません。何かを描くことをやめられなくなった先にあるものです。私が「抽象」と呼ぶ作品群は、最初から「抽象的なもの」を目指して描かれたわけではありません。むしろ、描き続ける中で具体的な形が溶け出していった結果として生まれたものです。
-        </p>
-        <p class="statement-para reveal-fade">
-          油彩という素材は、決して素直ではありません。乾くまでの時間、混ざり合う色、予期しない質感——これらは絵を描く者の意図を超えて動き始めます。〈<strong>脱領土化</strong>〉とは、この素材の反乱に身を委ねる行為でもあります。
-        </p>
-        <p class="statement-para reveal-fade">
-          抽象シリーズを通じて私が問い続けているのは、「絵画は何を記録できるか」という問いです。形でも色でもなく、その場にあった何か——感覚の痕跡を留めることが、絵画の本質かもしれません。それは左美都の地質が数千万年の時間を岩に閉じ込めるのと同じように。
-        </p>
+        <div class="statement-body">
+          <p class="statement-para reveal-fade">
+            具体的な対象を持たず、あるいは対象を持ちながらも、その形が絵画行為の中で次第に溶解し、別の何かへと変容していきます。油彩という物質の重さ、筆の痕跡、絵の具の層。描き、削り、重ねていく行為の蓄積が、具象を解体し、新たな感覚の地平を開いていくのです。抽象絵画は「何を描くか」ではなく「<strong>いかに存在するか</strong>」を問うものです。
+          </p>
+          <p class="statement-para reveal-fade">
+            本シリーズには、初期の実験的なドローイングから、現在進行形の大画面油彩まで、私の形態変容への問いが連続しています。それは単なる様式の変化ではなく、「左美都という土地の感覚をどこまで絵具の層として蓄積できるか」という持続的な探求の記録でもあります。
+          </p>
+          <div class="statement-divider" aria-hidden="true"></div>
+          <p class="statement-para reveal-fade">
+            抽象とは、何かを描かないことではありません。何かを描くことをやめられなくなった先にあるものです。私が「抽象」と呼ぶ作品群は、最初から「抽象的なもの」を目指して描かれたわけではありません。むしろ、描き続ける中で具体的な形が溶け出していった結果として生まれたものです。
+          </p>
+          <p class="statement-para reveal-fade">
+            油彩という素材は、決して素直ではありません。乾くまでの時間、混ざり合う色、予期しない質感——これらは絵を描く者の意図を超えて動き始めます。〈<strong>脱領土化</strong>〉とは、この素材の反乱に身を委ねる行為でもあります。
+          </p>
+          <p class="statement-para reveal-fade">
+            抽象シリーズを通じて私が問い続けているのは、「絵画は何を記録できるか」という問いです。形でも色でもなく、その場にあった何か——感覚の痕跡を留めることが、絵画の本質かもしれません。それは左美都の地質が数千万年の時間を岩に閉じ込めるのと同じように。
+          </p>
+        </div>
+        <p class="statement-closing reveal-fade">— Tsuda Shoichi</p>
       </div>
-
-      <p class="statement-closing reveal-fade">— Tsuda Shoichi</p>
     </section>
 
     <section class="gallery-section" id="gallery">
-      <div class="section-label">Works Index</div>
-      <div class="gallery-grid">
-        <a href="#work-flow" class="gallery-item" style="--h-mm: 727;">
-          <div class="gallery-item-img-wrap"><img src="images/【P20縦】flow.jpg" alt="flow" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">flow</span><span class="gallery-item-meta">2020 / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-redsky" class="gallery-item" style="--h-mm: 318;">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】IMG_7401(赤い空と吹く風).jpg" alt="赤い空と吹く風" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">赤い空と吹く風</span><span class="gallery-item-meta">2016 / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-desert" class="gallery-item" style="--h-mm: 530;">
-          <div class="gallery-item-img-wrap"><img src="images/【S10】IMG_7399(砂漠の山).jpg" alt="砂漠の山" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">砂漠の山</span><span class="gallery-item-meta">2016 / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-dondoyaki" class="gallery-item" style="--h-mm: 606;">
-          <div class="gallery-item-img-wrap"><img src="images/【F20横】IMG_7397(どんど焼き).jpg" alt="どんど焼き" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">どんど焼き</span><span class="gallery-item-meta">2016 / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-7242" class="gallery-item" style="--h-mm: 318;">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】IMG_7242.jpg" alt="無題" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">無題 (IMG_7242)</span><span class="gallery-item-meta">2016 / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-7237" class="gallery-item" style="--h-mm: 410;">
-          <div class="gallery-item-img-wrap"><img src="images/【F6縦】IMG_7237.jpg" alt="無題" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">無題 (IMG_7237)</span><span class="gallery-item-meta">2016 / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-mountains" class="gallery-item" style="--h-mm: 318;">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】IMG_7236[mountains between us].jpg" alt="mountains between us" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">mountains between us</span><span class="gallery-item-meta">2016 / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-dregs" class="gallery-item" style="--h-mm: 530;">
-          <div class="gallery-item-img-wrap"><img src="images/【Dregs（澱）】 修正後.JPG" alt="【Dregs（澱）】" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">【Dregs（澱）】</span><span class="gallery-item-meta">2009 / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-noise" class="gallery-item" style="--h-mm: 530;">
-          <div class="gallery-item-img-wrap"><img src="images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG" alt="tHE n0iSe" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">tHE n0iSe Of ThE PriMItⅣe sEA</span><span class="gallery-item-meta">2009 / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-damagedealer" class="gallery-item" style="--h-mm: 910;">
-          <div class="gallery-item-img-wrap"><img src="images/Damage Dealer.JPG" alt="Damage Dealer" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">Damage Dealer</span><span class="gallery-item-meta">2009 / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-castle" class="gallery-item" style="--h-mm: 652;">
-          <div class="gallery-item-img-wrap"><img src="images/3.13【a cAstLe】.JPG" alt="3.13【a cAstLe】" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">3.13【a cAstLe】</span><span class="gallery-item-meta">2009 / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-stilllife" class="gallery-item" style="--h-mm: 652;">
-          <div class="gallery-item-img-wrap"><img src="images/Still-Life♪.JPG" alt="Still-Life♪" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">Still-Life♪</span><span class="gallery-item-meta">2020 / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-cg" class="gallery-item" style="--h-mm: 652;">
-          <div class="gallery-item-img-wrap"><img src="images/【CG(Cell-Graphics) [catastrophe] - II】 -修正版.jpg" alt="【CG(Cell-Graphics) [catastrophe] - II】" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">【CG(Cell-Graphics) [catastrophe] - II】</span><span class="gallery-item-meta">2019 / Graphic & Oil</span>
-          </div>
-        </a>
+      <div class="gallery-inner">
+        <div class="section-label">Works Index</div>
+        <div class="gallery-grid">
+          <a href="#work-flow" class="gallery-item" style="--h-mm: 727;">
+            <div class="gallery-item-img-wrap"><img src="images/【P20縦】flow.jpg" alt="flow" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">flow</span><span class="gallery-item-meta">2020 / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-redsky" class="gallery-item" style="--h-mm: 318;">
+            <div class="gallery-item-img-wrap"><img src="images/【F6横】IMG_7401(赤い空と吹く風).jpg" alt="赤い空と吹く風" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">赤い空と吹く風</span><span class="gallery-item-meta">2016 / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-desert" class="gallery-item" style="--h-mm: 530;">
+            <div class="gallery-item-img-wrap"><img src="images/【S10】IMG_7399(砂漠の山).jpg" alt="砂漠の山" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">砂漠の山</span><span class="gallery-item-meta">2016 / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-dondoyaki" class="gallery-item" style="--h-mm: 606;">
+            <div class="gallery-item-img-wrap"><img src="images/【F20横】IMG_7397(どんど焼き).jpg" alt="どんど焼き" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">どんど焼き</span><span class="gallery-item-meta">2016 / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-7242" class="gallery-item" style="--h-mm: 318;">
+            <div class="gallery-item-img-wrap"><img src="images/【F6横】IMG_7242.jpg" alt="無題" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">無題 (IMG_7242)</span><span class="gallery-item-meta">2016 / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-7237" class="gallery-item" style="--h-mm: 410;">
+            <div class="gallery-item-img-wrap"><img src="images/【F6縦】IMG_7237.jpg" alt="無題" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">無題 (IMG_7237)</span><span class="gallery-item-meta">2016 / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-mountains" class="gallery-item" style="--h-mm: 318;">
+            <div class="gallery-item-img-wrap"><img src="images/【F6横】IMG_7236[mountains between us].jpg" alt="mountains between us" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">mountains between us</span><span class="gallery-item-meta">2016 / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-dregs" class="gallery-item" style="--h-mm: 530;">
+            <div class="gallery-item-img-wrap"><img src="images/【Dregs（澱）】 修正後.JPG" alt="【Dregs（澱）】" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">【Dregs（澱）】</span><span class="gallery-item-meta">2009 / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-noise" class="gallery-item" style="--h-mm: 530;">
+            <div class="gallery-item-img-wrap"><img src="images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG" alt="tHE n0iSe" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">tHE n0iSe Of ThE PriMItⅣe sEA</span><span class="gallery-item-meta">2009 / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-damagedealer" class="gallery-item" style="--h-mm: 910;">
+            <div class="gallery-item-img-wrap"><img src="images/Damage Dealer.JPG" alt="Damage Dealer" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">Damage Dealer</span><span class="gallery-item-meta">2009 / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-castle" class="gallery-item" style="--h-mm: 652;">
+            <div class="gallery-item-img-wrap"><img src="images/3.13【a cAstLe】.JPG" alt="3.13【a cAstLe】" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">3.13【a cAstLe】</span><span class="gallery-item-meta">2009 / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-stilllife" class="gallery-item" style="--h-mm: 652;">
+            <div class="gallery-item-img-wrap"><img src="images/Still-Life♪.JPG" alt="Still-Life♪" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">Still-Life♪</span><span class="gallery-item-meta">2020 / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-cg" class="gallery-item" style="--h-mm: 652;">
+            <div class="gallery-item-img-wrap"><img src="images/【CG(Cell-Graphics) [catastrophe] - II】 -修正版.jpg" alt="【CG(Cell-Graphics) [catastrophe] - II】" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">【CG(Cell-Graphics) [catastrophe] - II】</span><span class="gallery-item-meta">2019 / Graphic & Oil</span>
+            </div>
+          </a>
+        </div>
       </div>
     </section>
 
@@ -931,10 +939,8 @@
             </div>
           </div>
         </article>
-
       </div>
     </section>
-
   </main>
 
   <section class="contact-section" id="contact">
@@ -1136,14 +1142,11 @@
       });
     });
 
-    /* ★ スマホとPCでスクロール先を動的に切り替える再設定 */
     document.getElementById('backToTop').addEventListener('click', (e) => {
       e.preventDefault();
       if (window.innerWidth <= 768) {
-        // スマホ表示時：ページのタイトル（Heroセクション）が見える最上部へスクロール
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        // PC表示時：既存通り作品ギャラリー（#gallery）の先頭へスクロール
         const target = document.getElementById('gallery');
         if (target) {
           const offset = topNav?.offsetHeight || 80;
@@ -1185,7 +1188,6 @@
           const jpTitleEl = block.querySelector('.tl-title');
           jp = jpTitleEl ? jpTitleEl.textContent : '';
         } else {
-           /* Gallery Grid items */
           const galleryItem = btn.closest('.gallery-item');
           if (galleryItem) {
              const jpTitleEl = galleryItem.querySelector('.gallery-item-title');
@@ -1200,7 +1202,6 @@
     modalClose.addEventListener('click', closeModal);
     modalImg.addEventListener('click', closeModal);
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('is-active')) closeModal(); });
-
   </script>
 </body>
 </html>
