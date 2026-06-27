@@ -236,34 +236,49 @@
     @keyframes fadeUp  { from { opacity:0; transform:translateY(24px) scale(0.98); filter: blur(4px); } to { opacity:1; transform:translateY(0) scale(1); filter: blur(0); } }
     @keyframes fadeIn  { from { opacity:0; } to { opacity:1; } }
 
-    /* Heroタイトルのにじみ出るアニメーション（高速・テンポ改善版） */
-    @keyframes inkRevealSlideUp {
-      from { opacity: 0; transform: translateY(80%) scale(0.95); filter: blur(12px); }
-      to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-    }
-
     .hero-sub {
       font-family: var(--en); font-size: clamp(0.55rem,2vw,0.72rem);
       letter-spacing: 0.35em; color: var(--muted-col);
       text-transform: uppercase; margin-bottom: 2.5rem; opacity: 0; animation: fadeUp 0.8s var(--ease-expo) 0s forwards;
     }
+
+    /* ════════════════════════════════════════
+       HERO TITLE ANIMATION (描く。掘る。還る。)
+       洗練された心地よさと、せかされないスピード感の両立
+    ════════════════════════════════════════ */
     .hero-title {
       font-family: var(--jp); font-size: clamp(3.5rem,10vw,7.5rem);
       font-weight: 200; line-height: 1.05;
       letter-spacing: -0.025em; color: var(--text); margin-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.1em;
     }
-    .hero-title .line { display: block; overflow: hidden; }
-    
-    .hero-title .line-inner {
-      display: block; opacity: 0; transform: translateY(80%) scale(0.95); filter: blur(12px);
-      will-change: transform, opacity, filter;
+    .hero-title span {
+      display: block; opacity: 0; position: relative; will-change: transform, opacity, filter;
     }
-    /* 表示スピードの再調整（ディレイを大幅に前倒し、デュレーションを1.1sに最適化） */
-    body.is-loaded .hero-title .line:nth-child(1) .line-inner { animation: inkRevealSlideUp 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards; }
-    body.is-loaded .hero-title .line:nth-child(2) .line-inner { animation: inkRevealSlideUp 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.28s forwards; }
-    body.is-loaded .hero-title .line:nth-child(3) .line-inner { animation: inkRevealSlideUp 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.46s forwards; }
-    
     .hero-title em { font-style: normal; color: rgba(232,228,219,0.55); }
+
+    /* 1. 描く。(Draw) - 筆跡のように左から右へピントが合う */
+    body.is-loaded .line-draw { animation: drawReveal 1.6s cubic-bezier(0.1, 1, 0.2, 1) forwards; animation-delay: 0.1s; }
+    @keyframes drawReveal {
+      0% { opacity: 0; clip-path: inset(0 100% 0 0); filter: blur(12px); transform: translateX(-30px); }
+      100% { opacity: 1; clip-path: inset(0 0 0 0); filter: blur(0); transform: translateX(0); }
+    }
+
+    /* 2. 掘る。(Dig) - 深い場所から重力を感じて浮かび上がる */
+    body.is-loaded .line-dig { animation: digReveal 1.8s cubic-bezier(0.1, 1, 0.2, 1) forwards; animation-delay: 0.5s; }
+    @keyframes digReveal {
+      0% { opacity: 0; transform: translateY(30px) scale(0.95); filter: brightness(0) blur(10px); }
+      100% { opacity: 1; transform: translateY(0) scale(1); filter: brightness(1) blur(0); }
+    }
+
+    /* 3. 還る。(Return) - 周囲から中心へ優しく収束する */
+    body.is-loaded .line-return { animation: returnReveal 2.0s cubic-bezier(0.1, 1, 0.2, 1) forwards; animation-delay: 0.9s; }
+    @keyframes returnReveal {
+      0% { opacity: 0; transform: scale(1.08); letter-spacing: 0.2em; filter: blur(12px); color: #ffffff; text-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
+      100% { opacity: 1; transform: scale(1); letter-spacing: -0.025em; filter: blur(0); color: var(--text); text-shadow: 0 0 0px rgba(255, 255, 255, 0); }
+    }
 
     .hero-body {
       font-size: clamp(13px, 1.2vw + 10px, 15px); line-height: 2;
@@ -984,9 +999,9 @@
   <p class="hero-sub">Artist / Painter — Nagano, Japan</p>
   
   <h1 class="hero-title">
-    <span class="line"><span class="line-inner">描く。</span></span>
-    <span class="line"><span class="line-inner"><em>掘る。</em></span></span>
-    <span class="line"><span class="line-inner">還る。</span></span>
+    <span class="line-draw">描く。</span>
+    <span class="line-dig"><em>掘る。</em></span>
+    <span class="line-return">還る。</span>
   </h1>
   
   <p class="hero-body">
