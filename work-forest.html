@@ -23,9 +23,9 @@
        DESIGN TOKENS & RESET
     =========================================================== */
     :root {
-      /* 元のサイト共通カラーパレット */
       --bg:        #060605;
       --bg2:       #0c0c0a;
+      --bg3:       #111110;
       --fg:        #e9e5df;
       --muted:     rgba(233,229,223,0.44);
       --dim:       rgba(233,229,223,0.22);
@@ -34,21 +34,21 @@
       --accent2:   #7c9aa0;
       --border:    rgba(233,229,223,0.08);
       --border-md: rgba(233,229,223,0.20);
-
       --font-en:   'Cormorant Garamond', serif;
       --font-ja:   'Noto Serif JP', serif;
       
+      /* アニメーションのイージング（より有機的で優雅な曲線に調整） */
       --ease-fluid: cubic-bezier(0.2, 0.8, 0.2, 1);
       --ease-slow:  cubic-bezier(0.16, 1, 0.3, 1);
       
       --px:        clamp(1.5rem, 6vw, 5rem);
-      --cm-scale:  clamp(0.6px, 0.18vw, 1.8px);
+      --cm-scale:  clamp(0.7px, 0.15vw, 1.8px);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: auto; background: var(--bg); }
+    html { scroll-behavior: smooth; background: var(--bg); }
     body {
-      background: transparent; /* 背景画像を見せるため透過 */
+      background: var(--bg);
       color: var(--fg);
       font-family: var(--font-ja);
       line-height: 2.1;
@@ -56,7 +56,6 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
-      position: relative;
     }
     body.is-locked { overflow: hidden; }
     img { max-width: 100%; height: auto; display: block; }
@@ -64,33 +63,11 @@
     a:hover { opacity: 0.6; }
 
     /* ============================================================
-       AMBIENT BACKGROUND (鑑賞を邪魔しない特異性)
-    =========================================================== */
-    .ambient-bg {
-      position: fixed; top: -10%; left: -10%; width: 120%; height: 120%;
-      background-image: url('images/【F100横】林.jpg');
-      background-size: cover; background-position: center;
-      /* 強いブラーと暗転で、絵の具の色彩だけを抽出した動的な環境光を作る */
-      filter: blur(60px) brightness(0.15) saturate(1.3);
-      z-index: -10; pointer-events: none;
-      animation: ambientDrift 40s ease-in-out infinite alternate;
-    }
-    .ambient-overlay {
-      position: fixed; inset: 0;
-      background: radial-gradient(circle at center, transparent 0%, rgba(6,6,5,0.7) 100%);
-      z-index: -9; pointer-events: none;
-    }
-    @keyframes ambientDrift {
-      0% { transform: scale(1) translate(0, 0); }
-      100% { transform: scale(1.1) translate(-2%, -2%); }
-    }
-
-    /* ============================================================
-       HEADER (元のデザインを完全復元)
+       NAVIGATION
     =========================================================== */
     nav#top-nav {
       position: fixed;
-      top: 0; left: 0; width: 100%; z-index: 500;
+      top: 0; left: 0; width: 100%; z-index: 300;
       display: flex; align-items: center; justify-content: space-between;
       padding: clamp(16px, 3vw, 40px) var(--px);
       background: transparent;
@@ -106,13 +83,15 @@
     }
     .nav-logo-unified {
       font-family: var(--font-en); font-size: clamp(0.75rem, 2.5vw, 0.95rem);
-      letter-spacing: 0.35em; font-weight: 300; color: var(--accent);
+      letter-spacing: 0.35em;
+      font-weight: 300; color: var(--accent);
       text-transform: uppercase;
     }
     .nav-links { display: flex; gap: 2.5rem; list-style: none; }
     .nav-links a {
       font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.75rem);
-      letter-spacing: 0.3em; color: var(--muted); text-transform: uppercase; transition: color 0.4s var(--ease-fluid);
+      letter-spacing: 0.3em;
+      color: var(--muted); text-transform: uppercase; transition: color 0.4s var(--ease-fluid);
     }
     .nav-links a:hover { color: var(--accent); }
     .nav-cta {
@@ -123,10 +102,11 @@
     }
     .nav-cta:hover { background: rgba(196,168,130,0.1); color: #fff; border-color: var(--accent); }
     
-    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; position: relative; z-index: 501; width: 32px; height: 20px; }
+    /* Hamburger */
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; position: relative; z-index: 301; width: 32px; height: 20px; }
     .nav-hamburger span {
       display: block; position: absolute; left: 0; width: 100%; height: 1px;
-      background: var(--accent); transition: 0.5s var(--ease-slow);
+      background: var(--accent); transition: transform 0.5s var(--ease-slow), opacity 0.5s var(--ease-slow), top 0.5s var(--ease-slow);
     }
     .nav-hamburger span:nth-child(1) { top: 0px; }
     .nav-hamburger span:nth-child(2) { top: 9px; }
@@ -135,196 +115,317 @@
     .nav-hamburger.is-active span:nth-child(2) { opacity: 0; }
     .nav-hamburger.is-active span:nth-child(3) { top: 9px; transform: rotate(-45deg); }
 
-    /* ============================================================
-       IN-PAGE NAVIGATION (より機能的でスタイリッシュに)
-    =========================================================== */
+    /* Page Nav (Dot Indicator) */
     .page-nav {
-      position: fixed; right: clamp(15px, 3vw, 40px); top: 50%; transform: translateY(-50%);
-      z-index: 400; opacity: 0; visibility: hidden; transition: opacity 0.8s ease, visibility 0.8s;
+      position: fixed; right: clamp(20px, 4vw, 50px); top: 50%; transform: translateY(-50%); z-index: 200;
+      display: flex; flex-direction: column; gap: 28px;
+      opacity: 0; visibility: hidden; transition: opacity 0.8s var(--ease-slow), visibility 0.8s;
     }
     .page-nav.visible { opacity: 1; visibility: visible; }
-    .page-nav-list { list-style: none; display: flex; flex-direction: column; gap: 1.5rem; position: relative; }
-    /* 縦のガイドライン */
-    .page-nav-list::before {
-      content: ''; position: absolute; right: 3px; top: 0; bottom: 0; width: 1px;
-      background: var(--border-md); z-index: -1;
+    .page-nav-item { display: flex; align-items: center; gap: 16px; flex-direction: row-reverse; cursor: pointer; background: none; border: none; padding: 8px 0; }
+    .page-nav-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--border-md); transition: all 0.4s var(--ease-fluid); flex-shrink: 0;
+      position: relative;
     }
-    .page-nav-item {
-      display: flex; align-items: center; justify-content: flex-end; gap: 1rem;
-      cursor: pointer; position: relative; padding: 4px 0;
+    .page-nav-dot::after {
+      content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 0.5px solid transparent; transition: all 0.4s var(--ease-fluid);
     }
     .page-nav-label {
-      font-family: var(--font-en); font-size: 10px; letter-spacing: 0.2em;
-      color: var(--muted); text-transform: uppercase; transition: 0.4s;
-      opacity: 0; transform: translateX(10px);
+      font-family: var(--font-en); font-size: 11px; letter-spacing: 0.2em;
+      color: rgba(233,229,223,0.3); text-transform: uppercase; transition: color 0.4s var(--ease-fluid); white-space: nowrap;
     }
-    .page-nav-dot {
-      width: 7px; height: 7px; background: var(--bg); border: 1px solid var(--muted); border-radius: 50%;
-      transition: 0.4s; flex-shrink: 0;
-    }
-    .page-nav-item:hover .page-nav-label { opacity: 1; transform: translateX(0); color: var(--fg); }
-    .page-nav-item:hover .page-nav-dot { border-color: var(--accent); background: var(--accent); transform: scale(1.2); }
-    
-    .page-nav-item.active .page-nav-label { opacity: 1; transform: translateX(0); color: var(--accent); }
-    .page-nav-item.active .page-nav-dot { background: var(--accent); border-color: var(--accent); transform: scale(1.5); box-shadow: 0 0 10px rgba(196,168,130,0.5); }
+    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot { background: var(--accent); transform: scale(1.2); }
+    .page-nav-item.active .page-nav-dot::after { border-color: rgba(196,168,130,0.4); transform: scale(1.5); }
+    .page-nav-item:hover .page-nav-label { color: rgba(233,229,223,0.9); }
+    .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       COMPACT HERO SECTION
+       HERO (REDESIGNED ANIMATION)
     =========================================================== */
     .hero {
-      position: relative; height: 80vh; min-height: 500px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center; overflow: hidden; padding-top: 80px;
+      position: relative; height: 100svh; min-height: 600px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 var(--px) clamp(4rem, 10vh, 8rem); overflow: hidden;
+      background: var(--bg);
     }
+    
+    /* 波と微粒子を思わせる有機的な背景アニメーション */
+    .hero-ambient {
+      position: absolute; inset: 0; pointer-events: none; z-index: 1;
+      background: 
+        radial-gradient(ellipse 80% 60% at 30% 40%, rgba(124,154,160,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 75% 30%, rgba(196,168,130,0.06) 0%, transparent 60%);
+      filter: blur(30px);
+      animation: ambientDrift 20s ease-in-out infinite alternate;
+    }
+    @keyframes ambientDrift {
+      0% { transform: scale(1) translate(0, 0); }
+      100% { transform: scale(1.15) translate(3%, 4%); }
+    }
+    .hero-divider {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 1px; z-index: 2;
+      background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%);
+    }
+    
+    .hero-inner { position: relative; z-index: 3; }
+    
     .hero-eyebrow {
-      font-family: var(--font-en); font-size: clamp(0.55rem, 1.2vw, 0.65rem);
-      letter-spacing: 0.5em; color: var(--accent); text-transform: uppercase;
-      margin-bottom: 1.5rem; opacity: 0; transform: translateY(20px);
-      animation: fadeUp 1s var(--ease-slow) 0.5s forwards;
+      font-family: var(--font-en); font-size: clamp(0.55rem, 1.3vw, 0.65rem);
+      letter-spacing: 0.5em; color: var(--dim); text-transform: uppercase;
+      margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.5rem;
+      opacity: 0; transform: translateX(-20px);
+      transition: opacity 1.2s var(--ease-slow) 0.2s, transform 1.2s var(--ease-slow) 0.2s;
     }
+    .hero-eyebrow::before { content: ''; width: 32px; height: 0.5px; background: var(--accent2); flex-shrink: 0; opacity: 0.6; transform: scaleX(0); transform-origin: left; transition: transform 1.2s var(--ease-slow) 0.6s; }
+    .hero-eyebrow.revealed { opacity: 1; transform: translateX(0); }
+    .hero-eyebrow.revealed::before { transform: scaleX(1); }
+    
     .hero-title {
-      font-family: var(--font-ja); font-size: clamp(3.5rem, 10vw, 8rem); font-weight: 200;
-      line-height: 1.1; letter-spacing: 0.1em; color: var(--fg);
-      text-shadow: 0 10px 40px rgba(0,0,0,0.5); margin-bottom: 1rem;
-      opacity: 0; transform: translateY(20px);
-      animation: fadeUp 1s var(--ease-slow) 0.8s forwards;
+      font-family: var(--font-ja); font-size: clamp(5.5rem, 19vw, 15rem); font-weight: 200;
+      line-height: 1.05; letter-spacing: 0.08em; color: var(--fg); margin-bottom: clamp(1rem, 2.5vh, 2rem);
+      display: flex; flex-wrap: wrap; text-shadow: 0 10px 40px rgba(0,0,0,0.5);
     }
+    
+    /* タイトルの1文字ずつに適用する波動的エフェクト */
+    .char-wrap {
+      display: inline-block; overflow: hidden; padding-right: 0.05em; padding-bottom: 0.1em;
+    }
+    .char-inner {
+      display: inline-block;
+      opacity: 0; filter: blur(24px); transform: translateY(60px) scale(0.85) rotate(-3deg);
+      transition: opacity 2.4s var(--ease-slow), filter 2.4s var(--ease-slow), transform 2.4s var(--ease-slow);
+    }
+    .hero-title.revealed .char-inner {
+      opacity: 1; filter: blur(0); transform: translateY(0) scale(1) rotate(0);
+    }
+    
     .hero-title-en {
-      font-family: var(--font-en); font-size: clamp(1rem, 2.5vw, 1.8rem);
-      font-weight: 300; font-style: italic; letter-spacing: 0.4em; color: rgba(196,168,130,0.7);
-      opacity: 0; filter: blur(5px);
-      animation: blurIn 1.5s var(--ease-slow) 1.2s forwards;
+      font-family: var(--font-en); font-size: clamp(1rem, 3.2vw, 2.2rem);
+      font-weight: 300; font-style: italic; letter-spacing: 0.35em; color: rgba(196,168,130,0.6);
+      opacity: 0; filter: blur(10px); transform: translateY(15px);
+      transition: opacity 2s var(--ease-slow) 1.2s, filter 2s var(--ease-slow) 1.2s, transform 2s var(--ease-slow) 1.2s;
     }
+    .hero-title-en.revealed { opacity: 1; filter: blur(0); transform: translateY(0); }
+    
+    .hero-meta {
+      display: flex; align-items: center; gap: 2rem; margin-top: clamp(2.5rem, 6vh, 5rem); 
+      opacity: 0; transform: translateY(20px); transition: opacity 1.5s var(--ease-slow) 1.6s, transform 1.5s var(--ease-slow) 1.6s;
+    }
+    .hero-meta.revealed { opacity: 1; transform: translateY(0); }
+    .hero-meta-line { width: 48px; height: 0.5px; background: linear-gradient(to right, var(--accent), var(--accent2)); flex-shrink: 0; }
+    .hero-meta-text { font-family: var(--font-en); font-size: clamp(0.55rem, 1.2vw, 0.65rem); letter-spacing: 0.3em; color: var(--dim); text-transform: uppercase; }
+    
     .hero-scroll {
-      position: absolute; bottom: 3rem; left: 50%; transform: translateX(-50%);
+      position: absolute; bottom: clamp(2.5rem, 6vh, 4.5rem); right: var(--px); z-index: 3; 
       display: flex; flex-direction: column; align-items: center; gap: 16px;
-      opacity: 0; animation: fadeUp 1.5s var(--ease-slow) 2s forwards;
+      opacity: 0; transition: opacity 1.5s var(--ease-slow) 2.4s;
     }
-    .hero-scroll-label { font-family: var(--font-en); font-size: 0.55rem; letter-spacing: 0.4em; color: var(--muted); text-transform: uppercase; }
-    .hero-scroll-track { width: 1px; height: 50px; background: rgba(233,229,223,0.1); position: relative; overflow: hidden; }
+    .hero-scroll.revealed { opacity: 1; }
+    .hero-scroll-label { font-family: var(--font-en); font-size: 0.5rem; letter-spacing: 0.4em; color: var(--whisper); text-transform: uppercase; writing-mode: vertical-rl; }
+    .hero-scroll-track { width: 1px; height: 56px; background: var(--border); position: relative; overflow: hidden; }
     .hero-scroll-fill {
       position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
-      background: var(--accent);
-      animation: scrollDrop 2s cubic-bezier(0.6, 0.05, 0.4, 1) infinite;
+      background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+      animation: scrollDrop 2.5s cubic-bezier(0.6, 0.05, 0.4, 1) 2s infinite;
     }
-    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-    @keyframes blurIn { to { opacity: 1; filter: blur(0); } }
-    @keyframes scrollDrop { 0% { top: -100%; } 100% { top: 100%; } }
+    @keyframes scrollDrop { 0% { top: -100%; opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
 
     /* ============================================================
        CONCEPT SECTION
     =========================================================== */
     .concept-section {
-      padding: clamp(6rem, 12vh, 10rem) var(--px);
-      max-width: 1000px; margin: 0 auto; text-align: center; position: relative;
+      padding: clamp(7rem, 15vh, 12rem) var(--px);
+      width: 100%; max-width: 1400px; margin: 0 auto;
+      text-align: center; position: relative;
     }
     .concept-pullquote {
       font-family: var(--font-ja); font-weight: 200; 
-      font-size: clamp(1.2rem, 3vw, 2rem); line-height: 2.2; color: var(--fg); letter-spacing: 0.1em;
-      margin-bottom: clamp(3rem, 8vh, 5rem);
+      font-size: clamp(1.3rem, 3.5vw, 2.2rem);
+      line-height: 2.2; color: var(--fg); letter-spacing: 0.1em;
+      margin-bottom: clamp(4rem, 10vh, 6rem); word-break: auto-phrase;
+      opacity: 0; filter: blur(8px); transform: translateY(30px);
+      transition: opacity 1.4s var(--ease-slow), filter 1.4s var(--ease-slow), transform 1.4s var(--ease-slow);
     }
-    .concept-pullquote .accent-word { color: var(--accent); }
+    .concept-pullquote.in-view { opacity: 1; filter: blur(0); transform: translateY(0); }
+    .concept-pullquote .accent-word { color: var(--accent); position: relative; display: inline-block; }
+    .concept-pullquote .accent-word::after {
+      content: ''; position: absolute; left: 0; bottom: -4px; width: 100%; height: 0.5px; background: rgba(196,168,130,0.5);
+    }
+    
     .concept-body {
-      display: flex; flex-direction: column; gap: 2.5rem; max-width: 800px; margin: 0 auto;
+      display: flex; flex-direction: column; gap: clamp(2rem, 4vh, 3rem);
+      max-width: 880px; margin: 0 auto;
     }
     .concept-para {
-      font-size: clamp(0.95rem, 1.6vw, 1.05rem); line-height: 2.4;
-      color: rgba(233,229,223,0.85); letter-spacing: 0.08em; text-align: justify;
+      font-size: clamp(0.95rem, 1.8vw, 1.1rem); line-height: 2.4;
+      color: rgba(233,229,223,0.8); letter-spacing: 0.08em; text-align: justify; word-break: auto-phrase;
+      opacity: 0; transform: translateY(24px); transition: opacity 1.2s var(--ease-slow) 0.2s, transform 1.2s var(--ease-slow) 0.2s;
     }
+    .concept-para.in-view { opacity: 1; transform: translateY(0); }
+    
+    .concept-divider {
+      width: 1px; height: 60px; margin: clamp(2rem, 4vh, 3rem) auto;
+      background: linear-gradient(to bottom, transparent, var(--accent2), transparent);
+      opacity: 0; transition: opacity 1s var(--ease-slow) 0.4s;
+    }
+    .concept-divider.in-view { opacity: 0.6; }
+    
     .concept-closing {
-      font-family: var(--font-en); font-style: italic; font-size: 1.1rem; color: var(--accent);
-      text-align: center; letter-spacing: 0.1em; margin-top: clamp(3rem, 6vh, 4rem);
+      font-family: var(--font-en); font-style: italic; font-weight: 300;
+      font-size: clamp(1rem, 2vw, 1.25rem); line-height: 2; color: var(--accent); 
+      text-align: center; letter-spacing: 0.06em; margin-top: clamp(4rem, 8vh, 6rem);
+      opacity: 0; transform: translateY(20px); transition: opacity 1.2s var(--ease-slow) 0.4s, transform 1.2s var(--ease-slow) 0.4s;
     }
-
-    /* Scroll Reveal Utility */
-    .reveal { opacity: 0; transform: translateY(30px); transition: 1s var(--ease-slow); }
-    .reveal.is-inview { opacity: 1; transform: translateY(0); }
+    .concept-closing.in-view { opacity: 1; transform: translateY(0); }
 
     /* ============================================================
-       WORKS INDEX (Gallery)
+       GALLERY GRID
     =========================================================== */
     .gallery-section {
-      padding: clamp(5rem, 10vh, 8rem) var(--px);
-      max-width: 1600px; margin: 0 auto;
+      padding: clamp(4rem, 8vh, 8rem) var(--px) clamp(8rem, 15vh, 12rem);
+      max-width: 1920px; margin: 0 auto;
+      border-top: 0.5px solid var(--border);
     }
     .section-label {
-      font-family: var(--font-en); font-size: clamp(0.6rem, 1.2vw, 0.7rem);
+      font-family: var(--font-en); font-size: clamp(0.55rem, 1.2vw, 0.65rem);
       letter-spacing: 0.5em; color: var(--muted); text-transform: uppercase;
-      text-align: center; margin-bottom: clamp(4rem, 8vh, 6rem);
+      text-align: center; margin-bottom: clamp(4rem, 9vh, 7rem);
       display: flex; flex-direction: column; align-items: center; gap: 16px;
     }
     .section-label::after { content: ''; width: 1px; height: 24px; background: var(--border-md); }
     
     .gallery-grid {
       display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: center;
-      gap: clamp(3rem, 6vw, 5rem) clamp(2rem, 4vw, 3rem);
+      gap: clamp(3rem, 6vw, 6rem) clamp(2rem, 4vw, 4rem);
     }
+    
     .gallery-item {
-      display: flex; flex-direction: column; align-items: flex-start; text-decoration: none; cursor: pointer; max-width: 100%;
+      display: flex; flex-direction: column; align-items: flex-start; 
+      text-decoration: none; cursor: pointer; max-width: 100%;
+      opacity: 0; transform: translateY(40px); transition: opacity 1s var(--ease-slow), transform 1s var(--ease-slow);
     }
+    .gallery-item.in-view { opacity: 1; transform: translateY(0); }
+    
+    /* 現実の号数比率反映 */
     .gallery-item-img-wrap {
       width: calc(var(--w-cm) * var(--cm-scale));
       height: calc(var(--h-cm) * var(--cm-scale));
       max-width: 100%; display: flex; justify-content: center; align-items: center;
-      background: #000; overflow: hidden; position: relative;
-      /* 鑑賞の邪魔にならないよう、背景画像と分離する黒いマット(box-shadow) */
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      transition: transform 0.8s var(--ease-slow), box-shadow 0.8s var(--ease-slow);
+      background: #000; overflow: hidden; border: 0.5px solid var(--border);
+      position: relative; transition: border-color 0.6s var(--ease-slow), box-shadow 0.8s var(--ease-slow), transform 0.8s var(--ease-slow);
+    }
+    .gallery-item-img-wrap::before {
+      content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.2); z-index: 1; transition: background 0.6s ease;
     }
     .gallery-item-img-wrap img {
       width: 100%; height: 100%; display: block; object-fit: cover; 
-      filter: grayscale(15%) brightness(0.9); transform: scale(1.02);
+      filter: grayscale(20%) contrast(1.1); transform: scale(1.02);
       transition: transform 1.2s var(--ease-slow), filter 0.8s ease;
     }
     .gallery-item:hover .gallery-item-img-wrap {
-      transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+      border-color: rgba(196,168,130,0.4); box-shadow: 0 24px 50px rgba(0,0,0,0.8); transform: translateY(-8px);
     }
-    .gallery-item:hover img { transform: scale(1.08); filter: grayscale(0%) brightness(1); }
+    .gallery-item:hover .gallery-item-img-wrap::before { background: transparent; }
+    .gallery-item:hover img { transform: scale(1.08); filter: grayscale(0%) contrast(1); }
     
     .gallery-item-cap { padding-top: 1.2rem; text-align: left; width: 100%; }
-    .gallery-item-title { font-family: var(--font-ja); font-size: 1rem; font-weight: 300; color: var(--fg); letter-spacing: 0.1em; margin-bottom: 0.3rem; display: block; transition: color 0.4s ease; }
-    .gallery-item-meta { font-family: var(--font-en); font-size: 0.7rem; color: var(--accent); letter-spacing: 0.15em; font-style: italic; display: block; }
+    .gallery-item-title {
+      font-family: var(--font-ja); font-size: clamp(0.9rem, 1.4vw, 1.1rem); font-weight: 300;
+      color: var(--fg); letter-spacing: 0.08em; margin-bottom: 0.4rem; display: block; transition: color 0.4s ease;
+    }
+    .gallery-item-meta {
+      font-family: var(--font-en); font-size: clamp(0.65rem, 1.1vw, 0.75rem);
+      color: var(--accent); letter-spacing: 0.18em; font-style: italic; display: block;
+    }
     .gallery-item:hover .gallery-item-title { color: #fff; }
 
     /* ============================================================
-       CHRONOLOGY (Timeline)
+       INTEGRATED CHRONOLOGY SECTION 
     =========================================================== */
     .chronology-section {
-      padding: clamp(6rem, 12vh, 10rem) var(--px); background: rgba(6, 6, 5, 0.6); /* 僅かに背景を暗く */
-      border-top: 1px solid var(--border);
+      padding: clamp(6rem, 14vh, 12rem) var(--px);
+      background: var(--bg2); border-top: 0.5px solid var(--border); position: relative;
     }
-    .timeline-container { max-width: 1200px; margin: 0 auto; position: relative; }
+    .timeline-container { max-width: 1300px; margin: 0 auto; position: relative; }
+    .timeline-spine-wrapper {
+      position: absolute; top: 0; bottom: 0; left: 50%; width: 1px;
+      background: rgba(233,229,223,0.04); transform: translateX(-50%);
+    }
+    .timeline-spine-progress {
+      position: absolute; top: 0; left: 0; width: 1px;
+      background: linear-gradient(to bottom, transparent 0%, var(--accent) 5%, var(--accent) 95%, transparent 100%);
+      height: 0%; transition: height 0.1s linear;
+      box-shadow: 0 0 12px rgba(196,168,130,0.4);
+    }
     
-    /* PC表示時は左右を交互に配置せず、統一感のあるエディトリアルレイアウトに */
     .tl-entry {
-      display: flex; align-items: center; justify-content: space-between; gap: 5vw;
-      margin-bottom: clamp(6rem, 12vh, 10rem);
+      position: relative; width: 100%; margin-bottom: clamp(8rem, 18vh, 14rem);
+      opacity: 0; transform: translateY(40px); transition: opacity 1.2s var(--ease-slow), transform 1.2s var(--ease-slow);
     }
-    .tl-entry:nth-child(even) { flex-direction: row-reverse; }
     .tl-entry:last-child { margin-bottom: 0; }
+    .tl-entry.in-view { opacity: 1; transform: translateY(0); }
     
-    .tl-figure { width: 50%; position: relative; background: #000; box-shadow: 0 10px 40px rgba(0,0,0,0.6); cursor: zoom-in; overflow: hidden; }
-    .tl-figure img { width: 100%; height: auto; display: block; filter: grayscale(10%); transition: transform 1s var(--ease-slow), filter 0.8s ease; transform: scale(1.01); }
-    .tl-figure:hover img { transform: scale(1.05); filter: grayscale(0%); }
-    
-    .tl-body { width: 45%; }
-    .tl-year { font-family: var(--font-en); font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 300; color: var(--accent); letter-spacing: 0.05em; line-height: 1; margin-bottom: 1rem; }
-    .tl-title { font-family: var(--font-ja); font-size: clamp(1.4rem, 2.5vw, 2rem); font-weight: 300; color: var(--fg); margin-bottom: 0.5rem; letter-spacing: 0.08em; }
-    .tl-meta { font-family: var(--font-en); font-size: 0.75rem; color: var(--accent2); letter-spacing: 0.15em; margin-bottom: 1.5rem; display: block; }
-    .tl-desc { font-size: 0.95rem; line-height: 2.2; color: rgba(233,229,223,0.75); text-align: justify; }
-    .tl-desc p { margin-bottom: 1.2em; }
+    .tl-year-display {
+      font-family: var(--font-en); font-size: clamp(4rem, 8vw, 6.5rem); font-weight: 300;
+      color: var(--accent); letter-spacing: 0.04em; line-height: 1;
+      margin-bottom: clamp(1.5rem, 3vh, 2.5rem); padding-left: 2%; opacity: 0.9;
+      text-shadow: 0 10px 30px rgba(196,168,130,0.15);
+    }
+    .tl-entry:nth-child(even) .tl-year-display { text-align: right; padding-right: 2%; padding-left: 0; }
 
-    /* M+P100縦用フル幅レイアウト */
-    .tl-entry.is-full { flex-direction: column; align-items: center; text-align: center; gap: 3rem; }
-    .tl-entry.is-full .tl-figure { width: 100%; max-width: 1000px; }
-    .tl-entry.is-full .tl-body { width: 100%; max-width: 800px; }
+    .tl-content-wrap { display: flex; justify-content: space-between; align-items: center; gap: clamp(3rem, 6vw, 8rem); }
+    .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
+    
+    .tl-figure {
+      width: 54%; position: relative; border: 0.5px solid var(--border);
+      overflow: hidden; background: #000; cursor: zoom-in; transition: width 0.6s var(--ease-slow);
+    }
+    .tl-body { width: 40%; position: relative; z-index: 2; transition: width 0.6s var(--ease-slow); }
+    
+    /* Layout Variants */
+    .tl-entry.is-f100-h .tl-figure { width: 60%; aspect-ratio: 162 / 130.3; }
+    .tl-entry.is-f100-h .tl-body  { width: 34%; }
+    .tl-entry.is-f100-v .tl-figure { width: 44%; aspect-ratio: 130.3 / 162; }
+    .tl-entry.is-f100-v .tl-body  { width: 50%; }
+    .tl-entry.is-s100 .tl-figure { width: 50%; aspect-ratio: 1 / 1; }
+    .tl-entry.is-s100 .tl-body  { width: 44%; }
+    .tl-entry.is-f50-v .tl-figure { width: 38%; aspect-ratio: 91 / 116.7; }
+    .tl-entry.is-f50-v .tl-body  { width: 56%; }
+
+    /* M+P100縦 結合 (超横長レイアウト) */
+    .tl-entry.is-mp100-h .tl-content-wrap { flex-direction: column; align-items: center; gap: 4rem; }
+    .tl-entry.is-mp100-h .tl-year-display { text-align: center; padding: 0; }
+    .tl-entry.is-mp100-h .tl-figure { width: 100%; max-width: 1100px; aspect-ratio: 209.1 / 162; }
+    .tl-entry.is-mp100-h .tl-body { width: 100%; max-width: 900px; text-align: center; }
+    .tl-entry.is-mp100-h .tl-meta { border-bottom: none; border-top: 0.5px solid var(--border-md); padding-top: 1.5rem; }
+    
+    .tl-figure::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.15); transition: background 0.6s ease; pointer-events: none; }
+    .tl-figure img {
+      width: 100%; height: 100%; display: block; object-fit: cover; filter: grayscale(15%) contrast(1.05); transform: scale(1.01);
+      transition: transform 1.2s var(--ease-slow), filter 0.8s ease;
+    }
+    .tl-figure:hover::after { background: transparent; }
+    .tl-figure:hover img { transform: scale(1.05); filter: grayscale(0%) contrast(1); }
+    
+    .tl-title { font-family: var(--font-ja); font-size: clamp(1.5rem, 2.5vw, 2.4rem); font-weight: 300; color: var(--fg); line-height: 1.4; margin-bottom: 0.6rem; letter-spacing: 0.08em; }
+    .tl-meta { font-family: var(--font-en); font-size: clamp(0.65rem, 1.2vw, 0.8rem); color: var(--accent); letter-spacing: 0.2em; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border-md); }
+    .tl-desc { font-size: clamp(0.9rem, 1.6vw, 1.05rem); line-height: 2.3; color: rgba(233,229,223,0.75); text-align: justify; word-break: auto-phrase; }
+    .tl-desc p { margin-bottom: 1.4em; }
+    .tl-desc p:last-child { margin-bottom: 0; }
+
+    /* Typewriter Style (Refined) */
+    .tw-char { opacity: 0; display: inline-block; transform: translateY(4px); transition: opacity 0.4s var(--ease-fluid), transform 0.4s var(--ease-fluid); }
+    .tw-cursor { display: inline-block; width: 1px; height: 1em; background-color: var(--accent); margin-left: 4px; vertical-align: baseline; animation: tw-blink 1s infinite; }
+    @keyframes tw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .fade-out { opacity: 0; transition: opacity 0.8s ease; }
 
     /* ============================================================
-       CONTACT & FOOTER (完全復元)
+       CONTACT & FOOTER
     =========================================================== */
     .contact-section {
       padding: clamp(8rem, 16vh, 14rem) var(--px); text-align: center;
-      border-top: 0.5px solid var(--border); background: var(--bg);
+      border-top: 0.5px solid var(--border); background: radial-gradient(circle at 50% 0%, rgba(196,168,130,0.04) 0%, var(--bg) 60%);
     }
     .contact-heading { font-family: var(--font-ja); font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 2rem; letter-spacing: 0.08em; }
     .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.9rem, 1.8vw, 1.05rem); color: rgba(233,229,223,0.6); margin: 0 auto 3.5rem; max-width: 500px; line-height: 2.4; }
@@ -347,36 +448,64 @@
     .footer-copy { font-family: var(--font-en); font-size: clamp(0.55rem, 1.3vw, 0.65rem); letter-spacing: 0.25em; color: var(--dim); }
 
     /* ============================================================
-       MODAL LIGHTBOX
+       LIGHTBOX (MODAL) & BACK TO TOP
     =========================================================== */
     .image-modal {
       position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center;
       opacity: 0; visibility: hidden; transition: opacity 0.6s var(--ease-slow), visibility 0.6s;
     }
     .image-modal.is-active { opacity: 1; visibility: visible; }
-    .modal-bg { position: absolute; inset: 0; background: rgba(3,3,2,0.98); backdrop-filter: blur(24px); cursor: zoom-out; }
+    .modal-bg { position: absolute; inset: 0; background: rgba(3,3,2,0.98); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); cursor: zoom-out; }
     .modal-close {
-      position: absolute; top: 2rem; right: 2rem; z-index: 10001; background: none; border: none;
-      color: var(--muted); cursor: pointer; padding: 0.5rem; transition: 0.4s;
+      position: fixed; top: clamp(1.5rem, 4vh, 3rem); right: var(--px); z-index: 10001;
+      background: none; border: none; color: var(--muted); cursor: pointer; padding: 0.8rem;
+      transition: color 0.4s ease, transform 0.6s var(--ease-slow);
     }
-    .modal-close:hover { color: var(--fg); transform: rotate(90deg); }
+    .modal-close:hover { color: var(--fg); transform: scale(1.15) rotate(90deg); }
     .modal-content {
-      position: relative; z-index: 10000; max-width: 90vw; display: flex; flex-direction: column; align-items: center; gap: 1.5rem;
-      opacity: 0; transform: scale(0.98); transition: 0.6s var(--ease-slow) 0.1s;
+      position: relative; z-index: 10000; max-width: 92vw; margin: auto;
+      display: flex; flex-direction: column; align-items: center; gap: clamp(1.5rem, 3vh, 2rem);
+      opacity: 0; transform: scale(0.98) translateY(20px); filter: blur(10px);
+      transition: opacity 0.7s var(--ease-slow) 0.1s, transform 0.7s var(--ease-slow) 0.1s, filter 0.7s var(--ease-slow) 0.1s;
     }
-    .image-modal.is-active .modal-content { opacity: 1; transform: scale(1); }
-    .modal-content img { max-width: 100%; max-height: 80vh; object-fit: contain; box-shadow: 0 20px 60px rgba(0,0,0,0.8); cursor: zoom-out; }
-    .modal-caption-jp { font-family: var(--font-ja); font-size: 1.4rem; font-weight: 200; color: var(--fg); letter-spacing: 0.1em; text-align: center; }
+    .image-modal.is-active .modal-content { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+    .modal-content img { max-width: 100%; max-height: 78svh; object-fit: contain; box-shadow: 0 40px 100px rgba(0,0,0,0.8); cursor: zoom-out; }
+    .modal-caption { text-align: center; width: 100%; padding: 0 1rem; }
+    .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(1.2rem, 2.5vw, 1.8rem); font-weight: 200; color: var(--fg); margin-bottom: 0.4rem; letter-spacing: 0.1em; }
+    .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.75rem, 1.2vw, 0.9rem); font-style: italic; color: var(--accent); letter-spacing: 0.2em; }
+
+    .back-to-top {
+      position: fixed; bottom: clamp(2rem, 6vh, 4rem); right: clamp(20px, 4vw, 50px);
+      z-index: 9000; width: clamp(56px, 8vw, 72px); height: clamp(56px, 8vw, 72px); border-radius: 50%;
+      background: transparent; border: 1px solid var(--border-md); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted);
+      opacity: 0; visibility: hidden; transform: translateY(30px);
+      transition: all 0.5s var(--ease-slow); cursor: pointer;
+    }
+    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
+    .back-to-top:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); transform: translateY(-8px); box-shadow: 0 12px 30px rgba(196,168,130,0.25); }
+    .back-to-top svg { width: clamp(22px, 3vw, 26px); height: clamp(22px, 3vw, 26px); }
 
     /* ============================================================
        RESPONSIVE DESIGN
     =========================================================== */
     @media (max-width: 900px) {
-      .tl-entry { flex-direction: column !important; gap: 2rem; }
-      .tl-figure, .tl-body { width: 100%; }
-      .tl-year { text-align: left; }
-      .gallery-item { width: 100%; align-items: center; }
-      .gallery-item-img-wrap { width: 100% !important; height: auto !important; aspect-ratio: calc(var(--w-cm) / var(--h-cm)); max-width: 500px; }
+      .timeline-container { padding-left: 40px; } 
+      .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2.5rem; }
+      .tl-figure, .tl-body, 
+      .tl-entry.is-f100-h .tl-figure, .tl-entry.is-f100-h .tl-body,
+      .tl-entry.is-f100-v .tl-figure, .tl-entry.is-f100-v .tl-body,
+      .tl-entry.is-s100 .tl-figure, .tl-entry.is-s100 .tl-body,
+      .tl-entry.is-f50-v .tl-figure, .tl-entry.is-f50-v .tl-body { width: 100%; }
+      
+      .tl-entry.is-mp100-h .tl-year-display { text-align: left !important; }
+      .tl-entry.is-mp100-h .tl-body { text-align: left; }
+
+      .timeline-spine-wrapper { left: 16px; transform: none; }
+      .tl-year-display, .tl-entry:nth-child(even) .tl-year-display { padding-left: 0; margin-bottom: 0.8rem; text-align: left !important; font-size: clamp(3.5rem, 10vw, 4.5rem); }
+      
+      .gallery-item-img-wrap { height: auto !important; width: 100% !important; max-width: 540px; margin: 0 auto; }
+      .gallery-item { align-items: center; width: 100%; }
       .gallery-item-cap { text-align: center; }
     }
     @media (max-width: 768px) {
@@ -384,23 +513,35 @@
       .nav-links { display: none !important; }
       .nav-hamburger { display: block !important; }
       .nav-cta { display: none !important; }
-      .page-nav { display: none; } /* モバイルでは画面領域確保のため非表示 */
-      footer { flex-direction: column; text-align: center; justify-content: center; }
+      
+      .page-nav.visible { right: 12px; opacity: 0.6; }
+      .page-nav.visible:hover { opacity: 1; }
+      .page-nav-label { display: none; }
+      
+      .hero-title { justify-content: center; }
+      .hero-eyebrow, .hero-meta { justify-content: center; }
+    }
+    @media (max-width: 480px) {
+      .hero-scroll { display: none; }
+      .modal-content img { max-height: 60svh; }
+      .concept-para { text-align: left; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+      .gallery-item, .tl-entry, .reveal-fade, .char-inner { opacity: 1 !important; transform: none !important; filter: none !important; }
+      .hero-ambient { animation: none; }
     }
   </style>
 </head>
 <body id="top">
 
-  <div class="ambient-bg"></div>
-  <div class="ambient-overlay"></div>
-
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
       <li><a href="index.html#statement" onclick="closeMenu()">Statement</a></li>
-      <li><a href="index.html#works"      onclick="closeMenu()">Works</a></li>
-      <li><a href="index.html#profile"    onclick="closeMenu()">Profile</a></li>
-      <li><a href="index.html#news"       onclick="closeMenu()">News</a></li>
+      <li><a href="index.html#works"     onclick="closeMenu()">Works</a></li>
+      <li><a href="index.html#profile"   onclick="closeMenu()">Profile</a></li>
+      <li><a href="index.html#news"      onclick="closeMenu()">News</a></li>
     </ul>
     <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
       <span></span><span></span><span></span>
@@ -409,152 +550,297 @@
   </nav>
 
   <nav class="page-nav" id="pageNav" aria-label="ページ内ナビゲーション">
-    <ul class="page-nav-list">
-      <li class="page-nav-item" data-target="concept">
-        <span class="page-nav-label">Concept</span><div class="page-nav-dot"></div>
-      </li>
-      <li class="page-nav-item" data-target="gallery">
-        <span class="page-nav-label">Index</span><div class="page-nav-dot"></div>
-      </li>
-      <li class="page-nav-item" data-target="chronology">
-        <span class="page-nav-label">Timeline</span><div class="page-nav-dot"></div>
-      </li>
-    </ul>
+    <button class="page-nav-item" data-target="gallery" aria-label="Galleryへ">
+      <div class="page-nav-dot"></div><span class="page-nav-label">Gallery</span>
+    </button>
+    <button class="page-nav-item" data-target="chronology" aria-label="Timelineへ">
+      <div class="page-nav-dot"></div><span class="page-nav-label">Timeline</span>
+    </button>
   </nav>
 
   <main>
     <section class="hero">
-      <p class="hero-eyebrow">Series — Forest</p>
-      <h1 class="hero-title">森林</h1>
-      <p class="hero-title-en">Tracing the Essence</p>
-      <div class="hero-scroll" aria-hidden="true">
-        <div class="hero-scroll-track"><div class="hero-scroll-fill"></div></div>
+      <div class="hero-ambient"></div>
+      <div class="hero-divider" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <p class="hero-eyebrow" id="heroEyebrow">Series — Forest &nbsp;·&nbsp; Tracing the Essence</p>
+        <h1 class="hero-title" id="heroTitle" aria-label="森林">森林</h1>
+        <p class="hero-title-en" id="heroEn">Forest</p>
+        <div class="hero-meta" id="heroMeta">
+          <div class="hero-meta-line"></div>
+          <span class="hero-meta-text">Oil on Canvas &nbsp;·&nbsp; Nobusato-machi, Nagano</span>
+        </div>
+      </div>
+      <div class="hero-scroll" id="heroScroll" aria-hidden="true">
+        <div class="hero-scroll-track">
+          <div class="hero-scroll-fill"></div>
+        </div>
         <span class="hero-scroll-label">Scroll</span>
       </div>
     </section>
 
-    <section class="concept-section" id="concept">
-      <p class="concept-pullquote reveal">
+    <section class="concept-section">
+      <p class="concept-pullquote reveal-fade">
         生命の母体としての「うねり」から分岐し、極小の筆致の集積へ。<br>有機的な森は、やがて<span class="accent-word">強固な岩</span>へと接近していく。
       </p>
+
       <div class="concept-body">
-        <p class="concept-para reveal">
+        <p class="concept-para reveal-fade">
           そもそも、この「森林」シリーズの端緒は、生命を育む母体（マトリックス）としての森を、根源的な「うねり」として捉えることから始まりました。自然界を構成するあらゆる物質を微視的に捉えれば、すべては原子の集積と波動に還元されます。当初は、その波動力学的なエネルギーの奔流から分岐するように、画面の端から端までを一気に貫く長いストロークを用いていました。それは光や風の軌跡といった動的な要素を孕みながら、無数の幹の連なりを生み出し、空間を物理的なマチエールとして立ち上げる試みでした。
         </p>
-        <p class="concept-para reveal">
-          しかし近年、その表現はより微細で細かい筆致へと移行しています。無数の絵の具の粒子がキャンバス上で極限まで凝集していく過程で、私は「森はやがて岩に近づくのではないか」という確信を深めました。かつてバロック時代の人々が、人工と自然が渾然一体となったグロッタ（洞窟）や「岩の森」に宇宙の真理を見出し、物質の無限の襞（ひだ）のなかに生命の躍動を感じ取ったように。微視的な筆致の堆積は、有機的な植物相を、悠久の地質学的時間を内包した強固な鉱物へと変容させます。
+
+        <div class="concept-divider reveal-fade" aria-hidden="true"></div>
+
+        <p class="concept-para reveal-fade">
+          しかし近年、その表現はより微細で細かい筆致へと移行しています。無数の絵の具の粒子がキャンバス上で極限まで凝集していく過程で、私は「森はやがて岩に近づくのではないか」という確信を深めました。かつてバロック時代の人々が、人工と自然が渾然一体となったグロッタ（洞窟）や「岩の森」に宇宙の真理を見出し、物質の無限の襞（ひだ）のなかに生命の躍動を感じ取ったように。微視的な筆致の堆積は、有機的な植物相を、悠久の地質学的時間を内包した強固な鉱物へと変容させます。それは単なる風景の表象を超え、生命と無機物、波と粒子が交錯する、世界そのものの構造をキャンバスに現前させる行為なのです。
         </p>
       </div>
-      <p class="concept-closing reveal">— Tsuda Shoichi</p>
+
+      <p class="concept-closing reveal-fade">— Tsuda Shoichi</p>
     </section>
 
     <section class="gallery-section" id="gallery">
-      <div class="section-label reveal">Works Index</div>
+      <div class="section-label">Works Index</div>
       <div class="gallery-grid">
         
-        <div class="gallery-item reveal js-modal-open" data-src="images/【M+P100縦】林(3)20251128.jpg" data-title="林(3)" style="--w-cm: 209.1; --h-cm: 162;">
+        <a href="#work-hayashi3" class="gallery-item" style="--w-cm: 209.1; --h-cm: 162;">
           <div class="gallery-item-img-wrap"><img src="images/【M+P100縦】林(3)20251128.jpg" alt="林(3)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">林(3)</span><span class="gallery-item-meta">2026 / Oil on canvas</span>
           </div>
-        </div>
+        </a>
 
-        <div class="gallery-item reveal js-modal-open" data-src="images/【F100横】森20251217.jpg" data-title="森" style="--w-cm: 162; --h-cm: 130.3;">
+        <a href="#work-mori2025" class="gallery-item" style="--w-cm: 162; --h-cm: 130.3;">
           <div class="gallery-item-img-wrap"><img src="images/【F100横】森20251217.jpg" alt="森20251217" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">森</span><span class="gallery-item-meta">2025 / Oil on canvas</span>
           </div>
-        </div>
+        </a>
 
-        <div class="gallery-item reveal js-modal-open" data-src="images/IMG_8731.JPG" data-title="無題" style="--w-cm: 130.3; --h-cm: 162;">
+        <a href="#work-img8731" class="gallery-item" style="--w-cm: 130.3; --h-cm: 162;">
           <div class="gallery-item-img-wrap"><img src="images/IMG_8731.JPG" alt="無題" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">無題</span><span class="gallery-item-meta">2022 / Oil on canvas</span>
           </div>
-        </div>
+        </a>
 
-        <div class="gallery-item reveal js-modal-open" data-src="images/【F100縦】山の中.jpg" data-title="山の中" style="--w-cm: 130.3; --h-cm: 162;">
+        <a href="#work-yamanonaka" class="gallery-item" style="--w-cm: 130.3; --h-cm: 162;">
           <div class="gallery-item-img-wrap"><img src="images/【F100縦】山の中.jpg" alt="山の中" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">山の中</span><span class="gallery-item-meta">2022 / Oil on canvas</span>
           </div>
-        </div>
+        </a>
 
-        <div class="gallery-item reveal js-modal-open" data-src="images/【F100横】林(2).jpg" data-title="林(2)" style="--w-cm: 162; --h-cm: 130.3;">
+        <a href="#work-hayashi2" class="gallery-item" style="--w-cm: 162; --h-cm: 130.3;">
           <div class="gallery-item-img-wrap"><img src="images/【F100横】林(2).jpg" alt="林(2)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">林(2)</span><span class="gallery-item-meta">2021 / Oil on canvas</span>
           </div>
-        </div>
+        </a>
 
-        <div class="gallery-item reveal js-modal-open" data-src="images/【S100】森（の息吹）.jpg" data-title="森（の息吹）(2)" style="--w-cm: 162; --h-cm: 162;">
+        <a href="#work-morinoibuki-s100" class="gallery-item" style="--w-cm: 162; --h-cm: 162;">
           <div class="gallery-item-img-wrap"><img src="images/【S100】森（の息吹）.jpg" alt="森（の息吹）(2)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">森（の息吹）(2)</span><span class="gallery-item-meta">2021 / Oil on canvas</span>
           </div>
-        </div>
+        </a>
+
+        <a href="#work-morinoibuki-yoko" class="gallery-item" style="--w-cm: 162; --h-cm: 130.3;">
+          <div class="gallery-item-img-wrap"><img src="images/【F100横】森（の息吹）.jpg" alt="森（の息吹）" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">森（の息吹）</span><span class="gallery-item-meta">2021 / Oil on canvas</span>
+          </div>
+        </a>
+
+        <a href="#work-hayashi-tate" class="gallery-item" style="--w-cm: 130.3; --h-cm: 162;">
+          <div class="gallery-item-img-wrap"><img src="images/【F100縦】林.JPG" alt="林(2)" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">林(2)</span><span class="gallery-item-meta">2021 / Oil on canvas</span>
+          </div>
+        </a>
+
+        <a href="#work-hayashi-yoko" class="gallery-item" style="--w-cm: 162; --h-cm: 130.3;">
+          <div class="gallery-item-img-wrap"><img src="images/【F100横】林.jpg" alt="林" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">林</span><span class="gallery-item-meta">2021 / Oil on canvas</span>
+          </div>
+        </a>
+
+        <a href="#work-uneri" class="gallery-item" style="--w-cm: 91; --h-cm: 116.7;">
+          <div class="gallery-item-img-wrap"><img src="images/【F50縦】うねり.jpg" alt="うねり" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">うねり</span><span class="gallery-item-meta">2018 / Oil on canvas</span>
+          </div>
+        </a>
 
       </div>
     </section>
 
     <section class="chronology-section" id="chronology">
-      <div class="section-label reveal">Timeline</div>
       <div class="timeline-container">
+        <div class="timeline-spine-wrapper">
+          <div class="timeline-spine-progress" id="tl-spine-fill"></div>
+        </div>
 
-        <article class="tl-entry is-full reveal">
-          <div class="tl-figure js-modal-open" data-src="images/【M+P100縦】林(3)20251128.jpg" data-title="林 (3)">
-            <img src="images/【M+P100縦】林(3)20251128.jpg" alt="林(3)" loading="lazy">
-          </div>
-          <div class="tl-body">
-            <div class="tl-year">2026</div>
-            <h3 class="tl-title">林 (3)</h3>
-            <span class="tl-meta">162 × 209.1 cm</span>
-            <div class="tl-desc">
-              <p>大型の縦型カンヴァスを連結させた圧倒的なスケール感を持つ大作です。画面の端から端までを一気に貫く長いストロークが、樹皮を流れ落ちる雨水や木立を吹き抜ける風の軌跡を視覚化しています。</p>
-              <p>青と赤の複雑な階調が、静寂の中に潜む森の「息づかい」と空間の奥行きを鑑賞者に迫り出させる、本シリーズの一つの到達点と言える作品です。</p>
+        <article class="tl-entry is-mp100-h" id="work-hayashi3">
+          <div class="tl-year-display">2026</div>
+          <div class="tl-content-wrap">
+             <div class="tl-figure js-modal-open" data-img-src="images/【M+P100縦】林(3)20251128.jpg">
+              <img src="images/【M+P100縦】林(3)20251128.jpg" alt="林(3)" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">林 (3)</h3>
+              <p class="tl-meta">162 × 209.1 cm</p>
+               <div class="tl-desc">
+                <p>大型の縦型カンヴァスを連結させた圧倒的なスケール感を持つ大作です。画面の端から端までを一気に貫く長いストロークが、樹皮を流れ落ちる雨水や木立を吹き抜ける風の軌跡を視覚化しています。</p>
+                <p>青と赤の複雑な階調が、静寂の中に潜む森の「息づかい」と空間の奥行きを鑑賞者に迫り出させる、本シリーズの一つの到達点と言える作品です。</p>
+              </div>
             </div>
           </div>
         </article>
 
-        <article class="tl-entry reveal">
-          <div class="tl-figure js-modal-open" data-src="images/【F100横】森20251217.jpg" data-title="森">
-            <img src="images/【F100横】森20251217.jpg" alt="森" loading="lazy">
-          </div>
-          <div class="tl-body">
-            <div class="tl-year">2025</div>
-            <h3 class="tl-title">森</h3>
-            <span class="tl-meta">162 × 130.3 cm</span>
-            <div class="tl-desc">
-              <p>三水の森が内包する複雑な生態系と地脈のエネルギーが、幾重にも重なる鋭利な筆致によってカンヴァスに定着した作品です。</p>
-              <p>具体的な形への依存を手放し、手の痕跡とキャンバスの端から端へと続くストロークだけを純粋に追いかけた結果、幾何学的でありながらも有機的な熱を帯びた「森の構造」が析出されました。</p>
+        <article class="tl-entry is-f100-h" id="work-mori2025">
+          <div class="tl-year-display">2025</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F100横】森20251217.jpg">
+              <img src="images/【F100横】森20251217.jpg" alt="森2025" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">森</h3>
+              <p class="tl-meta">162 × 130.3 cm</p>
+              <div class="tl-desc">
+                <p>三水の森が内包する複雑な生態系と地脈のエネルギーが、幾重にも重なる鋭利な筆致によってカンヴァスに定着した作品です。</p>
+                <p>具体的な形への依存を手放し、手の痕跡とキャンバスの端から端へと続くストロークだけを純粋に追いかけた結果、幾何学的でありながらも有機的な熱を帯びた「森の構造」が析出されました。</p>
+              </div>
             </div>
           </div>
         </article>
 
-        <article class="tl-entry reveal">
-          <div class="tl-figure js-modal-open" data-src="images/IMG_8731.JPG" data-title="無題">
-            <img src="images/IMG_8731.JPG" alt="無題" loading="lazy">
-          </div>
-          <div class="tl-body">
-            <div class="tl-year">2022</div>
-            <h3 class="tl-title">無題</h3>
-            <span class="tl-meta">Oil on canvas</span>
-            <div class="tl-desc">
-              <p>柔らかな光を帯びた有機的な塊が、闇の奥底からうごめくように立ち上がる作品。特定の植物や地形を描いたものではなく、絵の具の物質性と長いストロークの反復の中で生まれました。</p>
+        <article class="tl-entry is-f100-v" id="work-img8731">
+          <div class="tl-year-display">2022</div>
+          <div class="tl-content-wrap">
+             <div class="tl-figure js-modal-open" data-img-src="images/IMG_8731.JPG">
+              <img src="images/IMG_8731.JPG" alt="無題" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">無題</h3>
+              <p class="tl-meta">Oil on canvas</p>
+               <div class="tl-desc">
+                <p>柔らかな光を帯びた有機的な塊が、闇の奥底からうごめくように立ち上がる作品。特定の植物や地形を描いたものではなく、絵の具の物質性と長いストロークの反復の中で生まれました。まるで森林が隠し持つ骨格や内臓のような、生々しくも神聖な気配を孕んでいます。</p>
+              </div>
             </div>
           </div>
         </article>
 
-        <article class="tl-entry reveal">
-          <div class="tl-figure js-modal-open" data-src="images/【F100横】林(2).jpg" data-title="林 (2)">
-            <img src="images/【F100横】林(2).jpg" alt="林(2)" loading="lazy">
+        <article class="tl-entry is-f100-v" id="work-yamanonaka">
+          <div class="tl-year-display">2022</div>
+          <div class="tl-content-wrap">
+             <div class="tl-figure js-modal-open" data-img-src="images/【F100縦】山の中.jpg">
+              <img src="images/【F100縦】山の中.jpg" alt="山の中" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">山の中</h3>
+              <p class="tl-meta">130.3 × 162 cm</p>
+               <div class="tl-desc">
+                <p>深い森の奥で交錯する光と影の空間を一度解体し、再構築したかのようなアプローチ。色彩は沈み込み、青と灰色の重厚なマチエールが画面を支配しています。視覚的風景というよりは、山中という「場」が持つ重力や湿度の記憶そのものを定着させる試みです。</p>
+              </div>
+            </div>
           </div>
-          <div class="tl-body">
-            <div class="tl-year">2021</div>
-            <h3 class="tl-title">林 (2)</h3>
-            <span class="tl-meta">162 × 130.3 cm</span>
-            <div class="tl-desc">
-              <p>現実の固有色から完全に解放され、森が内包する生命のエネルギーそのものを鮮烈な色彩として抽出した作品です。ピンクやシアンの長いストロークは、単なる視覚的風景を超え、神経系に直接訴えかけます。</p>
+        </article>
+
+        <article class="tl-entry is-f100-h" id="work-hayashi2">
+          <div class="tl-year-display">2021</div>
+          <div class="tl-content-wrap">
+             <div class="tl-figure js-modal-open" data-img-src="images/【F100横】林(2).jpg">
+              <img src="images/【F100横】林(2).jpg" alt="林(2)" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">林 (2)</h3>
+              <p class="tl-meta">162 × 130.3 cm</p>
+               <div class="tl-desc">
+                <p>現実の固有色から完全に解放され、森が内包する生命のエネルギーそのものを鮮烈な色彩として抽出した作品です。画面全体を縦に貫くピンクやシアンの長いストロークは、網膜に映る単なる視覚的風景を超え、見る者の神経系に直接訴えかけてくるようなプリミティブな躍動感に満ちています。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry is-s100" id="work-morinoibuki-s100">
+          <div class="tl-year-display">2021</div>
+          <div class="tl-content-wrap">
+             <div class="tl-figure js-modal-open" data-img-src="images/【S100】森（の息吹）.jpg">
+              <img src="images/【S100】森（の息吹）.jpg" alt="森（の息吹）(2)" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">森（の息吹）(2)</h3>
+              <p class="tl-meta">162 × 162 cm</p>
+               <div class="tl-desc">
+                <p>正方形の特異な画面の中で、色彩が渦を巻くように中心へと収束していく力強いコンポジション。端から端へと大胆に伸びる筆致が描くという身体的行為のリズムを刻み、そのままカンヴァス上の「息吹」として結実しています。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry is-f100-h" id="work-morinoibuki-yoko">
+          <div class="tl-year-display">2021</div>
+          <div class="tl-content-wrap">
+             <div class="tl-figure js-modal-open" data-img-src="images/【F100横】森（の息吹）.jpg">
+              <img src="images/【F100横】森（の息吹）.jpg" alt="森の息吹" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">森（の息吹）</h3>
+              <p class="tl-meta">162 × 130.3 cm</p>
+               <div class="tl-desc">
+                <p>森林を単なる自然環境としてではなく、一つの巨大な「胎内」として捉え直した作品です。なめらかで官能的な曲面を持つストロークが絡み合い、画面の奥深くへと視線を誘い込みます。風景画でありながら、脈打つ肉体としての温もりを強く感じさせる仕上がりとなっています。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry is-f100-v" id="work-hayashi-tate">
+          <div class="tl-year-display">2021</div>
+          <div class="tl-content-wrap">
+             <div class="tl-figure js-modal-open" data-img-src="images/【F100縦】林.JPG">
+              <img src="images/【F100縦】林.JPG" alt="林" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">林 (2)</h3>
+              <p class="tl-meta">130.3 × 162 cm</p>
+               <div class="tl-desc">
+                <p>白く差し込む光のようなストロークが、木立の隙間を抜ける空気の冷たさと透明感を見事に表現しています。油彩特有の粘り気を残しながらも、上方に向かって薄れていく幹の連なりが、物質の境界が溶けていくような神秘的な空間を創り出しています。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry is-f100-h" id="work-hayashi-yoko">
+          <div class="tl-year-display">2021</div>
+          <div class="tl-content-wrap">
+             <div class="tl-figure js-modal-open" data-img-src="images/【F100横】林.jpg">
+              <img src="images/【F100横】林.jpg" alt="林 横" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">林</h3>
+              <p class="tl-meta">162 × 130.3 cm</p>
+               <div class="tl-desc">
+                <p>水平方向への広がりを意識した構図の中に、縦に貫く長いストロークによる微細な色彩の揺らぎが配置されています。森の中の静寂と、葉擦れの微かなざわめきが共存する世界。幹の集積による光の反射と透過だけで「そこにある空間」の本質を捉えた作品です。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry is-f50-v" id="work-uneri">
+          <div class="tl-year-display">2018</div>
+          <div class="tl-content-wrap">
+             <div class="tl-figure js-modal-open" data-img-src="images/【F50縦】うねり.jpg">
+              <img src="images/【F50縦】うねり.jpg" alt="うねり" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">うねり</h3>
+              <p class="tl-meta">91 × 116.7 cm</p>
+               <div class="tl-desc">
+                <p>「森林」という主題に対する初期のアプローチ。色彩の要素を極限まで削ぎ落とし、モノクロームに近い階調の中で形態の「うねり」そのものに焦点を当てています。後の作品群に繋がる流動的なフォルムの原点とも言える、骨太で力強い筆致が特徴です。</p>
+                <p>ここで試みられたうねるような形態の追求と空間把握は、後に制作される『森（の息吹）』シリーズにおける、生命の胎動を感じさせる官能的でダイナミックな画面構成へと直接的に結実していくことになります。</p>
+              </div>
             </div>
           </div>
         </article>
@@ -580,19 +866,31 @@
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
+  <a href="#gallery" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M17 14l-5-5-5 5"/>
+    </svg>
+  </a>
+
   <div class="image-modal" id="imageModal" aria-hidden="true" role="dialog">
     <div class="modal-bg" id="modalBg"></div>
     <button class="modal-close" id="modalClose" aria-label="閉じる">
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="square"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="square">
+        <line x1="4" y1="4" x2="20" y2="20"/>
+        <line x1="20" y1="4" x2="4" y2="20"/>
+      </svg>
     </button>
     <div class="modal-content">
       <img src="" alt="拡大画像" id="modalImg">
-      <p class="modal-caption-jp" id="modalTitleJp"></p>
+      <div class="modal-caption">
+        <p class="modal-caption-jp" id="modalTitleJp"></p>
+        <p class="modal-caption-en" id="modalTitleEn"></p>
+      </div>
     </div>
   </div>
 
   <script>
-    /* --- メニュー制御 --- */
+    /* ── メニューの制御 ── */
     function toggleMenu() {
       const links = document.getElementById('nav-links');
       const hamburger = document.getElementById('hamburger');
@@ -606,92 +904,220 @@
       document.body.classList.remove('is-locked');
     }
 
-    /* --- スクロールイベント (ヘッダー背景＆ページ内Nav) --- */
+    /* ── テキスト分割エンジン (波及的なアニメーション用) ── */
+    function wrapTextInSpans(elementId) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const text = el.textContent.trim();
+      el.textContent = '';
+      [...text].forEach((char, i) => {
+        const wrap = document.createElement('span');
+        wrap.className = 'char-wrap';
+        const inner = document.createElement('span');
+        inner.className = 'char-inner';
+        inner.textContent = char;
+        /* 文字ごとに遅延を変えて波動的な現れ方を演出 */
+        inner.style.transitionDelay = `${(i * 0.15) + 0.3}s`;
+        wrap.appendChild(inner);
+        el.appendChild(wrap);
+      });
+    }
+
+    /* ── ファーストビュー アニメーション起動 ── */
+    window.addEventListener('DOMContentLoaded', () => {
+      wrapTextInSpans('heroTitle');
+    });
+
+    window.addEventListener('load', () => {
+      setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 100);
+      setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'),   300);
+      setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'),      400);
+      setTimeout(() => document.getElementById('heroMeta')?.classList.add('revealed'),    500);
+      setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1200);
+    });
+
+    /* ── Intersection Observer (Fade & Reveal) ── */
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('.gallery-item, .tl-entry, .reveal-fade, .concept-divider').forEach(el => io.observe(el));
+
+    /* ── Typewriter Engine (Timeline Titles) ── */
+    function prepareTypewriterDOM(el) {
+      if (el.dataset.twPrepared === "true") return;
+      const txt = el.textContent.trim();
+      el.textContent = '';
+      for (let i = 0; i < txt.length; i++) {
+        const span = document.createElement('span');
+        span.className = 'tw-char';
+        span.textContent = txt[i];
+        el.appendChild(span);
+      }
+      const cursor = document.createElement('span');
+      cursor.className = 'tw-cursor';
+      el.appendChild(cursor);
+      el.dataset.twPrepared = "true";
+    }
+
+    function runTypewriter(el) {
+      if (el.dataset.twDone === "true") return;
+      const chars = el.querySelectorAll('.tw-char');
+      const cursor = el.querySelector('.tw-cursor');
+      let idx = 0;
+      function nextChar() {
+        if (idx < chars.length) {
+          chars[idx].style.opacity = '1';
+          chars[idx].style.transform = 'translateY(0)';
+          idx++;
+          setTimeout(() => requestAnimationFrame(nextChar), 50);
+        } else {
+          el.dataset.twDone = "true";
+          if (cursor) {
+            cursor.classList.add('fade-out');
+            setTimeout(() => cursor.remove(), 1000);
+          }
+        }
+      }
+      requestAnimationFrame(nextChar);
+    }
+
+    document.querySelectorAll('[data-typewriter="true"]').forEach(el => {
+      prepareTypewriterDOM(el);
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            obs.unobserve(el);
+            setTimeout(() => requestAnimationFrame(() => runTypewriter(el)), 400);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -15% 0px' });
+      obs.observe(el);
+    });
+
+    /* ── スクロールイベント (Nav, Timeline Spine, Top Button) ── */
     const topNav = document.getElementById('top-nav');
     const pageNav = document.getElementById('pageNav');
     const navItems = document.querySelectorAll('.page-nav-item');
-    const sections = Array.from(navItems).map(item => document.getElementById(item.getAttribute('data-target')));
+    const sections = ['gallery', 'chronology'].map(id => document.getElementById(id));
+    const spineFill = document.getElementById('tl-spine-fill');
+    const tlWrap = document.querySelector('.timeline-container');
+    let ticking = false;
 
     window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      
-      // ヘッダーの背景変化
-      if (scrollY > 80) topNav.classList.add('scrolled');
-      else topNav.classList.remove('scrolled');
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          
+          /* Top Nav Glassmorphism */
+          if (scrollY > 80) topNav.classList.add('scrolled');
+          else topNav.classList.remove('scrolled');
 
-      // ページナビの表示・非表示
-      if (scrollY > window.innerHeight * 0.6) pageNav.classList.add('visible');
-      else pageNav.classList.remove('visible');
+          /* Page Nav Visibility & Active State */
+          const checkY = scrollY + window.innerHeight * 0.4;
+          let activeSec = null;
+          sections.forEach(sec => {
+            if (sec && sec.offsetTop <= checkY) activeSec = sec;
+          });
+          navItems.forEach(item => {
+            const target = document.getElementById(item.getAttribute('data-target'));
+            item.classList.toggle('active', target === activeSec);
+          });
+          if (pageNav) {
+            pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.7);
+          }
 
-      // スクロール位置に応じたアクティブ状態の付与
-      let current = '';
-      const offset = topNav.offsetHeight + 50; // ヘッダー高さを考慮
-      sections.forEach(sec => {
-        if (!sec) return;
-        const secTop = sec.offsetTop;
-        if (scrollY >= secTop - offset) {
-          current = sec.getAttribute('id');
-        }
-      });
-      navItems.forEach(item => {
-        item.classList.remove('active');
-        if (item.getAttribute('data-target') === current) {
-          item.classList.add('active');
-        }
-      });
+          /* Timeline Spine Progress */
+          if (tlWrap && spineFill) {
+            const rect = tlWrap.getBoundingClientRect();
+            const totalH = tlWrap.offsetHeight;
+            if (totalH > 0) {
+              const pct = (window.innerHeight * 0.6 - rect.top) / totalH * 100;
+              spineFill.style.height = Math.max(0, Math.min(100, pct)) + '%';
+            }
+          }
+
+          /* Back to Top */
+          const b2t = document.getElementById('backToTop');
+          if (scrollY > 500) b2t.classList.add('is-visible');
+          else b2t.classList.remove('is-visible');
+
+          ticking = false;
+        });
+        ticking = true;
+      }
     }, { passive: true });
 
-    /* --- ページ内ナビのスムーズスクロール (ヘッダー高さ計算済み) --- */
+    /* スムーズスクロール制御 */
     navItems.forEach(item => {
       item.addEventListener('click', () => {
-        const targetId = item.getAttribute('data-target');
-        const targetEl = document.getElementById(targetId);
-        if (targetEl) {
-          const offset = topNav.offsetHeight;
-          const targetPosition = targetEl.getBoundingClientRect().top + window.pageYOffset - offset;
-          window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+        const target = document.getElementById(item.getAttribute('data-target'));
+        if (target) {
+          const offset = topNav?.offsetHeight || 0;
+          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
         }
       });
     });
 
-    /* --- スクロールアニメーション (Reveal) --- */
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-inview');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
-    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-    /* --- Lightbox Modal --- */
-    const modal = document.getElementById('imageModal');
-    const modalImg = document.getElementById('modalImg');
-    const modalTitle = document.getElementById('modalTitleJp');
-    const closeElements = [document.getElementById('modalBg'), document.getElementById('modalClose')];
-
-    document.querySelectorAll('.js-modal-open').forEach(el => {
-      el.addEventListener('click', (e) => {
-        e.preventDefault();
-        const src = el.getAttribute('data-src');
-        const title = el.getAttribute('data-title');
-        
-        modalImg.src = src;
-        modalTitle.textContent = title || '';
-        modal.classList.add('is-active');
-        document.body.classList.add('is-locked');
-      });
+    document.getElementById('backToTop').addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    const closeModalFunc = () => {
-      modal.classList.remove('is-active');
-      document.body.classList.remove('is-locked');
-      setTimeout(() => { modalImg.src = ''; modalTitle.textContent = ''; }, 600);
+    /* ── Lightbox (Modal) ── */
+    const modal      = document.getElementById('imageModal');
+    const modalImg   = document.getElementById('modalImg');
+    const modalBg    = document.getElementById('modalBg');
+    const modalClose = document.getElementById('modalClose');
+    const titleJpEl  = document.getElementById('modalTitleJp');
+    const titleEnEl  = document.getElementById('modalTitleEn');
+
+    const openModal = (src, jp, en) => {
+      modalImg.src = src;
+      titleJpEl.textContent = jp || '';
+      titleEnEl.textContent = en || '';
+      modal.classList.add('is-active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('is-locked');
     };
 
-    closeElements.forEach(el => el.addEventListener('click', closeModalFunc));
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('is-active')) closeModalFunc(); });
+    const closeModal = () => {
+      modal.classList.remove('is-active');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('is-locked');
+      setTimeout(() => { modalImg.src = ''; titleJpEl.textContent = ''; titleEnEl.textContent = ''; }, 600);
+    };
+
+    document.querySelectorAll('.js-modal-open, .gallery-item').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        if(btn.tagName.toLowerCase() === 'a') e.preventDefault();
+        
+        let src = btn.getAttribute('data-img-src');
+        if (!src && btn.querySelector('img')) src = btn.querySelector('img').getAttribute('src');
+        
+        const block = btn.closest('.tl-entry');
+        let jp = '';
+        if (block) {
+          const jpTitleEl = block.querySelector('.tl-title');
+          jp = jpTitleEl ? jpTitleEl.textContent : '';
+        } else {
+          const galleryItem = btn.closest('.gallery-item');
+          if (galleryItem) {
+             const jpTitleEl = galleryItem.querySelector('.gallery-item-title');
+             jp = jpTitleEl ? jpTitleEl.textContent : '';
+          }
+        }
+        if (src) openModal(src, jp, '');
+      });
+    });
+
+    modalBg.addEventListener('click', closeModal);
+    modalClose.addEventListener('click', closeModal);
+    modalImg.addEventListener('click', closeModal);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('is-active')) closeModal(); });
 
   </script>
 </body>
