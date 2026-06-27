@@ -21,7 +21,7 @@
   <style>
     /* ============================================================
        DESIGN TOKENS (Variant Design System)
-    ============================================================ */
+    ================================================================ */
     :root {
       --bg:        #060605;
       --bg2:       #0c0c0a;
@@ -61,7 +61,7 @@
 
     /* ============================================================
        NAVIGATION
-    ============================================================ */
+    ================================================================ */
     nav#top-nav {
       position: fixed;
       top: 0; left: 0; width: 100%; z-index: 300;
@@ -142,21 +142,56 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       HERO FIRST VIEW
-    ============================================================ */
+       HERO FIRST VIEW (Redesigned with 【くにうみ】.jpg)
+    ================================================================ */
     .hero {
       position: relative;
       height: 100svh; min-height: 580px;
       display: flex; flex-direction: column; justify-content: flex-end;
       padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); overflow: hidden;
-      background:
-        radial-gradient(ellipse 70% 60% at 30% 30%, rgba(124,154,160,0.05) 0%, transparent 55%),
-        radial-gradient(ellipse 55% 80% at 72% 25%, rgba(196,168,130,0.04) 0%, transparent 55%),
-        var(--bg);
+      background-color: var(--bg);
     }
+    
+    /* Custom Background Image Wrapper */
+    .hero-bg-wrapper {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .hero-bg-image {
+      position: absolute;
+      inset: -5%; /* Room for gentle panning */
+      background-image: url('images/【くにうみ】.jpg');
+      background-size: cover;
+      background-position: center 25%;
+      mix-blend-mode: lighten; /* Extracts only the ethereal white lines/eclipse */
+      opacity: 0.35;
+      filter: grayscale(15%) contrast(1.1);
+      animation: hero-breathe 35s ease-in-out infinite alternate;
+    }
+    @keyframes hero-breathe {
+      0% { transform: scale(1) translate(0, 0); }
+      100% { transform: scale(1.05) translate(-1%, -1.5%); }
+    }
+    .hero-bg-overlay {
+      position: absolute;
+      inset: 0;
+      /* Seamlessly fades the background out into pure #060605 before scrolling to works */
+      background: linear-gradient(
+        to bottom,
+        rgba(6,6,5,0) 0%,
+        rgba(6,6,5,0.4) 60%,
+        var(--bg) 95%,
+        var(--bg) 100%
+      );
+    }
+
     .hero-divider {
       position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
       background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%);
+      z-index: 2;
     }
     .hero-inner { position: relative; z-index: 2; }
     .hero-eyebrow {
@@ -219,10 +254,11 @@
 
     /* ============================================================
        CONCEPT SECTION
-    ============================================================ */
+    ================================================================ */
     .concept-section {
       padding: clamp(6rem, 13vh, 10rem) var(--px);
       max-width: 900px; margin: 0 auto; text-align: center;
+      position: relative; z-index: 2; /* Ensures it sits above any residual hero elements */
     }
     .concept-text {
       font-size: clamp(0.9rem, 2vw, 1.05rem);
@@ -232,10 +268,11 @@
 
     /* ============================================================
        SERIES STATEMENT & KEYWORDS
-    ============================================================ */
+    ================================================================ */
     .statement-section {
       padding: clamp(4rem, 9vh, 7rem) var(--px) clamp(6rem, 13vh, 10rem);
       max-width: 960px; margin: 0 auto; border-top: 0.5px solid var(--border);
+      position: relative; z-index: 2;
     }
     .statement-label {
       font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem);
@@ -296,10 +333,11 @@
 
     /* ============================================================
        GALLERY GRID (Flexbox alignment & Balanced Spacing)
-    ============================================================ */
+    ================================================================ */
     .gallery-section {
       padding: 0 var(--px) clamp(6rem, 13vh, 10rem);
       max-width: 1600px; margin: 0 auto;
+      position: relative; z-index: 2;
     }
     .section-label {
       font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem);
@@ -347,10 +385,10 @@
 
     /* ============================================================
        INTEGRATED CHRONOLOGY SECTION 
-    ============================================================ */
+    ================================================================ */
     .chronology-section {
       padding: clamp(5rem, 12vh, 10rem) var(--px);
-      background: var(--bg2); border-top: 0.5px solid var(--border); position: relative;
+      background: var(--bg2); border-top: 0.5px solid var(--border); position: relative; z-index: 2;
     }
     .timeline-container { max-width: 1200px; margin: 0 auto; position: relative; }
     .timeline-spine-wrapper {
@@ -436,10 +474,11 @@
 
     /* ============================================================
        CONTACT & FOOTER
-    ============================================================ */
+    ================================================================ */
     .contact-section {
       padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center;
       border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(196,168,130,0.06) 0%, var(--bg) 70%);
+      position: relative; z-index: 2;
     }
     .contact-heading {
       font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200;
@@ -460,13 +499,14 @@
     footer {
       padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between;
       align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); background: var(--bg);
+      position: relative; z-index: 2;
     }
     .footer-logo { font-family: var(--font-ja); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.28); letter-spacing: 0.08em; }
     .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
 
     /* ============================================================
        LIGHTBOX (MODAL) & BACK TO TOP
-    ============================================================ */
+    ================================================================ */
     .image-modal {
       position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center;
       opacity: 0; visibility: hidden; transition: opacity 0.55s var(--ease), visibility 0.55s;
@@ -506,7 +546,7 @@
 
     /* ============================================================
        RESPONSIVE DESIGN
-    ============================================================ */
+    ================================================================ */
     @media (max-width: 1024px) {
       .concept-keywords-grid { grid-template-columns: 1fr; background: transparent; gap: 1rem; }
       .concept-kw-card { border: 0.5px solid var(--border); padding: 2rem; }
@@ -539,6 +579,7 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
       .gallery-item, .tl-entry, .reveal-fade, .concept-kw-card { opacity: 1 !important; transform: none !important; }
+      .hero-bg-image { animation: none !important; }
     }
   </style>
 </head>
@@ -569,6 +610,12 @@
 
   <main>
     <section class="hero">
+      
+      <div class="hero-bg-wrapper" aria-hidden="true">
+        <div class="hero-bg-image"></div>
+        <div class="hero-bg-overlay"></div>
+      </div>
+
       <div class="hero-divider" aria-hidden="true"></div>
       <div class="hero-inner">
         <p class="hero-eyebrow" id="heroEyebrow">Series — The Black Period &nbsp;·&nbsp; Oil on Canvas</p>
@@ -597,7 +644,7 @@
       </p>
     </section>
 
-    <section class="statement-section">
+    <section class="statement-section" id="statement">
       <p class="statement-label">Series Statement</p>
 
       <p class="statement-pullquote reveal-fade">
