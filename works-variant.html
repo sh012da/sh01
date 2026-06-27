@@ -45,7 +45,7 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      background: transparent; /* Changed to transparent to show global texture */
+      background: var(--bg);
       color: var(--fg);
       font-family: var(--font-ja);
       line-height: 2.1;
@@ -59,16 +59,6 @@
     img { max-width: 100%; height: auto; display: block; }
     a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
     a:hover { opacity: 0.45; }
-
-    /* ============================================================
-       GLOBAL ARTWORK TEXTURE
-    =========================================================== */
-    .global-texture {
-      position: fixed; inset: 0; z-index: -100; pointer-events: none;
-      background: url('images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg') center/cover no-repeat;
-      opacity: 0.04;
-      filter: grayscale(80%) contrast(1.4);
-    }
 
     /* ============================================================
        NAVIGATION
@@ -159,43 +149,24 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       HERO FIRST VIEW (WITH ARTWORK BACKGROUND)
+       HERO FIRST VIEW
     =========================================================== */
     .hero {
       position: relative;
       height: 100svh; min-height: 580px;
       display: flex; flex-direction: column; justify-content: flex-end;
       padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); overflow: hidden;
-      background: var(--bg);
+      background:
+        radial-gradient(ellipse 70% 60% at 30% 30%, rgba(124,154,160,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 55% 80% at 72% 25%, rgba(196,168,130,0.04) 0%, transparent 55%),
+        var(--bg);
     }
-
-    .hero-ambient {
-      position: absolute; inset: 0; pointer-events: none; z-index: 1;
-      background: url('images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg') center/cover no-repeat;
-      filter: brightness(0.55) saturate(1.2) contrast(1.1);
-      animation: ambientDrift 28s var(--ease) infinite alternate;
-      transform-origin: center 35%;
-    }
-    @keyframes ambientDrift {
-      0% { transform: scale(1.03) translate(0, 0); }
-      100% { transform: scale(1.1) translate(-1%, 2.5%); }
-    }
-
-    .hero-overlay {
-      position: absolute; inset: 0; z-index: 2; pointer-events: none;
-      background: 
-        radial-gradient(ellipse at 50% 40%, transparent 0%, rgba(6,6,5,0.7) 85%),
-        linear-gradient(to bottom, rgba(6,6,5,0.1) 0%, rgba(6,6,5,0.5) 60%, var(--bg) 100%);
-    }
-
     .hero-divider {
       position: absolute; left: 0; right: 0; bottom: 0;
-      height: 1px; z-index: 3;
+      height: 1px;
       background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%);
     }
-    
-    .hero-inner { position: relative; z-index: 4; }
-    
+    .hero-inner { position: relative; z-index: 2; }
     .hero-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem);
       letter-spacing: 0.5em;
@@ -213,7 +184,7 @@
       font-size: clamp(5rem, 19vw, 17rem); font-weight: 200;
       line-height: 0.88; letter-spacing: -0.02em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem);
       display: flex; gap: 0.05em;
-      overflow: visible; text-shadow: 0 10px 40px rgba(0,0,0,0.8);
+      overflow: visible;
     }
     .hero-title .char {
       display: inline-block; opacity: 0;
@@ -226,7 +197,7 @@
     .hero-title-en {
       font-family: var(--font-en);
       font-size: clamp(0.95rem, 3vw, 2rem);
-      font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.8);
+      font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.55);
       clip-path: inset(0 100% 0 0);
       transition: clip-path 1.4s var(--ease) 0.7s;
     }
@@ -241,11 +212,11 @@
     .hero-meta-line { width: 40px; height: 0.5px;
       background: linear-gradient(to right, var(--accent), var(--accent2)); flex-shrink: 0; }
     .hero-meta-text { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.62rem);
-      letter-spacing: 0.24em; color: var(--fg); text-transform: uppercase; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+      letter-spacing: 0.24em; color: var(--dim); text-transform: uppercase; }
     
     .hero-scroll {
       position: absolute;
-      bottom: clamp(2rem, 5vh, 4rem); right: var(--px); z-index: 4; 
+      bottom: clamp(2rem, 5vh, 4rem); right: var(--px); z-index: 2; 
       display: flex; flex-direction: column; align-items: center; gap: 12px;
       opacity: 0;
       transition: opacity 0.9s ease 1.8s;
@@ -258,7 +229,8 @@
       height: 100%;
       background: linear-gradient(to bottom, var(--accent), transparent); animation: scrollDrop 2.2s ease-in-out 2s infinite;
     }
-    
+    @keyframes scrollDrop { 0% { top: -100%; opacity: 1; } 70% { top: 100%; opacity: 0.4; } 71% { top: -100%; opacity: 0; } 100% { top: -100%; opacity: 0; } }
+
     /* ============================================================
        CONCEPT SECTION
     =========================================================== */
@@ -331,7 +303,6 @@
     .gallery-section {
       padding: 0 var(--px) clamp(6rem, 13vh, 10rem);
       max-width: 1600px; margin: 0 auto;
-      background: var(--bg); /* Ensure solid background so global texture doesn't distract */
     }
     .section-label {
       font-family: var(--font-en);
@@ -456,29 +427,29 @@
     .tl-entry.is-f50-ratio .tl-figure { width: 38%; aspect-ratio: 91 / 116.7; }
     .tl-entry.is-f50-ratio .tl-body { width: 54%; }
 
-    /* ★ Náströnd 専用レイアウト */
+    /* ★ Náströnd 専用レイアウト（中央配置、全体が見えるように調整） */
     .tl-entry.is-nastrond .tl-content-wrap {
-      flex-direction: column;
+      flex-direction: column; /* 縦積みに */
       align-items: center;
       gap: clamp(2.5rem, 6vw, 4.5rem);
     }
     .tl-entry.is-nastrond .tl-year-display { text-align: center; padding-left: 0; }
     .tl-entry.is-nastrond .tl-figure {
-      width: 100%;
-      max-width: 1080px;
+      width: 100%; /* コンテナ幅を最大限活用 */
+      max-width: 1080px; /* 前回の800pxから1080pxに拡大 */
       aspect-ratio: 290 / 116.7; 
       border: 0.5px solid var(--border);
-      margin: 0 auto;
+      margin: 0 auto; /* 中央配置 */
     }
     .tl-entry.is-nastrond .tl-figure img { 
       width: 100%; 
       height: 100%; 
-      object-fit: contain;
+      object-fit: contain; /* 全体が見えるように */
     }
     .tl-entry.is-nastrond .tl-body {
       width: 100%;
       max-width: 880px;
-      text-align: center;
+      text-align: center; /* テキストも中央寄せ */
     }
     
     .tl-figure img {
@@ -503,7 +474,7 @@
       text-align: justify;
     }
     .tl-entry.is-nastrond .tl-desc {
-      text-align: center;
+      text-align: center; /* Náströndのみ中央寄せ */
     }
     .tl-desc p { margin-bottom: 1.2em; }
     .tl-desc p:last-child { margin-bottom: 0; }
@@ -520,29 +491,13 @@
     .fade-out { opacity: 0; transition: opacity 0.8s ease; }
 
     /* ============================================================
-       CONTACT & FOOTER (WITH ARTWORK OVERLAY)
+       CONTACT & FOOTER
     =========================================================== */
     .contact-section {
-      position: relative;
       padding: clamp(7rem, 15vh, 11rem) var(--px);
       text-align: center;
-      border-top: 0.5px solid var(--border); 
-      background: var(--bg);
-      overflow: hidden;
+      border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(196,168,130,0.06) 0%, var(--bg) 70%);
     }
-    .contact-section::before {
-      content: ''; position: absolute; inset: 0; z-index: 0;
-      background: url('images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg') center/cover no-repeat;
-      opacity: 0.12; filter: blur(6px) brightness(0.5) contrast(1.2);
-      pointer-events: none;
-    }
-    .contact-section::after {
-      content: ''; position: absolute; inset: 0; z-index: 1;
-      background: linear-gradient(to bottom, var(--bg) 0%, transparent 30%, transparent 70%, var(--bg) 100%);
-      pointer-events: none;
-    }
-    .contact-section > * { position: relative; z-index: 2; }
-    
     .contact-heading {
       font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200;
       line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em;
@@ -631,6 +586,7 @@
       .tl-figure, .tl-body, .tl-entry.is-featured .tl-figure, .tl-entry.is-featured .tl-body, 
       .tl-entry.is-f50-ratio .tl-figure, .tl-entry.is-f50-ratio .tl-body { width: 100%; }
       
+      /* Náströnd もモバイルでは全幅にリセットし、はみ出しを防止 */
       .tl-entry.is-nastrond .tl-figure { width: 100%; max-width: 100%; margin: 0 auto; transform: none; }
       .tl-entry.is-nastrond .tl-year-display { text-align: left !important; }
 
@@ -659,13 +615,10 @@
       *, *::before, *::after { transition-duration: 0.01ms !important;
       animation-duration: 0.01ms !important; }
       .gallery-item, .tl-entry, .reveal-fade { opacity: 1 !important; transform: none !important; }
-      .hero-ambient { animation: none; }
     }
   </style>
 </head>
 <body id="top">
-
-  <div class="global-texture" aria-hidden="true"></div>
 
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
@@ -692,9 +645,7 @@
 
   <main>
     <section class="hero">
-      <div class="hero-ambient"></div>
-      <div class="hero-overlay"></div> <div class="hero-divider" aria-hidden="true"></div>
-      
+      <div class="hero-divider" aria-hidden="true"></div>
       <div class="hero-inner">
         <p class="hero-eyebrow" id="heroEyebrow">Series — Variant Forms &nbsp;·&nbsp; Body & Landscape</p>
         <h1 class="hero-title" id="heroTitle" aria-label="異体">
