@@ -244,8 +244,7 @@
     }
 
     /* ════════════════════════════════════════
-       HERO TITLE ANIMATION (描く。掘る。還る。)
-       洗練された心地よさと、せかされないスピード感の両立
+       HERO TITLE ANIMATION
     ════════════════════════════════════════ */
     .hero-title {
       font-family: var(--jp); font-size: clamp(3.5rem,10vw,7.5rem);
@@ -260,21 +259,18 @@
     }
     .hero-title em { font-style: normal; color: rgba(232,228,219,0.55); }
 
-    /* 1. 描く。(Draw) - 筆跡のように左から右へピントが合う */
     body.is-loaded .line-draw { animation: drawReveal 1.6s cubic-bezier(0.1, 1, 0.2, 1) forwards; animation-delay: 0.1s; }
     @keyframes drawReveal {
       0% { opacity: 0; clip-path: inset(0 100% 0 0); filter: blur(12px); transform: translateX(-30px); }
       100% { opacity: 1; clip-path: inset(0 0 0 0); filter: blur(0); transform: translateX(0); }
     }
 
-    /* 2. 掘る。(Dig) - 深い場所から重力を感じて浮かび上がる */
     body.is-loaded .line-dig { animation: digReveal 1.8s cubic-bezier(0.1, 1, 0.2, 1) forwards; animation-delay: 0.5s; }
     @keyframes digReveal {
       0% { opacity: 0; transform: translateY(30px) scale(0.95); filter: brightness(0) blur(10px); }
       100% { opacity: 1; transform: translateY(0) scale(1); filter: brightness(1) blur(0); }
     }
 
-    /* 3. 還る。(Return) - 周囲から中心へ優しく収束する */
     body.is-loaded .line-return { animation: returnReveal 2.0s cubic-bezier(0.1, 1, 0.2, 1) forwards; animation-delay: 0.9s; }
     @keyframes returnReveal {
       0% { opacity: 0; transform: scale(1.08); letter-spacing: 0.2em; filter: blur(12px); color: #ffffff; text-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
@@ -654,32 +650,88 @@
       background: rgba(255,255,255,0.05); transform: translateY(-2px);
     }
 
+    /* ════════════════════════════════════════
+       ARCHIVE CTA BUTTON (Redesigned)
+    ════════════════════════════════════════ */
     .cta-wrapper { text-align: center; margin-top: 10rem; width: 100%; display: flex; justify-content: center; }
-    .works-archive-cta {
-      display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 4rem 6rem; border: 1px solid rgba(203,191,176,0.25);
-      background: rgba(203,191,176,0.02); text-decoration: none; transition: all 0.6s var(--ease-expo);
-      border-radius: 4px; gap: 0.8rem; position: relative; overflow: hidden; width: 100%; max-width: 680px;
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-    }
     
-    .works-archive-cta::before {
-      content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-      background: linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent);
-      transform: skewX(-25deg); transition: left 0.75s cubic-bezier(0.19, 1, 0.22, 1); z-index: 0;
+    .works-archive-cta {
+      position: relative;
+      display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 4.5rem 6rem;
+      text-decoration: none; transition: all 0.6s var(--ease-expo);
+      gap: 0.5rem; overflow: visible; /* SVG描画をはみ出させるため */
+      width: 100%; max-width: 680px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
     }
-    .works-archive-cta:hover::before { left: 150%; }
-    .works-archive-cta:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-8px) scale(1.01); box-shadow: 0 24px 48px rgba(0,0,0,0.6), 0 0 32px rgba(203,191,176,0.3); }
-    .works-archive-cta:active { transform: translateY(-2px) scale(0.98); box-shadow: 0 8px 16px rgba(0,0,0,0.5), 0 0 10px rgba(203,191,176,0.1); transition: transform 0.1s ease-out, box-shadow 0.1s ease-out; }
+
+    /* SVG トレース境界線 */
+    .archive-btn__svg {
+      position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible;
+    }
+    .archive-btn__svg .bg-border {
+      fill: rgba(203,191,176,0.02); /* かすかな背景色 */
+      stroke: rgba(203,191,176,0.18);
+      stroke-width: 0.5;
+    }
+    .archive-btn__svg .trace-line {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 1.0; /* 1.2から少し細くして上品に */
+      stroke-linecap: square;
+      filter: drop-shadow(0 0 3px rgba(203,191,176,0.4)); /* 発光を抑えめに */
+      transition: stroke-dashoffset 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    /* ホバー時の内側からの仄かな発光 */
+    .archive-btn__wash {
+      position: absolute; inset: 1px;
+      background: radial-gradient(ellipse at 50% 50%, rgba(203,191,176,0.08) 0%, transparent 75%); /* 0.12から0.08へ明度調整 */
+      opacity: 0; transition: opacity 0.6s ease; pointer-events: none;
+    }
+    .works-archive-cta:hover .archive-btn__wash { opacity: 1; }
+
+    /* テキストスタイルとホバー時の変化 */
+    .cta-label-en, .cta-label-ja { position: relative; z-index: 1; transition: all 0.5s ease; }
+    .cta-label-en {
+      font-family: var(--en); font-size: 0.95rem; letter-spacing: 0.35em;
+      color: rgba(203,191,176,0.55); text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .works-archive-cta:hover .cta-label-en {
+      color: rgba(203,191,176,0.9);
+      letter-spacing: 0.4em;
+      text-shadow: 0 0 6px rgba(203,191,176,0.3); /* 仄かな発光 */
+    }
+    .cta-label-ja {
+      font-family: var(--jp); font-size: 1.3rem; font-weight: 300; letter-spacing: 0.2em;
+      color: rgba(232,228,219,0.75);
+    }
+    .works-archive-cta:hover .cta-label-ja {
+      color: rgba(235,228,215, 1); /* 真っ白を避ける */
+      text-shadow: 0 0 8px rgba(203,191,176,0.25);
+    }
+
+    /* 伸びる矢印アニメーション */
+    .archive-btn__arrow {
+      position: relative; z-index: 1; display: flex; align-items: center;
+      height: 12px; width: 32px; margin-top: 1.5rem;
+      transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .works-archive-cta:hover .archive-btn__arrow { width: 56px; }
+
+    .archive-btn__arrow-shaft {
+      position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 100%; height: 0.75px; background: var(--accent);
+      transform-origin: left center;
+    }
+    .archive-btn__arrow-head {
+      position: absolute; right: 0; top: 50%; transform: translateY(-50%) rotate(45deg);
+      width: 7px; height: 7px; border-top: 0.75px solid var(--accent); border-right: 0.75px solid var(--accent);
+      transform-origin: center; margin-right: -1px;
+    }
 
     .cta-wrapper a, .news-heading-wrap a { -webkit-tap-highlight-color: transparent; }
-    .cta-label-en, .cta-label-ja, .cta-arrow { position: relative; z-index: 1; }
-    .cta-label-en { font-family: var(--en); font-size: 0.95rem; letter-spacing: 0.35em; color: var(--accent); text-transform: uppercase; transition: color 0.4s ease; }
-    .cta-label-ja { font-family: var(--jp); font-size: 1.3rem; color: var(--text); font-weight: 300; letter-spacing: 0.2em; transition: color 0.4s ease; }
-    .cta-arrow { display: block; margin-top: 1.5rem; color: var(--accent); font-size: 1.6rem; transition: transform 0.6s var(--ease-expo), color 0.4s ease; }
-    
-    .works-archive-cta:hover .cta-label-en, .works-archive-cta:hover .cta-label-ja, .works-archive-cta:hover .cta-arrow { color: var(--bg); }
-    .works-archive-cta:hover .cta-arrow { transform: translateX(20px) scale(1.2); }
 
     /* ════════════════════════════════════════
        PROFILE & NEWS & FOOTER
@@ -912,6 +964,7 @@
       #works { padding: 6rem 1.5rem 8rem; }
       .works-header { margin-bottom: 6rem; flex-direction: column; align-items: flex-start; gap: 2rem; }
       .works-more { width: 100%; text-align: center; display: block; padding: 1.2rem; }
+      
       .works-archive-cta { padding: 3rem 2rem; }
       
       .profile-goals-layout { grid-template-columns: 1fr; gap: 3rem; }
@@ -1126,12 +1179,17 @@
       </div>
 
        <div class="cta-wrapper reveal">
-        <a href="works.html" class="works-archive-cta">
+        <a href="works.html" class="works-archive-cta" id="archiveBtn">
+          <svg class="archive-btn__svg" id="borderSvg" aria-hidden="true"></svg>
+          <div class="archive-btn__wash"></div>
           <span class="cta-label-en">Archive</span>
           <span class="cta-label-ja">全作品アーカイブ</span>
-          <span class="cta-arrow">→</span>
+          <div class="archive-btn__arrow">
+            <div class="archive-btn__arrow-shaft"></div>
+            <div class="archive-btn__arrow-head"></div>
+          </div>
         </a>
-      </div>
+        </div>
     </div>
   </div>
 </section>
@@ -1798,6 +1856,62 @@ document.addEventListener("DOMContentLoaded", () => {
     scrambleObserver.observe(el);
   });
 });
+
+/* ════════════════════════════════════════════════════════
+   ARCHIVE BUTTON SVG ANIMATION (追加実装)
+════════════════════════════════════════════════════════ */
+(function() {
+  var btn = document.getElementById('archiveBtn');
+  var svg = document.getElementById('borderSvg');
+  if (!btn || !svg) return;
+
+  function buildSvg() {
+    var w = btn.offsetWidth;
+    var h = btn.offsetHeight;
+    if (w === 0 || h === 0) return;
+
+    svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+    svg.innerHTML = '';
+
+    var ns = 'http://www.w3.org/2000/svg';
+    var perimeter = 2 * ((w - 1) + (h - 1));
+
+    // うっすらとした静的な境界線
+    var bgRect = document.createElementNS(ns, 'rect');
+    bgRect.setAttribute('x', '0.5');
+    bgRect.setAttribute('y', '0.5');
+    bgRect.setAttribute('width', w - 1);
+    bgRect.setAttribute('height', h - 1);
+    bgRect.setAttribute('class', 'bg-border');
+    svg.appendChild(bgRect);
+
+    // ホバー時に描画される線
+    var trace = document.createElementNS(ns, 'rect');
+    trace.setAttribute('x', '0.5');
+    trace.setAttribute('y', '0.5');
+    trace.setAttribute('width', w - 1);
+    trace.setAttribute('height', h - 1);
+    trace.setAttribute('class', 'trace-line');
+    trace.style.strokeDasharray = perimeter;
+    trace.style.strokeDashoffset = perimeter;
+    svg.appendChild(trace);
+
+    btn._trace = trace;
+    btn._perimeter = perimeter;
+  }
+
+  btn.addEventListener('mouseenter', function() {
+    if (btn._trace) btn._trace.style.strokeDashoffset = '0';
+  });
+
+  btn.addEventListener('mouseleave', function() {
+    if (btn._trace) btn._trace.style.strokeDashoffset = btn._perimeter;
+  });
+
+  // フォント読み込み等でサイズが変わることを考慮し、少し遅延させてビルド
+  setTimeout(buildSvg, 400);
+  window.addEventListener('resize', buildSvg);
+})();
 </script>
 </body>
 </html>
