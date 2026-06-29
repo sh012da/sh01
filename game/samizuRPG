@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Dynasty 33: 左美都神話 - 絆と血脈の果てに</title>
+<style>
+    :root { 
+        --main-gold: #d4af37; --bg-dark: #0a0c10; --panel-bg: #161920; 
+        --success: #2ecc71; --danger: #e74c3c; --magic: #3498db; --kizuna: #e67e22;
+        --border-color: #3a3f4b;
+    }
+    body { font-family: 'Helvetica Neue', 'Yu Gothic', sans-serif; background-color: var(--bg-dark); color: #e0e0e0; margin: 0; padding: 10px; display: flex; justify-content: center; user-select: none; overflow-x: hidden; }
+    
+    #game-container { 
+        width: 100%; max-width: 1000px; background: var(--panel-bg); 
+        border-radius: 8px; padding: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.9); border: 1px solid #444;
+        display: grid; grid-template-columns: 280px 1fr; grid-template-rows: auto 1fr auto; gap: 15px;
+        position: relative; overflow: hidden;
+    }
+
+    h1, h2, h3 { color: var(--main-gold); border-bottom: 1px solid var(--border-color); padding-bottom: 5px; margin-top: 0; text-shadow: 1px 1px 2px black; }
+    .panel { display: none; grid-column: 1 / -1; }
+    .active { display: block; }
+    
+    #score-panel { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); font-size: 1.2em; font-weight: bold; color: var(--main-gold); text-shadow: 1px 1px 3px #000; z-index: 10; background: rgba(0,0,0,0.7); padding: 5px 20px; border-radius: 20px; border: 1px solid var(--main-gold); box-shadow: 0 4px 10px rgba(0,0,0,0.8); }
+
+    #turn-banner { position: absolute; top: 40%; left: -100%; width: 100%; text-align: center; font-size: 4.5em; font-weight: 900; font-style: italic; color: #fff; z-index: 2500; pointer-events: none; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .turn-banner-show { left: 0 !important; }
+
+    #transition-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 12, 16, 0.95); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; color: var(--main-gold); font-size: 1.5em; font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); backdrop-filter: blur(5px); }
+    .spinner { margin-top: 20px; width: 50px; height: 50px; border: 4px solid rgba(212, 175, 55, 0.2); border-top: 4px solid var(--main-gold); border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    #result-overlay, #tree-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 4000; flex-direction: column; justify-content: center; align-items: center; text-align: center; backdrop-filter: blur(5px); }
+    .result-box, .tree-box { background: #161920; padding: 40px; border-radius: 12px; border: 2px solid var(--main-gold); box-shadow: 0 0 50px rgba(212, 175, 55, 0.3); max-height: 80vh; overflow-y: auto; width: 80%; max-width: 600px; }
+
+    .tree-node { border: 1px solid #555; background: #222; margin: 10px 0; padding: 10px; border-radius: 8px; position: relative; }
+    .tree-node::after { content: ''; position: absolute; bottom: -12px; left: 50%; width: 2px; height: 10px; background: var(--main-gold); }
+    .tree-node:last-child::after { display: none; }
+    .tree-gen { font-weight: bold; color: var(--main-gold); font-size: 1.2em; border-bottom: 1px dashed #555; padding-bottom: 5px; margin-bottom: 5px; }
+
+    #start-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; text-align: center; grid-column: 1 / -1; }
+    .input-group { margin: 15px 0; width: 100%; max-width: 300px; text-align: left; }
+    .input-group label { display: block; margin-bottom: 5px; color: var(--main-gold); font-weight: bold; }
+    .input-group input, .input-group select { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #555; background: #222; color: #fff; font-size: 1em; }
+    .start-btn { background: linear-gradient(135deg, var(--main-gold), #b38b22); color: #000; border: none; padding: 15px 30px; font-size: 1.2em; font-weight: bold; border-radius: 30px; cursor: pointer; transition: 0.3s; margin-top: 20px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4); }
+    .start-btn:hover { transform: scale(1.05); filter: brightness(1.2); }
+
+    #battle-layout { display: none; grid-template-columns: 280px 1fr; grid-template-rows: 1fr auto; gap: 15px; grid-column: 1 / -1; height: 100%; }
+    .active-battle { display: grid !important; }
+
+    .party-panel { background-color: rgba(20, 24, 30, 0.9); border: 2px solid var(--main-gold); border-radius: 8px; padding: 15px; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); z-index: 2; }
+    .char-box { background-color: #222730; padding: 10px; border-radius: 6px; margin-bottom: 10px; border-left: 4px solid var(--main-gold); position: relative; overflow: hidden; }
+    .char-name { font-weight: bold; font-size: 1.1em; color: #fff; margin-bottom: 5px; z-index: 2; position: relative; }
+    .kizuna-box { text-align: center; margin: 10px 0; padding: 10px; background-color: rgba(230, 126, 34, 0.1); border: 1px dashed var(--kizuna); border-radius: 8px; transition: 0.3s; }
+    
+    .trait { display: inline-block; background-color: #333; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.8em; margin: 2px 2px 2px 0; border: 1px solid #666; z-index: 2; position: relative; }
+    .trait.physical { border-color: var(--danger); color: #ff9999; }
+    .trait.magic { border-color: var(--magic); color: #99ccff; }
+    .trait.agility { border-color: var(--success); color: #99ff99; }
+    
+    .bar-container { width: 100%; height: 14px; background-color: #111; border-radius: 7px; overflow: hidden; margin-bottom: 5px; border: 1px solid #333; position: relative; z-index: 2; }
+    .bar-fill { height: 100%; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .hp-fill { background-color: var(--danger); }
+    .mp-fill { background-color: var(--magic); }
+    .kizuna-fill { background-color: var(--kizuna); }
+    .bar-text { position: absolute; width: 100%; text-align: center; top: 0; font-size: 10px; font-weight: bold; color: white; text-shadow: 1px 1px 2px black; line-height: 14px; }
+
+    .battle-center { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 20px; border-radius: 8px; border: 2px solid #444; overflow: hidden; transition: all 0.5s ease; background-size: cover; background-position: center; }
+    .battle-player-turn { border-color: var(--main-gold) !important; box-shadow: inset 0 0 40px rgba(212, 175, 55, 0.2), 0 0 20px rgba(212, 175, 55, 0.4); }
+    .battle-enemy-turn { border-color: var(--danger) !important; box-shadow: inset 0 0 60px rgba(231, 76, 60, 0.4), 0 0 30px rgba(231, 76, 60, 0.6); }
+
+    #battle-phase-indicator { position: absolute; top: 10px; left: 10px; padding: 6px 15px; font-weight: bold; font-size: 1em; border-radius: 4px; z-index: 5; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.8); }
+    #looming-enemy-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1.5); width: 150%; height: 150%; opacity: 0; pointer-events: none; z-index: 1; transition: opacity 1s ease; }
+    .battle-enemy-turn #looming-enemy-bg { opacity: 0.6; animation: loomPulse 2.5s infinite alternate ease-in-out; }
+    @keyframes loomPulse { 0% { transform: translate(-50%, -50%) scale(1.6); filter: blur(10px) drop-shadow(0 0 20px var(--danger)); } 100% { transform: translate(-50%, -50%) scale(2.0); filter: blur(5px) drop-shadow(0 0 50px var(--danger)); } }
+
+    .bg-stage-1 { background: linear-gradient(to bottom, #1e3c72 0%, #000 100%); }
+    .bg-stage-2 { background: radial-gradient(circle, #4a235a 0%, #000 80%); }
+    .bg-stage-3 { background: linear-gradient(to bottom, #2c3e50 0%, #000 100%); }
+    .bg-stage-4 { background: linear-gradient(to bottom, #5c4033 0%, #000 100%); }
+    .bg-stage-5 { background: radial-gradient(circle, #0e301d 0%, #000 90%); }
+
+    #enemy-visual { width: 220px; height: 220px; margin-bottom: 15px; filter: drop-shadow(0px 0px 20px rgba(0,0,0,0.8)); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2; position: relative; }
+    .float-anim { animation: float 3s ease-in-out infinite; }
+    @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+    
+    .enemy-info { text-align: center; width: 80%; background: rgba(0,0,0,0.8); padding: 10px; border-radius: 8px; border: 1px solid #555; z-index: 2; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.8); transition: border-color 0.3s; }
+    .stage-text { color: var(--main-gold); font-size: 0.95em; font-weight: bold; letter-spacing: 2px; text-shadow: 1px 1px 2px #000; z-index: 2; position: relative; margin-bottom: 10px; }
+
+    .bottom-panel { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .command-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; transition: opacity 0.3s, filter 0.3s; }
+    .disabled-menu { opacity: 0.3; pointer-events: none; filter: grayscale(80%); }
+
+    .cmd-btn { background: linear-gradient(180deg, #3a3f4b 0%, #242933 100%); color: #fff; border: 1px solid #555; padding: 12px 10px; font-weight: bold; font-size: 1.1em; border-radius: 6px; cursor: pointer; transition: 0.2s; text-align: left; }
+    .cmd-btn:hover { filter: brightness(1.2); }
+    .cmd-btn:active { transform: translateY(2px); }
+    .cmd-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .cmd-btn.attack { border-left: 5px solid var(--danger); }
+    .cmd-btn.magic { border-left: 5px solid var(--magic); }
+    .cmd-btn.item { border-left: 5px solid var(--success); }
+    .cmd-btn.flee { border-left: 5px solid #95a5a6; }
+    .cmd-btn.puzzle { border-left: 5px solid #9b59b6; }
+    .cmd-btn.kizuna { border-left: 5px solid var(--kizuna); background: linear-gradient(180deg, #5e3b1c 0%, #2e1c0d 100%); }
+    
+    .log-box { background-color: rgba(10, 12, 16, 0.9); padding: 15px; font-family: 'Yu Mincho', serif; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.95em; color: #dcdcdc; height: 130px; overflow-y: auto; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); line-height: 1.6; transition: border-color 0.4s; }
+
+    #qte-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 100; flex-direction: column; justify-content: center; align-items: center; border-radius: 8px; backdrop-filter: blur(5px); }
+    #qte-prompt { font-size: 2em; font-weight: bold; margin-bottom: 10px; color: white; text-align: center; text-shadow: 0 0 15px var(--main-gold); letter-spacing: 2px; }
+    #qte-timer-container { width: 85%; max-width: 400px; height: 8px; background: #222; border-radius: 4px; margin-bottom: 30px; border: 1px solid #555; overflow: hidden; box-shadow: inset 0 0 10px #000; }
+    #qte-timer-fill { width: 100%; height: 100%; background: var(--main-gold); transition: width 0.1s linear; }
+    #qte-arc-container { width: 300px; height: 150px; position: relative; margin-bottom: 30px; }
+    #qte-svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8)); }
+    #qte-linear-container { width: 85%; max-width: 400px; height: 40px; background: #1a1a1a; border: 2px solid #555; position: relative; margin-bottom: 40px; border-radius: 20px; overflow: hidden; display: none; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); }
+    #qte-linear-target { position: absolute; height: 100%; background: #e74c3c; width: 20%; left: 40%; transition: background 0.3s, box-shadow 0.3s; }
+    #qte-linear-cursor { position: absolute; height: 140%; top: -20%; width: 6px; background: #fff; left: 0%; box-shadow: 0 0 15px #fff; border-radius: 3px; z-index: 5; }
+    
+    #qte-controls { display: flex; width: 100%; max-width: 400px; gap: 20px; justify-content: space-between; }
+    .qte-btn { flex: 1; height: 90px; font-size: 32px; font-weight: bold; border-radius: 12px; border: 4px solid #7f8c8d; background: linear-gradient(180deg, #34495e 0%, #2c3e50 100%); color: #fff; cursor: pointer; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 8px 0 #1a252f; transition: 0.1s; }
+    .qte-btn span { font-size: 14px; font-weight: normal; margin-top: 5px; opacity: 0.8; }
+    .qte-btn:active { transform: translateY(8px); box-shadow: 0 0 0 #1a252f; }
+
+    #puzzle-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 200; flex-direction: column; justify-content: center; align-items: center; border-radius: 8px; backdrop-filter: blur(5px); }
+    #puzzle-canvas { background: #111; border: 2px solid #555; box-shadow: 0 0 30px rgba(155, 89, 182, 0.4); margin-top: 10px; }
+    .puzzle-controls { display: flex; gap: 10px; margin-top: 15px; width: 100%; max-width: 300px; justify-content: center; }
+    .pz-btn { background: #2c3e50; border: 2px solid #7f8c8d; color: white; padding: 10px 15px; font-weight: bold; border-radius: 6px; cursor: pointer; flex: 1; }
+    .pz-btn:active { background: #3498db; }
+
+    /* --- 新生 ド派手エフェクト（揺れなし） --- */
+    .mega-flash { position: absolute; top:0; left:0; width:100%; height:100%; background: #fff; z-index: 9999; pointer-events: none; animation: megaFlash 0.5s ease-out forwards; mix-blend-mode: overlay; border-radius: 8px; }
+    @keyframes megaFlash { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.1); } }
+
+    .cross-slash-1, .cross-slash-2 { position: absolute; top: 50%; left: 50%; width: 200%; height: 20px; z-index: 9998; pointer-events: none; }
+    .cross-slash-1 { transform: translate(-50%, -50%) rotate(-45deg) scaleX(0); animation: slashIn 0.3s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; }
+    .cross-slash-2 { transform: translate(-50%, -50%) rotate(45deg) scaleX(0); animation: slashIn 0.3s cubic-bezier(0.1, 0.8, 0.3, 1) forwards 0.1s; }
+    @keyframes slashIn { 0% { scale: 0 1; opacity: 1; } 50% { scale: 1 2; opacity: 1; } 100% { scale: 1.5 0; opacity: 0; } }
+
+    .impact-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 10px solid #fff; border-radius: 50%; z-index: 9997; pointer-events: none; animation: ringExpand 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; }
+    @keyframes ringExpand { 0% { width: 0; height: 0; opacity: 1; border-width: 40px; } 100% { width: 1400px; height: 1400px; opacity: 0; border-width: 0px; } }
+
+    .text-pop { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); font-size: 5em; font-weight: 900; font-style: italic; z-index: 10000; pointer-events: none; animation: textPopAnim 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; white-space: nowrap; }
+    @keyframes textPopAnim { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 15% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; } 30% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 80% { transform: translate(-50%, -50%) scale(1); opacity: 1; filter: brightness(1.5); } 100% { transform: translate(-50%, -150%) scale(1.5); opacity: 0; filter: brightness(1); } }
+
+    .screen-flash { position: absolute; top:0; left:0; width:100%; height:100%; background: #fff; z-index: 999; pointer-events: none; animation: flash 0.5s ease-out forwards; border-radius: 8px; }
+    .enemy-attack-flash { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(231, 76, 60, 0.8); z-index: 999; pointer-events: none; animation: flash 0.6s ease-out forwards; border-radius: 8px; }
+    @keyframes flash { 0% { opacity: 0.8; } 100% { opacity: 0; } }
+    
+    .shield-block { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 200px; background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(52, 152, 219, 0.1)); border: 8px solid var(--magic); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); animation: shieldPop 1.0s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; display: flex; justify-content: center; align-items: center; font-size: 2.2em; font-weight: 900; font-style: italic; z-index: 10000; pointer-events: none; box-shadow: 0 0 50px var(--magic); }
+    @keyframes shieldPop { 0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; filter: brightness(2); } 15% { transform: translate(-50%, -50%) scale(1.2); filter: brightness(1.5); } 30% { transform: translate(-50%, -50%) scale(1.0); opacity: 1; } 80% { transform: translate(-50%, -50%) scale(1.0); opacity: 0.9; } 100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; } }
+
+    .miss-text-anim { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 3.5em; font-weight: 900; color: #7f8c8d; text-shadow: 3px 3px 0 #000; z-index: 1000; pointer-events: none; animation: dropText 1.0s ease-in forwards; white-space: nowrap; }
+    @keyframes dropText { 0% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; } 20% { transform: translate(-50%, -50%) scale(1); opacity: 1;} 80% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(-50%, 0%) scale(1); opacity: 0; } }
+
+    .marriage-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 15px; }
+    .candidate-card { background: linear-gradient(180deg, #2a2d35 0%, #1a1d24 100%); border: 1px solid #555; padding: 15px; border-radius: 8px; text-align: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; }
+    .candidate-card:hover { border-color: var(--main-gold); transform: translateY(-5px); box-shadow: 0 8px 20px rgba(212, 175, 55, 0.2); }
+    .partner-portrait { width: 80px; height: 80px; border-radius: 50%; background: #000; border: 2px solid var(--main-gold); margin-bottom: 10px; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+
+    #event-section { display: none; background: rgba(0,0,0,0.6); padding: 20px; border-radius: 8px; border: 1px solid var(--main-gold); box-shadow: 0 0 20px rgba(212, 175, 55, 0.15); backdrop-filter: blur(5px); }
+    .choice-btn { width: 100%; background: #222; color: #eee; border: 1px solid #555; padding: 15px; margin-top: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 1em; transition: 0.2s; position: relative; overflow: hidden; }
+    .choice-btn:hover { background: #333; border-color: var(--main-gold); padding-left: 20px; }
+</style>
+</head>
+<body>
+
+<div id="game-container">
+    <div id="score-panel">総合得点: <span id="score-val">0</span></div>
+    <div id="turn-banner"></div>
+    <div id="fx-layer"></div>
+
+    <div id="transition-overlay">
+        <div id="transition-text">処理中...</div>
+        <div class="spinner"></div>
+    </div>
+
+    <div id="result-overlay">
+        <div class="result-box">
+            <h1 id="result-title" style="font-size: 3em; margin-bottom: 10px;">結末</h1>
+            <p id="result-desc" style="color: #aaa; margin-bottom: 30px;">血脈の果てに到達した記録</p>
+            <div style="font-size: 1.5em; margin-bottom: 15px;">到達世代: <span id="result-generation" style="color: white; font-weight: bold;"></span> 代</div>
+            <div style="font-size: 1.5em; margin-bottom: 30px;">最終総合得点: <span id="result-score-text" style="color: var(--main-gold); font-size: 2em; font-weight: bold;"></span> pts</div>
+            <button class="start-btn" onclick="location.reload()">新たな歴史を紡ぐ</button>
+        </div>
+    </div>
+
+    <div id="tree-overlay">
+        <div class="tree-box" id="tree-box-content">
+            <h1 style="margin-bottom: 20px;">左美都の地脈 (家系図)</h1>
+            <div id="family-tree-content"></div>
+            <button class="start-btn" onclick="document.getElementById('tree-overlay').style.display='none'">閉じる</button>
+        </div>
+    </div>
+
+    <div id="qte-overlay">
+        <div id="qte-prompt">A・S・D を揃えろ！</div>
+        <div id="qte-timer-container"><div id="qte-timer-fill"></div></div>
+        <div id="qte-arc-container">
+            <svg id="qte-svg" viewBox="0 0 200 100">
+                <path d="M 20 90 A 80 80 0 0 1 180 90" fill="none" stroke="#333" stroke-width="8" stroke-linecap="round"/>
+                <path id="qte-target-A" d="M 26 63 A 80 80 0 0 1 48 33" fill="none" stroke="#e74c3c" stroke-width="16" stroke-linecap="round" style="transition: 0.2s;"/>
+                <text id="qte-text-A" x="25" y="45" fill="white" font-size="16" font-weight="bold" font-family="sans-serif">A</text>
+                <path id="qte-target-S" d="M 68 18 A 80 80 0 0 1 132 18" fill="none" stroke="#2ecc71" stroke-width="16" stroke-linecap="round" style="transition: 0.2s;"/>
+                <text id="qte-text-S" x="93" y="12" fill="white" font-size="16" font-weight="bold" font-family="sans-serif">S</text>
+                <path id="qte-target-D" d="M 152 33 A 80 80 0 0 1 174 63" fill="none" stroke="#3498db" stroke-width="16" stroke-linecap="round" style="transition: 0.2s;"/>
+                <text id="qte-text-D" x="162" y="45" fill="white" font-size="16" font-weight="bold" font-family="sans-serif">D</text>
+                <line id="qte-cursor-line" x1="100" y1="90" x2="10" y2="90" stroke="#fff" stroke-width="6" stroke-linecap="round" style="transform-origin: 100px 90px;"/>
+                <circle cx="100" cy="90" r="6" fill="#fff" />
+            </svg>
+        </div>
+        <div id="qte-linear-container">
+            <div id="qte-linear-target"></div>
+            <div id="qte-linear-cursor"></div>
+        </div>
+        <div id="qte-controls">
+            <button class="qte-btn" id="btn-qte-A" onpointerdown="executeQTE('A')">A <span style="color:#fff;">(左)</span></button>
+            <button class="qte-btn" id="btn-qte-S" onpointerdown="executeQTE('S')">S <span style="color:#fff;">(中)</span></button>
+            <button class="qte-btn" id="btn-qte-D" onpointerdown="executeQTE('D')">D <span style="color:#fff;">(右)</span></button>
+        </div>
+    </div>
+
+    <div id="puzzle-overlay">
+        <h2 style="color:var(--magic); margin-bottom: 5px;">陣形連鎖 (巨塊)</h2>
+        <p style="color: #ccc; margin-top: 0; font-size: 0.9em;">素早く揃え、一撃必殺を叩き込め！ <br>残り時間: <span id="puzzle-time" style="font-weight:bold; color:white;">20</span>秒</p>
+        <canvas id="puzzle-canvas" width="200" height="400"></canvas>
+        <div class="puzzle-controls">
+            <button class="pz-btn" onpointerdown="movePuzzle(-1)">←</button>
+            <button class="pz-btn" onpointerdown="rotatePuzzle()">回転</button>
+            <button class="pz-btn" onpointerdown="movePuzzle(1)">→</button>
+            <button class="pz-btn" onpointerdown="dropPuzzle()">下</button>
+        </div>
+        <p style="font-size: 0.8em; color: #777; margin-top: 10px;">※PCは矢印キーでも操作可能</p>
+    </div>
+
+    <div id="start-screen" class="panel active">
+        <h1 style="font-size: 2.5em; margin-bottom: 10px; margin-top: 30px;">左美都神話</h1>
+        <p style="color: #aaa; margin-bottom: 30px;">血脈と絆が紡ぐ、世代交代型リアクティブRPG</p>
+        
+        <div class="input-group">
+            <label for="ruler-name">開祖の名</label>
+            <input type="text" id="ruler-name" value="ウロ" maxlength="10">
+        </div>
+        <div class="input-group">
+            <label for="ruler-gender">開祖の在り方（性別）</label>
+            <select id="ruler-gender">
+                <option value="男性">男性</option>
+                <option value="女性">女性</option>
+                <option value="境界を持たぬ者">境界を持たぬ者（ウロのように）</option>
+            </select>
+        </div>
+        <button class="start-btn" onclick="startGame()">歴史を刻む</button>
+    </div>
+
+    <div id="kingdom-panel" class="panel">
+        <div style="margin-top: 40px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: flex-end;">
+            <h1 style="margin-bottom: 0; border: none; padding: 0;">左美都 - 統治と血脈</h1>
+            <button class="cmd-btn" style="border-left: 5px solid var(--success); padding: 6px 12px; font-size: 0.9em;" onclick="showFamilyTree()">家系図を見る</button>
+        </div>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <div id="kingdom-party-info" class="party-panel" style="flex: 1; min-width: 250px;"></div>
+            
+            <div style="flex: 2; min-width: 300px;">
+                <div id="default-kingdom-menu">
+                    <div style="background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; border: 1px solid #444; margin-bottom:15px;">
+                        <h3 style="color:var(--success);">日常と対話</h3>
+                        <p style="font-size: 0.9em; color: #aaa;">時を進め、縁談を探すか、伴侶との対話を通して絆を試す。</p>
+                        <button class="cmd-btn" style="border-left: 5px solid var(--main-gold); width: 100%; text-align:center;" onclick="advanceKingdom()">1年進める（縁談 / 日常）</button>
+                    </div>
+                    
+                    <div style="background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; border: 1px solid #444;">
+                        <h3 style="color:var(--danger);">左美都の遠征</h3>
+                        <p style="font-size: 0.9em; color: #aaa;">血脈の準備が整えば、当主と伴侶で左美都を脅かす怪異の討伐へ向かう。</p>
+                        <button class="cmd-btn" style="border-left: 5px solid var(--danger); width: 100%; text-align:center;" onclick="startExpedition()" id="btn-start-exp">遠征に出発する</button>
+                    </div>
+                </div>
+                <div id="candidates-area" class="marriage-grid" style="display:none;"></div>
+                <div id="event-section">
+                    <h3 style="color: var(--kizuna); border-bottom: 1px solid var(--kizuna);">伴侶との対話</h3>
+                    <p id="event-text" style="line-height: 1.6; margin-bottom: 15px; font-family: 'Yu Mincho', serif; font-size: 1.05em;"></p>
+                    <div id="event-choices"></div>
+                </div>
+            </div>
+        </div>
+        <div class="log-box" id="kingdom-log" style="margin-top: 15px; height: 130px;"></div>
+    </div>
+
+    <div id="battle-layout">
+        <div class="party-panel" style="margin-top: 30px;">
+            <h3 style="margin-bottom: 10px; font-size:1.1em;">血脈 (Bloodlines)</h3>
+            <div id="battle-ruler-info" class="char-box"></div>
+            <div class="kizuna-box" id="battle-kizuna-box">
+                <div style="font-size:0.85em; color:var(--kizuna); font-weight:bold;">絆 (Bonds)</div>
+                <div class="bar-container"><div id="kizuna-fill" class="bar-fill kizuna-fill"></div><div class="bar-text" id="kizuna-text"></div></div>
+                <div id="synergy-display" style="font-size:0.75em; color:var(--main-gold); margin-top:5px; border-top:1px dashed #666; padding-top:4px;"></div>
+            </div>
+            <div id="battle-partner-info" class="char-box" style="border-left-color: #9b59b6;"></div>
+        </div>
+
+        <div class="battle-center battle-player-turn" id="battle-bg" style="margin-top: 30px;">
+            <div id="battle-phase-indicator"></div>
+            <svg id="looming-enemy-bg" viewBox="0 0 200 200"><g id="looming-svg-content"></g></svg>
+            <div class="stage-text" id="stage-name">STAGE</div>
+            <svg id="enemy-visual" class="float-anim" viewBox="0 0 200 200"><g id="enemy-svg-content"></g></svg>
+            <div class="enemy-info" id="enemy-info-box">
+                <div id="enemy-name" style="font-size: 1.2em; font-weight: bold; color: var(--danger); margin-bottom: 5px;">Enemy</div>
+                <div class="bar-container" style="height: 18px;"><div id="boss-hp-fill" class="bar-fill hp-fill"></div><div class="bar-text" id="boss-hp-text"></div></div>
+            </div>
+        </div>
+
+        <div class="bottom-panel">
+            <div class="command-menu" id="player-commands">
+                <button class="cmd-btn attack" onclick="executePlayerAction('attack')">
+                    <span style="font-size:1.1em;">剣撃</span><br><span style="font-size:0.7em; color:#aaa;">Attack (QTE)</span>
+                </button>
+                <button class="cmd-btn magic" onclick="executePlayerAction('magic')" id="btn-magic">
+                    <span style="font-size:1.1em;">神祇</span><br><span style="font-size:0.7em; color:#aaa;">Mitama (MP20)</span>
+                </button>
+                <button class="cmd-btn item" onclick="executePlayerAction('potion')" id="btn-potion">
+                    <span style="font-size:1.1em;">回復薬</span><br><span style="font-size:0.7em; color:#aaa;">Heal (<span id="potion-count">3</span>)</span>
+                </button>
+                <button class="cmd-btn flee" onclick="executePlayerAction('flee')">
+                    <span style="font-size:1.1em;">退却</span><br><span style="font-size:0.7em; color:#aaa;">Flee (逃げる)</span>
+                </button>
+                <button class="cmd-btn puzzle" onclick="executePlayerAction('puzzle')" id="btn-puzzle">
+                    <span style="font-size:1.1em;">陣形連鎖</span><br><span style="font-size:0.7em; color:#aaa;">Puzzle (MP10)</span>
+                </button>
+                <button class="cmd-btn kizuna" onclick="executePlayerAction('kizuna')" id="btn-kizuna">
+                    <span style="font-size:1.2em; color:var(--main-gold);">比翼の絆連携</span><br><span style="font-size:0.7em; color:#aaa;">Kizuna Combo</span>
+                </button>
+            </div>
+            <div class="log-box" id="battle-log"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+let audioCtx, noiseBuffer, currentBGMType = null, bgmSeqInterval = null, bgmStep = 0;
+
+const bgmData = {
+    kingdom: {
+        tempo: 160,
+        notes: [ 261.63, 329.63, 392.00, 523.25, 196.00, 246.94, 293.66, 392.00, 174.61, 220.00, 261.63, 349.23, 196.00, 246.94, 293.66, 392.00 ],
+        bass: [ 130.81, 98.00, 87.31, 98.00 ]
+    },
+    battle: {
+        tempo: 100, 
+        notes: [ 293.66, 349.23, 440.00, 587.33, 293.66, 349.23, 440.00, 587.33, 277.18, 329.63, 415.30, 554.37, 277.18, 329.63, 415.30, 554.37 ], 
+        bass: [ 73.42, 73.42, 73.42, 73.42, 69.30, 69.30, 69.30, 69.30 ]
+    }
+};
+
+function initAudio() {
+    if(!audioCtx) {
+        audioCtx = new AudioContext();
+        const bufferSize = audioCtx.sampleRate * 2;
+        noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+    }
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function switchBGM(type) {
+    if (currentBGMType === type) return;
+    currentBGMType = type;
+    bgmStep = 0;
+    if (bgmSeqInterval) clearInterval(bgmSeqInterval);
+    bgmSeqInterval = setInterval(playBGMStep, bgmData[type].tempo);
+}
+
+function playBGMStep() {
+    if(!audioCtx || !currentBGMType) return;
+    const t = audioCtx.currentTime;
+    const data = bgmData[currentBGMType];
+    let oscM = audioCtx.createOscillator(); let gainM = audioCtx.createGain();
+    oscM.type = 'square'; oscM.frequency.value = data.notes[bgmStep % data.notes.length];
+    gainM.gain.setValueAtTime(0.015, t); gainM.gain.exponentialRampToValueAtTime(0.001, t + (data.tempo/1000));
+    oscM.connect(gainM); gainM.connect(audioCtx.destination);
+    oscM.start(t); oscM.stop(t + (data.tempo/1000));
+
+    let bassIdx = (currentBGMType === 'battle') ? bgmStep % data.bass.length : Math.floor(bgmStep / 4) % data.bass.length;
+    if (currentBGMType === 'battle' || bgmStep % 4 === 0) {
+        let oscB = audioCtx.createOscillator(); let gainB = audioCtx.createGain();
+        oscB.type = 'triangle'; oscB.frequency.value = data.bass[bassIdx];
+        gainB.gain.setValueAtTime(0.03, t); gainB.gain.linearRampToValueAtTime(0.01, t + (data.tempo/1000) * (currentBGMType === 'battle' ? 1 : 2.5));
+        oscB.connect(gainB); gainB.connect(audioCtx.destination);
+        oscB.start(t); oscB.stop(t + (data.tempo/1000) * 3);
+    }
+    bgmStep++;
+}
+
+function playSfx(type) {
+    if(!audioCtx) return;
+    const t = audioCtx.currentTime;
+    if(type === 'click') {
+        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+        osc.type = 'square'; osc.frequency.setValueAtTime(800, t); osc.frequency.exponentialRampToValueAtTime(400, t + 0.05);
+        gain.gain.setValueAtTime(0.05, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.05);
+        osc.connect(gain); gain.connect(audioCtx.destination); osc.start(t); osc.stop(t + 0.05);
+    } else if (type === 'hit') {
+        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+        osc.type = 'square'; osc.frequency.setValueAtTime(1200, t); osc.frequency.exponentialRampToValueAtTime(100, t + 0.1);
+        gain.gain.setValueAtTime(0.12, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
+        osc.connect(gain); gain.connect(audioCtx.destination); osc.start(t); osc.stop(t + 0.1);
+        let noiseSrc = audioCtx.createBufferSource(); noiseSrc.buffer = noiseBuffer;
+        let noiseFilter = audioCtx.createBiquadFilter(); noiseFilter.type = 'highpass'; noiseFilter.frequency.value = 2000;
+        let nGain = audioCtx.createGain(); nGain.gain.setValueAtTime(0.25, t); nGain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
+        noiseSrc.connect(noiseFilter); noiseFilter.connect(nGain); nGain.connect(audioCtx.destination);
+        noiseSrc.start(t); noiseSrc.stop(t + 0.1);
+    } else if (type === 'perfect') {
+        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+        osc.type = 'square'; osc.frequency.setValueAtTime(880, t); osc.frequency.setValueAtTime(1108, t+0.05); osc.frequency.setValueAtTime(1318, t+0.1); osc.frequency.setValueAtTime(1760, t+0.15);
+        gain.gain.setValueAtTime(0.1, t); gain.gain.linearRampToValueAtTime(0, t + 0.6);
+        osc.connect(gain); gain.connect(audioCtx.destination); osc.start(t); osc.stop(t + 0.6);
+    } else if (type === 'guard') {
+        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+        osc.type = 'square'; osc.frequency.setValueAtTime(1200, t); osc.frequency.exponentialRampToValueAtTime(300, t + 0.2);
+        gain.gain.setValueAtTime(0.1, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
+        osc.connect(gain); gain.connect(audioCtx.destination); osc.start(t); osc.stop(t + 0.2);
+    } else if (type === 'miss') {
+        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+        osc.type = 'triangle'; osc.frequency.setValueAtTime(200, t); osc.frequency.linearRampToValueAtTime(50, t + 0.4);
+        gain.gain.setValueAtTime(0.15, t); gain.gain.linearRampToValueAtTime(0.01, t + 0.4);
+        osc.connect(gain); gain.connect(audioCtx.destination); osc.start(t); osc.stop(t + 0.4);
+    } else if (type === 'damage' || type === 'enemyAttack') {
+        let osc = audioCtx.createOscillator(); let lfo = audioCtx.createOscillator(); let lfoGain = audioCtx.createGain(); let gain = audioCtx.createGain();
+        osc.type = 'sawtooth'; osc.frequency.setValueAtTime(80, t); osc.frequency.linearRampToValueAtTime(30, t + 0.6);
+        lfo.type = 'sine'; lfo.frequency.value = 15; lfoGain.gain.value = 40; 
+        lfo.connect(lfoGain); lfoGain.connect(osc.frequency);
+        gain.gain.setValueAtTime(0.25, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.6);
+        osc.connect(gain); gain.connect(audioCtx.destination); osc.start(t); osc.stop(t + 0.6); lfo.start(t); lfo.stop(t + 0.6);
+        let noiseSrc = audioCtx.createBufferSource(); noiseSrc.buffer = noiseBuffer;
+        let noiseFilter = audioCtx.createBiquadFilter(); noiseFilter.type = 'lowpass'; noiseFilter.frequency.setValueAtTime(800, t); noiseFilter.frequency.linearRampToValueAtTime(100, t + 0.6);
+        let nGain = audioCtx.createGain(); nGain.gain.setValueAtTime(0.3, t); nGain.gain.exponentialRampToValueAtTime(0.01, t + 0.6);
+        noiseSrc.connect(noiseFilter); noiseFilter.connect(nGain); nGain.connect(audioCtx.destination);
+        noiseSrc.start(t); noiseSrc.stop(t + 0.6);
+    }
+}
+
+// --- グローバルログ管理 ---
+let globalLogHistory = [];
+function logMsg(msg, color = "#dcdcdc") {
+    globalLogHistory.push(`<div style="color: ${color}; margin-bottom: 6px; line-height: 1.4;">${msg}</div>`);
+    renderLogs();
+}
+function renderLogs() {
+    const html = globalLogHistory.join('');
+    const kLog = document.getElementById("kingdom-log");
+    const bLog = document.getElementById("battle-log");
+    if(kLog) { kLog.innerHTML = html; kLog.scrollTop = kLog.scrollHeight; }
+    if(bLog) { bLog.innerHTML = html; bLog.scrollTop = bLog.scrollHeight; }
+}
+
+let lineageTree = [];
+function updateFamilyTree() {
+    let current = lineageTree.find(x => x.gen === state.generation);
+    if(current) {
+        current.ruler = state.ruler; current.partner = state.partner;
+    } else {
+        lineageTree.push({ gen: state.generation, ruler: state.ruler, partner: state.partner });
+    }
+}
+function showFamilyTree() {
+    playSfx('click');
+    let html = "";
+    lineageTree.forEach(node => {
+        let pText = node.partner ? `伴侶: <span style="color:#fff;">${node.partner.name}</span>` : `<span style="color:#888;">伴侶なし</span>`;
+        let traits = node.ruler.traits.map(t => `<span class="trait ${t.type}">${t.name}</span>`).join(' ');
+        html += `
+            <div class="tree-node">
+                <div class="tree-gen">第${node.gen}代</div>
+                <div style="font-weight:bold; font-size:1.1em; color:var(--main-gold); margin-bottom:5px;">当主: ${node.ruler.name}</div>
+                <div style="font-size:0.9em; margin-bottom:5px;">${pText}</div>
+                <div>${traits}</div>
+            </div>
+        `;
+    });
+    document.getElementById("family-tree-content").innerHTML = html;
+    document.getElementById("tree-overlay").style.display = "flex";
+}
+
+const bloodlines = [
+    { name: "噛無也木", color: "#e74c3c", trait: { id: "T1", name: "蛇の加護", type: "physical", desc: "物理+25、防御失敗時の被ダメ半減", apply: c => { c.attack += 25; c.snakeBless = true; } } },
+    { name: "清水", color: "#3498db", trait: { id: "T2", name: "蛍の導き", type: "magic", desc: "最大MP+50、神祇ダメージ大幅増", apply: c => { c.maxMp += 50; c.fireflyMagic = true; } } },
+    { name: "車三郎田", color: "#e67e22", trait: { id: "T3", name: "剛力", type: "physical", desc: "最大HP+80、打たれ強い", apply: c => { c.maxHp += 80; } } },
+    { name: "今昼坂", color: "#2ecc71", trait: { id: "T4", name: "透明化", type: "agility", desc: "QTE枠拡大、退却成功率アップ", apply: c => { c.qteMult = 1.5; c.stealth = true; } } },
+    { name: "すずらん", color: "#9b59b6", trait: { id: "T5", name: "花の癒し", type: "magic", desc: "毎ターンHPが自動回復する", apply: c => { c.autoHeal = true; } } }
+];
+
+const inclusiveNames = ["真朗", "八之助", "三郎", "佐吉", "元助", "弥太郎", "ミヨ", "マツ", "康代", "さえ", "おくめ", "ウロ", "影", "蛍"];
+
+const stages = [
+    { id: 1, title: "STAGE 1: すずらんの峠", name: "農道の怨霊", maxHp: 120, attack: 60, speed: 1.8, bgClass: "bg-stage-1", svg: `<defs><radialGradient id="gg1" cx="50%" cy="40%" r="50%"><stop offset="0%" stop-color="#a0c0d8" stop-opacity="0.65"/><stop offset="100%" stop-color="#2040608" stop-opacity="0"/></radialGradient></defs><ellipse cx="100" cy="130" rx="52" ry="72" fill="url(#gg1)"/><path d="M 68,102 Q 100,86 132,102 L 148,185 Q 100,200 52,185 Z" fill="rgba(150,185,210,0.12)" stroke="rgba(180,210,235,0.28)" stroke-width="1.2"/><ellipse cx="100" cy="89" rx="27" ry="30" fill="rgba(195,218,232,0.18)"/><ellipse cx="87" cy="85" rx="7" ry="9" fill="rgba(0,5,20,0.92)"/><ellipse cx="113" cy="85" rx="7" ry="9" fill="rgba(0,5,20,0.92)"/><ellipse cx="87" cy="85" rx="3.5" ry="4.5" fill="none" stroke="rgba(90,150,220,0.5)" stroke-width=".8"/><ellipse cx="113" cy="85" rx="3.5" ry="4.5" fill="none" stroke="rgba(90,150,220,0.5)" stroke-width=".8"/><path d="M 88,107 Q 100,113 112,107" fill="none" stroke="rgba(0,0,0,.75)" stroke-width="3.5" stroke-linecap="round"/><circle cx="44" cy="72" r="2.8" fill="#ffe860"/><circle cx="44" cy="72" r="7" fill="rgba(255,232,80,.18)"/><circle cx="160" cy="98" r="2.2" fill="#ffe860"/><circle cx="160" cy="98" r="6" fill="rgba(255,232,80,.15)"/><circle cx="58" cy="152" r="2.4" fill="#ffe860"/><circle cx="58" cy="152" r="6" fill="rgba(255,232,80,.13)"/><circle cx="150" cy="158" r="2.6" fill="#ffe860"/><circle cx="150" cy="158" r="7" fill="rgba(255,232,80,.16)"/><path d="M 52,185 Q 62,192 68,180 Q 74,190 80,182 Q 86,192 92,183 Q 98,193 104,182 Q 110,193 116,182 Q 122,192 128,183 Q 134,190 140,182 Q 146,192 148,185" fill="none" stroke="rgba(155,190,215,.22)" stroke-width="1.5"/>` },
+    { id: 2, title: "STAGE 2: あぎと桜の狂気", name: "アケビの眼球", maxHp: 260, attack: 115, speed: 2.1, bgClass: "bg-stage-2", svg: `<defs><radialGradient id="gg2a" cx="50%" cy="55%" r="48%"><stop offset="0%" stop-color="#ede0c8" stop-opacity="0.9"/><stop offset="100%" stop-color="#c0a0c0" stop-opacity="0.5"/></radialGradient><radialGradient id="gg2b" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#800040"/><stop offset="100%" stop-color="#300020"/></radialGradient></defs><ellipse cx="100" cy="115" rx="72" ry="62" fill="#5a1a6a" stroke="rgba(140,60,160,.4)" stroke-width="2"/><ellipse cx="100" cy="115" rx="72" ry="62" fill="none" stroke="rgba(200,100,220,.2)" stroke-width="1" stroke-dasharray="8,4"/><path d="M 100,53 Q 100,80 100,115" stroke="rgba(140,60,160,.6)" stroke-width="3" fill="none"/><path d="M 100,53 Q 72,115 28,115 Q 72,115 100,177" stroke="rgba(170,70,190,.5)" stroke-width="1.5" fill="none" stroke-dasharray="4,3"/><path d="M 100,53 Q 128,115 172,115 Q 128,115 100,177" stroke="rgba(170,70,190,.5)" stroke-width="1.5" fill="none" stroke-dasharray="4,3"/><ellipse cx="100" cy="115" rx="55" ry="46" fill="url(#gg2a)"/><ellipse cx="70" cy="100" rx="14" ry="16" fill="white" stroke="rgba(100,50,120,.3)" stroke-width="1"/><ellipse cx="70" cy="100" rx="9" ry="11" fill="url(#gg2b)"/><ellipse cx="70" cy="100" rx="4" ry="5" fill="rgba(0,0,0,.9)"/><circle cx="67" cy="97" r="2" fill="rgba(255,255,255,.6)"/><ellipse cx="130" cy="105" rx="14" ry="16" fill="white" stroke="rgba(100,50,120,.3)" stroke-width="1"/><ellipse cx="130" cy="105" rx="9" ry="11" fill="url(#gg2b)"/><ellipse cx="130" cy="105" rx="4" ry="5" fill="rgba(0,0,0,.9)"/><circle cx="127" cy="102" r="2" fill="rgba(255,255,255,.6)"/><ellipse cx="100" cy="132" rx="10" ry="12" fill="white" stroke="rgba(100,50,120,.3)" stroke-width="1"/><ellipse cx="100" cy="132" rx="6" ry="8" fill="url(#gg2b)"/><ellipse cx="100" cy="132" rx="2.5" ry="3.5" fill="rgba(0,0,0,.9)"/><circle cx="98" cy="130" r="1.5" fill="rgba(255,255,255,.6)"/><path d="M 52,140 Q 38,160 30,180" stroke="rgba(120,50,140,.6)" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M 148,145 Q 162,162 172,178" stroke="rgba(120,50,140,.6)" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M 80,165 Q 76,180 70,190" stroke="rgba(120,50,140,.5)" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M 120,165 Q 124,180 130,190" stroke="rgba(120,50,140,.5)" stroke-width="2" fill="none" stroke-linecap="round"/>` },
+    { id: 3, title: "STAGE 3: 楯の城", name: "木簡の亡者", maxHp: 460, attack: 185, speed: 2.4, bgClass: "bg-stage-3", svg: `<defs><radialGradient id="gg3" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#1a1008" stop-opacity="0"/><stop offset="80%" stop-color="#1a1008" stop-opacity="0"/><stop offset="100%" stop-color="#100a04" stop-opacity=".8"/></radialGradient></defs><circle cx="100" cy="100" r="75" fill="rgba(255,255,255,.02)" stroke="rgba(180,150,100,.12)" stroke-width="1"/><circle cx="100" cy="100" r="75" fill="url(#gg3)"/><rect x="62" y="22" width="18" height="55" rx="2" fill="#6b4c2a" stroke="rgba(200,160,90,.3)" stroke-width="1" transform="rotate(-45,71,49)"/><text x="66" y="52" font-size="9" fill="rgba(200,160,80,.7)" font-family="serif" transform="rotate(-45,71,49)">記</text><rect x="120" y="28" width="18" height="55" rx="2" fill="#5a4020" stroke="rgba(200,160,90,.3)" stroke-width="1" transform="rotate(30,129,55)"/><text x="124" y="62" font-size="9" fill="rgba(200,160,80,.7)" font-family="serif" transform="rotate(30,129,55)">号</text><rect x="38" y="85" width="18" height="55" rx="2" fill="#7a5530" stroke="rgba(200,160,90,.3)" stroke-width="1" transform="rotate(-20,47,112)"/><text x="42" y="118" font-size="9" fill="rgba(200,160,80,.7)" font-family="serif" transform="rotate(-20,47,112)">文</text><rect x="145" y="90" width="18" height="55" rx="2" fill="#604828" stroke="rgba(200,160,90,.3)" stroke-width="1" transform="rotate(55,154,117)"/><text x="149" y="123" font-size="9" fill="rgba(200,160,80,.7)" font-family="serif" transform="rotate(55,154,117)">字</text><rect x="70" y="138" width="18" height="55" rx="2" fill="#6e4f2c" stroke="rgba(200,160,90,.3)" stroke-width="1" transform="rotate(-15,79,165)"/><text x="74" y="168" font-size="9" fill="rgba(200,160,80,.7)" font-family="serif" transform="rotate(-15,79,165)">暴</text><rect x="112" y="140" width="18" height="55" rx="2" fill="#5c4224" stroke="rgba(200,160,90,.3)" stroke-width="1" transform="rotate(20,121,167)"/><text x="116" y="170" font-size="9" fill="rgba(200,160,80,.7)" font-family="serif" transform="rotate(20,121,167)">力</text><ellipse cx="100" cy="100" rx="22" ry="25" fill="rgba(0,0,0,.95)" stroke="rgba(180,140,70,.3)" stroke-width="1.5"/><ellipse cx="92" cy="93" rx="5" ry="7" fill="none" stroke="rgba(200,160,80,.6)" stroke-width="1.2"/><ellipse cx="108" cy="93" rx="5" ry="7" fill="none" stroke="rgba(200,160,80,.6)" stroke-width="1.2"/><path d="M 90,110 Q 100,116 110,110" fill="none" stroke="rgba(200,160,80,.5)" stroke-width="2" stroke-linecap="round"/>` },
+    { id: 4, title: "STAGE 4: おぼねりの森", name: "蛹の転生", maxHp: 760, attack: 290, speed: 2.7, bgClass: "bg-stage-4", svg: `<defs><linearGradient id="gg4a" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3a2010"/><stop offset="50%" stop-color="#5a3818"/><stop offset="100%" stop-color="#2a1a0a"/></linearGradient><radialGradient id="gg4b" cx="50%" cy="60%" r="40%"><stop offset="0%" stop-color="rgba(120,200,180,.15)"/><stop offset="100%" stop-color="rgba(120,200,180,0)"/></radialGradient></defs><ellipse cx="100" cy="120" rx="38" ry="65" fill="url(#gg4a)" stroke="rgba(180,130,60,.3)" stroke-width="1.5"/><ellipse cx="100" cy="120" rx="38" ry="65" fill="url(#gg4b)"/><path d="M 70,80 Q 100,70 130,80" stroke="rgba(150,100,40,.5)" stroke-width="1" fill="none"/><path d="M 66,100 Q 100,88 134,100" stroke="rgba(150,100,40,.4)" stroke-width="1" fill="none"/><path d="M 64,120 Q 100,108 136,120" stroke="rgba(150,100,40,.4)" stroke-width="1" fill="none"/><path d="M 66,140 Q 100,128 134,140" stroke="rgba(150,100,40,.4)" stroke-width="1" fill="none"/><path d="M 70,158 Q 100,148 130,158" stroke="rgba(150,100,40,.5)" stroke-width="1" fill="none"/><path d="M 62,110 Q 28,70 15,40" stroke="rgba(120,180,160,.35)" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M 60,100 Q 20,55 5,22" stroke="rgba(120,180,160,.25)" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M 138,110 Q 172,70 185,40" stroke="rgba(120,180,160,.35)" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M 140,100 Q 180,55 195,22" stroke="rgba(120,180,160,.25)" stroke-width="6" fill="none" stroke-linecap="round"/><ellipse cx="100" cy="78" rx="12" ry="10" fill="rgba(200,180,120,.2)" stroke="rgba(200,160,80,.4)" stroke-width="1"/><path d="M 96,74 L 104,74" stroke="rgba(200,160,80,.5)" stroke-width=".8"/><path d="M 94,78 L 106,78" stroke="rgba(200,160,80,.5)" stroke-width=".8"/>` },
+    { id: 5, title: "FINAL STAGE: 山中の淵", name: "双頭大蛇・左美都の守護", maxHp: 1400, attack: 460, speed: 3.2, bgClass: "bg-stage-5", svg: `<defs><radialGradient id="gg5a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#1a4020"/><stop offset="100%" stop-color="#0a1a0c"/></radialGradient></defs><path d="M 40,180 Q 50,140 80,120 Q 120,100 150,80 Q 170,65 165,45" stroke="#1a5030" stroke-width="22" fill="none" stroke-linecap="round"/><path d="M 40,180 Q 50,140 80,120 Q 120,100 150,80 Q 170,65 165,45" stroke="rgba(30,100,50,.3)" stroke-width="30" fill="none" stroke-linecap="round"/><path d="M 40,180 Q 50,140 80,120 Q 120,100 150,80 Q 170,65 165,45" stroke="rgba(60,180,80,.08)" stroke-width="38" fill="none" stroke-linecap="round"/><path d="M 160,185 Q 145,145 120,128 Q 85,108 55,90 Q 32,76 35,55" stroke="#163d26" stroke-width="22" fill="none" stroke-linecap="round"/><path d="M 160,185 Q 145,145 120,128 Q 85,108 55,90 Q 32,76 35,55" stroke="rgba(26,80,40,.3)" stroke-width="30" fill="none" stroke-linecap="round"/><ellipse cx="162" cy="40" rx="20" ry="16" fill="#1a5030" stroke="rgba(80,180,80,.25)" stroke-width="1.5"/><ellipse cx="162" cy="40" rx="20" ry="16" fill="rgba(40,120,60,.2)"/><ellipse cx="155" cy="37" rx="5" ry="6" fill="#c4a822" opacity=".9"/><ellipse cx="155" cy="37" rx="2" ry="3" fill="rgba(0,0,0,.9)"/><circle cx="154" cy="36" r="1" fill="rgba(255,255,255,.5)"/><ellipse cx="169" cy="37" rx="5" ry="6" fill="#c4a822" opacity=".9"/><ellipse cx="169" cy="37" rx="2" ry="3" fill="rgba(0,0,0,.9)"/><circle cx="168" cy="36" r="1" fill="rgba(255,255,255,.5)"/><path d="M 152,48 Q 162,52 172,48" stroke="rgba(80,200,80,.3)" stroke-width="1.5" fill="none"/><ellipse cx="38" cy="50" rx="20" ry="16" fill="#163d26" stroke="rgba(60,160,60,.25)" stroke-width="1.5"/><ellipse cx="38" cy="50" rx="20" ry="16" fill="rgba(30,100,50,.2)"/><ellipse cx="31" cy="47" rx="5" ry="6" fill="#c4a822" opacity=".9"/><ellipse cx="31" cy="47" rx="2" ry="3" fill="rgba(0,0,0,.9)"/><circle cx="30" cy="46" r="1" fill="rgba(255,255,255,.5)"/><ellipse cx="45" cy="47" rx="5" ry="6" fill="#c4a822" opacity=".9"/><ellipse cx="45" cy="47" rx="2" ry="3" fill="rgba(0,0,0,.9)"/><circle cx="44" cy="46" r="1" fill="rgba(255,255,255,.5)"/><path d="M 28,58 Q 38,62 48,58" stroke="rgba(60,180,60,.3)" stroke-width="1.5" fill="none"/>` }
+];
+
+const narrativeEvents = [
+    { text: "今昼坂を登っていると、木通（アケビ）がたわわに実っていた。伴侶がそれを見つめている。", choices: [ { text: "「まるで大きな芋虫をほおばるようだな」と笑い合う", kizuna: 30, log: "「自分も同じことを考えていた」と伴侶は笑い、深い愛情を感じた。" }, { text: "無言で一人でとって食べてしまう", kizuna: -25, log: "伴侶は寂しそうな顔をして、黙って歩き出した。" }, { text: "美しい実を選び、伴侶に手渡す", kizuna: 15, log: "伴侶は微笑みながらそれを受け取り、静かな絆が生まれた。" } ] },
+    { text: "楯の城跡の近くで、伴侶がひどい傷を負って倒れているのを見つけた。手には密書を握っている。", choices: [ { text: "傷を癒し、共に密書を届ける覚悟を決める", kizuna: 40, log: "共に死線を越える覚悟が、二人の魂を強く結びつけた。" }, { text: "「がめつい左美都の欲深い女だ、犬畜生め！」と罵倒して密書を奪う", kizuna: -100, log: "冷酷で理不尽な暴言が、取り返しのつかない亀裂を生んだ。" }, { text: "関わりを恐れ、密書をその場に深く埋めて隠す", kizuna: -10, log: "伴侶は無言で立ち上がり、あなたへの不信感を募らせた。" } ] },
+    { text: "夜更けの犀川。氾濫する川に橋を架けるため、伴侶が蛍を口に含み、川へ飛び込もうとしている。", choices: [ { text: "「気が狂ったか」と笑い飛ばして止める", kizuna: -30, log: "伴侶は悲しげにあなたを突き飛ばし、単独で川へ飛び込んだ。" }, { text: "黙って見守り、無事を祈る", kizuna: 10, log: "干渉しない優しさが、伴侶に安心感を与えた。" }, { text: "共に蛍を集め、一緒に川へ飛び込む", kizuna: 35, log: "神秘の光に包まれながら、二人は川底で固く手を握り合った。" } ] }
+];
+
+let state = { ruler: null, partner: null, heirs: [], generation: 1, kizuna: 40, potions: 3, currentStageIdx: 0, enemyHp: 0, score: 0, isPlayerTurn: false };
+let qte = { 
+    anim: null, type: '', targetKey: null, lastTime: 0, active: false, timer: 100, 
+    hits: { A: null, S: null, D: null }, angle: 0, dir: 1, speed: 0,
+    linearX: 0, linearDir: 1, linearSpeed: 0, linearVariation: 0, linearTarget: {min:0, max:0}
+};
+const qteTargets = { 'A': { min: 20, max: 50, color: '#e74c3c' }, 'S': { min: 75, max: 105, color: '#2ecc71' }, 'D': { min: 130, max: 160, color: '#3498db' } };
+const defVariations = [ { name: "【強撃】", desc: "往復移動" }, { name: "【神速】", desc: "片道超高速" }, { name: "【急所】", desc: "極小ターゲット" } ];
+
+// --- シナジー計算 ---
+function getSynergy() {
+    if(!state.partner) return { atk: 1.0, def: 1.0, name: "孤立無援" };
+    let rTypes = state.ruler.traits.map(t => t.type);
+    let pTypes = state.partner.traits.map(t => t.type);
+    let shared = rTypes.filter(x => pTypes.includes(x)).length > 0;
+    let diff = rTypes.filter(x => !pTypes.includes(x)).length > 0 || pTypes.filter(x => !rTypes.includes(x)).length > 0;
+
+    if (shared && !diff) return { atk: 1.3, def: 1.0, name: "共鳴の構え (攻撃力UP)" };
+    if (!shared && diff) return { atk: 1.0, def: 0.7, name: "相補の陣 (被ダメ軽減)" };
+    if (shared && diff) return { atk: 1.2, def: 0.8, name: "万象の絆 (攻防UP)" };
+    return { atk: 1.0, def: 1.0, name: "比翼" };
+}
+
+function showTransition(message) {
+    document.getElementById("transition-text").innerText = message;
+    document.getElementById("transition-overlay").style.display = "flex";
+}
+function hideTransition() { document.getElementById("transition-overlay").style.display = "none"; }
+
+function showTurnBanner(text, color) {
+    let banner = document.getElementById("turn-banner");
+    banner.innerText = text; banner.style.color = color; banner.style.textShadow = `0 0 30px ${color}, 2px 2px 10px #000`;
+    banner.classList.add("turn-banner-show");
+    setTimeout(() => { banner.classList.remove("turn-banner-show"); }, 800);
+}
+
+function addScore(points) { state.score += points; document.getElementById("score-val").innerText = state.score; }
+
+function showResult(type) {
+    document.getElementById("result-overlay").style.display = "flex";
+    document.getElementById("result-title").innerText = type === "CLEAR" ? "神話達成" : "血脈断絶";
+    document.getElementById("result-title").style.color = type === "CLEAR" ? "var(--main-gold)" : "var(--danger)";
+    document.getElementById("result-score-text").innerText = state.score;
+    document.getElementById("result-generation").innerText = state.generation;
+}
+
+function startGame() {
+    initAudio(); playSfx('perfect'); switchBGM('kingdom');
+    let nameInput = document.getElementById("ruler-name").value || "ウロ";
+    let genderSelect = document.getElementById("ruler-gender").value;
+    
+    document.getElementById("start-screen").classList.remove("active");
+    document.getElementById("start-screen").style.display = "none";
+    document.getElementById("kingdom-panel").classList.add("active");
+    
+    state.score = 0; addScore(0);
+    globalLogHistory = []; lineageTree = [];
+    state.ruler = createChar(nameInput, genderSelect, [bloodlines[0].trait]);
+    state.enemyHp = stages[0].maxHp;
+    
+    updateFamilyTree();
+    logMsg(`歴史は開祖 <span style="color:var(--main-gold);">${nameInput}</span> より始まる...`);
+    updateKingdomUI();
+}
+
+function createChar(name, gender, traits = []) {
+    let c = { name, gender, maxHp: 100, hp: 100, maxMp: 30, mp: 30, attack: 25, qteMult: 1.0, snakeBless: false, fireflyMagic: false, autoHeal: false, stealth: false, traits: [...traits] };
+    c.traits.forEach(t => t.apply(c)); c.hp = c.maxHp; c.mp = c.maxMp; return c;
+}
+
+function generatePartnerSVG(color) {
+    return `<svg viewBox="0 0 100 100" width="100%" height="100%"><circle cx="50" cy="50" r="50" fill="${color}" opacity="0.2"/><circle cx="50" cy="35" r="18" fill="${color}"/><path d="M 20,90 Q 50,50 80,90 Z" fill="${color}"/></svg>`;
+}
+
+function renderCharBox(char, isRuler = true) {
+    if (!char) return `<div class="char-box" style="color:#777; text-align:center;">未設定</div>`;
+    let trHtml = char.traits.map(t => `<span class="trait ${t.type}">${t.name}</span>`).join('');
+    return `
+        <div class="char-box">
+            <div class="char-name">${isRuler ? "当主" : "伴侶"}: ${char.name} <span style="font-size:0.7em; color:#aaa;">(${char.gender})</span></div>
+            <div style="font-size:0.85em; color:#ccc; margin-bottom:5px;">HP: ${char.hp}/${char.maxHp} | MP: ${char.mp}/${char.maxMp} | 攻: ${char.attack}</div>
+            <div>${trHtml || "<span class='trait'>凡人</span>"}</div>
+        </div>
+    `;
+}
+
+function updateKingdomUI() {
+    let kizunaClass = (state.kizuna <= 20) ? "kizuna-box kizuna-warning" : "kizuna-box";
+    let heirsHtml = "";
+    if (state.heirs.length > 0) {
+        heirsHtml = `<div style="margin-top:10px; border-top:1px solid #444; padding-top:10px;">
+            <div style="color:var(--main-gold); font-weight:bold; margin-bottom: 5px;">次代の後継者たち (${state.heirs.length}人)</div>`;
+        state.heirs.forEach(h => {
+            heirsHtml += `<div style="font-size:0.9em; padding: 3px; background:#222; margin-bottom:3px; border-radius:3px;">・${h.name} (${h.gender})</div>`;
+        });
+        heirsHtml += `</div>`;
+    }
+
+    document.getElementById("kingdom-party-info").innerHTML = `
+        <h3 style="margin-bottom:10px;">第${state.generation}代の血脈</h3>
+        ${renderCharBox(state.ruler, true)}
+        ${state.partner ? `<div class="${kizunaClass}">絆 (Bond): ${state.kizuna}%</div>${renderCharBox(state.partner, false)}` : `<div style="text-align:center; color:#888; margin:10px 0; padding:10px; border:1px dashed #555; border-radius:6px;">伴侶がいません<br><span style="font-size:0.8em;">(遠征前に縁談を推奨)</span></div>`}
+        ${heirsHtml}
+    `;
+    
+    document.getElementById("default-kingdom-menu").style.display = "block";
+    document.getElementById("candidates-area").style.display = "none";
+    document.getElementById("event-section").style.display = "none";
+}
+
+// 子供の死亡判定処理（奈良時代レベルの高い死亡率）
+function checkMortality() {
+    let survived = [];
+    let diedCount = 0;
+    state.heirs.forEach(heir => {
+        // 約35%の確率で死亡
+        if (Math.random() < 0.35) {
+            logMsg(`【悲報】過酷な時代の波紋、疫病により、子 ${heir.name} が命を落とした...`, "var(--danger)");
+            diedCount++;
+        } else {
+            survived.push(heir);
+        }
+    });
+    state.heirs = survived;
+    if (diedCount > 0) playSfx('miss');
+}
+
+function advanceKingdom() {
+    playSfx('click');
+    addScore(50);
+    
+    if (state.heirs.length > 0) {
+        checkMortality();
+    }
+
+    updateKingdomUI();
+    document.getElementById("default-kingdom-menu").style.display = "none";
+    if (!state.partner) {
+        let candidatesArea = document.getElementById("candidates-area");
+        candidatesArea.innerHTML = "";
+        
+        let shuffledBl = [...bloodlines].sort(() => 0.5 - Math.random()).slice(0, 3);
+        let shuffledNames = [...inclusiveNames].sort(() => 0.5 - Math.random());
+        
+        shuffledBl.forEach((bl, idx) => {
+            let name = shuffledNames[idx];
+            candidatesArea.innerHTML += `
+                <div class="candidate-card" onclick="marry(${bloodlines.indexOf(bl)}, '${name}')">
+                    <div class="partner-portrait">${generatePartnerSVG(bl.color)}</div>
+                    <div style="font-weight:bold; color:#fff;">${bl.name}の ${name}</div>
+                    <div class="trait ${bl.trait.type}" style="margin-top:5px;">${bl.trait.name}</div>
+                    <div style="font-size:0.75em; color:#aaa; margin-top:5px;">${bl.trait.desc}</div>
+                </div>
+            `;
+        });
+        candidatesArea.style.display = "grid";
+        logMsg("他家からの縁談が持ち込まれた。どの血脈を受け入れるか。");
+    } else {
+        let ev = narrativeEvents[Math.floor(Math.random() * narrativeEvents.length)];
+        document.getElementById("event-section").style.display = "block"; 
+        document.getElementById("event-text").innerText = ev.text;
+        
+        let choicesHtml = "";
+        ev.choices.forEach((c, idx) => {
+            choicesHtml += `<button class="choice-btn" onclick="resolveEvent(${idx}, ${c.kizuna}, '${c.log}')">${c.text}</button>`;
+        });
+        document.getElementById("event-choices").innerHTML = choicesHtml;
+        logMsg("伴侶との日常。選択によって絆が変動する...");
+    }
+}
+
+function marry(blIdx, name) {
+    playSfx('perfect');
+    let bl = bloodlines[blIdx];
+    let genders = ["男性", "女性", "境界を持たぬ者"];
+    state.partner = createChar(name, genders[Math.floor(Math.random() * genders.length)], [bl.trait]);
+    state.kizuna = 40;
+    addScore(200);
+    updateFamilyTree();
+    logMsg(`${bl.name}の ${name} を伴侶として迎えた。`, "var(--success)");
+    updateKingdomUI();
+}
+
+function resolveEvent(choiceIdx, kizunaChange, logText) {
+    playSfx('click');
+    state.kizuna += kizunaChange;
+    state.kizuna = Math.max(0, Math.min(100, state.kizuna));
+    if (kizunaChange > 0) addScore(kizunaChange * 5); 
+    
+    logMsg(logText);
+    logMsg(`絆が ${state.kizuna}% になった。`, "#aaa");
+    if (state.kizuna <= 0) {
+        logMsg(`完全に愛想を尽かされ、${state.partner.name} は家を出て行った...。離縁となった。`, "var(--danger)");
+        state.partner = null;
+        updateFamilyTree();
+    } else if (state.kizuna >= 50 && Math.random() < 0.25) { 
+        // 子供は何人も産まれる
+        let childTraits = [...state.ruler.traits];
+        state.partner.traits.forEach(t => { if(!childTraits.find(ct => ct.id === t.id)) childTraits.push(t); });
+        let genders = ["男性", "女性", "境界を持たぬ者"];
+        let cName = inclusiveNames[Math.floor(Math.random() * inclusiveNames.length)];
+        let newChild = createChar(cName, genders[Math.floor(Math.random() * genders.length)], childTraits);
+        state.heirs.push(newChild);
+        addScore(500); 
+        logMsg(`奇跡的に絆が実を結び、左美都の神秘によって子 ${newChild.name} が授けられた！`, "var(--main-gold)");
+    }
+    updateKingdomUI();
+}
+
+function startExpedition() {
+    playSfx('click');
+    if(state.heirs.length === 0 && !state.partner) { alert("血脈が途絶える危険があります。まずは縁談を。"); return; }
+    
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('battle-layout').classList.add('active-battle');
+    state.potions = 3;
+    logMsg(`<b>第${state.generation}代当主 ${state.ruler.name} が、左美都を脅かす死地へ赴く。</b>`, "var(--main-gold)");
+    
+    switchBGM('battle');
+    updateBattleUI();
+    renderLogs(); 
+    setTimeout(startPlayerTurn, 600);
+}
+
+function startPlayerTurn() {
+    if (state.ruler.hp <= 0 || state.enemyHp <= 0) return;
+    state.isPlayerTurn = true;
+    let bCenter = document.getElementById("battle-bg");
+    bCenter.classList.remove("battle-enemy-turn");
+    bCenter.classList.add("battle-player-turn");
+    
+    document.getElementById("battle-phase-indicator").style.background = "var(--main-gold)";
+    document.getElementById("battle-phase-indicator").style.color = "#000";
+    document.getElementById("battle-phase-indicator").innerText = "【当主の攻勢】";
+    
+    showTurnBanner("【 攻勢の番 】", "var(--main-gold)");
+    document.getElementById('player-commands').classList.remove('disabled-menu');
+    updateBattleUI(); 
+}
+
+function enemyTurn() {
+    if (state.ruler.hp <= 0 || state.enemyHp <= 0) return;
+    state.isPlayerTurn = false;
+    let bCenter = document.getElementById("battle-bg");
+    bCenter.classList.remove("battle-player-turn");
+    bCenter.classList.add("battle-enemy-turn");
+    
+    document.getElementById("battle-phase-indicator").style.background = "var(--danger)";
+    document.getElementById("battle-phase-indicator").style.color = "#fff";
+    document.getElementById("battle-phase-indicator").innerText = "【怪異の猛攻】";
+    
+    document.getElementById('player-commands').classList.add('disabled-menu'); 
+    showTurnBanner("【 怪異の番 】", "var(--danger)");
+    setTimeout(() => {
+        playSfx('damage');
+        logMsg(`＞ ${stages[state.currentStageIdx].name} の強烈な全体攻撃！`, "var(--danger)");
+        let enemyVis = document.getElementById("enemy-visual");
+        enemyVis.style.transform = "scale(1.3) translateY(-15px) rotate(-5deg)";
+        setTimeout(() => { enemyVis.style.transform = "scale(1)"; }, 300);
+        
+        setTimeout(() => prepareQTE('defend'), 500);
+    }, 1000);
+}
+
+function executePlayerAction(actionType) {
+    if (!state.isPlayerTurn) return; 
+    playSfx('click');
+    state.isPlayerTurn = false; 
+    document.getElementById('player-commands').classList.add('disabled-menu');
+    
+    if (actionType === 'attack') prepareQTE('attack');
+    else if (actionType === 'magic') useMagic();
+    else if (actionType === 'potion') usePotion();
+    else if (actionType === 'flee') fleeBattle();
+    else if (actionType === 'puzzle') startPuzzleMode();
+    else if (actionType === 'kizuna') useKizunaCombo();
+}
+
+function updateBattleUI() {
+    let stg = stages[state.currentStageIdx];
+    let battleCenter = document.getElementById("battle-bg");
+    
+    battleCenter.className = `battle-center ${stg.bgClass} ${state.isPlayerTurn ? 'battle-player-turn' : 'battle-enemy-turn'}`;
+    document.getElementById("stage-name").innerText = stg.title;
+    document.getElementById("enemy-name").innerText = stg.name;
+    document.getElementById("enemy-svg-content").innerHTML = stg.svg;
+    document.getElementById("looming-svg-content").innerHTML = stg.svg;
+    let bhpPct = Math.max(0, (state.enemyHp / stg.maxHp) * 100);
+    document.getElementById("boss-hp-fill").style.width = bhpPct + "%";
+    document.getElementById("boss-hp-text").innerText = `${state.enemyHp} / ${stg.maxHp}`;
+    
+    const renderBar = (val, max, type) => `<div class="bar-container"><div class="bar-fill ${type}-fill" style="width:${Math.max(0, (val/max)*100)}%"></div><div class="bar-text">${type.toUpperCase()}: ${val}/${max}</div></div>`;
+    
+    document.getElementById("battle-ruler-info").innerHTML = `
+        <div class="char-name">${state.ruler.name}</div>
+        ${renderBar(state.ruler.hp, state.ruler.maxHp, 'hp')}
+        ${renderBar(state.ruler.mp, state.ruler.maxMp, 'mp')}
+    `;
+    
+    if (state.partner) {
+        document.getElementById("battle-partner-info").style.display = "block";
+        document.getElementById("battle-kizuna-box").style.display = "block";
+        document.getElementById("battle-partner-info").innerHTML = `
+            <div class="char-name">${state.partner.name}</div>
+            ${renderBar(state.partner.hp, state.partner.maxHp, 'hp')}
+        `;
+        document.getElementById("kizuna-fill").style.width = state.kizuna + "%";
+        document.getElementById("kizuna-text").innerText = `${state.kizuna}%`;
+        document.getElementById("synergy-display").innerText = `陣形: ${getSynergy().name}`;
+        
+        document.getElementById("btn-kizuna").style.display = "block";
+        document.getElementById("btn-kizuna").disabled = (state.kizuna < 100);
+    } else {
+        document.getElementById("battle-partner-info").style.display = "none";
+        document.getElementById("battle-kizuna-box").style.display = "none";
+        document.getElementById("btn-kizuna").style.display = "none";
+    }
+    
+    document.getElementById("btn-magic").disabled = (state.ruler.mp < 20);
+    document.getElementById("btn-puzzle").disabled = (state.ruler.mp < 10);
+    document.getElementById("btn-potion").disabled = (state.potions <= 0);
+    document.getElementById("potion-count").innerText = state.potions;
+}
+
+// エフェクト機能
+function triggerJuice(type, qteColor) {
+    const fx = document.getElementById('fx-layer');
+    fx.innerHTML = '';
+    let color = qteColor || 'var(--main-gold)';
+
+    if (type === 'super-attack' || type === 'super-attack-long') {
+        fx.innerHTML = `
+            <div class="mega-flash"></div>
+            <div class="impact-ring" style="border-color: ${color};"></div>
+            <div class="cross-slash-1" style="background: linear-gradient(90deg, transparent, #fff, ${color}, transparent);"></div>
+            <div class="cross-slash-2" style="background: linear-gradient(90deg, transparent, #fff, ${color}, transparent);"></div>
+            <div class="text-pop" style="color: ${color};">PERFECT STRIKE!!</div>
+        `;
+    } else if (type === 'attack-great') {
+        fx.innerHTML = `
+            <div class="screen-flash"></div>
+            <div class="cross-slash-1" style="background: linear-gradient(90deg, transparent, #fff, ${color}, transparent);"></div>
+        `;
+    } else if (type === 'super-defend') {
+        fx.innerHTML = `
+            <div class="mega-flash" style="background: rgba(255,255,255,0.3);"></div>
+            <div class="shield-block" style="border-color: ${color}; color: ${color}; text-shadow: 0 0 30px #fff; box-shadow: 0 0 80px ${color}, inset 0 0 80px ${color};">
+                BLOCKED!
+            </div>
+        `;
+    } else if (type === 'defend-great') {
+        fx.innerHTML = `<div class="screen-flash" style="background:#3498db;"></div><div class="shield-block" style="width:100px; height:100px; font-size:1em; border-width:4px;">GUARD</div>`;
+    } else if (type === 'super-damage') {
+        fx.innerHTML = `<div class="enemy-attack-flash" style="background: rgba(231, 76, 60, 0.8);"></div><div class="text-pop" style="color:var(--danger); font-size: 4em;">FATAL BLOW!!</div>`;
+    } else if (type === 'miss') {
+        fx.innerHTML = `<div class="miss-text-anim">MISS...</div>`;
+    }
+}
+
+function useMagic() {
+    state.ruler.mp -= 20;
+    let syn = getSynergy();
+    let dmg = (state.ruler.fireflyMagic ? 200 : 60) * syn.atk; 
+    playSfx('perfect');
+    triggerJuice('super-attack', 'var(--magic)');
+    logMsg(`＞ ${state.ruler.name} は神祇を解き放った！ 敵に ${Math.floor(dmg)} の必中ダメージ！`, "var(--magic)");
+    dealEnemyDamage(Math.floor(dmg));
+}
+
+function usePotion() {
+    state.potions--;
+    playSfx('click');
+    let heal = Math.floor(state.ruler.maxHp * 0.6);
+    state.ruler.hp = Math.min(state.ruler.maxHp, state.ruler.hp + heal);
+    if(state.partner) state.partner.hp = Math.min(state.partner.maxHp, state.partner.hp + heal);
+    logMsg(`＞ 回復薬を使用した。当主（と伴侶）のHPが大幅に回復！`, "var(--success)");
+    updateBattleUI();
+    setTimeout(enemyTurn, 1000);
+}
+
+function useKizunaCombo() {
+    state.kizuna = 0; 
+    let syn = getSynergy();
+    let dmg = (state.ruler.attack * 4 + 150) * syn.atk;
+    playSfx('perfect');
+    triggerJuice('super-attack-long', 'var(--kizuna)');
+    logMsg(`＞ <b>【比翼の鳥】</b> ${state.ruler.name} と ${state.partner.name} の愛の連携撃！<br>敵に ${Math.floor(dmg)} の絶大ダメージ！`, "var(--kizuna)");
+    setTimeout(() => dealEnemyDamage(Math.floor(dmg)), 2000);
+}
+
+function fleeBattle() {
+    let stg = stages[state.currentStageIdx];
+    let hpRatio = state.enemyHp / stg.maxHp;
+    let fleeChance = 0.3 + (1.0 - hpRatio) * 0.5;
+    if (state.ruler.stealth) fleeChance += 0.2;
+    if (Math.random() < fleeChance) {
+        logMsg(`＞ 退却成功！敵の隙を突き、命からがら逃げ延びた！`, "#3498db");
+        showTransition("左美都への退却ルートを確保中...");
+        setTimeout(() => { returnToKingdom(true); }, 2000);
+    } else {
+        playSfx('miss');
+        logMsg(`＞ 退却失敗！敵に回り込まれ、隙を晒してしまった！`, "#e74c3c");
+        triggerJuice('miss');
+        setTimeout(enemyTurn, 1200);
+    }
+}
+
+function dealEnemyDamage(dmg) {
+    state.enemyHp -= dmg;
+    addScore(dmg); 
+    updateBattleUI();
+    let enemyVis = document.getElementById("enemy-visual");
+    enemyVis.style.transform = "scale(0.8) translateX(15px) rotate(5deg)";
+    setTimeout(() => { enemyVis.style.transform = "scale(1) translateX(0) rotate(0)"; }, 150);
+    if (state.enemyHp <= 0) {
+        setTimeout(winStage, 1200);
+    } else {
+        setTimeout(enemyTurn, 1400);
+    }
+}
+
+// --- QTE システム ---
+function prepareQTE(type) {
+    qte.type = type;
+    qte.active = true;
+    qte.hits = { A: null, S: null, D: null };
+    
+    document.getElementById("qte-overlay").style.display = "flex";
+    document.getElementById("qte-timer-fill").style.width = "100%";
+    let stg = stages[state.currentStageIdx];
+    let lineagePower = (state.ruler.maxHp + state.ruler.maxMp + state.ruler.attack) / 100;
+    
+    if (type === 'attack') {
+        qte.timer = 100;
+        let baseSpd = 3.5 + (stg.id * 0.3) - (lineagePower * 0.15);
+        qte.speed = Math.max(2.0, Math.min(baseSpd, 5.5)); 
+        
+        qte.angle = 0; qte.dir = 1;
+        document.getElementById("qte-prompt").innerHTML = "A・S・D をすべて揃えろ！";
+        
+        document.getElementById("qte-arc-container").style.display = "block";
+        document.getElementById("qte-linear-container").style.display = "none";
+        
+        ['A', 'S', 'D'].forEach(k => {
+            let el = document.getElementById(`qte-target-${k}`);
+            el.style.display = "block"; el.style.stroke = qteTargets[k].color; el.style.filter = "none"; el.style.opacity = "1";
+            document.getElementById(`qte-text-${k}`).innerText = k;
+            
+            let btn = document.getElementById(`btn-qte-${k}`);
+            btn.style.borderColor = "#7f8c8d"; btn.style.background = "linear-gradient(180deg, #34495e 0%, #2c3e50 100%)"; btn.style.opacity = "1";
+        });
+    } else if (type === 'defend') {
+        const keys = ['A', 'S', 'D'];
+        qte.targetKey = keys[Math.floor(Math.random() * keys.length)];
+        
+        qte.linearVariation = Math.floor(Math.random() * 3);
+        let vData = defVariations[qte.linearVariation];
+        
+        qte.timer = 80 - (stg.id * 5) + (lineagePower * 3);
+        let tWidth = (qte.linearVariation === 2 ? 10 : 25) - (stg.id * 2) + (lineagePower * 2.5);
+        tWidth = Math.max(8, Math.min(tWidth, 55)); 
+        let tLeft = 10 + Math.random() * (80 - tWidth);
+        qte.linearTarget = { min: tLeft, max: tLeft + tWidth };
+        
+        let speedReduction = Math.max(0.6, 1.0 - (lineagePower * 0.05));
+        qte.linearSpeed = stg.speed * (qte.linearVariation === 1 ? 2.8 : 1.7) * (1 + Math.random()*0.3) * speedReduction;
+        
+        qte.linearX = 0; qte.linearDir = 1;
+
+        document.getElementById("qte-arc-container").style.display = "none";
+        document.getElementById("qte-linear-container").style.display = "block";
+        
+        document.getElementById("qte-prompt").innerHTML = `敵の猛攻！ ${vData.name} <span style="color:${qteTargets[qte.targetKey].color}; text-shadow:0 0 10px ${qteTargets[qte.targetKey].color};">『 ${qte.targetKey} 』</span> で防げ！`;
+        
+        let tEl = document.getElementById("qte-linear-target");
+        tEl.style.width = tWidth + "%"; tEl.style.left = tLeft + "%"; tEl.style.background = qteTargets[qte.targetKey].color;
+        tEl.style.boxShadow = `0 0 15px ${qteTargets[qte.targetKey].color}`;
+
+        ['A', 'S', 'D'].forEach(k => {
+            let btn = document.getElementById(`btn-qte-${k}`);
+            if (k === qte.targetKey) {
+                btn.style.borderColor = qteTargets[k].color; btn.style.background = "linear-gradient(180deg, #34495e 0%, #2c3e50 100%)"; btn.style.opacity = "1";
+            } else {
+                btn.style.borderColor = "#444"; btn.style.background = "#222"; btn.style.opacity = "0.4";
+            }
+        });
+    }
+    
+    if (qte.anim) cancelAnimationFrame(qte.anim);
+    qte.lastTime = performance.now();
+    requestAnimationFrame(updateQTE);
+}
+
+function updateQTE(time) {
+    if (!qte.active) return;
+    let dt = (time - qte.lastTime) / 16.6;
+    qte.lastTime = time;
+    
+    qte.timer -= 0.30 * dt; 
+    document.getElementById("qte-timer-fill").style.width = Math.max(0, qte.timer) + "%";
+    if (qte.timer <= 0) { finishQTE(); return; }
+    
+    if (qte.type === 'attack') {
+        qte.angle += qte.speed * qte.dir * dt;
+        if (qte.angle >= 180) { qte.angle = 180; qte.dir = -1; }
+        if (qte.angle <= 0) { qte.angle = 0; qte.dir = 1; }
+        document.getElementById("qte-cursor-line").style.transform = `rotate(${qte.angle}deg)`;
+    } else {
+        qte.linearX += qte.linearSpeed * qte.linearDir * dt;
+        if (qte.linearVariation === 1) { 
+            if (qte.linearX >= 100) qte.linearX = 0;
+        } else { 
+            if (qte.linearX >= 100) { qte.linearX = 100; qte.linearDir = -1; }
+            if (qte.linearX <= 0) { qte.linearX = 0; qte.linearDir = 1; }
+        }
+        document.getElementById("qte-linear-cursor").style.left = qte.linearX + "%";
+    }
+    
+    qte.anim = requestAnimationFrame(updateQTE);
+}
+
+function executeQTE(pressedKey) {
+    if (!qte.active) return;
+    if (qte.type === 'attack') {
+        if (qte.hits[pressedKey] !== null) return;
+        let tgt = qteTargets[pressedKey];
+        let isTiming = (qte.angle >= tgt.min && qte.angle <= tgt.max);
+        qte.hits[pressedKey] = isTiming;
+        let targetEl = document.getElementById(`qte-target-${pressedKey}`);
+        let textEl = document.getElementById(`qte-text-${pressedKey}`);
+        let btn = document.getElementById(`btn-qte-${pressedKey}`);
+        
+        if (isTiming) {
+            playSfx('hit');
+            targetEl.style.stroke = "#fff"; targetEl.style.filter = "drop-shadow(0 0 10px #fff)";
+            textEl.innerText = "〇"; btn.style.background = tgt.color;
+        } else {
+            targetEl.style.stroke = "#444"; targetEl.style.opacity = "0.3";
+            textEl.innerText = "×"; btn.style.background = "#222";
+        }
+        if (Object.values(qte.hits).every(v => v !== null)) finishQTE();
+    } else if (qte.type === 'defend') {
+        if (pressedKey === qte.targetKey) {
+            let isTiming = (qte.linearX >= qte.linearTarget.min && qte.linearX <= qte.linearTarget.max);
+            qte.hits[qte.targetKey] = isTiming;
+        } else {
+            qte.hits[qte.targetKey] = false;
+        }
+        finishQTE(); 
+    }
+}
+
+function finishQTE() {
+    qte.active = false;
+    cancelAnimationFrame(qte.anim);
+    setTimeout(() => { document.getElementById("qte-overlay").style.display = "none"; }, 300);
+
+    let syn = getSynergy();
+    if (qte.type === 'attack') {
+        let successCount = Object.values(qte.hits).filter(v => v === true).length;
+        let dmg = state.ruler.attack * syn.atk; 
+        
+        if (successCount === 3) {
+            dmg = Math.floor(dmg * 2.8);
+            playSfx('perfect'); triggerJuice('super-attack', 'var(--main-gold)'); 
+            addScore(150);
+            logMsg(`＞ 剣撃 【PERFECT!】 全ての機を捉えた！ 敵に ${dmg} の致命傷！`, "var(--success)");
+            if (state.partner) state.kizuna = Math.min(100, state.kizuna + 10);
+            setTimeout(() => { dealEnemyDamage(dmg); }, 1800); 
+            return;
+        } else if (successCount === 2) {
+            dmg = Math.floor(dmg * 1.5);
+            playSfx('hit'); triggerJuice('attack-great', 'var(--main-gold)');
+            logMsg(`＞ 剣撃 【GREAT】 敵に ${dmg} の大ダメージ！`, "var(--kizuna)");
+        } else if (successCount === 1) {
+            dmg = Math.floor(dmg * 1.0);
+            playSfx('hit'); triggerJuice('attack-great', 'var(--main-gold)'); 
+            logMsg(`＞ 剣撃 【GOOD】 敵に ${dmg} のダメージ。`, "#fff");
+        } else {
+            dmg = Math.floor(dmg * 0.2);
+            playSfx('miss'); triggerJuice('miss');
+            logMsg(`＞ 痛恨のミス！ 敵に ${dmg} の擦り傷...`, "#888");
+        }
+        dealEnemyDamage(dmg);
+    } else if (qte.type === 'defend') {
+        let success = qte.hits[qte.targetKey] === true;
+        let eDmg = stages[state.currentStageIdx].attack * syn.def; 
+        
+        if (success) {
+            playSfx('guard');
+            triggerJuice('super-defend', qteTargets[qte.targetKey].color);
+            addScore(200); 
+            logMsg(`＞ 【PERFECT PARRY!】 完璧な防御！ ダメージを完全に弾き返した！`, "var(--magic)");
+            eDmg = 0;
+        } else {
+            playSfx('damage');
+            triggerJuice('super-damage');
+            if (state.ruler.snakeBless) {
+                eDmg = Math.floor(eDmg * 0.5);
+                logMsg(`＞ 防御失敗...だが『蛇の加護』が致命傷を防いだ。当主は ${Math.floor(eDmg)} のダメージ！`, "#e67e22");
+            } else {
+                logMsg(`＞ 防御失敗！ 敵の強烈な全体攻撃！ 当主は ${Math.floor(eDmg)} のダメージ！`, "var(--danger)");
+            }
+            
+            // 伴侶へのダメージと死亡判定
+            if (state.partner) {
+                let pdmg = Math.floor(eDmg * 0.8);
+                state.partner.hp -= pdmg;
+                if (state.partner.hp <= 0) {
+                    logMsg(`＞ 猛攻に耐えきれず、伴侶 ${state.partner.name} が命を落とした...`, "var(--danger)");
+                    state.partner = null;
+                    state.kizuna = 0;
+                }
+            }
+        }
+        
+        state.ruler.hp -= Math.floor(eDmg);
+        if (state.ruler.autoHeal && state.ruler.hp > 0) {
+            state.ruler.hp = Math.min(state.ruler.maxHp, state.ruler.hp + 10);
+            logMsg(`＞ 『花の癒し』が当主の傷を少し塞ぐ...`, "var(--success)");
+        }
+        
+        updateBattleUI();
+        if (state.ruler.hp <= 0) setTimeout(rulerDeath, 1500);
+        else if (eDmg === 0 || state.ruler.hp > 0) setTimeout(startPlayerTurn, 1200);
+    }
+}
+
+// --- パズル（陣形連鎖）ロジック ---
+const pzBlockSize = 40, pzCols = 5, pzRows = 10;
+let pzCtx = document.getElementById('puzzle-canvas').getContext('2d');
+let pzBoard = [], pzPiece = null, pzActive = false, pzTime = 20, pzTimerId = null;
+let pzTotalLines = 0, pzDropCounter = 0, pzLastTime = 0, pzReqId = null;
+const pzShapes = [ [], [[1,1,1,1]], [[2,0,0],[2,2,2]], [[0,0,3],[3,3,3]], [[4,4],[4,4]], [[0,5,5],[5,5,0]], [[0,6,0],[6,6,6]], [[7,7,0],[0,7,7]] ];
+const pzColors = [null, '#00ffff', '#0000ff', '#ffa500', '#ffff00', '#00ff00', '#800080', '#ff0000'];
+
+function startPuzzleMode() {
+    state.ruler.mp -= 10;
+    updateBattleUI();
+    document.getElementById('puzzle-overlay').style.display = 'flex';
+    pzBoard = Array.from({length: pzRows}, () => Array(pzCols).fill(0));
+    pzTotalLines = 0; pzTime = 20; pzActive = true;
+    document.getElementById('puzzle-time').innerText = pzTime;
+    spawnPuzzlePiece();
+    pzLastTime = performance.now();
+    pzReqId = requestAnimationFrame(puzzleLoop);
+    pzTimerId = setInterval(() => { pzTime--; document.getElementById('puzzle-time').innerText = pzTime; if(pzTime <= 0) endPuzzleMode(); }, 1000);
+}
+
+function spawnPuzzlePiece() {
+    let matrix = pzShapes[Math.floor(Math.random() * 7) + 1];
+    pzPiece = { matrix: matrix, pos: {x: Math.floor((pzCols - matrix[0].length) / 2), y: 0} };
+    if (collide(pzBoard, pzPiece)) endPuzzleMode();
+}
+
+function collide(board, piece) {
+    for(let y=0; y<piece.matrix.length; ++y) {
+        for(let x=0; x<piece.matrix[y].length; ++x) {
+            if(piece.matrix[y][x] !== 0 && (board[y + piece.pos.y] && board[y + piece.pos.y][x + piece.pos.x]) !== 0) return true;
+        }
+    }
+    return false;
+}
+
+function mergePuzzle(board, piece) {
+    piece.matrix.forEach((row, y) => { row.forEach((val, x) => { if(val !== 0) board[y + piece.pos.y][x + piece.pos.x] = val; }); });
+}
+
+function clearPuzzleLines() {
+    let lines = 0;
+    outer: for (let y = pzRows - 1; y >= 0; --y) {
+        for (let x = 0; x < pzCols; ++x) { if (pzBoard[y][x] === 0) continue outer; }
+        const row = pzBoard.splice(y, 1)[0].fill(0);
+        pzBoard.unshift(row);
+        playSfx('hit');
+        ++y; lines++;
+    }
+    if (lines > 0) { pzTotalLines += lines; addScore(lines * 500); }
+}
+
+function puzzleLoop(time = 0) {
+    if (!pzActive) return;
+    pzDropCounter += (time - pzLastTime); pzLastTime = time;
+    if (pzDropCounter > 200) { dropPuzzle(); }
+    drawPuzzle();
+    pzReqId = requestAnimationFrame(puzzleLoop);
+}
+
+function drawPuzzle() {
+    pzCtx.fillStyle = '#111';
+    pzCtx.fillRect(0, 0, pzCols*pzBlockSize, pzRows*pzBlockSize);
+    drawMatrix(pzBoard, {x:0, y:0});
+    if(pzPiece) drawMatrix(pzPiece.matrix, pzPiece.pos);
+}
+
+function drawMatrix(matrix, offset) {
+    matrix.forEach((row, y) => {
+        row.forEach((val, x) => {
+            if(val !== 0) {
+                pzCtx.fillStyle = pzColors[val];
+                pzCtx.fillRect((x + offset.x)*pzBlockSize, (y + offset.y)*pzBlockSize, pzBlockSize-2, pzBlockSize-2);
+            }
+        });
+    });
+}
+
+function movePuzzle(dir) { if(!pzActive) return; pzPiece.pos.x += dir; if(collide(pzBoard, pzPiece)) pzPiece.pos.x -= dir; }
+function dropPuzzle() { if(!pzActive) return; pzPiece.pos.y++; if(collide(pzBoard, pzPiece)) { pzPiece.pos.y--; mergePuzzle(pzBoard, pzPiece); clearPuzzleLines(); spawnPuzzlePiece(); } pzDropCounter = 0; }
+function rotatePuzzle() {
+    if(!pzActive) return;
+    const pos = pzPiece.pos.x; let offset = 1; const m = pzPiece.matrix;
+    for(let y=0; y<m.length; ++y) { for(let x=0; x<y; ++x) { [m[x][y], m[y][x]] = [m[y][x], m[x][y]]; } }
+    m.forEach(row => row.reverse());
+    while(collide(pzBoard, pzPiece)) {
+        pzPiece.pos.x += offset; offset = -(offset + (offset > 0 ? 1 : -1));
+        if(offset > m[0].length) {
+            m.forEach(row => row.reverse());
+            for(let y=0; y<m.length; ++y) { for(let x=0; x<y; ++x) { [m[x][y], m[y][x]] = [m[y][x], m[x][y]]; } }
+            pzPiece.pos.x = pos; return;
+        }
+    }
+}
+
+function endPuzzleMode() {
+    pzActive = false; clearInterval(pzTimerId); cancelAnimationFrame(pzReqId);
+    document.getElementById('puzzle-overlay').style.display = 'none';
+    
+    let syn = getSynergy();
+    if (pzTotalLines > 0) {
+        let dmg = Math.floor((pzTotalLines * 400 + 150) * syn.atk);
+        if(pzTotalLines >= 2) {
+            playSfx('perfect'); triggerJuice('super-attack', '#9b59b6');
+        } else {
+            playSfx('hit'); triggerJuice('attack-great', '#9b59b6');
+        }
+        logMsg(`＞ <b>【陣形連鎖完了】</b> ${pzTotalLines}ライン消去！ 敵に ${dmg} の大ダメージ！`, "#9b59b6");
+        dealEnemyDamage(dmg);
+    } else {
+        // パズル失敗時の反動ペナルティ
+        let dmgToEnemy = Math.floor(50 * syn.atk);
+        let dmgToPlayer = Math.floor(state.ruler.maxHp * 0.25); // 25%ダメージ
+        
+        playSfx('damage');
+        triggerJuice('super-damage');
+        logMsg(`＞ <b>【陣形崩壊】</b> 連携に失敗！敵に ${dmgToEnemy} の微弱なダメージを与えたが、反動で当主に ${dmgToPlayer} のダメージ！`, "var(--danger)");
+        
+        state.ruler.hp -= dmgToPlayer;
+        if(state.partner) {
+            let dmgToPartner = Math.floor(dmgToPlayer * 0.8);
+            state.partner.hp -= dmgToPartner;
+            if(state.partner.hp <= 0) {
+                logMsg(`＞ 陣形崩壊の反動により、伴侶 ${state.partner.name} が命を落とした...`, "var(--danger)");
+                state.partner = null;
+                state.kizuna = 0;
+            }
+        }
+        
+        updateBattleUI();
+        if (state.ruler.hp <= 0) {
+            setTimeout(rulerDeath, 1500);
+        } else {
+            setTimeout(() => dealEnemyDamage(dmgToEnemy), 1000);
+        }
+    }
+}
+
+window.addEventListener('keydown', (e) => {
+    if (qte.active) { const key = e.key.toUpperCase(); if (key === 'A' || key === 'S' || key === 'D') executeQTE(key); return; }
+    if (pzActive) {
+        if(e.key === 'ArrowLeft') movePuzzle(-1); else if(e.key === 'ArrowRight') movePuzzle(1);
+        else if(e.key === 'ArrowDown') dropPuzzle(); else if(e.key === 'ArrowUp') rotatePuzzle();
+        if(["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].indexOf(e.code) > -1) e.preventDefault();
+    }
+});
+
+function winStage() {
+    addScore(stages[state.currentStageIdx].maxHp); addScore(1500 * (state.currentStageIdx + 1)); 
+    logMsg(`<b>${stages[state.currentStageIdx].name} を討伐した！</b>`, "var(--main-gold)");
+    state.currentStageIdx++;
+    if (state.currentStageIdx >= stages.length) {
+        logMsg(`<b>【完全クリア】左美都の脅威は去り、神話は伝説となった...！</b>`, "var(--success)");
+        addScore(10000); setTimeout(() => showResult("CLEAR"), 2500);
+    } else {
+        logMsg(`次なる怪異の気配がする...一旦退却し、次代へ備えよ。`, "#ccc");
+        showTransition("戦果を確認中...");
+        setTimeout(() => { hideTransition(); state.enemyHp = stages[state.currentStageIdx].maxHp; returnToKingdom(true); }, 2500);
+    }
+}
+
+function rulerDeath() {
+    logMsg(`<b>当主 ${state.ruler.name} は左美都の土へと還った...</b>`, "var(--danger)");
+    setTimeout(() => {
+        if (state.heirs.length > 0) {
+            let nextRuler = state.heirs.shift(); // 先頭の子が次期当主
+            logMsg(`その想いと敵に与えた傷は、後継者 ${nextRuler.name} に託された...`, "var(--main-gold)");
+            showTransition("血脈を次代へ継承中...");
+            setTimeout(() => { 
+                hideTransition(); 
+                state.ruler = nextRuler;
+                state.partner = null; // 世代交代で伴侶リセット
+                state.kizuna = 40;
+                state.generation++;
+                updateFamilyTree();
+                returnToKingdom(false); 
+            }, 2500);
+        } else { 
+            logMsg("血脈は途絶えた...。", "var(--danger)");
+            setTimeout(() => showResult("GAMEOVER"), 1000); 
+        }
+    }, 2000);
+}
+
+// 遠征からの帰還処理 (isFromExpeditionフラグで死亡判定を呼ぶ)
+function returnToKingdom(isFromExpedition = false) {
+    hideTransition();
+    switchBGM('kingdom');
+    document.getElementById('battle-layout').classList.remove('active-battle');
+    document.getElementById('kingdom-panel').classList.add('active');
+    
+    if (isFromExpedition) {
+        logMsg("遠征から帰還した。月日が流れ、家族にも変化が起きる...", "#aaa");
+        if (state.heirs.length > 0) {
+            checkMortality();
+        }
+    } else {
+        logMsg("退却に成功し、無事に帰還した。体制を立て直そう。");
+    }
+
+    updateKingdomUI();
+    renderLogs(); 
+}
+</script>
+</body>
+</html>
