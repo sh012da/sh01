@@ -6,196 +6,385 @@
 <title>Dynasty 33: 左美都神話 - 絆と血脈の果てに</title>
 <style>
     :root { 
-        --main-gold: #d4af37; --bg-dark: #0a0c10; --panel-bg: #161920; 
+        --main-gold: #d4af37;
+        --bg-dark: #0a0c10; --panel-bg: #161920; 
         --success: #2ecc71; --danger: #e74c3c; --magic: #3498db; --kizuna: #e67e22;
         --border-color: #3a3f4b;
     }
-    body { font-family: 'Helvetica Neue', 'Yu Gothic', sans-serif; background-color: var(--bg-dark); color: #e0e0e0; margin: 0; padding: 10px; display: flex; justify-content: center; user-select: none; overflow-x: hidden; }
+    
+    /* ズーム防止処理（スマホでの連続タップ拡大を防ぐ） */
+    html, body { touch-action: manipulation; }
+    button, a, input, select { touch-action: manipulation; }
+
+    body { font-family: 'Helvetica Neue', 'Yu Gothic', sans-serif; background-color: var(--bg-dark); color: #e0e0e0; margin: 0; padding: 10px;
+    display: flex; justify-content: center; user-select: none; overflow-x: hidden; }
     
     #game-container { 
-        width: 100%; max-width: 1000px; background: var(--panel-bg); 
+        width: 100%;
+        max-width: 1000px; background: var(--panel-bg); 
         border-radius: 8px; padding: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.9); border: 1px solid #444;
-        display: grid; grid-template-columns: 280px 1fr; grid-template-rows: auto 1fr auto; gap: 15px;
+        display: grid;
+        grid-template-columns: 280px 1fr; grid-template-rows: auto 1fr auto; gap: 15px;
         position: relative; overflow: hidden; min-height: 90vh;
     }
 
-    h1, h2, h3 { color: var(--main-gold); border-bottom: 1px solid var(--border-color); padding-bottom: 5px; margin-top: 0; text-shadow: 1px 1px 2px black; }
-    .panel { display: none; grid-column: 1 / -1; }
+    h1, h2, h3 { color: var(--main-gold); border-bottom: 1px solid var(--border-color); padding-bottom: 5px; margin-top: 0;
+    text-shadow: 1px 1px 2px black; }
+    .panel { display: none; grid-column: 1 / -1;
+    }
     .active { display: block; }
     
-    #score-panel { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); font-size: 1.2em; font-weight: bold; color: var(--main-gold); text-shadow: 1px 1px 3px #000; z-index: 10; background: rgba(0,0,0,0.7); padding: 5px 20px; border-radius: 20px; border: 1px solid var(--main-gold); box-shadow: 0 4px 10px rgba(0,0,0,0.8); white-space: nowrap; }
+    #score-panel { position: absolute;
+    top: 15px; left: 50%; transform: translateX(-50%); font-size: 1.2em; font-weight: bold; color: var(--main-gold); text-shadow: 1px 1px 3px #000; z-index: 10;
+    background: rgba(0,0,0,0.7); padding: 5px 20px; border-radius: 20px; border: 1px solid var(--main-gold); box-shadow: 0 4px 10px rgba(0,0,0,0.8); white-space: nowrap;
+    }
 
-    #turn-banner { position: absolute; top: 40%; left: -100%; width: 100%; text-align: center; font-size: 4.5em; font-weight: 900; font-style: italic; color: #fff; z-index: 2500; pointer-events: none; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    #turn-banner { position: absolute; top: 40%; left: -100%; width: 100%; text-align: center; font-size: 4.5em; font-weight: 900;
+    font-style: italic; color: #fff; z-index: 2500; pointer-events: none; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
     .turn-banner-show { left: 0 !important; }
 
-    #transition-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 12, 16, 0.95); z-index: 3000; flex-direction: column; justify-content: center; align-items: center; color: var(--main-gold); font-size: 1.5em; font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); backdrop-filter: blur(5px); text-align: center; padding: 20px; }
-    .spinner { margin-top: 20px; width: 50px; height: 50px; border: 4px solid rgba(212, 175, 55, 0.2); border-top: 4px solid var(--main-gold); border-radius: 50%; animation: spin 1s linear infinite; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    #transition-overlay { display: none; position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 12, 16, 0.95); z-index: 3000; flex-direction: column; justify-content: center;
+    align-items: center; color: var(--main-gold); font-size: 1.5em; font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); backdrop-filter: blur(5px);
+    text-align: center; padding: 20px; }
+    .spinner { margin-top: 20px; width: 50px; height: 50px;
+    border: 4px solid rgba(212, 175, 55, 0.2); border-top: 4px solid var(--main-gold); border-radius: 50%; animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg);
+    } }
 
-    #result-overlay, #tree-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 4000; flex-direction: column; justify-content: center; align-items: center; text-align: center; backdrop-filter: blur(5px); }
-    .result-box, .tree-box { background: #161920; padding: 40px; border-radius: 12px; border: 2px solid var(--main-gold); box-shadow: 0 0 50px rgba(212, 175, 55, 0.3); max-height: 80vh; overflow-y: auto; width: 90%; max-width: 600px; }
+    #result-overlay, #tree-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.95); z-index: 4000; flex-direction: column; justify-content: center; align-items: center; text-align: center; backdrop-filter: blur(5px);
+    }
+    .result-box, .tree-box { background: #161920; padding: 40px; border-radius: 12px; border: 2px solid var(--main-gold);
+    box-shadow: 0 0 50px rgba(212, 175, 55, 0.3); max-height: 80vh; overflow-y: auto; width: 90%; max-width: 600px;
+    }
 
-    .tree-node { border: 1px solid #555; background: #222; margin: 10px 0; padding: 10px; border-radius: 8px; position: relative; }
-    .tree-node::after { content: ''; position: absolute; bottom: -12px; left: 50%; width: 2px; height: 10px; background: var(--main-gold); }
+    .tree-node { border: 1px solid #555; background: #222; margin: 10px 0; padding: 10px; border-radius: 8px;
+    position: relative; }
+    .tree-node::after { content: ''; position: absolute; bottom: -12px; left: 50%; width: 2px; height: 10px;
+    background: var(--main-gold); }
     .tree-node:last-child::after { display: none; }
-    .tree-gen { font-weight: bold; color: var(--main-gold); font-size: 1.2em; border-bottom: 1px dashed #555; padding-bottom: 5px; margin-bottom: 5px; }
+    .tree-gen { font-weight: bold; color: var(--main-gold);
+    font-size: 1.2em; border-bottom: 1px dashed #555; padding-bottom: 5px; margin-bottom: 5px; }
 
-    #start-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; text-align: center; grid-column: 1 / -1; }
-    .input-group { margin: 15px 0; width: 100%; max-width: 300px; text-align: left; }
-    .input-group label { display: block; margin-bottom: 5px; color: var(--main-gold); font-weight: bold; font-size: 0.9em; }
-    .input-group input, .input-group select { width: 100%; padding: 12px; border-radius: 4px; border: 1px solid #555; background: #222; color: #fff; font-size: 1em; box-sizing: border-box; }
+    #start-screen { display: flex; flex-direction: column;
+    align-items: center; justify-content: center; min-height: 60vh; text-align: center; grid-column: 1 / -1;
+    }
+    .input-group { margin: 15px 0; width: 100%; max-width: 300px; text-align: left;
+    }
+    .input-group label { display: block; margin-bottom: 5px; color: var(--main-gold); font-weight: bold; font-size: 0.9em;
+    }
+    .input-group input, .input-group select { width: 100%; padding: 12px; border-radius: 4px; border: 1px solid #555;
+    background: #222; color: #fff; font-size: 1em; box-sizing: border-box; }
     
-    .start-btn { background: linear-gradient(135deg, var(--main-gold), #b38b22); color: #000; border: none; padding: 15px 30px; font-size: 1.2em; font-weight: bold; border-radius: 30px; cursor: pointer; transition: 0.3s; margin-top: 20px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4); width: 100%; max-width: 300px; }
-    .start-btn:hover { transform: scale(1.05); filter: brightness(1.2); }
+    .start-btn { background: linear-gradient(135deg, var(--main-gold), #b38b22);
+    color: #000; border: none; padding: 15px 30px; font-size: 1.2em; font-weight: bold; border-radius: 30px; cursor: pointer; transition: 0.3s; margin-top: 20px;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4); width: 100%; max-width: 300px; }
+    .start-btn:hover { transform: scale(1.05);
+    filter: brightness(1.2); }
 
     /* 展示誘導用スタイリッシュリンク */
-    .ex-link-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 25px; padding: 12px 20px; background: rgba(212, 175, 55, 0.05); border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 8px; color: var(--main-gold); text-decoration: none; transition: all 0.3s ease; max-width: 400px; width: 100%; text-align: center; box-sizing: border-box; }
-    .ex-link-btn:hover { background: rgba(212, 175, 55, 0.15); box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); border-color: var(--main-gold); transform: translateY(-2px); }
-    .ex-link-small { font-size: 0.75em; color: #aaa; margin-bottom: 4px; }
-    .ex-link-main { font-size: 1.05em; font-weight: bold; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
-    .ex-link-main::after { content: '→'; font-size: 1.2em; transition: transform 0.3s; }
+    .ex-link-btn { display: flex; flex-direction: column; align-items: center;
+    justify-content: center; margin-top: 25px; padding: 12px 20px; background: rgba(212, 175, 55, 0.05); border: 1px solid rgba(212, 175, 55, 0.5);
+    border-radius: 8px; color: var(--main-gold); text-decoration: none; transition: all 0.3s ease; max-width: 400px; width: 100%; text-align: center; box-sizing: border-box;
+    }
+    .ex-link-btn:hover { background: rgba(212, 175, 55, 0.15); box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+    border-color: var(--main-gold); transform: translateY(-2px); }
+    .ex-link-small { font-size: 0.75em; color: #aaa; margin-bottom: 4px;
+    }
+    .ex-link-main { font-size: 1.05em; font-weight: bold; letter-spacing: 1px; display: flex; align-items: center; gap: 8px;
+    }
+    .ex-link-main::after { content: '→'; font-size: 1.2em; transition: transform 0.3s;
+    }
     .ex-link-btn:hover .ex-link-main::after { transform: translateX(5px); }
 
     /* 遊び方（ヘルプ）モーダル＆ボタン */
-    #help-btn { position: fixed; top: 15px; right: 15px; width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.8); border: 1px solid var(--main-gold); color: var(--main-gold); font-size: 1.2em; font-weight: bold; cursor: pointer; z-index: 4500; box-shadow: 0 0 10px rgba(0,0,0,0.5); transition: 0.3s; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-    #help-btn:hover { background: var(--main-gold); color: #000; box-shadow: 0 0 20px var(--main-gold); }
+    #help-btn { position: fixed;
+    top: 15px; right: 15px; width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.8); border: 1px solid var(--main-gold); color: var(--main-gold); font-size: 1.2em;
+    font-weight: bold; cursor: pointer; z-index: 4500; box-shadow: 0 0 10px rgba(0,0,0,0.5); transition: 0.3s; display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(5px); }
+    #help-btn:hover { background: var(--main-gold); color: #000; box-shadow: 0 0 20px var(--main-gold);
+    }
     
-    #help-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(15, 18, 24, 0.95); border: 1px solid var(--main-gold); border-radius: 12px; padding: 25px; width: 90%; max-width: 500px; z-index: 5000; box-shadow: 0 0 40px rgba(212, 175, 55, 0.2); backdrop-filter: blur(10px); }
-    #help-modal h3 { margin-top: 0; color: var(--main-gold); text-align: center; font-size: 1.4em; }
+    #help-modal { display: none; position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); background: rgba(15, 18, 24, 0.95); border: 1px solid var(--main-gold); border-radius: 12px; padding: 25px; width: 90%; max-width: 500px;
+    z-index: 5000; box-shadow: 0 0 40px rgba(212, 175, 55, 0.2); backdrop-filter: blur(10px);
+    }
+    #help-modal h3 { margin-top: 0; color: var(--main-gold); text-align: center; font-size: 1.4em;
+    }
     #help-modal .help-section { margin-bottom: 15px; }
-    #help-modal .help-title { font-weight: bold; color: #fff; margin-bottom: 5px; border-left: 3px solid var(--main-gold); padding-left: 8px; }
-    #help-modal p { font-size: 0.9em; line-height: 1.5; color: #bbb; margin: 0 0 10px 10px; }
-    .help-close-btn { display: block; width: 100%; padding: 12px; background: transparent; border: 1px solid #555; color: #fff; text-align: center; border-radius: 6px; margin-top: 20px; cursor: pointer; transition: 0.2s; }
+    #help-modal .help-title { font-weight: bold; color: #fff;
+    margin-bottom: 5px; border-left: 3px solid var(--main-gold); padding-left: 8px; }
+    #help-modal p { font-size: 0.9em; line-height: 1.5;
+    color: #bbb; margin: 0 0 10px 10px; }
+    .help-close-btn { display: block; width: 100%; padding: 12px;
+    background: transparent; border: 1px solid #555; color: #fff; text-align: center; border-radius: 6px; margin-top: 20px; cursor: pointer; transition: 0.2s;
+    }
     .help-close-btn:hover { background: #333; border-color: #fff; }
 
-    #battle-layout { display: none; grid-template-columns: 280px 1fr; grid-template-rows: 1fr auto; gap: 15px; grid-column: 1 / -1; height: 100%; }
+    #battle-layout { display: none;
+    grid-template-columns: 280px 1fr; grid-template-rows: 1fr auto; gap: 15px; grid-column: 1 / -1; height: 100%;
+    }
     .active-battle { display: grid !important; }
 
-    .party-panel { background-color: rgba(20, 24, 30, 0.9); border: 2px solid var(--main-gold); border-radius: 8px; padding: 15px; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); z-index: 2; display: flex; flex-direction: column; }
-    .char-box { background-color: #222730; padding: 10px; border-radius: 6px; margin-bottom: 10px; border-left: 4px solid var(--main-gold); position: relative; overflow: hidden; }
-    .char-name { font-weight: bold; font-size: 1.05em; color: #fff; margin-bottom: 5px; z-index: 2; position: relative; word-break: break-word; }
-    .kizuna-box { text-align: center; margin: 10px 0; padding: 10px; background-color: rgba(230, 126, 34, 0.1); border: 1px dashed var(--kizuna); border-radius: 8px; transition: 0.3s; }
+    .party-panel { background-color: rgba(20, 24, 30, 0.9);
+    border: 2px solid var(--main-gold); border-radius: 8px; padding: 15px; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); z-index: 2; display: flex; flex-direction: column;
+    }
+    .char-box { background-color: #222730; padding: 10px; border-radius: 6px; margin-bottom: 10px; border-left: 4px solid var(--main-gold); position: relative;
+    overflow: hidden; flex: 1;} /* flex: 1 を追加してスマホでのレイアウト安定化 */
+    .char-name { font-weight: bold; font-size: 1.05em; color: #fff; margin-bottom: 5px; z-index: 2; position: relative;
+    word-break: break-word; }
+    .kizuna-box { text-align: center; margin: 10px 0; padding: 10px; background-color: rgba(230, 126, 34, 0.1);
+    border: 1px dashed var(--kizuna); border-radius: 8px; transition: 0.3s; }
     
-    .trait { display: inline-block; background-color: #333; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.75em; margin: 2px 2px 2px 0; border: 1px solid #666; z-index: 2; position: relative; }
-    .trait.physical { border-color: var(--danger); color: #ff9999; }
+    .trait { display: inline-block;
+    background-color: #333; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.75em; margin: 2px 2px 2px 0; border: 1px solid #666;
+    z-index: 2; position: relative; }
+    .trait.physical { border-color: var(--danger); color: #ff9999;
+    }
     .trait.magic { border-color: var(--magic); color: #99ccff; }
-    .trait.agility { border-color: var(--success); color: #99ff99; }
+    .trait.agility { border-color: var(--success); color: #99ff99;
+    }
     
-    .bar-container { width: 100%; height: 12px; background-color: #111; border-radius: 6px; overflow: hidden; margin-bottom: 5px; border: 1px solid #333; position: relative; z-index: 2; }
-    .bar-fill { height: 100%; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-    .hp-fill { background-color: var(--danger); }
+    .bar-container { width: 100%; height: 12px; background-color: #111; border-radius: 6px; overflow: hidden;
+    margin-bottom: 5px; border: 1px solid #333; position: relative; z-index: 2; }
+    .bar-fill { height: 100%;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .hp-fill { background-color: var(--danger);
+    }
     .mp-fill { background-color: var(--magic); }
-    .kizuna-fill { background-color: var(--kizuna); }
-    .bar-text { position: absolute; width: 100%; text-align: center; top: 0; font-size: 9px; font-weight: bold; color: white; text-shadow: 1px 1px 2px black; line-height: 12px; }
+    .kizuna-fill { background-color: var(--kizuna);
+    }
+    .bar-text { position: absolute; width: 100%; text-align: center; top: 0; font-size: 9px; font-weight: bold; color: white;
+    text-shadow: 1px 1px 2px black; line-height: 12px; }
 
-    .battle-center { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 20px; border-radius: 8px; border: 2px solid #444; overflow: hidden; transition: all 0.5s ease; background-size: cover; background-position: center; min-height: 300px; }
-    .battle-player-turn { border-color: var(--main-gold) !important; box-shadow: inset 0 0 40px rgba(212, 175, 55, 0.2), 0 0 20px rgba(212, 175, 55, 0.4); }
-    .battle-enemy-turn { border-color: var(--danger) !important; box-shadow: inset 0 0 60px rgba(231, 76, 60, 0.4), 0 0 30px rgba(231, 76, 60, 0.6); }
+    .battle-center { position: relative; display: flex; flex-direction: column;
+    align-items: center; justify-content: flex-start; padding-top: 20px; border-radius: 8px; border: 2px solid #444; overflow: hidden; transition: all 0.5s ease; background-size: cover;
+    background-position: center; min-height: 300px; }
+    .battle-player-turn { border-color: var(--main-gold) !important;
+    box-shadow: inset 0 0 40px rgba(212, 175, 55, 0.2), 0 0 20px rgba(212, 175, 55, 0.4);
+    }
+    .battle-enemy-turn { border-color: var(--danger) !important; box-shadow: inset 0 0 60px rgba(231, 76, 60, 0.4), 0 0 30px rgba(231, 76, 60, 0.6);
+    }
 
-    #battle-phase-indicator { position: absolute; top: 10px; left: 10px; padding: 6px 15px; font-weight: bold; font-size: 0.9em; border-radius: 4px; z-index: 5; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.8); }
-    #looming-enemy-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1.5); width: 150%; height: 150%; opacity: 0; pointer-events: none; z-index: 1; transition: opacity 1s ease; }
-    .battle-enemy-turn #looming-enemy-bg { opacity: 0.6; animation: loomPulse 2.5s infinite alternate ease-in-out; }
-    @keyframes loomPulse { 0% { transform: translate(-50%, -50%) scale(1.6); filter: blur(10px) drop-shadow(0 0 20px var(--danger)); } 100% { transform: translate(-50%, -50%) scale(2.0); filter: blur(5px) drop-shadow(0 0 50px var(--danger)); } }
+    #battle-phase-indicator { position: absolute; top: 10px; left: 10px; padding: 6px 15px; font-weight: bold; font-size: 0.9em;
+    border-radius: 4px; z-index: 5; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.8); }
+    #looming-enemy-bg { position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1.5); width: 150%; height: 150%; opacity: 0; pointer-events: none; z-index: 1;
+    transition: opacity 1s ease; }
+    .battle-enemy-turn #looming-enemy-bg { opacity: 0.6; animation: loomPulse 2.5s infinite alternate ease-in-out;
+    }
+    @keyframes loomPulse { 0% { transform: translate(-50%, -50%) scale(1.6); filter: blur(10px) drop-shadow(0 0 20px var(--danger));
+    } 100% { transform: translate(-50%, -50%) scale(2.0); filter: blur(5px) drop-shadow(0 0 50px var(--danger));
+    } }
 
-    .bg-stage-1 { background: linear-gradient(to bottom, #1e3c72 0%, #000 100%); }
-    .bg-stage-2 { background: radial-gradient(circle, #4a235a 0%, #000 80%); }
-    .bg-stage-3 { background: linear-gradient(to bottom, #2c3e50 0%, #000 100%); }
-    .bg-stage-4 { background: linear-gradient(to bottom, #5c4033 0%, #000 100%); }
+    .bg-stage-1 { background: linear-gradient(to bottom, #1e3c72 0%, #000 100%);
+    }
+    .bg-stage-2 { background: radial-gradient(circle, #4a235a 0%, #000 80%);
+    }
+    .bg-stage-3 { background: linear-gradient(to bottom, #2c3e50 0%, #000 100%);
+    }
+    .bg-stage-4 { background: linear-gradient(to bottom, #5c4033 0%, #000 100%);
+    }
     .bg-stage-5 { background: radial-gradient(circle, #0e301d 0%, #000 90%); }
 
-    #enemy-visual { width: 180px; height: 180px; margin-bottom: 15px; filter: drop-shadow(0px 0px 20px rgba(0,0,0,0.8)); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2; position: relative; }
-    .float-anim { animation: float 3s ease-in-out infinite; }
-    @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+    #enemy-visual { width: 180px;
+    height: 180px; margin-bottom: 15px; filter: drop-shadow(0px 0px 20px rgba(0,0,0,0.8)); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2; position: relative;
+    }
+    .float-anim { animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px);
+    } 100% { transform: translateY(0px); } }
     
-    .enemy-info { text-align: center; width: 80%; background: rgba(0,0,0,0.8); padding: 10px; border-radius: 8px; border: 1px solid #555; z-index: 2; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.8); transition: border-color 0.3s; margin-bottom: 15px; }
-    .stage-text { color: var(--main-gold); font-size: 0.9em; font-weight: bold; letter-spacing: 2px; text-shadow: 1px 1px 2px #000; z-index: 2; position: relative; margin-bottom: 10px; }
+    .enemy-info { text-align: center; width: 80%;
+    background: rgba(0,0,0,0.8); padding: 10px; border-radius: 8px; border: 1px solid #555; z-index: 2; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.8);
+    transition: border-color 0.3s; margin-bottom: 15px; }
+    .stage-text { color: var(--main-gold); font-size: 0.9em; font-weight: bold; letter-spacing: 2px;
+    text-shadow: 1px 1px 2px #000; z-index: 2; position: relative; margin-bottom: 10px;
+    }
 
-    .bottom-panel { grid-column: 1 / -1; display: grid; grid-template-columns: 1.5fr 1fr; gap: 15px; }
-    .command-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; transition: opacity 0.3s, filter 0.3s; }
-    .disabled-menu { opacity: 0.3; pointer-events: none; filter: grayscale(80%); }
+    .bottom-panel { grid-column: 1 / -1; display: grid; grid-template-columns: 1.5fr 1fr; gap: 15px;
+    }
+    .command-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; transition: opacity 0.3s, filter 0.3s;
+    }
+    .disabled-menu { opacity: 0.3; pointer-events: none; filter: grayscale(80%);
+    }
 
-    .cmd-btn { background: linear-gradient(180deg, #3a3f4b 0%, #242933 100%); color: #fff; border: 1px solid #555; padding: 12px 10px; font-weight: bold; font-size: 1.05em; border-radius: 6px; cursor: pointer; transition: 0.2s; text-align: left; display: flex; flex-direction: column; justify-content: center; }
+    .cmd-btn { background: linear-gradient(180deg, #3a3f4b 0%, #242933 100%); color: #fff; border: 1px solid #555;
+    padding: 12px 10px; font-weight: bold; font-size: 1.05em; border-radius: 6px; cursor: pointer; transition: 0.2s; text-align: left; display: flex; flex-direction: column;
+    justify-content: center; }
     .cmd-btn:hover { filter: brightness(1.2); }
-    .cmd-btn:active { transform: translateY(2px); }
+    .cmd-btn:active { transform: translateY(2px);
+    }
     .cmd-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .cmd-btn span { pointer-events: none; }
+    .cmd-btn span { pointer-events: none;
+    }
     .cmd-btn.attack { border-left: 5px solid var(--danger); }
-    .cmd-btn.magic { border-left: 5px solid var(--magic); }
+    .cmd-btn.magic { border-left: 5px solid var(--magic);
+    }
     .cmd-btn.item { border-left: 5px solid var(--success); }
-    .cmd-btn.flee { border-left: 5px solid #95a5a6; }
+    .cmd-btn.flee { border-left: 5px solid #95a5a6;
+    }
     .cmd-btn.puzzle { border-left: 5px solid #9b59b6; }
-    .cmd-btn.kizuna { border-left: 5px solid var(--kizuna); background: linear-gradient(180deg, #5e3b1c 0%, #2e1c0d 100%); }
+    .cmd-btn.kizuna { border-left: 5px solid var(--kizuna);
+    background: linear-gradient(180deg, #5e3b1c 0%, #2e1c0d 100%); }
     
-    .log-box { background-color: rgba(10, 12, 16, 0.9); padding: 15px; font-family: 'Yu Mincho', serif; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.9em; color: #dcdcdc; height: 150px; overflow-y: auto; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); line-height: 1.6; transition: border-color 0.4s; }
+    .log-box { background-color: rgba(10, 12, 16, 0.9);
+    padding: 15px; font-family: 'Yu Mincho', serif; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.9em; color: #dcdcdc; height: 150px; overflow-y: auto;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.8); line-height: 1.6; transition: border-color 0.4s;
+    }
 
     /* QTE */
-    #qte-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 100; flex-direction: column; justify-content: center; align-items: center; border-radius: 8px; backdrop-filter: blur(5px); }
-    #qte-prompt { font-size: 1.8em; font-weight: bold; margin-bottom: 10px; color: white; text-align: center; text-shadow: 0 0 15px var(--main-gold); letter-spacing: 2px; }
-    #qte-timer-container { width: 85%; max-width: 400px; height: 8px; background: #222; border-radius: 4px; margin-bottom: 20px; border: 1px solid #555; overflow: hidden; box-shadow: inset 0 0 10px #000; }
-    #qte-timer-fill { width: 100%; height: 100%; background: var(--main-gold); transition: width 0.1s linear; }
-    #qte-arc-container { width: 260px; height: 130px; position: relative; margin-bottom: 20px; }
-    #qte-svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8)); }
-    #qte-linear-container { width: 85%; max-width: 400px; height: 30px; background: #1a1a1a; border: 2px solid #555; position: relative; margin-bottom: 30px; border-radius: 15px; overflow: hidden; display: none; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); }
-    #qte-linear-target { position: absolute; height: 100%; background: #e74c3c; width: 20%; left: 40%; transition: background 0.3s, box-shadow 0.3s; }
-    #qte-linear-cursor { position: absolute; height: 140%; top: -20%; width: 4px; background: #fff; left: 0%; box-shadow: 0 0 10px #fff; border-radius: 2px; z-index: 5; }
+    #qte-overlay { display: none; position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 100; flex-direction: column; justify-content: center; align-items: center; border-radius: 8px; backdrop-filter: blur(5px);
+    }
+    #qte-prompt { font-size: 1.8em; font-weight: bold; margin-bottom: 10px; color: white; text-align: center;
+    text-shadow: 0 0 15px var(--main-gold); letter-spacing: 2px; }
+    #qte-timer-container { width: 85%; max-width: 400px; height: 8px;
+    background: #222; border-radius: 4px; margin-bottom: 20px; border: 1px solid #555; overflow: hidden; box-shadow: inset 0 0 10px #000;
+    }
+    #qte-timer-fill { width: 100%; height: 100%; background: var(--main-gold); transition: width 0.1s linear;
+    }
+    #qte-arc-container { width: 260px; height: 130px; position: relative; margin-bottom: 20px;
+    }
+    #qte-svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));
+    }
+    #qte-linear-container { width: 85%; max-width: 400px; height: 30px; background: #1a1a1a; border: 2px solid #555; position: relative;
+    margin-bottom: 30px; border-radius: 15px; overflow: hidden; display: none; box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+    }
+    #qte-linear-target { position: absolute; height: 100%; background: #e74c3c; width: 20%; left: 40%;
+    transition: background 0.3s, box-shadow 0.3s; }
+    #qte-linear-cursor { position: absolute; height: 140%; top: -20%; width: 4px;
+    background: #fff; left: 0%; box-shadow: 0 0 10px #fff; border-radius: 2px; z-index: 5;
+    }
     
-    #qte-controls { display: flex; width: 90%; max-width: 400px; gap: 10px; justify-content: space-between; }
-    .qte-btn { flex: 1; height: 70px; font-size: 24px; font-weight: bold; border-radius: 8px; border: 3px solid #7f8c8d; background: linear-gradient(180deg, #34495e 0%, #2c3e50 100%); color: #fff; cursor: pointer; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 6px 0 #1a252f; transition: 0.1s; }
-    .qte-btn span { font-size: 12px; font-weight: normal; margin-top: 3px; opacity: 0.8; }
-    .qte-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #1a252f; }
+    #qte-controls { display: flex; width: 90%; max-width: 400px; gap: 10px; justify-content: space-between;
+    }
+    .qte-btn { flex: 1; height: 70px; font-size: 24px; font-weight: bold; border-radius: 8px; border: 3px solid #7f8c8d;
+    background: linear-gradient(180deg, #34495e 0%, #2c3e50 100%); color: #fff; cursor: pointer; display: flex; flex-direction: column; justify-content: center; align-items: center;
+    box-shadow: 0 6px 0 #1a252f; transition: 0.1s; }
+    
+    /* PC用・スマホ用のテキスト出し分け */
+    .sp-text { display: none; }
+    .pc-key { display: block; font-size: 24px; font-weight: bold; }
+    .qte-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #1a252f;
+    }
 
     /* パズル画面 */
-    #puzzle-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 200; flex-direction: column; justify-content: center; align-items: center; border-radius: 8px; backdrop-filter: blur(5px); }
-    #puzzle-canvas { background: #111; border: 2px solid #555; box-shadow: 0 0 30px rgba(155, 89, 182, 0.4); margin-top: 10px; max-width: 90%; }
-    .puzzle-controls { display: flex; gap: 8px; margin-top: 15px; width: 90%; max-width: 300px; justify-content: center; }
-    .pz-btn { background: #2c3e50; border: 2px solid #7f8c8d; color: white; padding: 12px 10px; font-weight: bold; border-radius: 6px; cursor: pointer; flex: 1; text-align: center; }
-    .pz-btn:active { background: #3498db; }
+    #puzzle-overlay { display: none; position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 200; flex-direction: column; justify-content: center; align-items: center; border-radius: 8px; backdrop-filter: blur(5px);
+    }
+    #puzzle-canvas { background: #111; border: 2px solid #555; box-shadow: 0 0 30px rgba(155, 89, 182, 0.4);
+    margin-top: 10px; max-width: 90%; }
+    .puzzle-controls { display: flex; gap: 8px; margin-top: 15px; width: 90%; max-width: 300px;
+    justify-content: center; }
+    .pz-btn { background: #2c3e50; border: 2px solid #7f8c8d; color: white; padding: 12px 10px;
+    font-weight: bold; border-radius: 6px; cursor: pointer; flex: 1; text-align: center; }
+    .pz-btn:active { background: #3498db;
+    }
 
     /* ド派手エフェクト */
-    .mega-flash { position: absolute; top:0; left:0; width:100%; height:100%; background: #fff; z-index: 9999; pointer-events: none; animation: megaFlash 0.5s ease-out forwards; mix-blend-mode: overlay; border-radius: 8px; }
-    @keyframes megaFlash { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.1); } }
+    .mega-flash { position: absolute; top:0; left:0; width:100%; height:100%; background: #fff;
+    z-index: 9999; pointer-events: none; animation: megaFlash 0.5s ease-out forwards; mix-blend-mode: overlay; border-radius: 8px;
+    }
+    @keyframes megaFlash { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.1);
+    } }
 
-    .cross-slash-1, .cross-slash-2 { position: absolute; top: 50%; left: 50%; width: 200%; height: 20px; z-index: 9998; pointer-events: none; }
-    .cross-slash-1 { transform: translate(-50%, -50%) rotate(-45deg) scaleX(0); animation: slashIn 0.3s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; }
-    .cross-slash-2 { transform: translate(-50%, -50%) rotate(45deg) scaleX(0); animation: slashIn 0.3s cubic-bezier(0.1, 0.8, 0.3, 1) forwards 0.1s; }
-    @keyframes slashIn { 0% { scale: 0 1; opacity: 1; } 50% { scale: 1 2; opacity: 1; } 100% { scale: 1.5 0; opacity: 0; } }
+    .cross-slash-1, .cross-slash-2 { position: absolute; top: 50%; left: 50%; width: 200%; height: 20px; z-index: 9998;
+    pointer-events: none; }
+    .cross-slash-1 { transform: translate(-50%, -50%) rotate(-45deg) scaleX(0);
+    animation: slashIn 0.3s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; }
+    .cross-slash-2 { transform: translate(-50%, -50%) rotate(45deg) scaleX(0);
+    animation: slashIn 0.3s cubic-bezier(0.1, 0.8, 0.3, 1) forwards 0.1s; }
+    @keyframes slashIn { 0% { scale: 0 1;
+    opacity: 1; } 50% { scale: 1 2; opacity: 1; } 100% { scale: 1.5 0; opacity: 0;
+    } }
 
-    .impact-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 10px solid #fff; border-radius: 50%; z-index: 9997; pointer-events: none; animation: ringExpand 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; }
-    @keyframes ringExpand { 0% { width: 0; height: 0; opacity: 1; border-width: 30px; } 100% { width: 1000px; height: 1000px; opacity: 0; border-width: 0px; } }
+    .impact-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 10px solid #fff;
+    border-radius: 50%; z-index: 9997; pointer-events: none; animation: ringExpand 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+    }
+    @keyframes ringExpand { 0% { width: 0; height: 0; opacity: 1; border-width: 30px;
+    } 100% { width: 1000px; height: 1000px; opacity: 0; border-width: 0px; } }
 
-    .text-pop { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); font-size: 3.5em; font-weight: 900; font-style: italic; z-index: 10000; pointer-events: none; animation: textPopAnim 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; white-space: nowrap; text-shadow: 0 0 20px #000; }
-    @keyframes textPopAnim { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 15% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; } 30% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 80% { transform: translate(-50%, -50%) scale(1); opacity: 1; filter: brightness(1.5); } 100% { transform: translate(-50%, -150%) scale(1.5); opacity: 0; filter: brightness(1); } }
+    .text-pop { position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); font-size: 3.5em; font-weight: 900; font-style: italic; z-index: 10000; pointer-events: none;
+    animation: textPopAnim 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; white-space: nowrap; text-shadow: 0 0 20px #000;
+    }
+    @keyframes textPopAnim { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0;
+    } 15% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; } 30% { transform: translate(-50%, -50%) scale(1); opacity: 1;
+    } 80% { transform: translate(-50%, -50%) scale(1); opacity: 1; filter: brightness(1.5); } 100% { transform: translate(-50%, -150%) scale(1.5); opacity: 0;
+    filter: brightness(1); } }
 
-    .screen-flash { position: absolute; top:0; left:0; width:100%; height:100%; background: #fff; z-index: 999; pointer-events: none; animation: flash 0.5s ease-out forwards; border-radius: 8px; }
-    .enemy-attack-flash { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(231, 76, 60, 0.8); z-index: 999; pointer-events: none; animation: flash 0.6s ease-out forwards; border-radius: 8px; }
-    @keyframes flash { 0% { opacity: 0.8; } 100% { opacity: 0; } }
+    .screen-flash { position: absolute; top:0; left:0; width:100%; height:100%; background: #fff; z-index: 999;
+    pointer-events: none; animation: flash 0.5s ease-out forwards; border-radius: 8px; }
+    .enemy-attack-flash { position: absolute; top:0; left:0; width:100%;
+    height:100%; background: rgba(231, 76, 60, 0.8); z-index: 999; pointer-events: none; animation: flash 0.6s ease-out forwards; border-radius: 8px;
+    }
+    @keyframes flash { 0% { opacity: 0.8; } 100% { opacity: 0;
+    } }
     
-    .shield-block { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 150px; height: 150px; background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(52, 152, 219, 0.1)); border: 6px solid var(--magic); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); animation: shieldPop 1.0s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; display: flex; justify-content: center; align-items: center; font-size: 1.8em; font-weight: 900; font-style: italic; z-index: 10000; pointer-events: none; box-shadow: 0 0 30px var(--magic); }
-    @keyframes shieldPop { 0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; filter: brightness(2); } 15% { transform: translate(-50%, -50%) scale(1.2); filter: brightness(1.5); } 30% { transform: translate(-50%, -50%) scale(1.0); opacity: 1; } 80% { transform: translate(-50%, -50%) scale(1.0); opacity: 0.9; } 100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; } }
+    .shield-block { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 150px; height: 150px; background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(52, 152, 219, 0.1)); border: 6px solid var(--magic);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    animation: shieldPop 1.0s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; display: flex; justify-content: center; align-items: center; font-size: 1.8em; font-weight: 900; font-style: italic;
+    z-index: 10000; pointer-events: none; box-shadow: 0 0 30px var(--magic); }
+    @keyframes shieldPop { 0% { transform: translate(-50%, -50%) scale(0.2);
+    opacity: 1; filter: brightness(2); } 15% { transform: translate(-50%, -50%) scale(1.2); filter: brightness(1.5); } 30% { transform: translate(-50%, -50%) scale(1.0);
+    opacity: 1; } 80% { transform: translate(-50%, -50%) scale(1.0); opacity: 0.9; } 100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0;
+    } }
 
-    .miss-text-anim { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 3em; font-weight: 900; color: #7f8c8d; text-shadow: 2px 2px 0 #000; z-index: 1000; pointer-events: none; animation: dropText 1.0s ease-in forwards; white-space: nowrap; }
-    @keyframes dropText { 0% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; } 20% { transform: translate(-50%, -50%) scale(1); opacity: 1;} 80% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(-50%, 0%) scale(1); opacity: 0; } }
+    .miss-text-anim { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 3em; font-weight: 900;
+    color: #7f8c8d; text-shadow: 2px 2px 0 #000; z-index: 1000; pointer-events: none; animation: dropText 1.0s ease-in forwards; white-space: nowrap;
+    }
+    @keyframes dropText { 0% { transform: translate(-50%, -50%) scale(1.5); opacity: 1;
+    } 20% { transform: translate(-50%, -50%) scale(1); opacity: 1;} 80% { transform: translate(-50%, -50%) scale(1); opacity: 1;
+    } 100% { transform: translate(-50%, 0%) scale(1); opacity: 0; } }
 
-    .marriage-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 15px; }
-    .candidate-card { background: linear-gradient(180deg, #2a2d35 0%, #1a1d24 100%); border: 1px solid #555; padding: 10px; border-radius: 8px; text-align: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; }
-    .candidate-card:hover { border-color: var(--main-gold); transform: translateY(-3px); box-shadow: 0 8px 15px rgba(212, 175, 55, 0.2); }
-    .partner-portrait { width: 60px; height: 60px; border-radius: 50%; background: #000; border: 2px solid var(--main-gold); margin-bottom: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+    .marriage-grid { display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 15px; }
+    .candidate-card { background: linear-gradient(180deg, #2a2d35 0%, #1a1d24 100%);
+    border: 1px solid #555; padding: 10px; border-radius: 8px; text-align: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    display: flex; flex-direction: column; align-items: center; }
+    .candidate-card:hover { border-color: var(--main-gold); transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(212, 175, 55, 0.2); }
+    .partner-portrait { width: 60px; height: 60px; border-radius: 50%;
+    background: #000; border: 2px solid var(--main-gold); margin-bottom: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden;
+    }
 
-    #event-section { display: none; background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; border: 1px solid var(--main-gold); box-shadow: 0 0 20px rgba(212, 175, 55, 0.15); backdrop-filter: blur(5px); }
-    .choice-btn { width: 100%; background: #222; color: #eee; border: 1px solid #555; padding: 12px; margin-top: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 0.9em; transition: 0.2s; }
-    .choice-btn:hover { background: #333; border-color: var(--main-gold); padding-left: 15px; }
+    #event-section { display: none; background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; border: 1px solid var(--main-gold);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.15); backdrop-filter: blur(5px); }
+    .choice-btn { width: 100%; background: #222;
+    color: #eee; border: 1px solid #555; padding: 12px; margin-top: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 0.9em; transition: 0.2s;
+    }
+    .choice-btn:hover { background: #333; border-color: var(--main-gold); padding-left: 15px;
+    }
 
     /* レスポンシブ (メディアクエリ) */
     @media (max-width: 768px) {
         #game-container {
-            grid-template-columns: 1fr;
-            grid-template-rows: auto auto 1fr auto;
-            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100dvh;
+            padding: 5px;
+            overflow-y: auto;
         }
-        #battle-layout { grid-template-columns: 1fr; }
-        .bottom-panel { grid-template-columns: 1fr; }
+        .panel { flex: 1; display: none; flex-direction: column; }
+        .panel.active { display: flex !important; }
+        
+        /* バトルレイアウトをFlexに変更し、要素が潰れないように完全修正 */
+        #battle-layout.active-battle { 
+            display: flex !important; 
+            flex-direction: column; 
+            height: auto; 
+            gap: 10px;
+        }
+        .party-panel { flex-direction: row; flex-wrap: wrap; gap: 10px; padding: 10px; }
+        .bottom-panel { display: flex; flex-direction: column; }
         .command-menu { grid-template-columns: 1fr 1fr; gap: 5px; }
-        .party-panel { flex-direction: column; }
+        .battle-center { min-height: 240px; flex: 1; }
+        
         #score-panel { font-size: 1em; top: 10px; padding: 5px 15px; }
         .text-pop { font-size: 2.5em; }
         .cmd-btn { font-size: 0.9em; padding: 8px; }
@@ -203,6 +392,11 @@
         .cmd-btn span:last-child { font-size: 0.65em !important; }
         #help-btn { top: 10px; right: 10px; width: 35px; height: 35px; font-size: 1em; }
         .ex-link-main { font-size: 0.9em; }
+        
+        /* スマホ向けQTE表示の修正 */
+        .pc-key { display: none !important; }
+        .sp-text { display: block !important; font-size: 22px; font-weight: bold; opacity: 1 !important; margin: 0 !important; }
+        #qte-svg text { display: none; } /* 円弧上のASDテキストを非表示 */
     }
 </style>
 </head>
@@ -221,7 +415,7 @@
     </div>
     <div class="help-section">
         <div class="help-title">遠征（バトル）</div>
-        <p>・<strong>剣撃 (QTE):</strong> A・S・Dキーまたは画面のボタンをタイミングよく押して大ダメージを狙います。<br>
+        <p>・<strong>剣撃 (QTE):</strong> PCはA/S/Dキー、スマホはタイミングよく画面ボタンをタップして大ダメージを狙います。<br>
            ・<strong>陣形連鎖 (パズル):</strong> ブロックを操作してラインを消します。<b style="color:var(--danger)">1ラインも消せないと陣形崩壊が起き、自分たちに甚大な反動ダメージ</b>が来ます。<br>
            ・<strong>比翼の絆連携:</strong> 伴侶が生存し、絆が100%の時に放てる最強の合体技です。</p>
     </div>
@@ -264,6 +458,7 @@
     <div id="qte-overlay">
         <div id="qte-prompt">A・S・D を揃えろ！</div>
         <div id="qte-timer-container"><div id="qte-timer-fill"></div></div>
+    
         <div id="qte-arc-container">
             <svg id="qte-svg" viewBox="0 0 200 100">
                 <path d="M 20 90 A 80 80 0 0 1 180 90" fill="none" stroke="#333" stroke-width="8" stroke-linecap="round"/>
@@ -277,14 +472,21 @@
                 <circle cx="100" cy="90" r="6" fill="#fff" />
             </svg>
         </div>
+        
         <div id="qte-linear-container">
             <div id="qte-linear-target"></div>
             <div id="qte-linear-cursor"></div>
         </div>
         <div id="qte-controls">
-            <button class="qte-btn" id="btn-qte-A" onpointerdown="executeQTE('A')">A <span>(左)</span></button>
-            <button class="qte-btn" id="btn-qte-S" onpointerdown="executeQTE('S')">S <span>(中)</span></button>
-            <button class="qte-btn" id="btn-qte-D" onpointerdown="executeQTE('D')">D <span>(右)</span></button>
+            <button class="qte-btn" id="btn-qte-A" onpointerdown="executeQTE('A')">
+                <span class="pc-key">Aキー</span><span class="sp-text">左</span>
+            </button>
+            <button class="qte-btn" id="btn-qte-S" onpointerdown="executeQTE('S')">
+                <span class="pc-key">Sキー</span><span class="sp-text">中</span>
+            </button>
+            <button class="qte-btn" id="btn-qte-D" onpointerdown="executeQTE('D')">
+                <span class="pc-key">Dキー</span><span class="sp-text">右</span>
+            </button>
         </div>
     </div>
 
@@ -302,6 +504,7 @@
             <button class="pz-btn" onpointerdown="movePuzzle(1)">→</button>
             <button class="pz-btn" onpointerdown="dropPuzzle()">下</button>
         </div>
+        
         <p style="font-size: 0.7em; color: #777; margin-top: 10px;">※PCは矢印キーでも操作可能</p>
     </div>
 
@@ -364,7 +567,7 @@
 
     <div id="battle-layout">
         <div class="party-panel" style="margin-top: 30px;">
-            <h3 style="margin-bottom: 10px; font-size:1.1em;">血脈 (Bloodlines)</h3>
+            <h3 style="margin-bottom: 10px; font-size:1.1em; width: 100%;">血脈 (Bloodlines)</h3>
             <div id="battle-ruler-info" class="char-box"></div>
             <div class="kizuna-box" id="battle-kizuna-box">
                 <div style="font-size:0.85em; color:var(--kizuna); font-weight:bold; margin-bottom:2px;">絆 (Bonds)</div>
@@ -433,7 +636,6 @@ const bgmData = {
         bass: [ 73.42, 73.42, 73.42, 73.42, 69.30, 69.30, 69.30, 69.30 ]
     }
 };
-
 function initAudio() {
     if(!audioCtx) {
         audioCtx = new AudioContext();
@@ -459,15 +661,19 @@ function playBGMStep() {
     const data = bgmData[currentBGMType];
     let oscM = audioCtx.createOscillator(); let gainM = audioCtx.createGain();
     oscM.type = 'square'; oscM.frequency.value = data.notes[bgmStep % data.notes.length];
-    gainM.gain.setValueAtTime(0.015, t); gainM.gain.exponentialRampToValueAtTime(0.001, t + (data.tempo/1000));
+    gainM.gain.setValueAtTime(0.015, t);
+    gainM.gain.exponentialRampToValueAtTime(0.001, t + (data.tempo/1000));
     oscM.connect(gainM); gainM.connect(audioCtx.destination);
     oscM.start(t); oscM.stop(t + (data.tempo/1000));
 
-    let bassIdx = (currentBGMType === 'battle') ? bgmStep % data.bass.length : Math.floor(bgmStep / 4) % data.bass.length;
+    let bassIdx = (currentBGMType === 'battle') ?
+    bgmStep % data.bass.length : Math.floor(bgmStep / 4) % data.bass.length;
     if (currentBGMType === 'battle' || bgmStep % 4 === 0) {
-        let oscB = audioCtx.createOscillator(); let gainB = audioCtx.createGain();
+        let oscB = audioCtx.createOscillator();
+        let gainB = audioCtx.createGain();
         oscB.type = 'triangle'; oscB.frequency.value = data.bass[bassIdx];
-        gainB.gain.setValueAtTime(0.03, t); gainB.gain.linearRampToValueAtTime(0.01, t + (data.tempo/1000) * (currentBGMType === 'battle' ? 1 : 2.5));
+        gainB.gain.setValueAtTime(0.03, t);
+        gainB.gain.linearRampToValueAtTime(0.01, t + (data.tempo/1000) * (currentBGMType === 'battle' ? 1 : 2.5));
         oscB.connect(gainB); gainB.connect(audioCtx.destination);
         oscB.start(t); oscB.stop(t + (data.tempo/1000) * 3);
     }
@@ -481,43 +687,58 @@ function playSfx(type) {
         let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
         osc.type = 'square'; osc.frequency.setValueAtTime(800, t); osc.frequency.exponentialRampToValueAtTime(400, t + 0.05);
         gain.gain.setValueAtTime(0.05, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.05);
-        osc.connect(gain); gain.connect(audioCtx.destination); osc.start(t); osc.stop(t + 0.05);
+        osc.connect(gain); gain.connect(audioCtx.destination); osc.start(t);
+        osc.stop(t + 0.05);
     } else if (type === 'hit') {
-        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+        let osc = audioCtx.createOscillator();
+        let gain = audioCtx.createGain();
         osc.type = 'square'; osc.frequency.setValueAtTime(1200, t); osc.frequency.exponentialRampToValueAtTime(100, t + 0.1);
         gain.gain.setValueAtTime(0.12, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
-        osc.connect(gain); gain.connect(audioCtx.destination); osc.start(t); osc.stop(t + 0.1);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination); osc.start(t); osc.stop(t + 0.1);
         let noiseSrc = audioCtx.createBufferSource(); noiseSrc.buffer = noiseBuffer;
-        let noiseFilter = audioCtx.createBiquadFilter(); noiseFilter.type = 'highpass'; noiseFilter.frequency.value = 2000;
+        let noiseFilter = audioCtx.createBiquadFilter(); noiseFilter.type = 'highpass';
+        noiseFilter.frequency.value = 2000;
         let nGain = audioCtx.createGain(); nGain.gain.setValueAtTime(0.25, t); nGain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
         noiseSrc.connect(noiseFilter); noiseFilter.connect(nGain); nGain.connect(audioCtx.destination);
         noiseSrc.start(t); noiseSrc.stop(t + 0.1);
     } else if (type === 'perfect') {
-        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+        let osc = audioCtx.createOscillator();
+        let gain = audioCtx.createGain();
         osc.type = 'square'; 
         osc.frequency.setValueAtTime(880, t); osc.frequency.setValueAtTime(1108, t+0.05); osc.frequency.setValueAtTime(1318, t+0.1); osc.frequency.setValueAtTime(1760, t+0.15);
-        gain.gain.setValueAtTime(0.1, t); gain.gain.linearRampToValueAtTime(0, t + 0.6);
+        gain.gain.setValueAtTime(0.1, t);
+        gain.gain.linearRampToValueAtTime(0, t + 0.6);
         osc.connect(gain); gain.connect(audioCtx.destination); osc.start(t); osc.stop(t + 0.6);
     } else if (type === 'guard') {
-        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+        let osc = audioCtx.createOscillator();
+        let gain = audioCtx.createGain();
         osc.type = 'square'; osc.frequency.setValueAtTime(1200, t); osc.frequency.exponentialRampToValueAtTime(300, t + 0.2);
         gain.gain.setValueAtTime(0.1, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
-        osc.connect(gain); gain.connect(audioCtx.destination); osc.start(t); osc.stop(t + 0.2);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination); osc.start(t); osc.stop(t + 0.2);
     } else if (type === 'miss') {
-        let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+        let osc = audioCtx.createOscillator();
+        let gain = audioCtx.createGain();
         osc.type = 'triangle'; osc.frequency.setValueAtTime(200, t); osc.frequency.linearRampToValueAtTime(50, t + 0.4);
         gain.gain.setValueAtTime(0.15, t); gain.gain.linearRampToValueAtTime(0.01, t + 0.4);
-        osc.connect(gain); gain.connect(audioCtx.destination); osc.start(t); osc.stop(t + 0.4);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination); osc.start(t); osc.stop(t + 0.4);
     } else if (type === 'damage' || type === 'enemyAttack') {
-        let osc = audioCtx.createOscillator(); let lfo = audioCtx.createOscillator(); let lfoGain = audioCtx.createGain(); let gain = audioCtx.createGain();
-        osc.type = 'sawtooth'; osc.frequency.setValueAtTime(80, t); osc.frequency.linearRampToValueAtTime(30, t + 0.6);
+        let osc = audioCtx.createOscillator();
+        let lfo = audioCtx.createOscillator(); let lfoGain = audioCtx.createGain(); let gain = audioCtx.createGain();
+        osc.type = 'sawtooth'; osc.frequency.setValueAtTime(80, t);
+        osc.frequency.linearRampToValueAtTime(30, t + 0.6);
         lfo.type = 'sine'; lfo.frequency.value = 15; lfoGain.gain.value = 40; 
         lfo.connect(lfoGain); lfoGain.connect(osc.frequency);
-        gain.gain.setValueAtTime(0.25, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.6);
+        gain.gain.setValueAtTime(0.25, t);
+        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.6);
         osc.connect(gain); gain.connect(audioCtx.destination); osc.start(t); osc.stop(t + 0.6); lfo.start(t); lfo.stop(t + 0.6);
-        let noiseSrc = audioCtx.createBufferSource(); noiseSrc.buffer = noiseBuffer;
+        let noiseSrc = audioCtx.createBufferSource();
+        noiseSrc.buffer = noiseBuffer;
         let noiseFilter = audioCtx.createBiquadFilter(); noiseFilter.type = 'lowpass'; noiseFilter.frequency.setValueAtTime(800, t); noiseFilter.frequency.linearRampToValueAtTime(100, t + 0.6);
-        let nGain = audioCtx.createGain(); nGain.gain.setValueAtTime(0.3, t); nGain.gain.exponentialRampToValueAtTime(0.01, t + 0.6);
+        let nGain = audioCtx.createGain();
+        nGain.gain.setValueAtTime(0.3, t); nGain.gain.exponentialRampToValueAtTime(0.01, t + 0.6);
         noiseSrc.connect(noiseFilter); noiseFilter.connect(nGain); nGain.connect(audioCtx.destination);
         noiseSrc.start(t); noiseSrc.stop(t + 0.6);
     }
@@ -533,7 +754,8 @@ function renderLogs() {
     const kLog = document.getElementById("kingdom-log");
     const bLog = document.getElementById("battle-log");
     if(kLog) { kLog.innerHTML = html; kLog.scrollTop = kLog.scrollHeight; }
-    if(bLog) { bLog.innerHTML = html; bLog.scrollTop = bLog.scrollHeight; }
+    if(bLog) { bLog.innerHTML = html; bLog.scrollTop = bLog.scrollHeight;
+    }
 }
 
 let lineageTree = [];
@@ -565,27 +787,39 @@ function showFamilyTree() {
 }
 
 const bloodlines = [
-    { name: "噛無也木", color: "#e74c3c", trait: { id: "T1", name: "蛇の加護", type: "physical", desc: "物理+25、防御失敗時の被ダメ半減", apply: c => { c.attack += 25; c.snakeBless = true; } } },
-    { name: "清水", color: "#3498db", trait: { id: "T2", name: "蛍の導き", type: "magic", desc: "最大MP+50、神祇ダメージ大幅増", apply: c => { c.maxMp += 50; c.fireflyMagic = true; } } },
-    { name: "車三郎田", color: "#e67e22", trait: { id: "T3", name: "剛力", type: "physical", desc: "最大HP+80、打たれ強い", apply: c => { c.maxHp += 80; } } },
-    { name: "今昼坂", color: "#2ecc71", trait: { id: "T4", name: "透明化", type: "agility", desc: "QTE枠拡大、退却成功率アップ", apply: c => { c.qteMult = 1.5; c.stealth = true; } } },
-    { name: "すずらん", color: "#9b59b6", trait: { id: "T5", name: "花の癒し", type: "magic", desc: "毎ターンHPが自動回復する", apply: c => { c.autoHeal = true; } } }
+    { name: "噛無也木", color: "#e74c3c", trait: { id: "T1", name: "蛇の加護", type: "physical", desc: "物理+25、防御失敗時の被ダメ半減", apply: c => { c.attack += 25;
+    c.snakeBless = true; } } },
+    { name: "清水", color: "#3498db", trait: { id: "T2", name: "蛍の導き", type: "magic", desc: "最大MP+50、神祇ダメージ大幅増", apply: c => { c.maxMp += 50;
+    c.fireflyMagic = true; } } },
+    { name: "車三郎田", color: "#e67e22", trait: { id: "T3", name: "剛力", type: "physical", desc: "最大HP+80、打たれ強い", apply: c => { c.maxHp += 80;
+    } } },
+    { name: "今昼坂", color: "#2ecc71", trait: { id: "T4", name: "透明化", type: "agility", desc: "QTE枠拡大、退却成功率アップ", apply: c => { c.qteMult = 1.5;
+    c.stealth = true; } } },
+    { name: "すずらん", color: "#9b59b6", trait: { id: "T5", name: "花の癒し", type: "magic", desc: "毎ターンHPが自動回復する", apply: c => { c.autoHeal = true;
+    } } }
 ];
 
 const inclusiveNames = ["真朗", "八之助", "三郎", "佐吉", "元助", "弥太郎", "ミヨ", "マツ", "康代", "さえ", "おくめ", "ウロ", "影", "蛍"];
-
 const stages = [
-    { id: 1, title: "STAGE 1: すずらんの峠", name: "農道の怨霊", maxHp: 120, attack: 60, speed: 1.8, bgClass: "bg-stage-1", svg: `<defs><radialGradient id="gg1" cx="50%" cy="40%" r="50%"><stop offset="0%" stop-color="#a0c0d8" stop-opacity="0.65"/><stop offset="100%" stop-color="#2040608" stop-opacity="0"/></radialGradient></defs><ellipse cx="100" cy="130" rx="52" ry="72" fill="url(#gg1)"/><path d="M 68,102 Q 100,86 132,102 L 148,185 Q 100,200 52,185 Z" fill="rgba(150,185,210,0.12)" stroke="rgba(180,210,235,0.28)" stroke-width="1.2"/><ellipse cx="100" cy="89" rx="27" ry="30" fill="rgba(195,218,232,0.18)"/><ellipse cx="87" cy="85" rx="7" ry="9" fill="rgba(0,5,20,0.92)"/><ellipse cx="113" cy="85" rx="7" ry="9" fill="rgba(0,5,20,0.92)"/><ellipse cx="87" cy="85" rx="3.5" ry="4.5" fill="none" stroke="rgba(90,150,220,0.5)" stroke-width=".8"/><ellipse cx="113" cy="85" rx="3.5" ry="4.5" fill="none" stroke="rgba(90,150,220,0.5)" stroke-width=".8"/><path d="M 88,107 Q 100,113 112,107" fill="none" stroke="rgba(0,0,0,.75)" stroke-width="3.5" stroke-linecap="round"/><circle cx="44" cy="72" r="2.8" fill="#ffe860"/><circle cx="44" cy="72" r="7" fill="rgba(255,232,80,.18)"/><circle cx="160" cy="98" r="2.2" fill="#ffe860"/><circle cx="160" cy="98" r="6" fill="rgba(255,232,80,.15)"/><circle cx="58" cy="152" r="2.4" fill="#ffe860"/><circle cx="58" cy="152" r="6" fill="rgba(255,232,80,.13)"/><circle cx="150" cy="158" r="2.6" fill="#ffe860"/><circle cx="150" cy="158" r="7" fill="rgba(255,232,80,.16)"/><path d="M 52,185 Q 62,192 68,180 Q 74,190 80,182 Q 86,192 92,183 Q 98,193 104,182 Q 110,193 116,182 Q 122,192 128,183 Q 134,190 140,182 Q 146,192 148,185" fill="none" stroke="rgba(155,190,215,.22)" stroke-width="1.5"/>` },
-    { id: 2, title: "STAGE 2: あぎと桜の狂気", name: "アケビの眼球", maxHp: 260, attack: 115, speed: 2.1, bgClass: "bg-stage-2", svg: `<defs><radialGradient id="gg2a" cx="50%" cy="55%" r="48%"><stop offset="0%" stop-color="#ede0c8" stop-opacity="0.9"/><stop offset="100%" stop-color="#c0a0c0" stop-opacity="0.5"/></radialGradient><radialGradient id="gg2b" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#800040"/><stop offset="100%" stop-color="#300020"/></radialGradient></defs><ellipse cx="100" cy="115" rx="72" ry="62" fill="#5a1a6a" stroke="rgba(140,60,160,.4)" stroke-width="2"/><ellipse cx="100" cy="115" rx="72" ry="62" fill="none" stroke="rgba(200,100,220,.2)" stroke-width="1" stroke-dasharray="8,4"/><path d="M 100,53 Q 100,80 100,115" stroke="rgba(140,60,160,.6)" stroke-width="3" fill="none"/><path d="M 100,53 Q 72,115 28,115 Q 72,115 100,177" stroke="rgba(170,70,190,.5)" stroke-width="1.5" fill="none" stroke-dasharray="4,3"/><path d="M 100,53 Q 128,115 172,115 Q 128,115 100,177" stroke="rgba(170,70,190,.5)" stroke-width="1.5" fill="none" stroke-dasharray="4,3"/><ellipse cx="100" cy="115" rx="55" ry="46" fill="url(#gg2a)"/><ellipse cx="70" cy="100" rx="14" ry="16" fill="white" stroke="rgba(100,50,120,.3)" stroke-width="1"/><ellipse cx="70" cy="100" rx="9" ry="11" fill="url(#gg2b)"/><ellipse cx="70" cy="100" rx="4" ry="5" fill="rgba(0,0,0,.9)"/><circle cx="67" cy="97" r="2" fill="rgba(255,255,255,.6)"/><ellipse cx="130" cy="105" rx="14" ry="16" fill="white" stroke="rgba(100,50,120,.3)" stroke-width="1"/><ellipse cx="130" cy="105" rx="9" ry="11" fill="url(#gg2b)"/><ellipse cx="130" cy="105" rx="4" ry="5" fill="rgba(0,0,0,.9)"/><circle cx="127" cy="102" r="2" fill="rgba(255,255,255,.6)"/><ellipse cx="100" cy="132" rx="10" ry="12" fill="white" stroke="rgba(100,50,120,.3)" stroke-width="1"/><ellipse cx="100" cy="132" rx="6" ry="8" fill="url(#gg2b)"/><ellipse cx="100" cy="132" rx="2.5" ry="3.5" fill="rgba(0,0,0,.9)"/><circle cx="98" cy="130" r="1.5" fill="rgba(255,255,255,.6)"/><path d="M 52,140 Q 38,160 30,180" stroke="rgba(120,50,140,.6)" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M 148,145 Q 162,162 172,178" stroke="rgba(120,50,140,.6)" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M 80,165 Q 76,180 70,190" stroke="rgba(120,50,140,.5)" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M 120,165 Q 124,180 130,190" stroke="rgba(120,50,140,.5)" stroke-width="2" fill="none" stroke-linecap="round"/>` },
-    { id: 3, title: "STAGE 3: 楯の城", name: "木簡の亡者", maxHp: 460, attack: 185, speed: 2.4, bgClass: "bg-stage-3", svg: `<defs><radialGradient id="gg3" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#1a1008" stop-opacity="0"/><stop offset="80%" stop-color="#1a1008" stop-opacity="0"/><stop offset="100%" stop-color="#100a04" stop-opacity=".8"/></radialGradient></defs><circle cx="100" cy="100" r="75" fill="rgba(255,255,255,.02)" stroke="rgba(180,150,100,.12)" stroke-width="1"/><circle cx="100" cy="100" r="75" fill="url(#gg3)"/><rect x="62" y="22" width="18" height="55" rx="2" fill="#6b4c2a" stroke="rgba(200,160,90,.3)" stroke-width="1" transform="rotate(-45,71,49)"/><text x="66" y="52" font-size="9" fill="rgba(200,160,80,.7)" font-family="serif" transform="rotate(-45,71,49)">記</text><rect x="120" y="28" width="18" height="55" rx="2" fill="#5a4020" stroke="rgba(200,160,90,.3)" stroke-width="1" transform="rotate(30,129,55)"/><text x="124" y="62" font-size="9" fill="rgba(200,160,80,.7)" font-family="serif" transform="rotate(30,129,55)">号</text><rect x="38" y="85" width="18" height="55" rx="2" fill="#7a5530" stroke="rgba(200,160,90,.3)" stroke-width="1" transform="rotate(-20,47,112)"/><text x="42" y="118" font-size="9" fill="rgba(200,160,80,.7)" font-family="serif" transform="rotate(-20,47,112)">文</text><rect x="145" y="90" width="18" height="55" rx="2" fill="#604828" stroke="rgba(200,160,90,.3)" stroke-width="1" transform="rotate(55,154,117)"/><text x="149" y="123" font-size="9" fill="rgba(200,160,80,.7)" font-family="serif" transform="rotate(55,154,117)">字</text><rect x="70" y="138" width="18" height="55" rx="2" fill="#6e4f2c" stroke="rgba(200,160,90,.3)" stroke-width="1" transform="rotate(-15,79,165)"/><text x="74" y="168" font-size="9" fill="rgba(200,160,80,.7)" font-family="serif" transform="rotate(-15,79,165)">暴</text><rect x="112" y="140" width="18" height="55" rx="2" fill="#5c4224" stroke="rgba(200,160,90,.3)" stroke-width="1" transform="rotate(20,121,167)"/><text x="116" y="170" font-size="9" fill="rgba(200,160,80,.7)" font-family="serif" transform="rotate(20,121,167)">力</text><ellipse cx="100" cy="100" rx="22" ry="25" fill="rgba(0,0,0,.95)" stroke="rgba(180,140,70,.3)" stroke-width="1.5"/><ellipse cx="92" cy="93" rx="5" ry="7" fill="none" stroke="rgba(200,160,80,.6)" stroke-width="1.2"/><ellipse cx="108" cy="93" rx="5" ry="7" fill="none" stroke="rgba(200,160,80,.6)" stroke-width="1.2"/><path d="M 90,110 Q 100,116 110,110" fill="none" stroke="rgba(200,160,80,.5)" stroke-width="2" stroke-linecap="round"/>` },
-    { id: 4, title: "STAGE 4: おぼねりの森", name: "蛹の転生", maxHp: 760, attack: 290, speed: 2.7, bgClass: "bg-stage-4", svg: `<defs><linearGradient id="gg4a" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3a2010"/><stop offset="50%" stop-color="#5a3818"/><stop offset="100%" stop-color="#2a1a0a"/></linearGradient><radialGradient id="gg4b" cx="50%" cy="60%" r="40%"><stop offset="0%" stop-color="rgba(120,200,180,.15)"/><stop offset="100%" stop-color="rgba(120,200,180,0)"/></radialGradient></defs><ellipse cx="100" cy="120" rx="38" ry="65" fill="url(#gg4a)" stroke="rgba(180,130,60,.3)" stroke-width="1.5"/><ellipse cx="100" cy="120" rx="38" ry="65" fill="url(#gg4b)"/><path d="M 70,80 Q 100,70 130,80" stroke="rgba(150,100,40,.5)" stroke-width="1" fill="none"/><path d="M 66,100 Q 100,88 134,100" stroke="rgba(150,100,40,.4)" stroke-width="1" fill="none"/><path d="M 64,120 Q 100,108 136,120" stroke="rgba(150,100,40,.4)" stroke-width="1" fill="none"/><path d="M 66,140 Q 100,128 134,140" stroke="rgba(150,100,40,.4)" stroke-width="1" fill="none"/><path d="M 70,158 Q 100,148 130,158" stroke="rgba(150,100,40,.5)" stroke-width="1" fill="none"/><path d="M 62,110 Q 28,70 15,40" stroke="rgba(120,180,160,.35)" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M 60,100 Q 20,55 5,22" stroke="rgba(120,180,160,.25)" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M 138,110 Q 172,70 185,40" stroke="rgba(120,180,160,.35)" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M 140,100 Q 180,55 195,22" stroke="rgba(120,180,160,.25)" stroke-width="6" fill="none" stroke-linecap="round"/><ellipse cx="100" cy="78" rx="12" ry="10" fill="rgba(200,180,120,.2)" stroke="rgba(200,160,80,.4)" stroke-width="1"/><path d="M 96,74 L 104,74" stroke="rgba(200,160,80,.5)" stroke-width=".8"/><path d="M 94,78 L 106,78" stroke="rgba(200,160,80,.5)" stroke-width=".8"/>` },
-    { id: 5, title: "FINAL STAGE: 山中の淵", name: "双頭大蛇・左美都の守護", maxHp: 1400, attack: 460, speed: 3.2, bgClass: "bg-stage-5", svg: `<defs><radialGradient id="gg5a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#1a4020"/><stop offset="100%" stop-color="#0a1a0c"/></radialGradient></defs><path d="M 40,180 Q 50,140 80,120 Q 120,100 150,80 Q 170,65 165,45" stroke="#1a5030" stroke-width="22" fill="none" stroke-linecap="round"/><path d="M 40,180 Q 50,140 80,120 Q 120,100 150,80 Q 170,65 165,45" stroke="rgba(30,100,50,.3)" stroke-width="30" fill="none" stroke-linecap="round"/><path d="M 40,180 Q 50,140 80,120 Q 120,100 150,80 Q 170,65 165,45" stroke="rgba(60,180,80,.08)" stroke-width="38" fill="none" stroke-linecap="round"/><path d="M 160,185 Q 145,145 120,128 Q 85,108 55,90 Q 32,76 35,55" stroke="#163d26" stroke-width="22" fill="none" stroke-linecap="round"/><path d="M 160,185 Q 145,145 120,128 Q 85,108 55,90 Q 32,76 35,55" stroke="rgba(26,80,40,.3)" stroke-width="30" fill="none" stroke-linecap="round"/><ellipse cx="162" cy="40" rx="20" ry="16" fill="#1a5030" stroke="rgba(80,180,80,.25)" stroke-width="1.5"/><ellipse cx="162" cy="40" rx="20" ry="16" fill="rgba(40,120,60,.2)"/><ellipse cx="155" cy="37" rx="5" ry="6" fill="#c4a822" opacity=".9"/><ellipse cx="155" cy="37" rx="2" ry="3" fill="rgba(0,0,0,.9)"/><circle cx="154" cy="36" r="1" fill="rgba(255,255,255,.5)"/><ellipse cx="169" cy="37" rx="5" ry="6" fill="#c4a822" opacity=".9"/><ellipse cx="169" cy="37" rx="2" ry="3" fill="rgba(0,0,0,.9)"/><circle cx="168" cy="36" r="1" fill="rgba(255,255,255,.5)"/><path d="M 152,48 Q 162,52 172,48" stroke="rgba(80,200,80,.3)" stroke-width="1.5" fill="none"/><ellipse cx="38" cy="50" rx="20" ry="16" fill="#163d26" stroke="rgba(60,160,60,.25)" stroke-width="1.5"/><ellipse cx="38" cy="50" rx="20" ry="16" fill="rgba(30,100,50,.2)"/><ellipse cx="31" cy="47" rx="5" ry="6" fill="#c4a822" opacity=".9"/><ellipse cx="31" cy="47" rx="2" ry="3" fill="rgba(0,0,0,.9)"/><circle cx="30" cy="46" r="1" fill="rgba(255,255,255,.5)"/><ellipse cx="45" cy="47" rx="5" ry="6" fill="#c4a822" opacity=".9"/><ellipse cx="45" cy="47" rx="2" ry="3" fill="rgba(0,0,0,.9)"/><circle cx="44" cy="46" r="1" fill="rgba(255,255,255,.5)"/><path d="M 28,58 Q 38,62 48,58" stroke="rgba(60,180,60,.3)" stroke-width="1.5" fill="none"/>` }
+    { id: 1, title: "STAGE 1: すずらんの峠", name: "農道の怨霊", maxHp: 120, attack: 60, speed: 1.8, bgClass: "bg-stage-1", svg: `<defs><radialGradient id="gg1" cx="50%" cy="40%" r="50%"><stop offset="0%" stop-color="#a0c0d8" stop-opacity="0.65"/><stop offset="100%" stop-color="#2040608" stop-opacity="0"/></radialGradient></defs><ellipse cx="100" cy="130" rx="52" ry="72" fill="url(#gg1)"/><path d="M 68,102 Q 100,86 132,102 L 148,185 Q 100,200 52,185 Z" fill="rgba(150,185,210,0.12)" stroke="rgba(180,210,235,0.28)" stroke-width="1.2"/><ellipse cx="100" cy="89" rx="27" ry="30" fill="rgba(195,218,232,0.18)"/><ellipse cx="87" cy="85" rx="7" ry="9" fill="rgba(0,5,20,0.92)"/><ellipse cx="113" cy="85" rx="7" ry="9" fill="rgba(0,5,20,0.92)"/><ellipse cx="87" cy="85" rx="3.5" ry="4.5" fill="none" stroke="rgba(90,150,220,0.5)" stroke-width=".8"/><ellipse cx="113" cy="85" rx="3.5" ry="4.5" fill="none" stroke="rgba(90,150,220,0.5)" stroke-width=".8"/><path d="M 88,107 Q 100,113 112,107" fill="none" stroke="rgba(0,0,0,.75)" stroke-width="3.5" stroke-linecap="round"/><circle cx="44" cy="72" r="2.8" fill="#ffe860"/><circle cx="44" cy="72" r="7" 
+    fill="rgba(255,232,80,.18)"/><circle cx="160" cy="98" r="2.2" fill="#ffe860"/><circle cx="160" cy="98" r="6" fill="rgba(255,232,80,.15)"/><circle cx="58" cy="152" r="2.4" fill="#ffe860"/><circle cx="58" cy="152" r="6" fill="rgba(255,232,80,.13)"/><circle cx="150" cy="158" r="2.6" fill="#ffe860"/><circle cx="150" cy="158" r="7" fill="rgba(255,232,80,.16)"/><path d="M 52,185 Q 62,192 68,180 Q 74,190 80,182 Q 86,192 92,183 Q 98,193 104,182 Q 110,193 116,182 Q 122,192 128,183 Q 134,190 140,182 Q 146,192 148,185" fill="none" stroke="rgba(155,190,215,.22)" stroke-width="1.5"/>` },
+    { id: 2, title: "STAGE 2: あぎと桜の狂気", name: "アケビの眼球", maxHp: 260, attack: 115, speed: 2.1, bgClass: "bg-stage-2", svg: `<defs><radialGradient id="gg2a" cx="50%" cy="55%" r="48%"><stop offset="0%" stop-color="#ede0c8" stop-opacity="0.9"/><stop offset="100%" stop-color="#c0a0c0" stop-opacity="0.5"/></radialGradient><radialGradient id="gg2b" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#800040"/><stop offset="100%" stop-color="#300020"/></radialGradient></defs><ellipse cx="100" cy="115" rx="72" ry="62" fill="#5a1a6a" 
+    stroke="rgba(140,60,160,.4)" stroke-width="2"/><ellipse cx="100" cy="115" rx="72" ry="62" fill="none" stroke="rgba(200,100,220,.2)" stroke-width="1" stroke-dasharray="8,4"/><path d="M 100,53 Q 100,80 100,115" stroke="rgba(140,60,160,.6)" stroke-width="3" fill="none"/><path d="M 100,53 Q 72,115 28,115 Q 72,115 100,177" stroke="rgba(170,70,190,.5)" stroke-width="1.5" fill="none" stroke-dasharray="4,3"/><path d="M 100,53 Q 128,115 172,115 Q 128,115 100,177" stroke="rgba(170,70,190,.5)" stroke-width="1.5" fill="none" stroke-dasharray="4,3"/><ellipse cx="100" cy="115" rx="55" ry="46" fill="url(#gg2a)"/><ellipse cx="70" cy="100" rx="14" ry="16" fill="white" stroke="rgba(100,50,120,.3)" stroke-width="1"/><ellipse cx="70" cy="100" rx="9" ry="11" fill="url(#gg2b)"/><ellipse cx="70" cy="100" rx="4" ry="5" fill="rgba(0,0,0,.9)"/><circle cx="67" cy="97" r="2" fill="rgba(255,255,255,.6)"/><ellipse cx="130" cy="105" rx="14" ry="16" fill="white" stroke="rgba(100,50,120,.3)" stroke-width="1"/><ellipse cx="130" cy="105" rx="9" ry="11" fill="url(#gg2b)"/><ellipse cx="130" cy="105" rx="4" ry="5" fill="rgba(0,0,0,.9)"/><circle cx="127" cy="102" r="2" fill="rgba(255,255,255,.6)"/><ellipse cx="100" cy="132" rx="10" ry="12" fill="white" stroke="rgba(100,50,120,.3)" stroke-width="1"/><ellipse cx="100" cy="132" rx="6" ry="8" 
+    fill="url(#gg2b)"/><ellipse cx="100" cy="132" rx="2.5" ry="3.5" fill="rgba(0,0,0,.9)"/><circle cx="98" cy="130" r="1.5" fill="rgba(255,255,255,.6)"/><path d="M 52,140 Q 38,160 30,180" stroke="rgba(120,50,140,.6)" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M 148,145 Q 162,162 172,178" stroke="rgba(120,50,140,.6)" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M 80,165 Q 76,180 70,190" stroke="rgba(120,50,140,.5)" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M 120,165 Q 124,180 130,190" stroke="rgba(120,50,140,.5)" stroke-width="2" fill="none" stroke-linecap="round"/>` },
+    { id: 3, title: "STAGE 3: 楯の城", name: "木簡の亡者", maxHp: 460, attack: 185, speed: 2.4, bgClass: "bg-stage-3", svg: `<defs><radialGradient id="gg3" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#1a1008" stop-opacity="0"/><stop offset="80%" stop-color="#1a1008" stop-opacity="0"/><stop offset="100%" stop-color="#100a04" stop-opacity=".8"/></radialGradient></defs><circle cx="100" cy="100" r="75" fill="rgba(255,255,255,.02)" stroke="rgba(180,150,100,.12)" stroke-width="1"/><circle cx="100" cy="100" r="75" fill="url(#gg3)"/><rect x="62" y="22" width="18" height="55" rx="2" fill="#6b4c2a" stroke="rgba(200,160,90,.3)" stroke-width="1" 
+    transform="rotate(-45,71,49)"/><text x="66" y="52" font-size="9" fill="rgba(200,160,80,.7)" font-family="serif" transform="rotate(-45,71,49)">記</text><rect x="120" y="28" width="18" height="55" rx="2" fill="#5a4020" stroke="rgba(200,160,90,.3)" stroke-width="1" transform="rotate(30,129,55)"/><text x="124" y="62" font-size="9" fill="rgba(200,160,80,.7)" font-family="serif" transform="rotate(30,129,55)">号</text><rect x="38" y="85" width="18" height="55" rx="2" fill="#7a5530" stroke="rgba(200,160,90,.3)" stroke-width="1" transform="rotate(-20,47,112)"/><text x="42" y="118" font-size="9" fill="rgba(200,160,80,.7)" font-family="serif" transform="rotate(-20,47,112)">文</text><rect x="145" y="90" width="18" height="55" rx="2" fill="#604828" stroke="rgba(200,160,90,.3)" stroke-width="1" transform="rotate(55,154,117)"/><text x="149" y="123" font-size="9" fill="rgba(200,160,80,.7)" font-family="serif" transform="rotate(55,154,117)">字</text><rect x="70" y="138" width="18" height="55" rx="2" fill="#6e4f2c" stroke="rgba(200,160,90,.3)" stroke-width="1" transform="rotate(-15,79,165)"/><text x="74" y="168" font-size="9" fill="rgba(200,160,80,.7)" font-family="serif" transform="rotate(-15,79,165)">暴</text><rect x="112" y="140" width="18" height="55" rx="2" fill="#5c4224" stroke="rgba(200,160,90,.3)" stroke-width="1" transform="rotate(20,121,167)"/><text x="116" y="170" font-size="9" fill="rgba(200,160,80,.7)" font-family="serif" transform="rotate(20,121,167)">力</text><ellipse cx="100" cy="100" rx="22" ry="25" fill="rgba(0,0,0,.95)" stroke="rgba(180,140,70,.3)" stroke-width="1.5"/><ellipse cx="92" cy="93" rx="5" ry="7" fill="none" stroke="rgba(200,160,80,.6)" stroke-width="1.2"/><ellipse cx="108" cy="93" rx="5" ry="7" 
+    fill="none" stroke="rgba(200,160,80,.6)" stroke-width="1.2"/><path d="M 90,110 Q 100,116 110,110" fill="none" stroke="rgba(200,160,80,.5)" stroke-width="2" stroke-linecap="round"/>` },
+    { id: 4, title: "STAGE 4: おぼねりの森", name: "蛹の転生", maxHp: 760, attack: 290, speed: 2.7, bgClass: "bg-stage-4", svg: `<defs><linearGradient id="gg4a" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3a2010"/><stop offset="50%" stop-color="#5a3818"/><stop offset="100%" stop-color="#2a1a0a"/></linearGradient><radialGradient id="gg4b" cx="50%" cy="60%" r="40%"><stop offset="0%" stop-color="rgba(120,200,180,.15)"/><stop offset="100%" stop-color="rgba(120,200,180,0)"/></radialGradient></defs><ellipse cx="100" cy="120" rx="38" ry="65" fill="url(#gg4a)" stroke="rgba(180,130,60,.3)" stroke-width="1.5"/><ellipse cx="100" cy="120" rx="38" ry="65" fill="url(#gg4b)"/><path d="M 70,80 Q 100,70 130,80" stroke="rgba(150,100,40,.5)" stroke-width="1" fill="none"/><path d="M 66,100 Q 100,88 134,100" stroke="rgba(150,100,40,.4)" stroke-width="1" fill="none"/><path d="M 64,120 Q 100,108 136,120" stroke="rgba(150,100,40,.4)" stroke-width="1" fill="none"/><path d="M 66,140 Q 100,128 134,140" stroke="rgba(150,100,40,.4)" stroke-width="1" fill="none"/><path d="M 70,158 
+    Q 100,148 130,158" stroke="rgba(150,100,40,.5)" stroke-width="1" fill="none"/><path d="M 62,110 Q 28,70 15,40" stroke="rgba(120,180,160,.35)" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M 60,100 Q 20,55 5,22" stroke="rgba(120,180,160,.25)" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M 138,110 Q 172,70 185,40" stroke="rgba(120,180,160,.35)" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M 140,100 Q 180,55 195,22" stroke="rgba(120,180,160,.25)" stroke-width="6" fill="none" stroke-linecap="round"/><ellipse cx="100" cy="78" rx="12" ry="10" fill="rgba(200,180,120,.2)" stroke="rgba(200,160,80,.4)" stroke-width="1"/><path d="M 96,74 L 104,74" stroke="rgba(200,160,80,.5)" stroke-width=".8"/><path d="M 94,78 L 106,78" stroke="rgba(200,160,80,.5)" stroke-width=".8"/>` },
+    { id: 5, title: "FINAL STAGE: 山中の淵", name: "双頭大蛇・左美都の守護", maxHp: 1400, attack: 460, speed: 3.2, bgClass: "bg-stage-5", svg: `<defs><radialGradient id="gg5a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#1a4020"/><stop offset="100%" stop-color="#0a1a0c"/></radialGradient></defs><path d="M 40,180 Q 50,140 80,120 Q 120,100 150,80 
+    Q 170,65 165,45" stroke="#1a5030" stroke-width="22" fill="none" stroke-linecap="round"/><path d="M 40,180 Q 50,140 80,120 Q 120,100 150,80 Q 170,65 165,45" stroke="rgba(30,100,50,.3)" stroke-width="30" fill="none" stroke-linecap="round"/><path d="M 40,180 Q 50,140 80,120 Q 120,100 150,80 Q 170,65 165,45" stroke="rgba(60,180,80,.08)" stroke-width="38" fill="none" stroke-linecap="round"/><path d="M 160,185 Q 145,145 120,128 Q 85,108 55,90 Q 32,76 35,55" stroke="#163d26" stroke-width="22" fill="none" stroke-linecap="round"/><path d="M 160,185 Q 145,145 120,128 Q 85,108 55,90 Q 32,76 35,55" stroke="rgba(26,80,40,.3)" stroke-width="30" fill="none" stroke-linecap="round"/><ellipse cx="162" cy="40" rx="20" ry="16" fill="#1a5030" stroke="rgba(80,180,80,.25)" stroke-width="1.5"/><ellipse cx="162" cy="40" rx="20" ry="16" fill="rgba(40,120,60,.2)"/><ellipse cx="155" cy="37" rx="5" ry="6" fill="#c4a822" opacity=".9"/><ellipse cx="155" cy="37" rx="2" ry="3" fill="rgba(0,0,0,.9)"/><circle cx="154" cy="36" r="1" fill="rgba(255,255,255,.5)"/><ellipse cx="169" cy="37" rx="5" ry="6" fill="#c4a822" opacity=".9"/><ellipse 
+    cx="169" cy="37" rx="2" ry="3" fill="rgba(0,0,0,.9)"/><circle cx="168" cy="36" r="1" fill="rgba(255,255,255,.5)"/><path d="M 152,48 Q 162,52 172,48" stroke="rgba(80,200,80,.3)" stroke-width="1.5" fill="none"/><ellipse cx="38" cy="50" rx="20" ry="16" fill="#163d26" stroke="rgba(60,160,60,.25)" stroke-width="1.5"/><ellipse cx="38" cy="50" rx="20" ry="16" fill="rgba(30,100,50,.2)"/><ellipse cx="31" cy="47" rx="5" ry="6" fill="#c4a822" opacity=".9"/><ellipse cx="31" cy="47" rx="2" ry="3" fill="rgba(0,0,0,.9)"/><circle cx="30" cy="46" r="1" fill="rgba(255,255,255,.5)"/><ellipse cx="45" cy="47" rx="5" ry="6" fill="#c4a822" opacity=".9"/><ellipse cx="45" cy="47" rx="2" ry="3" fill="rgba(0,0,0,.9)"/><circle cx="44" cy="46" r="1" fill="rgba(255,255,255,.5)"/><path d="M 28,58 Q 38,62 48,58" stroke="rgba(60,180,60,.3)" stroke-width="1.5" fill="none"/>` }
 ];
-
 const narrativeEvents = [
     { text: "今昼坂を登っていると、木通（アケビ）がたわわに実っていた。伴侶がそれを見つめている。", choices: [ { text: "「まるで大きな芋虫をほおばるようだな」と笑い合う", kizuna: 30, log: "「自分も同じことを考えていた」と伴侶は笑い、深い愛情を感じた。" }, { text: "無言で一人でとって食べてしまう", kizuna: -25, log: "伴侶は寂しそうな顔をして、黙って歩き出した。" }, { text: "美しい実を選び、伴侶に手渡す", kizuna: 15, log: "伴侶は微笑みながらそれを受け取り、静かな絆が生まれた。" } ] },
     { text: "楯の城跡の近くで、伴侶がひどい傷を負って倒れているのを見つけた。手には密書を握っている。", choices: [ { text: "傷を癒し、共に密書を届ける覚悟を決める", kizuna: 40, log: "共に死線を越える覚悟が、二人の魂を強く結びつけた。" }, { text: "「がめつい左美都の欲深い女だ、犬畜生め！」と罵倒して密書を奪う", kizuna: -100, log: "冷酷で理不尽な暴言が、取り返しのつかない亀裂を生んだ。" }, { text: "関わりを恐れ、密書をその場に深く埋めて隠す", kizuna: -10, log: "伴侶は無言で立ち上がり、あなたへの不信感を募らせた。" } ] },
-    { text: "夜更けの犀川。氾濫する川に橋を架けるため、伴侶が蛍を口に含み、川へ飛び込もうとしている。", choices: [ { text: "「気が狂ったか」と笑い飛ばして止める", kizuna: -30, log: "伴侶は悲しげにあなたを突き飛ばし、単独で川へ飛び込んだ。" }, { text: "黙って見守り、無事を祈る", kizuna: 10, log: "干渉しない優しさが、伴侶に安心感を与えた。" }, { text: "共に蛍を集め、一緒に川へ飛び込む", kizuna: 35, log: "神秘の光に包まれながら、二人は川底で固く手を握り合った。" } ] }
+    { text: "夜更けの犀川。氾濫する川に橋を架けるため、伴侶が蛍を口に含み、川へ飛び込もうとしている。", choices: [ { text: "「気が狂ったか」と笑い飛ばして止める", kizuna: -30, log: "伴侶は悲しげにあなたを突き飛ばし、単独で川へ飛び込んだ。" }, { text: "黙って見守り、無事を祈る", kizuna: 10, log: "干渉しない優しさが、伴侶に安心感を与えた。" }, { text: "共に蛍を集め、一緒に川へ飛び込む", kizuna: 
+    35, log: "神秘の光に包まれながら、二人は川底で固く手を握り合った。" } ] }
 ];
 
 let state = { ruler: null, partner: null, heirs: [], generation: 1, kizuna: 40, potions: 3, currentStageIdx: 0, enemyHp: 0, score: 0, isPlayerTurn: false };
@@ -596,14 +830,12 @@ let qte = {
 };
 const qteTargets = { 'A': { min: 20, max: 50, color: '#e74c3c' }, 'S': { min: 75, max: 105, color: '#2ecc71' }, 'D': { min: 130, max: 160, color: '#3498db' } };
 const defVariations = [ { name: "【強撃】", desc: "往復移動" }, { name: "【神速】", desc: "片道超高速" }, { name: "【急所】", desc: "極小ターゲット" } ];
-
 function getSynergy() {
     if(!state.partner) return { atk: 1.0, def: 1.0, name: "孤立無援" };
     let rTypes = state.ruler.traits.map(t => t.type);
     let pTypes = state.partner.traits.map(t => t.type);
     let shared = rTypes.filter(x => pTypes.includes(x)).length > 0;
     let diff = rTypes.filter(x => !pTypes.includes(x)).length > 0 || pTypes.filter(x => !rTypes.includes(x)).length > 0;
-
     if (shared && !diff) return { atk: 1.3, def: 1.0, name: "共鳴の構え (攻撃力UP)" };
     if (!shared && diff) return { atk: 1.0, def: 0.7, name: "相補の陣 (被ダメ軽減)" };
     if (shared && diff) return { atk: 1.2, def: 0.8, name: "万象の絆 (攻防UP)" };
@@ -623,7 +855,8 @@ function showTurnBanner(text, color) {
     setTimeout(() => { banner.classList.remove("turn-banner-show"); }, 800);
 }
 
-function addScore(points) { state.score += points; document.getElementById("score-val").innerText = state.score; }
+function addScore(points) { state.score += points; document.getElementById("score-val").innerText = state.score;
+}
 
 function showResult(type) {
     document.getElementById("result-overlay").style.display = "flex";
@@ -666,9 +899,12 @@ function renderCharBox(char, isRuler = true) {
     let trHtml = char.traits.map(t => `<span class="trait ${t.type}">${t.name}</span>`).join('');
     return `
         <div class="char-box">
-            <div class="char-name">${isRuler ? "当主" : "伴侶"}: ${char.name} <span style="font-size:0.7em; color:#aaa;">(${char.gender})</span></div>
-            <div style="font-size:0.85em; color:#ccc; margin-bottom:5px;">HP: ${char.hp}/${char.maxHp} | MP: ${char.mp}/${char.maxMp} | 攻: ${char.attack}</div>
-            <div>${trHtml || "<span class='trait'>凡人</span>"}</div>
+            <div class="char-name">${isRuler ?
+            "当主" : "伴侶"}: ${char.name} <span style="font-size:0.7em; color:#aaa;">(${char.gender})</span></div>
+            <div style="font-size:0.85em; color:#ccc; margin-bottom:5px;">HP: ${char.hp}/${char.maxHp} |
+            MP: ${char.mp}/${char.maxMp} | 攻: ${char.attack}</div>
+            <div>${trHtml ||
+            "<span class='trait'>凡人</span>"}</div>
         </div>
     `;
 }
@@ -686,12 +922,12 @@ function updateKingdomUI() {
     }
 
     document.getElementById("kingdom-party-info").innerHTML = `
-        <h3 style="margin-bottom:10px;">第${state.generation}代の血脈</h3>
+        <h3 style="margin-bottom:10px; width: 100%;">第${state.generation}代の血脈</h3>
         ${renderCharBox(state.ruler, true)}
-        ${state.partner ? `<div class="${kizunaClass}">絆 (Bond): ${state.kizuna}%</div>${renderCharBox(state.partner, false)}` : `<div style="text-align:center; color:#888; margin:10px 0; padding:10px; border:1px dashed #555; border-radius:6px;">伴侶がいません<br><span style="font-size:0.8em;">(遠征前に縁談を推奨)</span></div>`}
+        ${state.partner ?
+        `<div class="${kizunaClass}" style="flex:1;">絆 (Bond): ${state.kizuna}%</div>${renderCharBox(state.partner, false)}` : `<div style="flex:1; text-align:center; color:#888; margin:10px 0; padding:10px; border:1px dashed #555; border-radius:6px;">伴侶がいません<br><span style="font-size:0.8em;">(遠征前に縁談を推奨)</span></div>`}
         ${heirsHtml}
     `;
-    
     document.getElementById("default-kingdom-menu").style.display = "block";
     document.getElementById("candidates-area").style.display = "none";
     document.getElementById("event-section").style.display = "none";
@@ -716,7 +952,6 @@ function checkMortality() {
 function advanceKingdom() {
     playSfx('click');
     addScore(50);
-    
     if (state.heirs.length > 0) checkMortality();
 
     updateKingdomUI();
@@ -727,13 +962,13 @@ function advanceKingdom() {
         
         let shuffledBl = [...bloodlines].sort(() => 0.5 - Math.random()).slice(0, 3);
         let shuffledNames = [...inclusiveNames].sort(() => 0.5 - Math.random());
-        
         shuffledBl.forEach((bl, idx) => {
             let name = shuffledNames[idx];
             candidatesArea.innerHTML += `
                 <div class="candidate-card" onclick="marry(${bloodlines.indexOf(bl)}, '${name}')">
                     <div class="partner-portrait">${generatePartnerSVG(bl.color)}</div>
                     <div style="font-weight:bold; color:#fff;">${bl.name}の ${name}</div>
+     
                     <div class="trait ${bl.trait.type}" style="margin-top:5px;">${bl.trait.name}</div>
                     <div style="font-size:0.75em; color:#aaa; margin-top:5px;">${bl.trait.desc}</div>
                 </div>
@@ -794,7 +1029,8 @@ function resolveEvent(choiceIdx, kizunaChange, logText) {
 
 function startExpedition() {
     playSfx('click');
-    if(state.heirs.length === 0 && !state.partner) { alert("血脈が途絶える危険があります。まずは縁談を。"); return; }
+    if(state.heirs.length === 0 && !state.partner) { alert("血脈が途絶える危険があります。まずは縁談を。"); return;
+    }
     
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('battle-layout').classList.add('active-battle');
@@ -817,7 +1053,6 @@ function startPlayerTurn() {
     document.getElementById("battle-phase-indicator").style.background = "var(--main-gold)";
     document.getElementById("battle-phase-indicator").style.color = "#000";
     document.getElementById("battle-phase-indicator").innerText = "【当主の攻勢】";
-    
     showTurnBanner("【 攻勢の番 】", "var(--main-gold)");
     document.getElementById('player-commands').classList.remove('disabled-menu');
     updateBattleUI(); 
@@ -834,7 +1069,7 @@ function enemyTurn() {
     document.getElementById("battle-phase-indicator").style.color = "#fff";
     document.getElementById("battle-phase-indicator").innerText = "【怪異の猛攻】";
     
-    document.getElementById('player-commands').classList.add('disabled-menu'); 
+    document.getElementById('player-commands').classList.add('disabled-menu');
     showTurnBanner("【 怪異の番 】", "var(--danger)");
     setTimeout(() => {
         playSfx('damage');
@@ -865,7 +1100,8 @@ function updateBattleUI() {
     let stg = stages[state.currentStageIdx];
     let battleCenter = document.getElementById("battle-bg");
     
-    battleCenter.className = `battle-center ${stg.bgClass} ${state.isPlayerTurn ? 'battle-player-turn' : 'battle-enemy-turn'}`;
+    battleCenter.className = `battle-center ${stg.bgClass} ${state.isPlayerTurn ?
+    'battle-player-turn' : 'battle-enemy-turn'}`;
     document.getElementById("stage-name").innerText = stg.title;
     document.getElementById("enemy-name").innerText = stg.name;
     document.getElementById("enemy-svg-content").innerHTML = stg.svg;
@@ -873,15 +1109,12 @@ function updateBattleUI() {
     let bhpPct = Math.max(0, (state.enemyHp / stg.maxHp) * 100);
     document.getElementById("boss-hp-fill").style.width = bhpPct + "%";
     document.getElementById("boss-hp-text").innerText = `${state.enemyHp} / ${stg.maxHp}`;
-    
     const renderBar = (val, max, type) => `<div class="bar-container"><div class="bar-fill ${type}-fill" style="width:${Math.max(0, (val/max)*100)}%"></div><div class="bar-text">${type.toUpperCase()}: ${val}/${max}</div></div>`;
-    
     document.getElementById("battle-ruler-info").innerHTML = `
         <div class="char-name">${state.ruler.name}</div>
         ${renderBar(state.ruler.hp, state.ruler.maxHp, 'hp')}
         ${renderBar(state.ruler.mp, state.ruler.maxMp, 'mp')}
     `;
-    
     if (state.partner) {
         document.getElementById("battle-partner-info").style.display = "block";
         document.getElementById("battle-kizuna-box").style.display = "block";
@@ -918,7 +1151,8 @@ function triggerJuice(type, qteColor) {
             <div class="impact-ring" style="border-color: ${color};"></div>
             <div class="cross-slash-1" style="background: linear-gradient(90deg, transparent, #fff, ${color}, transparent);"></div>
             <div class="cross-slash-2" style="background: linear-gradient(90deg, transparent, #fff, ${color}, transparent);"></div>
-            <div class="text-pop" style="color: ${color};">PERFECT STRIKE!!</div>
+       
+             <div class="text-pop" style="color: ${color};">PERFECT STRIKE!!</div>
         `;
     } else if (type === 'attack-great') {
         fx.innerHTML = `
@@ -996,7 +1230,10 @@ function dealEnemyDamage(dmg) {
 }
 
 function prepareQTE(type) {
-    qte.type = type; qte.active = true; qte.hits = { A: null, S: null, D: null };
+    qte.type = type;
+    qte.active = true; qte.hits = { A: null, S: null, D: null };
+    
+    let isMobile = window.innerWidth <= 768; // デバイス（画面幅）判定
     
     document.getElementById("qte-overlay").style.display = "flex";
     document.getElementById("qte-timer-fill").style.width = "100%";
@@ -1008,8 +1245,10 @@ function prepareQTE(type) {
         let baseSpd = 3.5 + (stg.id * 0.3) - (lineagePower * 0.15);
         qte.speed = Math.max(2.0, Math.min(baseSpd, 5.5)); 
         
-        qte.angle = 0; qte.dir = 1;
-        document.getElementById("qte-prompt").innerHTML = "A・S・D をすべて揃えろ！";
+        qte.angle = 0;
+        qte.dir = 1;
+        // モバイルならタップ指示に変更
+        document.getElementById("qte-prompt").innerHTML = isMobile ? "タイミングよく画面をタップしろ！" : "A・S・D キーを揃えろ！";
         document.getElementById("qte-arc-container").style.display = "block";
         document.getElementById("qte-linear-container").style.display = "none";
         
@@ -1025,7 +1264,6 @@ function prepareQTE(type) {
         qte.targetKey = keys[Math.floor(Math.random() * keys.length)];
         qte.linearVariation = Math.floor(Math.random() * 3);
         let vData = defVariations[qte.linearVariation];
-        
         qte.timer = 80 - (stg.id * 5) + (lineagePower * 3);
         let tWidth = (qte.linearVariation === 2 ? 10 : 25) - (stg.id * 2) + (lineagePower * 2.5);
         tWidth = Math.max(8, Math.min(tWidth, 55)); 
@@ -1034,11 +1272,16 @@ function prepareQTE(type) {
         
         let speedReduction = Math.max(0.6, 1.0 - (lineagePower * 0.05));
         qte.linearSpeed = stg.speed * (qte.linearVariation === 1 ? 2.8 : 1.7) * (1 + Math.random()*0.3) * speedReduction;
-        qte.linearX = 0; qte.linearDir = 1;
+        qte.linearX = 0;
+        qte.linearDir = 1;
 
         document.getElementById("qte-arc-container").style.display = "none";
         document.getElementById("qte-linear-container").style.display = "block";
-        document.getElementById("qte-prompt").innerHTML = `敵の猛攻！ ${vData.name} <span style="color:${qteTargets[qte.targetKey].color}; text-shadow:0 0 10px ${qteTargets[qte.targetKey].color};">『 ${qte.targetKey} 』</span> で防げ！`;
+        
+        // モバイルならタップ文言に変更
+        let spText = qte.targetKey === 'A' ? '左' : (qte.targetKey === 'S' ? '中' : '右');
+        let keyDisplay = isMobile ? spText : qte.targetKey + "キー";
+        document.getElementById("qte-prompt").innerHTML = `敵の猛攻！ ${vData.name} <span style="color:${qteTargets[qte.targetKey].color}; text-shadow:0 0 10px ${qteTargets[qte.targetKey].color};">『 ${keyDisplay} 』</span> で防げ！`;
         
         let tEl = document.getElementById("qte-linear-target");
         tEl.style.width = tWidth + "%"; tEl.style.left = tLeft + "%"; tEl.style.background = qteTargets[qte.targetKey].color;
@@ -1062,23 +1305,27 @@ function prepareQTE(type) {
 function updateQTE(time) {
     if (!qte.active) return;
     let dt = (time - qte.lastTime) / 16.6; qte.lastTime = time;
-    
     qte.timer -= 0.30 * dt; 
     document.getElementById("qte-timer-fill").style.width = Math.max(0, qte.timer) + "%";
-    if (qte.timer <= 0) { finishQTE(); return; }
+    if (qte.timer <= 0) { finishQTE(); return;
+    }
     
     if (qte.type === 'attack') {
         qte.angle += qte.speed * qte.dir * dt;
-        if (qte.angle >= 180) { qte.angle = 180; qte.dir = -1; }
-        if (qte.angle <= 0) { qte.angle = 0; qte.dir = 1; }
+        if (qte.angle >= 180) { qte.angle = 180; qte.dir = -1;
+        }
+        if (qte.angle <= 0) { qte.angle = 0; qte.dir = 1;
+        }
         document.getElementById("qte-cursor-line").style.transform = `rotate(${qte.angle}deg)`;
     } else {
         qte.linearX += qte.linearSpeed * qte.linearDir * dt;
         if (qte.linearVariation === 1) { 
             if (qte.linearX >= 100) qte.linearX = 0;
         } else { 
-            if (qte.linearX >= 100) { qte.linearX = 100; qte.linearDir = -1; }
-            if (qte.linearX <= 0) { qte.linearX = 0; qte.linearDir = 1; }
+            if (qte.linearX >= 100) { qte.linearX = 100;
+            qte.linearDir = -1; }
+            if (qte.linearX <= 0) { qte.linearX = 0;
+            qte.linearDir = 1; }
         }
         document.getElementById("qte-linear-cursor").style.left = qte.linearX + "%";
     }
@@ -1098,7 +1345,8 @@ function executeQTE(pressedKey) {
         let btn = document.getElementById(`btn-qte-${pressedKey}`);
         
         if (isTiming) {
-            playSfx('hit'); targetEl.style.stroke = "#fff"; targetEl.style.filter = "drop-shadow(0 0 10px #fff)";
+            playSfx('hit'); targetEl.style.stroke = "#fff";
+            targetEl.style.filter = "drop-shadow(0 0 10px #fff)";
             textEl.innerText = "〇"; btn.style.background = tgt.color;
         } else {
             targetEl.style.stroke = "#444"; targetEl.style.opacity = "0.3";
@@ -1143,7 +1391,8 @@ function finishQTE() {
             logMsg(`＞ 剣撃 【GOOD】 敵に ${dmg} のダメージ。`, "#fff");
         } else {
             dmg = Math.floor(dmg * 0.2);
-            playSfx('miss'); triggerJuice('miss');
+            playSfx('miss');
+            triggerJuice('miss');
             logMsg(`＞ 痛恨のミス！ 敵に ${dmg} の擦り傷...`, "#888");
         }
         dealEnemyDamage(dmg);
@@ -1152,7 +1401,8 @@ function finishQTE() {
         let eDmg = stages[state.currentStageIdx].attack * syn.def; 
         
         if (success) {
-            playSfx('guard'); triggerJuice('super-defend', qteTargets[qte.targetKey].color);
+            playSfx('guard');
+            triggerJuice('super-defend', qteTargets[qte.targetKey].color);
             addScore(200); logMsg(`＞ 【PERFECT PARRY!】 完璧な防御！ ダメージを完全に弾き返した！`, "var(--magic)");
             eDmg = 0;
         } else {
@@ -1194,7 +1444,8 @@ const pzShapes = [ [], [[1,1,1,1]], [[2,0,0],[2,2,2]], [[0,0,3],[3,3,3]], [[4,4]
 const pzColors = [null, '#00ffff', '#0000ff', '#ffa500', '#ffff00', '#00ff00', '#800080', '#ff0000'];
 
 function startPuzzleMode() {
-    state.ruler.mp -= 10; updateBattleUI();
+    state.ruler.mp -= 10;
+    updateBattleUI();
     document.getElementById('puzzle-overlay').style.display = 'flex';
     pzBoard = Array.from({length: pzRows}, () => Array(pzCols).fill(0));
     pzTotalLines = 0; pzTime = 20; pzActive = true;
@@ -1225,11 +1476,13 @@ function mergePuzzle(board, piece) {
 function clearPuzzleLines() {
     let lines = 0;
     outer: for (let y = pzRows - 1; y >= 0; --y) {
-        for (let x = 0; x < pzCols; ++x) { if (pzBoard[y][x] === 0) continue outer; }
+        for (let x = 0; x < pzCols; ++x) { if (pzBoard[y][x] === 0) continue outer;
+        }
         const row = pzBoard.splice(y, 1)[0].fill(0); pzBoard.unshift(row);
         playSfx('hit'); ++y; lines++;
     }
-    if (lines > 0) { pzTotalLines += lines; addScore(lines * 500); }
+    if (lines > 0) { pzTotalLines += lines; addScore(lines * 500);
+    }
 }
 
 function puzzleLoop(time = 0) {
@@ -1253,17 +1506,21 @@ function drawMatrix(matrix, offset) {
 }
 
 function movePuzzle(dir) { if(!pzActive) return; pzPiece.pos.x += dir; if(collide(pzBoard, pzPiece)) pzPiece.pos.x -= dir; }
-function dropPuzzle() { if(!pzActive) return; pzPiece.pos.y++; if(collide(pzBoard, pzPiece)) { pzPiece.pos.y--; mergePuzzle(pzBoard, pzPiece); clearPuzzleLines(); spawnPuzzlePiece(); } pzDropCounter = 0; }
+function dropPuzzle() { if(!pzActive) return; pzPiece.pos.y++;
+    if(collide(pzBoard, pzPiece)) { pzPiece.pos.y--; mergePuzzle(pzBoard, pzPiece); clearPuzzleLines(); spawnPuzzlePiece(); } pzDropCounter = 0; }
 function rotatePuzzle() {
     if(!pzActive) return;
     const pos = pzPiece.pos.x; let offset = 1; const m = pzPiece.matrix;
-    for(let y=0; y<m.length; ++y) { for(let x=0; x<y; ++x) { [m[x][y], m[y][x]] = [m[y][x], m[x][y]]; } }
+    for(let y=0; y<m.length; ++y) { for(let x=0; x<y; ++x) { [m[x][y], m[y][x]] = [m[y][x], m[x][y]];
+    } }
     m.forEach(row => row.reverse());
     while(collide(pzBoard, pzPiece)) {
-        pzPiece.pos.x += offset; offset = -(offset + (offset > 0 ? 1 : -1));
+        pzPiece.pos.x += offset;
+        offset = -(offset + (offset > 0 ? 1 : -1));
         if(offset > m[0].length) {
             m.forEach(row => row.reverse());
-            for(let y=0; y<m.length; ++y) { for(let x=0; x<y; ++x) { [m[x][y], m[y][x]] = [m[y][x], m[x][y]]; } }
+            for(let y=0; y<m.length; ++y) { for(let x=0; x<y; ++x) { [m[x][y], m[y][x]] = [m[y][x], m[x][y]];
+            } }
             pzPiece.pos.x = pos; return;
         }
     }
@@ -1272,12 +1529,12 @@ function rotatePuzzle() {
 function endPuzzleMode() {
     pzActive = false; clearInterval(pzTimerId); cancelAnimationFrame(pzReqId);
     document.getElementById('puzzle-overlay').style.display = 'none';
-    
     let syn = getSynergy();
     if (pzTotalLines > 0) {
         let dmg = Math.floor((pzTotalLines * 400 + 150) * syn.atk);
         if(pzTotalLines >= 2) { playSfx('perfect'); triggerJuice('super-attack', '#9b59b6'); } 
-        else { playSfx('hit'); triggerJuice('attack-great', '#9b59b6'); }
+        else { playSfx('hit');
+        triggerJuice('attack-great', '#9b59b6'); }
         logMsg(`＞ <b>【陣形連鎖完了】</b> ${pzTotalLines}ライン消去！ 敵に ${dmg} の大ダメージ！`, "#9b59b6");
         dealEnemyDamage(dmg);
     } else {
@@ -1297,7 +1554,8 @@ function endPuzzleMode() {
         }
         updateBattleUI();
         if (state.ruler.hp <= 0) { setTimeout(rulerDeath, 1500); } 
-        else { setTimeout(() => dealEnemyDamage(dmgToEnemy), 1000); }
+        else { setTimeout(() => dealEnemyDamage(dmgToEnemy), 1000);
+        }
     }
 }
 
@@ -1333,6 +1591,7 @@ function rulerDeath() {
             showTransition("血脈を次代へ継承中...");
             setTimeout(() => { 
                 hideTransition(); state.ruler = nextRuler; state.partner = null; state.kizuna = 40; state.generation++;
+  
                 updateFamilyTree(); returnToKingdom(false); 
             }, 2500);
         } else { 
@@ -1346,7 +1605,6 @@ function returnToKingdom(isFromExpedition = false) {
     hideTransition(); switchBGM('kingdom');
     document.getElementById('battle-layout').classList.remove('active-battle');
     document.getElementById('kingdom-panel').classList.add('active');
-    
     if (isFromExpedition) {
         logMsg("遠征から帰還した。月日が流れ、家族にも変化が起きる...", "#aaa");
         if (state.heirs.length > 0) checkMortality();
