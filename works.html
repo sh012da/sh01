@@ -145,17 +145,13 @@
     .nav-links a:hover { color: var(--accent); }
     
     .nav-cta {
-      font-family: var(--en);
-      font-size: clamp(0.55rem, 1.5vw, 0.65rem);
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      border: 0.5px solid rgba(184,168,152,0.4);
-      padding: 0.55rem 1.4rem;
-      color: var(--accent);
-      text-decoration: none;
-      transition: background 0.25s, color 0.25s;
+      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
+      letter-spacing: 0.25em; text-transform: uppercase;
+      border: 0.5px solid rgba(184,168,152,0.4); padding: 0.55rem 1.4rem;
+      color: var(--accent); text-decoration: none; transition: all 0.4s var(--ease-expo);
+      border-radius: 2px;
     }
-    .nav-cta:hover { background: rgba(184,168,152,0.08); color: var(--fg); }
+    .nav-cta:hover { background: var(--accent); color: var(--bg); box-shadow: 0 4px 16px rgba(203,191,176,0.2); }
     
     .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
     .nav-hamburger span {
@@ -164,7 +160,7 @@
     }
 
     /* ════════════════════════════════════════
-       ★ SIDE LINK NAVIGATION
+       ★ SIDE LINK NAVIGATION (元に戻す)
     ════════════════════════════════════════ */
     .side-link-nav {
       position: fixed;
@@ -439,13 +435,8 @@
     }
     .gi:hover .gi-title,
     .gi:hover .gi-en { opacity:1; transform:translateY(0); }
-    .gi::before {
-      content:''; position:absolute; left:0; bottom:0;
-      width:2px; height:0; background:var(--accent);
-      transition:height 0.55s var(--ease-expo);
-      z-index:2; pointer-events:none;
-    }
-    .gi:hover::before { height:45%; }
+    
+    /* 従来の底辺の線を削除し、SVGの枠線アニメーションに変更 */
     .gi-num {
       position:absolute; top:clamp(8px,1.2vw,16px); right:clamp(8px,1.2vw,16px);
       z-index:2; font-family:var(--en);
@@ -457,6 +448,19 @@
       pointer-events:none;
     }
     .gi:hover .gi-num { opacity:1; transform:translateY(0); }
+
+    /* ★ ギャラリー画像ホバー時のSVG枠線アニメーション */
+    .gi__svg-border {
+      position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4;
+    }
+    .gi__svg-border .trace-line {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 1.0;
+      stroke-linecap: square;
+      filter: drop-shadow(0 0 4px rgba(203,191,176,0.5));
+      transition: stroke-dashoffset 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
 
     /* ════════════════════════════════════════
        ★ CONTACT & FOOTER
@@ -501,6 +505,18 @@
     }
     .footer-logo { font-family: var(--jp); font-size: 16px; font-weight: 300; color: rgba(237,233,228,0.5); letter-spacing: 0.05em; }
     .footer-copy { font-family: var(--en); font-size: 11px; color: rgba(237,233,228,0.32); letter-spacing: 0.14em; }
+
+    /* ════════════════════════════════════════
+       ★ TOOLTIP (マウス追従ポップアップ)
+    ════════════════════════════════════════ */
+    .mouse-tooltip {
+      position: fixed; top: 0; left: 0; pointer-events: none; background: rgba(10, 10, 8, 0.95); color: rgba(232, 228, 219, 0.9);
+      padding: 6px 12px; border-radius: 4px; font-size: 11px; font-family: var(--jp); letter-spacing: 0.05em; border: 0.5px solid rgba(203, 191, 176, 0.3);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5); opacity: 0; transform: translate(15px, 15px); transition: opacity 0.2s ease; z-index: 99999;
+      white-space: nowrap; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    }
+    .mouse-tooltip.visible { opacity: 1; }
+    @media (pointer: coarse) { .mouse-tooltip { display: none !important; } }
 
     /* ════════════════════════════════════════
        ★ BACK TO TOP BUTTON
@@ -654,7 +670,8 @@
           <span class="gi-title">森林</span>
           <span class="gi-en">Fragmented Forest</span>
         </div>
-        <a href="work-forest.html" aria-label="森林"></a>
+        <svg class="gi__svg-border" aria-hidden="true"></svg>
+        <a href="work-forest.html" aria-label="森林" data-tooltip="「森林」系（シーケンス）の作品紹介ページにリンクします。"></a>
       </article>
 
       <article class="gi" data-images="images/416A0035.jpg">
@@ -665,7 +682,8 @@
           <span class="gi-title">左美都の神話と伝承</span>
           <span class="gi-en">Myth and Tradition</span>
         </div>
-        <a href="work-samizu.html" aria-label="左美都の神話と伝承"></a>
+        <svg class="gi__svg-border" aria-hidden="true"></svg>
+        <a href="work-samizu.html" aria-label="左美都の神話と伝承" data-tooltip="「左美都の神話と伝承」系（シーケンス）の作品紹介ページにリンクします。"></a>
       </article>
 
       <article class="gi" data-images="images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg">
@@ -676,7 +694,8 @@
           <span class="gi-title">異体</span>
           <span class="gi-en">Variant Forms</span>
         </div>
-        <a href="works-variant.html" aria-label="異体"></a>
+        <svg class="gi__svg-border" aria-hidden="true"></svg>
+        <a href="works-variant.html" aria-label="異体" data-tooltip="「異体」系（シーケンス）の作品紹介ページにリンクします。"></a>
       </article>
 
       <article class="gi" data-images="images/【S100】so far.jpg">
@@ -687,7 +706,8 @@
           <span class="gi-title">洞窟</span>
           <span class="gi-en">The Cave</span>
         </div>
-        <a href="works-cave.html" aria-label="洞窟"></a>
+        <svg class="gi__svg-border" aria-hidden="true"></svg>
+        <a href="works-cave.html" aria-label="洞窟" data-tooltip="「洞窟」系（シーケンス）の作品紹介ページにリンクします。"></a>
       </article>
 
       <article class="gi" data-images="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg">
@@ -698,7 +718,8 @@
           <span class="gi-title">素描</span>
           <span class="gi-en">Drawings</span>
         </div>
-        <a href="works-drawing.html" aria-label="素描"></a>
+        <svg class="gi__svg-border" aria-hidden="true"></svg>
+        <a href="works-drawing.html" aria-label="素描" data-tooltip="「素描」系（シーケンス）の作品紹介ページにリンクします。"></a>
       </article>
 
       <article class="gi" data-images="images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG">
@@ -709,7 +730,8 @@
           <span class="gi-title">抽象</span>
           <span class="gi-en">Abstract</span>
         </div>
-        <a href="work-abstract.html" aria-label="抽象"></a>
+        <svg class="gi__svg-border" aria-hidden="true"></svg>
+        <a href="work-abstract.html" aria-label="抽象" data-tooltip="「抽象」系（シーケンス）の作品紹介ページにリンクします。"></a>
       </article>
 
       <article class="gi" data-images="images/【F100号横】今、シリア.jpg">
@@ -720,7 +742,8 @@
           <span class="gi-title">難民(子ども)</span>
           <span class="gi-en">Refugees</span>
         </div>
-        <a href="work-refugees.html" aria-label="難民(子ども)"></a>
+        <svg class="gi__svg-border" aria-hidden="true"></svg>
+        <a href="work-refugees.html" aria-label="難民(子ども)" data-tooltip="「難民(子ども)」系（シーケンス）の作品紹介ページにリンクします。"></a>
       </article>
 
       <article class="gi" data-images="images/【F25縦】少年兵（アフリカ）.jpg">
@@ -731,7 +754,8 @@
           <span class="gi-title">子ども兵士</span>
           <span class="gi-en">Tiny Soldiers</span>
         </div>
-        <a href="work-tiny_soldier.html" aria-label="子ども兵士"></a>
+        <svg class="gi__svg-border" aria-hidden="true"></svg>
+        <a href="work-tiny_soldier.html" aria-label="子ども兵士" data-tooltip="「子ども兵士」系（シーケンス）の作品紹介ページにリンクします。"></a>
       </article>
 
       <article class="gi" data-images="images/before_clouds_are_captured.jpg">
@@ -742,7 +766,8 @@
           <span class="gi-title">黒の時代</span>
           <span class="gi-en">The Black Period</span>
         </div>
-        <a href="work-black_era.html" aria-label="黒の時代"></a>
+        <svg class="gi__svg-border" aria-hidden="true"></svg>
+        <a href="work-black_era.html" aria-label="黒の時代" data-tooltip="「黒の時代」系（シーケンス）の作品紹介ページにリンクします。"></a>
       </article>
 
       <article class="gi" data-images="images/@_the_beach.jpg">
@@ -753,7 +778,8 @@
           <span class="gi-title">40273</span>
           <span class="gi-en">20100405</span>
         </div>
-        <a href="work-40273.html" aria-label="2010年～2011年"></a>
+        <svg class="gi__svg-border" aria-hidden="true"></svg>
+        <a href="work-40273.html" aria-label="2010年～2011年" data-tooltip="「40273」系（シーケンス）の作品紹介ページにリンクします。"></a>
       </article>
 
       <article class="gi" data-images="images/子猫4（スコティッシュフォールド）.jpg">
@@ -764,7 +790,8 @@
           <span class="gi-title">標本美術</span>
           <span class="gi-en">Specimen Art</span>
         </div>
-        <a href="work-specimen_art.html" aria-label="標本美術"></a>
+        <svg class="gi__svg-border" aria-hidden="true"></svg>
+        <a href="work-specimen_art.html" aria-label="標本美術" data-tooltip="「標本美術」系（シーケンス）の作品紹介ページにリンクします。"></a>
       </article>
 
     </div>
@@ -793,6 +820,8 @@
     <span class="back-to-top-text">TOP</span>
   </a>
 
+  <div class="mouse-tooltip" id="mouse-tooltip"></div>
+
   <script>
     let menuOpenScrollY = 0;
 
@@ -814,6 +843,28 @@
       links.classList.remove('open');
       btn.style.display = '';
     }
+
+    /* ── ツールチップ機能 ── */
+    (function() {
+      var tooltip = document.getElementById('mouse-tooltip');
+      if (!tooltip) return;
+
+      var targetLinks = document.querySelectorAll('[data-tooltip]');
+      targetLinks.forEach(function(link) {
+        link.addEventListener('mouseenter', function() {
+          var customText = link.getAttribute('data-tooltip');
+          tooltip.textContent = customText ? customText : 'リンクします';
+          tooltip.classList.add('visible');
+        });
+        link.addEventListener('mousemove', function(e) {
+          tooltip.style.left = (e.clientX + 15) + 'px';
+          tooltip.style.top = (e.clientY + 15) + 'px';
+        });
+        link.addEventListener('mouseleave', function() {
+          tooltip.classList.remove('visible');
+        });
+      });
+    })();
 
     /* ── 文字スプリットアニメーション (「作品系」を1文字ずつ表示) ── */
     const TITLE_JP = '作品系';
@@ -928,6 +979,58 @@
           el.style.aspectRatio = pick(RATIOS);
         });
       }
+    })();
+
+    /* ── ギャラリー画像ホバー時のSVGトレースアニメーション ── */
+    (function() {
+      var gridItems = document.querySelectorAll('.gi');
+      if (!gridItems.length) return;
+
+      function buildSvgForCard(card) {
+        var svg = card.querySelector('.gi__svg-border');
+        if (!svg) return;
+        
+        var w = card.offsetWidth;
+        var h = card.offsetHeight;
+        if (w === 0 || h === 0) return;
+
+        svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+        svg.innerHTML = '';
+
+        var ns = 'http://www.w3.org/2000/svg';
+        var perimeter = 2 * ((w - 1) + (h - 1));
+
+        // ホバー時に描画される線
+        var trace = document.createElementNS(ns, 'rect');
+        trace.setAttribute('x', '0.5');
+        trace.setAttribute('y', '0.5');
+        trace.setAttribute('width', w - 1);
+        trace.setAttribute('height', h - 1);
+        trace.setAttribute('class', 'trace-line');
+        trace.style.strokeDasharray = perimeter;
+        trace.style.strokeDashoffset = perimeter;
+        svg.appendChild(trace);
+
+        card._trace = trace;
+        card._perimeter = perimeter;
+      }
+
+      function initAllCards() {
+        gridItems.forEach(function(card) { buildSvgForCard(card); });
+      }
+
+      gridItems.forEach(function(card) {
+        card.addEventListener('mouseenter', function() {
+          if (card._trace) card._trace.style.strokeDashoffset = '0';
+        });
+        card.addEventListener('mouseleave', function() {
+          if (card._trace) card._trace.style.strokeDashoffset = card._perimeter;
+        });
+      });
+
+      // ランダムグリッドの適用後や画像の読み込みを考慮して少し遅延させてビルド
+      setTimeout(initAllCards, 500);
+      window.addEventListener('resize', initAllCards);
     })();
 
     /* ── Intersection Observer (フェードイン) ── */
