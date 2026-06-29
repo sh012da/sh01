@@ -130,16 +130,30 @@
     .party-panel { background-color: rgba(20, 24, 30, 0.9);
     border: 2px solid var(--main-gold); border-radius: 8px; padding: 15px; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); z-index: 2; display: flex; flex-direction: column;
     }
-    .char-box { background-color: #222730; padding: 10px; border-radius: 6px; margin-bottom: 10px; border-left: 4px solid var(--main-gold); position: relative;
-    overflow: hidden; flex: 1;} 
+    
+    /* === 修正部分：overflowをvisibleにし、Flexboxで高さを自動調整 === */
+    .char-box { 
+        background-color: #222730; 
+        padding: 12px 10px; 
+        border-radius: 6px; 
+        margin-bottom: 10px; 
+        border-left: 4px solid var(--main-gold); 
+        position: relative;
+        overflow: visible; /* 見切れ防止のためvisibleに変更 */
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    } 
+    
     .char-name { font-weight: bold; font-size: 1.05em; color: #fff; margin-bottom: 5px; z-index: 2; position: relative;
-    word-break: break-word; }
+    word-break: break-word; line-height: 1.3; }
+    
     .kizuna-box { text-align: center; margin: 10px 0; padding: 10px; background-color: rgba(230, 126, 34, 0.1);
     border: 1px dashed var(--kizuna); border-radius: 8px; transition: 0.3s; }
     
     .trait { display: inline-block;
-    background-color: #333; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.75em; margin: 2px 2px 2px 0; border: 1px solid #666;
-    z-index: 2; position: relative; }
+    background-color: #333; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75em; margin: 4px 2px 2px 0; border: 1px solid #666;
+    z-index: 2; position: relative; line-height: 1.2; }
     .trait.physical { border-color: var(--danger); color: #ff9999;
     }
     .trait.magic { border-color: var(--magic); color: #99ccff; }
@@ -563,13 +577,13 @@
     <div id="battle-layout">
         <div class="party-panel" style="margin-top: 30px;">
             <h3 style="margin-bottom: 10px; font-size:1.1em; width: 100%;">血脈 (Bloodlines)</h3>
-            <div id="battle-ruler-info" class="char-box"></div>
+            <div id="battle-ruler-info"></div>
             <div class="kizuna-box" id="battle-kizuna-box">
                 <div style="font-size:0.85em; color:var(--kizuna); font-weight:bold; margin-bottom:2px;">絆 (Bonds)</div>
                 <div class="bar-container"><div id="kizuna-fill" class="bar-fill kizuna-fill"></div><div class="bar-text" id="kizuna-text"></div></div>
                 <div id="synergy-display" style="font-size:0.75em; color:var(--main-gold); margin-top:5px; border-top:1px dashed #666; padding-top:4px;"></div>
             </div>
-            <div id="battle-partner-info" class="char-box" style="border-left-color: #9b59b6;"></div>
+            <div id="battle-partner-info" style="margin-top: 10px;"></div>
         </div>
 
         <div class="battle-center battle-player-turn" id="battle-bg" style="margin-top: 0px;">
@@ -904,16 +918,15 @@ function generatePartnerSVG(color) {
 }
 
 function renderCharBox(char, isRuler = true) {
-    if (!char) return `<div class="char-box" style="color:#777; text-align:center;">未設定</div>`;
+    if (!char) return `<div class="char-box" style="justify-content:center; color:#777; text-align:center;">未設定</div>`;
     let trHtml = char.traits.map(t => `<span class="trait ${t.type}">${t.name}</span>`).join('');
     return `
         <div class="char-box">
-            <div class="char-name">${isRuler ?
-            "当主" : "伴侶"}: ${char.name} <span style="font-size:0.7em; color:#aaa;">(${char.gender})</span></div>
-            <div style="font-size:0.85em; color:#ccc; margin-bottom:5px;">HP: ${char.hp}/${char.maxHp} |
-            MP: ${char.mp}/${char.maxMp} | 攻: ${char.attack}</div>
-            <div>${trHtml ||
-            "<span class='trait'>凡人</span>"}</div>
+            <div>
+                <div class="char-name">${isRuler ? "当主" : "伴侶"}: ${char.name} <span style="font-size:0.7em; color:#aaa;">(${char.gender})</span></div>
+                <div style="font-size:0.85em; color:#ccc; margin-bottom:8px;">HP: ${char.hp}/${char.maxHp} | MP: ${char.mp}/${char.maxMp} | 攻: ${char.attack}</div>
+            </div>
+            <div style="margin-top: auto;">${trHtml || "<span class='trait'>凡人</span>"}</div>
         </div>
     `;
 }
@@ -930,6 +943,8 @@ function updateKingdomUI() {
         heirsHtml += `</div>`;
     }
 
+    document.getElementById("battle-ruler-info").innerHTML = renderCharBox(state.ruler, true);
+    
     document.getElementById("kingdom-party-info").innerHTML = `
         <h3 style="margin-bottom:10px; width: 100%;">第${state.generation}代の血脈</h3>
         ${renderCharBox(state.ruler, true)}
@@ -1118,18 +1133,14 @@ function updateBattleUI() {
     document.getElementById("boss-hp-fill").style.width = bhpPct + "%";
     document.getElementById("boss-hp-text").innerText = `${state.enemyHp} / ${stg.maxHp}`;
     const renderBar = (val, max, type) => `<div class="bar-container"><div class="bar-fill ${type}-fill" style="width:${Math.max(0, (val/max)*100)}%"></div><div class="bar-text">${type.toUpperCase()}: ${val}/${max}</div></div>`;
-    document.getElementById("battle-ruler-info").innerHTML = `
-        <div class="char-name">${state.ruler.name}</div>
-        ${renderBar(state.ruler.hp, state.ruler.maxHp, 'hp')}
-        ${renderBar(state.ruler.mp, state.ruler.maxMp, 'mp')}
-    `;
+    
+    document.getElementById("battle-ruler-info").innerHTML = renderCharBox(state.ruler, true);
+
     if (state.partner) {
         document.getElementById("battle-partner-info").style.display = "block";
         document.getElementById("battle-kizuna-box").style.display = "block";
-        document.getElementById("battle-partner-info").innerHTML = `
-            <div class="char-name">${state.partner.name}</div>
-            ${renderBar(state.partner.hp, state.partner.maxHp, 'hp')}
-        `;
+        document.getElementById("battle-partner-info").innerHTML = renderCharBox(state.partner, false);
+        
         document.getElementById("kizuna-fill").style.width = state.kizuna + "%";
         document.getElementById("kizuna-text").innerText = `${state.kizuna}%`;
         document.getElementById("synergy-display").innerText = `陣形: ${getSynergy().name}`;
