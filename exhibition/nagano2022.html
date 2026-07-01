@@ -1,1 +1,870 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5RF8JPF5D8');
+  </script>
+  <link rel="icon" type="image/jpeg" href="https://sh012da.github.io/sh01/images/exhi-kakuchi/覚知 (1).JPG">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>＋覚知ka ｜ Tsuda Shoichi</title>
+  <meta name="description" content="油彩画展「＋覚知ka」展示記録 — 津田翔一。知覚が像を結ぶ、その手前の瞬間を油彩で掴む個展。">
+  <meta property="og:title" content="＋覚知ka ｜ Tsuda Shoichi">
+  <meta property="og:description" content="見るより先に、肌が知っている。個展「＋覚知ka」展示記録。">
+  <meta property="og:type" content="website">
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       TOKENS & BASE (メインサイト準拠)
+    ================================================================ */
+    :root {
+      --bg:          #080808;
+      --bg2:         #0c0c0c;
+      --bg3:         #111111;
+      --fg:          #ede9e4;
+      --text:        #e8e4db;
+      --text-muted:  rgba(232,228,219,0.68);
+      --text-dim:    rgba(232,228,219,0.46);
+      --border:      rgba(232,228,219,0.12);
+      --border-mid:  rgba(232,228,219,0.25);
+      --accent:      #cbbfb0;
+      --accent-glow: rgba(203,191,176,0.35);
+      --muted-col:   #938c84;
+      --en:          'Cormorant Garamond', serif;
+      --jp:          'Noto Serif JP', serif;
+      --ease-expo:   cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --px:          clamp(16px, 5vw, 64px);
+      
+      /* 覚知 専用カラー (トーンを落としメインサイトに適合) */
+      --red:         #8c3029;
+      --blue:        #3a5a73;
+    }
+    html, body { overflow-x: hidden; width: 100%; position: relative; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text); font-family: var(--jp);
+      line-height: 1.9; letter-spacing: 0.05em; -webkit-font-smoothing: antialiased;
+      padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right);
+      word-break: normal; line-break: strict; overflow-wrap: break-word;
+    }
+    body.no-scroll { overflow: hidden; }
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: var(--fg); text-decoration: none; }
+    ::selection { background: var(--accent); color: var(--bg); }
+
+    .pc-only { display: inline; }
+
+    /* ============================================================
+       SCROLL PROGRESS BAR
+    ================================================================ */
+    .scroll-progress {
+      position: fixed; top: 0; left: 0; height: 2.5px;
+      background: linear-gradient(90deg, var(--red), var(--blue));
+      width: 0%; z-index: 10000; box-shadow: 0 0 10px rgba(203,191,176,0.6);
+      transition: width 0.1s ease-out;
+    }
+
+    /* ============================================================
+       NAV (メインサイト統合)
+    ================================================================ */
+    nav {
+      position: fixed; width: 100%; top: 0; z-index: 999;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: clamp(24px,4vw,40px) var(--px); background: transparent;
+      border-bottom: 1px solid transparent; transform: translateY(-100%);
+      opacity: 0; transition: background 0.6s var(--ease-expo), padding 0.6s var(--ease-expo), border-color 0.6s ease, backdrop-filter 0.6s ease, transform 1.2s var(--ease-expo) 0.2s, opacity 1.2s ease 0.2s;
+    }
+    body.is-loaded nav { transform: translateY(0); opacity: 1; }
+    nav.nav-scrolled {
+      padding: clamp(12px,2vw,24px) var(--px); background: rgba(8, 8, 8, 0.88);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 0.5px solid rgba(232,228,219,0.08); transition-delay: 0s, 0s, 0s, 0s, 0s, 0s;
+    }
+    .nav-logo {
+      font-family: var(--en); font-size: clamp(0.7rem,2.5vw,0.9rem);
+      letter-spacing: 0.3em; font-weight: 300; color: var(--accent);
+      text-transform: uppercase; transition: opacity 0.4s ease, transform 0.4s var(--ease-expo);
+    }
+    .nav-logo:hover { opacity: 0.7; transform: scale(0.98); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.72rem);
+      letter-spacing: 0.25em; color: var(--muted-col); text-transform: uppercase;
+      transition: color 0.3s ease, transform 0.3s ease; display: inline-block; position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%) scaleX(0);
+      width: 12px; height: 1px; background: var(--accent); transition: transform 0.3s var(--ease-out-back);
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+    .nav-links a.active::after { transform: translateX(-50%) scaleX(1); }
+    
+    .nav-cta {
+      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
+      letter-spacing: 0.25em; text-transform: uppercase;
+      border: 0.5px solid rgba(184,168,152,0.4); padding: 0.55rem 1.4rem;
+      color: var(--accent); transition: all 0.4s var(--ease-expo); border-radius: 2px;
+    }
+    .nav-cta:hover { background: var(--accent); color: var(--bg); box-shadow: 0 4px 16px rgba(203,191,176,0.2); }
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-hamburger span { display: block; width: 22px; height: 0.5px; background: var(--accent); margin: 6px 0; transition: all 0.25s; }
+
+    /* ============================================================
+       PAGE IN-PAGE NAVIGATION (RIGHT DOTS)
+    ================================================================ */
+    .page-nav {
+      position: fixed; right: clamp(15px, 3vw, 30px); top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 1.2rem; z-index: 900;
+      opacity: 0; visibility: hidden; transition: opacity 0.6s var(--ease-expo), visibility 0.6s;
+    }
+    .page-nav.is-visible { opacity: 1; visibility: visible; }
+    .page-nav-dot {
+      position: relative; width: 8px; height: 8px; border-radius: 50%;
+      border: 1px solid rgba(232,228,219,0.3); background: transparent;
+      transition: all 0.4s var(--ease-out-back); cursor: pointer;
+    }
+    .page-nav-dot::after {
+      content: attr(data-label); position: absolute; right: 24px; top: 50%;
+      transform: translateY(-50%) translateX(10px); font-family: var(--en); font-size: 10px;
+      letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase;
+      opacity: 0; visibility: hidden; transition: all 0.4s ease; white-space: nowrap; pointer-events: none;
+    }
+    .page-nav-dot:hover { border-color: var(--accent); background: rgba(203,191,176,0.2); }
+    .page-nav-dot:hover::after { opacity: 1; visibility: visible; transform: translateY(-50%) translateX(0); }
+    .page-nav-dot.active { background: var(--accent); border-color: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px rgba(203,191,176,0.4); }
+
+    /* ---- custom lens cursor (覚知 固有ギミック) ---- */
+    @media (hover:hover) and (pointer:fine) {
+      body.cursor-ready, body.cursor-ready a, body.cursor-ready button, body.cursor-ready .perceive-frame { cursor: none; }
+    }
+    .cursor-dot { position: fixed; top:0; left:0; width: 5px; height: 5px; border-radius: 50%; background: var(--accent);
+      pointer-events: none; z-index: 99999; transform: translate(-50%,-50%); display: none; }
+    .cursor-ring { position: fixed; top:0; left:0; width: 36px; height: 36px; border-radius: 50%; border: 0.5px solid var(--accent);
+      pointer-events: none; z-index: 99998; transform: translate(-50%,-50%); transition: width .3s var(--ease-expo), height .3s var(--ease-expo), border-color .3s ease, opacity .3s ease, background-color 0.3s ease;
+      display: none; opacity: 0.6; }
+    body.cursor-ready .cursor-dot, body.cursor-ready .cursor-ring { display: block; }
+    .cursor-ring.lens { width: 140px; height: 140px; border-color: var(--red); opacity: 0.8; background: rgba(140,48,41,0.05); backdrop-filter: blur(2px); }
+    .cursor-ring.hover { width: 56px; height: 56px; border-color: var(--accent); opacity: 0.9; background: rgba(203,191,176,0.1); }
+
+    /* ============================================================
+       HERO — 破片が組み上がる知覚の瞬間
+    ================================================================ */
+    .hero { position: relative; height: 100svh; min-height: 620px; overflow: hidden; background: var(--bg);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .shatter { position: absolute; inset: 0; z-index: 0; }
+    .shard {
+      position: absolute; background-image: url('https://sh012da.github.io/sh01/images/exhi-kakuchi/覚知 (1).JPG');
+      background-size: 320% 220%; background-repeat: no-repeat; filter: saturate(0.8) brightness(0.6);
+      opacity: 0; outline: 1px solid rgba(232,228,219,0.03);
+      animation: shardIn 2s var(--ease-expo) forwards;
+    }
+    @keyframes shardIn { 
+      from { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--dr)) scale(0.9); filter: blur(10px); }
+      to { opacity: 1; transform: translate(0,0) rotate(0) scale(1); filter: blur(0); } 
+    }
+    .shard:nth-child(1){ top:0; left:0; width:34%; height:50%; background-position: 0% 0%; --dx:-60px; --dy:-40px; --dr:-6deg; animation-delay:.2s;}
+    .shard:nth-child(2){ top:0; left:34%; width:32%; height:50%; background-position: 50% 0%; --dx:0px; --dy:-70px; --dr:4deg; animation-delay:.3s;}
+    .shard:nth-child(3){ top:0; left:66%; width:34%; height:50%; background-position: 100% 0%; --dx:70px; --dy:-30px; --dr:7deg; animation-delay:.25s;}
+    .shard:nth-child(4){ top:50%; left:0; width:34%; height:50%; background-position: 0% 100%; --dx:-80px; --dy:40px; --dr:5deg; animation-delay:.35s;}
+    .shard:nth-child(5){ top:50%; left:34%; width:32%; height:50%; background-position: 50% 100%; --dx:0px; --dy:80px; --dr:-4deg; animation-delay:.28s;}
+    .shard:nth-child(6){ top:50%; left:66%; width:34%; height:50%; background-position: 100% 100%; --dx:60px; --dy:50px; --dr:-7deg; animation-delay:.4s;}
+    
+    .hero::after { content:""; position:absolute; inset:0; z-index:1;
+      background: linear-gradient(180deg, rgba(8,8,8,0.7) 0%, rgba(8,8,8,0.4) 40%, rgba(8,8,8,0.9) 100%); }
+
+    .hero-seam { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; z-index: 3;
+      background: linear-gradient(to bottom, var(--red), var(--blue)); opacity: 0.4; transform: translateX(var(--seam-x, 0px)); }
+
+    .hero-content { position: relative; z-index: 4; text-align: center; padding: 0 var(--px); display: flex; flex-direction: column; align-items: center; }
+    
+    @keyframes fadeUp  { from { opacity:0; transform:translateY(24px) scale(0.98); filter: blur(4px); } to { opacity:1; transform:translateY(0) scale(1); filter: blur(0); } }
+    
+    .hero-eyebrow { font-family: var(--en); font-size: clamp(0.55rem, 1.5vw, 0.72rem); letter-spacing: 0.35em;
+      text-transform: uppercase; color: var(--muted-col); margin-bottom: 2rem; opacity: 0;
+      animation: fadeUp 1s var(--ease-expo) 1s forwards; }
+
+    /* タイトルをメインサイト準拠の洗練された書体・ウエイトに変更 */
+    .hero-title { font-family: var(--jp); font-weight: 200; font-size: clamp(56px, 14vw, 160px); line-height: 1.05;
+      letter-spacing: 0.02em; display: inline-flex; align-items: flex-end; opacity: 0; animation: fadeUp 1.4s var(--ease-expo) 1.2s forwards; }
+    .hero-title .plus { font-family: var(--en); font-weight: 200; font-size: 0.4em; align-self: flex-start; margin-top: 0.2em; color: var(--accent); }
+    .hero-title .c1 { color: var(--red); }
+    .hero-title .c2 { color: var(--blue); }
+    .hero-title .ka { font-family: var(--en); font-weight: 300; font-size: 0.3em; align-self: flex-end; color: var(--text-dim); margin-bottom: 0.2em; margin-left: 0.1em; letter-spacing: 0.1em; }
+
+    .hero-sub { font-family: var(--en); font-style: italic; font-weight: 300; font-size: clamp(0.78rem, 1.7vw, 1.05rem);
+      letter-spacing: 0.08em; color: var(--text-muted); margin-top: 1.5rem; opacity: 0;
+      animation: fadeUp 1.2s var(--ease-expo) 1.5s forwards; }
+
+    .hero-meta-row { margin-top: 3.5rem; display: flex; justify-content: center; gap: clamp(24px,4vw,56px);
+      flex-wrap: wrap; opacity: 0; animation: fadeUp 1.2s var(--ease-expo) 1.8s forwards; }
+    .hero-meta-row .m-label { font-family: var(--en); font-size: 0.58rem; letter-spacing: 0.3em; color: var(--accent); text-transform: uppercase; display:block; margin-bottom: 8px;}
+    .hero-meta-row .m-val { font-family: var(--jp); font-size: 0.8rem; font-weight: 300; color: var(--text-muted); letter-spacing: 0.06em; }
+
+    .scroll-cue { position: absolute; bottom: clamp(20px,5vh,40px); right: clamp(20px,5vw,50px); z-index: 5;
+      display:flex; flex-direction:column; align-items:center; gap: 10px; opacity: 0; animation: fadeUp 1s var(--ease-expo) 2.2s forwards; }
+    .scroll-cue .line { width: 1px; height: 46px; background: rgba(232,228,219,0.1); position: relative; overflow: hidden; }
+    .scroll-cue .line::after { content:""; position:absolute; top:-100%; left:0; width:100%; height:100%;
+      background: linear-gradient(to bottom, transparent, var(--accent), var(--fg)); animation: cueDrop 2.1s cubic-bezier(.77,0,.18,1) infinite; }
+    @keyframes cueDrop { 0%{top:-100%;} 70%{top:100%;opacity:.5;} 71%{top:-100%;opacity:0;} 100%{top:-100%;opacity:0;} }
+    .scroll-cue .deg { font-family: var(--en); font-size: 0.6rem; letter-spacing: 0.2em; color: var(--text-dim); writing-mode: vertical-rl; }
+
+    /* ============================================================
+       SECTIONS (メインサイト準拠)
+    ================================================================ */
+    .section { position: relative; padding: 10rem 2.5rem; border-bottom: 0.5px solid var(--border); overflow: hidden; }
+    .section-tilt { clip-path: polygon(0 0, 100% 46px, 100% 100%, 0 100%); margin-top: -46px; padding-top: calc(10rem + 46px); border-bottom: none; }
+    .tone-b { background: var(--bg2); border-bottom: 0.5px solid var(--border); }
+
+    .section-label {
+      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
+      letter-spacing: 0.28em; color: var(--accent); text-transform: uppercase;
+      margin-bottom: 0.5rem; display: flex; align-items: center; gap: 1rem;
+    }
+    .section-label::after { content:""; width: 48px; height: 0.5px; background: rgba(232,228,219,0.2); }
+    .section-heading-en {
+      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
+      color: rgba(232,228,219,0.4); text-transform: uppercase;
+      letter-spacing: 0.2em; margin-bottom: 1rem;
+    }
+    .section-heading {
+      font-family: var(--jp); font-size: clamp(1.6rem,3.5vw,2.8rem);
+      font-weight: 300; line-height: 1.3; color: var(--text); margin-bottom: 3.5rem; letter-spacing: 0.02em;
+    }
+
+    .sec-desc { max-width: 680px; color: var(--text-muted); font-size: clamp(0.9rem, 1.5vw, 1.05rem); font-weight: 300; line-height: 2.2; margin-bottom: clamp(40px,6vh,70px); letter-spacing: 0.06em; }
+
+    .reveal { opacity: 0; transform: translateY(40px); filter: blur(8px); transition: opacity 1.2s var(--ease-expo), transform 1.2s var(--ease-expo), filter 1.2s var(--ease-expo); }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); filter: blur(0); }
+
+    /* watermark kanji (細字で密かに配置) */
+    .bg-kanji { position:absolute; font-family: var(--jp); font-weight: 200; color: rgba(232,228,219,0.02);
+      user-select:none; pointer-events:none; z-index:0; white-space:nowrap; line-height: 1; }
+
+    /* --- overview / lede --- */
+    .container { width: 100%; max-width: 1400px; margin: 0 auto; }
+    .lede-grid { display: grid; grid-template-columns: 1fr 1px 1fr; gap: clamp(40px,6vw,90px); align-items: start; position: relative; z-index: 1; }
+    .lede-grid .divider { background: linear-gradient(to bottom, var(--red), var(--blue)); opacity: 0.3; height: 100%; }
+    .lede-text p { font-size: 0.95rem; font-weight: 300; line-height: 2.3; color: var(--text-muted); margin-bottom: 1.8em; text-align: justify; letter-spacing: 0.08em; }
+    .lede-text p.lead { font-size: 1.15rem; font-weight: 400; color: var(--text); }
+    .spec-list { display:flex; flex-direction:column; }
+    .spec-list .row { display:grid; grid-template-columns: 100px 1fr; gap: 16px; padding: 22px 0; border-bottom: 0.5px solid var(--border); }
+    .spec-list .k { font-family: var(--en); font-size: 0.6rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent); padding-top: 3px; }
+    .spec-list .v { font-size: 0.88rem; font-weight: 300; color: var(--text-muted); line-height: 1.8; }
+
+    /* ============================================================
+       PERCEIVE-FRAME — カーソルが知覚のレンズになる
+    ================================================================ */
+    .perceive-frame { position: relative; overflow: hidden; background: #000; --mx: -9999px; --my: -9999px; border: 0.5px solid var(--border); }
+    .perceive-frame .layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .perceive-frame .layer-blur {
+      filter: grayscale(0.8) blur(12px) brightness(0.4) contrast(1.1);
+      -webkit-mask-image: radial-gradient(circle at var(--mx) var(--my), transparent 0px, transparent 80px, black 150px);
+              mask-image: radial-gradient(circle at var(--mx) var(--my), transparent 0px, transparent 80px, black 150px);
+    }
+    .perceive-hint { font-family: var(--en); font-size: 0.6rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--text-dim);
+      display: flex; align-items: center; gap: 12px; margin-top: 20px; }
+    .perceive-hint span:first-child { width: 24px; height: 24px; border-radius: 50%; border: 0.5px solid var(--text-dim); flex-shrink:0; position: relative; }
+    .perceive-hint span:first-child::after { content:''; position: absolute; top:50%; left:50%; transform:translate(-50%,-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--text-dim); }
+
+    /* ============================================================
+       DUO SPLIT & ASYM BLOCKS
+    ================================================================ */
+    .duo-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); margin: clamp(60px,10vh,120px) 0; }
+    .duo-split figure { position: relative; aspect-ratio: 3/4; overflow: hidden; background: var(--bg2); margin:0; }
+    .duo-split figure img { width:100%; height:100%; object-fit: cover; transition: transform 1.6s var(--ease-expo), filter 1.6s var(--ease-expo); filter: saturate(0.85) brightness(0.8); }
+    .duo-split figure:hover img { transform: scale(1.03); filter: saturate(1.1) brightness(1); }
+    .duo-split figcaption { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px 30px;
+      font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.25em; color: rgba(232,228,219,0.85); text-transform: uppercase;
+      background: linear-gradient(to top, rgba(8,8,8,0.9), transparent); }
+    .duo-split figure:first-child figcaption { color: var(--red); }
+    .duo-split figure:last-child figcaption { color: var(--blue); }
+
+    .blob-frame { overflow: hidden; aspect-ratio: 1/1; border-radius: 38% 62% 60% 40% / 46% 40% 60% 54%; transition: border-radius 1.2s var(--ease-expo), transform 0.6s var(--ease-expo); border: 0.5px solid var(--border); }
+    .blob-frame:hover { border-radius: 50%; transform: scale(1.02); }
+    .blob-frame img { width:100%; height:100%; object-fit:cover; filter: saturate(0.9) brightness(0.85); transition: filter 0.6s ease; }
+    .blob-frame:hover img { filter: saturate(1) brightness(1); }
+
+    .asym-2 { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(40px,6vw,80px); align-items: center; margin: clamp(60px,10vh,120px) 0; position: relative; z-index: 1; }
+    .asym-2--rev { grid-template-columns: 0.9fr 1.1fr; }
+    .block-ttl { font-family: var(--jp); font-weight: 300; font-size: clamp(1.3rem, 2.4vw, 1.8rem); margin-bottom: 1.2rem; letter-spacing: 0.05em; }
+    .block-txt { font-size: 0.92rem; font-weight: 300; line-height: 2.2; color: var(--text-muted); text-align: justify; letter-spacing: 0.06em; }
+
+    .cap-line { display:flex; justify-content: space-between; align-items:center; margin-top: clamp(50px,8vh,80px); padding-top: 20px; border-top: 0.5px solid var(--border); }
+    .cap-line span { font-family: var(--en); font-size: 0.62rem; letter-spacing: 0.2em; color: var(--text-dim); text-transform: uppercase; }
+    .cap-line span.ja { font-family: var(--jp); font-weight: 300; }
+
+    /* ============================================================
+       FILMSTRIP — 横へ歩く知覚
+    ================================================================ */
+    .film-section { height: 340vh; position: relative; border-bottom: 0.5px solid var(--border); }
+    .film-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; display:flex; align-items:center; }
+    .film-sticky::before { content:""; position:absolute; inset:0; z-index:2; pointer-events:none;
+      background: linear-gradient(to right, var(--bg) 0%, transparent 15%, transparent 85%, var(--bg) 100%); }
+    .film-track { display:flex; gap: clamp(24px,3.5vw,50px); padding: 0 10vw; align-items: flex-end; will-change: transform; }
+    .film-card { flex-shrink: 0; }
+    .film-card img { display:block; filter: saturate(0.85) brightness(0.8); border: 0.5px solid var(--border); transition: filter 0.5s ease; }
+    .film-card:hover img { filter: saturate(1.05) brightness(1); }
+    .film-card:nth-child(1) { width: clamp(200px,24vw,340px); }
+    .film-card:nth-child(1) img { aspect-ratio: 3/4.6; object-fit:cover; }
+    .film-card:nth-child(2) { width: clamp(280px,36vw,500px); margin-bottom: 80px; }
+    .film-card:nth-child(2) img { aspect-ratio: 5/3; object-fit:cover; }
+    .film-card:nth-child(3) { width: clamp(240px,28vw,400px); }
+    .film-card:nth-child(3) img { aspect-ratio: 4/5; object-fit:cover; }
+    .film-card:nth-child(4) { width: clamp(220px,26vw,360px); margin-bottom: 120px; }
+    .film-card:nth-child(4) img { aspect-ratio: 1/1; object-fit:cover; border-radius: 50%; }
+    .film-card:nth-child(5) { width: clamp(280px,32vw,460px); }
+    .film-card:nth-child(5) img { aspect-ratio: 4/3; object-fit:cover; }
+    .film-cap { margin-top: 18px; font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.22em; color: var(--text-dim); text-transform: uppercase; }
+    .film-heading { position: absolute; top: clamp(80px,12vh,120px); left: var(--px); z-index: 3; max-width: 500px; }
+    .film-hint { position: absolute; bottom: clamp(40px,8vh,80px); right: var(--px); z-index: 3;
+      font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.25em; color: var(--text-dim); text-transform: uppercase;
+      display:flex; align-items:center; gap:12px; }
+    .film-hint span { display:inline-block; width: 32px; height: 0.5px; background: var(--text-dim); }
+
+    /* ============================================================
+       PULL QUOTE
+    ================================================================ */
+    .quote-block { padding: clamp(8rem,16vh,12rem) 2.5rem; text-align:center; position:relative; border-bottom: 0.5px solid var(--border); }
+    .quote-block .mark { font-family: var(--en); font-size: 4.5rem; color: var(--accent); opacity: 0.3; line-height: 0.5; margin-bottom: 36px; font-weight: 300; }
+    .quote-block p { font-family: var(--jp); font-weight: 300; font-size: clamp(1.2rem, 2.5vw, 1.8rem); line-height: 2.4; max-width: 800px; margin: 0 auto; color: rgba(232,228,219,0.95); letter-spacing: 0.08em; text-shadow: 0 2px 14px rgba(0,0,0,0.6); }
+    .quote-block p em { font-style: normal; color: var(--fg); background: linear-gradient(transparent 70%, rgba(203,191,176,0.2) 70%); padding: 0 4px; }
+
+    /* ============================================================
+       VENUE CARDS (Concept Tags風にアレンジ)
+    ================================================================ */
+    .venue-row { display:grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: clamp(60px,8vh,90px); }
+    .venue-card {
+      background: rgba(255,255,255,0.015); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 0.5px solid rgba(232,228,219,0.08); padding: clamp(36px,5vw,56px) clamp(26px,4vw,44px);
+      border-radius: 4px; transition: transform 0.6s var(--ease-out-back), background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+      position: relative; overflow: hidden;
+    }
+    .venue-card::before {
+      content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.04), transparent);
+      transform: skewX(-25deg); transition: left 0.75s cubic-bezier(0.19, 1, 0.22, 1); z-index: 0;
+    }
+    .venue-card:hover::before { left: 150%; }
+    .venue-card:hover {
+      transform: translateY(-8px) scale(1.01); background: rgba(255,255,255,0.03);
+      border-color: rgba(203,191,176,0.3); box-shadow: 0 16px 32px rgba(0,0,0,0.4), 0 0 16px rgba(203,191,176,0.08);
+    }
+    .venue-card > * { position: relative; z-index: 1; }
+    .venue-card .tag { font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.26em; text-transform:uppercase; display:block; margin-bottom: 16px; }
+    .venue-card:first-child .tag { color: var(--red); }
+    .venue-card:last-child .tag { color: var(--blue); }
+    .venue-card h3 { font-family: var(--jp); font-weight: 300; font-size: clamp(1.2rem, 2vw, 1.4rem); margin-bottom: 12px; letter-spacing: 0.05em; color: var(--text); }
+    .venue-card p { font-size: 0.9rem; font-weight: 300; color: var(--text-muted); line-height: 2; letter-spacing: 0.06em; }
+
+    /* ============================================================
+       CLOSING
+    ================================================================ */
+    .closing { padding: clamp(8rem,16vh,14rem) 2.5rem clamp(6rem,10vh,8rem); text-align:center; position:relative; overflow:hidden; }
+    .closing .big-kanji { font-family: var(--jp); font-weight: 200; font-size: clamp(100px,18vw,300px); line-height:1;
+      background: linear-gradient(135deg, var(--red), var(--blue)); -webkit-background-clip:text; background-clip:text; color:transparent;
+      opacity: 0.7; margin-bottom: clamp(30px,5vh,50px); letter-spacing: 0.1em; padding-left: 0.1em; }
+    .closing h2 { font-family: var(--jp); font-weight: 300; font-size: clamp(1.6rem,3vw,2.2rem); margin-bottom: 1.8rem; letter-spacing: 0.05em; }
+    .closing p { color: var(--text-muted); max-width: 480px; margin: 0 auto 3.5rem; font-size: 0.95rem; font-weight: 300; line-height: 2.2; letter-spacing: 0.06em; }
+    
+    .closing-btn {
+      display: inline-flex; align-items: center; gap: 0.8em; font-family: var(--en); font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+      letter-spacing: 0.25em; text-transform: uppercase; border: 1px solid rgba(203,191,176,0.5); border-radius: 40px;
+      padding: 1.4rem 4rem; color: var(--accent); background: rgba(203,191,176,0.03); text-decoration: none;
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: all 0.5s var(--ease-out-back);
+    }
+    .closing-btn:hover { color: var(--bg); background: var(--accent); border-color: var(--accent); box-shadow: 0 12px 36px rgba(203,191,176,0.3); transform: translateY(-4px) scale(1.02); }
+
+    /* ============================================================
+       FOOTER (メインサイト統合)
+    ================================================================ */
+    footer {
+      border-top: 0.5px solid var(--border); padding: clamp(2.5rem,5vh,4rem) var(--px);
+      display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap: 1.5rem; background: var(--bg);
+    }
+    .footer-logo { font-family: var(--jp); font-size: 13px; letter-spacing: 0.15em; color: var(--text-dim); }
+    .footer-copy { font-family: var(--en); font-size: 11px; letter-spacing: 0.2em; color: var(--text-dim); text-transform: uppercase; }
+
+    /* ============================================================
+       UTILITIES
+    ================================================================ */
+    .lightbox { display:none; position: fixed; inset:0; z-index: 9998; background: rgba(8,8,8,0.98); justify-content:center; align-items:center; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .lightbox.active { display:flex; }
+    .lightbox__img { max-width: 90vw; max-height: 85vh; object-fit: contain; border: 0.5px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
+
+    .back-to-top {
+      position: fixed; bottom: clamp(1.5rem, 5vh, 3.5rem); right: clamp(15px, 4vw, 42px); z-index: 9000;
+      width: clamp(58px, 9vw, 78px); height: clamp(58px, 9vw, 78px); border-radius: 50%;
+      background: rgba(203,191,176,0.88); border: 1px solid var(--accent);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: #15130f; opacity: 0; visibility: hidden; transform: translateY(20px) scale(0.9);
+      transition: opacity 0.5s var(--ease-expo), visibility 0.5s, transform 0.5s var(--ease-expo), background 0.3s, color 0.3s;
+      cursor: pointer; text-decoration: none; box-shadow: 0 10px 28px rgba(0,0,0,0.6);
+    }
+    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+    .back-to-top:hover { background: var(--fg); transform: translateY(-5px) scale(1.05); box-shadow: 0 16px 38px rgba(0,0,0,0.75); }
+    .back-to-top svg { width: clamp(18px,2.8vw,26px); height: clamp(18px,2.8vw,26px); margin-bottom: 2px; }
+    .back-to-top-text { font-family: var(--en); font-size: clamp(0.58rem,1.3vw,0.74rem); letter-spacing: 0.1em; font-weight: 600; text-transform: uppercase; line-height: 1; }
+
+    /* ============================================================
+       RESPONSIVE
+    ================================================================ */
+    @media (max-width: 1024px) {
+      .lede-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .lede-grid .divider { display:none; }
+      .asym-2, .asym-2--rev { grid-template-columns: 1fr; gap: 3rem; }
+      .duo-split { grid-template-columns: 1fr; }
+      .venue-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .pc-only { display: none !important; }
+      nav { padding: 1rem 1.25rem; }
+      nav.nav-scrolled { padding: 0.8rem 1.25rem; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: block; }
+      .nav-links.open { display: flex; flex-direction: row; flex-wrap: nowrap; position: fixed; inset: 0; background: rgba(8,8,8,0.98); align-items: center; justify-content: center; gap: 0.6rem; z-index: 300; padding: 1rem; overflow-x: auto; backdrop-filter: blur(16px); }
+      .nav-links.open a { font-size: 0.9rem; padding: 0.6rem 0.5rem; display: block; white-space: nowrap; }
+      
+      .film-section { height: 250vh; }
+      body.cursor-ready { cursor: auto; }
+      .cursor-dot, .cursor-ring { display:none !important; }
+      .closing .big-kanji { font-size: clamp(80px,24vw,160px); }
+      .section { padding: 6rem 1.5rem; }
+      .section-tilt { padding-top: calc(6rem + 46px); }
+      footer { padding: 3rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+      .page-nav { display: none; }
+    }
+  </style>
+</head>
+<body id="top" class="is-loading">
+
+  <script>
+    (function() {
+      function start() { if (!document.body.classList.contains('is-loaded')) document.body.classList.add('is-loaded'); }
+      document.addEventListener('DOMContentLoaded', start);
+      window.addEventListener('load', start);
+      if (document.fonts && document.fonts.ready) { document.fonts.ready.then(start); }
+      setTimeout(start, 400); 
+    })();
+  </script>
+
+  <div class="scroll-progress" id="progress"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <nav id="top-nav">
+    <a href="https://sh012da.github.io/sh01/" class="nav-logo">Tsuda Shoichi</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="https://sh012da.github.io/sh01/index.html#statement" onclick="closeMenu()">Statement</a></li>
+      <li><a href="https://sh012da.github.io/sh01/index.html#works" onclick="closeMenu()">Works</a></li>
+      <li><a href="https://sh012da.github.io/sh01/index.html#profile" onclick="closeMenu()">Profile</a></li>
+      <li><a href="https://sh012da.github.io/sh01/index.html#news" onclick="closeMenu()">News</a></li>
+    </ul>
+    <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="https://sh012da.github.io/sh01/contact.html" class="nav-cta" id="nav-cta-btn">Contact</a>
+  </nav>
+
+  <div class="page-nav pc-only" id="page-nav">
+    <a href="#corridor" class="page-nav-dot" data-label="Prologue"></a>
+    <a href="#room-red" class="page-nav-dot" data-label="Red & Blue"></a>
+    <a href="#forest" class="page-nav-dot" data-label="Vertical Strokes"></a>
+    <a href="#horizon" class="page-nav-dot" data-label="Horizon"></a>
+    <a href="#threshold" class="page-nav-dot" data-label="Threshold"></a>
+  </div>
+
+  <header class="hero">
+    <div class="shatter" aria-hidden="true">
+      <div class="shard"></div><div class="shard"></div><div class="shard"></div>
+      <div class="shard"></div><div class="shard"></div><div class="shard"></div>
+    </div>
+    <div class="hero-seam" id="heroSeam"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Solo Exhibition — 油彩画展</p>
+      <h1 class="hero-title">
+        <span class="plus">＋</span>
+        <span class="c1">覚</span><span class="c2">知</span>
+        <span class="ka">ka</span>
+      </h1>
+      <p class="hero-sub">— the moment before perception becomes knowledge —</p>
+      <div class="hero-meta-row">
+        <div><span class="m-label">Artist</span><span class="m-val">津田翔一</span></div>
+        <div><span class="m-label">Year</span><span class="m-val">2026</span></div>
+        <div><span class="m-label">Medium</span><span class="m-val">油彩 / Oil on canvas</span></div>
+      </div>
+    </div>
+    <div class="scroll-cue" aria-hidden="true"><div class="line"></div><span class="deg">SCROLL</span></div>
+  </header>
+
+  <main>
+    <!-- ============== LEDE / OVERVIEW ============== -->
+    <section class="section tone-a" id="overview">
+      <span class="bg-kanji" style="top:-4%; right:-2%; font-size:26vw; transform:rotate(8deg);" aria-hidden="true">覚</span>
+      <div class="container">
+        <div class="reveal">
+          <p class="section-label">00 — Concept</p>
+          <h2 class="section-heading">知覚の、その手前にあるもの</h2>
+        </div>
+
+        <div class="lede-grid">
+          <div class="lede-text reveal">
+            <p class="lead">「覚知（かくち）」とは、知覚が言葉や意味に変換される前の、その手前で起きている小さな目覚めを指す。</p>
+            <p>これまで土地の記憶〈いと〉を辿ってきた油彩のシリーズから一歩踏み込み、本展では身体そのものが世界と接触する瞬間——輪郭が滲み、色が色のままで立ち上がる瞬間——を捉えた新作群を発表する。</p>
+            <p>会場には、訪れる者の歩みに合わせて表情を変える絵画が連なる。観客はただ見るのではなく、空間を歩き、画面に触れるように視線を這わせることで〈覚知〉そのものを追体験することになる。</p>
+          </div>
+          <div class="divider" aria-hidden="true"></div>
+          <div class="spec-list reveal">
+            <div class="row"><span class="k">Artist</span><span class="v">津田翔一 / Shoichi Tsuda</span></div>
+            <div class="row"><span class="k">Title</span><span class="v">油彩画展 ～＋覚知ka～</span></div>
+            <div class="row"><span class="k">Venue</span><span class="v">［会場名を記入］</span></div>
+            <div class="row"><span class="k">Period</span><span class="v">［20XX.X.X — X.X］</span></div>
+            <div class="row"><span class="k">Medium</span><span class="v">油彩、混合技法</span></div>
+          </div>
+        </div>
+
+        <div class="venue-row reveal">
+          <a class="venue-card" href="#room-red">
+            <span class="tag">Room 02</span>
+            <h3>紅と藍、対峙する身体</h3>
+            <p>動脈の紅と静脈の藍。二つの体温が一枚の画面の中でせめぎ合う、本展の核となる部屋。</p>
+          </a>
+          <a class="venue-card" href="#horizon">
+            <span class="tag">Room 04</span>
+            <h3>地平、溶けてゆく色彩</h3>
+            <p>輪郭が水平線へと溶け、土地の記憶が静かに横たわる。〈いと〉シリーズとの呼応点。</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 01 回廊 / CORRIDOR ============== -->
+    <section class="section tone-b section-tilt" id="corridor">
+      <span class="bg-kanji" style="bottom:-8%; left:-3%; font-size:22vw; transform:rotate(-6deg);" aria-hidden="true">知</span>
+      <div class="container">
+        <div class="reveal">
+          <p class="section-label" style="color:var(--blue);">01 — Prologue Corridor</p>
+          <h2 class="section-heading">歩くことから、すでに展示は始まっている</h2>
+        </div>
+        <p class="sec-desc reveal">入口を抜けると、奥へとまっすぐに伸びる回廊。両脇には色彩の異なる油彩が連なり、訪れる者は無意識のうちに歩幅を緩める。下の画像にカーソルを重ねると、ぼやけた知覚の表面に焦点が結ばれていく——〈覚知〉の最初の体験。</p>
+
+        <div class="perceive-frame reveal" style="aspect-ratio: 21/9;">
+          <img class="layer layer-clear" src="https://sh012da.github.io/sh01/images/exhi-kakuchi/覚知 (1).JPG" alt="覚知ka 展示風景 回廊全景">
+          <img class="layer layer-blur" src="https://sh012da.github.io/sh01/images/exhi-kakuchi/覚知 (1).JPG" alt="">
+        </div>
+        <p class="perceive-hint reveal"><span></span>カーソルを画像に重ねて、知覚を結んでください</p>
+
+        <div class="asym-2 reveal" style="margin-top: clamp(70px,10vh,110px);">
+          <div class="blob-frame"><img src="https://sh012da.github.io/sh01/images/exhi-kakuchi/覚知 (9).JPG" alt="覚知ka 回廊端の小品群"></div>
+          <div>
+            <h3 class="block-ttl">色の濃度が、距離をつくる</h3>
+            <p class="block-txt">回廊の手前には朱や深紅の強い画面、奥にゆくほど淡い色面が配置される。色彩の「濃度」そのものが空間の遠近を生み出し、鑑賞者は無意識のうちに色に導かれて歩を進めていく。</p>
+          </div>
+        </div>
+
+        <div class="cap-line reveal"><span class="ja">展示風景 ／ 序章 — 回廊</span><span>Fig. 01 — 02</span></div>
+      </div>
+    </section>
+
+    <div class="quote-block tone-a section">
+      <span class="bg-kanji" style="top:10%; left:6%; font-size:18vw;" aria-hidden="true">覚</span>
+      <span class="bg-kanji" style="bottom:6%; right:6%; font-size:18vw;" aria-hidden="true">知</span>
+      <div class="container">
+        <p class="mark reveal" aria-hidden="true">“</p>
+        <p class="reveal">見るより先に、肌が知っている。色が意味になる前のその一瞬を、絵の具という物質のまま掴みたい。<em>覚知とは、世界に触れ直すことだ。</em></p>
+      </div>
+    </div>
+
+    <!-- ============== 02 紅と藍 / ROOM RED & BLUE ============== -->
+    <section class="section tone-b section-tilt" id="room-red">
+      <div class="container">
+        <div class="reveal">
+          <p class="section-label" style="color:var(--red);">02 — Room Red &amp; Blue</p>
+          <h2 class="section-heading">紅と藍、対峙する身体</h2>
+        </div>
+        <p class="sec-desc reveal">展示の核となる小部屋。垂直に伸びる画面の中で、動脈のような紅と静脈のような藍がせめぎ合う。向かい合う壁の連作は互いを映す鏡のように呼応し、鑑賞者はその真ん中で二つの体温に挟まれる。</p>
+
+        <div class="duo-split reveal">
+          <figure><img src="https://sh012da.github.io/sh01/images/exhi-kakuchi/覚知 (2).JPG" alt="覚知ka 紅と藍の部屋 左壁の連作"><figcaption>紅 — Pulse</figcaption></figure>
+          <figure><img src="https://sh012da.github.io/sh01/images/exhi-kakuchi/覚知 (3).JPG" alt="覚知ka 紅と藍の部屋 中央壁面"><figcaption>藍 — Vein</figcaption></figure>
+        </div>
+
+        <div class="asym-2 asym-2--rev reveal">
+          <div>
+            <h3 class="block-ttl">輪郭を持たない身体</h3>
+            <p class="block-txt">骨格でも臓器でもない、けれど確かに「身体的」な何か。形は常に流動し、紅と藍の境界線は溶け合ったまま固定されることがない。津田の筆致は輪郭を引くのではなく、色と色の摩擦そのものを描き出す。</p>
+          </div>
+          <div class="perceive-frame" style="aspect-ratio: 4/5;">
+            <img class="layer layer-clear" src="https://sh012da.github.io/sh01/images/exhi-kakuchi/覚知 (9).JPG" alt="覚知ka 紅と藍 大画面詳細">
+            <img class="layer layer-blur" src="https://sh012da.github.io/sh01/images/exhi-kakuchi/覚知 (9).JPG" alt="">
+          </div>
+        </div>
+
+        <div class="cap-line reveal"><span class="ja">展示風景 ／ 紅と藍 — 対峙する身体</span><span>Fig. 03 — 05</span></div>
+      </div>
+    </section>
+
+    <!-- ============== 03 垂直の筆触 / FILMSTRIP ============== -->
+    <section class="film-section tone-a" id="forest">
+      <div class="film-sticky">
+        <div class="film-heading reveal is-visible">
+          <p class="section-label" style="color:var(--blue); margin-bottom: 0;">03 — Vertical Strokes</p>
+          <h2 class="section-heading" style="margin-top:12px; margin-bottom:0;">垂直の筆触、<br>森のように並ぶ</h2>
+        </div>
+        <div class="film-track" id="filmTrack">
+          <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-kakuchi/覚知 (4).JPG" alt="覚知ka 垂直の筆触 黄と黒の連作"><p class="film-cap">01 — 黄、滴る記憶</p></div>
+          <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-kakuchi/覚知 (4)2.JPG" alt="覚知ka 垂直の筆触 連作 近景"><p class="film-cap">02 — 連作、五つの色相</p></div>
+          <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-kakuchi/覚知 (5).JPG" alt="覚知ka 角部屋 虹色の大画面"><p class="film-cap">03 — 虹、空間を満たす</p></div>
+          <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-kakuchi/覚知 (6).JPG" alt="覚知ka 地平線の絵画と垂直連作"><p class="film-cap">04 — 反復、立ち止まる視線</p></div>
+          <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-kakuchi/覚知 (7).JPG" alt="覚知ka 垂直の筆触 別角度"><p class="film-cap">05 — 灰、声にならない震え</p></div>
+        </div>
+        <div class="film-hint"><span></span>Scroll — 横へ歩く</div>
+      </div>
+    </section>
+
+    <!-- ============== 04 地平 / HORIZON ============== -->
+    <section class="section tone-b section-tilt" id="horizon">
+      <span class="bg-kanji" style="top:-6%; right:0; font-size:20vw; transform:rotate(4deg);" aria-hidden="true">地</span>
+      <div class="container">
+        <div class="reveal">
+          <p class="section-label" style="color:var(--accent);">04 — Room Horizon</p>
+          <h2 class="section-heading">地平、溶けてゆく色彩</h2>
+        </div>
+        <p class="sec-desc reveal">部屋の最奥、正面に大きく掛けられた水平の画面。これまでの〈左美都〉シリーズが描いてきた土地の記憶と地続きの、けれど輪郭をすべて手放した風景。垂直の筆触を抜けてきた身体は、ここで初めて静止する。</p>
+
+        <div class="perceive-frame reveal" style="aspect-ratio: 16/8;">
+          <img class="layer layer-clear" src="https://sh012da.github.io/sh01/images/exhi-kakuchi/覚知 (6).JPG" alt="覚知ka 地平の部屋 全景">
+          <img class="layer layer-blur" src="https://sh012da.github.io/sh01/images/exhi-kakuchi/覚知 (6).JPG" alt="">
+        </div>
+
+        <div class="asym-2 reveal" style="margin-top: clamp(70px,10vh,110px);">
+          <div class="blob-frame"><img src="https://sh012da.github.io/sh01/images/exhi-kakuchi/覚知 (7).JPG" alt="覚知ka 地平の絵画 別角度"></div>
+          <div>
+            <h3 class="block-ttl">静止点としての水平線</h3>
+            <p class="block-txt">紅と藍の対峙、垂直の筆触の反復——それらを通過した先に、ようやく水平に横たわる一枚がある。色は溶け合い、もはや「対立」ではなく「呼吸」になる。これは答えではなく、覚知のプロセスがひとまず凪ぐ場所だ。</p>
+          </div>
+        </div>
+
+        <div class="cap-line reveal"><span class="ja">展示風景 ／ 地平 — 溶けてゆく色彩</span><span>Fig. 06 — 07</span></div>
+      </div>
+    </section>
+
+    <!-- ============== 05 扉の先 / THRESHOLD ============== -->
+    <section class="section tone-a section-tilt" id="threshold">
+      <div class="container">
+        <div class="reveal">
+          <p class="section-label" style="color:var(--blue);">05 — Threshold</p>
+          <h2 class="section-heading">扉の先に、まだ知らない部屋がある</h2>
+        </div>
+        <p class="sec-desc reveal">会場の奥、開け放たれた扉の向こうには、また別の生活空間が続いている。展示はここで終わるのではなく、日常へとなだらかに溶け出していく。覚知は美術館の中だけで起きるものではない、というささやかな宣言。</p>
+
+        <div class="duo-split reveal" style="margin-top:0;">
+          <figure style="aspect-ratio:5/6;"><img src="https://sh012da.github.io/sh01/images/exhi-kakuchi/覚知 (8).JPG" alt="覚知ka 開かれた扉と先の空間"><figcaption>境界 — Half-open</figcaption></figure>
+          <figure style="aspect-ratio:5/6;"><img src="https://sh012da.github.io/sh01/images/exhi-kakuchi/覚知 (9).JPG" alt="覚知ka 出口付近の展示風景"><figcaption>接続 — Beyond</figcaption></figure>
+        </div>
+
+        <div class="cap-line reveal"><span class="ja">展示風景 ／ 扉の先 — 日常への接続</span><span>Fig. 08 — 09</span></div>
+      </div>
+    </section>
+
+    <section class="closing tone-b section">
+      <div class="container">
+        <div class="big-kanji reveal is-visible" aria-hidden="true">覚知</div>
+        <h2 class="reveal">お問い合わせ</h2>
+        <p class="reveal">個展「油彩画展 ～＋覚知ka～」、作品、または取材等に関するお問い合わせは、下記よりお気軽にご連絡ください。</p>
+        <a class="closing-btn reveal" href="https://sh012da.github.io/sh01/contact.html">問い合わせフォームへ&ensp;→</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
+    <p class="footer-copy">© 2026 Tsuda Shoichi. All Rights Reserved.</p>
+  </footer>
+
+  <a href="#top" class="back-to-top" id="backToTop" aria-label="先頭へ">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+    <span class="back-to-top-text">TOP</span>
+  </a>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <img class="lightbox__img" src="" alt="拡大表示" id="lbImg">
+  </div>
+
+  <script>
+    /* ============================================================
+       NAV SCROLL & TOGGLE
+    ================================================================ */
+    var menuOpenScrollY = 0;
+    (function() {
+      var nav = document.getElementById('top-nav');
+      var links = document.getElementById('nav-links');
+      window.addEventListener('scroll', function() {
+        if(window.scrollY > 60) { nav.classList.add('nav-scrolled'); } else { nav.classList.remove('nav-scrolled'); }
+        if (links.classList.contains('open')) {
+          if (Math.abs(window.scrollY - menuOpenScrollY) > 20) { closeMenu(); }
+        }
+      }, { passive: true });
+    })();
+
+    function toggleMenu() {
+      var links = document.getElementById('nav-links');
+      var btn   = document.getElementById('nav-cta-btn');
+      var isOpen = links.classList.toggle('open');
+      btn.style.display = isOpen ? 'none' : '';
+      if (isOpen) { menuOpenScrollY = window.scrollY; document.body.classList.add('no-scroll'); }
+      else { document.body.classList.remove('no-scroll'); }
+    }
+
+    function closeMenu() {
+      var links = document.getElementById('nav-links');
+      var btn   = document.getElementById('nav-cta-btn');
+      links.classList.remove('open');
+      btn.style.display = '';
+      document.body.classList.remove('no-scroll');
+    }
+
+    /* ============================================================
+       覚知 専用スクリプト (進行状況, 追従, 視差エフェクト)
+    ================================================================ */
+    (function(){
+      const progress = document.getElementById('progress');
+      const pageNav = document.getElementById('page-nav');
+      const navDots = document.querySelectorAll('.page-nav-dot');
+      const targetIds = ['corridor','room-red','forest','horizon','threshold'];
+      const targets = targetIds.map(id => document.getElementById(id));
+      const backUp = document.getElementById('backToTop');
+      const fine = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+
+      function onScroll(){
+        const y = window.scrollY || document.documentElement.scrollTop;
+        const h = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = h > 0 ? (y/h)*100 : 0;
+        if (progress) progress.style.width = pct + '%';
+        
+        if (backUp) backUp.classList.toggle('is-visible', y > window.innerHeight * 0.5);
+        if (pageNav) pageNav.classList.toggle('is-visible', y > window.innerHeight * 0.5);
+
+        const checkY = y + window.innerHeight * 0.4;
+        let current = null;
+        targets.forEach(sec => { if (sec && sec.offsetTop <= checkY) current = sec; });
+        navDots.forEach(dot => {
+          dot.classList.toggle('active', document.getElementById(dot.getAttribute('href').substring(1)) === current);
+        });
+      }
+      document.addEventListener('scroll', onScroll, {passive:true});
+      onScroll();
+
+      navDots.forEach(dot => {
+        dot.addEventListener('click', e => {
+          e.preventDefault();
+          const t = document.getElementById(dot.getAttribute('href').substring(1));
+          if (t) window.scrollTo({ top: t.offsetTop - 40, behavior: 'smooth' });
+        });
+      });
+
+      backUp.addEventListener('click', e => { e.preventDefault(); window.scrollTo({top:0, behavior:'smooth'}); });
+
+      /* reveal on scroll */
+      const revealEls = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(entries => {
+          entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('is-visible'); io.unobserve(en.target); } });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        revealEls.forEach(el => io.observe(el));
+      } else { revealEls.forEach(el => el.classList.add('is-visible')); }
+
+      /* lightbox */
+      const lightbox = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lbImg');
+      document.querySelectorAll('.duo-split figure, .blob-frame, .film-card img').forEach(trigger => {
+        trigger.addEventListener('click', () => {
+          const img = trigger.tagName === 'IMG' ? trigger : trigger.querySelector('img');
+          if (img && img.src) {
+            lbImg.src = img.src;
+            lightbox.classList.add('active');
+            document.body.classList.add('no-scroll');
+          }
+        });
+      });
+      lightbox.addEventListener('click', () => {
+        lightbox.classList.remove('active');
+        document.body.classList.remove('no-scroll');
+        setTimeout(()=>{ lbImg.src=''; }, 300);
+      });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape' && lightbox.classList.contains('active')) lightbox.click(); });
+
+      /* custom cursor */
+      if (fine) {
+        document.body.classList.add('cursor-ready');
+        const dot = document.getElementById('cursorDot');
+        const ring = document.getElementById('cursorRing');
+        window.addEventListener('mousemove', e => {
+          dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px';
+          ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px';
+        });
+        document.querySelectorAll('a, button, .blob-frame, .duo-split figure').forEach(el => {
+          el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+          el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+        });
+        document.querySelectorAll('.perceive-frame').forEach(el => {
+          el.addEventListener('mouseenter', () => ring.classList.add('lens'));
+          el.addEventListener('mouseleave', () => ring.classList.remove('lens'));
+        });
+      }
+
+      /* hero seam follows mouse x subtly */
+      const heroSeam = document.getElementById('heroSeam');
+      if (heroSeam && fine) {
+        window.addEventListener('mousemove', e => {
+          const offset = (e.clientX / window.innerWidth - 0.5) * 60;
+          heroSeam.style.setProperty('--seam-x', offset + 'px');
+        });
+      }
+
+      /* perceive-frame lens tracking */
+      document.querySelectorAll('.perceive-frame').forEach(frame => {
+        const blur = frame.querySelector('.layer-blur');
+        if (!fine) { if (blur) blur.style.display = 'none'; return; }
+        frame.addEventListener('mousemove', e => {
+          const r = frame.getBoundingClientRect();
+          frame.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+          frame.style.setProperty('--my', (e.clientY - r.top) + 'px');
+        });
+        frame.addEventListener('mouseleave', () => {
+          frame.style.setProperty('--mx', '-9999px');
+          frame.style.setProperty('--my', '-9999px');
+        });
+      });
+
+      /* filmstrip: vertical scroll -> horizontal walk */
+      const filmSection = document.querySelector('.film-section');
+      const filmTrack = document.getElementById('filmTrack');
+      if (filmSection && filmTrack) {
+        let ticking = false;
+        function updateFilm() {
+          const rect = filmSection.getBoundingClientRect();
+          const total = filmSection.offsetHeight - window.innerHeight;
+          let p = total > 0 ? (-rect.top) / total : 0;
+          p = Math.min(1, Math.max(0, p));
+          const maxT = Math.max(0, filmTrack.scrollWidth - window.innerWidth + 40);
+          filmTrack.style.transform = 'translateX(-' + (p * maxT) + 'px)';
+          ticking = false;
+        }
+        document.addEventListener('scroll', () => { if (!ticking) { requestAnimationFrame(updateFilm); ticking = true; } }, {passive:true});
+        window.addEventListener('resize', updateFilm);
+        updateFilm();
+      }
+    })();
+  </script>
+</body>
+</html>
