@@ -731,6 +731,23 @@
     .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.9rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
 
     /* ============================================================
+       TOOLTIP
+    ============================================================ */
+    .mouse-tooltip {
+      position: fixed; top: 0; left: 0; pointer-events: none;
+      background: rgba(10, 10, 9, 0.95); color: rgba(233, 229, 223, 0.9);
+      padding: 6px 12px; border-radius: 4px; font-size: 11px;
+      font-family: var(--font-ja); letter-spacing: 0.05em;
+      border: 0.5px solid rgba(196, 168, 130, 0.3);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+      opacity: 0; transform: translate(15px, 15px); transition: opacity 0.2s ease;
+      z-index: 99999; white-space: nowrap;
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    }
+    .mouse-tooltip.visible { opacity: 1; }
+    @media (pointer: coarse) { .mouse-tooltip { display: none !important; } }
+
+    /* ============================================================
        RESPONSIVE
     ============================================================ */
     @media (max-width: 860px) {
@@ -1088,13 +1105,13 @@
                 <span class="career-detail-venue">北野カルチュラルセンター（長野県長野市） / 2nen Gallery（東京都中央区）</span>
               </div>
             </a>
-            <div class="career-row">
+            <a href="exhibition/nagano2022.html" class="career-row has-link">
               <span class="career-year">2022</span>
               <div>
                 <span class="career-detail-title">油彩画展 ～＋覚知ka～</span>
                 <span class="career-detail-venue">長野県立美術館（長野県長野市）</span>
               </div>
-            </div>
+            </a>
             <div class="career-row">
               <span class="career-year">2021</span>
               <div>
@@ -1249,7 +1266,38 @@
     </div>
   </div>
 
+  <!-- マウス追従用ツールチップ -->
+  <div class="mouse-tooltip" id="mouse-tooltip"></div>
+
   <script>
+    /* ── Tooltip Interaction ── */
+    (function() {
+      const tooltip = document.getElementById('mouse-tooltip');
+      if (!tooltip) return;
+
+      const linkRows = document.querySelectorAll('a.career-row.has-link');
+      
+      linkRows.forEach(link => {
+        link.addEventListener('mouseenter', () => {
+          const titleEl = link.querySelector('.career-detail-title');
+          const titleText = titleEl ? titleEl.textContent.trim() : '詳細';
+          
+          tooltip.textContent = `「${titleText}」のページへリンクします。`;
+          tooltip.classList.add('visible');
+        });
+        
+        link.addEventListener('mousemove', (e) => {
+          // マウスカーソルの少し右下に表示
+          tooltip.style.left = (e.clientX + 15) + 'px';
+          tooltip.style.top = (e.clientY + 15) + 'px';
+        });
+        
+        link.addEventListener('mouseleave', () => {
+          tooltip.classList.remove('visible');
+        });
+      });
+    })();
+
     /* ── Contact smooth scroll ── */
     document.getElementById('nav-cta-btn')?.addEventListener('click', (e) => {
       const target = document.getElementById('contact');
