@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>左美都村の記憶 - 狂気の果て -</title>
+    <style>
+        :root {
+            --bg-base: #0a0c0a; --board-bg: #0d110f;
+            --primary: #ce93d8; --sanity-high: #4caf50;
+            --sanity-med: #ffeb3b; --sanity-low: #f44336;
+            --cols: 6; --rows: 6;
+        }
+        body {
+            background-color: var(--bg-base); color: #eee;
+            font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+            margin: 0; display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; overflow: hidden;
+            user-select: none; -webkit-user-select: none; touch-action: none;
+            transition: background-color 1.5s, box-shadow 1.5s;
+        }
+
+        /* 狂気演出 */
+        body.stage-4 { background-color: #100b0f; }
+        body.stage-7 { background-color: #140505; }
+        body.stage-10 { background-color: #240202; }
+        body.stage-12 { background-color: #330000; box-shadow: inset 0 0 120px rgba(255, 0, 0, 0.5); }
+
+        body.insane {
+            animation: heartbeat 0.4s infinite, glitch-bg 0.8s infinite;
+            box-shadow: inset 0 0 300px rgba(255, 0, 0, 0.9) !important;
+        }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.05); } }
+        @keyframes glitch-bg {
+            0%, 100% { filter: contrast(1); }
+            90% { filter: contrast(1.5) hue-rotate(-40deg); transform: translate(-5px, 5px); }
+            94% { filter: contrast(1); transform: translate(5px, -5px); }
+            98% { filter: contrast(1.8) hue-rotate(40deg); transform: translate(-5px, -3px); }
+        }
+
+        #game-layout {
+            display: flex; flex-direction: column; width: 100%; max-width: 480px;
+            padding: 10px; box-sizing: border-box; gap: 8px; z-index: 10;
+        }
+
+        .header-panel { display: flex; justify-content: space-between; gap: 8px; width: 100%; }
+        .info-box {
+            background: rgba(255,255,255,0.05); border: 1px solid #333;
+            border-radius: 8px; padding: 8px; flex: 1; text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.6); position: relative;
+        }
+        h1 { margin: 0 0 4px 0; font-size: 11px; color: #ba68c8; border-bottom: 1px solid #444; padding-bottom: 2px;}
+        #score-display { font-size: 26px; font-weight: bold; text-shadow: 0 0 10px var(--primary); transition: 0.1s;}
+        #stage-display { font-size: 11px; color: #ffeb3b; font-weight: bold; margin-top: 2px;}
+        
+        #sanity-container {
+            width: 100%; height: 14px; background: #111; border-radius: 7px;
+            overflow: hidden; border: 1px solid #555; margin-top: 4px; box-shadow: inset 0 0 8px #000; position: relative;
+        }
+        #sanity-bar { height: 100%; width: 100%; background: var(--sanity-high); transition: width 0.1s linear, background-color 0.3s; }
+        #sanity-warning { font-size: 11px; color: #f44336; margin-top: 4px; display: none; font-weight: bold; text-shadow: 0 0 5px red; animation: blink 0.3s infinite;}
+        #penalty-warning { font-size: 11px; color: #ffeb3b; margin-top: 2px; display: none; font-weight: bold; text-shadow: 0 0 5px #ffeb3b; animation: blink 0.3s infinite;}
+        @keyframes blink { 50% { opacity: 0.1; } }
+
+        /* 消化中とUNDO */
+        .action-row { display: flex; justify-content: space-between; align-items: center; padding: 0 5px; }
+        #forbidden-colors { display: flex; justify-content: flex-start; align-items: center; gap: 6px; height: 24px; }
+        .mini-akebi { width: 16px; height: 16px; border-radius: 50%; box-shadow: 0 0 4px #000; }
+        .mini-color-1 { background: #ce93d8; border: 1px solid #fdfdfd; }
+        .mini-color-2 { background: #e57373; border: 1px solid #2c2c2c; }
+        .mini-color-3 { background: #64b5f6; border: 1px solid #a5d6a7; }
+        .mini-color-4 { background: #9e9e9e; border: 1px solid #fff59d; }
+        .mini-color-5 { background: #ffb74d; border: 1px solid #ab47bc; }
+        .mini-color-6 { background: #81c784; border: 1px solid #b71c1c; }
+
+        #undo-btn {
+            background: #333; color: #ccc; border: 1px solid #666; border-radius: 6px;
+            padding: 5px 10px; font-size: 11px; font-weight: bold; cursor: pointer;
+            transition: 0.2s; opacity: 0.4; pointer-events: none;
+        }
+        #undo-btn.active {
+            background: #ba68c8; color: #fff; border-color: #ce93d8;
+            opacity: 1; pointer-events: auto; box-shadow: 0 0 8px rgba(206,147,216,0.5);
+        }
+        #undo-btn.active:active { transform: scale(0.95); }
+
+        /* ボード領域 */
+        #board-wrapper {
+            position: relative; background: #000; border: 4px solid #444;
+            border-radius: 12px; padding: 4px; box-shadow: 0 0 30px rgba(0,0,0,0.9);
+            aspect-ratio: 1/1; width: 100%; transition: border-color 1.5s;
+        }
+        body.stage-4 #board-wrapper { border-color: #5e1a1a; }
+        body.stage-7 #board-wrapper { border-color: #8a1414; }
+        body.stage-10 #board-wrapper { border-color: #b70b0b; box-shadow: 0 0 50px rgba(180,0,0,0.6); }
+        body.stage-12 #board-wrapper { border-color: #ff0000; box-shadow: 0 0 80px rgba(255,0,0,1); }
+
+        #board {
+            display: grid; grid-template-columns: repeat(var(--cols), 1fr); grid-template-rows: repeat(var(--rows), 1fr);
+            gap: 3px; width: 100%; height: 100%; background-color: var(--board-bg); position: relative; z-index: 2;
+        }
+        #line-canvas { position: absolute; top: 4px; left: 4px; width: calc(100% - 8px); height: calc(100% - 8px); pointer-events: none; z-index: 1; }
+        
+        .cell {
+            position: relative; display: flex; justify-content: center; align-items: center;
+            border-radius: 50%; cursor: pointer; transition: transform 0.15s cubic-bezier(0.1, 0.8, 0.3, 1), opacity 0.2s, filter 0.3s;
+        }
+        .cell.selected { transform: scale(1.3); z-index: 5; opacity: 1; box-shadow: 0 0 15px rgba(255,255,255,0.6); filter: brightness(1.2); }
+        .cell.disabled { filter: brightness(0.2) grayscale(0.9); pointer-events: none; }
+        .cell.absorbing { z-index: 10; filter: brightness(2.5) blur(1px) !important; }
+        .falling { transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        
+        /* 絶対クリア保証：ヒント用エフェクト */
+        .hint-pulse {
+            animation: hint-glow 1s infinite alternate;
+            z-index: 4; box-shadow: 0 0 20px #00e5ff !important;
+        }
+        @keyframes hint-glow {
+            0% { filter: brightness(1); transform: scale(1); }
+            100% { filter: brightness(1.5); transform: scale(1.15); }
+        }
+
+        /* アケビのデザイン */
+        .akebi-shape {
+            width: 85%; height: 85%; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: relative; display: flex; justify-content: center; align-items: center;
+            box-shadow: 3px 5px 8px rgba(0,0,0,0.8); transform: rotate(15deg);
+        }
+        .akebi-flesh {
+            width: 65%; height: 75%; border-radius: 50%; position: relative;
+            display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 2px;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.8);
+        }
+        .type-1 .akebi-shape { background: #fdfdfd; border: 2px solid #ddd; } .type-1 .akebi-flesh { background: #ce93d8; }
+        .type-2 .akebi-shape { background: #2c2c2c; border: 2px solid #111; } .type-2 .akebi-flesh { background: #e57373; }
+        .type-3 .akebi-shape { background: #a5d6a7; border: 2px solid #81c784; } .type-3 .akebi-flesh { background: #64b5f6; }
+        .type-4 .akebi-shape { background: #fff59d; border: 2px solid #fff176; } .type-4 .akebi-flesh { background: #9e9e9e; }
+        .type-5 .akebi-shape { background: #ab47bc; border: 2px solid #7b1fa2; } .type-5 .akebi-flesh { background: #ffb74d; }
+        .type-6 .akebi-shape { background: #b71c1c; border: 2px solid #880e4f; } .type-6 .akebi-flesh { background: #81c784; }
+
+        .seed { width: 4px; height: 4px; background: #000; border-radius: 50%; }
+        .eye {
+            width: 16px; height: 16px; background: #fff; border-radius: 50%;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: none; box-shadow: inset 0 0 4px red, 0 0 5px rgba(255,255,255,0.5);
+        }
+        .eye::after {
+            content: ''; position: absolute; width: 6px; height: 6px; background: #000; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
+        body.insane .cell:not(.disabled) .seed, body.stage-7 .cell:not(.disabled) .seed, body.stage-10 .cell:not(.disabled) .seed, body.stage-12 .cell:not(.disabled) .seed { display: none; }
+        body.insane .cell:not(.disabled) .eye, body.stage-7 .cell:not(.disabled) .eye, body.stage-10 .cell:not(.disabled) .eye, body.stage-12 .cell:not(.disabled) .eye { display: block; animation: frantic-look 0.1s infinite alternate; }
+        @keyframes frantic-look { 0% { transform: translate(-80%, -80%) scale(1.1); } 33% { transform: translate(-20%, -50%) scale(0.9); } 66% { transform: translate(-70%, -20%) scale(1.2); } 100% { transform: translate(-10%, -70%) scale(1); } }
+
+        /* VFX群 */
+        #flash-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #fff; pointer-events: none; z-index: 999; opacity: 0; mix-blend-mode: overlay; }
+        .flash-active { animation: screen-flash 0.5s cubic-bezier(0.1, 0.8, 0.3, 1); }
+        @keyframes screen-flash { 0% { opacity: 1; } 100% { opacity: 0; } }
+
+        .heavy-shake { animation: explosive-shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes explosive-shake {
+            0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); filter: blur(0); }
+            10%, 90% { transform: translate3d(-15px, 15px, 0) rotate(-4deg); filter: blur(2px); }
+            20%, 80% { transform: translate3d(25px, -25px, 0) rotate(5deg); }
+            30%, 50%, 70% { transform: translate3d(-35px, 35px, 0) rotate(-6deg); }
+            40%, 60% { transform: translate3d(35px, -35px, 0) rotate(6deg); }
+        }
+
+        .shockwave {
+            position: absolute; border-radius: 50%; border: 15px solid currentColor; pointer-events: none; z-index: 15; opacity: 1; transform: translate(-50%, -50%) scale(0.1);
+            animation: expand-wave 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+        }
+        @keyframes expand-wave { 0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; border-width: 40px; } 100% { transform: translate(-50%, -50%) scale(4.5); opacity: 0; border-width: 1px; } }
+
+        .particle {
+            position: absolute; border-radius: 50%; pointer-events: none; z-index: 20; box-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+            animation: super-explode 0.8s cubic-bezier(0.1, 1, 0.3, 1) forwards;
+        }
+        @keyframes super-explode { 0% { transform: translate(0, 0) scale(2.5); opacity: 1; filter: brightness(3); } 100% { transform: translate(var(--tx), var(--ty)) scale(0.1); opacity: 0; filter: brightness(1); } }
+
+        #combo-text-container { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 50; pointer-events: none; }
+        .combo-text {
+            font-size: 50px; font-weight: bold; color: #fff; text-shadow: 0 0 20px #ffeb3b, 0 0 40px #ff9800; font-style: italic; white-space: nowrap;
+            animation: comboPop 1.2s cubic-bezier(0.1, 2, 0.3, 1) forwards; position: absolute; top:0; left:0; transform: translate(-50%, -50%); opacity: 0;
+        }
+        .combo-text.great { color: #00e5ff; text-shadow: 0 0 20px #00e5ff, 0 0 40px #00e5ff, 0 0 60px #00e5ff; font-size: 65px; }
+        .combo-text.crazy { color: #f50057; text-shadow: 0 0 20px #f50057, 0 0 40px #f50057, 0 0 60px #f50057; font-size: 80px; }
+        @keyframes comboPop { 0% { transform: translate(-50%, -50%) scale(0) rotate(-10deg); opacity: 1; } 15% { transform: translate(-50%, -50%) scale(1.3) rotate(5deg); opacity: 1; } 100% { transform: translate(-50%, -200px) scale(0.8) rotate(0deg); opacity: 0; } }
+
+        .score-popup {
+            position: absolute; color: #fff; font-weight: bold; font-size: 38px; text-shadow: 0 0 10px #000, 0 0 25px currentColor;
+            pointer-events: none; z-index: 30; animation: superFloatUp 1s cubic-bezier(0.1, 2, 0.3, 1) forwards;
+        }
+        @keyframes superFloatUp { 0% { transform: translateY(0) scale(0.5); opacity: 1; } 20% { transform: translateY(-50px) scale(1.5); opacity: 1; } 100% { transform: translateY(-150px) scale(0.8); opacity: 0; } }
+
+        /* モーダル */
+        #modal-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(10px);
+        }
+        #modal-title { font-size: 24px; color: var(--primary); font-weight: bold; margin-bottom: 12px; border-bottom: 2px solid #555; padding-bottom: 8px; width: 100%; max-width: 400px; text-shadow: 0 0 15px var(--primary);}
+        #modal-text {
+            font-size: 13.5px; line-height: 1.8; color: #eee; max-width: 400px; margin-bottom: 25px; text-align: left; background: rgba(255,255,255,0.03);
+            padding: 15px; border-radius: 8px; border: 1px solid #444; font-style: italic; box-shadow: inset 0 0 15px #000;
+        }
+        .btn {
+            background: var(--primary); color: #fff; border: 2px solid #ba68c8; padding: 12px 30px; font-size: 18px; font-weight: bold;
+            border-radius: 30px; cursor: pointer; transition: 0.2s; box-shadow: 0 0 20px rgba(206, 147, 216, 0.6); width: 100%; max-width: 250px;
+        }
+        .btn:hover { background: #ab47bc; transform: scale(1.1); box-shadow: 0 0 30px rgba(206, 147, 216, 1); }
+    </style>
+</head>
+<body>
+
+<div id="flash-overlay"></div>
+
+<div id="game-layout">
+    <div class="header-panel">
+        <div class="info-box">
+            <h1>SCORE</h1>
+            <div id="score-display">0</div>
+            <div id="stage-display">第1章 (NEXT: 30000)</div>
+        </div>
+        <div class="info-box" style="display:flex; flex-direction:column; justify-content:center;">
+            <h1>正気度 (SANITY)</h1>
+            <div id="sanity-container"><div id="sanity-bar"></div></div>
+            <div id="sanity-warning">!! アケビ接触: 精神汚染中 !!</div>
+            <div id="penalty-warning">⚠️ UNDO疲労: 回復量激減中!</div>
+        </div>
+    </div>
+    
+    <div class="action-row">
+        <div style="display:flex; flex-direction:column; align-items:flex-start;">
+            <div id="forbidden-text" style="font-size:11px; color:#ffeb3b; font-weight:bold; margin-bottom:3px;">⚠️ 直近1回消した色は選択不可</div>
+            <div id="forbidden-colors"><span style="color:#555; font-size:12px;">なし</span></div>
+        </div>
+        <button id="undo-btn" onclick="doUndo()">↩ 1手戻る (SANITY -15)</button>
+    </div>
+
+    <div id="board-wrapper">
+        <svg id="line-canvas"></svg>
+        <div id="board"></div>
+        <div id="combo-text-container"></div>
+    </div>
+</div>
+
+<div id="modal-overlay">
+    <div id="modal-title"></div>
+    <div id="modal-text"></div>
+    <button class="btn" id="modal-btn"></button>
+</div>
+
+<script>
+    // --- BGM & SE ---
+    const audioSystem = {
+        ctx: null, masterGain: null, droneOsc: null, droneGain: null,
+        nextNoteTime: 0, current16thNote: 0, tempo: 60, isPlaying: false,
+
+        init() {
+            if (this.ctx) return;
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            this.ctx = new AudioContext();
+            this.masterGain = this.ctx.createGain();
+            this.masterGain.connect(this.ctx.destination);
+        },
+        start() {
+            this.isPlaying = true;
+            if(this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+            const now = this.ctx.currentTime;
+            this.masterGain.gain.cancelScheduledValues(now);
+            this.masterGain.gain.setValueAtTime(0, now);
+            this.masterGain.gain.linearRampToValueAtTime(0.5, now + 1);
+            if (this.droneOsc) { try { this.droneOsc.stop(); } catch(e){} }
+            this.droneOsc = this.ctx.createOscillator();
+            this.droneOsc.type = 'triangle';
+            this.droneOsc.frequency.value = 40; 
+            this.droneGain = this.ctx.createGain();
+            this.droneGain.gain.value = 0; 
+            this.droneOsc.connect(this.droneGain);
+            this.droneGain.connect(this.masterGain);
+            this.droneOsc.start();
+            this.nextNoteTime = this.ctx.currentTime + 0.1;
+            this.scheduleLoop();
+        },
+        stop() { 
+            this.isPlaying = false; 
+            if(this.masterGain && this.ctx) {
+                const now = this.ctx.currentTime;
+                this.masterGain.gain.cancelScheduledValues(now);
+                this.masterGain.gain.setTargetAtTime(0, now, 0.05);
+                if (this.droneOsc) {
+                    try { this.droneOsc.stop(now + 0.1); } catch(e){}
+                    this.droneOsc.disconnect();
+                    this.droneOsc = null;
+                }
+                setTimeout(() => {
+                    if (this.ctx && this.ctx.state === 'running') this.ctx.suspend();
+                }, 150);
+            }
+        },
+        updateDrone() {
+            if (!this.droneOsc || !this.isPlaying) return;
+            let targetFreq = 40 + (currentStage * 3);
+            if (sanity < 30) targetFreq += 25; 
+            this.droneOsc.frequency.setTargetAtTime(targetFreq, this.ctx.currentTime, 0.5);
+            let targetGain = 0.03 + (currentStage * 0.015);
+            this.droneGain.gain.setTargetAtTime(targetGain, this.ctx.currentTime, 0.5);
+        },
+        playKick(time, intensity) {
+            if (!this.isPlaying) return;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.connect(gain); gain.connect(this.masterGain);
+            osc.frequency.setValueAtTime(120 * intensity, time);
+            osc.frequency.exponentialRampToValueAtTime(0.01, time + 0.4);
+            gain.gain.setValueAtTime(0.9, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + 0.4);
+            osc.start(time); osc.stop(time + 0.4);
+        },
+        playNoise(time, vol) {
+            if (!this.isPlaying) return;
+            const bufferSize = this.ctx.sampleRate * 0.08;
+            const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+            const noise = this.ctx.createBufferSource(); noise.buffer = buffer;
+            const filter = this.ctx.createBiquadFilter();
+            filter.type = 'highpass'; filter.frequency.value = 4000;
+            const gain = this.ctx.createGain();
+            noise.connect(filter); filter.connect(gain); gain.connect(this.masterGain);
+            gain.gain.setValueAtTime(vol, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + 0.08);
+            noise.start(time);
+        },
+        playExplosion(comboCount) {
+            if (!this.ctx) return;
+            const t = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.connect(gain); gain.connect(this.masterGain);
+            osc.type = 'square';
+            const baseFreq = 250 + (comboCount * 90); 
+            osc.frequency.setValueAtTime(baseFreq, t);
+            osc.frequency.exponentialRampToValueAtTime(10, t + 0.5);
+            gain.gain.setValueAtTime(0.6, t);
+            gain.gain.exponentialRampToValueAtTime(0.01, t + 0.5);
+            osc.start(t); osc.stop(t + 0.5);
+            this.playNoise(t, 0.5); 
+        },
+        scheduleNote(beatNumber, time) {
+            this.tempo = 60 + (currentStage * 10);
+            if (sanity < 35) this.tempo += 25; 
+            let kickInt = 1 + (currentStage * 0.08);
+
+            if (currentStage < 3) { 
+                if (beatNumber === 0) this.playKick(time, kickInt);
+                if (beatNumber === 4) this.playKick(time, kickInt * 0.7);
+            } else if (currentStage < 6) { 
+                if (beatNumber % 4 === 0) this.playKick(time, kickInt);
+                if (beatNumber % 8 === 4) this.playKick(time, kickInt * 0.5);
+            } else if (currentStage < 9) { 
+                if (beatNumber % 4 === 0) this.playKick(time, kickInt * 1.1);
+                if (beatNumber % 2 === 0) this.playNoise(time, 0.15 + (currentStage*0.01));
+            } else if (currentStage < 11) { 
+                if (beatNumber % 4 === 0) this.playKick(time, kickInt * 1.3);
+                if (beatNumber % 4 === 2) this.playKick(time, kickInt * 0.9);
+                this.playNoise(time, 0.2);
+            } else { 
+                if (beatNumber % 2 === 0) this.playKick(time, kickInt * 1.6);
+                this.playNoise(time, 0.3);
+            }
+        },
+        scheduleLoop() {
+            if (!this.isPlaying) return;
+            while (this.nextNoteTime < this.ctx.currentTime + 0.1) {
+                this.scheduleNote(this.current16thNote, this.nextNoteTime);
+                this.nextNoteTime += 0.25 * (60.0 / this.tempo);
+                this.current16thNote = (this.current16thNote + 1) % 16;
+            }
+            this.updateDrone();
+            requestAnimationFrame(() => this.scheduleLoop());
+        }
+    };
+
+    // --- 物語データ (目標スコア調整版) ---
+    const STORY = [
+        { title: "第1章：動機", text: "「日中の単調な労働と、眠るしかない夜の繰り返しが耐え難い」<br>サララは毛虫が蝶になる瞬間を目にし、閉じた円環から抜け出す決意をした。<br><br><span style='color:#f44336; font-weight:bold;'>【重要ルール：必ずお読みください】<br>① 上下左右に同じ色を3つ以上なぞって消去します。<br>② 序盤は連鎖が起きやすくなっていますが、計画的に消してスコアを稼ぐ必要があります。<br>※手詰まりになった時は「1手戻る」ボタンを活用してください。</span>", btn: "旅立つ", target: 30000 },
+        { title: "第2章：過酷な旅", text: "生まれつき虚弱な赤人は何度も転び、自分が踏み潰される毛虫になったように感じた。しかし、サララへの想いから辛い道中を耐え抜いた。<br>沼持は道を踏み固め、石をどけて彼らに気配りをした。", btn: "歩みを進める", target: 70000 },
+        { title: "第3章：呪術者", text: "宿所に着いた彼らを迎えたのは、異様な大きさの鉱物を首から下げた呪術者だった。<br>鉱物の中には、サララの顔がぼんやりと映り込んでいた。", btn: "学習を始める", target: 120000 },
+        { title: "第4章：出会いと離脱", text: "サララは声の小さな少女、ウネと不思議に気が合った。<br>一方、沼持は大柄な男との喧嘩に敗れ、サララの手を振り払ってどこかへ行ってしまった。", btn: "文字を学ぶ", target: 180000 },
+        { title: "第5章：ご馳走", text: "文字を学ぶ日々は骨が折れた。<br>空腹に耐えられない時、赤人が山からとってくるアケビは最高のご馳走だった。彼は見違えるほど逞しくなっていった。<br><br><span style='color:#f44336; font-weight:bold;'>【通知】ここから盤面が少し広くなります。</span>", btn: "帰路につく", target: 250000 },
+        { title: "第6章：迷い道", text: "三か月の滞在を経て、彼らは帰途についた。<br>しかし、いくら歩いても同じような景色が三人を取り囲み、獣道から先に進めない。", btn: "山道を進む", target: 330000 },
+        { title: "第7章：無感覚", text: "不思議なことに、お腹が空かない。身体の疲労もなかった。<br>空の雲の中を歩くとこういう感じがするのかもしれない。<br>純粋な恐怖から、誰も喋らなくなっていた。", btn: "恐怖に耐える", target: 420000 },
+        { title: "第8章：反復の悟り", text: "アケビは一定の間隔をおいて、いつもウネが見つける。<br>アケビの形、みずみずしさ、匂いまでそっくりだった。すべてが同じなのだと三人は悟った。<br><br><span style='color:#f44336; font-weight:bold;'>【警告】ここから難易度が跳ね上がります。<br>一度色を消すと、その色が『禁止色』として盤面を圧迫し、次の一手が極端に消しづらくなります。</span>", btn: "狂気の淵へ", target: 530000 },
+        { title: "第9章：乖離", text: "「何回も同じことを繰り返している」<br>赤人の声は単なる音の響きだった。アケビを食べる一連の流れは、本人たちの意識から遠く隔たっていた。<br><br><span style='color:#f44336; font-weight:bold;'>【通知】盤面がさらに広くなり、アケビの種類が増加します。<br>※徐々に「連鎖による正気度回復量」が減少し始めます。</span>", btn: "意識を保つ", target: 650000 },
+        { title: "第10章：凝視", text: "真っ白で長い外皮に包まれた薄い紫色の果肉が三人を見ていた。<br>まさに、果肉が三人を見ているのだった。", btn: "目を逸らさない", target: 780000 },
+        { title: "第11章：眼球", text: "ふんわりとした甘い肉の中に目がぎょろぎょろと動いていた。<br>今回もいつもと同じように、三人は無意識に手を伸ばす……。", btn: "無意識に抗う", target: 920000 },
+        { title: "第12章：最後の幻覚", text: "三人がほとんどと同時に、無意識に口を大きく開けた時――。<br><br><span style='color:#f44336; font-weight:bold;'>【最終警告】禁止枠が最大(3色)まで拡大します。<br>※正気度の回復量が極端に低下し、ミリ単位でしか回復しません。<br>※掴んでいる間は正気度が超高速で溶けます。<br>迷った時は数秒待てば「ヒント」が発光します。一度の大連鎖でスコア105万への到達を目指してください。</span>", btn: "最後の審判", target: 1050000 }
+    ];
+
+    const ENDING = { title: "結末：生還", text: "大きな声がした。沼持は急いで駆け寄り、一人一人の頬を思い切り叩いた。乾いた大きな音があたりに響き渡った。<br><br>ハッとして周りを見ると、そこは虫一匹いない奇妙な森だった。<br><br>……村に帰ってきたのは、言葉を失った沼持だけだったという。<br><br>【伝承 完】", btn: "記憶を刻み直す" };
+    const GAMEOVER = { title: "GAME OVER", text: "「アケビの中の目が、私を呼んでいる。」<br><br>彼らは完全に正気を失い、果肉の中の目と永遠に見つめ合い続けた。<br>三人は二度と左美都村へ帰ることはなく、アケビの森の一部となった。", btn: "運命に抗う" };
+
+    let ROWS = 6, COLS = 6;
+    let grid = [];
+    let score = 0, sanity = 100;
+    let isPlaying = false, isResolving = false;
+    let currentStage = 0;
+    let playStartTime = 0;
+    let forbiddenColors = []; 
+    
+    let undoState = null;
+    const UNDO_COST = 15;
+    let healMultiplier = 1.0; 
+
+    let lastInteractionTime = 0;
+    let isDragging = false;
+    let selectedCells = [];
+    
+    const DOM = {
+        board: document.getElementById('board'), svg: document.getElementById('line-canvas'),
+        wrapper: document.getElementById('board-wrapper'), gameLayout: document.getElementById('game-layout'),
+        flash: document.getElementById('flash-overlay'), comboContainer: document.getElementById('combo-text-container'),
+        score: document.getElementById('score-display'), stage: document.getElementById('stage-display'),
+        sanityBar: document.getElementById('sanity-bar'), sanityWarning: document.getElementById('sanity-warning'),
+        penaltyWarning: document.getElementById('penalty-warning'),
+        forbiddenText: document.getElementById('forbidden-text'), forbiddenBox: document.getElementById('forbidden-colors'), 
+        undoBtn: document.getElementById('undo-btn'),
+        modal: document.getElementById('modal-overlay'), modalTitle: document.getElementById('modal-title'), 
+        modalText: document.getElementById('modal-text'), modalBtn: document.getElementById('modal-btn'), 
+        body: document.body
+    };
+
+    function updateGridSize() {
+        if (currentStage <= 3) { ROWS = 6; COLS = 6; } // 序盤: 6x6
+        else if (currentStage <= 7) { ROWS = 7; COLS = 7; } // 中盤: 7x7
+        else { ROWS = 8; COLS = 8; } // 終盤: 8x8
+        DOM.board.style.setProperty('--cols', COLS);
+        DOM.board.style.setProperty('--rows', ROWS);
+    }
+
+    function getMaxColors() {
+        if (currentStage <= 2) return 3; // 1〜3章
+        if (currentStage <= 5) return 4; // 4〜6章
+        if (currentStage <= 8) return 5; // 7〜9章
+        return 6;                        // 10〜12章
+    }
+    
+    function getMaxForbidden() {
+        if (currentStage <= 2) return 0; // 序盤は禁止色なし
+        if (currentStage <= 5) return 1; // 4〜6章は1色
+        if (currentStage <= 8) return 2; // 7〜9章は2色
+        return 3;                        // 終盤は3色
+    }
+
+    function randType() { return Math.floor(Math.random() * getMaxColors()) + 1; }
+    function hexCol(type) { return {1: '#ce93d8', 2: '#e57373', 3: '#64b5f6', 4: '#9e9e9e', 5: '#ffb74d', 6: '#81c784'}[type]; }
+
+    function createAkebiHTML(type) {
+        return `<div class="akebi-shape"><div class="akebi-flesh"><div class="seed"></div><div class="seed"></div><div class="seed"></div><div class="eye"></div></div></div>`;
+    }
+
+    function getHardColor(x, y) {
+        // 【修正】序盤の全消し防止：同色隣接率を90%→60%に低下
+        if (currentStage <= 2) {
+            if (Math.random() < 0.6) { 
+                let neighbors = [];
+                if (x > 0 && grid[y][x-1] !== 0) neighbors.push(grid[y][x-1]);
+                if (y < ROWS - 1 && grid[y+1][x] !== 0) neighbors.push(grid[y+1][x]);
+                if (neighbors.length > 0) return neighbors[Math.floor(Math.random() * neighbors.length)];
+            }
+            return Math.floor(Math.random() * getMaxColors()) + 1;
+        }
+
+        let diffRate = 0.2 + (currentStage * 0.05); 
+        if (diffRate > 0.65) diffRate = 0.65;
+        
+        if (Math.random() > diffRate) return randType(); 
+        
+        let avoid = new Set();
+        if (x > 0 && grid[y][x-1] !== 0) avoid.add(grid[y][x-1]);
+        if (x > 1 && grid[y][x-1] === grid[y][x-2] && grid[y][x-1] !== 0) avoid.add(grid[y][x-1]);
+        if (y < ROWS - 1 && grid[y+1][x] !== 0) avoid.add(grid[y+1][x]);
+        if (y > 0 && grid[y-1][x] !== 0) avoid.add(grid[y-1][x]); 
+        if (y > 1 && grid[y-1][x] === grid[y-2][x] && grid[y-1][x] !== 0) avoid.add(grid[y-1][x]);
+        
+        if (currentStage >= 7 && Math.random() < 0.6) {
+            if (forbiddenColors.length > 0) return forbiddenColors[Math.floor(Math.random() * forbiddenColors.length)];
+        } else if (Math.random() < 0.4) {
+            forbiddenColors.forEach(c => avoid.add(c));
+        }
+
+        let max = getMaxColors();
+        let available = [];
+        for(let i=1; i<=max; i++) { if(!avoid.has(i)) available.push(i); }
+        if (available.length > 0) return available[Math.floor(Math.random() * available.length)];
+        return randType();
+    }
+
+    function ensurePlayable() {
+        // 【修正】序盤でも必ず消せる箇所を3つ程度にし、一発クリアを防ぐ
+        let targetMoves = (currentStage <= 2) ? 3 : (currentStage <= 6 ? 2 : 1);
+        let moves = countValidMoves();
+        let loopGuard = 0;
+        let wasInjected = false;
+
+        while (moves < targetMoves && loopGuard < 20) {
+            injectMove();
+            moves = countValidMoves();
+            wasInjected = true;
+            loopGuard++;
+        }
+        
+        return wasInjected; 
+    }
+
+    function countValidMoves() {
+        const visited = Array.from({length: ROWS}, () => Array(COLS).fill(false));
+        let count = 0;
+        for (let y = 0; y < ROWS; y++) {
+            for (let x = 0; x < COLS; x++) {
+                if (!visited[y][x]) {
+                    let type = grid[y][x], size = 0, queue = [{x, y}];
+                    visited[y][x] = true;
+                    while (queue.length > 0) {
+                        let curr = queue.shift(); size++;
+                        [[0,-1], [0,1], [-1,0], [1,0]].forEach(([dx, dy]) => {
+                            let nx = curr.x + dx, ny = curr.y + dy;
+                            if (nx>=0 && nx<COLS && ny>=0 && ny<ROWS && !visited[ny][nx] && grid[ny][nx] === type) {
+                                visited[ny][nx] = true; queue.push({x: nx, y: ny});
+                            }
+                        });
+                    }
+                    if (size >= 3 && !forbiddenColors.includes(type)) count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    function injectMove() {
+        let max = getMaxColors();
+        let availableColors = [];
+        for(let i=1; i<=max; i++) { if(!forbiddenColors.includes(i)) availableColors.push(i); }
+        if (availableColors.length === 0) availableColors = [1]; 
+        let forceColor = availableColors[Math.floor(Math.random() * availableColors.length)];
+        
+        let isVertical = Math.random() > 0.5;
+        let rx, ry;
+        if (isVertical) {
+            rx = Math.floor(Math.random() * COLS);
+            ry = Math.floor(Math.random() * (ROWS - 2));
+            grid[ry][rx] = forceColor;
+            grid[ry+1][rx] = forceColor;
+            grid[ry+2][rx] = forceColor;
+        } else {
+            rx = Math.floor(Math.random() * (COLS - 2));
+            ry = Math.floor(Math.random() * ROWS);
+            grid[ry][rx] = forceColor;
+            grid[ry][rx+1] = forceColor;
+            grid[ry][rx+2] = forceColor;
+        }
+    }
+
+    function showHint() {
+        const visited = Array.from({length: ROWS}, () => Array(COLS).fill(false));
+        for (let y = 0; y < ROWS; y++) {
+            for (let x = 0; x < COLS; x++) {
+                if (!visited[y][x]) {
+                    let type = grid[y][x], group = [], queue = [{x, y}];
+                    visited[y][x] = true;
+                    while (queue.length > 0) {
+                        let curr = queue.shift(); group.push(curr);
+                        [[0,-1], [0,1], [-1,0], [1,0]].forEach(([dx, dy]) => {
+                            let nx = curr.x + dx, ny = curr.y + dy;
+                            if (nx>=0 && nx<COLS && ny>=0 && ny<ROWS && !visited[ny][nx] && grid[ny][nx] === type) {
+                                visited[ny][nx] = true; queue.push({x: nx, y: ny});
+                            }
+                        });
+                    }
+                    if (group.length >= 3 && !forbiddenColors.includes(type)) {
+                        group.forEach(c => {
+                            let cell = getCellDOM(c.x, c.y);
+                            if (cell) cell.classList.add('hint-pulse');
+                        });
+                        return; 
+                    }
+                }
+            }
+        }
+    }
+
+    function hideHint() {
+        document.querySelectorAll('.hint-pulse').forEach(el => el.classList.remove('hint-pulse'));
+    }
+
+    function updateForbiddenUI() {
+        let maxF = getMaxForbidden();
+        if(maxF === 0) {
+            DOM.forbiddenText.innerText = `現在、制限なし`;
+            DOM.forbiddenBox.innerHTML = '<span style="color:#555; font-size:12px;">なし</span>'; 
+            return;
+        }
+        DOM.forbiddenText.innerText = `⚠️ 直近${maxF}回消した色は選択不可`;
+        DOM.forbiddenBox.innerHTML = '';
+        forbiddenColors.forEach(c => {
+            let div = document.createElement('div'); div.className = `mini-akebi mini-color-${c}`;
+            DOM.forbiddenBox.appendChild(div);
+        });
+    }
+
+    function initBoard() {
+        updateGridSize(); 
+        grid = Array.from({length: ROWS}, () => Array(COLS).fill(0));
+        forbiddenColors = []; updateForbiddenUI();
+        undoState = null; updateUndoButton();
+        healMultiplier = 1.0; DOM.penaltyWarning.style.display = 'none';
+        
+        for (let y = 0; y < ROWS; y++) { for (let x = 0; x < COLS; x++) grid[y][x] = randType(); }
+        ensurePlayable();
+        drawBoard(); 
+    }
+
+    function drawBoard() {
+        DOM.board.innerHTML = '';
+        for (let y = 0; y < ROWS; y++) {
+            for (let x = 0; x < COLS; x++) {
+                let type = grid[y][x];
+                let cell = document.createElement('div');
+                cell.className = `cell type-${type}`;
+                cell.dataset.x = x; cell.dataset.y = y;
+                if (forbiddenColors.includes(type)) cell.classList.add('disabled');
+                cell.innerHTML = createAkebiHTML(type);
+                DOM.board.appendChild(cell);
+            }
+        }
+    }
+
+    function getCellDOM(x, y) { return DOM.board.children[y * COLS + x]; }
+
+    function setupInteractions() {
+        DOM.board.addEventListener('mousedown', handleStart);
+        DOM.board.addEventListener('mousemove', handleMove);
+        window.addEventListener('mouseup', handleEnd);
+        DOM.board.addEventListener('touchstart', handleStart, {passive: false});
+        DOM.board.addEventListener('touchmove', handleMove, {passive: false});
+        window.addEventListener('touchend', handleEnd);
+    }
+
+    function getTargetCell(e) {
+        let cx = e.clientX, cy = e.clientY;
+        if (e.touches && e.touches.length > 0) { cx = e.touches[0].clientX; cy = e.touches[0].clientY; }
+        const el = document.elementFromPoint(cx, cy);
+        return el ? el.closest('.cell') : null;
+    }
+
+    function handleStart(e) {
+        if (!isPlaying || isResolving) return;
+        e.preventDefault();
+        
+        lastInteractionTime = performance.now() / 1000;
+        hideHint();
+
+        const cell = getTargetCell(e); if (!cell) return;
+        const type = grid[parseInt(cell.dataset.y)][parseInt(cell.dataset.x)];
+        if (forbiddenColors.includes(type)) return;
+
+        isDragging = true; selectedCells = []; DOM.svg.innerHTML = ''; addCellToSelection(cell);
+    }
+
+    function handleMove(e) {
+        if (!isDragging || !isPlaying || isResolving) return;
+        e.preventDefault();
+        const cell = getTargetCell(e); if (!cell) return;
+        const x = parseInt(cell.dataset.x), y = parseInt(cell.dataset.y);
+        const type = grid[y][x];
+        if (forbiddenColors.includes(type)) return;
+
+        if (selectedCells.length > 0) {
+            const last = selectedCells[selectedCells.length - 1];
+            if (selectedCells.length > 1 && selectedCells[selectedCells.length - 2].x === x && selectedCells[selectedCells.length - 2].y === y) {
+                const removed = selectedCells.pop(); getCellDOM(removed.x, removed.y).classList.remove('selected'); drawLine(); return;
+            }
+            const dx = Math.abs(last.x - x), dy = Math.abs(last.y - y);
+            if (dx + dy === 1 && type === selectedCells[0].type && !selectedCells.some(c => c.x === x && c.y === y)) {
+                addCellToSelection(cell);
+            }
+        }
+    }
+
+    function addCellToSelection(cell) {
+        cell.classList.add('selected');
+        selectedCells.push({x: parseInt(cell.dataset.x), y: parseInt(cell.dataset.y), type: grid[cell.dataset.y][cell.dataset.x]});
+        drawLine();
+    }
+
+    function drawLine() {
+        if (selectedCells.length < 2) { DOM.svg.innerHTML = ''; return; }
+        const color = hexCol(selectedCells[0].type);
+        const rect = DOM.board.getBoundingClientRect();
+        const cw = rect.width / COLS, ch = rect.height / ROWS;
+        const lineThickness = ROWS >= 8 ? 8 : 12; 
+        let points = selectedCells.map(c => `${(c.x * cw) + cw/2},${(c.y * ch) + ch/2}`).join(' ');
+        DOM.svg.innerHTML = `<polyline points="${points}" fill="none" stroke="${color}" stroke-width="${lineThickness}" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" filter="drop-shadow(0 0 12px ${color})"/>`;
+    }
+
+    async function handleEnd() {
+        if (!isDragging || !isPlaying || isResolving) return;
+        isDragging = false; DOM.svg.innerHTML = '';
+        if (selectedCells.length >= 3) {
+            isResolving = true;
+            hideHint();
+            saveUndoState();
+
+            const colorType = selectedCells[0].type;
+            
+            let maxF = getMaxForbidden();
+            if (maxF > 0) {
+                forbiddenColors = forbiddenColors.filter(c => c !== colorType);
+                forbiddenColors.unshift(colorType);
+                if (forbiddenColors.length > maxF) forbiddenColors.pop();
+            }
+            updateForbiddenUI();
+            updateDisabledCells();
+
+            await stickAndExplode([selectedCells], 1);
+        } else {
+            selectedCells.forEach(c => getCellDOM(c.x, c.y).classList.remove('selected'));
+        }
+        selectedCells = [];
+    }
+
+    function saveUndoState() {
+        undoState = {
+            grid: grid.map(row => [...row]),
+            forbiddenColors: [...forbiddenColors],
+            score: score
+        };
+        updateUndoButton();
+    }
+
+    function doUndo() {
+        if (!undoState || sanity <= UNDO_COST || isResolving || !isPlaying) return;
+        
+        updateSanity(-UNDO_COST);
+        grid = undoState.grid.map(row => [...row]);
+        forbiddenColors = [...undoState.forbiddenColors];
+        score = undoState.score;
+        DOM.score.innerText = score;
+        
+        updateForbiddenUI();
+        drawBoard(); 
+        
+        undoState = null; 
+        updateUndoButton();
+
+        healMultiplier = 0.15;
+        DOM.penaltyWarning.style.display = 'block';
+        lastInteractionTime = performance.now() / 1000;
+    }
+
+    function updateUndoButton() {
+        if (undoState && sanity > UNDO_COST && !isResolving && isPlaying) {
+            DOM.undoBtn.classList.add('active');
+        } else {
+            DOM.undoBtn.classList.remove('active');
+        }
+    }
+
+    function updateDisabledCells() {
+        for (let y = 0; y < ROWS; y++) {
+            for (let x = 0; x < COLS; x++) {
+                let cell = getCellDOM(x, y);
+                if (cell) {
+                    if (forbiddenColors.includes(grid[y][x])) cell.classList.add('disabled');
+                    else cell.classList.remove('disabled');
+                }
+            }
+        }
+    }
+
+    async function stickAndExplode(groups, comboCount) {
+        let totalPts = 0;
+        let totalHeal = 0;
+        let primaryColor = hexCol(groups[0][0].type);
+
+        const rect = DOM.board.getBoundingClientRect();
+        const cw = rect.width / COLS, ch = rect.height / ROWS;
+        
+        groups.forEach(group => {
+            let sumX = 0, sumY = 0;
+            group.forEach(c => { sumX += c.x; sumY += c.y; });
+            const centerX = sumX / group.length;
+            const centerY = sumY / group.length;
+
+            group.forEach(c => {
+                const el = getCellDOM(c.x, c.y);
+                if (el) {
+                    el.classList.add('absorbing');
+                    const transX = (centerX - c.x) * cw;
+                    const transY = (centerY - c.y) * ch;
+                    el.style.transform = `translate(${transX}px, ${transY}px) scale(0.2)`;
+                }
+            });
+        });
+
+        await sleep(250); 
+        audioSystem.playExplosion(comboCount);
+
+        groups.forEach(group => {
+            let sumX = 0, sumY = 0;
+            group.forEach(c => { sumX += c.x; sumY += c.y; });
+            const cx = sumX / group.length;
+            const cy = sumY / group.length;
+            const centerPxX = rect.left + (cx * cw) + cw/2;
+            const centerPxY = rect.top + (cy * ch) + ch/2;
+            const colorHex = hexCol(group[0].type);
+
+            const len = group.length;
+            const stageMult = 1 + (currentStage * 0.5);
+            // 修正：スコアインフレを少しマイルドに調整
+            const comboBonus = Math.pow(1.3, comboCount);
+            const pts = Math.floor(len * len * 40 * stageMult * comboBonus);
+            totalPts += pts;
+
+            // ★ 【修正】ステージ進行による回復量の減衰（最終ステージは15%しか回復しない）
+            let stageHealNerf = Math.max(0.15, 1.0 - (currentStage * 0.08)); 
+            let baseHeal = (len * 10) * comboCount;
+            totalHeal += baseHeal * healMultiplier * stageHealNerf; 
+
+            createSuperExplosion(centerPxX, centerPxY, colorHex, comboCount);
+            createScorePopup(centerPxX, centerPxY, pts, colorHex);
+
+            group.forEach(c => {
+                const el = getCellDOM(c.x, c.y);
+                if(el) el.remove();
+                grid[c.y][c.x] = 0;
+            });
+        });
+
+        triggerGlobalVFX(primaryColor, comboCount);
+        
+        score += totalPts;
+        DOM.score.innerText = score;
+        updateSanity(totalHeal);
+
+        if (currentStage < 11 && score >= STORY[currentStage].target) {
+            setTimeout(() => triggerStageClear(), 1200);
+            return;
+        } else if (currentStage === 11 && score >= STORY[11].target) {
+            setTimeout(() => triggerGameClear(), 1200);
+            return;
+        }
+
+        await applyGravityAndFindChains(comboCount);
+    }
+
+    async function applyGravityAndFindChains(comboCount) {
+        for (let x = 0; x < COLS; x++) {
+            let emptyY = ROWS - 1;
+            for (let y = ROWS - 1; y >= 0; y--) {
+                if (grid[y][x] !== 0) {
+                    if (y !== emptyY) { grid[emptyY][x] = grid[y][x]; grid[y][x] = 0; }
+                    emptyY--;
+                }
+            }
+            for (let y = emptyY; y >= 0; y--) { grid[y][x] = getHardColor(x, y); }
+        }
+
+        redrawBoardWithGravity();
+        await sleep(400); 
+
+        const visited = Array.from({length: ROWS}, () => Array(COLS).fill(false));
+        const chains = [];
+        for (let y = 0; y < ROWS; y++) {
+            for (let x = 0; x < COLS; x++) {
+                if (grid[y][x] !== 0 && !visited[y][x]) {
+                    const type = grid[y][x];
+                    const group = [];
+                    const queue = [{x, y}];
+                    visited[y][x] = true;
+
+                    while (queue.length > 0) {
+                        const curr = queue.shift();
+                        group.push(curr);
+                        [[0,-1], [0,1], [-1,0], [1,0]].forEach(([dx, dy]) => {
+                            let nx = curr.x + dx, ny = curr.y + dy;
+                            if (nx>=0 && nx<COLS && ny>=0 && ny<ROWS && !visited[ny][nx] && grid[ny][nx] === type) {
+                                visited[ny][nx] = true; queue.push({x: nx, y: ny});
+                            }
+                        });
+                    }
+                    if (group.length >= 3) chains.push(group);
+                }
+            }
+        }
+
+        if (chains.length > 0) {
+            await stickAndExplode(chains, comboCount + 1);
+        } else {
+            isResolving = false;
+            
+            if (healMultiplier < 1.0) {
+                healMultiplier = 1.0;
+                DOM.penaltyWarning.style.display = 'none';
+            }
+
+            let injected = ensurePlayable();
+            if (injected) {
+                drawBoard(); 
+            }
+            
+            updateDisabledCells();
+            updateUndoButton(); 
+            lastInteractionTime = performance.now() / 1000;
+        }
+    }
+
+    function redrawBoardWithGravity() {
+        DOM.board.innerHTML = '';
+        for (let y = 0; y < ROWS; y++) {
+            for (let x = 0; x < COLS; x++) {
+                let type = grid[y][x];
+                let cell = document.createElement('div');
+                cell.className = `cell type-${type}`;
+                cell.dataset.x = x; cell.dataset.y = y;
+                if (forbiddenColors.includes(type)) cell.classList.add('disabled');
+                cell.innerHTML = createAkebiHTML(type);
+                
+                if (y < ROWS && !getCellDOM(x, y)) {
+                    cell.style.top = '-90px'; 
+                    cell.classList.add('falling');
+                }
+                DOM.board.appendChild(cell);
+                requestAnimationFrame(() => { cell.style.top = '0px'; });
+            }
+        }
+    }
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    function triggerGlobalVFX(color, comboCount) {
+        DOM.gameLayout.classList.remove('heavy-shake');
+        void DOM.gameLayout.offsetWidth; 
+        DOM.gameLayout.classList.add('heavy-shake');
+
+        DOM.flash.classList.remove('flash-active');
+        void DOM.flash.offsetWidth;
+        DOM.flash.classList.add('flash-active');
+
+        if (comboCount > 1) {
+            const txt = document.createElement('div');
+            txt.className = 'combo-text';
+            txt.innerText = `${comboCount} CHAIN!!`;
+            
+            if(comboCount >= 4) { txt.classList.add('crazy'); txt.innerText = `${comboCount} CHAIN!!! CRAZY!`; }
+            else if(comboCount >= 3) { txt.classList.add('great'); txt.innerText = `${comboCount} CHAIN! GREAT!!`; }
+            
+            DOM.comboContainer.appendChild(txt);
+            setTimeout(() => txt.remove(), 1200);
+        }
+    }
+
+    function createSuperExplosion(px, py, color, comboCount) {
+        for(let w=0; w<2; w++) {
+            setTimeout(() => {
+                const wave = document.createElement('div');
+                wave.className = 'shockwave'; wave.style.color = color;
+                wave.style.left = px + 'px'; wave.style.top = py + 'px';
+                if (w===1) wave.style.animationDuration = '0.8s';
+                document.body.appendChild(wave);
+                setTimeout(() => wave.remove(), 800);
+            }, w * 150);
+        }
+
+        const pCount = Math.min(60, 25 + comboCount * 8);
+        for(let i=0; i<pCount; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle'; 
+            p.style.backgroundColor = color; p.style.color = color; 
+            if(Math.random() > 0.6) p.style.backgroundColor = '#fff'; 
+            
+            const size = Math.random() * 18 + 8;
+            p.style.width = size + 'px'; p.style.height = size + 'px';
+            p.style.left = (px - size/2) + 'px'; p.style.top = (py - size/2) + 'px';
+            
+            const a = Math.random() * Math.PI * 2;
+            const d = Math.random() * 250 + 100; 
+            p.style.setProperty('--tx', Math.cos(a) * d + 'px');
+            p.style.setProperty('--ty', Math.sin(a) * d + 'px');
+            
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 800);
+        }
+    }
+
+    function createScorePopup(px, py, pts, color) {
+        const pop = document.createElement('div');
+        pop.className = 'score-popup'; pop.innerText = `+${pts}`; pop.style.color = color;
+        pop.style.left = (px - 60) + 'px'; pop.style.top = (py - 30) + 'px';
+        document.body.appendChild(pop);
+        setTimeout(() => pop.remove(), 1000);
+    }
+
+    function updateSanity(amount) {
+        sanity = Math.max(0, Math.min(100, sanity + amount));
+        DOM.sanityBar.style.width = sanity + '%';
+        if (sanity > 60) { DOM.sanityBar.style.backgroundColor = 'var(--sanity-high)'; DOM.body.classList.remove('insane'); }
+        else if (sanity > 30) { DOM.sanityBar.style.backgroundColor = 'var(--sanity-med)'; DOM.body.classList.remove('insane'); }
+        else { DOM.sanityBar.style.backgroundColor = 'var(--sanity-low)'; DOM.body.classList.add('insane'); }
+        
+        updateUndoButton(); 
+        
+        if (sanity === 0 && isPlaying) triggerGameOver();
+    }
+
+    function showModal(data, action) {
+        isPlaying = false;
+        undoState = null; updateUndoButton(); 
+        healMultiplier = 1.0; DOM.penaltyWarning.style.display = 'none';
+        audioSystem.stop(); 
+        
+        DOM.modalTitle.innerText = data.title;
+        DOM.modalText.innerHTML = data.text;
+        DOM.modalBtn.innerText = data.btn;
+        DOM.modal.style.display = 'flex';
+        DOM.modalBtn.onclick = () => {
+            audioSystem.init();
+            audioSystem.start();
+            action();
+        };
+    }
+
+    function startGame() {
+        currentStage = 0; score = 0; sanity = 100; forbiddenColors = [];
+        DOM.body.className = '';
+        DOM.score.innerText = score;
+        DOM.stage.innerText = `第1章 (NEXT: ${STORY[0].target})`;
+        initBoard();
+        showModal(STORY[0], () => {
+            DOM.modal.style.display = 'none';
+            isPlaying = true; 
+            playStartTime = performance.now() / 1000;
+            lastInteractionTime = playStartTime;
+            requestAnimationFrame(gameLoop);
+        });
+    }
+
+    function triggerStageClear() {
+        currentStage++;
+        DOM.body.className = `stage-${currentStage + 1}`;
+        DOM.stage.innerText = `第${currentStage + 1}章 (NEXT: ${STORY[currentStage].target})`;
+        sanity = 100; updateSanity(0); 
+        forbiddenColors = []; updateForbiddenUI();
+        
+        showModal(STORY[currentStage], () => {
+            DOM.modal.style.display = 'none';
+            isPlaying = true; 
+            playStartTime = performance.now() / 1000;
+            lastInteractionTime = playStartTime;
+            isResolving = false;
+            initBoard(); 
+            requestAnimationFrame(gameLoop);
+        });
+    }
+
+    function triggerGameClear() { DOM.body.className = ''; showModal(ENDING, startGame); }
+    function triggerGameOver() { DOM.body.className = ''; showModal(GAMEOVER, startGame); }
+
+    function gameLoop(timestamp) {
+        if (!isPlaying) return;
+        
+        let now = timestamp / 1000;
+        
+        if (!isResolving) {
+            let elapsed = now - playStartTime;
+            
+            // 【修正】基礎となる正気度低下を少し引き上げ
+            let baseDrain = 0.5 + (currentStage * 0.35); 
+            if (currentStage >= 8) baseDrain = 3.0 + ((currentStage-8) * 1.8); 
+            if (currentStage >= 11) baseDrain = 10.0; // 最終ステージは超高速
+
+            let currentDrainRate = baseDrain + (elapsed * 0.025); 
+            
+            // 【修正】ドラッグ中（掴み中）のペナルティもステージ進行で強化
+            if (isDragging) {
+                let dragMult = 3.0 + (currentStage * 0.1); 
+                currentDrainRate *= dragMult; 
+                DOM.sanityWarning.style.display = 'block';
+            } else {
+                DOM.sanityWarning.style.display = 'none';
+            }
+
+            updateSanity(-(currentDrainRate * 0.016)); 
+
+            // 絶対クリア保証: 4秒間手詰まりならヒントを表示
+            if (!isDragging && (now - lastInteractionTime > 4.0)) {
+                showHint();
+            }
+        }
+        
+        requestAnimationFrame(gameLoop);
+    }
+
+    window.onload = () => {
+        setupInteractions();
+        startGame();
+    };
+</script>
+</body>
+</html>
