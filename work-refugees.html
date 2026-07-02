@@ -62,6 +62,10 @@
     a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
     a:hover { opacity: 0.45; }
 
+    /* Typography Utilities for Responsive Line Breaks */
+    .pc-br { display: inline; }
+    .sp-br { display: none; }
+
     /* ============================================================
        GLOBAL AMBIENT BACKGROUND
     ============================================================ */
@@ -198,15 +202,33 @@
     /* ============================================================
        CONCEPT & STATEMENT SECTION
     ============================================================ */
-    .concept-section { padding: clamp(6rem, 13vh, 10rem) var(--px); max-width: 900px; margin: 0 auto; text-align: center; position: relative; z-index: 1; }
-    .concept-text { font-size: clamp(0.95rem, 2.4vw, 1.25rem); font-weight: 300; line-height: 2.3; color: rgba(233,229,223,0.9); letter-spacing: 0.08em; margin-bottom: 2.5rem; text-shadow: 0 2px 8px rgba(0,0,0,0.6); }
-    .concept-sub { font-size: clamp(0.85rem, 1.6vw, 1.05rem); font-style: italic; color: rgba(233,229,223,0.6); line-height: 1.8; max-width: 700px; margin: 0 auto; letter-spacing: 0.05em; text-align: left; border-left: 1px solid var(--accent); padding-left: 1.5rem; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
+    .concept-section { padding: clamp(6rem, 13vh, 10rem) var(--px); max-width: 1200px; margin: 0 auto; text-align: center; position: relative; z-index: 1; }
+    .concept-text { font-size: clamp(0.95rem, 2.4vw, 1.25rem); font-weight: 300; line-height: 2.3; color: rgba(233,229,223,0.9); letter-spacing: 0.08em; margin-bottom: 2.5rem; text-shadow: 0 2px 8px rgba(0,0,0,0.6); word-break: keep-all; overflow-wrap: break-word; }
+    .concept-sub { font-size: clamp(0.85rem, 1.6vw, 1.05rem); font-style: italic; color: rgba(233,229,223,0.6); line-height: 1.8; max-width: 800px; margin: 0 auto; letter-spacing: 0.05em; text-align: left; border-left: 1px solid var(--accent); padding-left: 1.5rem; text-shadow: 0 1px 4px rgba(0,0,0,0.8); word-break: keep-all; }
 
-    .statement-section { padding: clamp(4rem, 9vh, 7rem) var(--px) clamp(6rem, 13vh, 10rem); max-width: 900px; margin: 0 auto; border-top: 0.5px solid var(--border); position: relative; z-index: 1; }
+    /* Statement Section: 枠を広げ、中は読みやすく絞る */
+    .statement-section { padding: clamp(4rem, 9vh, 7rem) var(--px) clamp(6rem, 13vh, 10rem); max-width: 1200px; margin: 0 auto; border-top: 0.5px solid var(--border); position: relative; z-index: 1; }
     .statement-label { font-family: var(--font-en); font-size: clamp(0.58rem, 1.3vw, 0.68rem); letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase; text-align: center; margin-bottom: clamp(2.5rem, 6vh, 4rem); }
-    .statement-pullquote { font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.4rem, 3.4vw, 2.3rem); line-height: 1.8; color: var(--fg); text-align: center; letter-spacing: 0.04em; margin-bottom: clamp(3.5rem, 8vh, 5.5rem); opacity: 0; transform: translateY(20px); transition: opacity 1s var(--ease), transform 1s var(--ease); text-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+    
+    .statement-pullquote { 
+      font-family: var(--font-ja); 
+      font-weight: 200; 
+      font-size: clamp(1.4rem, 3.2vw, 2.6rem); /* 広げた枠に合わせて少しスケールアップ */
+      line-height: 1.8; 
+      color: var(--fg); 
+      text-align: center; 
+      letter-spacing: 0.06em; 
+      margin-bottom: clamp(3.5rem, 8vh, 5.5rem); 
+      opacity: 0; transform: translateY(20px); transition: opacity 1s var(--ease), transform 1s var(--ease); 
+      text-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      /* タイポグラフィ最適化：単語の途中での改行を防ぐ */
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
     .statement-pullquote.in-view { opacity: 1; transform: translateY(0); }
-    .statement-body { display: flex; flex-direction: column; gap: clamp(1.8rem, 3.5vh, 2.5rem); }
+    
+    /* Paragraphs: 横に広がりすぎると読みづらいため、最大幅を制限 */
+    .statement-body { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(1.8rem, 3.5vh, 2.5rem); }
     .statement-para { font-size: clamp(0.92rem, 1.8vw, 1.05rem); line-height: 2.3; color: rgba(233,229,223,0.82); letter-spacing: 0.05em; text-align: justify; opacity: 0; transform: translateY(16px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); text-shadow: 0 2px 6px rgba(0,0,0,0.8); }
     .statement-para.in-view { opacity: 1; transform: translateY(0); }
     .statement-para strong { color: var(--accent); font-weight: 400; text-shadow: none; }
@@ -215,11 +237,11 @@
     .statement-closing.in-view { opacity: 1; transform: translateY(0); }
 
     /* ============================================================
-       GALLERY GRID (Larger Container, Balanced Sizing)
+       GALLERY GRID
     ============================================================ */
     .gallery-section { 
       padding: 0 var(--px) clamp(6rem, 13vh, 10rem); 
-      max-width: 1340px; /* 全体をもう少し大きめに再拡張 */
+      max-width: 1340px; 
       margin: 0 auto; 
       position: relative; 
       z-index: 1; 
@@ -239,32 +261,22 @@
     .gallery-item:focus { outline: 1px dashed var(--accent); outline-offset: 4px; }
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
 
-    /* 各構造スパン配置（右端の24列目を意図的に空け、ページ内ナビとの干渉を防ぐ配列を維持） */
-    /* 1行目 */
-    .gi-ref00 { grid-column: 2 / span 7; }   /* マリーエレン */
-    .gi-ref01 { grid-column: 10 / span 14; } /* さけび（ガザ） */
-    
-    /* 2行目 */
-    .gi-ref02 { grid-column: 2 / span 5; }   /* 飢餓(3) */
-    .gi-ref03 { grid-column: 8 / span 5; }   /* 飢餓(2) */
-    .gi-ref04 { grid-column: 14 / span 10; } /* ぜんぶかみさまに... */
-    
-    /* 3行目 */
-    .gi-ref05 { grid-column: 2 / span 6; }   /* Phone */
-    .gi-ref06 { grid-column: 9 / span 6; }   /* ポリオ予防接種 */
+    .gi-ref00 { grid-column: 2 / span 7; }
+    .gi-ref01 { grid-column: 10 / span 14; }
+    .gi-ref02 { grid-column: 2 / span 5; }
+    .gi-ref03 { grid-column: 8 / span 5; }
+    .gi-ref04 { grid-column: 14 / span 10; }
+    .gi-ref05 { grid-column: 2 / span 6; }
+    .gi-ref06 { grid-column: 9 / span 6; }
     .gi-ref07 { 
       grid-column: 16 / span 6; 
-      justify-self: center; /* 枠内で中央揃え */
-      width: 93%; /* ここで「ほんの少しだけ」小さく調整（小さくしすぎない） */
-    }  /* ムハマード */
-    
-    /* 4行目 */
-    .gi-ref08 { grid-column: 2 / span 11; }  /* 視線（イラク） */
-    .gi-ref09 { grid-column: 15 / span 7; }  /* 1／1057000000 */
-    
-    /* 5行目 */
-    .gi-ref10 { grid-column: 3 / span 8; }   /* おんぶ */
-    .gi-ref11 { grid-column: 12 / span 12; } /* 今、シリア */
+      justify-self: center; 
+      width: 93%; 
+    }
+    .gi-ref08 { grid-column: 2 / span 11; }
+    .gi-ref09 { grid-column: 15 / span 7; }
+    .gi-ref10 { grid-column: 3 / span 8; }
+    .gi-ref11 { grid-column: 12 / span 12; }
 
     .gallery-item-img-wrap { 
       width: 100%; display: flex; justify-content: center; align-items: center; 
@@ -321,7 +333,7 @@
     .tl-figure img { width: 100%; height: auto; display: block; filter: grayscale(12%) brightness(0.85); transition: transform 1s var(--ease), filter 0.6s ease; }
     .tl-figure:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
 
-    .tl-title { font-family: var(--font-ja); font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 300; color: var(--fg); line-height: 1.4; margin-bottom: 0.8rem; text-shadow: 0 2px 8px rgba(0,0,0,0.7); }
+    .tl-title { font-family: var(--font-ja); font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 300; color: var(--fg); line-height: 1.4; margin-bottom: 0.8rem; text-shadow: 0 2px 8px rgba(0,0,0,0.7); word-break: keep-all; }
     .tl-meta { font-family: var(--font-en); font-size: clamp(0.6rem, 1.2vw, 0.75rem); color: var(--accent); letter-spacing: 0.15em; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border-md); }
     .tl-desc { font-size: clamp(0.85rem, 1.6vw, 0.95rem); line-height: 2.1; color: rgba(233,229,223,0.85); text-align: justify; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
     .tl-desc p { margin-bottom: 1.2em; }
@@ -343,7 +355,7 @@
       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       position: relative; z-index: 1;
     }
-    .contact-heading { font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em; text-shadow: 0 4px 12px rgba(0,0,0,0.6); }
+    .contact-heading { font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em; text-shadow: 0 4px 12px rgba(0,0,0,0.6); word-break: keep-all; }
     .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.8vw, 0.95rem); color: rgba(233,229,223,0.7); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2; text-shadow: 0 2px 6px rgba(0,0,0,0.8); }
     .contact-btn { display: inline-block; padding: 1.2rem 3.5rem; background: rgba(168,117,96,0.85); color: var(--bg); font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none; transition: all 0.4s var(--ease); border-radius: 2px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
     .contact-btn:hover { background: var(--fg); color: var(--bg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(168,117,96,0.4); }
@@ -361,6 +373,10 @@
       .gi-ref01, .gi-ref04, .gi-ref08, .gi-ref10, .gi-ref11 { grid-column: auto / span 6 !important; }
     }
     @media (max-width: 768px) {
+      /* Mobile Line Break Toggle */
+      .pc-br { display: none; }
+      .sp-br { display: inline; }
+
       .gallery-grid { grid-template-columns: repeat(6, 1fr); gap: 2.5rem 1.25rem; align-items: start; }
       .gallery-item { grid-column: auto / span 3 !important; }
       .gi-ref01, .gi-ref04, .gi-ref08, .gi-ref10, .gi-ref11 { grid-column: auto / span 6 !important; }
@@ -444,12 +460,14 @@
       </p>
     </section>
 
-    <section class="statement-section">
+    <section class="statement-section" id="statement">
       <p class="statement-label">Series Statement</p>
+      
       <p class="statement-pullquote reveal-fade">
-        描かないことは、見なかったことと同じだ。<br>
+        描かないことは、<br class="sp-br">見なかったことと同じだ。<br>
         だから私は、描く。
       </p>
+      
       <div class="statement-body">
         <p class="statement-para reveal-fade">
           「難民（子ども）/ Refugees」シリーズは、シリア内戦・アフリカ・ケニアのイフォ難民キャンプで撮影された報道写真を起点に制作された油彩作品群だ。写真という瞬間の証拠を、絵画という時間の堆積へと変換することで、これらの像に別の生を与えようとした。
