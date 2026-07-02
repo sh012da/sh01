@@ -160,39 +160,54 @@
     }
 
     /* ════════════════════════════════════════
-       ★ SIDE LINK NAVIGATION (元に戻す)
+       ★ SIDE LINK NAVIGATION (元デザイン復活・被り対策版)
     ════════════════════════════════════════ */
     .side-link-nav {
       position: fixed;
-      right: clamp(16px, 3vw, 36px);
+      right: clamp(12px, 2vw, 32px);
       top: 50%;
       transform: translateY(-50%);
       z-index: 150;
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 12px;
+      /* 縦幅が狭い時は自動的にgapを縮小 */
+      gap: clamp(4px, 1.2vh, 10px);
+      /* ヘッダーとTOPボタンの領域（約200px）を絶対に侵さない */
+      max-height: calc(100vh - 200px);
+      padding: 10px 4px 10px 10px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      /* スクロールバーを見せないスマートな仕様 */
+      -ms-overflow-style: none; /* IE/Edge */
+      scrollbar-width: none; /* Firefox */
     }
+    .side-link-nav::-webkit-scrollbar {
+      display: none; /* Chrome/Safari */
+    }
+
     .side-link-nav a {
       display: inline-flex;
       align-items: center;
       justify-content: space-between;
-      min-width: 140px;
+      min-width: clamp(120px, 10vw, 140px);
       font-family: var(--jp);
-      font-size: clamp(11px, 1.1vw, 13px);
+      font-size: clamp(10px, 0.9vw, 12px);
       font-weight: 300;
-      color: rgba(237,233,228, 0.75);
+      color: rgba(237,233,228, 0.65);
       text-decoration: none;
       letter-spacing: 0.15em;
-      padding: 0.6rem 1.2rem;
-      border: 1px solid rgba(255,255,255,0.08);
+      /* 縦幅が狭い時はpaddingも自動縮小 */
+      padding: clamp(6px, 1vh, 10px) 1.2rem;
+      border: 1px solid rgba(255,255,255,0.06);
       border-radius: 40px;
-      background: rgba(13,13,11,0.4);
+      background: rgba(13,13,11,0.25);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       transition: all 0.4s var(--ease-expo);
       position: relative;
       overflow: hidden;
+      flex-shrink: 0;
     }
     
     .side-link-nav a::before {
@@ -219,7 +234,8 @@
     .side-link-nav a:hover {
       color: var(--bg);
       border-color: transparent;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+      background: transparent;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
       transform: translateX(-4px);
     }
     .side-link-nav a:hover::before {
@@ -232,9 +248,8 @@
     }
 
     .side-link-nav a:active {
-      transform: translateX(-2px) scale(0.94);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
-      transition: transform 0.1s var(--ease-bounce), box-shadow 0.1s;
+      transform: translateX(-2px) scale(0.96);
+      transition: transform 0.1s var(--ease-bounce);
     }
 
     /* ─── HERO ─── */
@@ -436,7 +451,6 @@
     .gi:hover .gi-title,
     .gi:hover .gi-en { opacity:1; transform:translateY(0); }
     
-    /* 従来の底辺の線を削除し、SVGの枠線アニメーションに変更 */
     .gi-num {
       position:absolute; top:clamp(8px,1.2vw,16px); right:clamp(8px,1.2vw,16px);
       z-index:2; font-family:var(--en);
@@ -630,7 +644,7 @@
     <a href="works-cave.html">洞窟</a>
     <a href="works-drawing.html">素描</a>
     <a href="work-abstract.html">抽象</a>
-  　<a href="work-scars.html">傷</a>
+    <a href="work-scars.html">傷</a>
     <a href="work-refugees.html">難民</a>
     <a href="work-tiny_soldier.html">子ども兵士</a>
     <a href="work-black_era.html">黒の時代</a>
