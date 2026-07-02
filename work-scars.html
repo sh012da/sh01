@@ -31,12 +31,10 @@
       --fg:        #e2ddd6;
       --muted:     rgba(226,221,214,0.4);
       --dim:       rgba(226,221,214,0.2);
-      /* Scars Accent - 乾いた血、皮膚の痛み、土へと繋がる痕跡の色 */
       --accent:    #9b4a41; 
       --accent2:   #6d564e;
       --scar-line: #a42c23;
       --border:    rgba(226,221,214,0.08);
-      --border-md: rgba(226,221,214,0.20);
       --font-en:   'Cormorant Garamond', serif;
       --font-ja:   'Noto Serif JP', serif;
       --ease:      cubic-bezier(0.19, 1, 0.22, 1);
@@ -57,7 +55,7 @@
     a:hover { opacity: 0.45; }
 
     /* ============================================================
-       GLOBAL AMBIENT & SCAR LINES (最初から表示された固定の傷)
+       GLOBAL AMBIENT & SCAR LINES
     ============================================================ */
     .global-ambient-bg {
       position: fixed; inset: -10%; width: 120vw; height: 120vh;
@@ -67,7 +65,6 @@
       opacity: 0.6; z-index: -3; pointer-events: none;
     }
 
-    /* 画面全体を斜めに切り裂く傷跡（最初から完全表示） */
     .global-scar-line {
       position: fixed; top: -10vh; left: 15%; width: 1.5px; height: 150vh;
       background: linear-gradient(to bottom, rgba(164,44,35,0.8), rgba(164,44,35,0.1), transparent);
@@ -113,9 +110,7 @@
       color: var(--accent); transition: background 0.25s, color 0.25s; background: rgba(0,0,0,0.4);
     }
     .nav-cta:hover { background: rgba(164,44,35,0.2); color: var(--fg); }
-    .nav-hamburger { display: none; }
 
-    /* Page Nav (Right fixed) */
     .page-nav {
       position: fixed; right: clamp(20px, 4vw, 40px); top: 50%; transform: translateY(-50%); z-index: 200;
       display: flex; flex-direction: column; gap: 24px; opacity: 0; visibility: hidden;
@@ -130,7 +125,7 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       HERO FIRST VIEW (Refugeesに合わせた左下配置)
+       HERO
     ============================================================ */
     .hero {
       position: relative; height: 100svh; min-height: 600px;
@@ -142,7 +137,7 @@
       background-image: url('images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg');
       background-size: cover; background-position: center;
       opacity: 0.25; filter: grayscale(30%) contrast(1.2);
-      clip-path: polygon(0 50%, 100% 50%, 100% 50%, 0 50%); /* 中央の裂け目から開く */
+      clip-path: polygon(0 50%, 100% 50%, 100% 50%, 0 50%);
       transition: clip-path 2.5s var(--ease) 0.5s, opacity 3s ease;
       z-index: 0;
     }
@@ -165,11 +160,6 @@
     .hero-title-en { font-family: var(--font-en); font-size: clamp(1rem, 4vw, 2.5rem); font-style: italic; letter-spacing: 0.4em; color: var(--accent); opacity: 0; filter: blur(10px); transition: opacity 2s ease 1.5s, filter 2s var(--ease) 1.5s; text-shadow: 0 4px 20px rgba(164,44,35,0.8); margin-left: 0.2rem; }
     .hero-title-en.revealed { opacity: 1; filter: blur(0); }
 
-    .hero-meta { display: flex; align-items: center; gap: 1.8rem; margin-top: clamp(2rem, 5vh, 4.5rem); opacity: 0; transform: translateY(14px); transition: opacity 1s ease 1.1s, transform 1s var(--ease) 1.1s; }
-    .hero-meta.revealed { opacity: 1; transform: translateY(0); }
-    .hero-meta-line { width: 40px; height: 0.5px; background: linear-gradient(to right, var(--accent), var(--accent2)); flex-shrink: 0; }
-    .hero-meta-text { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.62rem); letter-spacing: 0.24em; color: var(--fg); opacity: 0.7; text-transform: uppercase; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }
-
     .hero-scroll { position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0; transition: opacity 1s ease 2.5s; }
     .hero-scroll.revealed { opacity: 1; }
     .hero-scroll-label { font-family: var(--font-en); font-size: 0.52rem; letter-spacing: 0.38em; color: var(--fg); opacity: 0.5; text-transform: uppercase; writing-mode: vertical-rl; }
@@ -182,32 +172,23 @@
     ============================================================ */
     .concept-section { padding: clamp(8rem, 18vh, 12rem) var(--px); max-width: 1000px; margin: 0 auto; text-align: center; position: relative; z-index: 1; }
     .concept-text { font-size: clamp(1.2rem, 3vw, 2rem); font-weight: 200; line-height: 2; color: var(--fg); letter-spacing: 0.1em; margin-bottom: 3rem; position: relative; display: inline-block; }
-    
-    /* テキストの背後を走る傷跡（スクロール追従） */
     .concept-text::after {
       content: ''; position: absolute; top: 50%; left: -10%; height: 2px;
       background: var(--scar-line); box-shadow: 0 0 15px var(--scar-line);
       transform: translateY(-50%) rotate(-2deg); z-index: -1; opacity: 0.7;
-      /* JSの --local-progress で幅を制御 */
       width: calc(var(--local-progress, 0) * 120%);
       will-change: width;
     }
-
     .concept-sub { font-size: clamp(0.85rem, 1.8vw, 1.05rem); color: rgba(226,221,214,0.6); line-height: 2.2; max-width: 700px; margin: 0 auto; letter-spacing: 0.08em; text-align: justify; }
 
     .statement-section { padding: clamp(5rem, 10vh, 8rem) var(--px) clamp(8rem, 15vh, 12rem); max-width: 900px; margin: 0 auto; position: relative; z-index: 1; border-top: 1px solid rgba(255,255,255,0.03); }
     .statement-label { font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.7rem); letter-spacing: 0.5em; color: var(--accent); text-transform: uppercase; text-align: center; margin-bottom: clamp(4rem, 8vh, 6rem); opacity: 0; transform: translateY(20px); transition: all 1s ease; }
     .statement-label.in-view { opacity: 1; transform: translateY(0); }
-
     .statement-body { display: flex; flex-direction: column; gap: clamp(2.5rem, 5vh, 3.5rem); position: relative; }
     .statement-para { font-size: clamp(0.9rem, 1.8vw, 1.05rem); line-height: 2.4; color: rgba(226,221,214,0.85); letter-spacing: 0.06em; text-align: justify; opacity: 0; transform: translateY(30px) skewY(1deg); transition: opacity 1.2s var(--ease), transform 1.2s var(--ease); position: relative; z-index: 2; }
     .statement-para.in-view { opacity: 1; transform: translateY(0) skewY(0); }
-    
-    /* 左美都への転機を示すハイライト */
     .statement-para.highlight { padding-left: 2rem; border-left: 1px solid var(--accent); color: var(--fg); font-weight: 300; }
     .statement-para strong { color: var(--accent); font-weight: 400; }
-
-    /* ステートメント横を走る垂直の傷（スクロール追従） */
     .statement-vertical-scar {
       position: absolute; top: 0; left: -2rem; width: 1px;
       background: linear-gradient(to bottom, var(--scar-line), transparent);
@@ -216,12 +197,21 @@
     }
 
     /* ============================================================
-       GALLERY GRID (24カラムグリッド・分類表示)
+       GALLERY GRID (Categories: 傷 & AAV) - 2016 to 2014 Order
     ============================================================ */
     .gallery-section { padding: 0 var(--px) clamp(8rem, 15vh, 12rem); max-width: 1600px; margin: 0 auto; position: relative; z-index: 1; }
-    .section-label { font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.7rem); letter-spacing: 0.5em; color: var(--muted); text-transform: uppercase; text-align: center; margin-bottom: clamp(4rem, 8vh, 6rem); display: flex; align-items: center; justify-content: center; gap: 20px; }
+    .section-label { font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.7rem); letter-spacing: 0.5em; color: var(--muted); text-transform: uppercase; text-align: center; margin-bottom: 2rem; display: flex; align-items: center; justify-content: center; gap: 20px; }
     .section-label::before, .section-label::after { content: ''; width: 40px; height: 1px; background: var(--border); }
     
+    .gallery-category-title {
+      font-family: var(--font-ja); font-size: clamp(2rem, 4vw, 3rem); font-weight: 200;
+      color: var(--fg); text-align: center; margin: 5rem 0 3rem; letter-spacing: 0.1em;
+    }
+    .gallery-category-title span {
+      font-family: var(--font-en); font-size: clamp(0.8rem, 1.5vw, 1.2rem);
+      color: var(--accent); display: block; margin-top: 0.5rem; letter-spacing: 0.25em; font-style: italic;
+    }
+
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(24, 1fr);
@@ -229,73 +219,46 @@
       align-items: start;
     }
     
-    /* Category Dividers */
-    .gallery-category {
-      grid-column: 1 / -1;
-      display: flex; align-items: center; gap: 2rem;
-      margin: 3rem 0 1rem;
-      opacity: 0; transform: translateY(20px); transition: all 0.8s var(--ease);
-    }
-    .gallery-category.in-view { opacity: 1; transform: translateY(0); }
-    .gallery-category-title {
-      font-family: var(--font-en); font-size: clamp(1rem, 2vw, 1.5rem);
-      color: var(--accent); letter-spacing: 0.15em; font-style: italic; white-space: nowrap;
-    }
-    .gallery-category-line {
-      height: 1px; width: 100%; background: linear-gradient(to right, rgba(164,44,35,0.4), transparent);
-    }
-
     .gallery-item {
       display: flex; flex-direction: column; text-decoration: none; cursor: pointer;
       position: relative; opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
     }
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
 
-    /* ダイナミック配置：2003 - 2008 */
-    .gi-c1-1 { grid-column: 3 / span 6; }
-    .gi-c1-2 { grid-column: 10 / span 6; }
-    .gi-c1-3 { grid-column: 17 / span 6; }
-    .gi-c1-4 { grid-column: 5 / span 16; margin-top: 2rem; }
+    /* Layout Mapping: 傷 (Scars) [2016 -> 2015 -> 2014] */
+    .gi-kizu-1 { grid-column: 3 / span 12; }  /* 2016: ティラナ F100 */
+    .gi-kizu-2 { grid-column: 16 / span 7; margin-top: 6rem; }  /* 2016: 傷(5) F6 */
+    .gi-kizu-3 { grid-column: 5 / span 8; }   /* 2016: 黒人妊婦 F6 */
+    
+    .gi-kizu-4 { grid-column: 2 / span 5; }   /* 2015: 傷(4) F6 */
+    .gi-kizu-5 { grid-column: 8 / span 5; }   /* 2015: 傷(6) F6 */
+    .gi-kizu-6 { grid-column: 14 / span 5; }  /* 2015: 傷(9) F6 */
+    .gi-kizu-7 { grid-column: 20 / span 5; }  /* 2015: 傷(10) F6 */
+    
+    .gi-kizu-8 { grid-column: 3 / span 10; }  /* 2014: さけび F100 */
+    .gi-kizu-9 { grid-column: 15 / span 8; margin-top: 3rem; }  /* 2014: 視線 M60 */
 
-    /* ダイナミック配置：2014 - 2015 */
-    .gi-c2-1 { grid-column: 2 / span 7; }
-    .gi-c2-2 { grid-column: 10 / span 6; }
-    .gi-c2-3 { grid-column: 17 / span 7; }
-    .gi-c2-4 { grid-column: 9 / span 8; margin-top: 1rem; }
-
-    /* ダイナミック配置：Scars Series */
-    .gi-c3-1 { grid-column: 2 / span 5; }
-    .gi-c3-2 { grid-column: 8 / span 5; }
-    .gi-c3-3 { grid-column: 14 / span 5; }
-    .gi-c3-4 { grid-column: 20 / span 5; }
-    .gi-c3-5 { grid-column: 4 / span 6; }
-    .gi-c3-6 { grid-column: 11 / span 6; }
-    .gi-c3-7 { grid-column: 18 / span 5; }
-    .gi-c3-8 { grid-column: 5 / span 7; }
-    .gi-c3-9 { grid-column: 14 / span 7; }
-
-    /* ダイナミック配置：Acid Attack Victims */
-    .gi-c4-1 { grid-column: 3 / span 4; }
-    .gi-c4-2 { grid-column: 8 / span 4; }
-    .gi-c4-3 { grid-column: 13 / span 4; }
-    .gi-c4-4 { grid-column: 18 / span 4; }
-    .gi-c4-5 { grid-column: 5 / span 16; margin-top: 2rem; }
+    /* Layout Mapping: AAV [All 2015] */
+    .gi-aav-1 { grid-column: 4 / span 7; }    /* 2015: AAV(4) F20縦 */
+    .gi-aav-2 { grid-column: 14 / span 7; }   /* 2015: AAV(6) F20縦 */
+    .gi-aav-3 { grid-column: 5 / span 14; }   /* 2015: AAV Sonali F100横 */
 
     .gallery-item-img-wrap {
-      width: 100%; overflow: hidden; background: rgba(0,0,0,0.8); position: relative;
+      width: 100%; overflow: hidden; position: relative;
+      /* Remove black background and set zero line-height to remove gaps */
+      background: transparent; font-size: 0; line-height: 0; 
       border: 0.5px solid var(--border); transition: border-color 0.4s ease, box-shadow 0.6s ease;
     }
-    .gallery-item-img-wrap img { width: 100%; height: auto; object-fit: contain; filter: grayscale(40%) contrast(1.1) brightness(0.8); transition: transform 1.2s var(--ease), filter 0.8s ease; display: block; }
-    
+    .gallery-item-img-wrap img { width: 100%; height: auto; object-fit: cover; filter: grayscale(40%) contrast(1.1) brightness(0.8); transition: transform 1.2s var(--ease), filter 0.8s ease; display: block; }
     .gallery-item:hover .gallery-item-img-wrap { border-color: rgba(164,44,35,0.5); box-shadow: 0 16px 40px rgba(0,0,0,0.8), 0 0 15px rgba(164,44,35,0.15); }
     .gallery-item:hover img { transform: scale(1.03); filter: grayscale(0%) contrast(1.0) brightness(1.0); }
 
-    .gallery-item-cap { padding-top: 1.2rem; text-align: left; }
+    .gallery-item-cap { padding-top: 1.2rem; text-align: left; line-height: 1.6; }
     .gallery-item-title { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.4vw, 1rem); font-weight: 300; color: var(--fg); letter-spacing: 0.05em; margin-bottom: 0.3rem; display: block; text-shadow: 0 2px 4px rgba(0,0,0,0.6); }
     .gallery-item-meta { font-family: var(--font-en); font-size: clamp(0.6rem, 1.1vw, 0.7rem); color: var(--accent); letter-spacing: 0.14em; font-style: italic; display: block; }
 
     /* ============================================================
-       CHRONOLOGY (タイムライン＝傷跡を辿る年譜)
+       CHRONOLOGY (タイムライン)
     ============================================================ */
     .chronology-section { 
       padding: clamp(6rem, 15vh, 12rem) var(--px); background: var(--bg2); 
@@ -304,7 +267,6 @@
     }
     .timeline-container { max-width: 1400px; margin: 0 auto; position: relative; }
     
-    /* スクロール追従するタイムラインの背骨（傷跡） */
     .timeline-spine-wrapper { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: rgba(226,221,214,0.05); transform: translateX(-50%); }
     .timeline-spine-progress { 
       position: absolute; top: 0; left: 0; width: 100%; background: var(--scar-line); 
@@ -324,13 +286,11 @@
     .tl-content-wrap { display: flex; justify-content: space-between; align-items: center; gap: clamp(3rem, 6vw, 8rem); position: relative; z-index: 2; margin-top: clamp(2rem, 4vw, 4rem); }
     .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
 
-    .tl-figure { width: 55%; position: relative; overflow: hidden; cursor: zoom-in; background: #000; border: 0.5px solid var(--border); }
+    .tl-figure { width: 55%; position: relative; overflow: hidden; cursor: zoom-in; background: transparent; font-size: 0; line-height: 0; border: 0.5px solid var(--border); }
     .tl-figure::after { content: ''; position: absolute; inset: 0; border: 1px solid transparent; pointer-events: none; transition: border-color 0.5s ease; }
     .tl-figure:hover::after { border-color: var(--accent); }
-    
-    .tl-body { width: 40%; position: relative; z-index: 2; padding: 2rem 0; }
+    .tl-body { width: 40%; position: relative; z-index: 2; padding: 2rem 0; line-height: 2.1; }
 
-    /* Full Figure Layout */
     .tl-entry.is-full-figure .tl-content-wrap { flex-direction: column; align-items: center; gap: clamp(3rem, 5vw, 5rem); }
     .tl-entry.is-full-figure .tl-figure { width: 90%; max-height: 80vh; display: flex; justify-content: center; align-items: center; padding: 0; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
     .tl-entry.is-full-figure .tl-figure img { width: 100%; max-height: 75vh; object-fit: contain; }
@@ -345,7 +305,6 @@
     .tl-desc p { margin-bottom: 1.5em; }
     .tl-entry.is-full-figure .tl-desc { text-align: left; }
 
-    /* Typewriter Style */
     .tw-char { opacity: 0; display: inline-block; transition: opacity 0.2s ease; }
     .tw-cursor { display: inline-block; width: 1.5px; height: 1.1em; background-color: var(--accent); margin-left: 2px; vertical-align: middle; animation: tw-blink 0.8s infinite; }
     @keyframes tw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
@@ -391,13 +350,20 @@
     .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.55rem, 1.2vw, 0.7rem); font-weight: 400; text-transform: uppercase; letter-spacing: 0.1em; line-height: 1; }
 
     /* ============================================================
-       RESPONSIVE DESIGN (Grid対応)
+       RESPONSIVE DESIGN
     ============================================================ */
     @media (max-width: 1024px) {
-      .gallery-grid { grid-template-columns: repeat(12, 1fr); gap: 3rem 1.5rem; }
-      .gallery-category { grid-column: 1 / -1 !important; }
-      .gallery-item { grid-column: auto / span 6 !important; width: 100% !important; margin-top: 0 !important; }
-      .gi-c1-4, .gi-c4-5 { grid-column: auto / span 12 !important; }
+      .gallery-grid { grid-template-columns: repeat(12, 1fr); gap: 4rem 2rem; }
+      
+      .gi-kizu-1 { grid-column: 1 / span 12; }
+      .gi-kizu-2 { grid-column: 7 / span 6; margin-top: 0; }
+      .gi-kizu-3 { grid-column: 1 / span 6; }
+      .gi-kizu-4, .gi-kizu-5, .gi-kizu-6, .gi-kizu-7 { grid-column: auto / span 6; }
+      .gi-kizu-8, .gi-kizu-9 { grid-column: 1 / span 12; margin-top: 0; }
+      
+      .gi-aav-1 { grid-column: 1 / span 6; }
+      .gi-aav-2 { grid-column: 7 / span 6; }
+      .gi-aav-3 { grid-column: 1 / span 12; }
     }
     @media (max-width: 860px) {
       .timeline-container { padding-left: 40px; }
@@ -410,15 +376,10 @@
     }
     @media (max-width: 768px) {
       nav#top-nav { padding: 1rem 1.25rem; }
-      .nav-links, .nav-hamburger { display: none !important; }
+      .nav-links { display: none !important; }
       .page-nav.visible { right: 8px; opacity: 0.5; }
       .page-nav.visible:hover { opacity: 1; }
       .page-nav-label { display: none; }
-      
-      .gallery-grid { grid-template-columns: repeat(6, 1fr); gap: 2.5rem 1.25rem; }
-      .gallery-item { grid-column: auto / span 3 !important; }
-      .gi-c1-4, .gi-c4-5 { grid-column: auto / span 6 !important; }
-
       .hero-eyebrow { transform: translateY(0); opacity: 1; }
       .hero-title .char { transform: none; opacity: 1; }
       .hero-title-en { opacity: 1; filter: blur(0); }
@@ -426,15 +387,13 @@
     @media (max-width: 480px) {
       .hero-scroll { display: none; }
       .statement-para { text-align: left; }
-      .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem 1rem; }
-      .gallery-item { grid-column: auto / span 1 !important; }
-      .gi-c1-4, .gi-c4-5 { grid-column: auto / span 2 !important; }
+      .gallery-grid { grid-template-columns: 1fr; gap: 3rem 0; }
+      .gallery-item { grid-column: auto / span 1 !important; margin-top: 0 !important; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
       .gallery-item, .tl-entry, .concept-text, .statement-para { opacity: 1 !important; transform: none !important; }
       .hero-bg-image { animation: none !important; clip-path: none !important; }
-      .global-scar-line, .global-scar-line-2 { display: none !important; }
     }
   </style>
 </head>
@@ -474,10 +433,6 @@
           <span class="char">傷</span>
         </h1>
         <p class="hero-title-en" id="heroEn">Scars</p>
-        <div class="hero-meta" id="heroMeta">
-          <div class="hero-meta-line"></div>
-          <span class="hero-meta-text">Works 2003 – &nbsp;·&nbsp; Portraits &nbsp;·&nbsp; Wounds</span>
-        </div>
       </div>
       
       <div class="hero-scroll" id="heroScroll" aria-hidden="true">
@@ -516,179 +471,88 @@
 
     <section class="gallery-section" id="gallery">
       <div class="section-label">Works Index</div>
+
+      <h3 class="gallery-category-title">傷<span>Scars</span></h3>
       <div class="gallery-grid">
-        
-        <div class="gallery-category reveal-fade">
-          <span class="gallery-category-title">2003 — 2008</span>
-          <span class="gallery-category-line"></span>
-        </div>
-
-        <a href="#work-scars01" class="gallery-item js-modal-open gi-c1-1" data-img-src="images/【F6横】イラクの子ども(2003).jpg" data-jp="イラクの子ども(2003)">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】イラクの子ども(2003).jpg" alt="イラクの子ども(2003)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">イラクの子ども(2003)</span><span class="gallery-item-meta">2003 / F6</span>
-          </div>
-        </a>
-
-        <a href="#work-scars01" class="gallery-item js-scroll-to gi-c1-2" data-target="work-scars01">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg" alt="傷(5) (イスラエルの少女)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷(5) (イスラエルの少女)</span><span class="gallery-item-meta">2008 / F6</span>
-          </div>
-        </a>
-
-        <a href="#work-scars01" class="gallery-item js-modal-open gi-c1-3" data-img-src="images/【F6横】ガザ.jpg" data-jp="ガザ">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】ガザ.jpg" alt="ガザ" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">ガザ</span><span class="gallery-item-meta">2008- / F6</span>
-          </div>
-        </a>
-
-        <a href="#work-scars04" class="gallery-item js-scroll-to gi-c1-4" data-target="work-scars04">
+          
+        <a href="#work-scars-tirana" class="gallery-item gi-kizu-1">
           <div class="gallery-item-img-wrap"><img src="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg" alt="ティラナ [アルバニア共和国]" loading="lazy"></div>
           <div class="gallery-item-cap">
-            <span class="gallery-item-title">ティラナ [アルバニア共和国]</span><span class="gallery-item-meta">2008 / F100</span>
+            <span class="gallery-item-title">ティラナ [アルバニア共和国]</span><span class="gallery-item-meta">2016 / F100</span>
           </div>
         </a>
-
-        <div class="gallery-category reveal-fade">
-          <span class="gallery-category-title">2014 — 2015</span>
-          <span class="gallery-category-line"></span>
-        </div>
-
-        <a href="#work-scars08" class="gallery-item js-scroll-to gi-c2-1" data-target="work-scars08">
+        <a href="#work-scars01" class="gallery-item gi-kizu-2">
+          <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg" alt="傷(5) (イスラエルの少女)" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">傷(5) (イスラエルの少女)</span><span class="gallery-item-meta">2016 / F6</span>
+          </div>
+        </a>
+        <a href="#work-scars08" class="gallery-item gi-kizu-3">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg" alt="黒人妊婦 [コナーさん]" loading="lazy"></div>
           <div class="gallery-item-cap">
-            <span class="gallery-item-title">黒人妊婦 [コナーさん]</span><span class="gallery-item-meta">2014 / F6</span>
+            <span class="gallery-item-title">黒人妊婦 [コナーさん]</span><span class="gallery-item-meta">2016 / F6</span>
           </div>
         </a>
 
-        <a href="#work-scars08" class="gallery-item js-modal-open gi-c2-2" data-img-src="images/【F6横】シリア難民の少女（2015）.jpg" data-jp="シリア難民の少女（2015）">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】シリア難民の少女（2015）.jpg" alt="シリア難民の少女（2015）" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">シリア難民の少女</span><span class="gallery-item-meta">2015 / F6</span>
-          </div>
-        </a>
-
-        <a href="#work-scars08" class="gallery-item js-modal-open gi-c2-3" data-img-src="images/【F6横】トルコへ向かうシリア難民の少女.jpg" data-jp="トルコへ向かうシリア難民の少女">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】トルコへ向かうシリア難民の少女.jpg" alt="トルコへ向かうシリア難民の少女" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">トルコへ向かうシリア難民の少女</span><span class="gallery-item-meta">— / F6</span>
-          </div>
-        </a>
-
-        <a href="#work-scars08" class="gallery-item js-modal-open gi-c2-4" data-img-src="images/【F6横】怪我をした少年.jpg" data-jp="怪我をした少年">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】怪我をした少年.jpg" alt="怪我をした少年" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">怪我をした少年</span><span class="gallery-item-meta">— / F6</span>
-          </div>
-        </a>
-
-        <div class="gallery-category reveal-fade">
-          <span class="gallery-category-title">Series "Scars"</span>
-          <span class="gallery-category-line"></span>
-        </div>
-
-        <a href="#work-scars-extra" class="gallery-item js-modal-open gi-c3-1" data-img-src="images/【F6横】傷#2.jpg" data-jp="傷#2">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】傷#2.jpg" alt="傷#2" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷#2</span><span class="gallery-item-meta">— / F6</span>
-          </div>
-        </a>
-
-        <a href="#work-scars-extra" class="gallery-item js-modal-open gi-c3-2" data-img-src="images/【F6横】傷(3)(Andrew, 23).jpg" data-jp="傷(3) (Andrew, 23)">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(3)(Andrew, 23).jpg" alt="傷(3) (Andrew, 23)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷(3) (Andrew, 23)</span><span class="gallery-item-meta">— / F6</span>
-          </div>
-        </a>
-
-        <a href="#work-scars-extra" class="gallery-item js-modal-open gi-c3-3" data-img-src="images/【F6横】傷(4).jpg" data-jp="傷(4)">
+        <a href="#work-scars04" class="gallery-item gi-kizu-4">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(4).jpg" alt="傷(4)" loading="lazy"></div>
           <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷(4)</span><span class="gallery-item-meta">— / F6</span>
+            <span class="gallery-item-title">傷(4)</span><span class="gallery-item-meta">2015 / F6</span>
           </div>
         </a>
-
-        <a href="#work-scars-extra" class="gallery-item js-modal-open gi-c3-4" data-img-src="images/【F6横】傷(6).jpg" data-jp="傷(6)">
+        <a href="#work-scars06" class="gallery-item gi-kizu-5">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(6).jpg" alt="傷(6)" loading="lazy"></div>
           <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷(6)</span><span class="gallery-item-meta">— / F6</span>
+            <span class="gallery-item-title">傷(6)</span><span class="gallery-item-meta">2015 / F6</span>
           </div>
         </a>
-
-        <a href="#work-scars-extra" class="gallery-item js-modal-open gi-c3-5" data-img-src="images/【F6横】傷#8.jpg" data-jp="傷#8">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】傷#8.jpg" alt="傷#8" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷#8</span><span class="gallery-item-meta">— / F6</span>
-          </div>
-        </a>
-
-        <a href="#work-scars-extra" class="gallery-item js-scroll-to gi-c3-6" data-target="work-scars-extra">
+        <a href="#work-scars09" class="gallery-item gi-kizu-6">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(9)(シャフィク、Shafiq).jpg" alt="傷(9) (Shafiq)" loading="lazy"></div>
           <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷(9) (Shafiq)</span><span class="gallery-item-meta">— / F6</span>
+            <span class="gallery-item-title">傷(9) (Shafiq)</span><span class="gallery-item-meta">2015 / F6</span>
           </div>
         </a>
-
-        <a href="#work-scars-extra" class="gallery-item js-modal-open gi-c3-7" data-img-src="images/【F6横】傷(10).jpg" data-jp="傷(10)">
+        <a href="#work-scars10" class="gallery-item gi-kizu-7">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(10).jpg" alt="傷(10)" loading="lazy"></div>
           <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷(10)</span><span class="gallery-item-meta">— / F6</span>
+            <span class="gallery-item-title">傷(10)</span><span class="gallery-item-meta">2015 / F6</span>
           </div>
         </a>
 
-        <a href="#work-scars-extra" class="gallery-item js-modal-open gi-c3-8" data-img-src="images/【F6横】傷(11).jpg" data-jp="傷(11)">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(11).jpg" alt="傷(11)" loading="lazy"></div>
+        <a href="#work-scars-sakebi" class="gallery-item gi-kizu-8">
+          <div class="gallery-item-img-wrap"><img src="images/【F100横】さけび.jpg" alt="さけび" loading="lazy"></div>
           <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷(11)</span><span class="gallery-item-meta">— / F6</span>
+            <span class="gallery-item-title">さけび</span><span class="gallery-item-meta">2014 / F100</span>
           </div>
         </a>
-
-        <a href="#work-scars-extra" class="gallery-item js-modal-open gi-c3-9" data-img-src="images/【F6横】傷.jpg" data-jp="傷">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】傷.jpg" alt="傷" loading="lazy"></div>
+        <a href="#work-scars-shisen" class="gallery-item gi-kizu-9">
+          <div class="gallery-item-img-wrap"><img src="images/【M60横】視線.jpg" alt="視線" loading="lazy"></div>
           <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷</span><span class="gallery-item-meta">— / F6</span>
+            <span class="gallery-item-title">視線</span><span class="gallery-item-meta">2014 / M60</span>
           </div>
         </a>
 
-        <div class="gallery-category reveal-fade">
-          <span class="gallery-category-title">Acid Attack Victims</span>
-          <span class="gallery-category-line"></span>
-        </div>
+      </div>
 
-        <a href="#work-scars-extra" class="gallery-item js-modal-open gi-c4-1" data-img-src="images/【F20縦】Acid Attac Victim(2).jpg" data-jp="Acid Attack Victim (2)">
-          <div class="gallery-item-img-wrap"><img src="images/【F20縦】Acid Attac Victim(2).jpg" alt="Acid Attack Victim (2)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">Acid Attack Victim (2)</span><span class="gallery-item-meta">— / F20</span>
-          </div>
-        </a>
-
-        <a href="#work-scars-extra" class="gallery-item js-modal-open gi-c4-2" data-img-src="images/【F20縦】Acid Attac Victim(3).jpg" data-jp="Acid Attack Victim (3)">
-          <div class="gallery-item-img-wrap"><img src="images/【F20縦】Acid Attac Victim(3).jpg" alt="Acid Attack Victim (3)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">Acid Attack Victim (3)</span><span class="gallery-item-meta">— / F20</span>
-          </div>
-        </a>
-
-        <a href="#work-scars-extra" class="gallery-item js-modal-open gi-c4-3" data-img-src="images/【F20縦】Acid Attac Victim(4).jpg" data-jp="Acid Attack Victim (4)">
+      <h3 class="gallery-category-title" style="margin-top: 8rem;">AAV<span>Acid Attack Victim</span></h3>
+      <div class="gallery-grid">
+        
+        <a href="#work-aav04" class="gallery-item gi-aav-1">
           <div class="gallery-item-img-wrap"><img src="images/【F20縦】Acid Attac Victim(4).jpg" alt="Acid Attack Victim (4)" loading="lazy"></div>
           <div class="gallery-item-cap">
-            <span class="gallery-item-title">Acid Attack Victim (4)</span><span class="gallery-item-meta">— / F20</span>
+            <span class="gallery-item-title">Acid Attack Victim (4)</span><span class="gallery-item-meta">2015 / F20</span>
           </div>
         </a>
-
-        <a href="#work-scars-extra" class="gallery-item js-modal-open gi-c4-4" data-img-src="images/【F20縦】Acid Attac Victim(6).jpg" data-jp="Acid Attack Victim (6)">
+        <a href="#work-aav06" class="gallery-item gi-aav-2">
           <div class="gallery-item-img-wrap"><img src="images/【F20縦】Acid Attac Victim(6).jpg" alt="Acid Attack Victim (6)" loading="lazy"></div>
           <div class="gallery-item-cap">
-            <span class="gallery-item-title">Acid Attack Victim (6)</span><span class="gallery-item-meta">— / F20</span>
+            <span class="gallery-item-title">Acid Attack Victim (6)</span><span class="gallery-item-meta">2015 / F20</span>
           </div>
         </a>
-
-        <a href="#work-scars07" class="gallery-item js-scroll-to gi-c4-5" data-target="work-scars07">
+        <a href="#work-aav-sonali" class="gallery-item gi-aav-3">
           <div class="gallery-item-img-wrap"><img src="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg" alt="Acid Attack Victim [Sonali Mukherjee]" loading="lazy"></div>
           <div class="gallery-item-cap">
-            <span class="gallery-item-title">Acid Attack Victim [Sonali Mukherjee]</span><span class="gallery-item-meta">— / F100</span>
+            <span class="gallery-item-title">Acid Attack Victim [Sonali Mukherjee]</span><span class="gallery-item-meta">2015 / F100</span>
           </div>
         </a>
 
@@ -701,27 +565,10 @@
           <div class="timeline-spine-progress"></div>
         </div>
 
-        <article class="tl-entry" id="work-scars01">
-          <div class="tl-year-display">2008</div>
+        <article class="tl-entry is-full-figure" id="work-scars-tirana">
+          <div class="tl-year-display">2016</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg" data-jp="傷(5) (イスラエルの少女)">
-              <img src="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg" alt="傷(5) (イスラエルの少女)" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">傷(5) (イスラエルの少女)</h3>
-              <p class="tl-meta">F6 / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>このシリーズの原点とも言える作品群の一つ。顔を覆うように引かれた不鮮明なストロークは、物理的な傷跡であると同時に、記憶のブレ、あるいは存在の揺らぎそのものを表している。</p>
-                <p>油彩特有の粘り気のある筆致は、少女の表情を不確かなものにしながらも、そこに確かな「皮膚の重さ」を残している。</p>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="tl-entry is-full-figure" id="work-scars04">
-          <div class="tl-year-display">2008</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg" data-jp="ティラナ [アルバニア共和国]">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg">
               <img src="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg" alt="ティラナ [アルバニア共和国]" loading="lazy">
              </div>
             <div class="tl-body">
@@ -734,11 +581,28 @@
             </div>
           </div>
         </article>
+
+        <article class="tl-entry" id="work-scars01">
+          <div class="tl-year-display">2016</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg">
+              <img src="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg" alt="傷(5) (イスラエルの少女)" loading="lazy">
+            </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">傷(5) (イスラエルの少女)</h3>
+              <p class="tl-meta">F6 / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>顔を覆うように引かれた不鮮明なストロークは、物理的な傷跡であると同時に、記憶のブレ、あるいは存在の揺らぎそのものを表している。</p>
+                <p>油彩特有の粘り気のある筆致は、少女の表情を不確かなものにしながらも、そこに確かな「皮膚の重さ」を残している。</p>
+              </div>
+            </div>
+          </div>
+        </article>
         
         <article class="tl-entry" id="work-scars08">
-          <div class="tl-year-display">2014</div>
+          <div class="tl-year-display">2016</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg" data-jp="黒人妊婦 [コナーさん]">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg">
               <img src="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg" alt="黒人妊婦 [コナーさん]" loading="lazy">
             </div>
             <div class="tl-body">
@@ -752,10 +616,10 @@
           </div>
         </article>
 
-        <article class="tl-entry is-full-figure" id="work-scars07">
-          <div class="tl-year-display">—</div>
+        <article class="tl-entry is-full-figure" id="work-aav-sonali">
+          <div class="tl-year-display">2015</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg" data-jp="Acid Attack Victim [Sonali Mukherjee]">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg">
               <img src="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg" alt="Acid Attack Victim [Sonali Mukherjee]" loading="lazy">
             </div>
             <div class="tl-body">
@@ -769,18 +633,34 @@
           </div>
         </article>
 
-        <article class="tl-entry" id="work-scars-extra">
-          <div class="tl-year-display">—</div>
+        <article class="tl-entry" id="work-scars09">
+          <div class="tl-year-display">2015</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F6横】傷(9)(シャフィク、Shafiq).jpg" data-jp="傷(9) (Shafiq)">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F6横】傷(9)(シャフィク、Shafiq).jpg">
               <img src="images/【F6横】傷(9)(シャフィク、Shafiq).jpg" alt="傷(9) (Shafiq)" loading="lazy">
             </div>
             <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">傷 シリーズ群</h3>
-              <p class="tl-meta">F6 - F20 / Oil on canvas</p>
+              <h3 class="tl-title" data-typewriter="true">傷</h3>
+              <p class="tl-meta">F6 / Oil on canvas</p>
               <div class="tl-desc">
                 <p>視線は霞み、背景と皮膚の境界は溶け合っている。私たちが「傷」と呼ぶものは何か。それは外部からの力が介入した痕跡だ。</p>
                 <p>キャンバスに顔料を擦り付ける行為自体が、画面に対する一つの「傷」をつける行為に他ならない。油彩によるこの物質的な格闘は、やがて窯の中で火炎が土に傷をつけ、景色を生み出す陶芸の表現へと必然的に結びついていった。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tl-entry is-full-figure" id="work-scars-sakebi">
+          <div class="tl-year-display">2014</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F100横】さけび.jpg">
+              <img src="images/【F100横】さけび.jpg" alt="さけび" loading="lazy">
+             </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">さけび / 視線</h3>
+              <p class="tl-meta">F100, M60 / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>2014年に制作された「さけび（F100号）」および「視線（M60号）」。傷シリーズへと本格的に移行する直前の、内面的な葛藤や他者との境界線の揺らぎを油彩の激しいストロークで捉えようとした重要なマイルストーン。</p>
               </div>
             </div>
           </div>
@@ -837,8 +717,7 @@
       setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 800);
       setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'), 1200);
       setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'), 1800);
-      setTimeout(() => document.getElementById('heroMeta')?.classList.add('revealed'), 2200);
-      setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 2800);
+      setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 2500);
     });
 
     /* ── Observer (Fade Up & Grid Animation) ── */
@@ -850,7 +729,7 @@
       });
     }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
     
-    document.querySelectorAll('.gallery-category, .gallery-item, .tl-entry, .statement-label, .statement-para, .reveal-fade').forEach(el => io.observe(el));
+    document.querySelectorAll('.gallery-item, .tl-entry, .statement-label, .statement-para, .reveal-fade, .gallery-category-title').forEach(el => io.observe(el));
 
     /* ── Typewriter Engine ── */
     function prepareTypewriterDOM(el) {
@@ -933,7 +812,7 @@
             pageNav.classList.toggle('visible', scrollY > viewH * 0.8);
           }
 
-          /* Local Scroll Tracking (Concept text strike-through, Statement line, Timeline spine) */
+          /* Local Scroll Tracking */
           trackEls.forEach(el => {
             const rect = el.getBoundingClientRect();
             let localProg = (viewH - rect.top) / (viewH + rect.height);
@@ -952,18 +831,12 @@
       }
     }, { passive: true });
 
-    /* ── Smooth Scroll Navigation ── */
-    document.querySelectorAll('.js-scroll-to, .page-nav-item').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = btn.getAttribute('data-target');
-        const targetEl = document.getElementById(targetId);
-        if (targetEl) {
-          const offset = topNav?.offsetHeight || 80;
-          window.scrollTo({
-            top: targetEl.getBoundingClientRect().top + window.scrollY - offset - 20,
-            behavior: 'smooth'
-          });
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const target = document.getElementById(item.getAttribute('data-target'));
+        if (target) {
+          const offset = topNav?.offsetHeight || 0;
+          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
         }
       });
     });
@@ -1006,18 +879,21 @@
     };
 
     document.querySelectorAll('.js-modal-open').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
+      btn.addEventListener('click', () => {
         const src = btn.getAttribute('data-img-src');
-        const jp = btn.getAttribute('data-jp') || '';
-        const en = btn.getAttribute('data-en') || '';
-        if (src) openModal(src, jp, en);
-      });
-      btn.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          btn.click();
+        const block = btn.closest('.tl-entry');
+        let jp = '';
+        if (block) {
+          const jpTitleEl = block.querySelector('.tl-title');
+          jp = jpTitleEl ? jpTitleEl.textContent : '';
+        } else {
+           const galleryItem = btn.closest('.gallery-item');
+          if (galleryItem) {
+             const jpTitleEl = galleryItem.querySelector('.gallery-item-title');
+             jp = jpTitleEl ? jpTitleEl.textContent : '';
+          }
         }
+        if (src) openModal(src, jp, '');
       });
     });
 
