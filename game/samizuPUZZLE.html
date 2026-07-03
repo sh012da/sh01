@@ -380,9 +380,9 @@
         }
     };
 
-    // --- 物語データ (目標スコア調整版) ---
+    // --- 物語データ ---
     const STORY = [
-        { title: "第1章：動機", text: "「日中の単調な労働と、眠るしかない夜の繰り返しが耐え難い」<br>サララは毛虫が蝶になる瞬間を目にし、閉じた円環から抜け出す決意をした。<br><br><span style='color:#f44336; font-weight:bold;'>【重要ルール：必ずお読みください】<br>① 上下左右に同じ色を3つ以上なぞって消去します。<br>② 序盤は連鎖が起きやすくなっていますが、計画的に消してスコアを稼ぐ必要があります。<br>※手詰まりになった時は「1手戻る」ボタンを活用してください。</span>", btn: "旅立つ", target: 30000 },
+        { title: "第1章：動機", text: "「日中の単調な労働と、眠るしかない夜の繰り返しが耐え難い」<br>サララは毛虫が蝶になる瞬間を目にし、閉じた円環から抜け出す決意をした。<br><br><span style='color:#f44336; font-weight:bold;'>【重要ルール：必ずお読みください】<br>① 上下左右に同じ色を3つ以上なぞって消去します。<br>② 連鎖は意図的に発生しにくくなっています。頭脳をフル回転させてください。<br>※手詰まりになった時は「1手戻る」ボタンを活用してください。</span>", btn: "旅立つ", target: 30000 },
         { title: "第2章：過酷な旅", text: "生まれつき虚弱な赤人は何度も転び、自分が踏み潰される毛虫になったように感じた。しかし、サララへの想いから辛い道中を耐え抜いた。<br>沼持は道を踏み固め、石をどけて彼らに気配りをした。", btn: "歩みを進める", target: 70000 },
         { title: "第3章：呪術者", text: "宿所に着いた彼らを迎えたのは、異様な大きさの鉱物を首から下げた呪術者だった。<br>鉱物の中には、サララの顔がぼんやりと映り込んでいた。", btn: "学習を始める", target: 120000 },
         { title: "第4章：出会いと離脱", text: "サララは声の小さな少女、ウネと不思議に気が合った。<br>一方、沼持は大柄な男との喧嘩に敗れ、サララの手を振り払ってどこかへ行ってしまった。", btn: "文字を学ぶ", target: 180000 },
@@ -459,9 +459,9 @@
     }
 
     function getHardColor(x, y) {
-        // 【修正】序盤の全消し防止：同色隣接率を90%→60%に低下
+        // ★修正: 序盤の全消し防止と自然連鎖の大幅な抑制
         if (currentStage <= 2) {
-            if (Math.random() < 0.6) { 
+            if (Math.random() < 0.3) { // 60% -> 30%に半減
                 let neighbors = [];
                 if (x > 0 && grid[y][x-1] !== 0) neighbors.push(grid[y][x-1]);
                 if (y < ROWS - 1 && grid[y+1][x] !== 0) neighbors.push(grid[y+1][x]);
@@ -470,8 +470,9 @@
             return Math.floor(Math.random() * getMaxColors()) + 1;
         }
 
-        let diffRate = 0.2 + (currentStage * 0.05); 
-        if (diffRate > 0.65) diffRate = 0.65;
+        // ★修正: 中盤以降の散布率（diffRate）を強化し連鎖を阻害
+        let diffRate = 0.4 + (currentStage * 0.05); 
+        if (diffRate > 0.85) diffRate = 0.85; // 上限を65%から85%に引き上げ
         
         if (Math.random() > diffRate) return randType(); 
         
@@ -496,13 +497,13 @@
     }
 
     function ensurePlayable() {
-        // 【修正】序盤でも必ず消せる箇所を3つ程度にし、一発クリアを防ぐ
-        let targetMoves = (currentStage <= 2) ? 3 : (currentStage <= 6 ? 2 : 1);
+        // ★修正: 最低限の手数だけ保証し、無駄に消しやすくしない
+        let targetMoves = (currentStage <= 2) ? 2 : 1;
         let moves = countValidMoves();
         let loopGuard = 0;
         let wasInjected = false;
 
-        while (moves < targetMoves && loopGuard < 20) {
+        while (moves < targetMoves && loopGuard < 30) {
             injectMove();
             moves = countValidMoves();
             wasInjected = true;
@@ -816,14 +817,13 @@
 
             const len = group.length;
             const stageMult = 1 + (currentStage * 0.5);
-            // 修正：スコアインフレを少しマイルドに調整
             const comboBonus = Math.pow(1.3, comboCount);
             const pts = Math.floor(len * len * 40 * stageMult * comboBonus);
             totalPts += pts;
 
-            // ★ 【修正】ステージ進行による回復量の減衰（最終ステージは15%しか回復しない）
-            let stageHealNerf = Math.max(0.15, 1.0 - (currentStage * 0.08)); 
-            let baseHeal = (len * 10) * comboCount;
+            // ★修正: 基礎回復量を大幅に減らし(len * 5)、減衰率も厳しく設定
+            let stageHealNerf = Math.max(0.15, 0.9 - (currentStage * 0.08)); 
+            let baseHeal = (len * 5) * comboCount;
             totalHeal += baseHeal * healMultiplier * stageHealNerf; 
 
             createSuperExplosion(centerPxX, centerPxY, colorHex, comboCount);
@@ -1073,14 +1073,14 @@
         if (!isResolving) {
             let elapsed = now - playStartTime;
             
-            // 【修正】基礎となる正気度低下を少し引き上げ
-            let baseDrain = 0.5 + (currentStage * 0.35); 
-            if (currentStage >= 8) baseDrain = 3.0 + ((currentStage-8) * 1.8); 
-            if (currentStage >= 11) baseDrain = 10.0; // 最終ステージは超高速
+            // ★修正: 基礎となる正気度低下を大幅に引き上げ
+            let baseDrain = 1.0 + (currentStage * 0.5); 
+            if (currentStage >= 8) baseDrain = 4.0 + ((currentStage-8) * 2.0); 
+            if (currentStage >= 11) baseDrain = 10.0; // 最終ステージは超高速(仕様維持)
 
             let currentDrainRate = baseDrain + (elapsed * 0.025); 
             
-            // 【修正】ドラッグ中（掴み中）のペナルティもステージ進行で強化
+            // ペナルティ倍率の強化
             if (isDragging) {
                 let dragMult = 3.0 + (currentStage * 0.1); 
                 currentDrainRate *= dragMult; 
