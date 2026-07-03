@@ -369,16 +369,47 @@
 
     /* モバイル・レスポンシブ (Hero Photo & Placements) */
     @media(max-width: 860px) {
-      .hero { align-items: flex-end; padding-bottom: 7rem; }
-      .hero-photo-cluster { display: none; }
-      
-      .hero-photo-plate.main-plate { 
-        position: relative; left: auto; top: auto; transform: none; 
-        margin: 0 auto 30px; width: 65%; max-width: 200px; 
-        animation: mobile-plate-in 1s forwards var(--delay); opacity: 0; 
+      .hero {
+        align-items: center; /* 左右中央揃え */
+        justify-content: center; /* 上下中央揃え */
+        flex-direction: column; /* 縦並びに変更 */
+        padding-top: 100px;
+        padding-bottom: 80px;
       }
-      .specimen-tag.hero-tag { margin: 0; width: 100%; }
-      .hero-coord.tl { display: block; top: auto; bottom: clamp(100px, 12vh, 130px); right: var(--px); text-align: right; }
+      .hero-photo-cluster { display: none; }
+
+      /* メイン写真を少し小さくし、下のテキストボックスに意図的に潜り込ませる（奥行き演出） */
+      .hero-photo-plate.main-plate {
+        position: relative; left: auto; top: auto; transform: none;
+        margin: 0 auto -28px; /* ネガティブマージンで重なりを作る */
+        width: 45%; max-width: 170px;
+        animation: mobile-plate-in 1s forwards var(--delay); opacity: 0;
+        z-index: 5;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      }
+
+      .specimen-tag.hero-tag {
+        margin: 0; width: 100%;
+        padding: 2rem 1.4rem; /* 余白を調整して窮屈さを軽減 */
+        background: rgba(9, 9, 8, 0.88); /* 写真との重なりを考慮し背景を少し濃く */
+        z-index: 6; /* 写真より前面へ */
+      }
+
+      /* タイトルの文字サイズと行間を最適化 */
+      .hero-title {
+        font-size: clamp(1.7rem, 7.5vw, 2.2rem);
+        line-height: 1.5;
+        margin-bottom: 16px;
+      }
+      .hero-sub-jp { font-size: 0.85rem; line-height: 1.5; margin-bottom: 6px; }
+      .hero-sub-en { font-size: 0.72rem; }
+      .tag-row { margin-bottom: 12px; }
+      .tag-site { margin-bottom: 16px; }
+
+      /* 装飾要素の整理（画面端の余白確保・視線誘導） */
+      .hero-coord.tl { display: block; top: 85px; bottom: auto; right: var(--px); text-align: right; }
+      .hero-compass { top: 85px; }
+      .hero-watermark { display: none; } /* 狭い画面では非表示にしてスッキリと */
     }
     @media(min-width: 861px) {
       .hero-photo-plate.main-plate { display: none; }
