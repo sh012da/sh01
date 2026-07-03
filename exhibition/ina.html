@@ -242,27 +242,97 @@
       text-transform: uppercase; white-space: nowrap; z-index: 2;
     }
 
-    /* Gimmick: Photo Cluster */
+    /* --- Samizu Link Text Gimmick --- */
+    .link-samizu {
+      position: relative;
+      color: var(--accent);
+      text-decoration: none;
+      display: inline-block;
+      transition: color 0.3s var(--ease), text-shadow 0.3s var(--ease);
+      padding: 0 2px;
+    }
+    .link-samizu::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      bottom: 0;
+      left: 0;
+      background-color: var(--accent);
+      transform: scaleX(1);
+      transform-origin: bottom right;
+      transition: transform 0.4s var(--ease);
+    }
+    .link-samizu:hover {
+      color: #fff;
+      text-shadow: 0 0 8px rgba(196,168,130,0.6);
+    }
+    .link-samizu:hover::after {
+      transform: scaleX(0);
+      transform-origin: bottom left;
+    }
+    .link-samizu-svg { cursor: pointer; transition: opacity 0.3s; }
+    .link-samizu-svg:hover { opacity: 0.7; }
+    .link-samizu-svg text { transition: fill 0.3s; }
+    .link-samizu-svg:hover text { fill: #fff; }
+
+    /* Gimmick: Photo Cluster (Material Style) */
     .hero-photo-cluster {
       position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden;
     }
     .hero-photo-plate {
-      position: absolute; width: clamp(140px, 18vw, 260px);
-      padding: 4px; background: #efece6; box-shadow: 0 20px 50px rgba(0,0,0,0.65);
-      opacity: 0; pointer-events: auto;
+      position: absolute; 
+      width: clamp(140px, 18vw, 260px);
+      padding: 6px 6px 26px 6px; /* Added extra padding to look like a physical polaroid/material */
+      background: #f4f0e6;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.03);
+      border: 1px solid rgba(0,0,0,0.15);
+      opacity: 0; pointer-events: auto; cursor: zoom-in;
       animation: cluster-in 1.2s var(--ease) var(--delay) forwards;
+      transition: box-shadow 0.4s ease;
     }
-    .hero-photo-plate img { width: 100%; filter: sepia(10%) saturate(80%) brightness(0.9) contrast(1.1); cursor: zoom-in; transition: filter 0.4s ease; }
+    .hero-photo-plate img { width: 100%; filter: sepia(12%) saturate(80%) brightness(0.85) contrast(1.1); transition: filter 0.4s ease, transform 0.4s ease; }
+    .hero-photo-plate:hover { box-shadow: 0 25px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.03); z-index: 20; }
     .hero-photo-plate:hover img { filter: sepia(0%) saturate(100%) brightness(1) contrast(1); }
+    
+    /* Document Tape Gimmick */
+    .tape {
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-3deg);
+      width: 38%;
+      min-width: 45px;
+      height: 16px;
+      background: rgba(238, 234, 222, 0.9);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2), inset 0 0 4px rgba(200, 190, 180, 0.4);
+      backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+      z-index: 10;
+      clip-path: polygon(1% 5%, 4% 0%, 96% 2%, 99% 7%, 100% 95%, 96% 100%, 4% 97%, 0% 94%);
+    }
+    .hero-photo-plate::after {
+      content: attr(data-ref);
+      position: absolute;
+      bottom: 6px;
+      right: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.45rem;
+      color: rgba(30, 28, 25, 0.6);
+      letter-spacing: 0.1em;
+    }
+
     @keyframes cluster-in {
       0% { opacity: 0; transform: translate(-50%, -50%) rotate(calc(var(--rot) - 6deg)) translateY(40px); }
       100% { opacity: 1; transform: translate(-50%, -50%) rotate(var(--rot)) translateY(0); }
     }
     
-    .plate-1 { left: 20%; top: 22%; --rot: -5deg; --delay: 1.4s; }
+    .plate-1 { left: 20%; top: 22%; --rot: -4deg; --delay: 1.4s; }
+    .plate-1 .tape { transform: translateX(-50%) rotate(2deg); }
     .plate-2 { left: 85%; top: 25%; --rot: 3deg; --delay: 1.6s; }
+    .plate-2 .tape { transform: translateX(-50%) rotate(-4deg); }
     .plate-3 { left: 15%; top: 76%; --rot: 2deg; --delay: 1.8s; width: clamp(180px, 24vw, 320px); }
-    .plate-4 { left: 82%; top: 80%; --rot: -4deg; --delay: 2.0s; width: clamp(120px, 16vw, 220px); }
+    .plate-3 .tape { width: 25%; transform: translateX(-50%) rotate(1deg); }
+    .plate-4 { left: 82%; top: 80%; --rot: -5deg; --delay: 2.0s; width: clamp(120px, 16vw, 220px); }
 
     .specimen-tag.hero-tag {
       position: relative; z-index: 6; max-width: 720px; margin: 0 auto;
@@ -301,14 +371,18 @@
     .hero-scroll-line { width: 1px; height: 30px; background: linear-gradient(to bottom, var(--accent), transparent); animation: line-run 2s ease-in-out infinite; }
     @keyframes line-run { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 50.01% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
 
-    /* モバイル・レスポンシブ (Hero Photo) */
+    /* モバイル・レスポンシブ (Hero Photo & Placements) */
     @media(max-width: 860px) {
       .hero { align-items: flex-end; padding-bottom: 7rem; }
       .hero-photo-cluster { display: none; }
-      .hero-photo-plate.main-plate { position: relative; left: auto; top: auto; transform: none; margin: 0 0 24px; width: 60%; max-width: 180px; animation: mobile-plate-in 1s forwards var(--delay); opacity: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-      .hero-photo-plate.main-plate .plate-tag { display:block; background:#efece6; color:#1a1a18; font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.06em; padding: 5px 8px 6px; }
+      
+      .hero-photo-plate.main-plate { 
+        position: relative; left: auto; top: auto; transform: none; 
+        margin: 0 auto 30px; width: 65%; max-width: 200px; 
+        animation: mobile-plate-in 1s forwards var(--delay); opacity: 0; 
+      }
       .specimen-tag.hero-tag { margin: 0; width: 100%; }
-      .hero-coord.tl { display:none; }
+      .hero-coord.tl { display: block; top: auto; bottom: clamp(100px, 12vh, 130px); right: var(--px); text-align: right; }
     }
     @media(min-width: 861px) {
       .hero-photo-plate.main-plate { display: none; }
@@ -339,7 +413,20 @@
     .field-table .field:last-child { border-right: none; }
     .field-table dt { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.12em; color: var(--accent-soft); text-transform: uppercase; margin-bottom: 8px; }
     .field-table dd { font-family: var(--font-ja); font-size: 0.95rem; color: var(--fg); font-weight: 400; line-height: 1.7; }
-    @media(max-width: 900px) { .field-table { grid-template-columns: repeat(2,1fr); } .field-table .field:nth-child(2n){border-right:none;} .field-table .field{border-bottom:0.5px solid var(--border);} }
+    
+    /* 完璧なレスポンシブ対応（テーブル） */
+    @media(max-width: 900px) { 
+      .field-table { grid-template-columns: repeat(2,1fr); } 
+      .field-table .field:nth-child(2n) { border-right: none; } 
+      .field-table .field { border-bottom: 0.5px solid var(--border); } 
+      .field-table .field:last-child { border-bottom: none; }
+      .field-table .field:last-child:nth-child(odd) { grid-column: span 2; border-right: none; }
+    }
+    @media(max-width: 480px) {
+      .field-table { grid-template-columns: 1fr; }
+      .field-table .field { border-right: none; }
+      .field-table .field:last-child:nth-child(odd) { grid-column: auto; }
+    }
 
     .overview-quote { font-family: var(--font-ja); font-weight: 300; font-size: clamp(20px, 2.5vw, 28px); line-height: 1.95; max-width: 760px; color: rgba(233,229,223,0.95); position: relative; padding-left: 26px; margin-bottom: 12px; }
     .overview-quote::before { content: "「"; position: absolute; left: -6px; top: -4px; font-family: var(--font-en); font-size: 1.6em; color: var(--accent); }
@@ -384,7 +471,7 @@
     .plate-strip-hint { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; color: var(--muted); text-align: right; margin-top: 8px; animation: pulse-text 2s infinite; }
     @keyframes pulse-text { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; color: var(--accent); } }
 
-    /* ---------- SITE PLAN (UI Recreation for PDF Zones) ---------- */
+    /* ---------- SITE PLAN ---------- */
     .site-plan-section { background: var(--bg2); border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); }
     .site-plan-wrap { max-width: 960px; margin: 46px auto 0; position: relative; }
     .site-plan-wrap svg { width: 100%; height: auto; }
@@ -455,7 +542,7 @@
     .strata-arrow { stroke: var(--accent); stroke-width: 1.4; fill: none; stroke-dasharray: 260; stroke-dashoffset: 260; transition: stroke-dashoffset 1.6s var(--ease) 0.8s; }
     .strata-diagram.is-visible .strata-arrow { stroke-dashoffset: 0; }
     .strata-diagram text { font-family: var(--font-mono); font-size: 11px; fill: var(--muted); }
-    .strata-diagram text.dest { fill: var(--accent); font-style: italic; font-family: var(--font-en); font-size: 13px; }
+    .strata-diagram text.dest { font-style: italic; font-family: var(--font-en); font-size: 13px; }
     .closing-quote { font-family: var(--font-ja); font-weight: 300; font-size: clamp(22px, 2.8vw, 36px); max-width: 780px; margin: 0 auto; line-height: 2; color: var(--fg); letter-spacing: 0.08em; }
     .closing-sign { margin-top: 36px; font-family: var(--font-mono); color: var(--accent); font-size: 0.8rem; letter-spacing: 0.1em; }
 
@@ -557,26 +644,30 @@
 
     <div class="hero-compass"><span>N</span><div class="arrow"></div></div>
     <div class="hero-coord tl decode-target">36.0000°N  137.9500°E — 伊那 調査区</div>
-    <div class="hero-watermark">EXCAVATION RECORD — SITE 三水 — 2023</div>
+    <div class="hero-watermark">EXCAVATION RECORD — SITE <a href="work-samizu.html" class="link-samizu">三水</a> — 2023</div>
 
     <div class="hero-photo-cluster">
-      <div class="hero-photo-plate plate-1 js-modal-trigger" data-cap="会場記録 — 連絡通路" data-en="Corridor">
+      <div class="hero-photo-plate plate-1 js-modal-trigger" data-cap="会場記録 — 連絡通路" data-en="Corridor" data-ref="REF.01">
+        <div class="tape"></div>
         <img src="https://sh012da.github.io/sh01/images/exhi-ina/伊那 (8).JPG" alt="記録写真">
       </div>
-      <div class="hero-photo-plate plate-2 js-modal-trigger" data-cap="会場記録 — 十二片の森を見る人々" data-en="Viewers">
+      <div class="hero-photo-plate plate-2 js-modal-trigger" data-cap="会場記録 — 十二片の森を見る人々" data-en="Viewers" data-ref="REF.02">
+        <div class="tape"></div>
         <img src="https://sh012da.github.io/sh01/images/exhi-ina/伊那 (4).JPG" alt="記録写真">
       </div>
-      <div class="hero-photo-plate plate-3 js-modal-trigger" data-cap="会場記録 — 中央ケース越しの色彩" data-en="Through the Vitrine">
+      <div class="hero-photo-plate plate-3 js-modal-trigger" data-cap="会場記録 — 中央ケース越しの色彩" data-en="Through the Vitrine" data-ref="REF.03">
+        <div class="tape"></div>
         <img src="https://sh012da.github.io/sh01/images/exhi-ina/伊那 (10).JPG" alt="記録写真">
       </div>
-      <div class="hero-photo-plate plate-4 js-modal-trigger" data-cap="想定復元資料 — 木製匙" data-en="Simulated Material">
+      <div class="hero-photo-plate plate-4 js-modal-trigger" data-cap="想定復元資料 — 木製匙" data-en="Simulated Material" data-ref="REF.04">
+        <div class="tape"></div>
         <img src="https://sh012da.github.io/sh01/images/exhi-ina/伊那 (11).JPG" alt="記録写真">
       </div>
     </div>
 
-    <div class="hero-photo-plate main-plate js-modal-trigger" data-cap="会場記録写真 — 壁面の絵画と中央の展示ケース" data-en="Site Photograph, Trench A" style="--rot: -1.5deg; --delay: 1.8s;">
+    <div class="hero-photo-plate main-plate js-modal-trigger" data-cap="会場記録写真 — 壁面の絵画と中央の展示ケース" data-en="Site Photograph, Trench A" data-ref="REF.00" style="--rot: -1.5deg; --delay: 1.8s;">
+      <div class="tape"></div>
       <img src="https://sh012da.github.io/sh01/images/exhi-ina/伊那 (14).JPG" alt="会場記録写真">
-      <span class="plate-tag decode-target">Fig. 00 — Site Photograph</span>
     </div>
 
     <div class="specimen-tag hero-tag">
@@ -587,7 +678,9 @@
         中央に<span class="u">遺物</span>を。
       </h1>
       <div class="hero-sub-jp">若手作家公募個展「トライアル・ギャラリー」2023 — 調査記録</div>
-      <div class="hero-sub-en decode-target">The Origin Stratum of Samizu</div>
+      <div class="hero-sub-en">
+        <span class="decode-target">The Origin Stratum of </span><a href="work-samizu.html" class="link-samizu decode-target">Samizu</a>
+      </div>
     </div>
 
     <div class="hero-scroll-cue"><span>Descend</span><div class="hero-scroll-line"></div></div>
@@ -876,7 +969,9 @@
               <path d="M0,0 L8,4 L0,8 Z" fill="#c4a882" />
             </marker>
           </defs>
-          <text x="628" y="48" class="dest">→ Samizu</text>
+          <a href="work-samizu.html" target="_self" class="link-samizu-svg">
+            <text x="628" y="48" class="dest" fill="#c4a882">→ Samizu</text>
+          </a>
         </svg>
       </div>
 
