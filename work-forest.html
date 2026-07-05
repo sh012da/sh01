@@ -323,8 +323,9 @@
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
     
     .gallery-item-img-wrap {
-      width: calc(var(--w-cm) * var(--cm-scale));
-      height: calc(var(--h-cm) * var(--cm-scale));
+      /* --zoom で小作品のスケールを調整できるように変数を追加 */
+      width: calc(var(--w-cm) * var(--cm-scale) * var(--zoom, 1));
+      height: calc(var(--h-cm) * var(--cm-scale) * var(--zoom, 1));
       max-width: 100%; display: flex; justify-content: center; align-items: center;
       background: #000; overflow: hidden; border: 0.5px solid var(--border);
       position: relative; transition: border-color 0.6s var(--ease-slow), box-shadow 0.8s var(--ease-slow), transform 0.8s var(--ease-slow);
@@ -669,7 +670,7 @@
           </div>
         </a>
 
-        <a href="#work-f6-yoko" class="gallery-item js-scroll-link" style="--w-cm: 41.0; --h-cm: 31.8;">
+        <a href="#work-f6-yoko" class="gallery-item js-scroll-link" style="--w-cm: 41.0; --h-cm: 31.8; --zoom: 2.4;">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】森（川久保沢）.jpg" alt="森（川久保沢）" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">森（川久保沢）</span>
@@ -677,7 +678,7 @@
           </div>
         </a>
 
-        <a href="#work-f8-tate" class="gallery-item js-scroll-link" style="--w-cm: 38.0; --h-cm: 45.5;">
+        <a href="#work-f8-tate" class="gallery-item js-scroll-link" style="--w-cm: 38.0; --h-cm: 45.5; --zoom: 2.4;">
           <div class="gallery-item-img-wrap"><img src="images/【F8縦】森.jpg" alt="森" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">森</span>
@@ -1155,20 +1156,30 @@
       }
     });
 
-    /* ── スムーズスクロール制御 (Gallery Grid -> Timeline) ── */
+    /* ── スムーズスクロール制御 (Gallery Grid -> Timeline or Modal) ── */
     document.querySelectorAll('.js-scroll-link').forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         const targetId = link.getAttribute('href').substring(1);
         const targetEl = document.getElementById(targetId);
         
+        // Timeline内に実体があり、非表示ではない場合は該当箇所までスクロール
         if (targetEl && targetEl.style.display !== 'none') {
           const offset = topNav?.offsetHeight || 80;
-          // Timelineの該当項目までスクロール
           window.scrollTo({ 
             top: targetEl.getBoundingClientRect().top + window.scrollY - offset - 20, 
             behavior: 'smooth' 
           });
+        } else {
+          // Timelineに詳細要素がない（display: none等）の場合はその場でモーダルを開く
+          const imgWrap = link.querySelector('img');
+          const src = imgWrap ? imgWrap.getAttribute('src') : '';
+          const titleEl = link.querySelector('.gallery-item-title');
+          const jp = titleEl ? titleEl.textContent : '';
+          const metaTag = link.querySelector('.gallery-item-meta');
+          const metaText = metaTag ? metaTag.textContent : '';
+          
+          if (src) openModal(src, jp, metaText);
         }
       });
     });
@@ -1197,7 +1208,7 @@
       setTimeout(() => { modalImg.src = ''; titleJpEl.textContent = ''; metaEl.textContent = ''; }, 600);
     };
 
-    // js-modal-open が付与されている要素（Timelineの画像）のみモーダルを開く
+    // Timelineセクション内の画像クリックでのモーダル開閉
     document.querySelectorAll('.js-modal-open').forEach(btn => {
       btn.addEventListener('click', (e) => {
         let src = btn.getAttribute('data-img-src');
