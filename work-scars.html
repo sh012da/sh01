@@ -23,42 +23,40 @@
 
   <style>
     /* ============================================================
-       DESIGN TOKENS (Scars Theme)
+        DESIGN TOKENS (Scars Custom Minimal Theme)
     ============================================================ */
     :root {
-      --bg:        #030303;
-      --bg2:       rgba(8, 8, 8, 0.85);
-      --fg:        #e2ddd6;
-      --muted:     rgba(226,221,214,0.4);
-      --dim:       rgba(226,221,214,0.2);
-      --accent:    #9b4a41; 
-      --accent2:   #6d564e;
-      --scar-line: #a42c23;
-      --border:    rgba(226,221,214,0.08);
+      --bg:        #050505;
+      --bg2:       rgba(10, 10, 10, 0.9);
+      --fg:        #e5e0d8;
+      --muted:     rgba(229, 224, 216, 0.45);
+      --dim:       rgba(229, 224, 216, 0.2);
+      --accent:    #a64337; 
+      --accent2:   #735950;
+      --scar-line: #b52b1d;
+      --border:    rgba(229, 224, 216, 0.09);
       --font-en:   'Cormorant Garamond', serif;
       --font-ja:   'Noto Serif JP', serif;
-      --ease:      cubic-bezier(0.19, 1, 0.22, 1);
+      --ease:      cubic-bezier(0.16, 1, 0.3, 1);
       --px:        clamp(1.5rem, 6vw, 6rem);
-      /* スクロールバー消失時のカクつき防止用変数 */
       --scrollbar-width: 0px; 
     }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; background: var(--bg); }
     body {
       background: transparent; color: var(--fg);
-      font-family: var(--font-ja); line-height: 2.1; letter-spacing: 0.08em;
+      font-family: var(--font-ja); line-height: 2.2; letter-spacing: 0.08em;
       -webkit-font-smoothing: antialiased; overflow-x: hidden;
-      /* 画面ブレ防止のため、スクロールバーの幅をパディングに加算 */
       padding-left: env(safe-area-inset-left); 
       padding-right: calc(env(safe-area-inset-right) + var(--scrollbar-width));
       position: relative;
     }
     body.is-locked { overflow: hidden; }
     img { max-width: 100%; height: auto; display: block; }
-    a { color: var(--fg); text-decoration: none; transition: opacity 0.4s ease; }
-    a:hover { opacity: 0.45; }
+    a { color: var(--fg); text-decoration: none; transition: opacity 0.4s var(--ease); }
+    a:hover { opacity: 0.6; }
 
-    /* 日本語タイポグラフィの最適化（画面内に美しく収める） */
     .concept-sub, .statement-para, .tl-desc, .contact-body-text {
       word-break: normal;
       word-break: auto-phrase;
@@ -68,359 +66,354 @@
     }
 
     /* ============================================================
-       GLOBAL AMBIENT & SCAR LINES
+        AMBIENT STRUCTURE
     ============================================================ */
     .global-ambient-bg {
       position: fixed; inset: -10%; width: 120vw; height: 120vh;
       background-image: url('images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg');
       background-size: cover; background-position: center;
-      filter: blur(70px) brightness(0.2) grayscale(30%);
-      opacity: 0.6; z-index: -3; pointer-events: none;
+      filter: blur(80px) brightness(0.15) grayscale(40%);
+      opacity: 0.55; z-index: -3; pointer-events: none;
     }
 
     .global-scar-line {
-      position: fixed; top: -10vh; left: 15%; width: 1.5px; height: 150vh;
-      background: linear-gradient(to bottom, rgba(164,44,35,0.8), rgba(164,44,35,0.1), transparent);
-      transform: rotate(28deg);
-      transform-origin: top center; z-index: -2; pointer-events: none;
-      box-shadow: 0 0 20px rgba(164,44,35,0.4);
+      position: fixed; top: -10vh; left: 18%; width: 1px; height: 150vh;
+      background: linear-gradient(to bottom, rgba(181,43,29,0.7), rgba(181,43,29,0.1), transparent);
+      transform: rotate(26deg); transform-origin: top center; z-index: -2; pointer-events: none;
+      box-shadow: 0 0 30px rgba(181,43,29,0.3);
     }
     .global-scar-line-2 {
-      position: fixed; bottom: -10vh; right: 20%; width: 2px; height: 120vh;
-      background: linear-gradient(to top, rgba(226,221,214,0.1), rgba(226,221,214,0.02), transparent);
-      transform: rotate(-18deg);
-      transform-origin: bottom center; z-index: -2; pointer-events: none;
+      position: fixed; bottom: -10vh; right: 22%; width: 1.5px; height: 120vh;
+      background: linear-gradient(to top, rgba(229,224,216,0.08), rgba(229,224,216,0.01), transparent);
+      transform: rotate(-16deg); transform-origin: bottom center; z-index: -2; pointer-events: none;
     }
 
     /* ============================================================
-       NAVIGATION
+        NAVIGATION
     ============================================================ */
     nav#top-nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 300;
       display: flex; align-items: center; justify-content: space-between;
-      /* 画面ブレ防止のため、paddingを個別に設定 */
-      padding-top: clamp(14px, 3vw, 36px);
-      padding-bottom: clamp(14px, 3vw, 36px);
+      padding-top: clamp(16px, 3vw, 32px);
+      padding-bottom: clamp(16px, 3vw, 32px);
       padding-left: var(--px);
       padding-right: calc(var(--px) + var(--scrollbar-width));
       background: transparent;
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      border-bottom: 0.5px solid transparent; transition: background 0.4s ease, border-color 0.4s ease;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 0.5px solid transparent; transition: background 0.5s var(--ease), border-color 0.5s var(--ease);
     }
-    nav#top-nav.scrolled { background: rgba(3, 3, 3, 0.85); border-color: var(--border); }
+    nav#top-nav.scrolled { background: rgba(5, 5, 5, 0.85); border-color: var(--border); }
     .nav-logo-unified {
-      font-family: var(--font-en); font-size: clamp(0.7rem, 2.5vw, 0.9rem);
-      letter-spacing: 0.3em; font-weight: 300; color: var(--accent);
-      text-transform: uppercase; transition: opacity 0.4s ease; text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+      font-family: var(--font-en); font-size: clamp(0.75rem, 2.5vw, 0.95rem);
+      letter-spacing: 0.35em; font-weight: 300; color: var(--fg);
+      text-transform: uppercase; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
-    .nav-logo-unified:hover { opacity: 0.5; }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
     .nav-links a {
-      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
+      font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.75rem);
       letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase;
-      transition: color 0.3s ease; text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+      transition: color 0.3s var(--ease);
     }
-    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover { color: var(--fg); }
     .nav-cta {
-      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
+      font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.7rem);
       letter-spacing: 0.25em; text-transform: uppercase;
-      border: 0.5px solid rgba(164,44,35,0.4); padding: 0.55rem 1.4rem;
-      color: var(--accent); transition: background 0.25s, color 0.25s; background: rgba(0,0,0,0.4);
+      border: 0.5px solid rgba(229,224,216,0.3); padding: 0.6rem 1.6rem;
+      color: var(--fg); transition: background 0.3s, border-color 0.3s;
     }
-    .nav-cta:hover { background: rgba(164,44,35,0.2); color: var(--fg); }
+    .nav-cta:hover { background: rgba(229,224,216,0.05); border-color: var(--fg); }
 
     .page-nav {
-      /* 画面ブレ防止対応 */
       position: fixed; right: calc(clamp(20px, 4vw, 40px) + var(--scrollbar-width)); top: 50%; transform: translateY(-50%); z-index: 200;
-      display: flex; flex-direction: column; gap: 24px; opacity: 0; visibility: hidden;
+      display: flex; flex-direction: column; gap: 28px; opacity: 0; visibility: hidden;
       transition: opacity 0.6s var(--ease), visibility 0.6s;
     }
     .page-nav.visible { opacity: 1; visibility: visible; }
-    .page-nav-item { display: flex; align-items: center; gap: 12px; flex-direction: row-reverse; cursor: pointer; background: none; border: none; padding: 8px 0; }
-    .page-nav-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(226,221,214,0.3); transition: all 0.35s; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-    .page-nav-label { font-family: var(--font-en); font-size: 12px; letter-spacing: 0.15em; color: rgba(226,221,214,0.3); text-transform: uppercase; transition: color 0.35s; white-space: nowrap; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot { background: var(--accent); transform: scale(1.4) rotate(45deg); border-radius: 2px; box-shadow: 0 0 10px rgba(164,44,35,0.6); }
-    .page-nav-item:hover .page-nav-label { color: rgba(226,221,214,0.85); }
-    .page-nav-item.active .page-nav-label { color: var(--accent); }
+    .page-nav-item { display: flex; align-items: center; gap: 14px; flex-direction: row-reverse; cursor: pointer; background: none; border: none; padding: 6px 0; }
+    .page-nav-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(229,224,216,0.25); transition: all 0.4s var(--ease); flex-shrink: 0; }
+    .page-nav-label { font-family: var(--font-en); font-size: 11px; letter-spacing: 0.2em; color: rgba(229,224,216,0.25); text-transform: uppercase; transition: color 0.4s var(--ease); white-space: nowrap; }
+    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot { background: var(--accent); transform: scale(1.5); }
+    .page-nav-item:hover .page-nav-label { color: rgba(229,224,216,0.8); }
+    .page-nav-item.active .page-nav-label { color: var(--fg); }
 
     /* ============================================================
-       HERO
+        HERO
     ============================================================ */
     .hero {
-      position: relative; height: 100svh; min-height: 600px;
+      position: relative; height: 100svh; min-height: 650px;
       display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start;
-      padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); overflow: hidden; background: transparent;
+      padding: 0 var(--px) clamp(4rem, 10vh, 8rem); overflow: hidden;
     }
     .hero-bg-image {
-      position: absolute; inset: -2%;
+      position: absolute; inset: 0;
       background-image: url('images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg');
       background-size: cover; background-position: center;
-      opacity: 0.25; filter: grayscale(30%) contrast(1.2);
-      clip-path: polygon(0 50%, 100% 50%, 100% 50%, 0 50%);
-      transition: clip-path 2.5s var(--ease) 0.5s, opacity 3s ease;
+      opacity: 0.2; filter: grayscale(20%) contrast(1.15);
+      clip-path: polygon(0 45%, 100% 45%, 100% 55%, 0 55%);
+      transition: clip-path 2.4s var(--ease) 0.3s, opacity 2.4s var(--ease);
       z-index: 0;
     }
-    .hero-bg-image.revealed { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); opacity: 0.4; }
+    .hero-bg-image.revealed { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); opacity: 0.35; }
 
-    .hero-inner { position: relative; z-index: 2; text-align: left; width: 100%; mix-blend-mode: exclusion; }
-    
-    .hero-eyebrow { font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.75rem); letter-spacing: 0.6em; color: var(--fg); opacity: 0; transform: translateY(10px); transition: opacity 1.5s ease 1s, transform 1.5s var(--ease) 1s; text-transform: uppercase; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.2rem; }
-    .hero-eyebrow::before { content: ''; width: 30px; height: 1px; background: var(--scar-line); flex-shrink: 0; opacity: 0.8; box-shadow: 0 0 5px var(--scar-line); }
-    .hero-eyebrow.revealed { opacity: 0.8; transform: translateY(0); }
+    .hero-inner { position: relative; z-index: 2; text-align: left; width: 100%; }
+    .hero-eyebrow { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.8rem); letter-spacing: 0.5em; color: var(--muted); opacity: 0; transform: translateY(15px); transition: opacity 1.5s var(--ease) 0.8s, transform 1.5s var(--ease) 0.8s; text-transform: uppercase; margin-bottom: 1.8rem; display: flex; align-items: center; gap: 1.5rem; }
+    .hero-eyebrow::before { content: ''; width: 40px; height: 1px; background: var(--accent); opacity: 0.7; }
+    .hero-eyebrow.revealed { opacity: 0.9; transform: translateY(0); }
 
     .hero-title {
-      font-family: var(--font-ja); font-size: clamp(6rem, 22vw, 20rem); font-weight: 200;
-      line-height: 0.88; color: var(--fg); margin-bottom: 1rem; position: relative;
-      display: flex; gap: 0.05em; overflow: hidden; padding: 10px 0; text-shadow: 0 10px 40px rgba(0,0,0,0.9);
+      font-family: var(--font-ja); font-size: clamp(5.5rem, 20vw, 16rem); font-weight: 200;
+      line-height: 0.9; color: var(--fg); margin-bottom: 0.8rem;
+      display: flex; gap: 0.02em; overflow: hidden; padding: 10px 0;
     }
-    .hero-title .char { display: inline-block; opacity: 0; transform: scaleY(0) skewX(-20deg); transform-origin: left bottom; transition: transform 1.8s var(--ease), opacity 1s ease; }
-    .hero-title.revealed .char { opacity: 1; transform: scaleY(1) skewX(0deg); }
+    .hero-title .char { display: inline-block; opacity: 0; transform: translateY(100%) skewY(5deg); transition: transform 2s var(--ease), opacity 1.2s var(--ease); }
+    .hero-title.revealed .char { opacity: 1; transform: translateY(0) skewY(0); }
     
-    .hero-title-en { font-family: var(--font-en); font-size: clamp(1rem, 4vw, 2.5rem); font-style: italic; letter-spacing: 0.4em; color: var(--accent); opacity: 0; filter: blur(10px); transition: opacity 2s ease 1.5s, filter 2s var(--ease) 1.5s; text-shadow: 0 4px 20px rgba(164,44,35,0.8); margin-left: 0.2rem; }
-    .hero-title-en.revealed { opacity: 1; filter: blur(0); }
+    .hero-title-en { font-family: var(--font-en); font-size: clamp(1.2rem, 4vw, 2.4rem); font-style: italic; letter-spacing: 0.35em; color: var(--accent); opacity: 0; transform: scale(0.95); filter: blur(4px); transition: opacity 2s var(--ease) 1.4s, transform 2s var(--ease) 1.4s, filter 1.6s var(--ease) 1.4s; }
+    .hero-title-en.revealed { opacity: 1; transform: scale(1); filter: blur(0); }
 
-    .hero-scroll { position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0; transition: opacity 1s ease 2.5s; }
+    .hero-scroll { position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 14px; opacity: 0; transition: opacity 1.2s var(--ease) 2.2s; }
     .hero-scroll.revealed { opacity: 1; }
-    .hero-scroll-label { font-family: var(--font-en); font-size: 0.52rem; letter-spacing: 0.38em; color: var(--fg); opacity: 0.5; text-transform: uppercase; writing-mode: vertical-rl; }
-    .hero-scroll-track { width: 1px; height: 60px; background: rgba(255,255,255,0.05); position: relative; overflow: hidden; }
-    .hero-scroll-fill { position: absolute; top: -100%; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, var(--accent), transparent); animation: scrollDrop 2.5s cubic-bezier(0.77, 0, 0.175, 1) 2s infinite; }
-    @keyframes scrollDrop { 0% { top: -100%; opacity: 1; } 50% { top: 100%; opacity: 0.5; } 100% { top: 100%; opacity: 0; } }
+    .hero-scroll-label { font-family: var(--font-en); font-size: 0.55rem; letter-spacing: 0.4em; color: var(--muted); text-transform: uppercase; writing-mode: vertical-rl; }
+    .hero-scroll-track { width: 1px; height: 50px; background: rgba(229,224,216,0.08); position: relative; overflow: hidden; }
+    .hero-scroll-fill { position: absolute; top: -100%; left: 0; width: 100%; height: 100%; background: var(--accent); animation: scrollDrop 2.8s cubic-bezier(0.76, 0, 0.24, 1) infinite; }
+    @keyframes scrollDrop { 0% { top: -100%; } 40% { top: 0; } 80% { top: 100%; } 100% { top: 100%; } }
 
     /* ============================================================
-       CONCEPT & STATEMENT
+        CONCEPT & STATEMENT
     ============================================================ */
-    .concept-section { padding: clamp(8rem, 18vh, 12rem) var(--px); max-width: 1000px; margin: 0 auto; text-align: center; position: relative; z-index: 1; }
-    .concept-text { font-size: clamp(1.2rem, 3vw, 2rem); font-weight: 200; line-height: 2; color: var(--fg); letter-spacing: 0.1em; margin-bottom: 3rem; position: relative; display: inline-block; }
+    .concept-section { padding: clamp(8rem, 20vh, 14rem) var(--px); max-width: 1050px; margin: 0 auto; text-align: center; position: relative; z-index: 1; }
+    .concept-text { font-size: clamp(1.25rem, 3.2vw, 2.1rem); font-weight: 200; line-height: 2.1; color: var(--fg); letter-spacing: 0.12em; margin-bottom: 3.5rem; position: relative; display: inline-block; }
     .concept-text::after {
-      content: ''; position: absolute; top: 50%; left: -10%; height: 2px;
-      background: var(--scar-line); box-shadow: 0 0 15px var(--scar-line);
-      transform: translateY(-50%) rotate(-2deg); z-index: -1; opacity: 0.7;
-      width: calc(var(--local-progress, 0) * 120%);
-      will-change: width;
+      content: ''; position: absolute; top: 52%; left: -8%; height: 1px;
+      background: var(--scar-line); box-shadow: 0 0 12px var(--scar-line);
+      transform: translateY(-50%) rotate(-1.5deg); z-index: -1; opacity: 0.65;
+      width: calc(var(--local-progress, 0) * 116%); will-change: width;
     }
-    .concept-sub { font-size: clamp(0.85rem, 1.8vw, 1.05rem); color: rgba(226,221,214,0.6); line-height: 2.2; max-width: 700px; margin: 0 auto; letter-spacing: 0.08em; }
+    .concept-sub { font-size: clamp(0.88rem, 1.8vw, 1.05rem); color: rgba(229,224,216,0.65); line-height: 2.3; max-width: 720px; margin: 0 auto; }
 
-    .statement-section { padding: clamp(5rem, 10vh, 8rem) var(--px) clamp(8rem, 15vh, 12rem); max-width: 900px; margin: 0 auto; position: relative; z-index: 1; border-top: 1px solid rgba(255,255,255,0.03); }
-    .statement-label { font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.7rem); letter-spacing: 0.5em; color: var(--accent); text-transform: uppercase; text-align: center; margin-bottom: clamp(4rem, 8vh, 6rem); opacity: 0; transform: translateY(20px); transition: all 1s ease; }
+    .statement-section { padding: clamp(5rem, 10vh, 8rem) var(--px) clamp(8rem, 18vh, 12rem); max-width: 940px; margin: 0 auto; position: relative; z-index: 1; border-top: 0.5px solid var(--border); }
+    .statement-label { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.75rem); letter-spacing: 0.5em; color: var(--accent); text-transform: uppercase; text-align: center; margin-bottom: clamp(4rem, 8vh, 6rem); opacity: 0; transform: translateY(15px); transition: all 1.2s var(--ease); }
     .statement-label.in-view { opacity: 1; transform: translateY(0); }
-    .statement-body { display: flex; flex-direction: column; gap: clamp(2.5rem, 5vh, 3.5rem); position: relative; }
-    .statement-para { font-size: clamp(0.9rem, 1.8vw, 1.05rem); line-height: 2.4; color: rgba(226,221,214,0.85); letter-spacing: 0.06em; opacity: 0; transform: translateY(30px) skewY(1deg); transition: opacity 1.2s var(--ease), transform 1.2s var(--ease); position: relative; z-index: 2; }
-    .statement-para.in-view { opacity: 1; transform: translateY(0) skewY(0); }
-    .statement-para.highlight { padding-left: 2rem; border-left: 1px solid var(--accent); color: var(--fg); font-weight: 300; }
+    .statement-body { display: flex; flex-direction: column; gap: clamp(2.5rem, 5vh, 3.8rem); position: relative; }
+    .statement-para { font-size: clamp(0.9rem, 1.8vw, 1.05rem); line-height: 2.4; color: rgba(229,224,216,0.85); opacity: 0; transform: translateY(25px); transition: opacity 1.4s var(--ease), transform 1.4s var(--ease); position: relative; z-index: 2; }
+    .statement-para.in-view { opacity: 1; transform: translateY(0); }
+    .statement-para.highlight { padding-left: 2.2rem; border-left: 2px solid var(--accent); color: var(--fg); font-weight: 300; }
     .statement-para strong { color: var(--accent); font-weight: 400; }
     .statement-vertical-scar {
-      position: absolute; top: 0; left: -2rem; width: 1px;
+      position: absolute; top: 0; left: -2.5rem; width: 1px;
       background: linear-gradient(to bottom, var(--scar-line), transparent);
-      height: calc(var(--local-progress, 0) * 120%);
-      opacity: 0.6; z-index: 1; pointer-events: none;
+      height: calc(var(--local-progress, 0) * 115%); opacity: 0.5; z-index: 1; pointer-events: none;
     }
 
     /* ============================================================
-       GALLERY GRID (Compact Layout)
+        WORKS ARCHIVE GRID
     ============================================================ */
-    .gallery-section { padding: 0 var(--px) clamp(6rem, 12vh, 10rem); max-width: 1600px; margin: 0 auto; position: relative; z-index: 1; }
-    .section-label { font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.7rem); letter-spacing: 0.5em; color: var(--muted); text-transform: uppercase; text-align: center; margin-bottom: 2rem; display: flex; align-items: center; justify-content: center; gap: 20px; }
-    .section-label::before, .section-label::after { content: ''; width: 40px; height: 1px; background: var(--border); }
+    .gallery-section { padding: 0 var(--px) clamp(6rem, 14vh, 12rem); max-width: 1680px; margin: 0 auto; position: relative; z-index: 1; }
+    .section-label { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.75rem); letter-spacing: 0.5em; color: var(--muted); text-transform: uppercase; text-align: center; margin-bottom: 2.5rem; display: flex; align-items: center; justify-content: center; gap: 24px; }
+    .section-label::before, .section-label::after { content: ''; width: 50px; height: 0.5px; background: var(--border); }
     
     .gallery-category-title {
-      font-family: var(--font-ja); font-size: clamp(2rem, 4vw, 3rem); font-weight: 200;
-      color: var(--fg); text-align: center; margin: 4rem 0 2.5rem; letter-spacing: 0.1em;
+      font-family: var(--font-ja); font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 200;
+      color: var(--fg); text-align: center; margin: 5rem 0 3.5rem; letter-spacing: 0.15em;
     }
     .gallery-category-title span {
-      font-family: var(--font-en); font-size: clamp(0.8rem, 1.5vw, 1.2rem);
-      color: var(--accent); display: block; margin-top: 0.5rem; letter-spacing: 0.25em; font-style: italic;
+      font-family: var(--font-en); font-size: clamp(0.85rem, 1.6vw, 1.1rem);
+      color: var(--accent); display: block; margin-top: 0.6rem; letter-spacing: 0.3em; font-style: italic; font-weight: 300;
     }
 
     .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(24, 1fr);
-      gap: clamp(1.5rem, 2.5vw, 3rem) clamp(0.8rem, 1.5vw, 2rem);
-      align-items: start;
+      display: grid; grid-template-columns: repeat(24, 1fr);
+      gap: clamp(2rem, 3.5vw, 4.5rem) clamp(1rem, 2vw, 2.5rem);
+      align-items: start; margin-bottom: 6rem;
     }
     
     .gallery-item {
       display: flex; flex-direction: column; text-decoration: none; cursor: pointer;
-      position: relative; opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+      position: relative; opacity: 0; transform: translateY(30px);
+      transition: opacity 1s var(--ease), transform 1s var(--ease);
     }
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
 
-    /* ─── Gallery Item Layout Mapping ─── */
-    .gi-2016-1 { grid-column: 2 / span 5; }
-    .gi-2016-2 { grid-column: 8 / span 5; margin-top: 3rem; }
-    .gi-2016-3 { grid-column: 14 / span 5; margin-top: 1rem; }
-    .gi-2016-4 { grid-column: 20 / span 4; margin-top: 4rem; }
-    .gi-2016-5 { grid-column: 1 / span 5; margin-top: 2rem; }
-    .gi-2016-6 { grid-column: 7 / span 5; margin-top: 5rem; }
-    .gi-2016-7 { grid-column: 13 / span 5; margin-top: 2rem; }
-    .gi-2016-8 { grid-column: 19 / span 5; margin-top: 0rem; }
-    .gi-2016-9 { grid-column: 4 / span 6; margin-top: 3rem; }
-    .gi-2016-10 { grid-column: 12 / span 6; margin-top: 1rem; }
+    .gi-2016-1  { grid-column: 2 / span 5; }
+    .gi-2016-2  { grid-column: 8 / span 5; margin-top: 4rem; }
+    .gi-2016-3  { grid-column: 14 / span 5; margin-top: 1rem; }
+    .gi-2016-4  { grid-column: 20 / span 4; margin-top: 5rem; }
+    .gi-2016-5  { grid-column: 1 / span 5; margin-top: 2rem; }
+    .gi-2016-6  { grid-column: 7 / span 5; margin-top: 6rem; }
+    .gi-2016-7  { grid-column: 13 / span 5; margin-top: 2rem; }
+    .gi-2016-8  { grid-column: 19 / span 5; margin-top: 0.5rem; }
+    .gi-2016-9  { grid-column: 3 / span 6; margin-top: 3rem; }
+    .gi-2016-10 { grid-column: 11 / span 6; margin-top: 1.5rem; }
 
-    .gi-2015-1 { grid-column: 2 / span 5; }
-    .gi-2015-2 { grid-column: 8 / span 5; margin-top: 2rem; }
-    .gi-2015-3 { grid-column: 14 / span 5; }
-    .gi-2015-4 { grid-column: 20 / span 4; margin-top: 3rem; }
-    .gi-2015-5 { grid-column: 4 / span 5; margin-top: 2rem; }
-    .gi-2015-6 { grid-column: 10 / span 5; margin-top: 5rem; }
-    .gi-2015-7 { grid-column: 16 / span 5; margin-top: 1rem; }
-    .gi-2015-8 { grid-column: 8 / span 6; margin-top: 3rem; }
+    .gi-2015-1  { grid-column: 2 / span 5; }
+    .gi-2015-2  { grid-column: 8 / span 5; margin-top: 3rem; }
+    .gi-2015-3  { grid-column: 14 / span 5; }
+    .gi-2015-4  { grid-column: 20 / span 4; margin-top: 4rem; }
+    .gi-2015-5  { grid-column: 4 / span 5; margin-top: 2rem; }
+    .gi-2015-6  { grid-column: 10 / span 5; margin-top: 6rem; }
+    .gi-2015-7  { grid-column: 16 / span 5; margin-top: 1rem; }
+    .gi-2015-8  { grid-column: 8 / span 6; margin-top: 3rem; }
 
-    .gi-2014-1 { grid-column: 4 / span 8; margin-top: 4rem; }
-    .gi-2014-2 { grid-column: 13 / span 9; margin-top: 2rem; }
-    .gi-2014-3 { grid-column: 8 / span 8; margin-top: 3rem; }
+    .gi-2014-1  { grid-column: 3 / span 8; margin-top: 3rem; }
+    .gi-2014-2  { grid-column: 13 / span 9; margin-top: 1.5rem; }
+    .gi-2014-3  { grid-column: 8 / span 8; margin-top: 4rem; }
 
-    .gi-aav-1 { grid-column: 2 / span 6; }
-    .gi-aav-2 { grid-column: 9 / span 6; margin-top: 3rem; }
-    .gi-aav-3 { grid-column: 16 / span 6; margin-top: 1rem; }
-    .gi-aav-4 { grid-column: 5 / span 6; margin-top: 4rem; }
-    .gi-aav-5 { grid-column: 13 / span 6; margin-top: 2rem; }
-    .gi-aav-6 { grid-column: 7 / span 12; margin-top: 6rem; }
+    .gi-aav-1   { grid-column: 2 / span 6; }
+    .gi-aav-2   { grid-column: 9 / span 6; margin-top: 4.5rem; }
+    .gi-aav-3   { grid-column: 16 / span 6; margin-top: 1.5rem; }
+    .gi-aav-4   { grid-column: 4 / span 6; margin-top: 3.5rem; }
+    .gi-aav-5   { grid-column: 12 / span 6; margin-top: 2rem; }
+    .gi-aav-6   { grid-column: 6 / span 12; margin-top: 6rem; }
 
     .gallery-item-img-wrap {
-      width: 100%; position: relative; overflow: hidden;
-      background: transparent; font-size: 0; line-height: 0; 
-      border: 0.5px solid var(--border); transition: border-color 0.4s ease, box-shadow 0.6s ease;
+      width: 100%; position: relative; overflow: hidden; background: #000;
+      font-size: 0; line-height: 0; aspect-ratio: auto;
+      border: 0.5px solid var(--border); transition: border-color 0.6s var(--ease), box-shadow 0.6s var(--ease);
     }
-    .gallery-item-img-wrap img { width: 100%; height: auto; display: block; filter: grayscale(40%) contrast(1.1) brightness(0.8); transition: transform 1.2s var(--ease), filter 0.8s ease; }
-    .gallery-item:hover .gallery-item-img-wrap { border-color: rgba(164,44,35,0.5); box-shadow: 0 16px 40px rgba(0,0,0,0.8), 0 0 15px rgba(164,44,35,0.15); }
-    .gallery-item:hover img { transform: scale(1.03); filter: grayscale(0%) contrast(1.0) brightness(1.0); }
+    .gallery-item-img-wrap img { width: 100%; height: auto; display: block; filter: grayscale(50%) contrast(1.1) brightness(0.75); transition: transform 1.5s var(--ease), filter 1s var(--ease); }
+    .gallery-item:hover .gallery-item-img-wrap { border-color: rgba(229,224,216,0.4); box-shadow: 0 20px 45px rgba(0,0,0,0.85); }
+    .gallery-item:hover img { transform: scale(1.025); filter: grayscale(0%) contrast(1.05) brightness(1.0); }
 
-    .gallery-item-cap { padding-top: 1.2rem; text-align: left; line-height: 1.6; }
-    .gallery-item-title { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.4vw, 1rem); font-weight: 300; color: var(--fg); letter-spacing: 0.05em; margin-bottom: 0.3rem; display: block; text-shadow: 0 2px 4px rgba(0,0,0,0.6); }
-    .gallery-item-meta { font-family: var(--font-en); font-size: clamp(0.6rem, 1.1vw, 0.7rem); color: var(--accent); letter-spacing: 0.14em; font-style: italic; display: block; }
+    .gallery-item-cap { padding-top: 1.4rem; text-align: left; line-height: 1.5; }
+    .gallery-item-title { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.4vw, 0.98rem); font-weight: 300; color: var(--fg); letter-spacing: 0.05em; margin-bottom: 0.4rem; display: block; }
+    .gallery-item-meta { font-family: var(--font-en); font-size: clamp(0.65rem, 1.2vw, 0.75rem); color: var(--muted); letter-spacing: 0.1em; display: block; }
 
     /* ============================================================
-       CHRONOLOGY (タイムライン)
+        CHRONOLOGY TIMELINE
     ============================================================ */
     .chronology-section { 
-      padding: clamp(6rem, 15vh, 12rem) var(--px); background: var(--bg2); 
-      backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-      border-top: 1px solid rgba(164,44,35,0.1); position: relative; z-index: 1;
+      padding: clamp(6rem, 16vh, 12rem) var(--px); background: var(--bg2); 
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-top: 0.5px solid var(--border); position: relative; z-index: 1;
     }
-    .timeline-container { max-width: 1400px; margin: 0 auto; position: relative; }
+    .timeline-container { max-width: 1300px; margin: 0 auto; position: relative; }
     
-    .timeline-spine-wrapper { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: rgba(226,221,214,0.05); transform: translateX(-50%); }
+    .timeline-spine-wrapper { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(229,224,216,0.06); transform: translateX(-50%); }
     .timeline-spine-progress { 
       position: absolute; top: 0; left: 0; width: 100%; background: var(--scar-line); 
       height: calc(var(--local-progress, 0) * 100%); 
-      box-shadow: 0 0 15px var(--scar-line);
-      will-change: height;
+      box-shadow: 0 0 15px var(--scar-line); will-change: height;
     }
 
-    .tl-entry { position: relative; width: 100%; margin-bottom: clamp(10rem, 20vh, 15rem); display: flex; flex-direction: column; opacity: 0; transform: translateY(40px); transition: opacity 1.2s var(--ease), transform 1.2s var(--ease); }
+    .tl-entry { position: relative; width: 100%; margin-bottom: clamp(10rem, 22vh, 16rem); display: flex; flex-direction: column; opacity: 0; transform: translateY(40px); transition: opacity 1.2s var(--ease), transform 1.2s var(--ease); }
     .tl-entry:last-child { margin-bottom: 0; }
     .tl-entry.in-view { opacity: 1; transform: translateY(0); }
 
-    .tl-year-display { font-family: var(--font-en); font-size: clamp(4rem, 8vw, 7rem); font-weight: 200; color: transparent; -webkit-text-stroke: 1px rgba(164,44,35,0.6); letter-spacing: 0.05em; line-height: 1; position: absolute; top: -5%; left: 0; z-index: 0; opacity: 0.4; transition: color 1s ease; }
-    .tl-entry.in-view .tl-year-display { color: rgba(164,44,35,0.1); }
+    .tl-year-display { font-family: var(--font-en); font-size: clamp(4.5rem, 9vw, 8.5rem); font-weight: 200; color: transparent; -webkit-text-stroke: 0.5px rgba(229,224,216,0.12); letter-spacing: 0.02em; line-height: 1; position: absolute; top: -10%; left: 0; z-index: 0; pointer-events: none; }
     .tl-entry:nth-child(even) .tl-year-display { left: auto; right: 0; text-align: right; }
 
-    .tl-content-wrap { display: flex; justify-content: space-between; align-items: center; gap: clamp(3rem, 6vw, 8rem); position: relative; z-index: 2; margin-top: clamp(2rem, 4vw, 4rem); }
+    .tl-content-wrap { display: flex; justify-content: space-between; align-items: center; gap: clamp(3rem, 7vw, 7.5rem); position: relative; z-index: 2; margin-top: clamp(2rem, 4vw, 4rem); }
     .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
 
     .tl-figure { 
-      width: 55%; position: relative; overflow: hidden; cursor: zoom-in; 
-      background: transparent; font-size: 0; line-height: 0; 
-      border: 0.5px solid var(--border); height: fit-content;
+      width: 54%; position: relative; overflow: hidden; cursor: zoom-in; 
+      background: #000; font-size: 0; line-height: 0; border: 0.5px solid var(--border); height: fit-content;
+      transition: border-color 0.5s var(--ease);
     }
-    .tl-figure::after { content: ''; position: absolute; inset: 0; border: 1px solid transparent; pointer-events: none; transition: border-color 0.5s ease; }
-    .tl-figure:hover::after { border-color: var(--accent); }
-    .tl-body { width: 40%; position: relative; z-index: 2; padding: 2rem 0; line-height: 2.1; }
+    .tl-figure:hover { border-color: rgba(229,224,216,0.4); }
+    .tl-body { width: 41%; position: relative; z-index: 2; padding: 1.5rem 0; }
 
-    .tl-entry.is-full-figure .tl-content-wrap { flex-direction: column; align-items: center; gap: clamp(3rem, 5vw, 5rem); }
-    .tl-entry.is-full-figure .tl-figure { 
-      width: 90%; 
-      padding: 0; box-shadow: 0 30px 60px rgba(0,0,0,0.8); 
-    }
-    .tl-entry.is-full-figure .tl-body { width: 80%; max-width: 900px; text-align: center; }
+    .tl-entry.is-full-figure .tl-content-wrap { flex-direction: column; align-items: center; gap: clamp(3rem, 5vw, 4.5rem); }
+    .tl-entry.is-full-figure .tl-figure { width: 88%; max-width: 1000px; }
+    .tl-entry.is-full-figure .tl-body { width: 80%; max-width: 800px; text-align: center; }
 
-    .tl-figure img { width: 100%; height: auto; display: block; filter: grayscale(20%) brightness(0.9); transform: scale(1.02); transition: transform 1.5s var(--ease), filter 0.8s ease; }
-    .tl-figure:hover img { transform: scale(1.05); filter: grayscale(0%) brightness(1.0); }
+    .tl-figure img { width: 100%; height: auto; display: block; filter: grayscale(35%) brightness(0.8); transition: transform 1.6s var(--ease), filter 1s var(--ease); }
+    .tl-figure:hover img { transform: scale(1.02); filter: grayscale(0%) brightness(1.0); }
 
-    .tl-title { font-family: var(--font-ja); font-size: clamp(1.5rem, 2.8vw, 2.5rem); font-weight: 300; color: var(--fg); line-height: 1.4; margin-bottom: 1rem; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
-    .tl-meta { font-family: var(--font-en); font-size: clamp(0.7rem, 1.3vw, 0.8rem); color: var(--accent); letter-spacing: 0.15em; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
-    .tl-desc { font-size: clamp(0.9rem, 1.7vw, 1rem); line-height: 2.2; color: rgba(226,221,214,0.8); }
-    .tl-desc p { margin-bottom: 1.5em; }
+    .tl-title { font-family: var(--font-ja); font-size: clamp(1.35rem, 2.5vw, 2rem); font-weight: 300; color: var(--fg); line-height: 1.5; margin-bottom: 1rem; }
+    .tl-meta { font-family: var(--font-en); font-size: clamp(0.7rem, 1.3vw, 0.8rem); color: var(--accent); letter-spacing: 0.15em; margin-bottom: 2rem; padding-bottom: 1.2rem; border-bottom: 0.5px solid var(--border); text-transform: none; }
+    .tl-desc { font-size: clamp(0.88rem, 1.7vw, 1.02rem); line-height: 2.3; color: rgba(229,224,216,0.75); }
+    .tl-desc p { margin-bottom: 1.2em; }
     .tl-entry.is-full-figure .tl-desc { text-align: left; }
 
-    .tw-char { opacity: 0; display: inline-block; transition: opacity 0.2s ease; }
-    .tw-cursor { display: inline-block; width: 1.5px; height: 1.1em; background-color: var(--accent); margin-left: 2px; vertical-align: middle; animation: tw-blink 0.8s infinite; }
+    .tw-char { opacity: 0; display: inline-block; transition: opacity 0.15s var(--ease); }
+    .tw-cursor { display: inline-block; width: 1px; height: 1.2em; background-color: var(--accent); margin-left: 3px; vertical-align: middle; animation: tw-blink 0.9s infinite; }
     @keyframes tw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-    .fade-out { opacity: 0; transition: opacity 0.8s ease; }
+    .fade-out { opacity: 0; transition: opacity 0.6s var(--ease); }
 
     /* ============================================================
-       CONTACT & FOOTER
+        CONTACT & FOOTER
     ============================================================ */
     .contact-section { 
-      padding: clamp(8rem, 16vh, 12rem) var(--px); text-align: center; 
-      border-top: 1px solid var(--border); 
-      background: radial-gradient(circle at center, rgba(164,44,35,0.08) 0%, rgba(3,3,3,0.95) 70%); 
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); position: relative; z-index: 1;
+      padding: clamp(8rem, 16vh, 12rem) var(--px); text-align: center; border-top: 0.5px solid var(--border); 
+      background: radial-gradient(circle at center, rgba(166,67,55,0.05) 0%, rgba(5,5,5,1) 80%); 
+      position: relative; z-index: 1;
     }
-    .contact-heading { font-family: var(--font-ja); font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 2rem; letter-spacing: 0.05em; }
-    .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.9rem, 1.8vw, 1rem); color: rgba(226,221,214,0.7); margin: 0 auto 3.5rem; max-width: 500px; line-height: 2.2; }
-    .contact-btn { display: inline-block; padding: 1.2rem 4rem; background: transparent; color: var(--fg); font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.75rem); font-weight: 400; letter-spacing: 0.3em; text-transform: uppercase; text-decoration: none; border: 1px solid var(--accent); transition: all 0.5s var(--ease); }
-    .contact-btn:hover { background: var(--accent); color: #fff; transform: translateY(-4px); box-shadow: 0 15px 30px rgba(164,44,35,0.3); }
+    .contact-heading { font-family: var(--font-ja); font-size: clamp(2rem, 4.5vw, 3.2rem); font-weight: 200; line-height: 1.3; color: var(--fg); margin-bottom: 2rem; letter-spacing: 0.08em; }
+    .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.88rem, 1.8vw, 1rem); color: rgba(229,224,216,0.6); margin: 0 auto 3.5rem; max-width: 520px; }
+    .contact-btn { display: inline-block; padding: 1.2rem 4.5rem; background: transparent; color: var(--fg); font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.75rem); letter-spacing: 0.3em; text-transform: uppercase; border: 0.5px solid var(--fg); transition: all 0.5s var(--ease); }
+    .contact-btn:hover { background: var(--fg); color: #000; transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
     
-    footer { padding: clamp(2.5rem, 6vh, 5rem) var(--px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(3, 3, 3, 1); position: relative; z-index: 1; }
-    .footer-logo { font-family: var(--font-ja); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(226,221,214,0.4); letter-spacing: 0.1em; }
-    .footer-copy { font-family: var(--font-en); font-size: clamp(0.55rem, 1.3vw, 0.65rem); letter-spacing: 0.2em; color: var(--muted); }
+    footer { padding: clamp(3rem, 6vh, 5rem) var(--px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; border-top: 0.5px solid var(--border); background: #000; position: relative; z-index: 1; }
+    .footer-logo { font-family: var(--font-ja); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: var(--muted); letter-spacing: 0.15em; }
+    .footer-copy { font-family: var(--font-en); font-size: clamp(0.55rem, 1.3vw, 0.65rem); letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase; }
 
     /* ============================================================
-       LIGHTBOX (MODAL) & BACK TO TOP
+        STYLISH MODAL LIGHTBOX (Customized for high aesthetic value)
     ============================================================ */
-    .image-modal { position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.6s var(--ease), visibility 0.6s; }
+    .image-modal { position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.5s var(--ease), visibility 0.5s; }
     .image-modal.is-active { opacity: 1; visibility: visible; }
-    .modal-bg { position: absolute; inset: 0; background: rgba(0,0,0,0.98); cursor: zoom-out; }
-    .modal-close { position: fixed; top: clamp(1.5rem, 4vh, 2.5rem); right: calc(var(--px) + var(--scrollbar-width)); z-index: 10001; background: none; border: none; color: var(--muted); cursor: pointer; padding: 0.5rem; transition: color 0.4s ease, transform 0.4s var(--ease); }
-    .modal-close:hover { color: var(--fg); transform: scale(1.2) rotate(90deg); }
-    .modal-content { position: relative; z-index: 10000; max-width: 95vw; margin: auto; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; opacity: 0; transform: scale(0.98) translateY(20px); transition: opacity 0.6s var(--ease) 0.1s, transform 0.6s var(--ease) 0.1s; }
-    .image-modal.is-active .modal-content { opacity: 1; transform: scale(1) translateY(0); }
-    .modal-content img { max-width: 100%; max-height: 80svh; object-fit: contain; box-shadow: 0 40px 100px rgba(0,0,0,1); cursor: zoom-out; border: 0.5px solid rgba(164,44,35,0.3); }
-    .modal-caption { text-align: center; width: 100%; padding: 0 1rem; }
-    .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(1.2rem, 2.2vw, 1.6rem); font-weight: 200; color: var(--fg); margin-bottom: 0.4rem; }
-    .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.75rem, 1.3vw, 0.9rem); font-style: italic; color: var(--accent); letter-spacing: 0.2em; }
+    .modal-bg { position: absolute; inset: 0; background: rgba(3,3,3,0.98); cursor: zoom-out; }
+    .modal-close { position: fixed; top: clamp(1.5rem, 4vh, 2.5rem); right: calc(var(--px) + var(--scrollbar-width)); z-index: 10001; background: none; border: none; color: var(--muted); cursor: pointer; padding: 0.5rem; transition: color 0.4s var(--ease), transform 0.4s var(--ease); }
+    .modal-close:hover { color: var(--fg); transform: scale(1.1) rotate(90deg); }
     
-    .back-to-top { position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: calc(clamp(15px, 4vw, 50px) + var(--scrollbar-width)); z-index: 9000; width: clamp(60px, 9vw, 80px); height: clamp(60px, 9vw, 80px); border-radius: 50%; background: transparent; border: 1px solid rgba(164,44,35,0.5); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--fg); opacity: 0; visibility: hidden; transform: translateY(30px); transition: all 0.5s var(--ease); cursor: pointer; backdrop-filter: blur(4px); }
+    .modal-content {
+      position: relative; z-index: 10000; max-width: 90vw; width: fit-content; margin: auto;
+      display: flex; flex-direction: column; align-items: center; gap: 1.8rem;
+      opacity: 0; transform: scale(0.97) translateY(15px); transition: opacity 0.5s var(--ease) 0.05s, transform 0.5s var(--ease) 0.05s;
+    }
+    .image-modal.is-active .modal-content { opacity: 1; transform: scale(1) translateY(0); }
+    
+    .modal-img-wrap { width: 100%; display: flex; justify-content: center; background: transparent; }
+    .modal-content img { max-width: 100%; max-height: 76svh; width: auto; height: auto; object-fit: contain; box-shadow: 0 40px 90px rgba(0,0,0,0.95); cursor: zoom-out; border: 0.5px solid rgba(229,224,216,0.1); }
+    
+    /* Elegant Meta Text Grid for Lightbox */
+    .modal-caption { text-align: center; width: 100%; max-width: 700px; padding: 0 1rem; }
+    .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(1.1rem, 2.2vw, 1.4rem); font-weight: 300; color: var(--fg); margin-bottom: 0.6rem; letter-spacing: 0.15em; }
+    .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.85rem, 1.6vw, 1rem); font-style: italic; color: var(--accent); letter-spacing: 0.15em; margin-bottom: 0.6rem; }
+    .modal-caption-details { font-family: var(--font-en); font-size: clamp(0.7rem, 1.4vw, 0.85rem); color: #a39586; letter-spacing: 0.25em; font-weight: 300; display: block; margin-top: 0.5rem; }
+
+    .back-to-top { position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: calc(clamp(15px, 4vw, 50px) + var(--scrollbar-width)); z-index: 9000; width: clamp(55px, 8vw, 70px); height: clamp(55px, 8vw, 70px); border-radius: 50%; background: transparent; border: 0.5px solid rgba(229,224,216,0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--fg); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.5s var(--ease); cursor: pointer; backdrop-filter: blur(8px); }
     .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
-    .back-to-top:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-8px); box-shadow: 0 10px 20px rgba(164,44,35,0.4); }
-    .back-to-top svg { width: clamp(20px, 3vw, 28px); height: clamp(20px, 3vw, 28px); margin-bottom: 4px; }
-    .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.55rem, 1.2vw, 0.7rem); font-weight: 400; text-transform: uppercase; letter-spacing: 0.1em; line-height: 1; }
+    .back-to-top:hover { background: var(--fg); border-color: var(--fg); color: #000; transform: translateY(-5px); }
+    .back-to-top svg { width: clamp(18px, 2.5vw, 24px); height: clamp(18px, 2.5vw, 24px); margin-bottom: 2px; }
+    .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.5rem, 1.1vw, 0.65rem); text-transform: uppercase; letter-spacing: 0.15em; line-height: 1; }
 
     /* ============================================================
-       RESPONSIVE DESIGN
+        RESPONSIVE SYSTEM 
     ============================================================ */
-    @media (max-width: 1024px) {
-      .gallery-grid { grid-template-columns: repeat(12, 1fr); gap: 3rem 1.5rem; }
-      .gallery-item { grid-column: auto / span 4 !important; margin-top: 1rem !important; }
+    @media (max-width: 1200px) {
+      .gallery-grid { grid-template-columns: repeat(12, 1fr); gap: 3.5rem 1.8rem; }
+      .gallery-item { grid-column: auto / span 4 !important; margin-top: 0 !important; }
       .gi-2014-1, .gi-2014-2, .gi-2014-3, .gi-aav-6 { grid-column: 2 / span 10 !important; }
     }
     @media (max-width: 860px) {
-      .timeline-container { padding-left: 40px; }
+      .timeline-container { padding-left: 35px; }
       .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2.5rem; }
       .tl-figure, .tl-body { width: 100%; padding: 0; }
-      .timeline-spine-wrapper { left: 20px; transform: none; }
-      .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; font-size: clamp(3rem, 10vw, 4.5rem); position: relative; top: 0; opacity: 1; -webkit-text-stroke: 0; color: var(--accent); }
+      .timeline-spine-wrapper { left: 15px; transform: none; }
+      .tl-year-display { position: relative; top: 0; left: 0 !important; font-size: clamp(3rem, 10vw, 4.5rem); -webkit-text-stroke: 0; color: var(--accent); opacity: 1; margin-bottom: 0.5rem; }
       .tl-entry.is-full-figure .tl-figure { width: 100%; }
       .tl-entry.is-full-figure .tl-body { width: 100%; text-align: left; }
     }
     @media (max-width: 768px) {
-      nav#top-nav { padding-left: 1.25rem; padding-right: calc(1.25rem + var(--scrollbar-width)); }
+      nav#top-nav { padding-left: 1.5rem; padding-right: calc(1.5rem + var(--scrollbar-width)); }
       .nav-links { display: none !important; }
-      .page-nav.visible { right: calc(8px + var(--scrollbar-width)); opacity: 0.5; }
-      .page-nav.visible:hover { opacity: 1; }
+      .page-nav.visible { right: calc(10px + var(--scrollbar-width)); opacity: 0.6; }
       .page-nav-label { display: none; }
       .hero-eyebrow { transform: translateY(0); opacity: 1; }
       .hero-title .char { transform: none; opacity: 1; }
-      .hero-title-en { opacity: 1; filter: blur(0); }
+      .hero-title-en { opacity: 1; transform: none; filter: blur(0); }
       .gallery-item { grid-column: auto / span 6 !important; }
       .gi-2014-1, .gi-2014-2, .gi-2014-3, .gi-aav-6 { grid-column: 1 / span 12 !important; }
     }
-    @media (max-width: 480px) {
+    @media (max-width: 500px) {
       .hero-scroll { display: none; }
       .statement-para, .tl-desc, .contact-body-text { text-align: left; }
-      .gallery-grid { grid-template-columns: 1fr; gap: 2rem 0; }
-      .gallery-item { grid-column: auto / span 1 !important; margin-top: 0 !important; }
+      .gallery-grid { grid-template-columns: 1fr; gap: 2.5rem 0; }
+      .gallery-item { grid-column: auto / span 1 !important; }
+      .statement-vertical-scar { display: none; }
+      .statement-para.highlight { padding-left: 1.2rem; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
@@ -496,7 +489,7 @@
         </p>
         <p class="statement-para highlight">
           <strong>この「皮膚と傷」という物質的な探求は、やがて私を別の次元へと導くことになった。</strong><br>
-          人間の表面に刻まれた傷を見つめ続けるうちに、私の関心は「大地の表面（土）」へと向かっていったのだ。歴史や風土という目に見えない傷を、泥という物質で形にする。このシリーズで「皮膚の変容」を描き切ったことこそが、後に陶芸を取り入れ、土地の記憶を焼き付ける「左美都」の制作へと至る、最も重要な土壌となったのである。
+          人間の表面に刻まれた傷を見つめ続けるうちに、私の関心は「大地の表面（土）」へと向かっていったのだ。歴史や風土という目えない傷を、泥という物質で形にする。このシリーズで「皮膚の変容」を描き切ったことこそが、後に陶芸を取り入れ、土地の記憶を焼き付ける「左美都」の制作へと至る、最も重要な土壌となったのである。
         </p>
       </div>
     </section>
@@ -507,131 +500,131 @@
       <h3 class="gallery-category-title">傷<span>Scars</span></h3>
       <div class="gallery-grid">
           
-        <a href="#work-scars-gaza" class="gallery-item gi-2016-1" data-img-src="images/【F6横】ガザ.jpg">
+        <a href="#gallery" class="gallery-item gi-2016-1" data-img-src="images/【F6横】ガザ.jpg" data-title-ja="ガザ" data-title-en="Gaza" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】ガザ.jpg" alt="ガザ" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">ガザ</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
           </div>
         </a>
-        <a href="#work-scars-boy" class="gallery-item gi-2016-2" data-img-src="images/【F6横】怪我をした少年.jpg">
+        <a href="#gallery" class="gallery-item gi-2016-2" data-img-src="images/【F6横】怪我をした少年.jpg" data-title-ja="怪我をした少年" data-title-en="Injured Boy" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】怪我をした少年.jpg" alt="怪我をした少年" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">怪我をした少年</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
           </div>
         </a>
-        <a href="#work-scars-iraq" class="gallery-item gi-2016-3" data-img-src="images/【F6横】イラクの子ども(2003).jpg">
+        <a href="#gallery" class="gallery-item gi-2016-3" data-img-src="images/【F6横】イラクの子ども(2003).jpg" data-title-ja="イラクの子ども (2003)" data-title-en="Children of Iraq (2003)" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】イラクの子ども(2003).jpg" alt="イラクの子ども (2003)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">イラクの子ども (2003)</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
           </div>
         </a>
-        <a href="#work-scars-turkey" class="gallery-item gi-2016-4" data-img-src="images/【F6横】トルコへ向かうシリア難民の少女.jpg">
+        <a href="#gallery" class="gallery-item gi-2016-4" data-img-src="images/【F6横】トルコへ向かうシリア難民の少女.jpg" data-title-ja="トルコへ向かうシリア難民の少女" data-title-en="Syrian Refugee Girl Heading for Turkey" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】トルコへ向かうシリア難民の少女.jpg" alt="トルコへ向かうシリア難民の少女" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">トルコへ向かうシリア難民の少女</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
           </div>
         </a>
-        <a href="#work-scars-syria" class="gallery-item gi-2016-5" data-img-src="images/【F6横】シリア難民の少女（2015）.jpg">
+        <a href="#gallery" class="gallery-item gi-2016-5" data-img-src="images/【F6横】シリア難民の少女（2015）.jpg" data-title-ja="シリア難民の少女 (2015)" data-title-en="Syrian Refugee Girl (2015)" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】シリア難民の少女（2015）.jpg" alt="シリア難民の少女 (2015)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">シリア難民の少女 (2015)</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
           </div>
         </a>
-        <a href="#work-scars07" class="gallery-item gi-2016-6" data-img-src="images/【F6横】傷(7).jpg">
+        <a href="#gallery" class="gallery-item gi-2016-6" data-img-src="images/【F6横】傷(7).jpg" data-title-ja="傷(7)" data-title-en="Scar (7)" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(7).jpg" alt="傷(7)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">傷(7)</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
           </div>
         </a>
-        <a href="#work-scars08" class="gallery-item gi-2016-7" data-img-src="images/【F6横】傷(8).jpg">
+        <a href="#gallery" class="gallery-item gi-2016-7" data-img-src="images/【F6横】傷(8).jpg" data-title-ja="傷(8)" data-title-en="Scar (8)" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(8).jpg" alt="傷(8)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">傷(8)</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
           </div>
         </a>
-        <a href="#work-scars11" class="gallery-item gi-2016-8" data-img-src="images/【F6横】傷(11).jpg">
+        <a href="#gallery" class="gallery-item gi-2016-8" data-img-src="images/【F6横】傷(11).jpg" data-title-ja="傷(11)" data-title-en="Scar (11)" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(11).jpg" alt="傷(11)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">傷(11)</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
           </div>
         </a>
         
-        <a href="#work-scars01" class="gallery-item gi-2016-9" data-img-src="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg">
+        <a href="#work-scars01" class="gallery-item gi-2016-9" data-img-src="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg" data-title-ja="傷(5) (イスラエルの少女)" data-title-en="Scar (5) [Israeli Girl]" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg" alt="傷(5) (イスラエルの少女)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">傷(5) (イスラエルの少女)</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
           </div>
         </a>
-        <a href="#work-scars08-black" class="gallery-item gi-2016-10" data-img-src="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg">
+        <a href="#work-scars08-black" class="gallery-item gi-2016-10" data-img-src="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg" data-title-ja="黒人妊婦 [コナーさん]" data-title-en="Pregnant Black Woman [Mrs. Connor]" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg" alt="黒人妊婦 [コナーさん]" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">黒人妊婦 [コナーさん]</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
           </div>
         </a>
 
-        <a href="#work-scars04" class="gallery-item gi-2015-1" data-img-src="images/【F6横】傷(4).jpg">
+        <a href="#work-scars04" class="gallery-item gi-2015-1" data-img-src="images/【F6横】傷(4).jpg" data-title-ja="傷(4)" data-title-en="Scar (4)" data-year="2015" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(4).jpg" alt="傷(4)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">傷(4)</span><span class="gallery-item-meta">2015 / 31.8 × 41.0 cm</span>
           </div>
         </a>
-        <a href="#work-scars06" class="gallery-item gi-2015-2" data-img-src="images/【F6横】傷(6).jpg">
+        <a href="#gallery" class="gallery-item gi-2015-2" data-img-src="images/【F6横】傷(6).jpg" data-title-ja="傷(6)" data-title-en="Scar (6)" data-year="2015" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(6).jpg" alt="傷(6)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">傷(6)</span><span class="gallery-item-meta">2015 / 31.8 × 41.0 cm</span>
           </div>
         </a>
-        <a href="#work-scars09" class="gallery-item gi-2015-3" data-img-src="images/【F6横】傷(9)(シャフィク、Shafiq).jpg">
+        <a href="#gallery" class="gallery-item gi-2015-3" data-img-src="images/【F6横】傷(9)(シャフィク、Shafiq).jpg" data-title-ja="傷(9) (Shafiq)" data-title-en="Scar (9) [Shafiq]" data-year="2015" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(9)(シャフィク、Shafiq).jpg" alt="傷(9) (Shafiq)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">傷(9) (Shafiq)</span><span class="gallery-item-meta">2015 / 31.8 × 41.0 cm</span>
           </div>
         </a>
-        <a href="#work-scars10" class="gallery-item gi-2015-4" data-img-src="images/【F6横】傷(10).jpg">
+        <a href="#gallery" class="gallery-item gi-2015-4" data-img-src="images/【F6横】傷(10).jpg" data-title-ja="傷(10)" data-title-en="Scar (10)" data-year="2015" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(10).jpg" alt="傷(10)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">傷(10)</span><span class="gallery-item-meta">2015 / 31.8 × 41.0 cm</span>
           </div>
         </a>
         
-        <a href="#gallery" class="gallery-item gi-2015-5" data-img-src="images/【F6横】傷.jpg">
+        <a href="#gallery" class="gallery-item gi-2015-5" data-img-src="images/【F6横】傷.jpg" data-title-ja="傷" data-title-en="Scar" data-year="2015" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】傷.jpg" alt="傷" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">傷</span><span class="gallery-item-meta">2015 / 31.8 × 41.0 cm</span>
           </div>
         </a>
-        <a href="#gallery" class="gallery-item gi-2015-6" data-img-src="images/【F6横】傷(2).jpg">
+        <a href="#gallery" class="gallery-item gi-2015-6" data-img-src="images/【F6横】傷(2).jpg" data-title-ja="傷(2)" data-title-en="Scar (2)" data-year="2015" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(2).jpg" alt="傷(2)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">傷(2)</span><span class="gallery-item-meta">2015 / 31.8 × 41.0 cm</span>
           </div>
         </a>
-        <a href="#gallery" class="gallery-item gi-2015-7" data-img-src="images/【F6横】傷(3)(Andrew, 23).jpg">
+        <a href="#gallery" class="gallery-item gi-2015-7" data-img-src="images/【F6横】傷(3)(Andrew, 23).jpg" data-title-ja="傷(3) (Andrew, 23)" data-title-en="Scar (3) [Andrew, 23]" data-year="2015" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(3)(Andrew, 23).jpg" alt="傷(3) (Andrew, 23)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">傷(3) (Andrew, 23)</span><span class="gallery-item-meta">2015 / 31.8 × 41.0 cm</span>
           </div>
         </a>
-        <a href="#gallery" class="gallery-item gi-2015-8" data-img-src="images/【F6横】傷(4).jpg">
+        <a href="#gallery" class="gallery-item gi-2015-8" data-img-src="images/【F6横】傷(4).jpg" data-title-ja="傷(4)" data-title-en="Scar (4)" data-year="2015" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(4).jpg" alt="傷(4)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">傷(4)</span><span class="gallery-item-meta">2015 / 31.8 × 41.0 cm</span>
           </div>
         </a>
 
-        <a href="#work-scars-tirana" class="gallery-item gi-2014-1" data-img-src="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg">
+        <a href="#work-scars-tirana" class="gallery-item gi-2014-1" data-img-src="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg" data-title-ja="視線(2)[ティラナ (アルバニア共和国)]" data-title-en="Gaze (2) [Tirana, Republic of Albania]" data-year="2014" data-size="130.3 × 162.1 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg" alt="視線(2)[ティラナ (アルバニア共和国)]" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">視線(2)[ティラナ (アルバニア共和国)]</span><span class="gallery-item-meta">2014 / 130.3 × 162.1 cm</span>
           </div>
         </a>
-        <a href="#work-scars-sakebi" class="gallery-item gi-2014-2" data-img-src="images/【F100横】さけび（ガザ）.jpg">
+        <a href="#work-scars-sakebi" class="gallery-item gi-2014-2" data-img-src="images/【F100横】さけび（ガザ）.jpg" data-title-ja="さけび" data-title-en="Shout" data-year="2014" data-size="130.3 × 162.1 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F100横】さけび（ガザ）.jpg" alt="さけび" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">さけび</span><span class="gallery-item-meta">2014 / 130.3 × 162.1 cm</span>
           </div>
         </a>
-        <a href="#work-scars-shisen" class="gallery-item gi-2014-3" data-img-src="images/【M60横】視線（イラク）.jpg">
+        <a href="#gallery" class="gallery-item gi-2014-3" data-img-src="images/【M60横】視線（イラク）.jpg" data-title-ja="視線（イラク）" data-title-en="Gaze [Iraq]" data-year="2014" data-size="80.3 × 130.3 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【M60横】視線（イラク）.jpg" alt="視線（イラク）" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">視線（イラク）</span><span class="gallery-item-meta">2014 / 80.3 × 130.3 cm</span>
@@ -643,48 +636,48 @@
       <h3 class="gallery-category-title" style="margin-top: 8rem;">AAV<span>Acid Attack Victim</span></h3>
       <div class="gallery-grid">
           
-        <a href="#gallery" class="gallery-item gi-aav-1" data-img-src="images/【F20縦】Acid Attac Victim(2).jpg">
+        <a href="#gallery" class="gallery-item gi-aav-1" data-img-src="images/【F20縦】Acid Attac Victim(2).jpg" data-title-ja="Acid Attack Victim (2)" data-title-en="Acid Attack Victim (2)" data-year="2015" data-size="72.7 × 60.6 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F20縦】Acid Attac Victim(2).jpg" alt="Acid Attack Victim (2)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">Acid Attack Victim (2)</span><span class="gallery-item-meta">2015 / 72.7 × 60.6 cm</span>
           </div>
         </a>
         
-        <a href="#gallery" class="gallery-item gi-aav-2" data-img-src="images/【F20縦】Acid Attac Victim(3).jpg">
+        <a href="#gallery" class="gallery-item gi-aav-2" data-img-src="images/【F20縦】Acid Attac Victim(3).jpg" data-title-ja="Acid Attack Victim (3)" data-title-en="Acid Attack Victim (3)" data-year="2015" data-size="72.7 × 60.6 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F20縦】Acid Attac Victim(3).jpg" alt="Acid Attack Victim (3)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">Acid Attack Victim (3)</span><span class="gallery-item-meta">2015 / 72.7 × 60.6 cm</span>
           </div>
         </a>
 
-        <a href="#work-aav04" class="gallery-item gi-aav-3" data-img-src="images/【F20縦】Acid Attac Victim(4).jpg">
+        <a href="#gallery" class="gallery-item gi-aav-3" data-img-src="images/【F20縦】Acid Attac Victim(4).jpg" data-title-ja="Acid Attack Victim (4)" data-title-en="Acid Attack Victim (4)" data-year="2015" data-size="72.7 × 60.6 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F20縦】Acid Attac Victim(4).jpg" alt="Acid Attack Victim (4)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">Acid Attack Victim (4)</span><span class="gallery-item-meta">2015 / 72.7 × 60.6 cm</span>
           </div>
         </a>
         
-        <a href="#gallery" class="gallery-item gi-aav-4" data-img-src="images/【F20縦】Acid Attac Victim(5).jpg">
+        <a href="#gallery" class="gallery-item gi-aav-4" data-img-src="images/【F20縦】Acid Attac Victim(5).jpg" data-title-ja="Acid Attack Victim (5)" data-title-en="Acid Attack Victim (5)" data-year="2015" data-size="72.7 × 60.6 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F20縦】Acid Attac Victim(5).jpg" alt="Acid Attack Victim (5)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">Acid Attack Victim (5)</span><span class="gallery-item-meta">2015 / 72.7 × 60.6 cm</span>
           </div>
         </a>
 
-        <a href="#work-aav06" class="gallery-item gi-aav-5" data-img-src="images/【F20縦】Acid Attac Victim(6).jpg">
+        <a href="#gallery" class="gallery-item gi-aav-5" data-img-src="images/【F20縦】Acid Attac Victim(6).jpg" data-title-ja="Acid Attack Victim (6)" data-title-en="Acid Attack Victim (6)" data-year="2015" data-size="72.7 × 60.6 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F20縦】Acid Attac Victim(6).jpg" alt="Acid Attack Victim (6)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">Acid Attack Victim (6)</span><span class="gallery-item-meta">2015 / 72.7 × 60.6 cm</span>
           </div>
         </a>
 
-        <a href="#work-aav-sonali" class="gallery-item gi-aav-6" data-img-src="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg">
+        <a href="#work-aav-sonali" class="gallery-item gi-aav-6" data-img-src="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg" data-title-ja="Acid Attack Victim [Sonali Mukherjee]" data-title-en="Acid Attack Victim [Sonali Mukherjee]" data-year="2015" data-size="130.3 × 162.1 cm" data-material="Oil on canvas">
           <div class="gallery-item-img-wrap"><img src="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg" alt="Acid Attack Victim [Sonali Mukherjee]" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">Acid Attack Victim [Sonali Mukherjee]</span><span class="gallery-item-meta">2015 / 130.3 × 162.1 cm</span>
           </div>
         </a>
-        </div>
+      </div>
     </section>
 
     <section class="chronology-section" id="chronology">
@@ -696,7 +689,7 @@
         <article class="tl-entry" id="work-scars01">
           <div class="tl-year-display">2016</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg" data-title-ja="傷(5) (イスラエルの少女)" data-title-en="Scar (5) [Israeli Girl]" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
               <img src="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg" alt="傷(5) (イスラエルの少女)" loading="lazy">
             </div>
             <div class="tl-body">
@@ -713,7 +706,7 @@
         <article class="tl-entry" id="work-scars08-black">
           <div class="tl-year-display">2016</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg" data-title-ja="黒人妊婦 [コナーさん]" data-title-en="Pregnant Black Woman [Mrs. Connor]" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
               <img src="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg" alt="黒人妊婦 [コナーさん]" loading="lazy">
             </div>
             <div class="tl-body">
@@ -730,11 +723,11 @@
         <article class="tl-entry is-full-figure" id="work-aav-sonali">
           <div class="tl-year-display">2015</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg">
-              <img src="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg" alt="Acid&nbsp;Attack&nbsp;Victim&nbsp;[Sonali&nbsp;Mukherjee]" loading="lazy">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg" data-title-ja="Acid Attack Victim [Sonali Mukherjee]" data-title-en="Acid Attack Victim [Sonali Mukherjee]" data-year="2015" data-size="130.3 × 162.1 cm" data-material="Oil on canvas">
+              <img src="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg" alt="Acid Attack Victim [Sonali Mukherjee]" loading="lazy">
             </div>
             <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">Acid&nbsp;Attack&nbsp;Victim&nbsp;[Sonali&nbsp;Mukherjee]</h3>
+              <h3 class="tl-title" data-typewriter="true">Acid Attack Victim [Sonali Mukherjee]</h3>
               <p class="tl-meta">130.3 × 162.1 cm / Oil on canvas</p>
               <div class="tl-desc">
                 <p>ソナリ・ムカジーさんを描いた大作。酸によって視力を奪われ、顔の構造を激しく変容させられた彼女の姿を、容赦のないスケールで描き出した。</p>
@@ -747,7 +740,7 @@
         <article class="tl-entry" id="work-scars04">
           <div class="tl-year-display">2015</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F6横】傷(4).jpg">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F6横】傷(4).jpg" data-title-ja="傷(4)" data-title-en="Scar (4)" data-year="2015" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
               <img src="images/【F6横】傷(4).jpg" alt="傷(4)" loading="lazy">
             </div>
             <div class="tl-body">
@@ -764,14 +757,14 @@
         <article class="tl-entry is-full-figure" id="work-scars-tirana">
           <div class="tl-year-display">2014</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg" data-title-ja="視線(2)[ティラナ (アルバニア共和国)]" data-title-en="Gaze (2) [Tirana, Republic of Albania]" data-year="2014" data-size="130.3 × 162.1 cm" data-material="Oil on canvas">
               <img src="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg" alt="視線(2)[ティラナ (アルバニア共和国)]" loading="lazy">
              </div>
             <div class="tl-body">
               <h3 class="tl-title" data-typewriter="true">視線(2)[ティラナ (アルバニア共和国)]</h3>
               <p class="tl-meta">130.3 × 162.1 cm / Oil on canvas</p>
               <div class="tl-desc">
-                <p>弾薬庫の爆発事故により顔に傷を負った少女。F100号という巨大なキャンバスに描かれた横顔は、個人の悲劇を超え、静謐なモニュメントのような強度を持つ。</p>
+                <p>弾薬庫の爆発事故により顔に傷を負った少女。長辺162.1cmという巨大なキャンバスに描かれた横顔は、個人の悲劇を超え、静謐なモニュメントのような強度を持つ。</p>
                 <p>絆創膏の白と、滲むような赤。傷を描きながらも、その奥にある生命の尊厳を浮かび上がらせる。この「表面への痛みの刻印」への眼差しが、のちの大地（土）へのアプローチへと繋がっていく。</p>
               </div>
             </div>
@@ -781,14 +774,14 @@
         <article class="tl-entry is-full-figure" id="work-scars-sakebi">
           <div class="tl-year-display">2014</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F100横】さけび（ガザ）.jpg">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F100横】さけび（ガザ）.jpg" data-title-ja="さけび" data-title-en="Shout" data-year="2014" data-size="130.3 × 162.1 cm" data-material="Oil on canvas">
               <img src="images/【F100横】さけび（ガザ）.jpg" alt="さけび" loading="lazy">
              </div>
             <div class="tl-body">
               <h3 class="tl-title" data-typewriter="true">さけび</h3>
               <p class="tl-meta">130.3 × 162.1 cm / Oil on canvas</p>
               <div class="tl-desc">
-                <p>2014年に制作された「さけび（F100号）」。傷シリーズへと本格的に移行する直前の、内面的な葛藤や他者との境界線の揺らぎを油彩の激しいストロークで捉えようとした重要なマイルストーン。</p>
+                <p>2014年に制作された「さけび」。傷シリーズへと本格的に移行する直前の、内面的な葛藤や他者との境界線の揺らぎを油彩の激しいストロークで捉えようとした重要なマイルストーン。</p>
               </div>
             </div>
           </div>
@@ -815,7 +808,7 @@
   </footer>
 
   <a href="#gallery" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M18 15l-6-6-6 6"/>
     </svg>
     <span class="back-to-top-text">TOP</span>
@@ -830,10 +823,13 @@
       </svg>
     </button>
     <div class="modal-content">
-      <img src="" alt="拡大画像" id="modalImg">
+      <div class="modal-img-wrap">
+        <img src="" alt="拡大画像" id="modalImg">
+      </div>
       <div class="modal-caption">
-        <p class="modal-caption-jp" id="modalTitleJp"></p>
+        <h4 class="modal-caption-jp" id="modalTitleJp"></h4>
         <p class="modal-caption-en" id="modalTitleEn"></p>
+        <p class="modal-caption-details" id="modalMeta"></p>
       </div>
     </div>
   </div>
@@ -842,24 +838,24 @@
     /* ── ファーストビュー アニメーション ── */
     window.addEventListener('load', () => {
       setTimeout(() => document.getElementById('heroBg')?.classList.add('revealed'), 100);
-      setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 800);
-      setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'), 1200);
-      setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'), 1800);
-      setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 2500);
+      setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 700);
+      setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'), 1100);
+      setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'), 1700);
+      setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 2400);
     });
 
-    /* ── Observer (Fade Up & Grid Animation) ── */
+    /* ── Intersection Observer for Fade-in Core ── */
     const io = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
         entry.target.classList.add('in-view');
         io.unobserve(entry.target);
       });
-    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
     
     document.querySelectorAll('.gallery-item, .tl-entry, .statement-label, .statement-para, .reveal-fade, .gallery-category-title').forEach(el => io.observe(el));
 
-    /* ── Typewriter Engine ── */
+    /* ── Typewriter Logic ── */
     function prepareTypewriterDOM(el) {
       if (el.dataset.twPrepared === "true") return;
       const txt = el.textContent.trim();
@@ -884,12 +880,12 @@
         if (idx < chars.length) {
           chars[idx].style.opacity = '1';
           idx++;
-          setTimeout(() => requestAnimationFrame(nextChar), 40);
+          setTimeout(() => requestAnimationFrame(nextChar), 35);
         } else {
           el.dataset.twDone = "true";
           if (cursor) {
             cursor.classList.add('fade-out');
-            setTimeout(() => cursor.remove(), 800);
+            setTimeout(() => cursor.remove(), 600);
           }
         }
       }
@@ -901,14 +897,14 @@
         entries.forEach(e => {
           if (e.isIntersecting) {
             obs.unobserve(el);
-            setTimeout(() => requestAnimationFrame(() => runTypewriter(el)), 400);
+            setTimeout(() => requestAnimationFrame(() => runTypewriter(el)), 300);
           }
         });
-      }, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
+      }, { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
       obs.observe(el);
     });
 
-    /* ── Scroll Interactions (Local Scars, Nav, Page-Nav) ── */
+    /* ── Scroll Tracking Structure ── */
     const topNav = document.getElementById('top-nav');
     const pageNav = document.getElementById('pageNav');
     const navItems = document.querySelectorAll('.page-nav-item');
@@ -922,11 +918,9 @@
           const scrollY = window.scrollY;
           const viewH = window.innerHeight;
 
-          /* Top Nav Glassmorphism */
-          if (scrollY > 50) topNav.classList.add('scrolled');
+          if (scrollY > 60) topNav.classList.add('scrolled');
           else topNav.classList.remove('scrolled');
 
-          /* Page Nav Visibility & Active State */
           const checkY = scrollY + viewH * 0.4;
           let activeSec = null;
           sections.forEach(sec => {
@@ -937,10 +931,9 @@
             item.classList.toggle('active', target === activeSec);
           });
           if (pageNav) {
-            pageNav.classList.toggle('visible', scrollY > viewH * 0.8);
+            pageNav.classList.toggle('visible', scrollY > viewH * 0.7);
           }
 
-          /* Local Scroll Tracking */
           trackEls.forEach(el => {
             const rect = el.getBoundingClientRect();
             let localProg = (viewH - rect.top) / (viewH + rect.height);
@@ -948,7 +941,6 @@
             el.style.setProperty('--local-progress', localProg);
           });
 
-          /* Back to Top */
           const b2t = document.getElementById('backToTop');
           if (scrollY > 600) b2t.classList.add('is-visible');
           else b2t.classList.remove('is-visible');
@@ -971,26 +963,24 @@
 
     document.getElementById('backToTop').addEventListener('click', (e) => {
       e.preventDefault();
-      if (window.innerWidth <= 768) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+      const target = document.getElementById('gallery');
+      if (target && window.innerWidth > 768) {
+        const offset = topNav?.offsetHeight || 80;
+        window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
       } else {
-        const target = document.getElementById('gallery');
-        if (target) {
-          const offset = topNav?.offsetHeight || 80;
-          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
-        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     });
 
-    /* ── Lightbox (Modal) & Link Routing ── */
-    const modal      = document.getElementById('imageModal');
-    const modalImg   = document.getElementById('modalImg');
-    const modalBg    = document.getElementById('modalBg');
-    const modalClose = document.getElementById('modalClose');
-    const titleJpEl  = document.getElementById('modalTitleJp');
-    const titleEnEl  = document.getElementById('modalTitleEn');
+    /* ── High-Aesthetic Lightbox Engine with Meta Distribution ── */
+    const modal        = document.getElementById('imageModal');
+    const modalImg     = document.getElementById('modalImg');
+    const modalBg      = document.getElementById('modalBg');
+    const modalClose   = document.getElementById('modalClose');
+    const titleJpEl    = document.getElementById('modalTitleJp');
+    const titleEnEl    = document.getElementById('modalTitleEn');
+    const modalMeta    = document.getElementById('modalMeta');
 
-    // 画面ブレ(レイアウトシフト)防止処理
     const lockBody = () => {
       const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
       document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`);
@@ -1002,10 +992,22 @@
       document.documentElement.style.setProperty('--scrollbar-width', '0px');
     };
 
-    const openModal = (src, jp, en) => {
-      modalImg.src = src;
-      titleJpEl.textContent = jp || '';
-      titleEnEl.textContent = en || '';
+    const openModal = (data) => {
+      modalImg.src = data.src;
+      titleJpEl.textContent = data.jp || '';
+      
+      if (data.en) {
+        titleEnEl.textContent = data.en;
+        titleEnEl.style.display = 'block';
+      } else {
+        titleEnEl.textContent = '';
+        titleEnEl.style.display = 'none';
+      }
+
+      // 年、サイズ、マテリアルを「/」区切りで美しく結合
+      const metaArray = [data.year, data.size, data.material].filter(Boolean);
+      modalMeta.textContent = metaArray.join(' / ');
+      
       modal.classList.add('is-active');
       modal.setAttribute('aria-hidden', 'false');
       lockBody();
@@ -1015,47 +1017,58 @@
       modal.classList.remove('is-active');
       modal.setAttribute('aria-hidden', 'true');
       unlockBody();
-      setTimeout(() => { modalImg.src = ''; titleJpEl.textContent = ''; titleEnEl.textContent = ''; }, 600);
+      setTimeout(() => {
+        modalImg.src = '';
+        titleJpEl.textContent = '';
+        titleEnEl.textContent = '';
+        modalMeta.textContent = '';
+        titleEnEl.style.display = 'block';
+      }, 500);
     };
 
-    // 【1】 ギャラリーアイテムのクリック制御 (年譜移動 or その場で拡大)
+    // ギャラリーアイテムのクリック制御 (年譜移動 または その場モーダル展開仕様)
     document.querySelectorAll('.gallery-item').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        e.preventDefault(); // デフォルトのリンク移動をキャンセル
+        e.preventDefault();
         
         const href = btn.getAttribute('href');
         const targetId = href ? href.replace('#', '') : '';
         const targetEl = document.getElementById(targetId);
 
-        // リンク先がDOM内に存在し、かつ年譜の要素(tl-entry)である場合はスクロール
+        // 下の年譜（タイムライン）に対応する構造がある場合はスムーズスクロール
         if (targetEl && targetEl.classList.contains('tl-entry')) {
           const offset = topNav?.offsetHeight || 80;
-          // 要素の少し上(40px)をターゲットに滑らかにスクロール
           window.scrollTo({
-            top: targetEl.getBoundingClientRect().top + window.scrollY - offset - 40,
+            top: targetEl.getBoundingClientRect().top + window.scrollY - offset - 30,
             behavior: 'smooth'
           });
         } else {
-          // 年譜にない場合はモーダルを開く
-          const src = btn.getAttribute('data-img-src');
-          const jpTitleEl = btn.querySelector('.gallery-item-title');
-          const jp = jpTitleEl ? jpTitleEl.textContent : '';
-          if (src) openModal(src, jp, '');
+          // 上のグリッドのみに存在する作品は、その場でスタイリッシュなモーダルを展開
+          const metaData = {
+            src: btn.getAttribute('data-img-src'),
+            jp: btn.getAttribute('data-title-ja'),
+            en: btn.getAttribute('data-title-en'),
+            year: btn.getAttribute('data-year'),
+            size: btn.getAttribute('data-size'),
+            material: btn.getAttribute('data-material')
+          };
+          openModal(metaData);
         }
       });
     });
 
-    // 【2】 年譜(Timeline)内の画像クリック制御 (従来通りその場で拡大)
-    document.querySelectorAll('.tl-figure.js-modal-open').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const src = btn.getAttribute('data-img-src');
-        const block = btn.closest('.tl-entry');
-        let jp = '';
-        if (block) {
-          const jpTitleEl = block.querySelector('.tl-title');
-          jp = jpTitleEl ? jpTitleEl.textContent : '';
-        }
-        if (src) openModal(src, jp, '');
+    // 年譜（Timeline）内の画像クリック時も同様の高品質モーダルをトリガー
+    document.querySelectorAll('.tl-figure.js-modal-open').forEach(fig => {
+      fig.addEventListener('click', () => {
+        const metaData = {
+          src: fig.getAttribute('data-img-src'),
+          jp: fig.getAttribute('data-title-ja'),
+          en: fig.getAttribute('data-title-en'),
+          year: fig.getAttribute('data-year'),
+          size: fig.getAttribute('data-size'),
+          material: fig.getAttribute('data-material')
+        };
+        openModal(metaData);
       });
     });
 
