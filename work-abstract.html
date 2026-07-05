@@ -23,11 +23,9 @@
        DESIGN TOKENS & BASE
     ============================================================ */
     :root {
-      /* ベースカラーを少し透過させ、背景画と馴染ませる */
       --bg-base:     #060605;
       --bg:          rgba(6, 6, 5, 0.94);
       --bg2:         rgba(12, 12, 10, 0.95);
-      --bg-glass:    rgba(6, 6, 5, 0.65);
       
       --fg:          #e9e5df;
       --muted:       rgba(233,229,223,0.44);
@@ -43,9 +41,12 @@
       --ease:        cubic-bezier(0.16, 1, 0.3, 1);
       --px:          clamp(1.25rem, 6vw, 5rem);
       
-      --scale-desktop: 0.40;
-      --scale-mobile: 0.28;
+      /* ギャラリーの縮尺係数 (画面幅に応じて可変) */
+      --cm-scale:    clamp(2px, 0.3vw, 3.8px);
     }
+
+    @media (max-width: 768px) { :root { --cm-scale: 2.5px; } }
+    @media (max-width: 480px) { :root { --cm-scale: 1.8px; } }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -63,7 +64,7 @@
       position: relative;
     }
 
-    /* ── 背景作品のグローバル設定 (Fixed Parallax) ── */
+    /* ── 背景作品のグローバル設定 ── */
     body::before {
       content: "";
       position: fixed;
@@ -74,11 +75,9 @@
       background-position: center;
       background-attachment: fixed;
       z-index: -2;
-      /* 背景作品が主張しすぎないよう少し明度を落とす */
       filter: brightness(0.8) contrast(1.1);
     }
     
-    /* ── 全体を覆うベースオーバーレイ（スクロール時の基調） ── */
     body::after {
       content: "";
       position: fixed;
@@ -111,7 +110,7 @@
     }
     .nav-logo-unified {
       font-family: var(--font-en); font-size: clamp(0.7rem, 2.5vw, 0.9rem);
-      letter-spacing: 0.3em;
+      letter-spacing: 0.35em;
       font-weight: 300; color: var(--accent);
       text-transform: uppercase; transition: opacity 0.4s ease;
       text-shadow: 0 2px 10px rgba(0,0,0,0.5);
@@ -127,12 +126,10 @@
     .nav-links a:hover { color: var(--accent); }
     .nav-cta {
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
+      letter-spacing: 0.25em; text-transform: uppercase;
       border: 0.5px solid rgba(196,168,130,0.45); padding: 0.55rem 1.4rem;
       color: var(--accent); transition: background 0.25s, color 0.25s;
-      background: rgba(6,6,5,0.4);
-      backdrop-filter: blur(4px);
+      background: rgba(6,6,5,0.4); backdrop-filter: blur(4px);
     }
     .nav-cta:hover { background: rgba(196,168,130,0.15); color: var(--fg); }
     
@@ -185,7 +182,6 @@
       height: 100svh; min-height: 580px;
       display: flex; flex-direction: column; justify-content: flex-end;
       padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); overflow: hidden;
-      /* 背景作品を見せるため、セクション背景はグラデーションによる影のみ設定 */
       background: linear-gradient(to top, rgba(6,6,5,1) 0%, rgba(6,6,5,0.3) 40%, rgba(6,6,5,0.1) 100%);
     }
     .hero-divider {
@@ -200,13 +196,11 @@
       letter-spacing: 0.5em;
       color: rgba(233,229,223,0.7); text-transform: uppercase;
       margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.2rem;
-      clip-path: inset(0 100% 0 0);
-      transition: clip-path 1.2s var(--ease) 0.2s;
+      clip-path: inset(0 100% 0 0); transition: clip-path 1.2s var(--ease) 0.2s;
       text-shadow: 0 2px 10px rgba(0,0,0,0.8);
     }
     .hero-eyebrow::before {
-      content: ''; width: 24px;
-      height: 1px; background: var(--accent2); flex-shrink: 0;
+      content: ''; width: 24px; height: 1px; background: var(--accent2); flex-shrink: 0;
       box-shadow: 0 0 5px rgba(0,0,0,0.5);
     }
     .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
@@ -215,12 +209,9 @@
       font-family: var(--font-ja); font-size: clamp(5rem, 19vw, 17rem); font-weight: 200;
       line-height: 0.88; letter-spacing: -0.02em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem);
       display: flex; gap: 0.05em; overflow: visible;
-      text-shadow: 0 8px 32px rgba(0,0,0,0.85); /* 複雑な背景から文字を浮き立たせる */
+      text-shadow: 0 8px 32px rgba(0,0,0,0.85); 
     }
-    .hero-title .char {
-      display: inline-block; opacity: 0;
-      transition: transform 1.4s var(--ease), opacity 0.9s ease;
-    }
+    .hero-title .char { display: inline-block; opacity: 0; transition: transform 1.4s var(--ease), opacity 0.9s ease; }
     .hero-title .char:nth-child(1) { transform: translateX(-60px); transition-delay: 0.2s; }
     .hero-title .char:nth-child(2) { transform: translateX(60px);  transition-delay: 0.35s; }
     .hero-title.revealed .char { opacity: 1; transform: translateX(0); }
@@ -250,26 +241,21 @@
     }
     
     .hero-scroll {
-      position: absolute;
-      bottom: clamp(2rem, 5vh, 4rem); right: var(--px);
+      position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px);
       z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 12px;
-      opacity: 0;
-      transition: opacity 0.9s ease 1.8s;
+      opacity: 0; transition: opacity 0.9s ease 1.8s;
     }
     .hero-scroll.revealed { opacity: 1; }
     .hero-scroll-label {
       font-family: var(--font-en); font-size: 0.52rem; letter-spacing: 0.38em;
-      color: rgba(233,229,223,0.4);
-      text-transform: uppercase; writing-mode: vertical-rl;
+      color: rgba(233,229,223,0.4); text-transform: uppercase; writing-mode: vertical-rl;
       text-shadow: 0 1px 4px rgba(0,0,0,0.8);
     }
     .hero-scroll-track {
-      width: 1px; height: 48px;
-      background: rgba(233,229,223,0.15); position: relative; overflow: hidden;
+      width: 1px; height: 48px; background: rgba(233,229,223,0.15); position: relative; overflow: hidden;
     }
     .hero-scroll-fill {
-      position: absolute;
-      top: -100%; left: 0; width: 100%; height: 100%;
+      position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
       background: linear-gradient(to bottom, var(--accent), transparent);
       animation: scrollDrop 2.2s ease-in-out 2s infinite;
     }
@@ -281,24 +267,21 @@
     }
 
     /* ============================================================
-       CONTENT SECTIONS (テキスト・ギャラリー群)
-       鑑賞の妨げにならないよう、背景を濃い色でマスク
+       CONTENT SECTIONS 
     ============================================================ */
     .concept-section, .statement-section {
-      background: var(--bg); /* 背景を94%の黒で覆う */
+      background: var(--bg);
       backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
       position: relative;
     }
     .concept-section {
       padding: clamp(6rem, 13vh, 10rem) var(--px);
       max-width: 640px; margin: 0 auto; text-align: center;
-      background: transparent; /* コンセプト部分は前セクションのグラデーションを引き継ぐ */
+      background: transparent; 
     }
     .concept-text {
-      font-size: clamp(0.9rem, 2vw, 1.05rem);
-      font-weight: 300; line-height: 2.3;
-      color: rgba(233,229,223,0.9); letter-spacing: 0.08em;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+      font-size: clamp(0.9rem, 2vw, 1.05rem); font-weight: 300; line-height: 2.3;
+      color: rgba(233,229,223,0.9); letter-spacing: 0.08em; text-shadow: 0 2px 10px rgba(0,0,0,0.8);
     }
 
     .statement-section {
@@ -316,19 +299,15 @@
       font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.3rem, 3.2vw, 2.1rem);
       line-height: 1.75; color: var(--fg); text-align: center; letter-spacing: 0.03em;
       margin-bottom: clamp(3rem, 7vh, 5rem);
-      opacity: 0; transform: translateY(20px);
-      transition: opacity 1s var(--ease), transform 1s var(--ease);
+      opacity: 0; transform: translateY(20px); transition: opacity 1s var(--ease), transform 1s var(--ease);
     }
     .statement-pullquote.in-view { opacity: 1; transform: translateY(0); }
     .statement-pullquote .accent-word { color: var(--accent); }
-    .statement-body {
-      display: flex; flex-direction: column; gap: clamp(1.6rem, 3vh, 2.2rem);
-    }
+    .statement-body { display: flex; flex-direction: column; gap: clamp(1.6rem, 3vh, 2.2rem); }
     .statement-para {
       font-size: clamp(0.86rem, 1.7vw, 0.98rem); line-height: 2.25;
       color: rgba(233,229,223,0.72); letter-spacing: 0.04em; text-align: justify;
-      opacity: 0; transform: translateY(16px);
-      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+      opacity: 0; transform: translateY(16px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
     }
     .statement-para.in-view { opacity: 1; transform: translateY(0); }
     .statement-para strong { color: var(--accent); font-weight: 400; }
@@ -340,8 +319,7 @@
       font-family: var(--font-en); font-style: italic; font-weight: 300;
       font-size: clamp(0.95rem, 2vw, 1.15rem); line-height: 1.9;
       color: var(--accent); text-align: center; letter-spacing: 0.04em;
-      opacity: 0; transform: translateY(16px);
-      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+      opacity: 0; transform: translateY(16px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
     }
     .statement-closing.in-view { opacity: 1; transform: translateY(0); }
 
@@ -349,9 +327,8 @@
        PERFECT PROPORTIONAL GALLERY GRID
     ============================================================ */
     .gallery-section {
-      background: var(--bg); /* 作品鑑賞を最優先し、背景はほぼ黒にする */
-      padding: 0 var(--px) clamp(6rem, 13vh, 10rem);
-      position: relative;
+      background: var(--bg); 
+      padding: 0 var(--px) clamp(6rem, 13vh, 10rem); position: relative;
     }
     .gallery-inner { max-width: 1600px; margin: 0 auto; }
     .section-label {
@@ -361,24 +338,26 @@
     }
     .gallery-grid {
       display: flex; flex-wrap: wrap; justify-content: center;
-      align-items: flex-start; gap: clamp(1.5rem, 3vw, 3rem);
+      align-items: flex-end; gap: clamp(1.5rem, 3vw, 3rem);
     }
     .gallery-item {
       display: flex; flex-direction: column; text-decoration: none; cursor: pointer;
-      align-items: flex-start;
-      opacity: 0; transform: translateY(20px);
+      align-items: flex-start; opacity: 0; transform: translateY(20px);
       transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+      width: fit-content; max-width: 100%;
     }
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
     
     .gallery-item-img-wrap {
-      display: inline-block; max-width: 100%;
+      /* キャンバスサイズ(cm)から算出した正確なスケールで描写 */
+      width: calc(var(--w-cm) * var(--cm-scale));
+      height: calc(var(--h-cm) * var(--cm-scale));
+      max-width: 100vw; display: flex; justify-content: center; align-items: center;
       background: transparent; overflow: hidden; border: 0.5px solid var(--border);
       transition: border-color 0.4s ease, box-shadow 0.5s var(--ease);
     }
     .gallery-item-img-wrap img {
-      display: block; width: auto; height: auto;
-      max-height: calc(var(--h-mm, 400) * var(--scale-desktop) * 1px); max-width: 100%;
+      width: 100%; height: 100%; object-fit: cover;
       filter: grayscale(15%) brightness(0.85);
       transition: transform 0.8s var(--ease), filter 0.6s ease;
     }
@@ -388,14 +367,14 @@
     .gallery-item:hover img {
       transform: scale(1.03); filter: grayscale(0%) brightness(1.0);
     }
-    .gallery-item-cap { padding-top: 1rem; text-align: left; }
+    .gallery-item-cap { padding-top: 1rem; text-align: left; width: 100%; }
     .gallery-item-title {
       font-family: var(--font-ja); font-size: clamp(0.85rem, 1.4vw, 1rem); font-weight: 300;
       color: var(--fg); letter-spacing: 0.05em; margin-bottom: 0.3rem; display: block;
     }
     .gallery-item-meta {
-      font-family: var(--font-en); font-size: clamp(0.6rem, 1.1vw, 0.7rem);
-      color: var(--accent); letter-spacing: 0.14em; font-style: italic; display: block;
+      font-family: var(--font-en), var(--font-ja); font-size: clamp(0.6rem, 1.1vw, 0.7rem);
+      color: var(--accent); letter-spacing: 0.1em; opacity: 0.9; display: block;
     }
 
     /* ============================================================
@@ -403,10 +382,9 @@
     ============================================================ */
     .chronology-section {
       padding: clamp(5rem, 12vh, 10rem) var(--px);
-      background: var(--bg2); /* さらに濃くしてコンテンツを安定させる */
+      background: var(--bg2); 
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border-top: 0.5px solid var(--border);
-      position: relative;
+      border-top: 0.5px solid var(--border); position: relative;
     }
     .timeline-container { max-width: 1200px; margin: 0 auto; position: relative; }
     .timeline-spine-wrapper {
@@ -428,9 +406,9 @@
     .tl-year-display {
       font-family: var(--font-en); font-size: clamp(3.5rem, 7vw, 5.5rem); font-weight: 300;
       color: var(--accent); letter-spacing: 0.02em; line-height: 1;
-      margin-bottom: clamp(1rem, 2vh, 2rem); padding-left: 2%; opacity: 0.85;
+      margin-bottom: clamp(1rem, 2vh, 2rem); padding-left: 2%; opacity: 0.85; text-shadow: 0 4px 16px rgba(0,0,0,0.4);
     }
-    .tl-entry:nth-child(even) .tl-year-display { text-align: left; }
+    .tl-entry:nth-child(even) .tl-year-display { text-align: right; padding-right: 2%; padding-left: 0; }
 
     .tl-content-wrap {
       display: flex; justify-content: space-between; align-items: center; gap: clamp(2rem, 5vw, 6rem);
@@ -440,7 +418,7 @@
       width: 54%; position: relative; border: 0.5px solid var(--border); overflow: hidden;
       background: rgba(6, 6, 5, 0.4); cursor: zoom-in; transition: width 0.4s ease;
     }
-    .tl-body { width: 42%; position: relative; z-index: 2; transition: width 0.4s ease; }
+    .tl-body { width: 42%; position: relative; z-index: 2; transition: width 0.4s ease; text-shadow: 0 2px 10px rgba(0,0,0,0.6); }
     
     .tl-entry.is-featured .tl-figure { width: 64%; }
     .tl-entry.is-featured .tl-body   { width: 32%; }
@@ -448,30 +426,20 @@
     .tl-entry.is-compact .tl-body    { width: 52%; }
     
     .tl-figure img {
-      width: 100%; height: auto; display: block; filter: grayscale(12%) brightness(0.85);
+      width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(12%) brightness(0.85);
       transition: transform 1s var(--ease), filter 0.6s ease;
     }
     .tl-figure:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
     
-    .tl-title {
-      font-family: var(--font-ja); font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 300;
-      color: var(--fg); line-height: 1.4; margin-bottom: 0.8rem;
-    }
-    .tl-meta {
-      font-family: var(--font-en); font-size: clamp(0.6rem, 1.2vw, 0.75rem); color: var(--accent);
-      letter-spacing: 0.15em; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border-md);
-    }
-    .tl-desc {
-      font-size: clamp(0.85rem, 1.6vw, 0.95rem); line-height: 2.1;
-      color: rgba(233,229,223,0.7); text-align: justify;
-    }
+    .tl-title { font-family: var(--font-ja); font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 300; color: var(--fg); line-height: 1.4; margin-bottom: 0.8rem; letter-spacing: 0.05em; }
+    .tl-meta { font-family: var(--font-en), var(--font-ja); font-size: clamp(0.65rem, 1vw, 0.75rem); color: var(--accent); letter-spacing: 0.1em; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border-md); }
+    .tl-desc { font-size: clamp(0.88rem, 1.6vw, 0.98rem); line-height: 2.2; color: rgba(233,229,223,0.74); text-align: justify; word-break: auto-phrase; }
+    .tl-desc p { margin-bottom: 1.2em; }
+    .tl-desc p:last-child { margin-bottom: 0; }
 
     /* Typewriter */
     .tw-char { opacity: 0; display: inline-block; transition: opacity 0.3s ease; }
-    .tw-cursor {
-      display: inline-block; width: 1.5px; height: 1.1em; background-color: var(--accent);
-      margin-left: 2px; vertical-align: middle; animation: tw-blink 0.8s infinite;
-    }
+    .tw-cursor { display: inline-block; width: 1.5px; height: 1.1em; background-color: var(--accent); margin-left: 2px; vertical-align: middle; animation: tw-blink 0.8s infinite; }
     @keyframes tw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     .fade-out { opacity: 0; transition: opacity 0.8s ease; }
 
@@ -504,8 +472,7 @@
     footer {
       padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between;
       align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); 
-      background: var(--bg-base); /* フッターは完全にソリッドな黒に着地させる */
-      position: relative;
+      background: var(--bg-base); position: relative;
     }
     .footer-logo { font-family: var(--font-ja); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.28); letter-spacing: 0.08em; }
     .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
@@ -518,7 +485,7 @@
       opacity: 0; visibility: hidden; transition: opacity 0.55s var(--ease), visibility 0.55s;
     }
     .image-modal.is-active { opacity: 1; visibility: visible; }
-    .modal-bg { position: absolute; inset: 0; background: rgba(6,6,5,0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); cursor: zoom-out; }
+    .modal-bg { position: absolute; inset: 0; background: rgba(6,6,5,0.98); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); cursor: zoom-out; }
     .modal-close {
       position: fixed; top: clamp(1rem, 3vh, 2rem); right: var(--px); z-index: 10001;
       background: none; border: none; color: var(--muted); cursor: pointer; padding: 0.5rem;
@@ -526,21 +493,21 @@
     }
     .modal-close:hover { color: var(--fg); transform: scale(1.1) rotate(90deg); }
     .modal-content {
-      position: relative; z-index: 10000; max-width: 90vw; margin: auto;
-      display: flex; flex-direction: column; align-items: center; gap: clamp(1rem, 2vh, 1.5rem);
-      opacity: 0; transform: scale(0.96) translateY(12px);
-      transition: opacity 0.55s var(--ease) 0.08s, transform 0.55s var(--ease) 0.08s;
+      position: relative; z-index: 10000; width: 100vw; height: 100svh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem;
+      opacity: 0; transform: scale(0.98) translateY(10px);
+      transition: opacity 0.6s var(--ease) 0.1s, transform 0.6s var(--ease) 0.1s; padding: 3rem 1rem 1rem;
     }
     .image-modal.is-active .modal-content { opacity: 1; transform: scale(1) translateY(0); }
-    .modal-content img { max-width: 100%; max-height: 75svh; object-fit: contain; box-shadow: 0 32px 80px rgba(0,0,0,0.75); border: 0.5px solid var(--border); cursor: zoom-out; }
-    .modal-caption { text-align: center; width: 100%; padding: 0 1rem; }
-    .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 200; color: var(--fg); margin-bottom: 0.3rem; }
-    .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.72rem, 1.2vw, 0.85rem); font-style: italic; color: var(--accent); letter-spacing: 0.15em; }
+    .modal-content img { max-width: 92vw; max-height: 82svh; object-fit: contain; box-shadow: 0 40px 100px rgba(0,0,0,0.9); border: 0.5px solid var(--border-md); cursor: zoom-out; }
+    .modal-caption { text-align: center; padding-bottom: 2vh; }
+    .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(0.9rem, 1.4vw, 1.1rem); font-weight: 200; color: var(--fg); margin-bottom: 0.5rem; letter-spacing: 0.15em; }
+    .modal-caption-meta { font-family: var(--font-en), var(--font-ja); font-size: clamp(0.65rem, 1vw, 0.75rem); font-weight: 300; color: var(--accent); letter-spacing: 0.12em; opacity: 0.85; }
 
     .back-to-top {
       position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px);
       z-index: 9000; width: clamp(64px, 10vw, 90px); height: clamp(64px, 10vw, 90px);
-      border-radius: 50%; background: rgba(196, 168, 130, 0.85); border: 1px solid var(--accent);
+      border-radius: 50%; background: rgba(196, 168, 130, 0.9); border: 1px solid var(--accent);
       display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--bg-base);
       opacity: 0; visibility: hidden; transform: translateY(20px);
       transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
@@ -557,28 +524,27 @@
       .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2rem; }
       .tl-figure, .tl-body, .tl-entry.is-featured .tl-figure, .tl-entry.is-featured .tl-body, .tl-entry.is-compact .tl-figure, .tl-entry.is-compact .tl-body { width: 100%; }
       .timeline-spine-wrapper { left: 20px; transform: none; }
-      .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; }
+      .tl-year-display, .tl-entry:nth-child(even) .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; }
     }
     @media (max-width: 768px) {
       nav#top-nav { padding: 1rem 1.25rem; justify-content: space-between; align-items: center; }
       .nav-links, .nav-hamburger { display: none !important; }
-      .gallery-section { display: none !important; }
+      .gallery-section { padding-left: 1.5rem; padding-right: 1.5rem; }
       .page-nav.visible { right: 8px; opacity: 0.5; }
       .page-nav.visible:hover { opacity: 1; }
       .page-nav-label { display: none; }
-      .gallery-grid { flex-direction: row; } 
-      .gallery-item-img-wrap img { max-height: calc(var(--h-mm, 400) * var(--scale-mobile) * 1px); }
     }
     @media (max-width: 480px) {
       .hero-scroll { display: none; }
       .modal-content img { max-height: 60svh; }
       .statement-para { text-align: left; }
-      .statement-section { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .statement-section { padding-left: 1rem; padding-right: 1rem; }
+      .gallery-item-img-wrap { max-width: 100%; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
       .gallery-item, .tl-entry { opacity: 1 !important; transform: none !important; }
-      body::before { background-attachment: scroll; } /* 視差効果の停止 */
+      body::before { background-attachment: scroll; }
     }
   </style>
 </head>
@@ -642,7 +608,7 @@
       <div class="statement-inner">
         <p class="statement-label">Series Statement</p>
         <p class="statement-pullquote reveal-fade">
-          「抽象（Abstract）」シリーズは、津田翔一の制作における<span class="accent-word">脱領土化</span>——すなわち形態・意味・物語が解体されていく過程——を、最も純粋な形で体現した作品群です。
+          「抽象（Abstract）」シリーズは、制作における<span class="accent-word">脱領土化</span>——すなわち形態・意味・物語が解体されていく過程——を、最も純粋な形で体現した作品群です。
         </p>
         <div class="statement-body">
           <p class="statement-para reveal-fade">
@@ -670,84 +636,88 @@
       <div class="gallery-inner">
         <div class="section-label">Works Index</div>
         <div class="gallery-grid">
-          <a href="#work-flow" class="gallery-item" style="--h-mm: 727;">
+          
+          <a href="#work-flow" class="gallery-item js-scroll-link" style="--w-cm: 53.0; --h-cm: 72.7;">
             <div class="gallery-item-img-wrap"><img src="images/【P20縦】flow.jpg" alt="flow" loading="lazy"></div>
             <div class="gallery-item-cap">
-              <span class="gallery-item-title">flow</span><span class="gallery-item-meta">2020 / Oil on canvas</span>
+              <span class="gallery-item-title">flow</span><span class="gallery-item-meta">2020 / 53.0 × 72.7 cm / Oil on canvas</span>
             </div>
           </a>
-          <a href="#work-redsky" class="gallery-item" style="--h-mm: 318;">
+          
+          <a href="#grid-only-redsky" class="gallery-item js-scroll-link" style="--w-cm: 41.0; --h-cm: 31.8;">
             <div class="gallery-item-img-wrap"><img src="images/【F6横】IMG_7401(赤い空と吹く風).jpg" alt="赤い空と吹く風" loading="lazy"></div>
             <div class="gallery-item-cap">
-              <span class="gallery-item-title">赤い空と吹く風</span><span class="gallery-item-meta">2016 / Oil on canvas</span>
+              <span class="gallery-item-title">赤い空と吹く風</span><span class="gallery-item-meta">2016 / 41.0 × 31.8 cm / Oil on canvas</span>
             </div>
           </a>
-          <a href="#work-desert" class="gallery-item" style="--h-mm: 530;">
+          <a href="#grid-only-desert" class="gallery-item js-scroll-link" style="--w-cm: 53.0; --h-cm: 53.0;">
             <div class="gallery-item-img-wrap"><img src="images/【S10】IMG_7399(砂漠の山).jpg" alt="砂漠の山" loading="lazy"></div>
             <div class="gallery-item-cap">
-              <span class="gallery-item-title">砂漠の山</span><span class="gallery-item-meta">2016 / Oil on canvas</span>
+              <span class="gallery-item-title">砂漠の山</span><span class="gallery-item-meta">2016 / 53.0 × 53.0 cm / Oil on canvas</span>
             </div>
           </a>
-          <a href="#work-dondoyaki" class="gallery-item" style="--h-mm: 606;">
-            <div class="gallery-item-img-wrap"><img src="images/【F20横】IMG_7397(どんど焼き).jpg" alt="どんど焼き" loading="lazy"></div>
-            <div class="gallery-item-cap">
-              <span class="gallery-item-title">どんど焼き</span><span class="gallery-item-meta">2016 / Oil on canvas</span>
-            </div>
-          </a>
-          <a href="#work-7242" class="gallery-item" style="--h-mm: 318;">
+          <a href="#grid-only-7242" class="gallery-item js-scroll-link" style="--w-cm: 41.0; --h-cm: 31.8;">
             <div class="gallery-item-img-wrap"><img src="images/【F6横】IMG_7242.jpg" alt="無題" loading="lazy"></div>
             <div class="gallery-item-cap">
-              <span class="gallery-item-title">無題 (IMG_7242)</span><span class="gallery-item-meta">2016 / Oil on canvas</span>
+              <span class="gallery-item-title">無題 (IMG_7242)</span><span class="gallery-item-meta">2016 / 41.0 × 31.8 cm / Oil on canvas</span>
             </div>
           </a>
-          <a href="#work-7237" class="gallery-item" style="--h-mm: 410;">
+          <a href="#grid-only-7237" class="gallery-item js-scroll-link" style="--w-cm: 31.8; --h-cm: 41.0;">
             <div class="gallery-item-img-wrap"><img src="images/【F6縦】IMG_7237.jpg" alt="無題" loading="lazy"></div>
             <div class="gallery-item-cap">
-              <span class="gallery-item-title">無題 (IMG_7237)</span><span class="gallery-item-meta">2016 / Oil on canvas</span>
+              <span class="gallery-item-title">無題 (IMG_7237)</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm / Oil on canvas</span>
             </div>
           </a>
-          <a href="#work-mountains" class="gallery-item" style="--h-mm: 318;">
+          <a href="#grid-only-mountains" class="gallery-item js-scroll-link" style="--w-cm: 41.0; --h-cm: 31.8;">
             <div class="gallery-item-img-wrap"><img src="images/【F6横】IMG_7236[mountains between us].jpg" alt="mountains between us" loading="lazy"></div>
             <div class="gallery-item-cap">
-              <span class="gallery-item-title">mountains between us</span><span class="gallery-item-meta">2016 / Oil on canvas</span>
+              <span class="gallery-item-title">mountains between us</span><span class="gallery-item-meta">2016 / 41.0 × 31.8 cm / Oil on canvas</span>
             </div>
           </a>
-          <a href="#work-dregs" class="gallery-item" style="--h-mm: 530;">
+          
+          <a href="#work-dondoyaki" class="gallery-item js-scroll-link" style="--w-cm: 72.7; --h-cm: 60.6;">
+            <div class="gallery-item-img-wrap"><img src="images/【F20横】IMG_7397(どんど焼き).jpg" alt="どんど焼き" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">どんど焼き</span><span class="gallery-item-meta">2016 / 72.7 × 60.6 cm / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-dregs" class="gallery-item js-scroll-link" style="--w-cm: 72.7; --h-cm: 53.0;">
             <div class="gallery-item-img-wrap"><img src="images/【Dregs（澱）】 修正後.JPG" alt="【Dregs（澱）】" loading="lazy"></div>
             <div class="gallery-item-cap">
-              <span class="gallery-item-title">【Dregs（澱）】</span><span class="gallery-item-meta">2009 / Oil on canvas</span>
+              <span class="gallery-item-title">【Dregs（澱）】</span><span class="gallery-item-meta">2009 / 72.7 × 53.0 cm / Oil on canvas</span>
             </div>
           </a>
-          <a href="#work-noise" class="gallery-item" style="--h-mm: 530;">
+          <a href="#work-noise" class="gallery-item js-scroll-link" style="--w-cm: 65.2; --h-cm: 53.0;">
             <div class="gallery-item-img-wrap"><img src="images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG" alt="tHE n0iSe" loading="lazy"></div>
             <div class="gallery-item-cap">
-              <span class="gallery-item-title">tHE n0iSe Of ThE PriMItⅣe sEA</span><span class="gallery-item-meta">2009 / Oil on canvas</span>
+              <span class="gallery-item-title">tHE n0iSe Of ThE PriMItⅣe sEA</span><span class="gallery-item-meta">2009 / 65.2 × 53.0 cm / Oil on canvas</span>
             </div>
           </a>
-          <a href="#work-damagedealer" class="gallery-item" style="--h-mm: 910;">
+          <a href="#work-damagedealer" class="gallery-item js-scroll-link" style="--w-cm: 91.0; --h-cm: 72.7;">
             <div class="gallery-item-img-wrap"><img src="images/Damage Dealer.JPG" alt="Damage Dealer" loading="lazy"></div>
             <div class="gallery-item-cap">
-              <span class="gallery-item-title">Damage Dealer</span><span class="gallery-item-meta">2009 / Oil on canvas</span>
+              <span class="gallery-item-title">Damage Dealer</span><span class="gallery-item-meta">2009 / 91.0 × 72.7 cm / Oil on canvas</span>
             </div>
           </a>
-          <a href="#work-castle" class="gallery-item" style="--h-mm: 652;">
+          <a href="#work-castle" class="gallery-item js-scroll-link" style="--w-cm: 91.0; --h-cm: 65.2;">
             <div class="gallery-item-img-wrap"><img src="images/3.13【a cAstLe】.JPG" alt="3.13【a cAstLe】" loading="lazy"></div>
             <div class="gallery-item-cap">
-              <span class="gallery-item-title">3.13【a cAstLe】</span><span class="gallery-item-meta">2009 / Oil on canvas</span>
+              <span class="gallery-item-title">3.13【a cAstLe】</span><span class="gallery-item-meta">2009 / 91.0 × 65.2 cm / Oil on canvas</span>
             </div>
           </a>
-          <a href="#work-stilllife" class="gallery-item" style="--h-mm: 652;">
+          <a href="#work-stilllife" class="gallery-item js-scroll-link" style="--w-cm: 65.2; --h-cm: 53.0;">
             <div class="gallery-item-img-wrap"><img src="images/Still-Life♪.JPG" alt="Still-Life♪" loading="lazy"></div>
             <div class="gallery-item-cap">
-              <span class="gallery-item-title">Still-Life♪</span><span class="gallery-item-meta">2020 / Oil on canvas</span>
+              <span class="gallery-item-title">Still-Life♪</span><span class="gallery-item-meta">2020 / 65.2 × 53.0 cm / Oil on canvas</span>
             </div>
           </a>
-          <a href="#work-cg" class="gallery-item" style="--h-mm: 652;">
-            <div class="gallery-item-img-wrap"><img src="images/【CG(Cell-Graphics) [catastrophe] - II】 -修正版.jpg" alt="【CG(Cell-Graphics) [catastrophe] - II】" loading="lazy"></div>
+          <a href="#work-cg" class="gallery-item js-scroll-link" style="--w-cm: 65.2; --h-cm: 50.0;">
+            <div class="gallery-item-img-wrap"><img src="images/【CG(Cell-Graphics) [catastrophe] - II】 -修正版.jpg" alt="CG" loading="lazy"></div>
             <div class="gallery-item-cap">
-              <span class="gallery-item-title">【CG(Cell-Graphics) [catastrophe] - II】</span><span class="gallery-item-meta">2019 / Graphic & Oil</span>
+              <span class="gallery-item-title">【CG(Cell-Graphics) [catastrophe] - II】</span><span class="gallery-item-meta">2019 / 65.2 × 50.0 cm / Graphic & Oil</span>
             </div>
           </a>
+
         </div>
       </div>
     </section>
@@ -761,41 +731,15 @@
         <article class="tl-entry is-featured" id="work-flow">
           <div class="tl-year-display">2020</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【P20縦】flow.jpg">
+            <div class="tl-figure js-modal-open" data-img-src="images/【P20縦】flow.jpg" style="aspect-ratio: 53.0 / 72.7;">
               <img src="images/【P20縦】flow.jpg" alt="flow" loading="lazy">
             </div>
             <div class="tl-body">
               <h3 class="tl-title" data-typewriter="true">flow</h3>
-              <p class="tl-meta">P20 (530×727mm) / Oil on canvas</p>
-              <p class="tl-desc">絶え間なく流動する意識の表層を捉え、キャンバスの物質空間に定着させる試みです。色彩の有機的な重なりは時間の積層を体現し、生そのものの不可逆な運動性を静かに物語ります。</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="tl-entry is-compact" id="work-redsky">
-          <div class="tl-year-display">2016</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F6横】IMG_7401(赤い空と吹く風).jpg">
-              <img src="images/【F6横】IMG_7401(赤い空と吹く風).jpg" alt="赤い空と吹く風" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">赤い空と吹く風</h3>
-              <p class="tl-meta">F6 (410×318mm) / Oil on canvas</p>
-              <p class="tl-desc">大気の震えと、地平線を激しく染め上げる圧倒的な光の記憶。目に見えない「風」という流動的な存在を、油彩特有の重厚なマチエールを伴って視覚空間へと析出させています。</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="tl-entry is-compact" id="work-desert">
-          <div class="tl-year-display">2016</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【S10】IMG_7399(砂漠の山).jpg">
-              <img src="images/【S10】IMG_7399(砂漠の山).jpg" alt="砂漠の山" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">砂漠の山</h3>
-              <p class="tl-meta">S10 (530×530mm) / Oil on canvas</p>
-              <p class="tl-desc">静寂と乾燥が支配する無私なる空間にそびえ立つ、精神的な結晶としての山です。具体的な風景の輪郭を極限まで削ぎ落とし、純粋な形態構造として存在の骨格を浮かび上がらせています。</p>
+              <p class="tl-meta">53.0 × 72.7 cm / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>絶え間なく流動する意識の表層を捉え、キャンバスの物質空間に定着させる試みです。色彩の有機的な重なりは時間の積層を体現し、生そのものの不可逆な運動性を静かに物語ります。</p>
+              </div>
             </div>
           </div>
         </article>
@@ -803,55 +747,15 @@
         <article class="tl-entry is-compact" id="work-dondoyaki">
           <div class="tl-year-display">2016</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F20横】IMG_7397(どんど焼き).jpg">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F20横】IMG_7397(どんど焼き).jpg" style="aspect-ratio: 72.7 / 60.6;">
               <img src="images/【F20横】IMG_7397(どんど焼き).jpg" alt="どんど焼き" loading="lazy">
             </div>
             <div class="tl-body">
               <h3 class="tl-title" data-typewriter="true">どんど焼き</h3>
-              <p class="tl-meta">F20 (727×606mm) / Oil on canvas</p>
-              <p class="tl-desc">土着的な炎の儀礼。闇を焦がす火の粉と、土地の記憶に深く刻まれた祈りのエネルギーを、激しく交差する抽象的なストロークへと昇華させた作品です。</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="tl-entry is-compact" id="work-7242">
-          <div class="tl-year-display">2016</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F6横】IMG_7242.jpg">
-              <img src="images/【F6横】IMG_7242.jpg" alt="無題" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">無題 (IMG_7242)</h3>
-              <p class="tl-meta">F6 (410×318mm) / Oil on canvas</p>
-              <p class="tl-desc">幾重にも積層する色彩の断層。描く行為と削る行為のストイックな反復によって、キャンバスの深層から予期せぬ知覚の地層が立ち現れます。</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="tl-entry is-compact" id="work-7237">
-          <div class="tl-year-display">2016</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F6縦】IMG_7237.jpg">
-              <img src="images/【F6縦】IMG_7237.jpg" alt="無題" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">無題 (IMG_7237)</h3>
-              <p class="tl-meta">F6 (318×410mm) / Oil on canvas</p>
-              <p class="tl-desc">垂直に貫く線の強固な意思。画面を二分するような峻烈なストロークは、平面空間に対して新たな境界線と視覚的深度をもたらします。</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="tl-entry is-compact" id="work-mountains">
-          <div class="tl-year-display">2016</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F6横】IMG_7236[mountains between us].jpg">
-              <img src="images/【F6横】IMG_7236[mountains between us].jpg" alt="mountains between us" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">mountains between us</h3>
-              <p class="tl-meta">F6 (410×318mm) / Oil on canvas</p>
-              <p class="tl-desc">隔たりとしての山、あるいは繋がりとしての境界。自己と他者、あるいは内界と外界の間に横たわる不可視の距離を、形態の衝突として表現しています。</p>
+              <p class="tl-meta">72.7 × 60.6 cm / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>土着的な炎の儀礼。闇を焦がす火の粉と、土地の記憶に深く刻まれた祈りのエネルギーを、激しく交差する抽象的なストロークへと昇華させた作品です。</p>
+              </div>
             </div>
           </div>
         </article>
@@ -859,13 +763,15 @@
         <article class="tl-entry" id="work-dregs">
           <div class="tl-year-display">2009</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【Dregs（澱）】 修正後.JPG">
+            <div class="tl-figure js-modal-open" data-img-src="images/【Dregs（澱）】 修正後.JPG" style="aspect-ratio: 72.7 / 53.0;">
               <img src="images/【Dregs（澱）】 修正後.JPG" alt="Dregs（澱）" loading="lazy">
             </div>
             <div class="tl-body">
               <h3 class="tl-title" data-typewriter="true">【Dregs（澱）】</h3>
-              <p class="tl-meta">P20 (727×530mm) / Oil on canvas</p>
-              <p class="tl-desc">意識の底流に深く沈殿する記憶の残滓。言語化を拒む内省的な感情を、物質としての絵の具の重なりによってキャンバスに定着させています。</p>
+              <p class="tl-meta">72.7 × 53.0 cm / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>意識の底流に深く沈殿する記憶の残滓。言語化を拒む内省的な感情を、物質としての絵の具の重なりによってキャンバスに定着させています。</p>
+              </div>
             </div>
           </div>
         </article>
@@ -873,13 +779,15 @@
         <article class="tl-entry" id="work-noise">
           <div class="tl-year-display">2009</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG">
+            <div class="tl-figure js-modal-open" data-img-src="images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG" style="aspect-ratio: 65.2 / 53.0;">
               <img src="images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG" alt="tHE n0iSe" loading="lazy">
             </div>
             <div class="tl-body">
               <h3 class="tl-title" data-typewriter="true">tHE n0iSe Of ThE PriMItⅣe sEA</h3>
-              <p class="tl-meta">F15 (652×530mm) / Oil on canvas</p>
-              <p class="tl-desc">生命の根源的な混沌。原始の海が発していたであろう不協和音を、激しい色彩の衝突とストロークのノイズによって絵画行為へと昇華しています。</p>
+              <p class="tl-meta">65.2 × 53.0 cm / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>生命の根源的な混沌。原始の海が発していたであろう不協和音を、激しい色彩の衝突とストロークのノイズによって絵画行為へと昇華しています。</p>
+              </div>
             </div>
           </div>
         </article>
@@ -887,13 +795,15 @@
         <article class="tl-entry" id="work-damagedealer">
           <div class="tl-year-display">2009</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/Damage Dealer.JPG">
+            <div class="tl-figure js-modal-open" data-img-src="images/Damage Dealer.JPG" style="aspect-ratio: 91.0 / 72.7;">
               <img src="images/Damage Dealer.JPG" alt="Damage Dealer" loading="lazy">
             </div>
             <div class="tl-body">
               <h3 class="tl-title" data-typewriter="true">Damage Dealer</h3>
-              <p class="tl-meta">F30 (727×910mm) / Oil on canvas</p>
-              <p class="tl-desc">黄と青、二つの領域がせめぎ合う画面の中で、人のかたちが溶け、滲み、また結ばれ直していきます。具象と抽象のあわいに留まり続けることで、傷つけること／傷つくことの両義性が一枚の絵肌として定着しています。</p>
+              <p class="tl-meta">91.0 × 72.7 cm / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>黄と青、二つの領域がせめぎ合う画面の中で、人のかたちが溶け、滲み、また結ばれ直していきます。具象と抽象のあわいに留まり続けることで、傷つけること／傷つくことの両義性が一枚の絵肌として定着しています。</p>
+              </div>
             </div>
           </div>
         </article>
@@ -901,13 +811,15 @@
         <article class="tl-entry" id="work-castle">
           <div class="tl-year-display">2009</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/3.13【a cAstLe】.JPG">
+            <div class="tl-figure js-modal-open" data-img-src="images/3.13【a cAstLe】.JPG" style="aspect-ratio: 91.0 / 65.2;">
               <img src="images/3.13【a cAstLe】.JPG" alt="3.13【a cAstLe】" loading="lazy">
             </div>
             <div class="tl-body">
               <h3 class="tl-title" data-typewriter="true">3.13【a cAstLe】</h3>
-              <p class="tl-meta">P30 (910×652mm) / Oil on canvas</p>
-              <p class="tl-desc">構築と崩壊の極限の境界に立ち現れる、脆弱で不確かな構造体です。個人の内面にそびえ立つ、侵されざる砦の静かなポートレートとなっています。</p>
+              <p class="tl-meta">91.0 × 65.2 cm / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>構築と崩壊の極限の境界に立ち現れる、脆弱で不確かな構造体です。個人の内面にそびえ立つ、侵されざる砦の静かなポートレートとなっています。</p>
+              </div>
             </div>
           </div>
         </article>
@@ -915,13 +827,15 @@
         <article class="tl-entry" id="work-stilllife">
           <div class="tl-year-display">2009</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/Still-Life♪.JPG">
+            <div class="tl-figure js-modal-open" data-img-src="images/Still-Life♪.JPG" style="aspect-ratio: 65.2 / 53.0;">
               <img src="images/Still-Life♪.JPG" alt="Still-Life♪" loading="lazy">
             </div>
             <div class="tl-body">
               <h3 class="tl-title" data-typewriter="true">Still-Life♪</h3>
-              <p class="tl-meta">F15 (530×652mm) / Oil on canvas</p>
-              <p class="tl-desc">静物画（Still Life）という古典的テーマの現代的な解体です。静止した物体の内奥に秘められた、密やかな運動性とリズムを楽譜のようにキャンバスに配置しています。</p>
+              <p class="tl-meta">65.2 × 53.0 cm / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>静物画（Still Life）という古典的テーマの現代的な解体です。静止した物体の内奥に秘められた、密やかな運動性とリズムを楽譜のようにキャンバスに配置しています。</p>
+              </div>
             </div>
           </div>
         </article>
@@ -929,13 +843,15 @@
         <article class="tl-entry" id="work-cg">
           <div class="tl-year-display">2009</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【CG(Cell-Graphics) [catastrophe] - II】 -修正版.jpg">
+            <div class="tl-figure js-modal-open" data-img-src="images/【CG(Cell-Graphics) [catastrophe] - II】 -修正版.jpg" style="aspect-ratio: 65.2 / 50.0;">
               <img src="images/【CG(Cell-Graphics) [catastrophe] - II】 -修正版.jpg" alt="CG" loading="lazy">
             </div>
             <div class="tl-body">
               <h3 class="tl-title" data-typewriter="true">【CG(Cell-Graphics) [catastrophe] - II】</h3>
-              <p class="tl-meta">P15 (500×652mm) / Graphic & Oil</p>
-              <p class="tl-desc">デジタル的な細胞の増殖と、不可避なカタストロフ。油彩という古典的メディアを交錯させながら、現代の視覚的飽和構造を模索した初期の抽象表現です。</p>
+              <p class="tl-meta">65.2 × 50.0 cm / Graphic & Oil</p>
+              <div class="tl-desc">
+                <p>デジタル的な細胞の増殖と、不可避なカタストロフ。油彩という古典的メディアを交錯させながら、現代の視覚的飽和構造を模索した初期の抽象表現です。</p>
+              </div>
             </div>
           </div>
         </article>
@@ -978,7 +894,7 @@
       <img src="" alt="拡大画像" id="modalImg">
       <div class="modal-caption">
         <p class="modal-caption-jp" id="modalTitleJp"></p>
-        <p class="modal-caption-en" id="modalTitleEn"></p>
+        <p class="modal-caption-meta" id="modalMeta"></p>
       </div>
     </div>
   </div>
@@ -987,25 +903,14 @@
     /* ── ナビゲーション & メニュー ── */
     function toggleMenu() {
       const links = document.getElementById('nav-links');
-      const cta = document.getElementById('nav-cta-btn');
       const hamburger = document.getElementById('hamburger');
       links.classList.toggle('open');
       hamburger.classList.toggle('is-active');
-      if(cta) cta.style.display = links.classList.contains('open') ? 'none' : '';
-      if (links.classList.contains('open')) {
-        document.body.classList.add('is-locked');
-      } else {
-        document.body.classList.remove('is-locked');
-      }
+      document.body.classList.toggle('is-locked');
     }
-    
     function closeMenu() {
-      const links = document.getElementById('nav-links');
-      const cta = document.getElementById('nav-cta-btn');
-      const hamburger = document.getElementById('hamburger');
-      links.classList.remove('open');
-      hamburger.classList.remove('is-active');
-      if(cta) cta.style.display = '';
+      document.getElementById('nav-links').classList.remove('open');
+      document.getElementById('hamburger').classList.remove('is-active');
       document.body.classList.remove('is-locked');
     }
 
@@ -1132,6 +1037,7 @@
       }
     }, { passive: true });
 
+    /* スクロールイベント (Page Nav) */
     navItems.forEach(item => {
       item.addEventListener('click', () => {
         const target = document.getElementById(item.getAttribute('data-target'));
@@ -1155,18 +1061,18 @@
       }
     });
 
-    /* ── Lightbox (Modal) ── */
+    /* ── Lightbox (Modal) / Gallery Grid Scroll & Expand Logic ── */
     const modal      = document.getElementById('imageModal');
     const modalImg   = document.getElementById('modalImg');
     const modalBg    = document.getElementById('modalBg');
     const modalClose = document.getElementById('modalClose');
     const titleJpEl  = document.getElementById('modalTitleJp');
-    const titleEnEl  = document.getElementById('modalTitleEn');
+    const metaEl     = document.getElementById('modalMeta');
 
-    const openModal = (src, jp, en) => {
+    const openModal = (src, jp, metaText) => {
       modalImg.src = src;
       titleJpEl.textContent = jp || '';
-      titleEnEl.textContent = en || '';
+      metaEl.textContent = metaText || '';
       modal.classList.add('is-active');
       modal.setAttribute('aria-hidden', 'false');
       document.body.classList.add('is-locked');
@@ -1176,25 +1082,58 @@
       modal.classList.remove('is-active');
       modal.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('is-locked');
-      setTimeout(() => { modalImg.src = ''; titleJpEl.textContent = ''; titleEnEl.textContent = ''; }, 560);
+      setTimeout(() => { modalImg.src = ''; titleJpEl.textContent = ''; metaEl.textContent = ''; }, 560);
     };
 
+    // グリッド作品のクリック時の制御
+    document.querySelectorAll('.js-scroll-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href').substring(1);
+        const targetEl = document.getElementById(targetId);
+        
+        // 年譜（Timeline）に該当作品が存在する場合はスムーズスクロール
+        if (targetEl && targetEl.style.display !== 'none') {
+          const offset = topNav?.offsetHeight || 80;
+          window.scrollTo({ 
+            top: targetEl.getBoundingClientRect().top + window.scrollY - offset - 20, 
+            behavior: 'smooth' 
+          });
+        } else {
+          // ★ グリッドにしか存在しない作品の場合は、その場で拡大モーダル表示
+          let src = link.querySelector('img').getAttribute('src');
+          let jp = link.querySelector('.gallery-item-title')?.textContent || '';
+          let metaText = link.querySelector('.gallery-item-meta')?.textContent || '';
+          openModal(src, jp, metaText);
+        }
+      });
+    });
+
+    // 年譜（Timeline）画像のクリック時の制御
     document.querySelectorAll('.js-modal-open').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const src = btn.getAttribute('data-img-src');
+      btn.addEventListener('click', (e) => {
+        let src = btn.getAttribute('data-img-src');
+        if (!src && btn.querySelector('img')) src = btn.querySelector('img').getAttribute('src');
+        
         const block = btn.closest('.tl-entry');
         let jp = '';
+        let metaText = '';
+
         if (block) {
           const jpTitleEl = block.querySelector('.tl-title');
           jp = jpTitleEl ? jpTitleEl.textContent : '';
-        } else {
-          const galleryItem = btn.closest('.gallery-item');
-          if (galleryItem) {
-             const jpTitleEl = galleryItem.querySelector('.gallery-item-title');
-             jp = jpTitleEl ? jpTitleEl.textContent : '';
-          }
-        }
-        if (src) openModal(src, jp, '');
+
+          const yearEl = block.querySelector('.tl-year-display');
+          const year = yearEl ? yearEl.textContent.trim() : '';
+
+          const metaTag = block.querySelector('.tl-meta');
+          const meta = metaTag ? metaTag.textContent : '';
+
+          // 制作年とサイズ・マテリアルを結合
+          metaText = year ? `${year} / ${meta}` : meta;
+        } 
+        
+        if (src) openModal(src, jp, metaText);
       });
     });
 
