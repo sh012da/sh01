@@ -22,7 +22,7 @@
   
   <style>
     /* ============================================================
-       DESIGN TOKENS
+        DESIGN TOKENS
     ============================================================ */
     :root {
       --bg:        #060605;
@@ -59,13 +59,12 @@
       padding-left: env(safe-area-inset-left);
       padding-right: env(safe-area-inset-right);
     }
-    body.is-locked { overflow: hidden; }
     img { max-width: 100%; height: auto; display: block; }
     a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
     a:hover { opacity: 0.45; }
 
     /* ============================================================
-       NAVIGATION
+        NAVIGATION (ハンバーガーメニュー無しの洗練されたデザイン)
     ============================================================ */
     nav#top-nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 300;
@@ -78,6 +77,7 @@
     }
     nav#top-nav.scrolled { background: rgba(10,10,9,0.93); border-color: var(--border); }
     .nav-logo-unified {
+      position: relative; z-index: 301;
       font-family: var(--font-en); font-size: clamp(0.7rem, 2.5vw, 0.9rem);
       letter-spacing: 0.3em; font-weight: 300; color: var(--accent);
       text-transform: uppercase; transition: opacity 0.4s ease;
@@ -90,21 +90,13 @@
     }
     .nav-links a:hover { color: var(--accent); }
     .nav-cta {
+      position: relative; z-index: 301;
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
       letter-spacing: 0.25em; text-transform: uppercase;
       border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem;
       color: var(--accent); transition: background 0.25s, color 0.25s;
     }
     .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
-    
-    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; position: relative; z-index: 301; width: 30px; height: 20px; }
-    .nav-hamburger span { display: block; position: absolute; left: 0; width: 100%; height: 1px; background: var(--accent); transition: transform 0.4s var(--ease), opacity 0.4s var(--ease), top 0.4s var(--ease); }
-    .nav-hamburger span:nth-child(1) { top: 0px; }
-    .nav-hamburger span:nth-child(2) { top: 9px; }
-    .nav-hamburger span:nth-child(3) { top: 18px; }
-    .nav-hamburger.is-active span:nth-child(1) { top: 9px; transform: rotate(45deg); }
-    .nav-hamburger.is-active span:nth-child(2) { opacity: 0; }
-    .nav-hamburger.is-active span:nth-child(3) { top: 9px; transform: rotate(-45deg); }
 
     /* Page Nav */
     .page-nav {
@@ -122,7 +114,7 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       HERO FIRST VIEW
+        HERO FIRST VIEW
     ============================================================ */
     .hero {
       position: relative; height: 100svh; min-height: 580px;
@@ -166,7 +158,7 @@
     @keyframes scrollDrop { 0% { top: -100%; opacity: 1; } 70% { top: 100%; opacity: 0.4; } 71% { top: -100%; opacity: 0; } 100% { top: -100%; opacity: 0; } }
 
     /* ============================================================
-       CONCEPT & STATEMENT
+        CONCEPT & STATEMENT
     ============================================================ */
     .concept-section { padding: clamp(6rem, 13vh, 10rem) var(--px); max-width: 900px; margin: 0 auto; text-align: center; position: relative; z-index: 2; }
     .concept-text { font-size: clamp(0.9rem, 2vw, 1.05rem); font-weight: 300; line-height: 2.3; color: rgba(233,229,223,0.85); letter-spacing: 0.08em; }
@@ -184,7 +176,7 @@
     .statement-closing.in-view { opacity: 1; transform: translateY(0); }
 
     /* ============================================================
-       GALLERY GRID
+        GALLERY GRID
     ============================================================ */
     .gallery-section { padding: 0 var(--px) clamp(6rem, 13vh, 10rem); max-width: 1600px; margin: 0 auto; }
     .section-label { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem); letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase; text-align: center; margin-bottom: clamp(3rem, 7vh, 5rem); }
@@ -204,7 +196,7 @@
     .gallery-item-meta { font-family: var(--font-en); font-size: clamp(0.6rem, 1.1vw, 0.7rem); color: var(--accent); letter-spacing: 0.14em; font-style: italic; display: block; }
 
     /* ============================================================
-       INTEGRATED CHRONOLOGY SECTION 
+        INTEGRATED CHRONOLOGY SECTION (完璧な全体表示・トリミング排除)
     ============================================================ */
     .chronology-section { padding: clamp(5rem, 12vh, 10rem) var(--px); background: var(--bg2); border-top: 0.5px solid var(--border); position: relative; }
     .timeline-container { max-width: 1200px; margin: 0 auto; position: relative; }
@@ -220,10 +212,20 @@
     .tl-content-wrap { display: flex; justify-content: space-between; align-items: center; gap: clamp(2rem, 5vw, 6rem); }
     .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
     
-    .tl-figure { width: 54%; position: relative; border: 0.5px solid var(--border); overflow: hidden; background: var(--bg); cursor: zoom-in; transition: width 0.4s ease; }
+    /* コンテナのトリミング防止設計 (overflowを解除しアスペクト比を担保) */
+    .tl-figure { 
+      position: relative; 
+      border: 0.5px solid var(--border); 
+      background: var(--bg); 
+      cursor: zoom-in; 
+      transition: width 0.4s ease, border-color 0.4s ease; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
     .tl-body { width: 42%; position: relative; z-index: 2; transition: width 0.4s ease; }
 
-    /* 縦・横の正確な比率調整 (cmベースの正確なアスペクト比) */
+    /* PC表示での正確なアスペクト比割り当て */
     .tl-entry.is-f25-portrait .tl-figure { width: 38%; aspect-ratio: 652 / 803; }
     .tl-entry.is-f25-portrait .tl-body { width: 54%; }
 
@@ -233,8 +235,17 @@
     .tl-entry.is-f30-landscape .tl-figure { width: 55%; aspect-ratio: 910 / 727; }
     .tl-entry.is-f30-landscape .tl-body { width: 38%; }
     
-    .tl-figure img { width: 100%; height: 100%; display: block; object-fit: cover; filter: grayscale(12%) brightness(0.85); transition: transform 1s var(--ease), filter 0.6s ease; }
-    .tl-figure:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
+    /* 【超重要】画像の100%全体表示を強制するCSSルール */
+    .tl-figure img { 
+      width: 100% !important; 
+      height: 100% !important; 
+      display: block; 
+      object-fit: contain !important; /* 絶対にトリミングさせず、アスペクト比を100%保つ */
+      filter: grayscale(12%) brightness(0.85); 
+      transition: transform 1s var(--ease), filter 0.6s ease; 
+    }
+    .tl-figure:hover { border-color: rgba(196,168,130,0.35); }
+    .tl-figure:hover img { transform: scale(1.02); filter: grayscale(0%) brightness(1.0); }
     
     .tl-title { font-family: var(--font-ja); font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 300; color: var(--fg); line-height: 1.4; margin-bottom: 0.8rem; }
     .tl-meta { font-family: var(--font-en); font-size: clamp(0.6rem, 1.2vw, 0.75rem); color: var(--accent); letter-spacing: 0.15em; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border-md); }
@@ -249,7 +260,7 @@
     .fade-out { opacity: 0; transition: opacity 0.8s ease; }
 
     /* ============================================================
-       CONTACT & FOOTER
+        CONTACT & FOOTER
     ============================================================ */
     .contact-section { padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center; border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(196,168,130,0.06) 0%, var(--bg) 70%); }
     .contact-heading { font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em; }
@@ -262,7 +273,7 @@
     .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
 
     /* ============================================================
-       LIGHTBOX (MODAL) & BACK TO TOP
+        LIGHTBOX (MODAL) & BACK TO TOP
     ============================================================ */
     .image-modal { position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.55s var(--ease), visibility 0.55s; }
     .image-modal.is-active { opacity: 1; visibility: visible; }
@@ -284,31 +295,51 @@
     .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.9rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
 
     /* ============================================================
-       RESPONSIVE DESIGN
+        RESPONSIVE DESIGN
     ============================================================ */
     @media (max-width: 860px) {
       .timeline-container { padding-left: 36px; } 
       .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2rem; }
-      .tl-figure, .tl-body, .tl-entry.is-f25-portrait .tl-figure, .tl-entry.is-f25-portrait .tl-body, .tl-entry.is-p30-landscape .tl-figure, .tl-entry.is-p30-landscape .tl-body, .tl-entry.is-f30-landscape .tl-figure, .tl-entry.is-f30-landscape .tl-body { width: 100%; aspect-ratio: auto; }
-      .tl-figure img { aspect-ratio: inherit; }
+      
+      .tl-figure, .tl-body, 
+      .tl-entry.is-f25-portrait .tl-figure, .tl-entry.is-f25-portrait .tl-body, 
+      .tl-entry.is-p30-landscape .tl-figure, .tl-entry.is-p30-landscape .tl-body, 
+      .tl-entry.is-f30-landscape .tl-figure, .tl-entry.is-f30-landscape .tl-body { 
+        width: 100%; 
+        aspect-ratio: auto !important; /* スマホ・タブレット時は縦横固定を完全解除 */
+      }
+      
+      /* 少年兵(10)含む全縦・横長作品がレスポンシブでも絶対にトリミングされない完璧な指定 */
+      .tl-figure img { 
+        width: 100% !important; 
+        height: auto !important; 
+        max-height: 70vh !important; /* 縦長作品がスクロールアウトしないよう上限を設定 */
+        object-fit: contain !important; /* 縦横比を完全に維持して内包表示 */
+      }
+      
       .timeline-spine-wrapper { left: 16px; transform: none; }
       .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; font-size: clamp(2.5rem, 8vw, 3.5rem); }
     }
+
     @media (max-width: 768px) {
-      nav#top-nav { padding: 1rem 1.25rem; justify-content: space-between; align-items: center; }
+      nav#top-nav { padding: 1.2rem 1.25rem; justify-content: space-between; align-items: center; }
+      
+      /* ハンバーガーメニューに関連するコードを完全削除 / スマホヘッダーをミニマルに再定義 */
       .nav-links { display: none !important; }
-      .nav-hamburger { display: none !important; }
+      
       .gallery-section { display: none !important; }
       .page-nav.visible { right: 8px; opacity: 0.5; }
       .page-nav.visible:hover { opacity: 1; }
       .page-nav-label { display: none; }
     }
+
     @media (max-width: 480px) {
       .hero-scroll { display: none; }
       .modal-content img { max-height: 70svh; }
       .statement-para { text-align: left; }
       .statement-section { padding-left: 1.25rem; padding-right: 1.25rem; }
     }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
       .gallery-item, .tl-entry, .reveal-fade { opacity: 1 !important; transform: none !important; }
@@ -321,14 +352,11 @@
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="index.html#statement" onclick="closeMenu()">Statement</a></li>
-      <li><a href="index.html#works"     onclick="closeMenu()">Works</a></li>
-      <li><a href="index.html#profile"   onclick="closeMenu()">Profile</a></li>
-      <li><a href="index.html#news"      onclick="closeMenu()">News</a></li>
+      <li><a href="index.html#statement">Statement</a></li>
+      <li><a href="index.html#works">Works</a></li>
+      <li><a href="index.html#profile">Profile</a></li>
+      <li><a href="index.html#news">News</a></li>
     </ul>
-    <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
-      <span></span><span></span><span></span>
-    </button>
     <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
   </nav>
 
@@ -644,7 +672,7 @@
               <p class="tl-meta">72.7 × 91.0 cm / Oil on canvas</p>
               <div class="tl-desc">
                 <p>タバコを深く咥え、無造作に肩に銃を担ぐ少年。大人びた振る舞いを強いられる戦場において、成熟を急かされた精神と、未成熟な身体の危ういバランスが見事に定着されている。</p>
-                <p>どこか遠くを見つめるそのアンニュイな表情と煙の行方は、彼らの未来を覆い隠す紛争地の不条理そのものを物語っている。</p>
+                <p>どこか遠くを見つめるそのアンニュイな表情と煙の行方は、彼らの未来を覆い隠す紛煙地の不条理そのものを物語っている。</p>
               </div>
             </div>
           </div>
@@ -747,31 +775,6 @@
   </div>
 
   <script>
-    /* ── ナビゲーション & メニュー ── */
-    function toggleMenu() {
-      const links = document.getElementById('nav-links');
-      const cta = document.getElementById('nav-cta-btn');
-      const hamburger = document.getElementById('hamburger');
-      links.classList.toggle('open');
-      hamburger.classList.toggle('is-active');
-      if(cta) cta.style.display = links.classList.contains('open') ? 'none' : '';
-      if (links.classList.contains('open')) {
-        document.body.classList.add('is-locked');
-      } else {
-        document.body.classList.remove('is-locked');
-      }
-    }
-    
-    function closeMenu() {
-      const links = document.getElementById('nav-links');
-      const cta = document.getElementById('nav-cta-btn');
-      const hamburger = document.getElementById('hamburger');
-      links.classList.remove('open');
-      hamburger.classList.remove('is-active');
-      if(cta) cta.style.display = '';
-      document.body.classList.remove('is-locked');
-    }
-
     /* ── ファーストビュー アニメーション ── */
     window.addEventListener('load', () => {
       setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 150);
@@ -887,8 +890,10 @@
 
           /* Back to Top */
           const b2t = document.getElementById('backToTop');
-          if (scrollY > 400) b2t.classList.add('is-visible');
-          else b2t.classList.remove('is-visible');
+          if (b2t) {
+            if (scrollY > 400) b2t.classList.add('is-visible');
+            else b2t.classList.remove('is-visible');
+          }
 
           ticking = false;
         });
@@ -945,7 +950,7 @@
 
     document.querySelectorAll('.js-modal-open').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        e.preventDefault(); // hrefがある場合の挙動をキャンセル
+        e.preventDefault(); 
         const src = btn.getAttribute('data-img-src');
         const title = btn.getAttribute('data-title');
         const meta = btn.getAttribute('data-meta');
@@ -957,7 +962,6 @@
     modalClose.addEventListener('click', closeModal);
     modalImg.addEventListener('click', closeModal);
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('is-active')) closeModal(); });
-
   </script>
 </body>
 </html>
