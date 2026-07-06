@@ -39,7 +39,7 @@
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 16px; }
+    html { font-size: 16px; scroll-behavior: smooth; }
 
     /* 紙と木炭の「摩擦」を表現する全画面ノイズ */
     body::before {
@@ -64,7 +64,8 @@
     }
     
     body.is-locked { overflow: hidden; }
-    /* トリミングせず画像全体を表示する。余白も排除 */
+    
+    /* トリミングを排除、黒い余白無し */
     img { max-width: 100%; height: auto; display: block; }
     
     a, button { cursor: none; }
@@ -82,7 +83,7 @@
     .cursor-outline { width: 40px; height: 40px; border: 1px solid rgba(196,168,130,0.4); transition: width 0.2s, height 0.2s, border-color 0.2s; transition-timing-function: ease-out; }
     body.hovering .cursor-dot { width: 8px; height: 8px; background-color: var(--bg); }
     body.hovering .cursor-outline { width: 60px; height: 60px; border-color: rgba(233,229,223,0.1); background: var(--fg); backdrop-filter: blur(2px); mix-blend-mode: difference; }
-    @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none; } body, a, button { cursor: auto; } }
+    @media (max-width: 1024px) { .cursor-dot, .cursor-outline { display: none; } body, a, button { cursor: auto; } }
 
     /* ============================================================
        NAVIGATION
@@ -100,7 +101,7 @@
     .nav-cta { font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem); letter-spacing: 0.25em; text-transform: uppercase; border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem; color: var(--accent); transition: background 0.25s, color 0.25s; }
     .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
 
-    .page-nav { position: fixed; right: clamp(20px, 4vw, 40px); top: 50%; transform: translateY(-50%); z-index: 200; display: flex; flex-direction: column; gap: 24px; opacity: 0; visibility: hidden; transition: opacity 0.6s var(--ease), visibility 0.6s; }
+    .page-nav { position: fixed; right: clamp(10px, 3vw, 40px); top: 50%; transform: translateY(-50%); z-index: 200; display: flex; flex-direction: column; gap: 24px; opacity: 0; visibility: hidden; transition: opacity 0.6s var(--ease), visibility 0.6s; }
     .page-nav.visible { opacity: 1; visibility: visible; mix-blend-mode: difference; }
     .page-nav-item { display: flex; align-items: center; gap: 12px; flex-direction: row-reverse; background: none; border: none; padding: 8px 0; outline: none; }
     .page-nav-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(233,229,223,0.4); transition: all 0.35s; flex-shrink: 0; }
@@ -113,7 +114,7 @@
        HERO
     =========================================================== */
     .hero {
-      position: relative; height: 100svh; min-height: 700px;
+      position: relative; height: 100svh; min-height: 600px;
       display: flex; flex-direction: column; justify-content: center;
       padding: 0 var(--px); overflow: hidden;
     }
@@ -125,37 +126,37 @@
     .hero-video-bg.loaded { opacity: 0.3; transform: scale(1); }
     
     .hero-title-wrapper { position: relative; z-index: 4; display: flex; flex-direction: column; align-items: flex-start; margin-top: 10vh; }
-    .hero-title-huge { font-family: var(--font-ja); font-size: clamp(6rem, 22vw, 24rem); font-weight: 200; line-height: 0.8; letter-spacing: -0.04em; color: var(--fg); mix-blend-mode: overlay; display: flex; flex-direction: column; }
+    .hero-title-huge { font-family: var(--font-ja); font-size: clamp(5rem, 20vw, 24rem); font-weight: 200; line-height: 0.8; letter-spacing: -0.04em; color: var(--fg); mix-blend-mode: overlay; display: flex; flex-direction: column; }
     .hero-title-huge .char { display: block; opacity: 0; transform: translateY(100px) rotate(-5deg); transition: transform 1.8s var(--ease), opacity 1.5s ease; }
     .hero-title-huge.revealed .char { opacity: 1; transform: translateY(0) rotate(0); }
     .hero-title-huge.revealed .char:nth-child(2) { transition-delay: 0.15s; margin-left: 15vw; color: transparent; -webkit-text-stroke: 1px var(--fg); }
 
-    .hero-meta-box { position: absolute; bottom: clamp(3rem, 8vh, 6rem); left: var(--px); z-index: 5; display: flex; flex-direction: column; gap: 1rem; }
-    .hero-eyebrow { font-family: var(--font-en); font-size: clamp(0.6rem, 1.2vw, 0.75rem); letter-spacing: 0.4em; color: var(--muted); text-transform: uppercase; display: flex; align-items: center; gap: 1.5rem; overflow: hidden; }
+    .hero-meta-box { position: absolute; bottom: clamp(2rem, 8vh, 6rem); left: var(--px); z-index: 5; display: flex; flex-direction: column; gap: 1rem; }
+    .hero-eyebrow { font-family: var(--font-en); font-size: clamp(0.55rem, 1.2vw, 0.75rem); letter-spacing: 0.4em; color: var(--muted); text-transform: uppercase; display: flex; align-items: center; gap: 1.5rem; overflow: hidden; }
     .hero-eyebrow span { display: block; transform: translateY(100%); transition: transform 1s var(--ease) 0.5s; }
     .hero-eyebrow.revealed span { transform: translateY(0); }
     .hero-eyebrow::before { content: ''; width: 0; height: 1px; background: var(--accent); transition: width 1s var(--ease) 0.8s; }
     .hero-eyebrow.revealed::before { width: 40px; }
 
-    .hero-scroll { position: absolute; bottom: 0; right: var(--px); z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 12px; padding-bottom: clamp(2rem, 5vh, 4rem); }
+    .hero-scroll { position: absolute; bottom: 0; right: var(--px); z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 12px; padding-bottom: clamp(1.5rem, 5vh, 4rem); }
     .hero-scroll-label { font-family: var(--font-en); font-size: 0.6rem; letter-spacing: 0.3em; color: var(--accent); writing-mode: vertical-rl; }
     .hero-scroll-line { width: 1px; height: 0; background: var(--accent); transition: height 1.5s var(--ease) 1s; }
     .hero-scroll.revealed .hero-scroll-line { height: 80px; animation: scrollStretch 2.5s cubic-bezier(0.77, 0, 0.175, 1) infinite alternate; }
     @keyframes scrollStretch { 0% { transform-origin: top; transform: scaleY(0.3); } 100% { transform-origin: top; transform: scaleY(1); } }
 
-    .hero-tiktok-pill { position: absolute; top: clamp(6rem, 15vh, 10rem); right: var(--px); z-index: 10; display: inline-flex; align-items: center; gap: 12px; padding: 12px 24px; border: 1px solid rgba(233, 229, 223, 0.15); background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border-radius: 30px; opacity: 0; transform: translateX(20px); transition: all 0.6s var(--ease); }
+    .hero-tiktok-pill { position: absolute; top: clamp(5rem, 12vh, 10rem); right: var(--px); z-index: 10; display: inline-flex; align-items: center; gap: 12px; padding: 10px 20px; border: 1px solid rgba(233, 229, 223, 0.15); background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border-radius: 30px; opacity: 0; transform: translateX(20px); transition: all 0.6s var(--ease); }
     .hero-tiktok-pill.revealed { opacity: 1; transform: translateX(0); transition-delay: 1.2s; }
     .hero-tiktok-pill:hover { background: rgba(196,168,130,0.15); border-color: var(--accent); transform: scale(1.05); }
-    .hero-tiktok-pill svg { width: 16px; height: 16px; fill: var(--fg); }
-    .hero-tiktok-pill span { font-size: 0.75rem; letter-spacing: 0.1em; color: var(--fg); }
+    .hero-tiktok-pill svg { width: 14px; height: 14px; fill: var(--fg); }
+    .hero-tiktok-pill span { font-size: 0.7rem; letter-spacing: 0.1em; color: var(--fg); }
 
     /* ============================================================
        CONCEPT
     =========================================================== */
-    .concept-section { position: relative; padding: clamp(8rem, 15vh, 15rem) var(--px); display: grid; grid-template-columns: 1fr 1.5fr; gap: 4rem; border-bottom: 1px solid var(--border); }
+    .concept-section { position: relative; padding: clamp(6rem, 15vh, 15rem) var(--px); display: grid; grid-template-columns: 1fr 1.5fr; gap: 4rem; border-bottom: 1px solid var(--border); }
     .concept-title-area { position: sticky; top: 30vh; height: fit-content; }
     .section-label-large { font-family: var(--font-en); font-size: clamp(2rem, 5vw, 4rem); font-style: italic; font-weight: 300; color: var(--dim); letter-spacing: 0.05em; line-height: 1; margin-bottom: 1rem; }
-    .concept-body { font-size: clamp(0.95rem, 1.8vw, 1.1rem); font-weight: 300; line-height: 2.4; color: rgba(233,229,223,0.85); letter-spacing: 0.08em; text-align: justify; }
+    .concept-body { font-size: clamp(0.9rem, 1.8vw, 1.1rem); font-weight: 300; line-height: 2.4; color: rgba(233,229,223,0.85); letter-spacing: 0.08em; text-align: justify; }
     .concept-body p { margin-bottom: 2.5em; position: relative; }
     .concept-body em { font-style: normal; color: var(--accent); font-weight: 400; }
     .credit { font-family: var(--font-en); font-size: 0.75rem; color: var(--muted); letter-spacing: 0.2em; margin-bottom: 4rem; display: inline-block; border-bottom: 1px solid var(--border); padding-bottom: 8px;}
@@ -165,22 +166,22 @@
     =========================================================== */
     .gallery-carousel-section {
       position: relative;
-      padding: clamp(6rem, 12vh, 10rem) 0;
+      padding: clamp(5rem, 10vh, 10rem) 0;
       background: var(--bg2);
       border-bottom: 1px solid var(--border);
       overflow: hidden;
     }
     .carousel-header {
-      text-align: center; margin-bottom: clamp(3rem, 6vh, 5rem);
+      text-align: center; margin-bottom: clamp(2rem, 6vh, 5rem);
     }
     .carousel-header h2 {
-      font-family: var(--font-en); font-size: clamp(1.2rem, 3vw, 2rem); font-style: italic;
+      font-family: var(--font-en); font-size: clamp(1.5rem, 4vw, 2.5rem); font-style: italic;
       color: var(--accent); letter-spacing: 0.2em; font-weight: 300;
     }
     
     .coverflow-container {
       position: relative;
-      height: clamp(400px, 55vh, 600px); /* 高さを十分に確保 */
+      height: clamp(350px, 50vh, 600px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -189,8 +190,8 @@
     }
     .coverflow-item {
       position: absolute;
-      width: clamp(220px, 30vw, 360px);
-      height: auto; /* トリミングを完全に排除 */
+      width: clamp(200px, 35vw, 400px);
+      height: auto; 
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -198,54 +199,56 @@
       transform-style: preserve-3d;
       cursor: pointer;
     }
-    /* 画像ラッパーで黒い余白を排除し、ぴったりフィットさせる */
+    
+    /* 楽しく、洗練された画像ラッパー（トリミングなし） */
     .cf-img-wrap {
       width: 100%;
-      font-size: 0;
-      line-height: 0;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      font-size: 0; line-height: 0;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
       border: 1px solid rgba(233,229,223,0.1);
-      transition: border-color 0.4s ease, transform 0.4s ease;
+      transition: border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+      background: var(--bg); /* 念のため */
     }
     .coverflow-item img {
-      width: 100%; 
-      height: auto; 
+      width: 100%; height: auto; 
     }
+    /* アクティブ時のリッチなエフェクト */
     .coverflow-item.is-active .cf-img-wrap {
       border-color: rgba(196,168,130,0.6);
-      transform: scale(1.02);
+      transform: scale(1.05) translateY(-8px);
+      box-shadow: 0 30px 60px rgba(196,168,130,0.12), 0 15px 25px rgba(0,0,0,0.8);
     }
     
-    /* 読みやすく距離を離したタイトル */
+    /* 見やすいタイトルの配置とアニメーション */
     .coverflow-info {
       position: absolute; 
-      bottom: -5rem; /* 画像から十分離す */
+      bottom: -4.5rem; /* 画像から余裕を持たせる */
       left: 0; width: 100%; text-align: center;
       opacity: 0; transform: translateY(-10px); transition: all 0.4s var(--ease); pointer-events: none;
     }
     .coverflow-item.is-active .coverflow-info {
-      opacity: 1; transform: translateY(0); transition-delay: 0.2s;
+      opacity: 1; transform: translateY(0); transition-delay: 0.15s;
     }
-    .cf-title { font-family: var(--font-ja); font-size: 1rem; color: var(--fg); letter-spacing: 0.05em; font-weight: 300; margin-bottom: 0.2rem; }
+    .cf-title { font-family: var(--font-ja); font-size: clamp(0.9rem, 2vw, 1.1rem); color: var(--fg); letter-spacing: 0.05em; font-weight: 300; margin-bottom: 0.3rem; }
     .cf-spec { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.65rem; color: var(--accent); letter-spacing: 0.15em; }
 
     .carousel-hint {
-      position: absolute; bottom: 5%; width: 100%; text-align: center;
-      font-family: var(--font-en); font-size: 0.65rem; color: var(--dim); letter-spacing: 0.3em;
+      position: absolute; bottom: 3%; width: 100%; text-align: center;
+      font-family: var(--font-en); font-size: 0.6rem; color: var(--dim); letter-spacing: 0.3em;
       text-transform: uppercase; pointer-events: none;
     }
 
     /* ============================================================
-       TIMELINE SECTION (作品年譜)
+       TIMELINE SECTION (作品年譜 & 作品解説)
     =========================================================== */
     .timeline-section { 
       position: relative;
-      padding: clamp(6rem, 12vh, 12rem) var(--px); 
+      padding: clamp(5rem, 10vh, 12rem) var(--px); 
       background: var(--bg);
     }
     .timeline-header {
       text-align: center;
-      margin-bottom: clamp(5rem, 10vh, 10rem);
+      margin-bottom: clamp(4rem, 8vh, 10rem);
     }
     .timeline-header .section-label-large { margin-bottom: 0.5rem; }
     .timeline-header p {
@@ -257,7 +260,8 @@
       max-width: 1200px;
       margin: 0 auto;
     }
-    /* スクロールに合わせて伸びる中央のライン */
+    
+    /* 中央ライン */
     .timeline-line {
       position: absolute;
       top: 0; bottom: 0; left: 50%;
@@ -270,7 +274,7 @@
       position: absolute;
       top: 0; left: 0; width: 100%;
       background: var(--accent);
-      height: 0; /* JSで制御 */
+      height: 0; 
       transition: height 0.3s cubic-bezier(0.19, 1, 0.22, 1);
     }
 
@@ -283,7 +287,7 @@
     .timeline-year-text {
       display: inline-block;
       font-family: var(--font-en);
-      font-size: clamp(2rem, 4vw, 3rem);
+      font-size: clamp(1.8rem, 4vw, 3rem);
       font-weight: 300;
       color: var(--fg);
       background: var(--bg);
@@ -328,18 +332,20 @@
       outline: none;
       border: none;
       transition: transform 0.5s var(--ease-out);
+      cursor: pointer;
     }
     .timeline-card:hover {
       transform: translateY(-8px);
     }
     .timeline-img-wrap {
       width: 100%;
-      font-size: 0; line-height: 0; /* 黒い余白を殺す */
+      font-size: 0; line-height: 0; 
       border: 1px solid rgba(233,229,223,0.1);
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);
       overflow: hidden;
       margin-bottom: 1.5rem;
       transition: border-color 0.4s ease;
+      background: var(--bg);
     }
     .timeline-card:hover .timeline-img-wrap {
       border-color: var(--accent);
@@ -350,7 +356,7 @@
       filter: grayscale(20%) brightness(0.9);
     }
     .timeline-card:hover .timeline-img-wrap img {
-      transform: scale(1.03); /* コンテナ内で少しだけズーム（トリミングというより演出） */
+      transform: scale(1.02); 
       filter: grayscale(0%) brightness(1.05);
     }
 
@@ -361,13 +367,33 @@
     .timeline-title { font-family: var(--font-ja); font-size: clamp(1.2rem, 2.5vw, 1.8rem); font-weight: 200; color: var(--fg); letter-spacing: 0.05em;}
     .timeline-spec { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.75rem; color: var(--dim); letter-spacing: 0.15em; }
 
+    /* === 作品解説テキスト（再実装） === */
+    .timeline-desc {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      line-height: 2.2;
+      color: rgba(233,229,223,0.75);
+      text-align: justify;
+      max-width: 90%;
+    }
+    /* 左側のアイテムは、テキストブロック自体を右寄せにして整合性を保つ */
+    .timeline-item.left .timeline-desc {
+      margin-left: auto;
+    }
+    .timeline-desc p {
+      margin-bottom: 1em;
+    }
+    .timeline-desc p:last-child {
+      margin-bottom: 0;
+    }
+
     /* ============================================================
        CONTACT & FOOTER
     =========================================================== */
-    .contact-section { padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center; border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(196,168,130,0.06) 0%, var(--bg) 70%); }
-    .contact-heading { font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em; }
+    .contact-section { padding: clamp(6rem, 15vh, 10rem) var(--px); text-align: center; border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(196,168,130,0.06) 0%, var(--bg) 70%); }
+    .contact-heading { font-family: var(--font-ja); font-size: clamp(1.8rem, 5vw, 3.5rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em; }
     .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.8vw, 0.95rem); color: rgba(233,229,223,0.55); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2; }
-    .contact-btn { display: inline-block; padding: 1.2rem 3.5rem; background: var(--accent); color: var(--bg); font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none; transition: all 0.4s var(--ease); border-radius: 2px; cursor: none; }
+    .contact-btn { display: inline-block; padding: 1.2rem 3rem; background: var(--accent); color: var(--bg); font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none; transition: all 0.4s var(--ease); border-radius: 2px; cursor: none; }
     .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3); }
 
     footer { padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); background: var(--bg); }
@@ -381,7 +407,7 @@
       position: fixed;
       bottom: clamp(20px, 4vw, 40px);
       right: clamp(20px, 4vw, 40px);
-      width: 64px; height: 64px;
+      width: 60px; height: 60px;
       border-radius: 50%;
       background: transparent;
       border: 1px solid var(--accent);
@@ -390,9 +416,10 @@
       display: flex; align-items: center; justify-content: center;
       opacity: 0; visibility: hidden;
       transform: translateY(30px) scale(0.8);
-      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); /* 弾むような出現 */
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
       overflow: hidden;
       cursor: none;
+      outline: none;
     }
     .btt-btn.visible {
       opacity: 1; visibility: visible; transform: translateY(0) scale(1);
@@ -418,13 +445,12 @@
     }
     .btt-btn:hover .btt-content { color: var(--bg); }
     .btt-icon {
-      width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2;
+      width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2;
       transition: transform 0.3s;
     }
     .btt-btn:hover .btt-icon { transform: translateY(-3px); }
-    .btt-text { font-family: var(--font-en); font-size: 10px; font-weight: 600; letter-spacing: 0.1em; }
+    .btt-text { font-family: var(--font-en); font-size: 9px; font-weight: 600; letter-spacing: 0.1em; }
 
-    /* クリック時の波紋エフェクト */
     .ripple {
       position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.6);
       transform: scale(0); animation: ripple-anim 0.6s linear; pointer-events: none; z-index: 2;
@@ -454,18 +480,33 @@
     .fade-up.in-view { opacity: 1; transform: translateY(0); }
 
     /* ============================================================
-       RESPONSIVE
+       RESPONSIVE (PC / タブレット / スマホ 完璧な最適化)
     =========================================================== */
     @media (max-width: 1024px) {
       .concept-section { grid-template-columns: 1fr; gap: 2rem; }
       .concept-title-area { position: relative; top: 0; margin-bottom: 2rem; }
-      .timeline-line { left: 20px; }
+    }
+
+    @media (max-width: 768px) {
+      /* Hero & ギャラリー調整 */
+      .hero-title-huge { font-size: clamp(4rem, 18vw, 6rem); }
+      .coverflow-item { width: clamp(180px, 60vw, 260px); }
+      
+      /* Timelineの1カラム化 */
+      .timeline-section { padding: clamp(4rem, 8vh, 6rem) var(--px); }
+      .timeline-line { left: 16px; transform: none; }
       .timeline-line-progress { left: 0; width: 100%; }
-      .timeline-year { text-align: left; padding-left: 50px; margin: 4rem 0 2rem; }
-      .timeline-item { width: 100%; padding-left: 50px; margin-bottom: 4rem; }
-      .timeline-item.left, .timeline-item.right { left: 0; text-align: left; }
-      .timeline-item.left::after, .timeline-item.right::after { left: 16px; transform: none; }
-      .timeline-item.left .timeline-meta { align-items: flex-start; }
+      .timeline-year { text-align: left; padding-left: 45px; margin: 4rem 0 2rem; }
+      .timeline-item { width: 100%; padding-left: 45px; margin-bottom: 4rem; left: 0 !important; text-align: left !important; }
+      .timeline-item.left::after, .timeline-item.right::after { left: 11px; right: auto; transform: translateX(-50%); }
+      .timeline-item.left:hover::after, .timeline-item.right:hover::after { transform: scale(1.5) translateX(-30%); }
+      .timeline-item.left .timeline-meta, .timeline-item.right .timeline-meta { align-items: flex-start; }
+      
+      /* 作品解説のスマホ最適化 */
+      .timeline-item.left .timeline-desc { margin-left: 0; max-width: 100%; text-align: left; }
+      .timeline-item.right .timeline-desc { max-width: 100%; text-align: left; }
+      
+      .page-nav { display: none; /* スマホでは画面領域確保のため非表示 */ }
     }
   </style>
 </head>
@@ -543,45 +584,43 @@
       
       <div class="coverflow-container" id="cfContainer">
         <div class="coverflow-item" data-action="modal" data-img-src="images/岩間（湘南）20230317.JPG" data-title="岩間" data-spec="2026 / デジタル">
-          <div class="cf-img-wrap"><img src="images/岩間（湘南）20230317.JPG" alt="岩間"></div>
+          <div class="cf-img-wrap"><img src="images/岩間（湘南）20230317.JPG" alt="岩間" loading="lazy"></div>
           <div class="coverflow-info"><div class="cf-title">岩間</div><div class="cf-spec">2026 / デジタル</div></div>
         </div>
         <div class="coverflow-item" data-action="modal" data-img-src="images/風景のアレンジメント（山）(2).jpg" data-title="風景のアレンジメント（山）" data-spec="2025 / 鉛筆・パネル">
-          <div class="cf-img-wrap"><img src="images/風景のアレンジメント（山）(2).jpg" alt="風景のアレンジメント（山）"></div>
+          <div class="cf-img-wrap"><img src="images/風景のアレンジメント（山）(2).jpg" alt="風景のアレンジメント（山）" loading="lazy"></div>
           <div class="coverflow-info"><div class="cf-title">風景のアレンジメント（山）</div><div class="cf-spec">2025 / 鉛筆・パネル</div></div>
         </div>
         <div class="coverflow-item" data-action="modal" data-img-src="images/【Extracapsular Cataract Extraction】.jpg" data-title="Extracapsular Cataract Extraction" data-spec="2025 / 鉛筆・紙">
-          <div class="cf-img-wrap"><img src="images/【Extracapsular Cataract Extraction】.jpg" alt="Extracapsular Cataract Extraction"></div>
+          <div class="cf-img-wrap"><img src="images/【Extracapsular Cataract Extraction】.jpg" alt="Extracapsular Cataract Extraction" loading="lazy"></div>
           <div class="coverflow-info"><div class="cf-title">Extracapsular Cataract Extraction</div><div class="cf-spec">2025 / 鉛筆・紙</div></div>
         </div>
         <div class="coverflow-item" data-action="modal" data-img-src="images/img022.jpg" data-title="img022" data-spec="2024 / 鉛筆・紙">
-          <div class="cf-img-wrap"><img src="images/img022.jpg" alt="img022"></div>
+          <div class="cf-img-wrap"><img src="images/img022.jpg" alt="img022" loading="lazy"></div>
           <div class="coverflow-info"><div class="cf-title">img022</div><div class="cf-spec">2024 / 鉛筆・紙</div></div>
         </div>
         <div class="coverflow-item" data-action="modal" data-img-src="images/IMG_7569.jpg" data-title="IMG_7569" data-spec="2024 / 木炭・鉛筆・紙">
-          <div class="cf-img-wrap"><img src="images/IMG_7569.jpg" alt="IMG_7569"></div>
+          <div class="cf-img-wrap"><img src="images/IMG_7569.jpg" alt="IMG_7569" loading="lazy"></div>
           <div class="coverflow-info"><div class="cf-title">IMG_7569</div><div class="cf-spec">2024 / 木炭・鉛筆・紙</div></div>
         </div>
-        
         <div class="coverflow-item" data-action="modal" data-img-src="images/あじのひらき.jpg" data-title="あじのひらき" data-spec="2024 / 鉛筆・紙">
-          <div class="cf-img-wrap"><img src="images/あじのひらき.jpg" alt="あじのひらき"></div>
+          <div class="cf-img-wrap"><img src="images/あじのひらき.jpg" alt="あじのひらき" loading="lazy"></div>
           <div class="coverflow-info"><div class="cf-title">あじのひらき</div><div class="cf-spec">2024 / 鉛筆・紙</div></div>
         </div>
         <div class="coverflow-item" data-action="modal" data-img-src="images/冷麺.jpg" data-title="冷麺" data-spec="2024 / 鉛筆・紙">
-          <div class="cf-img-wrap"><img src="images/冷麺.jpg" alt="冷麺"></div>
+          <div class="cf-img-wrap"><img src="images/冷麺.jpg" alt="冷麺" loading="lazy"></div>
           <div class="coverflow-info"><div class="cf-title">冷麺</div><div class="cf-spec">2024 / 鉛筆・紙</div></div>
         </div>
         <div class="coverflow-item" data-action="modal" data-img-src="images/【tHe LakE (c011aPsed HeRe by y0ur cA11)】 加工後.jpg" data-title="tHe LakE" data-spec="2024 / 鉛筆・紙">
-          <div class="cf-img-wrap"><img src="images/【tHe LakE (c011aPsed HeRe by y0ur cA11)】 加工後.jpg" alt="tHe LakE"></div>
+          <div class="cf-img-wrap"><img src="images/【tHe LakE (c011aPsed HeRe by y0ur cA11)】 加工後.jpg" alt="tHe LakE" loading="lazy"></div>
           <div class="coverflow-info"><div class="cf-title">tHe LakE</div><div class="cf-spec">2024 / 鉛筆・紙</div></div>
         </div>
-        
         <div class="coverflow-item" data-action="modal" data-img-src="images/【a thread】 修正版.jpg" data-title="a thread" data-spec="2023 / 鉛筆・紙 / 30x30cm">
-          <div class="cf-img-wrap"><img src="images/【a thread】 修正版.jpg" alt="a thread"></div>
+          <div class="cf-img-wrap"><img src="images/【a thread】 修正版.jpg" alt="a thread" loading="lazy"></div>
           <div class="coverflow-info"><div class="cf-title">a thread</div><div class="cf-spec">2023 / 鉛筆・紙</div></div>
         </div>
         <div class="coverflow-item" data-action="modal" data-img-src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg" data-title="【CG(Cell-Graphics)】" data-spec="2008 / 鉛筆・紙 / A4">
-          <div class="cf-img-wrap"><img src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg" alt="CG(Cell-Graphics)"></div>
+          <div class="cf-img-wrap"><img src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg" alt="CG(Cell-Graphics)" loading="lazy"></div>
           <div class="coverflow-info"><div class="cf-title">【CG(Cell-Graphics)】</div><div class="cf-spec">2008 / 鉛筆・紙</div></div>
         </div>
       </div>
@@ -608,6 +647,10 @@
               <p class="timeline-spec">デジタル</p>
             </div>
           </button>
+          <div class="timeline-desc">
+            <p>湘南の海岸に露出した岩の"間"を描いた素描である。隆起し、亀裂し、風化した岩の表面は、地層の時間を可視化する。炭素の塊、岩の記録と出会うとき、そこには有機と無機、生と死の境界を問うための「力の場」が生まれる。</p>
+            <p>角ばった断面と、そのあいだに走る白い光のような線は、岩の地質学的な裂け目でありながら、同時に「いと」——それ以上還元できない存在の最小単位——の形象として読むことができる。この素描はサイト特有の感覚の移植の試みでもある。</p>
+          </div>
         </article>
 
         <div class="timeline-year fade-up">
@@ -621,6 +664,9 @@
               <p class="timeline-spec">鉛筆・パネル</p>
             </div>
           </button>
+          <div class="timeline-desc">
+            <p>山水画の古典的な構図を援用しながら、鉛筆のストロークによって岩肌のテクスチャと空間の広がりを再構築した風景の素描。記憶や概念としての「山」を紙の上に配置し直す試み。</p>
+          </div>
         </article>
         <article class="timeline-item left fade-up">
           <button class="timeline-card js-modal-open" data-img-src="images/【Extracapsular Cataract Extraction】.jpg" data-title="Extracapsular Cataract Extraction" data-spec="2025 / 鉛筆・紙">
@@ -630,6 +676,9 @@
               <p class="timeline-spec">鉛筆・紙</p>
             </div>
           </button>
+          <div class="timeline-desc">
+            <p>「水晶体嚢外摘出術」という医学的プロセスを暗示しつつ、有機的な形態が抽出・分離されていく瞬間を緻密な鉛筆の線で捉えている。肉体という不可侵の領域にメスが入る生々しさと、グラフィックとしての静謐さが共存する。</p>
+          </div>
         </article>
 
         <div class="timeline-year fade-up">
@@ -643,6 +692,9 @@
               <p class="timeline-spec">鉛筆・紙</p>
             </div>
           </button>
+          <div class="timeline-desc">
+            <p>流出する体液や垂れ下がる肉塊を思わせるフォルム。重力と物質の境界線を曖昧にするような不穏なエネルギーが、徹底的に抑制されたモノクロームの階調の中で描かれている。</p>
+          </div>
         </article>
         <article class="timeline-item left fade-up">
           <button class="timeline-card js-modal-open" data-img-src="images/IMG_7569.jpg" data-title="IMG_7569" data-spec="2024 / 木炭・鉛筆・紙">
@@ -652,6 +704,9 @@
               <p class="timeline-spec">木炭・鉛筆・紙</p>
             </div>
           </button>
+          <div class="timeline-desc">
+            <p>荒々しいストロークと深い陰影。形が具体的な意味や名前を持つ前の、描画材と紙との物理的な摩擦、純粋な運動の痕跡としての素描。</p>
+          </div>
         </article>
         <article class="timeline-item right fade-up">
           <button class="timeline-card js-modal-open" data-img-src="images/あじのひらき.jpg" data-title="あじのひらき" data-spec="2024 / 鉛筆・紙">
@@ -705,6 +760,10 @@
               <p class="timeline-spec">鉛筆・紙</p>
             </div>
           </button>
+          <div class="timeline-desc">
+            <p>細胞（cell）の微視的構造と、グラフィック（graphics）の平面的論理が交差する地点において生成される素描シリーズ。タイトルに含まれる〔apocalypse〕——黙示録——という語は、終末ではなく、「覆いを取り除く」という語源的意味において用いられている。</p>
+            <p>鉛筆の線は、生物学的・地質学的・神話的なイメージを複数のレイヤーとして重ね、単一の表面に「時間の堆積」を刻もうとする。細胞が分裂し、地層が形成されるように、線は繰り返し重なり、消えかかり、また現れる。</p>
+          </div>
         </article>
       </div>
     </section>
@@ -755,20 +814,23 @@
     const dot = document.getElementById('cursorDot');
     const outline = document.getElementById('cursorOutline');
     
-    window.addEventListener('mousemove', (e) => {
-      dot.style.left = `${e.clientX}px`;
-      dot.style.top = `${e.clientY}px`;
-      
-      outline.animate({
-        left: `${e.clientX}px`,
-        top: `${e.clientY}px`
-      }, { duration: 400, fill: "forwards" });
-    });
+    // スマホ以外でのみカーソルアニメーションを動作
+    if (window.matchMedia("(min-width: 1025px)").matches) {
+      window.addEventListener('mousemove', (e) => {
+        dot.style.left = `${e.clientX}px`;
+        dot.style.top = `${e.clientY}px`;
+        
+        outline.animate({
+          left: `${e.clientX}px`,
+          top: `${e.clientY}px`
+        }, { duration: 400, fill: "forwards" });
+      });
 
-    document.querySelectorAll('a, button, .coverflow-item').forEach(el => {
-      el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
-      el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
-    });
+      document.querySelectorAll('a, button, .coverflow-item').forEach(el => {
+        el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+        el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+      });
+    }
 
     /* ── HERO ANIMATION ── */
     window.addEventListener('load', () => {
@@ -780,9 +842,22 @@
       window.dispatchEvent(new Event('scroll'));
     });
 
-    /* ── 3D COVERFLOW LOGIC (Gallery) ── */
-    const cfItems = document.querySelectorAll('.coverflow-item');
+    /* ── 3D COVERFLOW LOGIC & RANDOMIZE (Gallery) ── */
+    const cfContainer = document.getElementById('cfContainer');
+    let cfItems = [];
     let cfIndex = 0;
+
+    if (cfContainer) {
+      // ロードのたびに要素をランダムにシャッフル
+      const itemsArray = Array.from(cfContainer.querySelectorAll('.coverflow-item'));
+      for (let i = itemsArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [itemsArray[i], itemsArray[j]] = [itemsArray[j], itemsArray[i]];
+      }
+      // シャッフルした順番でDOMに再追加
+      itemsArray.forEach(item => cfContainer.appendChild(item));
+      cfItems = document.querySelectorAll('.coverflow-item');
+    }
 
     function renderCoverflow() {
       cfItems.forEach((item, i) => {
@@ -821,9 +896,8 @@
       });
     });
 
-    // Touch Swipe
+    // Touch Swipe for Coverflow
     let touchStartX = 0;
-    const cfContainer = document.getElementById('cfContainer');
     if (cfContainer) {
       cfContainer.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
       cfContainer.addEventListener('touchend', e => {
@@ -860,7 +934,6 @@
         const rect = timelineContainer.getBoundingClientRect();
         const containerTop = rect.top;
         const containerHeight = rect.height;
-        // スクロールの中央あたりを進行度の基準にする
         const triggerPoint = winHeight * 0.7; 
         
         if (containerTop < triggerPoint && containerTop > -containerHeight) {
@@ -897,6 +970,7 @@
         const rect = this.getBoundingClientRect();
         const size = Math.max(rect.width, rect.height);
         ripple.style.width = ripple.style.height = `${size}px`;
+        // クリック位置を中心に波紋を広げる
         ripple.style.left = `${e.clientX - rect.left - size/2}px`;
         ripple.style.top = `${e.clientY - rect.top - size/2}px`;
         
