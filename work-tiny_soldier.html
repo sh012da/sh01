@@ -45,8 +45,7 @@
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     
-    /* ジャンプ時のヘッダー被り防止 */
-    html { scroll-behavior: smooth; scroll-padding-top: 120px; }
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
     
     body {
       background: var(--bg);
@@ -59,12 +58,19 @@
       padding-left: env(safe-area-inset-left);
       padding-right: env(safe-area-inset-right);
     }
+    body.is-locked {
+      overflow: hidden;
+      touch-action: none;
+    }
     img { max-width: 100%; height: auto; display: block; }
     a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
     a:hover { opacity: 0.45; }
 
+    /* 改行の孤立を防ぐためのユーティリティクラス */
+    .ib { display: inline-block; }
+
     /* ============================================================
-        NAVIGATION (ハンバーガーメニュー無しの洗練されたデザイン)
+        NAVIGATION
     ============================================================ */
     nav#top-nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 300;
@@ -77,30 +83,34 @@
     }
     nav#top-nav.scrolled { background: rgba(10,10,9,0.93); border-color: var(--border); }
     .nav-logo-unified {
-      position: relative; z-index: 301;
+      position: relative; z-index: 301; flex-shrink: 0;
       font-family: var(--font-en); font-size: clamp(0.7rem, 2.5vw, 0.9rem);
       letter-spacing: 0.3em; font-weight: 300; color: var(--accent);
       text-transform: uppercase; transition: opacity 0.4s ease;
     }
     .nav-logo-unified:hover { opacity: 0.5; }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
     .nav-links a {
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
       letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase; transition: color 0.3s ease;
+      white-space: nowrap;
     }
     .nav-links a:hover { color: var(--accent); }
+    
     .nav-cta {
-      position: relative; z-index: 301;
+      position: relative; z-index: 301; flex-shrink: 0;
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
       letter-spacing: 0.25em; text-transform: uppercase;
       border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem;
       color: var(--accent); transition: background 0.25s, color 0.25s;
+      margin-left: 1rem; white-space: nowrap;
     }
     .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
 
     /* Page Nav */
     .page-nav {
-      position: fixed; right: clamp(20px, 4vw, 40px); top: 50%;
+      position: fixed; right: clamp(10px, 4vw, 40px); top: 50%;
       transform: translateY(-50%); z-index: 200;
       display: flex; flex-direction: column; gap: 24px;
       opacity: 0; visibility: hidden; transition: opacity 0.6s var(--ease), visibility 0.6s;
@@ -136,7 +146,7 @@
     .hero-eyebrow { font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem); letter-spacing: 0.5em; color: var(--dim); text-transform: uppercase; margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.2rem; clip-path: inset(0 100% 0 0); transition: clip-path 1.2s var(--ease) 0.2s; }
     .hero-eyebrow::before { content: ''; width: 24px; height: 0.5px; background: var(--accent2); flex-shrink: 0; opacity: 0.6; }
     .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
-    .hero-title { font-family: var(--font-ja); font-size: clamp(2.8rem, 8vw, 8rem); font-weight: 200; line-height: 0.88; letter-spacing: -0.02em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem); display: flex; gap: 0.05em; overflow: visible; }
+    .hero-title { font-family: var(--font-ja); font-size: clamp(2.5rem, 8vw, 8rem); font-weight: 200; line-height: 0.88; letter-spacing: -0.02em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem); display: flex; gap: 0.05em; overflow: visible; }
     .hero-title .char { display: inline-block; opacity: 0; transition: transform 1.4s var(--ease), opacity 0.9s ease; }
     .hero-title .char:nth-child(1) { transform: translateX(-60px); transition-delay: 0.2s; }
     .hero-title .char:nth-child(2) { transform: translateX(-30px); transition-delay: 0.25s; }
@@ -160,7 +170,7 @@
     /* ============================================================
         CONCEPT & STATEMENT
     ============================================================ */
-    .concept-section { padding: clamp(6rem, 13vh, 10rem) var(--px); max-width: 900px; margin: 0 auto; text-align: center; position: relative; z-index: 2; }
+    .concept-section { padding: clamp(6rem, 13vh, 10rem) var(--px); max-width: 1000px; margin: 0 auto; text-align: center; position: relative; z-index: 2; }
     .concept-text { font-size: clamp(0.9rem, 2vw, 1.05rem); font-weight: 300; line-height: 2.3; color: rgba(233,229,223,0.85); letter-spacing: 0.08em; }
     .statement-section { padding: clamp(4rem, 9vh, 7rem) var(--px) clamp(6rem, 13vh, 10rem); max-width: 880px; margin: 0 auto; border-top: 0.5px solid var(--border); }
     .statement-label { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem); letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase; text-align: center; margin-bottom: clamp(2.5rem, 6vh, 4rem); }
@@ -181,13 +191,13 @@
     .gallery-section { padding: 0 var(--px) clamp(6rem, 13vh, 10rem); max-width: 1600px; margin: 0 auto; }
     .section-label { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem); letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase; text-align: center; margin-bottom: clamp(3rem, 7vh, 5rem); }
     .gallery-grid { display: flex; flex-wrap: wrap; gap: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 2.5vw, 2.5rem); justify-content: center; align-items: flex-start; }
-    .gallery-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; cursor: pointer; opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); width: fit-content; max-width: 100%; border: none; background: transparent; }
+    .gallery-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; cursor: pointer; opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); width: auto; max-width: 100%; border: none; background: transparent; }
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
     
-    .gallery-item-img-wrap { height: var(--item-height, var(--grid-base-h)); width: max-content; display: flex; justify-content: center; align-items: center; background: transparent; overflow: hidden; border: 0.5px solid var(--border); transition: border-color 0.4s ease, box-shadow 0.5s var(--ease); }
+    .gallery-item-img-wrap { height: var(--item-height, var(--grid-base-h)); width: auto; max-width: 100%; display: flex; justify-content: center; align-items: center; background: transparent; overflow: hidden; border: 0.5px solid var(--border); transition: border-color 0.4s ease, box-shadow 0.5s var(--ease); }
     .gallery-item.is-portrait { --item-height: calc(var(--grid-base-h) * 0.9); }
     .gallery-item.is-landscape { --item-height: calc(var(--grid-base-h) * 0.7); }
-    .gallery-item-img-wrap img { height: 100%; width: auto; display: block; object-fit: contain; filter: grayscale(15%) brightness(0.85); transition: transform 0.8s var(--ease), filter 0.6s ease; }
+    .gallery-item-img-wrap img { height: 100%; width: auto; max-width: 100%; display: block; object-fit: contain; filter: grayscale(15%) brightness(0.85); transition: transform 0.8s var(--ease), filter 0.6s ease; }
     .gallery-item:hover .gallery-item-img-wrap { border-color: rgba(196,168,130,0.35); box-shadow: 0 16px 40px rgba(0,0,0,0.5); }
     .gallery-item:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
     
@@ -196,7 +206,7 @@
     .gallery-item-meta { font-family: var(--font-en); font-size: clamp(0.6rem, 1.1vw, 0.7rem); color: var(--accent); letter-spacing: 0.14em; font-style: italic; display: block; }
 
     /* ============================================================
-        INTEGRATED CHRONOLOGY SECTION (画像の比率にピッタリ適応)
+        INTEGRATED CHRONOLOGY SECTION
     ============================================================ */
     .chronology-section { padding: clamp(5rem, 12vh, 10rem) var(--px); background: var(--bg2); border-top: 0.5px solid var(--border); position: relative; }
     .timeline-container { max-width: 1200px; margin: 0 auto; position: relative; }
@@ -212,7 +222,6 @@
     .tl-content-wrap { display: flex; justify-content: space-between; align-items: center; gap: clamp(2rem, 5vw, 6rem); }
     .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
     
-    /* コンテナのトリミング防止設計 */
     .tl-figure { 
       position: relative; 
       border: 0.5px solid var(--border); 
@@ -224,26 +233,17 @@
     }
     .tl-body { width: 42%; position: relative; z-index: 2; transition: width 0.4s ease; }
 
-    /* PC表示での横幅割り当て（アスペクト比を各クラスで精密に指定） */
-    .tl-entry.is-f25-portrait .tl-figure { width: 38%; aspect-ratio: 652 / 803; }
+    .tl-entry.is-f25-portrait .tl-figure { width: 38%; }
     .tl-entry.is-f25-portrait .tl-body { width: 54%; }
-
-    /* 少年兵(10)用：F25の縦横比を逆（横長）にした新設クラス。画像を少年兵(11)と同等の55%幅へ大型化 */
-    .tl-entry.is-f25-landscape .tl-figure { width: 55%; aspect-ratio: 803 / 652; }
-    .tl-entry.is-f25-landscape .tl-body { width: 38%; }
-
-    .tl-entry.is-p30-landscape .tl-figure { width: 55%; aspect-ratio: 910 / 652; }
+    .tl-entry.is-p30-landscape .tl-figure { width: 55%; }
     .tl-entry.is-p30-landscape .tl-body { width: 38%; }
-
-    .tl-entry.is-f30-landscape .tl-figure { width: 55%; aspect-ratio: 910 / 727; }
+    .tl-entry.is-f30-landscape .tl-figure { width: 55%; }
     .tl-entry.is-f30-landscape .tl-body { width: 38%; }
     
-    /* 画像の100%全体表示を強制し、余白（黒帯）を完全に排除するルール */
     .tl-figure img { 
       width: 100% !important; 
-      height: 100% !important; 
+      height: auto !important; 
       display: block; 
-      object-fit: fill !important; /* 精密なアスペクト比コンテナに対して完全に引き伸ばしてフィット */
       filter: grayscale(12%) brightness(0.85); 
       transition: transform 1s var(--ease), filter 0.6s ease; 
     }
@@ -291,7 +291,7 @@
     .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(0.9rem, 1.5vw, 1.1rem); font-weight: 300; color: var(--fg); margin-bottom: 0.3rem; letter-spacing: 0.08em; }
     .modal-caption-meta { font-family: var(--font-en); font-size: clamp(0.65rem, 1.1vw, 0.75rem); font-style: italic; color: var(--accent); letter-spacing: 0.15em; }
 
-    .back-to-top { position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px); z-index: 9000; width: clamp(64px, 10vw, 90px); height: clamp(64px, 10vw, 90px); border-radius: 50%; background: rgba(196, 168, 130, 0.85); border: 1px solid var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--bg); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6); }
+    .back-to-top { position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px); z-index: 9000; width: clamp(56px, 10vw, 90px); height: clamp(56px, 10vw, 90px); border-radius: 50%; background: rgba(196, 168, 130, 0.85); border: 1px solid var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--bg); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6); }
     .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
     .back-to-top:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-6px); }
     .back-to-top svg { width: clamp(20px, 3vw, 32px); height: clamp(20px, 3vw, 32px); margin-bottom: 2px; }
@@ -301,35 +301,64 @@
         RESPONSIVE DESIGN
     ============================================================ */
     @media (max-width: 860px) {
-      .timeline-container { padding-left: 36px; } 
-      .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2rem; }
+      .timeline-container { padding-left: 32px; } 
+      .timeline-spine-wrapper { left: 12px; transform: none; }
       
+      .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2rem; }
       .tl-figure, .tl-body, 
       .tl-entry.is-f25-portrait .tl-figure, .tl-entry.is-f25-portrait .tl-body, 
-      .tl-entry.is-f25-landscape .tl-figure, .tl-entry.is-f25-landscape .tl-body, 
       .tl-entry.is-p30-landscape .tl-figure, .tl-entry.is-p30-landscape .tl-body, 
       .tl-entry.is-f30-landscape .tl-figure, .tl-entry.is-f30-landscape .tl-body { 
         width: 100%; 
-        aspect-ratio: auto !important; /* スマホ時はコンテナの固定比率を解除 */
       }
-      
-      .tl-figure img { 
-        width: 100% !important; 
-        height: auto !important; 
-        object-fit: contain !important; /* モバイル環境でも比率を維持して全表示 */
-      }
-      
-      .timeline-spine-wrapper { left: 16px; transform: none; }
       .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; font-size: clamp(2.5rem, 8vw, 3.5rem); }
     }
 
     @media (max-width: 768px) {
-      nav#top-nav { padding: 1.2rem 1.25rem; justify-content: space-between; align-items: center; }
-      .nav-links { display: none !important; }
-      .gallery-section { display: none !important; }
-      .page-nav.visible { right: 8px; opacity: 0.5; }
-      .page-nav.visible:hover { opacity: 1; }
-      .page-nav-label { display: none; }
+      /* --- 横スクロール対応によるハンバーガーメニュー廃止 --- */
+      nav#top-nav { 
+        padding: 1rem var(--px); 
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+      }
+      nav#top-nav::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+      }
+      
+      .nav-links {
+        position: static; 
+        height: auto;
+        background: transparent;
+        flex-direction: row; 
+        justify-content: flex-start; 
+        gap: 1.2rem;
+        opacity: 1; 
+        visibility: visible; 
+        margin-left: auto;
+        padding-left: 1.5rem;
+      }
+      .nav-links a { 
+        font-size: 0.6rem; 
+        letter-spacing: 0.15em; 
+      }
+      
+      .nav-cta { 
+        display: inline-block;
+        margin-left: 1.2rem;
+        padding: 0.45rem 1rem;
+      }
+      
+      /* Page Nav (Right Dots) hide on mobile to avoid overlap */
+      .page-nav { display: none; }
+      
+      /* Gallery Fixes */
+      .gallery-item { width: 100%; }
+      .gallery-item-img-wrap { height: auto; width: 100%; border: none; }
+      .gallery-item-img-wrap img { width: 100%; height: auto; object-fit: cover; }
+      .gallery-grid { gap: 3.5rem 1rem; }
     }
 
     @media (max-width: 480px) {
@@ -348,9 +377,10 @@
 </head>
 <body id="top">
 
+  <!-- ハンバーガーメニューボタンを撤去し、仕様は維持しています -->
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
-    <ul class="nav-links" id="nav-links">
+    <ul class="nav-links" id="navLinks">
       <li><a href="index.html#statement">Statement</a></li>
       <li><a href="index.html#works">Works</a></li>
       <li><a href="index.html#profile">Profile</a></li>
@@ -394,10 +424,11 @@
       </div>
     </section>
 
+    <!-- span class="ib" を用いて、不自然な位置での改行を強制的にブロックしています -->
     <section class="concept-section">
       <p class="concept-text">
-        彼らは「兵士」と呼ばれる。しかしその手はまだ、おもちゃを握るはずの大きさをしている。<br>
-        無垢と暴力。その両端を一枚の画布に刻みつける。
+        <span class="ib">彼らは「兵士」と呼ばれる。</span><span class="ib">しかしその手はまだ、</span><span class="ib">おもちゃを握るはずの大きさをしている。</span><br>
+        <span class="ib">無垢と暴力。</span><span class="ib">その両端を一枚の画布に刻みつける。</span>
       </p>
     </section>
 
@@ -446,10 +477,10 @@
           </div>
         </a>
 
-        <a href="#work-10" class="gallery-item is-landscape">
+        <a href="#work-10" class="gallery-item is-portrait">
           <div class="gallery-item-img-wrap"><img src="images/【F25縦】少年兵(10)（ソマリア）.jpg" alt="少年兵(10)（ソマリア）" loading="lazy"></div>
           <div class="gallery-item-cap">
-            <span class="gallery-item-title">少年兵(10)（ソマリア）</span><span class="gallery-item-meta">2014 / 65.2 × 80.3 cm</span>
+            <span class="gallery-item-title">少年兵(10)（ソマリア）</span><span class="gallery-item-meta">2014 / 80.3 × 65.2 cm</span>
           </div>
         </a>
 
@@ -558,15 +589,15 @@
           </div>
         </article>
 
-        <article class="tl-entry is-f25-landscape" id="work-10">
+        <article class="tl-entry is-f25-portrait" id="work-10">
           <div class="tl-year-display">2014</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F25縦】少年兵(10)（ソマリア）.jpg" data-title="少年兵(10)（ソマリア）" data-meta="65.2 × 80.3 cm / Oil on canvas">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F25縦】少年兵(10)（ソマリア）.jpg" data-title="少年兵(10)（ソマリア）" data-meta="80.3 × 65.2 cm / Oil on canvas">
               <img src="images/【F25縦】少年兵(10)（ソマリア）.jpg" alt="少年兵(10)（ソマリア）" loading="lazy">
             </div>
             <div class="tl-body">
               <h3 class="tl-title" data-typewriter="true">少年兵(10)（ソマリア）</h3>
-              <p class="tl-meta">65.2 × 80.3 cm / Oil on canvas</p>
+              <p class="tl-meta">80.3 × 65.2 cm / Oil on canvas</p>
               <div class="tl-desc">
                 <p>両手に異なる二丁の銃を抱え、半裸で顔を激しく歪める少年。重圧に耐えかねて泣き叫んでいるのか、それとも精一杯の威嚇をしているのか。</p>
                 <p>幼い感情の生々しい爆発と、彼を取り巻く圧倒的な暴力の力学が、一枚の絵の中で激しく衝突し、鑑賞者の倫理観を深く揺さぶる。暴力がいかに精神を蹂躙するかを示す痛烈なポートレイトである。</p>
@@ -603,7 +634,7 @@
               <p class="tl-meta">80.3 × 65.2 cm / Oil on canvas</p>
               <div class="tl-desc">
                 <p>無地のパーカー姿で銃を構える少年の、真っ直ぐでどこか虚無的な眼差し。彼の目に映る世界は、果たしてどのような色をしているのだろうか。</p>
-                <p>感情を読み取らせない静かな瞳の奥に、紛争地で生き抜くための防衛機制と、決定的に失われてしまった無垢の喪失が垣間見える。沈黙が雄べんに語りかけてくる一枚。</p>
+                <p>感情を読み取らせない静かな瞳の奥に、紛争地で生き抜くための防衛機制と、決定的に失われてしまった無垢の喪失が垣間見える。沈黙が雄弁に語りかけてくる一枚。</p>
               </div>
             </div>
           </div>
@@ -774,7 +805,78 @@
   </div>
 
   <script>
-    /* ── ページ内スクロール時のクラス切り替えとプログレス制御 ── */
+    /* ── ファーストビュー アニメーション ── */
+    window.addEventListener('load', () => {
+      setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 150);
+      setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'),   350);
+      setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'),      680);
+      setTimeout(() => document.getElementById('heroMeta')?.classList.add('revealed'),    980);
+      setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1700);
+    });
+
+    /* ── Observer (Fade Up & Grid Animation) ── */
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.gallery-item, .tl-entry, .reveal-fade').forEach(el => io.observe(el));
+
+    /* ── Typewriter Engine ── */
+    function prepareTypewriterDOM(el) {
+      if (el.dataset.twPrepared === "true") return;
+      const txt = el.textContent.trim();
+      el.textContent = '';
+      for (let i = 0; i < txt.length; i++) {
+        const span = document.createElement('span');
+        span.className = 'tw-char';
+        span.textContent = txt[i];
+        el.appendChild(span);
+      }
+      const cursor = document.createElement('span');
+      cursor.className = 'tw-cursor';
+      el.appendChild(cursor);
+      el.dataset.twPrepared = "true";
+    }
+
+    function runTypewriter(el) {
+      if (el.dataset.twDone === "true") return;
+      const chars = el.querySelectorAll('.tw-char');
+      const cursor = el.querySelector('.tw-cursor');
+      let idx = 0;
+      function nextChar() {
+        if (idx < chars.length) {
+          chars[idx].style.opacity = '1';
+          idx++;
+          setTimeout(() => requestAnimationFrame(nextChar), 45);
+        } else {
+          el.dataset.twDone = "true";
+          if (cursor) {
+            cursor.classList.add('fade-out');
+            setTimeout(() => cursor.remove(), 800);
+          }
+        }
+      }
+      requestAnimationFrame(nextChar);
+    }
+
+    document.querySelectorAll('[data-typewriter="true"]').forEach(el => {
+      prepareTypewriterDOM(el);
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            obs.unobserve(el);
+            setTimeout(() => requestAnimationFrame(() => runTypewriter(el)), 300);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
+      obs.observe(el);
+    });
+
+    /* ── Scroll Interactions (Spine, Nav, Page-Nav) ── */
     const topNav = document.getElementById('top-nav');
     const pageNav = document.getElementById('pageNav');
     const navItems = document.querySelectorAll('.page-nav-item');
@@ -788,9 +890,11 @@
         window.requestAnimationFrame(() => {
           const scrollY = window.scrollY;
           
+          /* Top Nav Glassmorphism */
           if (scrollY > 50) topNav.classList.add('scrolled');
           else topNav.classList.remove('scrolled');
 
+          /* Page Nav Visibility & Active State (Desktop only visual) */
           const checkY = scrollY + window.innerHeight * 0.4;
           let activeSec = null;
           sections.forEach(sec => {
@@ -800,10 +904,11 @@
             const target = document.getElementById(item.getAttribute('data-target'));
             item.classList.toggle('active', target === activeSec);
           });
-          if (pageNav) {
+          if (pageNav && window.innerWidth > 768) {
             pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.6);
           }
 
+          /* Timeline Spine Progress */
           if (tlWrap && spineFill) {
             const rect = tlWrap.getBoundingClientRect();
             const totalH = tlWrap.offsetHeight;
@@ -813,6 +918,7 @@
             }
           }
 
+          /* Back to Top */
           const b2t = document.getElementById('backToTop');
           if (b2t) {
             if (scrollY > 400) b2t.classList.add('is-visible');
@@ -848,7 +954,7 @@
       }
     });
 
-    /* ── ライトボックス (Modal) ── */
+    /* ── Lightbox (Modal) ── */
     const modal      = document.getElementById('imageModal');
     const modalImg   = document.getElementById('modalImg');
     const modalBg    = document.getElementById('modalBg');
