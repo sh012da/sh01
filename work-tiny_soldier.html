@@ -196,7 +196,7 @@
     .gallery-item-meta { font-family: var(--font-en); font-size: clamp(0.6rem, 1.1vw, 0.7rem); color: var(--accent); letter-spacing: 0.14em; font-style: italic; display: block; }
 
     /* ============================================================
-        INTEGRATED CHRONOLOGY SECTION (完璧な全体表示・トリミング排除)
+        INTEGRATED CHRONOLOGY SECTION (画像の比率にピッタリ適応)
     ============================================================ */
     .chronology-section { padding: clamp(5rem, 12vh, 10rem) var(--px); background: var(--bg2); border-top: 0.5px solid var(--border); position: relative; }
     .timeline-container { max-width: 1200px; margin: 0 auto; position: relative; }
@@ -212,35 +212,33 @@
     .tl-content-wrap { display: flex; justify-content: space-between; align-items: center; gap: clamp(2rem, 5vw, 6rem); }
     .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
     
-    /* コンテナのトリミング防止設計 (overflowを解除しアスペクト比を担保) */
+    /* コンテナのトリミング防止設計 (自然な画像比率にコンテナを完全追従させる) */
     .tl-figure { 
       position: relative; 
       border: 0.5px solid var(--border); 
-      background: var(--bg); 
+      background: transparent; /* 黒帯の原因となる背景色指定を完全に削除 */
       cursor: zoom-in; 
       transition: width 0.4s ease, border-color 0.4s ease; 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: block; /* Flexを解除し、画像の自然な高さに依存させる */
+      overflow: hidden; /* Hover時の拡大は枠内に収める */
     }
     .tl-body { width: 42%; position: relative; z-index: 2; transition: width 0.4s ease; }
 
-    /* PC表示での正確なアスペクト比割り当て */
-    .tl-entry.is-f25-portrait .tl-figure { width: 38%; aspect-ratio: 652 / 803; }
+    /* PC表示での横幅割り当て（高さは画像の自然な比率に委ねるため aspect-ratio は削除） */
+    .tl-entry.is-f25-portrait .tl-figure { width: 38%; }
     .tl-entry.is-f25-portrait .tl-body { width: 54%; }
 
-    .tl-entry.is-p30-landscape .tl-figure { width: 55%; aspect-ratio: 910 / 652; }
+    .tl-entry.is-p30-landscape .tl-figure { width: 55%; }
     .tl-entry.is-p30-landscape .tl-body { width: 38%; }
 
-    .tl-entry.is-f30-landscape .tl-figure { width: 55%; aspect-ratio: 910 / 727; }
+    .tl-entry.is-f30-landscape .tl-figure { width: 55%; }
     .tl-entry.is-f30-landscape .tl-body { width: 38%; }
     
-    /* 【超重要】画像の100%全体表示を強制するCSSルール */
+    /* 【超重要】画像の100%全体表示を強制し、余白（黒帯）を一切出さないCSSルール */
     .tl-figure img { 
       width: 100% !important; 
-      height: 100% !important; 
+      height: auto !important; /* 画像本来の比率を維持し、コンテナをそのサイズにピッタリ合わせる */
       display: block; 
-      object-fit: contain !important; /* 絶対にトリミングさせず、アスペクト比を100%保つ */
       filter: grayscale(12%) brightness(0.85); 
       transition: transform 1s var(--ease), filter 0.6s ease; 
     }
@@ -306,15 +304,6 @@
       .tl-entry.is-p30-landscape .tl-figure, .tl-entry.is-p30-landscape .tl-body, 
       .tl-entry.is-f30-landscape .tl-figure, .tl-entry.is-f30-landscape .tl-body { 
         width: 100%; 
-        aspect-ratio: auto !important; /* スマホ・タブレット時は縦横固定を完全解除 */
-      }
-      
-      /* 少年兵(10)含む全縦・横長作品がレスポンシブでも絶対にトリミングされない完璧な指定 */
-      .tl-figure img { 
-        width: 100% !important; 
-        height: auto !important; 
-        max-height: 70vh !important; /* 縦長作品がスクロールアウトしないよう上限を設定 */
-        object-fit: contain !important; /* 縦横比を完全に維持して内包表示 */
       }
       
       .timeline-spine-wrapper { left: 16px; transform: none; }
