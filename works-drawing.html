@@ -29,8 +29,8 @@
       --muted:     rgba(233,229,223,0.44);
       --dim:       rgba(233,229,223,0.22);
       --accent:    #c4a882;
-      --border:    rgba(233,229,223,0.08);
-      --border-md: rgba(233,229,223,0.20);
+      --border:    rgba(233,229,223,0.12);
+      --border-md: rgba(233,229,223,0.25);
       --font-en:   'Cormorant Garamond', serif;
       --font-ja:   'Noto Serif JP', serif;
       --ease:      cubic-bezier(0.19, 1, 0.22, 1);
@@ -65,7 +65,6 @@
     
     body.is-locked { overflow: hidden; }
     
-    /* トリミングを排除、黒い余白無し */
     img { max-width: 100%; height: auto; display: block; }
     
     a, button { cursor: none; }
@@ -195,34 +194,30 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.8s ease, filter 0.8s ease;
+      transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.5s ease, filter 0.5s ease;
       transform-style: preserve-3d;
       cursor: pointer;
     }
     
-    /* 楽しく、洗練された画像ラッパー（トリミングなし） */
     .cf-img-wrap {
       width: 100%;
       font-size: 0; line-height: 0;
       box-shadow: 0 15px 35px rgba(0,0,0,0.5);
       border: 1px solid rgba(233,229,223,0.1);
       transition: border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
-      background: var(--bg); /* 念のため */
+      background: var(--bg);
     }
-    .coverflow-item img {
-      width: 100%; height: auto; 
-    }
-    /* アクティブ時のリッチなエフェクト */
+    .coverflow-item img { width: 100%; height: auto; }
+    
     .coverflow-item.is-active .cf-img-wrap {
       border-color: rgba(196,168,130,0.6);
       transform: scale(1.05) translateY(-8px);
       box-shadow: 0 30px 60px rgba(196,168,130,0.12), 0 15px 25px rgba(0,0,0,0.8);
     }
     
-    /* 見やすいタイトルの配置とアニメーション */
     .coverflow-info {
       position: absolute; 
-      bottom: -4.5rem; /* 画像から余裕を持たせる */
+      bottom: -4.5rem; 
       left: 0; width: 100%; text-align: center;
       opacity: 0; transform: translateY(-10px); transition: all 0.4s var(--ease); pointer-events: none;
     }
@@ -239,7 +234,7 @@
     }
 
     /* ============================================================
-       TIMELINE SECTION (作品年譜 & 作品解説)
+       TIMELINE SECTION (斬新なサイドバイサイド・レイアウト)
     =========================================================== */
     .timeline-section { 
       position: relative;
@@ -266,7 +261,7 @@
       position: absolute;
       top: 0; bottom: 0; left: 50%;
       width: 1px;
-      background: var(--border);
+      background: var(--border-md);
       transform: translateX(-50%);
       z-index: 1;
     }
@@ -278,52 +273,69 @@
       transition: height 0.3s cubic-bezier(0.19, 1, 0.22, 1);
     }
 
+    /* 斬新な透かし文字の年号マーカー */
     .timeline-year {
       position: relative;
       text-align: center;
-      margin: 6rem 0 3rem;
+      margin: 8rem 0 4rem;
       z-index: 2;
     }
     .timeline-year-text {
       display: inline-block;
       font-family: var(--font-en);
-      font-size: clamp(1.8rem, 4vw, 3rem);
-      font-weight: 300;
-      color: var(--fg);
-      background: var(--bg);
-      padding: 0 1.5rem;
-      letter-spacing: 0.1em;
-      border: 1px solid var(--border-md);
-      border-radius: 40px;
+      font-size: clamp(4rem, 10vw, 7rem);
+      font-weight: 200;
+      color: transparent;
+      -webkit-text-stroke: 1px var(--dim);
+      letter-spacing: 0.15em;
+      transition: color 0.6s ease, text-shadow 0.6s ease, transform 0.6s ease;
+    }
+    .timeline-year.in-view .timeline-year-text {
+      color: var(--accent);
+      -webkit-text-stroke: 1px transparent;
+      text-shadow: 0 0 40px rgba(196,168,130,0.3);
+      transform: scale(1.05);
     }
 
+    /* タイムラインアイテム（フレックスボックスによる左右分割） */
     .timeline-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
       position: relative;
-      width: 45%;
-      margin-bottom: 8rem;
+      margin-bottom: 12vh;
       z-index: 2;
     }
-    .timeline-item.left { left: 0; text-align: right; }
-    .timeline-item.right { left: 55%; text-align: left; }
-    
-    /* ライン上のドット */
-    .timeline-item::after {
-      content: '';
+    .item-left { flex-direction: row; }        /* 画像が左、テキストが右 */
+    .item-right { flex-direction: row-reverse; } /* 画像が右、テキストが左 */
+
+    /* コンテンツ領域の幅を確保 */
+    .timeline-content-img,
+    .timeline-content-txt {
+      width: 44%;
+    }
+
+    /* ライン上の発光するドット */
+    .timeline-node {
       position: absolute;
-      top: 30px;
-      width: 9px; height: 9px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 14px; height: 14px;
       background: var(--bg);
       border: 2px solid var(--accent);
       border-radius: 50%;
-      z-index: 3;
-      transition: background 0.4s, transform 0.4s;
+      z-index: 5;
+      transition: all 0.4s var(--ease-out);
     }
-    .timeline-item.left::after { right: -11.11%; transform: translateX(50%); }
-    .timeline-item.right::after { left: -11.11%; transform: translateX(-50%); }
-    .timeline-item:hover::after { background: var(--accent); transform: scale(1.5) translateX(30%); }
-    .timeline-item.right:hover::after { transform: scale(1.5) translateX(-30%); }
+    .timeline-item:hover .timeline-node {
+      background: var(--accent);
+      box-shadow: 0 0 20px var(--accent);
+      transform: translate(-50%, -50%) scale(1.4);
+    }
 
-    /* 作品カードのデザイン（トリミング禁止） */
+    /* --- 画像カード --- */
     .timeline-card {
       display: block;
       position: relative;
@@ -331,8 +343,9 @@
       background: transparent;
       outline: none;
       border: none;
-      transition: transform 0.5s var(--ease-out);
+      transition: transform 0.6s var(--ease-out);
       cursor: pointer;
+      width: 100%;
     }
     .timeline-card:hover {
       transform: translateY(-8px);
@@ -341,9 +354,8 @@
       width: 100%;
       font-size: 0; line-height: 0; 
       border: 1px solid rgba(233,229,223,0.1);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
       overflow: hidden;
-      margin-bottom: 1.5rem;
       transition: border-color 0.4s ease;
       background: var(--bg);
     }
@@ -356,36 +368,49 @@
       filter: grayscale(20%) brightness(0.9);
     }
     .timeline-card:hover .timeline-img-wrap img {
-      transform: scale(1.02); 
+      transform: scale(1.03); 
       filter: grayscale(0%) brightness(1.05);
     }
 
-    .timeline-meta { display: flex; flex-direction: column; gap: 0.5rem; }
-    .timeline-item.left .timeline-meta { align-items: flex-end; }
-    .timeline-item.right .timeline-meta { align-items: flex-start; }
-    
-    .timeline-title { font-family: var(--font-ja); font-size: clamp(1.2rem, 2.5vw, 1.8rem); font-weight: 200; color: var(--fg); letter-spacing: 0.05em;}
-    .timeline-spec { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.75rem; color: var(--dim); letter-spacing: 0.15em; }
-
-    /* === 作品解説テキスト（再実装） === */
-    .timeline-desc {
-      margin-top: 1.5rem;
-      font-size: 0.9rem;
-      line-height: 2.2;
-      color: rgba(233,229,223,0.75);
+    /* --- テキスト情報ブロック（グラスモーフィズムカード） --- */
+    .timeline-content-txt {
+      padding: 2.5rem;
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid rgba(233, 229, 223, 0.05);
+      border-radius: 8px;
+      backdrop-filter: blur(10px);
       text-align: justify;
-      max-width: 90%;
+      transition: transform 0.6s var(--ease-out), border-color 0.6s ease, box-shadow 0.6s ease;
     }
-    /* 左側のアイテムは、テキストブロック自体を右寄せにして整合性を保つ */
-    .timeline-item.left .timeline-desc {
-      margin-left: auto;
+    .timeline-item:hover .timeline-content-txt {
+      border-color: rgba(196, 168, 130, 0.3);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+      transform: translateY(-5px);
     }
-    .timeline-desc p {
-      margin-bottom: 1em;
+
+    .timeline-title { 
+      font-family: var(--font-ja); 
+      font-size: clamp(1.4rem, 2.5vw, 2rem); 
+      font-weight: 300; 
+      color: var(--accent); 
+      letter-spacing: 0.05em;
+      margin-bottom: 0.4rem;
     }
-    .timeline-desc p:last-child {
-      margin-bottom: 0;
+    .timeline-spec { 
+      font-family: 'Helvetica Neue', Arial, sans-serif; 
+      font-size: 0.75rem; 
+      color: var(--dim); 
+      letter-spacing: 0.15em; 
+      margin-bottom: 1.8rem;
     }
+    .timeline-desc {
+      font-size: 0.95rem;
+      line-height: 2.2;
+      color: var(--fg);
+      opacity: 0.85;
+    }
+    .timeline-desc p { margin-bottom: 1.2em; }
+    .timeline-desc p:last-child { margin-bottom: 0; }
 
     /* ============================================================
        CONTACT & FOOTER
@@ -401,7 +426,7 @@
     .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
 
     /* ============================================================
-       BACK TO TOP BUTTON (斬新で快感のあるデザイン)
+       BACK TO TOP BUTTON
     =========================================================== */
     .btt-btn {
       position: fixed;
@@ -432,32 +457,16 @@
       transition: transform 0.4s var(--ease-out);
       z-index: 0;
     }
-    .btt-btn:hover {
-      transform: translateY(-5px) scale(1.1);
-      box-shadow: 0 15px 30px rgba(196,168,130,0.2);
-    }
+    .btt-btn:hover { transform: translateY(-5px) scale(1.1); box-shadow: 0 15px 30px rgba(196,168,130,0.2); }
     .btt-btn:hover::before { transform: scale(1.05); }
     .btt-btn:active { transform: translateY(0) scale(0.9); }
-    
-    .btt-content {
-      position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
-      transition: color 0.3s;
-    }
+    .btt-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: color 0.3s; }
     .btt-btn:hover .btt-content { color: var(--bg); }
-    .btt-icon {
-      width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2;
-      transition: transform 0.3s;
-    }
+    .btt-icon { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; transition: transform 0.3s; }
     .btt-btn:hover .btt-icon { transform: translateY(-3px); }
     .btt-text { font-family: var(--font-en); font-size: 9px; font-weight: 600; letter-spacing: 0.1em; }
-
-    .ripple {
-      position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.6);
-      transform: scale(0); animation: ripple-anim 0.6s linear; pointer-events: none; z-index: 2;
-    }
-    @keyframes ripple-anim {
-      to { transform: scale(4); opacity: 0; }
-    }
+    .ripple { position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.6); transform: scale(0); animation: ripple-anim 0.6s linear; pointer-events: none; z-index: 2; }
+    @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
 
     /* ============================================================
        LIGHTBOX MODAL
@@ -467,11 +476,9 @@
     .modal-bg { position: absolute; inset: 0; background: rgba(6,6,5,0.98); backdrop-filter: blur(20px); }
     .modal-close { position: fixed; top: 2rem; right: var(--px); z-index: 100000; background: none; border: none; color: var(--fg); cursor: none; padding: 1rem; transition: transform 0.4s ease; }
     .modal-close:hover { transform: rotate(90deg) scale(1.2); color: var(--accent); }
-    
     .modal-content { position: relative; z-index: 100000; max-width: 95vw; max-height: 90vh; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; opacity: 0; transform: scale(0.98); transition: all 0.6s var(--ease); }
     .image-modal.is-active .modal-content { opacity: 1; transform: scale(1); }
     .modal-content img { max-width: 100%; max-height: 75vh; object-fit: contain; box-shadow: 0 40px 100px rgba(0,0,0,0.8); }
-    
     .modal-caption { text-align: center; }
     .modal-caption-jp { font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: 200; color: var(--fg); margin-bottom: 0.5rem; letter-spacing: 0.05em;}
     .modal-caption-spec { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.8rem; color: var(--accent); letter-spacing: 0.15em; line-height: 1.6; white-space: pre-line;}
@@ -485,28 +492,49 @@
     @media (max-width: 1024px) {
       .concept-section { grid-template-columns: 1fr; gap: 2rem; }
       .concept-title-area { position: relative; top: 0; margin-bottom: 2rem; }
+      .timeline-content-txt { padding: 1.5rem; }
     }
 
     @media (max-width: 768px) {
-      /* Hero & ギャラリー調整 */
       .hero-title-huge { font-size: clamp(4rem, 18vw, 6rem); }
       .coverflow-item { width: clamp(180px, 60vw, 260px); }
       
-      /* Timelineの1カラム化 */
+      /* Timeline スマホ用 1カラム最適化 */
       .timeline-section { padding: clamp(4rem, 8vh, 6rem) var(--px); }
-      .timeline-line { left: 16px; transform: none; }
+      .timeline-line { left: 20px; transform: none; }
       .timeline-line-progress { left: 0; width: 100%; }
-      .timeline-year { text-align: left; padding-left: 45px; margin: 4rem 0 2rem; }
-      .timeline-item { width: 100%; padding-left: 45px; margin-bottom: 4rem; left: 0 !important; text-align: left !important; }
-      .timeline-item.left::after, .timeline-item.right::after { left: 11px; right: auto; transform: translateX(-50%); }
-      .timeline-item.left:hover::after, .timeline-item.right:hover::after { transform: scale(1.5) translateX(-30%); }
-      .timeline-item.left .timeline-meta, .timeline-item.right .timeline-meta { align-items: flex-start; }
+      .timeline-year { text-align: left; padding-left: 45px; margin: 3rem 0 2rem; }
       
-      /* 作品解説のスマホ最適化 */
-      .timeline-item.left .timeline-desc { margin-left: 0; max-width: 100%; text-align: left; }
-      .timeline-item.right .timeline-desc { max-width: 100%; text-align: left; }
+      .timeline-item { flex-direction: column !important; margin-bottom: 5rem; }
       
-      .page-nav { display: none; /* スマホでは画面領域確保のため非表示 */ }
+      .timeline-content-img,
+      .timeline-content-txt {
+        width: 100%;
+        padding-left: 45px; /* ラインの横にスペースを確保 */
+      }
+      .timeline-content-txt {
+        background: transparent; /* スマホではカードを解除してシンプルに */
+        border: none;
+        backdrop-filter: none;
+        padding-top: 1.5rem;
+        padding-right: 0;
+        padding-bottom: 0;
+      }
+      .timeline-item:hover .timeline-content-txt {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+      
+      .timeline-node {
+        left: 20px;
+        top: 25%; /* 画像の少し下にマーカーを配置 */
+        transform: translate(-50%, -50%);
+      }
+      .timeline-item:hover .timeline-node {
+        transform: translate(-50%, -50%) scale(1.4);
+      }
+      
+      .page-nav { display: none; }
     }
   </style>
 </head>
@@ -583,45 +611,45 @@
       </div>
       
       <div class="coverflow-container" id="cfContainer">
-        <div class="coverflow-item" data-action="modal" data-img-src="images/岩間（湘南）20230317.JPG" data-title="岩間" data-spec="2026 / デジタル">
+        <div class="coverflow-item" data-action="modal" data-img-src="images/岩間（湘南）20230317.JPG" data-title="岩間" data-spec="2023 / デジタル">
           <div class="cf-img-wrap"><img src="images/岩間（湘南）20230317.JPG" alt="岩間" loading="lazy"></div>
-          <div class="coverflow-info"><div class="cf-title">岩間</div><div class="cf-spec">2026 / デジタル</div></div>
+          <div class="coverflow-info"><div class="cf-title">岩間</div><div class="cf-spec">2023 / デジタル</div></div>
         </div>
         <div class="coverflow-item" data-action="modal" data-img-src="images/風景のアレンジメント（山）(2).jpg" data-title="風景のアレンジメント（山）" data-spec="2025 / 鉛筆・パネル">
           <div class="cf-img-wrap"><img src="images/風景のアレンジメント（山）(2).jpg" alt="風景のアレンジメント（山）" loading="lazy"></div>
           <div class="coverflow-info"><div class="cf-title">風景のアレンジメント（山）</div><div class="cf-spec">2025 / 鉛筆・パネル</div></div>
         </div>
-        <div class="coverflow-item" data-action="modal" data-img-src="images/【Extracapsular Cataract Extraction】.jpg" data-title="Extracapsular Cataract Extraction" data-spec="2025 / 鉛筆・紙">
+        <div class="coverflow-item" data-action="modal" data-img-src="images/【Extracapsular Cataract Extraction】.jpg" data-title="Extracapsular Cataract Extraction" data-spec="2018 / 鉛筆・紙">
           <div class="cf-img-wrap"><img src="images/【Extracapsular Cataract Extraction】.jpg" alt="Extracapsular Cataract Extraction" loading="lazy"></div>
-          <div class="coverflow-info"><div class="cf-title">Extracapsular Cataract Extraction</div><div class="cf-spec">2025 / 鉛筆・紙</div></div>
+          <div class="coverflow-info"><div class="cf-title">Extracapsular Cataract Extraction</div><div class="cf-spec">2018 / 鉛筆・紙</div></div>
         </div>
-        <div class="coverflow-item" data-action="modal" data-img-src="images/img022.jpg" data-title="img022" data-spec="2024 / 鉛筆・紙">
+        <div class="coverflow-item" data-action="modal" data-img-src="images/img022.jpg" data-title="img022" data-spec="2018 / 鉛筆・紙">
           <div class="cf-img-wrap"><img src="images/img022.jpg" alt="img022" loading="lazy"></div>
-          <div class="coverflow-info"><div class="cf-title">img022</div><div class="cf-spec">2024 / 鉛筆・紙</div></div>
+          <div class="coverflow-info"><div class="cf-title">img022</div><div class="cf-spec">2018 / 鉛筆・紙</div></div>
         </div>
-        <div class="coverflow-item" data-action="modal" data-img-src="images/IMG_7569.jpg" data-title="IMG_7569" data-spec="2024 / 木炭・鉛筆・紙">
+        <div class="coverflow-item" data-action="modal" data-img-src="images/IMG_7569.jpg" data-title="IMG_7569" data-spec="2020 / 木炭・鉛筆・紙">
           <div class="cf-img-wrap"><img src="images/IMG_7569.jpg" alt="IMG_7569" loading="lazy"></div>
-          <div class="coverflow-info"><div class="cf-title">IMG_7569</div><div class="cf-spec">2024 / 木炭・鉛筆・紙</div></div>
+          <div class="coverflow-info"><div class="cf-title">IMG_7569</div><div class="cf-spec">2020 / 木炭・鉛筆・紙</div></div>
         </div>
-        <div class="coverflow-item" data-action="modal" data-img-src="images/あじのひらき.jpg" data-title="あじのひらき" data-spec="2024 / 鉛筆・紙">
+        <div class="coverflow-item" data-action="modal" data-img-src="images/あじのひらき.jpg" data-title="あじのひらき" data-spec="2009 / 鉛筆・紙">
           <div class="cf-img-wrap"><img src="images/あじのひらき.jpg" alt="あじのひらき" loading="lazy"></div>
-          <div class="coverflow-info"><div class="cf-title">あじのひらき</div><div class="cf-spec">2024 / 鉛筆・紙</div></div>
+          <div class="coverflow-info"><div class="cf-title">あじのひらき</div><div class="cf-spec">2009 / 鉛筆・紙</div></div>
         </div>
-        <div class="coverflow-item" data-action="modal" data-img-src="images/冷麺.jpg" data-title="冷麺" data-spec="2024 / 鉛筆・紙">
+        <div class="coverflow-item" data-action="modal" data-img-src="images/冷麺.jpg" data-title="冷麺" data-spec="2009 / 鉛筆・紙">
           <div class="cf-img-wrap"><img src="images/冷麺.jpg" alt="冷麺" loading="lazy"></div>
-          <div class="coverflow-info"><div class="cf-title">冷麺</div><div class="cf-spec">2024 / 鉛筆・紙</div></div>
+          <div class="coverflow-info"><div class="cf-title">冷麺</div><div class="cf-spec">2009 / 鉛筆・紙</div></div>
         </div>
-        <div class="coverflow-item" data-action="modal" data-img-src="images/【tHe LakE (c011aPsed HeRe by y0ur cA11)】 加工後.jpg" data-title="tHe LakE" data-spec="2024 / 鉛筆・紙">
+        <div class="coverflow-item" data-action="modal" data-img-src="images/【tHe LakE (c011aPsed HeRe by y0ur cA11)】 加工後.jpg" data-title="tHe LakE" data-spec="2009 / 鉛筆・紙">
           <div class="cf-img-wrap"><img src="images/【tHe LakE (c011aPsed HeRe by y0ur cA11)】 加工後.jpg" alt="tHe LakE" loading="lazy"></div>
-          <div class="coverflow-info"><div class="cf-title">tHe LakE</div><div class="cf-spec">2024 / 鉛筆・紙</div></div>
+          <div class="coverflow-info"><div class="cf-title">tHe LakE</div><div class="cf-spec">2009 / 鉛筆・紙</div></div>
         </div>
-        <div class="coverflow-item" data-action="modal" data-img-src="images/【a thread】 修正版.jpg" data-title="a thread" data-spec="2023 / 鉛筆・紙 / 30x30cm">
+        <div class="coverflow-item" data-action="modal" data-img-src="images/【a thread】 修正版.jpg" data-title="a thread" data-spec="2009 / 鉛筆・紙 / 30x30cm">
           <div class="cf-img-wrap"><img src="images/【a thread】 修正版.jpg" alt="a thread" loading="lazy"></div>
-          <div class="coverflow-info"><div class="cf-title">a thread</div><div class="cf-spec">2023 / 鉛筆・紙</div></div>
+          <div class="coverflow-info"><div class="cf-title">a thread</div><div class="cf-spec">2009 / 鉛筆・紙</div></div>
         </div>
-        <div class="coverflow-item" data-action="modal" data-img-src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg" data-title="【CG(Cell-Graphics)】" data-spec="2008 / 鉛筆・紙 / A4">
+        <div class="coverflow-item" data-action="modal" data-img-src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg" data-title="【CG(Cell-Graphics)】" data-spec="2009 / 鉛筆・紙 / A4">
           <div class="cf-img-wrap"><img src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg" alt="CG(Cell-Graphics)" loading="lazy"></div>
-          <div class="coverflow-info"><div class="cf-title">【CG(Cell-Graphics)】</div><div class="cf-spec">2008 / 鉛筆・紙</div></div>
+          <div class="coverflow-info"><div class="cf-title">【CG(Cell-Graphics)】</div><div class="cf-spec">2009 / 鉛筆・紙</div></div>
         </div>
       </div>
       <p class="carousel-hint fade-up" style="transition-delay: 0.3s;">Click active center image to view</p>
@@ -637,134 +665,170 @@
         <div class="timeline-line"><div class="timeline-line-progress" id="timelineProgress"></div></div>
 
         <div class="timeline-year fade-up">
-          <span class="timeline-year-text">2026</span>
-        </div>
-        <article class="timeline-item left fade-up">
-          <button class="timeline-card js-modal-open" data-img-src="images/岩間（湘南）20230317.JPG" data-title="岩間" data-spec="2026 / デジタル">
-            <div class="timeline-img-wrap"><img src="images/岩間（湘南）20230317.JPG" alt="岩間" loading="lazy"></div>
-            <div class="timeline-meta">
-              <h3 class="timeline-title">岩間</h3>
-              <p class="timeline-spec">デジタル</p>
-            </div>
-          </button>
-          <div class="timeline-desc">
-            <p>湘南の海岸に露出した岩の"間"を描いた素描である。隆起し、亀裂し、風化した岩の表面は、地層の時間を可視化する。炭素の塊、岩の記録と出会うとき、そこには有機と無機、生と死の境界を問うための「力の場」が生まれる。</p>
-            <p>角ばった断面と、そのあいだに走る白い光のような線は、岩の地質学的な裂け目でありながら、同時に「いと」——それ以上還元できない存在の最小単位——の形象として読むことができる。この素描はサイト特有の感覚の移植の試みでもある。</p>
-          </div>
-        </article>
-
-        <div class="timeline-year fade-up">
           <span class="timeline-year-text">2025</span>
         </div>
-        <article class="timeline-item right fade-up">
-          <button class="timeline-card js-modal-open" data-img-src="images/風景のアレンジメント（山）(2).jpg" data-title="風景のアレンジメント（山）" data-spec="2025 / 鉛筆・パネル">
-            <div class="timeline-img-wrap"><img src="images/風景のアレンジメント（山）(2).jpg" alt="風景のアレンジメント（山）" loading="lazy"></div>
-            <div class="timeline-meta">
-              <h3 class="timeline-title">風景のアレンジメント（山）</h3>
-              <p class="timeline-spec">鉛筆・パネル</p>
-            </div>
-          </button>
-          <div class="timeline-desc">
-            <p>山水画の古典的な構図を援用しながら、鉛筆のストロークによって岩肌のテクスチャと空間の広がりを再構築した風景の素描。記憶や概念としての「山」を紙の上に配置し直す試み。</p>
+        <article class="timeline-item item-left fade-up">
+          <div class="timeline-node"></div>
+          <div class="timeline-content-img">
+            <button class="timeline-card js-modal-open" data-img-src="images/風景のアレンジメント（山）(2).jpg" data-title="風景のアレンジメント（山）" data-spec="2025 / 鉛筆・パネル">
+              <div class="timeline-img-wrap"><img src="images/風景のアレンジメント（山）(2).jpg" alt="風景のアレンジメント（山）" loading="lazy"></div>
+            </button>
           </div>
-        </article>
-        <article class="timeline-item left fade-up">
-          <button class="timeline-card js-modal-open" data-img-src="images/【Extracapsular Cataract Extraction】.jpg" data-title="Extracapsular Cataract Extraction" data-spec="2025 / 鉛筆・紙">
-            <div class="timeline-img-wrap"><img src="images/【Extracapsular Cataract Extraction】.jpg" alt="Extracapsular Cataract Extraction" loading="lazy"></div>
-            <div class="timeline-meta">
-              <h3 class="timeline-title">Extracapsular Cataract Extraction</h3>
-              <p class="timeline-spec">鉛筆・紙</p>
+          <div class="timeline-content-txt">
+            <h3 class="timeline-title">風景のアレンジメント（山）</h3>
+            <p class="timeline-spec">鉛筆・パネル</p>
+            <div class="timeline-desc">
+              <p>山水画の古典的な構図を援用しながら、鉛筆のストロークによって岩肌のテクスチャと空間の広がりを再構築した風景の素描。記憶や概念としての「山」を紙の上に配置し直す試み。</p>
             </div>
-          </button>
-          <div class="timeline-desc">
-            <p>「水晶体嚢外摘出術」という医学的プロセスを暗示しつつ、有機的な形態が抽出・分離されていく瞬間を緻密な鉛筆の線で捉えている。肉体という不可侵の領域にメスが入る生々しさと、グラフィックとしての静謐さが共存する。</p>
           </div>
-        </article>
-
-        <div class="timeline-year fade-up">
-          <span class="timeline-year-text">2024</span>
-        </div>
-        <article class="timeline-item right fade-up">
-          <button class="timeline-card js-modal-open" data-img-src="images/img022.jpg" data-title="img022" data-spec="2024 / 鉛筆・紙">
-            <div class="timeline-img-wrap"><img src="images/img022.jpg" alt="img022" loading="lazy"></div>
-            <div class="timeline-meta">
-              <h3 class="timeline-title">img022</h3>
-              <p class="timeline-spec">鉛筆・紙</p>
-            </div>
-          </button>
-          <div class="timeline-desc">
-            <p>流出する体液や垂れ下がる肉塊を思わせるフォルム。重力と物質の境界線を曖昧にするような不穏なエネルギーが、徹底的に抑制されたモノクロームの階調の中で描かれている。</p>
-          </div>
-        </article>
-        <article class="timeline-item left fade-up">
-          <button class="timeline-card js-modal-open" data-img-src="images/IMG_7569.jpg" data-title="IMG_7569" data-spec="2024 / 木炭・鉛筆・紙">
-            <div class="timeline-img-wrap"><img src="images/IMG_7569.jpg" alt="IMG_7569" loading="lazy"></div>
-            <div class="timeline-meta">
-              <h3 class="timeline-title">IMG_7569</h3>
-              <p class="timeline-spec">木炭・鉛筆・紙</p>
-            </div>
-          </button>
-          <div class="timeline-desc">
-            <p>荒々しいストロークと深い陰影。形が具体的な意味や名前を持つ前の、描画材と紙との物理的な摩擦、純粋な運動の痕跡としての素描。</p>
-          </div>
-        </article>
-        <article class="timeline-item right fade-up">
-          <button class="timeline-card js-modal-open" data-img-src="images/あじのひらき.jpg" data-title="あじのひらき" data-spec="2024 / 鉛筆・紙">
-            <div class="timeline-img-wrap"><img src="images/あじのひらき.jpg" alt="あじのひらき" loading="lazy"></div>
-            <div class="timeline-meta">
-              <h3 class="timeline-title">あじのひらき</h3>
-              <p class="timeline-spec">鉛筆・紙</p>
-            </div>
-          </button>
-        </article>
-        <article class="timeline-item left fade-up">
-          <button class="timeline-card js-modal-open" data-img-src="images/冷麺.jpg" data-title="冷麺" data-spec="2024 / 鉛筆・紙">
-            <div class="timeline-img-wrap"><img src="images/冷麺.jpg" alt="冷麺" loading="lazy"></div>
-            <div class="timeline-meta">
-              <h3 class="timeline-title">冷麺</h3>
-              <p class="timeline-spec">鉛筆・紙</p>
-            </div>
-          </button>
-        </article>
-        <article class="timeline-item right fade-up">
-          <button class="timeline-card js-modal-open" data-img-src="images/【tHe LakE (c011aPsed HeRe by y0ur cA11)】 加工後.jpg" data-title="tHe LakE" data-spec="2024 / 鉛筆・紙">
-            <div class="timeline-img-wrap"><img src="images/【tHe LakE (c011aPsed HeRe by y0ur cA11)】 加工後.jpg" alt="tHe LakE" loading="lazy"></div>
-            <div class="timeline-meta">
-              <h3 class="timeline-title">tHe LakE</h3>
-              <p class="timeline-spec">鉛筆・紙</p>
-            </div>
-          </button>
         </article>
 
         <div class="timeline-year fade-up">
           <span class="timeline-year-text">2023</span>
         </div>
-        <article class="timeline-item left fade-up">
-          <button class="timeline-card js-modal-open" data-img-src="images/【a thread】 修正版.jpg" data-title="a thread" data-spec="2023 / 鉛筆・紙 / 30.0 × 30.0 cm">
-            <div class="timeline-img-wrap"><img src="images/【a thread】 修正版.jpg" alt="a thread" loading="lazy"></div>
-            <div class="timeline-meta">
-              <h3 class="timeline-title">a thread</h3>
-              <p class="timeline-spec">紙、鉛筆</p>
+        <article class="timeline-item item-right fade-up">
+          <div class="timeline-node"></div>
+          <div class="timeline-content-img">
+            <button class="timeline-card js-modal-open" data-img-src="images/岩間（湘南）20230317.JPG" data-title="岩間" data-spec="2023 / デジタル">
+              <div class="timeline-img-wrap"><img src="images/岩間（湘南）20230317.JPG" alt="岩間" loading="lazy"></div>
+            </button>
+          </div>
+          <div class="timeline-content-txt">
+            <h3 class="timeline-title">岩間</h3>
+            <p class="timeline-spec">デジタル</p>
+            <div class="timeline-desc">
+              <p>湘南の海岸に露出した岩の"間"を描いた素描である。隆起し、亀裂し、風化した岩の表面は、地層の時間を可視化する。炭素の塊、岩の記録と出会うとき、そこには有機と無機、生と死の境界を問うための「力の場」が生まれる。</p>
+              <p>角ばった断面と、そのあいだに走る白い光のような線は、岩の地質学的な裂け目でありながら、同時に「いと」——それ以上還元できない存在の最小単位——の形象として読むことができる。この素描はサイト特有の感覚の移植の試みでもある。</p>
             </div>
-          </button>
+          </div>
         </article>
 
         <div class="timeline-year fade-up">
-          <span class="timeline-year-text">2008</span>
+          <span class="timeline-year-text">2020</span>
         </div>
-        <article class="timeline-item right fade-up">
-          <button class="timeline-card js-modal-open" data-img-src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg" data-title="【CG(Cell-Graphics) [apocalypse] - III】" data-spec="2008 / 鉛筆・紙 / 21 × 29.7 cm (A4)">
-            <div class="timeline-img-wrap"><img src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg" alt="CG(Cell-Graphics)" loading="lazy"></div>
-            <div class="timeline-meta">
-              <h3 class="timeline-title">【CG(Cell-Graphics) [apocalypse] - III】</h3>
-              <p class="timeline-spec">鉛筆・紙</p>
+        <article class="timeline-item item-left fade-up">
+          <div class="timeline-node"></div>
+          <div class="timeline-content-img">
+            <button class="timeline-card js-modal-open" data-img-src="images/IMG_7569.jpg" data-title="IMG_7569" data-spec="2020 / 木炭・鉛筆・紙">
+              <div class="timeline-img-wrap"><img src="images/IMG_7569.jpg" alt="IMG_7569" loading="lazy"></div>
+            </button>
+          </div>
+          <div class="timeline-content-txt">
+            <h3 class="timeline-title">IMG_7569</h3>
+            <p class="timeline-spec">木炭・鉛筆・紙</p>
+            <div class="timeline-desc">
+              <p>荒々しいストロークと深い陰影。形が具体的な意味や名前を持つ前の、描画材と紙との物理的な摩擦、純粋な運動の痕跡としての素描。</p>
             </div>
-          </button>
-          <div class="timeline-desc">
-            <p>細胞（cell）の微視的構造と、グラフィック（graphics）の平面的論理が交差する地点において生成される素描シリーズ。タイトルに含まれる〔apocalypse〕——黙示録——という語は、終末ではなく、「覆いを取り除く」という語源的意味において用いられている。</p>
-            <p>鉛筆の線は、生物学的・地質学的・神話的なイメージを複数のレイヤーとして重ね、単一の表面に「時間の堆積」を刻もうとする。細胞が分裂し、地層が形成されるように、線は繰り返し重なり、消えかかり、また現れる。</p>
           </div>
         </article>
+
+        <div class="timeline-year fade-up">
+          <span class="timeline-year-text">2018</span>
+        </div>
+        <article class="timeline-item item-right fade-up">
+          <div class="timeline-node"></div>
+          <div class="timeline-content-img">
+            <button class="timeline-card js-modal-open" data-img-src="images/【Extracapsular Cataract Extraction】.jpg" data-title="Extracapsular Cataract Extraction" data-spec="2018 / 鉛筆・紙">
+              <div class="timeline-img-wrap"><img src="images/【Extracapsular Cataract Extraction】.jpg" alt="Extracapsular Cataract Extraction" loading="lazy"></div>
+            </button>
+          </div>
+          <div class="timeline-content-txt">
+            <h3 class="timeline-title">Extracapsular Cataract Extraction</h3>
+            <p class="timeline-spec">鉛筆・紙</p>
+            <div class="timeline-desc">
+              <p>「水晶体嚢外摘出術」という医学的プロセスを暗示しつつ、有機的な形態が抽出・分離されていく瞬間を緻密な鉛筆の線で捉えている。肉体という不可侵の領域にメスが入る生々しさと、グラフィックとしての静謐さが共存する。</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="timeline-item item-left fade-up">
+          <div class="timeline-node"></div>
+          <div class="timeline-content-img">
+            <button class="timeline-card js-modal-open" data-img-src="images/img022.jpg" data-title="img022" data-spec="2018 / 鉛筆・紙">
+              <div class="timeline-img-wrap"><img src="images/img022.jpg" alt="img022" loading="lazy"></div>
+            </button>
+          </div>
+          <div class="timeline-content-txt">
+            <h3 class="timeline-title">img022</h3>
+            <p class="timeline-spec">鉛筆・紙</p>
+            <div class="timeline-desc">
+              <p>流出する体液や垂れ下がる肉塊を思わせるフォルム。重力と物質の境界線を曖昧にするような不穏なエネルギーが、徹底的に抑制されたモノクロームの階調の中で描かれている。</p>
+            </div>
+          </div>
+        </article>
+
+        <div class="timeline-year fade-up">
+          <span class="timeline-year-text">2009</span>
+        </div>
+        <article class="timeline-item item-right fade-up">
+          <div class="timeline-node"></div>
+          <div class="timeline-content-img">
+            <button class="timeline-card js-modal-open" data-img-src="images/【tHe LakE (c011aPsed HeRe by y0ur cA11)】 加工後.jpg" data-title="tHe LakE" data-spec="2009 / 鉛筆・紙">
+              <div class="timeline-img-wrap"><img src="images/【tHe LakE (c011aPsed HeRe by y0ur cA11)】 加工後.jpg" alt="tHe LakE" loading="lazy"></div>
+            </button>
+          </div>
+          <div class="timeline-content-txt">
+            <h3 class="timeline-title">tHe LakE</h3>
+            <p class="timeline-spec">鉛筆・紙</p>
+          </div>
+        </article>
+
+        <article class="timeline-item item-left fade-up">
+          <div class="timeline-node"></div>
+          <div class="timeline-content-img">
+            <button class="timeline-card js-modal-open" data-img-src="images/冷麺.jpg" data-title="冷麺" data-spec="2009 / 鉛筆・紙">
+              <div class="timeline-img-wrap"><img src="images/冷麺.jpg" alt="冷麺" loading="lazy"></div>
+            </button>
+          </div>
+          <div class="timeline-content-txt">
+            <h3 class="timeline-title">冷麺</h3>
+            <p class="timeline-spec">鉛筆・紙</p>
+          </div>
+        </article>
+
+        <article class="timeline-item item-right fade-up">
+          <div class="timeline-node"></div>
+          <div class="timeline-content-img">
+            <button class="timeline-card js-modal-open" data-img-src="images/あじのひらき.jpg" data-title="あじのひらき" data-spec="2009 / 鉛筆・紙">
+              <div class="timeline-img-wrap"><img src="images/あじのひらき.jpg" alt="あじのひらき" loading="lazy"></div>
+            </button>
+          </div>
+          <div class="timeline-content-txt">
+            <h3 class="timeline-title">あじのひらき</h3>
+            <p class="timeline-spec">鉛筆・紙</p>
+          </div>
+        </article>
+
+        <article class="timeline-item item-left fade-up">
+          <div class="timeline-node"></div>
+          <div class="timeline-content-img">
+            <button class="timeline-card js-modal-open" data-img-src="images/【a thread】 修正版.jpg" data-title="a thread" data-spec="2009 / 鉛筆・紙 / 30.0 × 30.0 cm">
+              <div class="timeline-img-wrap"><img src="images/【a thread】 修正版.jpg" alt="a thread" loading="lazy"></div>
+            </button>
+          </div>
+          <div class="timeline-content-txt">
+            <h3 class="timeline-title">a thread</h3>
+            <p class="timeline-spec">紙、鉛筆</p>
+          </div>
+        </article>
+
+        <article class="timeline-item item-right fade-up">
+          <div class="timeline-node"></div>
+          <div class="timeline-content-img">
+            <button class="timeline-card js-modal-open" data-img-src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg" data-title="【CG(Cell-Graphics) [apocalypse] - III】" data-spec="2009 / 鉛筆・紙 / 21 × 29.7 cm (A4)">
+              <div class="timeline-img-wrap"><img src="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg" alt="CG(Cell-Graphics)" loading="lazy"></div>
+            </button>
+          </div>
+          <div class="timeline-content-txt">
+            <h3 class="timeline-title">【CG(Cell-Graphics) [apocalypse] - III】</h3>
+            <p class="timeline-spec">鉛筆・紙</p>
+            <div class="timeline-desc">
+              <p>細胞（cell）の微視的構造と、グラフィック（graphics）の平面的論理が交差する地点において生成される素描シリーズ。タイトルに含まれる〔apocalypse〕——黙示録——という語は、終末ではなく、「覆いを取り除く」という語源的意味において用いられている。</p>
+              <p>鉛筆の線は、生物学的・地質学的・神話的なイメージを複数のレイヤーとして重ね、単一の表面に「時間の堆積」を刻もうとする。細胞が分裂し、地層が形成されるように、線は繰り返し重なり、消えかかり、また現れる。</p>
+            </div>
+          </div>
+        </article>
+
       </div>
     </section>
   </main>
@@ -814,7 +878,6 @@
     const dot = document.getElementById('cursorDot');
     const outline = document.getElementById('cursorOutline');
     
-    // スマホ以外でのみカーソルアニメーションを動作
     if (window.matchMedia("(min-width: 1025px)").matches) {
       window.addEventListener('mousemove', (e) => {
         dot.style.left = `${e.clientX}px`;
@@ -842,19 +905,17 @@
       window.dispatchEvent(new Event('scroll'));
     });
 
-    /* ── 3D COVERFLOW LOGIC & RANDOMIZE (Gallery) ── */
+    /* ── 3D COVERFLOW LOGIC & RANDOMIZE ── */
     const cfContainer = document.getElementById('cfContainer');
     let cfItems = [];
     let cfIndex = 0;
 
     if (cfContainer) {
-      // ロードのたびに要素をランダムにシャッフル
       const itemsArray = Array.from(cfContainer.querySelectorAll('.coverflow-item'));
       for (let i = itemsArray.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [itemsArray[i], itemsArray[j]] = [itemsArray[j], itemsArray[i]];
       }
-      // シャッフルした順番でDOMに再追加
       itemsArray.forEach(item => cfContainer.appendChild(item));
       cfItems = document.querySelectorAll('.coverflow-item');
     }
@@ -896,14 +957,31 @@
       });
     });
 
-    // Touch Swipe for Coverflow
+    /* ── スワイプ操作のレスポンス劇的改善 ── */
     let touchStartX = 0;
+    let touchStartY = 0;
+
     if (cfContainer) {
-      cfContainer.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+      cfContainer.addEventListener('touchstart', e => { 
+        touchStartX = e.changedTouches[0].screenX; 
+        touchStartY = e.changedTouches[0].screenY; 
+      }, {passive: true});
+      
       cfContainer.addEventListener('touchend', e => {
         const touchEndX = e.changedTouches[0].screenX;
-        if (touchEndX < touchStartX - 50) { cfIndex = Math.min(cfIndex + 1, cfItems.length - 1); renderCoverflow(); }
-        if (touchEndX > touchStartX + 50) { cfIndex = Math.max(cfIndex - 1, 0); renderCoverflow(); }
+        const touchEndY = e.changedTouches[0].screenY;
+        const deltaX = touchEndX - touchStartX;
+        const deltaY = touchEndY - touchStartY;
+
+        // X軸(横移動)の距離がY軸(縦スクロール)より長く、閾値(30px)を超えた場合のみスワイプと判定
+        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 30) {
+          if (deltaX < 0) {
+            cfIndex = Math.min(cfIndex + 1, cfItems.length - 1); // 左フリック（次へ）
+          } else {
+            cfIndex = Math.max(cfIndex - 1, 0); // 右フリック（前へ）
+          }
+          renderCoverflow();
+        }
       }, {passive: true});
     }
     renderCoverflow(); 
@@ -919,17 +997,12 @@
       const scrollY = window.scrollY;
       const winHeight = window.innerHeight;
 
-      // Nav bar styling
       if (scrollY > 50) topNav.classList.add('scrolled');
       else topNav.classList.remove('scrolled');
 
-      // Page Nav visibility
       if (pageNav) pageNav.classList.toggle('visible', scrollY > winHeight * 0.6);
-
-      // Back to Top Button visibility
       if (bttBtn) bttBtn.classList.toggle('visible', scrollY > winHeight);
 
-      // Timeline Line Progress
       if (timelineContainer && timelineProgress) {
         const rect = timelineContainer.getBoundingClientRect();
         const containerTop = rect.top;
@@ -944,7 +1017,7 @@
       }
     }, { passive: true });
 
-    /* ── SMOOTH SCROLL & BTT CLICK (快感イージング) ── */
+    /* ── SMOOTH SCROLL & BTT CLICK ── */
     function customScrollToTop(duration = 900) {
       const startPosition = window.scrollY;
       let startTime = null;
@@ -952,7 +1025,6 @@
         if (startTime === null) startTime = currentTime;
         const timeElapsed = currentTime - startTime;
         const progress = Math.min(timeElapsed / duration, 1);
-        // Exponential ease-out (シュイーンと加速してフワッと止まる)
         const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
         window.scrollTo(0, startPosition * (1 - ease));
         if (timeElapsed < duration) requestAnimationFrame(animation);
@@ -962,7 +1034,6 @@
 
     if (bttBtn) {
       bttBtn.addEventListener('click', function(e) {
-        // 波紋（リップル）エフェクトの生成
         const ripple = document.createElement('span');
         ripple.classList.add('ripple');
         this.appendChild(ripple);
@@ -970,13 +1041,10 @@
         const rect = this.getBoundingClientRect();
         const size = Math.max(rect.width, rect.height);
         ripple.style.width = ripple.style.height = `${size}px`;
-        // クリック位置を中心に波紋を広げる
         ripple.style.left = `${e.clientX - rect.left - size/2}px`;
         ripple.style.top = `${e.clientY - rect.top - size/2}px`;
         
         setTimeout(() => ripple.remove(), 600);
-        
-        // カスタムスクロール発動
         customScrollToTop();
       });
     }
