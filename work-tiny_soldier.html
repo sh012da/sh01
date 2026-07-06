@@ -212,33 +212,38 @@
     .tl-content-wrap { display: flex; justify-content: space-between; align-items: center; gap: clamp(2rem, 5vw, 6rem); }
     .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
     
-    /* コンテナのトリミング防止設計 (自然な画像比率にコンテナを完全追従させる) */
+    /* コンテナのトリミング防止設計 */
     .tl-figure { 
       position: relative; 
       border: 0.5px solid var(--border); 
-      background: transparent; /* 黒帯の原因となる背景色指定を完全に削除 */
+      background: transparent; 
       cursor: zoom-in; 
       transition: width 0.4s ease, border-color 0.4s ease; 
-      display: block; /* Flexを解除し、画像の自然な高さに依存させる */
-      overflow: hidden; /* Hover時の拡大は枠内に収める */
+      display: block; 
+      overflow: hidden; 
     }
     .tl-body { width: 42%; position: relative; z-index: 2; transition: width 0.4s ease; }
 
-    /* PC表示での横幅割り当て（高さは画像の自然な比率に委ねるため aspect-ratio は削除） */
-    .tl-entry.is-f25-portrait .tl-figure { width: 38%; }
+    /* PC表示での横幅割り当て（アスペクト比を各クラスで精密に指定） */
+    .tl-entry.is-f25-portrait .tl-figure { width: 38%; aspect-ratio: 652 / 803; }
     .tl-entry.is-f25-portrait .tl-body { width: 54%; }
 
-    .tl-entry.is-p30-landscape .tl-figure { width: 55%; }
+    /* 少年兵(10)用：F25の縦横比を逆（横長）にした新設クラス。画像を少年兵(11)と同等の55%幅へ大型化 */
+    .tl-entry.is-f25-landscape .tl-figure { width: 55%; aspect-ratio: 803 / 652; }
+    .tl-entry.is-f25-landscape .tl-body { width: 38%; }
+
+    .tl-entry.is-p30-landscape .tl-figure { width: 55%; aspect-ratio: 910 / 652; }
     .tl-entry.is-p30-landscape .tl-body { width: 38%; }
 
-    .tl-entry.is-f30-landscape .tl-figure { width: 55%; }
+    .tl-entry.is-f30-landscape .tl-figure { width: 55%; aspect-ratio: 910 / 727; }
     .tl-entry.is-f30-landscape .tl-body { width: 38%; }
     
-    /* 【超重要】画像の100%全体表示を強制し、余白（黒帯）を一切出さないCSSルール */
+    /* 画像の100%全体表示を強制し、余白（黒帯）を完全に排除するルール */
     .tl-figure img { 
       width: 100% !important; 
-      height: auto !important; /* 画像本来の比率を維持し、コンテナをそのサイズにピッタリ合わせる */
+      height: 100% !important; 
       display: block; 
+      object-fit: fill !important; /* 精密なアスペクト比コンテナに対して完全に引き伸ばしてフィット */
       filter: grayscale(12%) brightness(0.85); 
       transition: transform 1s var(--ease), filter 0.6s ease; 
     }
@@ -301,9 +306,17 @@
       
       .tl-figure, .tl-body, 
       .tl-entry.is-f25-portrait .tl-figure, .tl-entry.is-f25-portrait .tl-body, 
+      .tl-entry.is-f25-landscape .tl-figure, .tl-entry.is-f25-landscape .tl-body, 
       .tl-entry.is-p30-landscape .tl-figure, .tl-entry.is-p30-landscape .tl-body, 
       .tl-entry.is-f30-landscape .tl-figure, .tl-entry.is-f30-landscape .tl-body { 
         width: 100%; 
+        aspect-ratio: auto !important; /* スマホ時はコンテナの固定比率を解除 */
+      }
+      
+      .tl-figure img { 
+        width: 100% !important; 
+        height: auto !important; 
+        object-fit: contain !important; /* モバイル環境でも比率を維持して全表示 */
       }
       
       .timeline-spine-wrapper { left: 16px; transform: none; }
@@ -312,10 +325,7 @@
 
     @media (max-width: 768px) {
       nav#top-nav { padding: 1.2rem 1.25rem; justify-content: space-between; align-items: center; }
-      
-      /* ハンバーガーメニューに関連するコードを完全削除 / スマホヘッダーをミニマルに再定義 */
       .nav-links { display: none !important; }
-      
       .gallery-section { display: none !important; }
       .page-nav.visible { right: 8px; opacity: 0.5; }
       .page-nav.visible:hover { opacity: 1; }
@@ -436,10 +446,10 @@
           </div>
         </a>
 
-        <a href="#work-10" class="gallery-item is-portrait">
+        <a href="#work-10" class="gallery-item is-landscape">
           <div class="gallery-item-img-wrap"><img src="images/【F25縦】少年兵(10)（ソマリア）.jpg" alt="少年兵(10)（ソマリア）" loading="lazy"></div>
           <div class="gallery-item-cap">
-            <span class="gallery-item-title">少年兵(10)（ソマリア）</span><span class="gallery-item-meta">2014 / 80.3 × 65.2 cm</span>
+            <span class="gallery-item-title">少年兵(10)（ソマリア）</span><span class="gallery-item-meta">2014 / 65.2 × 80.3 cm</span>
           </div>
         </a>
 
@@ -548,15 +558,15 @@
           </div>
         </article>
 
-        <article class="tl-entry is-f25-portrait" id="work-10">
+        <article class="tl-entry is-f25-landscape" id="work-10">
           <div class="tl-year-display">2014</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F25縦】少年兵(10)（ソマリア）.jpg" data-title="少年兵(10)（ソマリア）" data-meta="80.3 × 65.2 cm / Oil on canvas">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F25縦】少年兵(10)（ソマリア）.jpg" data-title="少年兵(10)（ソマリア）" data-meta="65.2 × 80.3 cm / Oil on canvas">
               <img src="images/【F25縦】少年兵(10)（ソマリア）.jpg" alt="少年兵(10)（ソマリア）" loading="lazy">
             </div>
             <div class="tl-body">
               <h3 class="tl-title" data-typewriter="true">少年兵(10)（ソマリア）</h3>
-              <p class="tl-meta">80.3 × 65.2 cm / Oil on canvas</p>
+              <p class="tl-meta">65.2 × 80.3 cm / Oil on canvas</p>
               <div class="tl-desc">
                 <p>両手に異なる二丁の銃を抱え、半裸で顔を激しく歪める少年。重圧に耐えかねて泣き叫んでいるのか、それとも精一杯の威嚇をしているのか。</p>
                 <p>幼い感情の生々しい爆発と、彼を取り巻く圧倒的な暴力の力学が、一枚の絵の中で激しく衝突し、鑑賞者の倫理観を深く揺さぶる。暴力がいかに精神を蹂躙するかを示す痛烈なポートレイトである。</p>
@@ -593,7 +603,7 @@
               <p class="tl-meta">80.3 × 65.2 cm / Oil on canvas</p>
               <div class="tl-desc">
                 <p>無地のパーカー姿で銃を構える少年の、真っ直ぐでどこか虚無的な眼差し。彼の目に映る世界は、果たしてどのような色をしているのだろうか。</p>
-                <p>感情を読み取らせない静かな瞳の奥に、紛争地で生き抜くための防衛機制と、決定的に失われてしまった無垢の喪失が垣間見える。沈黙が雄弁に語りかけてくる一枚。</p>
+                <p>感情を読み取らせない静かな瞳の奥に、紛争地で生き抜くための防衛機制と、決定的に失われてしまった無垢の喪失が垣間見える。沈黙が雄べんに語りかけてくる一枚。</p>
               </div>
             </div>
           </div>
@@ -764,78 +774,7 @@
   </div>
 
   <script>
-    /* ── ファーストビュー アニメーション ── */
-    window.addEventListener('load', () => {
-      setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 150);
-      setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'),   350);
-      setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'),      680);
-      setTimeout(() => document.getElementById('heroMeta')?.classList.add('revealed'),    980);
-      setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1700);
-    });
-
-    /* ── Observer (Fade Up & Grid Animation) ── */
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('in-view');
-        io.unobserve(entry.target);
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
-    document.querySelectorAll('.gallery-item, .tl-entry, .reveal-fade').forEach(el => io.observe(el));
-
-    /* ── Typewriter Engine ── */
-    function prepareTypewriterDOM(el) {
-      if (el.dataset.twPrepared === "true") return;
-      const txt = el.textContent.trim();
-      el.textContent = '';
-      for (let i = 0; i < txt.length; i++) {
-        const span = document.createElement('span');
-        span.className = 'tw-char';
-        span.textContent = txt[i];
-        el.appendChild(span);
-      }
-      const cursor = document.createElement('span');
-      cursor.className = 'tw-cursor';
-      el.appendChild(cursor);
-      el.dataset.twPrepared = "true";
-    }
-
-    function runTypewriter(el) {
-      if (el.dataset.twDone === "true") return;
-      const chars = el.querySelectorAll('.tw-char');
-      const cursor = el.querySelector('.tw-cursor');
-      let idx = 0;
-      function nextChar() {
-        if (idx < chars.length) {
-          chars[idx].style.opacity = '1';
-          idx++;
-          setTimeout(() => requestAnimationFrame(nextChar), 45);
-        } else {
-          el.dataset.twDone = "true";
-          if (cursor) {
-            cursor.classList.add('fade-out');
-            setTimeout(() => cursor.remove(), 800);
-          }
-        }
-      }
-      requestAnimationFrame(nextChar);
-    }
-
-    document.querySelectorAll('[data-typewriter="true"]').forEach(el => {
-      prepareTypewriterDOM(el);
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            obs.unobserve(el);
-            setTimeout(() => requestAnimationFrame(() => runTypewriter(el)), 300);
-          }
-        });
-      }, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
-      obs.observe(el);
-    });
-
-    /* ── Scroll Interactions (Spine, Nav, Page-Nav) ── */
+    /* ── ページ内スクロール時のクラス切り替えとプログレス制御 ── */
     const topNav = document.getElementById('top-nav');
     const pageNav = document.getElementById('pageNav');
     const navItems = document.querySelectorAll('.page-nav-item');
@@ -849,11 +788,9 @@
         window.requestAnimationFrame(() => {
           const scrollY = window.scrollY;
           
-          /* Top Nav Glassmorphism */
           if (scrollY > 50) topNav.classList.add('scrolled');
           else topNav.classList.remove('scrolled');
 
-          /* Page Nav Visibility & Active State */
           const checkY = scrollY + window.innerHeight * 0.4;
           let activeSec = null;
           sections.forEach(sec => {
@@ -867,7 +804,6 @@
             pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.6);
           }
 
-          /* Timeline Spine Progress */
           if (tlWrap && spineFill) {
             const rect = tlWrap.getBoundingClientRect();
             const totalH = tlWrap.offsetHeight;
@@ -877,7 +813,6 @@
             }
           }
 
-          /* Back to Top */
           const b2t = document.getElementById('backToTop');
           if (b2t) {
             if (scrollY > 400) b2t.classList.add('is-visible');
@@ -913,7 +848,7 @@
       }
     });
 
-    /* ── Lightbox (Modal) ── */
+    /* ── ライトボックス (Modal) ── */
     const modal      = document.getElementById('imageModal');
     const modalImg   = document.getElementById('modalImg');
     const modalBg    = document.getElementById('modalBg');
