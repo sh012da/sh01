@@ -41,7 +41,6 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { font-size: 16px; scroll-behavior: smooth; }
 
-    /* 紙と木炭の「摩擦」を表現する全画面ノイズ */
     body::before {
       content: "";
       position: fixed;
@@ -64,9 +63,7 @@
     }
     
     body.is-locked { overflow: hidden; }
-    
     img { max-width: 100%; height: auto; display: block; }
-    
     a, button { cursor: none; }
     a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
     a:hover { opacity: 0.5; }
@@ -143,12 +140,6 @@
     .hero-scroll.revealed .hero-scroll-line { height: 80px; animation: scrollStretch 2.5s cubic-bezier(0.77, 0, 0.175, 1) infinite alternate; }
     @keyframes scrollStretch { 0% { transform-origin: top; transform: scaleY(0.3); } 100% { transform-origin: top; transform: scaleY(1); } }
 
-    .hero-tiktok-pill { position: absolute; top: clamp(5rem, 12vh, 10rem); right: var(--px); z-index: 10; display: inline-flex; align-items: center; gap: 12px; padding: 10px 20px; border: 1px solid rgba(233, 229, 223, 0.15); background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border-radius: 30px; opacity: 0; transform: translateX(20px); transition: all 0.6s var(--ease); }
-    .hero-tiktok-pill.revealed { opacity: 1; transform: translateX(0); transition-delay: 1.2s; }
-    .hero-tiktok-pill:hover { background: rgba(196,168,130,0.15); border-color: var(--accent); transform: scale(1.05); }
-    .hero-tiktok-pill svg { width: 14px; height: 14px; fill: var(--fg); }
-    .hero-tiktok-pill span { font-size: 0.7rem; letter-spacing: 0.1em; color: var(--fg); }
-
     /* ============================================================
        CONCEPT
     =========================================================== */
@@ -186,7 +177,7 @@
       justify-content: center;
       perspective: 1200px;
       user-select: none;
-      touch-action: pan-y; /* 意図しない横スクロールによるブラウザバックを防止 */
+      touch-action: pan-y;
     }
     .coverflow-item {
       position: absolute;
@@ -415,9 +406,31 @@
     .contact-btn { display: inline-block; padding: 1.2rem 3rem; background: var(--accent); color: var(--bg); font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none; transition: all 0.4s var(--ease); border-radius: 2px; cursor: none; }
     .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3); }
 
-    footer { padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); background: var(--bg); }
-    .footer-logo { font-family: var(--font-ja); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.28); letter-spacing: 0.08em; }
-    .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
+    /* --- FOOTER 改善 --- */
+    footer { 
+      padding: clamp(3rem, 6vh, 5rem) var(--px) clamp(6rem, 15vh, 8rem); /* 下部に十分な余白を取りボタンとの干渉を防止 */
+      display: flex; 
+      flex-direction: column; /* 縦並びにして中央揃え */
+      justify-content: center; 
+      align-items: center; 
+      gap: 1.5rem; 
+      border-top: 0.5px solid var(--border); 
+      background: var(--bg); 
+      text-align: center;
+    }
+    .footer-logo { 
+      font-family: var(--font-ja); 
+      font-size: clamp(0.85rem, 2vw, 1rem); 
+      font-weight: 300; 
+      color: var(--accent); /* よりスタイリッシュに目立たせる */
+      letter-spacing: 0.15em; 
+    }
+    .footer-copy { 
+      font-family: var(--font-en); 
+      font-size: clamp(0.55rem, 1.3vw, 0.65rem); 
+      letter-spacing: 0.25em; 
+      color: var(--muted); 
+    }
 
     /* ============================================================
        BACK TO TOP BUTTON
@@ -431,7 +444,7 @@
       background: transparent;
       border: 1px solid var(--accent);
       color: var(--accent);
-      z-index: 999;
+      z-index: 998;
       display: flex; align-items: center; justify-content: center;
       opacity: 0; visibility: hidden;
       transform: translateY(30px) scale(0.8);
@@ -461,6 +474,90 @@
     .btt-text { font-family: var(--font-en); font-size: 9px; font-weight: 600; letter-spacing: 0.1em; }
     .ripple { position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.6); transform: scale(0); animation: ripple-anim 0.6s linear; pointer-events: none; z-index: 2; }
     @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
+
+    /* ============================================================
+       FLOATING TIKTOK BUTTON (斬新なデザイン)
+    =========================================================== */
+    .floating-tiktok {
+      position: fixed;
+      bottom: clamp(90px, 11vh, 115px); /* BTTボタンの直上に配置 */
+      right: clamp(20px, 4vw, 40px);
+      width: 60px;
+      height: 60px;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(233, 229, 223, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      z-index: 998;
+      text-decoration: none;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      cursor: none;
+      
+      /* 初期状態は見えない */
+      opacity: 0; visibility: hidden; transform: translateY(30px);
+      transition: width 0.5s cubic-bezier(0.19, 1, 0.22, 1),
+                  background 0.5s ease, border-color 0.5s ease,
+                  opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .floating-tiktok.visible {
+      opacity: 1; visibility: visible; transform: translateY(0);
+    }
+    
+    /* マウスホバーでグラスの薬莢のように伸びる */
+    .floating-tiktok:hover {
+      width: 250px;
+      background: rgba(196, 168, 130, 0.1);
+      border-color: var(--accent);
+      box-shadow: 0 12px 35px rgba(196, 168, 130, 0.2);
+    }
+    
+    .tiktok-icon-wrap {
+      width: 60px; height: 60px; flex-shrink: 0;
+      display: flex; justify-content: center; align-items: center;
+      position: relative;
+    }
+    .tiktok-icon-wrap svg {
+      width: 20px; height: 20px; fill: var(--fg);
+      transition: fill 0.3s ease, transform 0.5s var(--ease);
+    }
+    .floating-tiktok:hover .tiktok-icon-wrap svg {
+      fill: var(--accent);
+      transform: scale(1.1);
+    }
+    
+    /* 注意を惹きつけるレーダーのようなパルスリング */
+    .tiktok-pulse {
+      position: absolute;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(196, 168, 130, 0.6);
+      animation: pulse-ring 3s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+      z-index: -1;
+    }
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(196, 168, 130, 0.6); }
+      70% { box-shadow: 0 0 0 20px rgba(196, 168, 130, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(196, 168, 130, 0); }
+    }
+    .floating-tiktok:hover .tiktok-pulse {
+      animation: none; /* ホバー時はパルスを止める */
+    }
+    
+    .tiktok-text {
+      font-family: var(--font-ja); font-size: 0.75rem; letter-spacing: 0.1em; color: var(--fg);
+      white-space: nowrap; padding-right: 25px;
+      opacity: 0; transform: translateX(-15px);
+      transition: opacity 0.4s ease, transform 0.4s var(--ease);
+    }
+    .floating-tiktok:hover .tiktok-text {
+      opacity: 1; transform: translateX(0);
+      transition-delay: 0.1s; /* 伸び始めてから文字が現れる */
+    }
 
     /* ============================================================
        LIGHTBOX MODAL
@@ -493,42 +590,39 @@
       .hero-title-huge { font-size: clamp(4rem, 18vw, 6rem); }
       .coverflow-item { width: clamp(180px, 60vw, 260px); }
       
-      /* Timeline スマホ用 1カラム最適化 */
       .timeline-section { padding: clamp(4rem, 8vh, 6rem) var(--px); }
       .timeline-line { left: 20px; transform: none; }
       .timeline-line-progress { left: 0; width: 100%; }
       .timeline-year { text-align: left; padding-left: 45px; margin: 3rem 0 2rem; }
-      
       .timeline-item { flex-direction: column !important; margin-bottom: 5rem; }
       
       .timeline-content-img,
       .timeline-content-txt {
-        width: 100%;
-        padding-left: 45px; /* ラインの横にスペースを確保 */
+        width: 100%; padding-left: 45px;
       }
       .timeline-content-txt {
-        background: transparent; /* スマホではカードを解除してシンプルに */
-        border: none;
-        backdrop-filter: none;
-        padding-top: 1.5rem;
-        padding-right: 0;
-        padding-bottom: 0;
+        background: transparent; border: none; backdrop-filter: none;
+        padding-top: 1.5rem; padding-right: 0; padding-bottom: 0;
       }
-      .timeline-item:hover .timeline-content-txt {
-        transform: translateY(0);
-        box-shadow: none;
-      }
-      
-      .timeline-node {
-        left: 20px;
-        top: 25%; /* 画像の少し下にマーカーを配置 */
-        transform: translate(-50%, -50%);
-      }
-      .timeline-item:hover .timeline-node {
-        transform: translate(-50%, -50%) scale(1.4);
-      }
+      .timeline-item:hover .timeline-content-txt { transform: translateY(0); box-shadow: none; }
+      .timeline-node { left: 20px; top: 25%; transform: translate(-50%, -50%); }
+      .timeline-item:hover .timeline-node { transform: translate(-50%, -50%) scale(1.4); }
       
       .page-nav { display: none; }
+
+      /* スマホでのフローティングTikTokボタン最適化 */
+      .floating-tiktok {
+        width: 50px; height: 50px;
+        bottom: clamp(90px, 12vh, 100px);
+      }
+      .tiktok-icon-wrap { width: 50px; height: 50px; }
+      .tiktok-icon-wrap svg { width: 16px; height: 16px; }
+      /* スマホではタップの誤作動を防ぐため、展開させずにアイコンとしての視認性を保つ */
+      .floating-tiktok:hover {
+        width: 50px; 
+        background: rgba(196, 168, 130, 0.2);
+      }
+      .floating-tiktok:hover .tiktok-text { display: none; }
     }
   </style>
 </head>
@@ -577,13 +671,6 @@
         <div class="hero-scroll-line"></div>
         <span class="hero-scroll-label">Scroll</span>
       </div>
-
-      <a href="https://www.tiktok.com/@2dash01" target="_blank" rel="noopener noreferrer" class="hero-tiktok-pill" id="heroTiktok">
-        <svg viewBox="0 0 448 512" aria-hidden="true">
-          <path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17h0A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/>
-        </svg>
-        <span>日々のデジタルドローイング</span>
-      </a>
     </section>
 
     <section class="concept-section" id="concept">
@@ -863,6 +950,16 @@
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
+  <a href="https://www.tiktok.com/@2dash01" target="_blank" rel="noopener noreferrer" class="floating-tiktok" id="floatingTiktok" aria-label="TikTok 日々のデジタルドローイング">
+    <div class="tiktok-pulse"></div>
+    <div class="tiktok-icon-wrap">
+      <svg viewBox="0 0 448 512" aria-hidden="true">
+        <path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17h0A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/>
+      </svg>
+    </div>
+    <span class="tiktok-text">日々のデジタルドローイング</span>
+  </a>
+
   <button class="btt-btn" id="bttBtn" aria-label="トップへ戻る">
     <div class="btt-content">
       <svg class="btt-icon" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
@@ -915,7 +1012,6 @@
       setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'), 400);
       setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 800);
       setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1200);
-      setTimeout(() => document.getElementById('heroTiktok')?.classList.add('revealed'), 1500);
       window.dispatchEvent(new Event('scroll'));
     });
 
@@ -924,7 +1020,7 @@
     let cfItems = [];
     let cfIndex = 0;
     let autoplayTimer;
-    const AUTOPLAY_INTERVAL = 3000; // 自動回転の間隔（ミリ秒）
+    const AUTOPLAY_INTERVAL = 3000;
 
     if (cfContainer) {
       const itemsArray = Array.from(cfContainer.querySelectorAll('.coverflow-item'));
@@ -939,7 +1035,6 @@
     function renderCoverflow() {
       const len = cfItems.length;
       cfItems.forEach((item, i) => {
-        // ループを考慮した差分計算
         let diff = i - cfIndex;
         if (diff > len / 2) diff -= len;
         if (diff < -len / 2) diff += len;
@@ -959,7 +1054,6 @@
           const ry = -sign * 45;
           
           item.style.transform = `translateX(${tx}%) translateZ(${tz}px) rotateY(${ry}deg)`;
-          // 表示範囲外（3つ以上離れている）は透明にしてループの端を隠す
           item.style.opacity = absDiff > 3 ? 0 : Math.max(1 - absDiff * 0.4, 0);
           item.style.filter = "grayscale(80%) brightness(0.6)";
           item.style.zIndex = 20 - absDiff;
@@ -981,14 +1075,12 @@
       if (autoplayTimer) clearInterval(autoplayTimer);
     }
 
-    // ホバーやクリック時の挙動制御
     cfItems.forEach((item, i) => {
       item.addEventListener('click', () => {
         if (!item.classList.contains('is-active')) {
-          // クリックされたアイテムが中央に来るようにindexを更新（元のように追従）
           cfIndex = i;
           renderCoverflow();
-          startAutoplay(); // タイマーをリセット
+          startAutoplay(); 
         } else {
           openModal(item.getAttribute('data-img-src'), item.getAttribute('data-title'), item.getAttribute('data-spec'));
         }
@@ -1000,17 +1092,15 @@
     let touchStartY = null;
 
     if (cfContainer) {
-      // PCでのホバー時に自動再生停止
       cfContainer.addEventListener('mouseenter', stopAutoplay);
       cfContainer.addEventListener('mouseleave', startAutoplay);
 
       cfContainer.addEventListener('touchstart', e => { 
         touchStartX = e.touches[0].clientX; 
         touchStartY = e.touches[0].clientY; 
-        stopAutoplay(); // タッチ中は自動再生停止
+        stopAutoplay();
       }, {passive: true});
       
-      // 横方向のスワイプ時に縦スクロールを完全にブロックする
       cfContainer.addEventListener('touchmove', e => {
         if (!touchStartX || !touchStartY) return;
         const moveX = e.touches[0].clientX;
@@ -1018,33 +1108,30 @@
         const diffX = touchStartX - moveX;
         const diffY = touchStartY - moveY;
 
-        // 横移動（diffX）が縦移動（diffY）より大きい場合のみ、デフォルトスクロールを防止
         if (Math.abs(diffX) > Math.abs(diffY)) {
           e.preventDefault();
         }
-      }, {passive: false}); // preventDefaultを使用するためpassive:false
+      }, {passive: false});
 
       cfContainer.addEventListener('touchend', e => {
         if (!touchStartX) return;
         const touchEndX = e.changedTouches[0].clientX;
         const diffX = touchStartX - touchEndX;
 
-        // フリック判定（閾値を適切に設定）
         if (Math.abs(diffX) > 40) {
           if (diffX > 0) {
-            cfIndex = (cfIndex + 1) % cfItems.length; // 左フリック（次へ）
+            cfIndex = (cfIndex + 1) % cfItems.length; 
           } else {
-            cfIndex = (cfIndex - 1 + cfItems.length) % cfItems.length; // 右フリック（前へ）
+            cfIndex = (cfIndex - 1 + cfItems.length) % cfItems.length; 
           }
           renderCoverflow();
         }
         touchStartX = null;
         touchStartY = null;
-        startAutoplay(); // タッチ終了後に自動再生再開
+        startAutoplay();
       }, {passive: true});
     }
     
-    // 初期化実行
     renderCoverflow();
     startAutoplay();
 
@@ -1052,6 +1139,7 @@
     const topNav = document.getElementById('top-nav');
     const pageNav = document.getElementById('pageNav');
     const bttBtn = document.getElementById('bttBtn');
+    const floatingTiktok = document.getElementById('floatingTiktok');
     const timelineContainer = document.getElementById('timelineContainer');
     const timelineProgress = document.getElementById('timelineProgress');
 
@@ -1063,7 +1151,10 @@
       else topNav.classList.remove('scrolled');
 
       if (pageNav) pageNav.classList.toggle('visible', scrollY > winHeight * 0.6);
-      if (bttBtn) bttBtn.classList.toggle('visible', scrollY > winHeight);
+      
+      /* スクロールに応じてBTTボタンとTikTokボタンを表示 */
+      if (floatingTiktok) floatingTiktok.classList.toggle('visible', scrollY > winHeight * 0.3);
+      if (bttBtn) bttBtn.classList.toggle('visible', scrollY > winHeight * 0.6);
 
       if (timelineContainer && timelineProgress) {
         const rect = timelineContainer.getBoundingClientRect();
