@@ -115,7 +115,7 @@
     .nav-hamburger.is-active span:nth-child(3) { top: 9px; transform: rotate(-45deg); }
 
     /* ============================================================
-        ROOM INDEX (右サイドナビゲーション)
+        ROOM INDEX
     =========================================================== */
     .cinematic-index {
       position: fixed; right: clamp(25px, 4vw, 50px); top: 50%; transform: translateY(-50%);
@@ -126,24 +126,20 @@
       display: flex; align-items: center; justify-content: flex-end; gap: 20px; 
       height: 30px; color: var(--muted); font-family: var(--font-en); position: relative; 
     }
-    
     .index-num { 
       font-size: 0.75rem; letter-spacing: 0.1em; font-weight: 300;
       transition: opacity 0.3s var(--ease-fluid), transform 0.3s var(--ease-fluid); 
     }
     .index-line { width: 30px; height: 1px; background: var(--border); transition: all 0.4s var(--ease-fluid); transform-origin: right; }
-    
     .index-label {
       font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent);
       position: absolute; right: 0; opacity: 0; transform: translateX(12px);
       transition: opacity 0.4s var(--ease-fluid), transform 0.4s var(--ease-fluid);
       pointer-events: none; white-space: nowrap; font-weight: 400;
     }
-    
     .index-link:hover .index-num { opacity: 0; transform: translateX(-12px); }
     .index-link:hover .index-line { opacity: 0; transform: scaleX(0); }
     .index-link:hover .index-label { opacity: 1; transform: translateX(0); }
-    
     .index-item.is-active .index-link { color: var(--accent); }
     .index-item.is-active .index-link:not(:hover) .index-line { width: 55px; height: 2px; background: var(--accent); }
 
@@ -166,21 +162,19 @@
     .pagetop-btn:hover .pagetop-stroke { background-position: top; }
 
     /* ============================================================
-        GLOBAL TEXTURE & PRELOADER
+        GLOBAL TEXTURE & PRELOADER (フリーズ完全防止仕様)
     =========================================================== */
     .global-texture {
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
       background: url('images/【F100横】林.jpg') center/cover no-repeat;
       opacity: 0.03; filter: grayscale(100%) contrast(1.4);
     }
-    
     .preloader {
       position: fixed; inset: 0; z-index: 100000; background: #010401;
       display: flex; align-items: center; justify-content: center;
-      transition: opacity 1.2s var(--ease-slow), visibility 1.2s;
+      transition: opacity 1s var(--ease-slow), visibility 1s;
     }
     .preloader.is-hidden { opacity: 0; visibility: hidden; }
-    
     .forest-mist-loader {
       width: 120px; height: 120px; border-radius: 50%;
       background: radial-gradient(circle, rgba(196,168,130,0.15) 0%, transparent 70%);
@@ -192,36 +186,57 @@
     }
 
     /* ============================================================
-        HERO
+        HERO (アニメーション連動型)
     =========================================================== */
     .hero {
       position: relative; height: 100svh; min-height: 600px;
       display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10;
       overflow: hidden;
-      background: radial-gradient(circle at center, #050d06 0%, var(--bg) 75%);
+      background: #000;
     }
     
+    .hero::before {
+      content: ""; position: absolute; inset: 0; z-index: 0;
+      background-image: url('images/【S100】明るい洞窟(2)20250812.jpg');
+      background-size: cover; background-position: center; background-attachment: fixed;
+      opacity: 0.78; filter: brightness(0.85) contrast(1.15) saturate(1.05); 
+      pointer-events: none;
+    }
+    @media (max-width: 768px) {
+      .hero::before { background-attachment: scroll; }
+    }
+    .hero::after {
+      content: ""; position: absolute; inset: 0; z-index: 1;
+      background: radial-gradient(circle at center, transparent 20%, rgba(2,3,2,0.4) 70%, rgba(2,3,2,0.9) 100%);
+      pointer-events: none;
+    }
+
+    /* 完全に初期化された状態。is-loadedクラスが付与されてからアニメーションが発火する */
     .master-title {
+      position: relative; z-index: 2;
       font-family: var(--font-ja); font-size: clamp(5.5rem, 16vw, 15rem); font-weight: 200;
-      letter-spacing: 0.05em; color: var(--fg); text-align: center; line-height: 1.1;
-      opacity: 0; transform: scale(1.05) translateY(10px);
-      animation: forestOrganicReveal 3s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
-      will-change: transform, opacity, letter-spacing, filter;
-      text-shadow: 0 0 30px rgba(196,168,130,0.1);
+      letter-spacing: -0.02em; color: var(--fg); text-align: center; line-height: 1.1;
+      opacity: 0; transform: scale(1.05) translateY(10px); filter: blur(20px);
+      text-shadow: 0 4px 32px rgba(0,0,0,0.5), 0 0 20px rgba(0,0,0,0.4);
     }
-    
+    .is-loaded .master-title {
+      animation: forestOrganicReveal 3s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+    }
     @keyframes forestOrganicReveal {
       0% { opacity: 0; transform: scale(1.05) translateY(10px); letter-spacing: -0.02em; filter: blur(20px); }
       50% { opacity: 0.6; filter: blur(6px); }
       100% { opacity: 1; transform: scale(1) translateY(0); letter-spacing: 0.32em; filter: blur(0px); }
     }
-
+    
     .hero-subtitle {
-      position: absolute; bottom: 22vh;
+      position: absolute; bottom: 22vh; z-index: 2;
       font-family: var(--font-en); font-size: clamp(0.9rem, 2.5vw, 1.2rem);
       letter-spacing: 0.8em; color: var(--accent); text-transform: uppercase;
       opacity: 0; transform: translateY(10px); filter: blur(5px);
-      animation: subtitleOrganicReveal 2.2s cubic-bezier(0.16, 1, 0.3, 1) 1.6s forwards;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+    .is-loaded .hero-subtitle {
+      animation: subtitleOrganicReveal 2.2s cubic-bezier(0.16, 1, 0.3, 1) 1.5s forwards;
     }
     @keyframes subtitleOrganicReveal {
       0% { opacity: 0; transform: translateY(10px); filter: blur(5px); }
@@ -235,14 +250,12 @@
       position: relative; z-index: 10; padding: clamp(8rem, 18vh, 14rem) var(--px);
       max-width: 1200px; margin: 0 auto;
     }
-    
     .concept-line {
       font-size: clamp(1.15rem, 3.2vw, 2.1rem); line-height: 1.9; font-weight: 300;
       color: var(--fg); letter-spacing: 0.15em; text-align: center;
       display: block; overflow: hidden; margin-bottom: 0.4em;
     }
     .concept-line:last-child { margin-bottom: clamp(4.5rem, 9vh, 6rem); } 
-    
     .concept-inner-text {
       display: block; transform: translateY(115%) rotateZ(3deg); opacity: 0; filter: blur(14px);
       transform-origin: top left;
@@ -251,7 +264,6 @@
     .concept-line .highlight { color: var(--accent); font-weight: 400; }
     
     .concept-body { display: grid; grid-template-columns: 1fr; gap: 3.5rem; max-width: 820px; margin: 0 auto; }
-    
     .concept-para { 
       font-size: clamp(0.95rem, 1.4vw, 1.05rem); line-height: 2.6; color: var(--fg-dim); 
       text-align: justify; word-break: auto-phrase;
@@ -267,14 +279,13 @@
     .concept.in-view .concept-para:nth-child(2) { opacity: 1; transform: translateY(0); filter: blur(0); transition-delay: 1.3s; }
 
     /* ============================================================
-        WORK CHRONOLOGY (絶対比例・ノントリミング・自動回転維持)
+        WORK CHRONOLOGY
     =========================================================== */
     .chronology-section {
       position: relative; z-index: 10; background: var(--bg-cave);
       border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
       padding: 6rem 0 5rem; overflow: hidden;
     }
-    
     .chronology-header {
       padding: 0 var(--px) 2rem; max-width: 1600px; margin: 0 auto;
       display: flex; justify-content: space-between; align-items: flex-end;
@@ -300,41 +311,38 @@
       align-items: flex-start; /* 上辺完全整列 */
     }
     
-    /* 【重要修正】
-      枠の横幅を固定せず（widthを外す）、
-      子要素である「img」の幅（width: auto）に追従させることで、
-      作品比率を1ピクセルも崩さず、黒背景も発生させない完璧な表示を実現 
-    */
     .artwork-node {
       position: relative; display: flex; flex-direction: column;
       align-items: flex-start; flex-shrink: 0;
-      width: max-content; /* 画像の幅に合わせて自動拡張 */
+      width: max-content;
       user-select: none; -webkit-user-select: none;
     }
     
     .art-frame {
-      position: relative; 
-      width: max-content; /* 内包する画像に完全に密着 */
+      position: relative; width: max-content;
       box-shadow: 0 35px 75px rgba(0,0,0,0.9);
-      overflow: hidden; background: transparent;
-      border: 1px solid var(--border);
-      cursor: pointer;
+      overflow: hidden; background: transparent; 
+      border: 1px solid var(--border); cursor: pointer;
       user-select: none; -webkit-user-select: none;
     }
+    .art-frame::after {
+      content: 'VIEW'; position: absolute; inset: 0; background: rgba(2,4,2,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center; font-family: var(--font-en); font-size: 1.1rem; letter-spacing: 0.4em;
+      color: #fff; opacity: 0; transition: opacity 0.4s var(--ease-fluid);
+    }
+    .art-frame:hover::after { opacity: 1; }
     
-    /* 画像は高さを絶対基準（--size-scale比例）とし、
-      横幅はブラウザに完全自動計算（auto）させる。これが究極のノントリミング解。
-    */
+    /* ノントリミング・絶対比率維持 */
     .art-frame img {
-      height: calc(clamp(220px, 48vh, 480px) * var(--size-scale, 1)) !important;
+      height: calc(clamp(300px, 55vh, 600px) * var(--size-scale, 1)) !important;
       width: auto !important; 
+      object-fit: contain !important;
       display: block; transition: transform 1.5s var(--ease-slow);
-      -webkit-user-drag: none; pointer-events: auto; /* ドラッグ選択はさせず、回転スワイプは通す */
+      -webkit-user-drag: none; pointer-events: auto;
     }
     .art-frame:hover img { transform: scale(1.03); }
     
-    /* キャプションが画像幅より長くなるのを防ぐため、最小幅を担保 */
-    .art-caption { margin-top: 24px; min-width: 200px; display: flex; flex-direction: column; align-items: flex-start; }
+    .art-caption { margin-top: 24px; min-width: 200px; width: 100%; display: flex; flex-direction: column; align-items: flex-start; }
     .art-node-title { font-size: 1.1rem; font-weight: 300; letter-spacing: 0.08em; color: var(--fg); }
     .art-node-meta { font-family: var(--font-en); font-size: 0.75rem; letter-spacing: 0.05em; color: var(--accent); margin-top: 4px; line-height: 1.4; }
     
@@ -344,18 +352,16 @@
     .art-node-year { font-family: var(--font-en); font-size: 3.5rem; font-weight: 200; line-height: 1; color: rgba(233, 229, 223, 0.12); transition: color 0.4s; }
     .artwork-node:hover .art-node-year { color: var(--accent); }
 
-    /* 中央ストロークナビゲーション（長押し加速対応） */
+    /* 中央配置・長押し加速対応ストロークナビゲーション */
     .chrono-controls-centered {
       display: flex; align-items: center; justify-content: center;
       gap: 40px; width: 100%; position: relative; margin-top: 2.5rem; padding: 0 var(--px);
       user-select: none; -webkit-user-select: none;
     }
-    
     .chrono-nav-btn {
       width: 60px; height: 40px; display: flex; align-items: center; justify-content: center;
       position: relative; transition: transform 0.3s var(--ease-fluid); pointer-events: auto;
     }
-    
     .chrono-controls-centered::before {
       content: ''; position: absolute; left: 50%; top: 50%; width: 120px; height: 1px;
       background: linear-gradient(90deg, transparent, rgba(196,168,130,0.3) 20%, rgba(196,168,130,0.3) 80%, transparent);
@@ -370,20 +376,18 @@
     }
     .chrono-nav-btn.prev .btn-stroke-arrow { transform: rotate(-45deg); left: 20px; }
     .chrono-nav-btn.next .btn-stroke-arrow { transform: rotate(135deg); right: 20px; }
-    
     .chrono-nav-btn:hover { transform: scale(1.1); }
     .chrono-nav-btn.prev:hover .btn-stroke-arrow { border-color: #fff; transform: rotate(-45deg) translateX(-4px); }
     .chrono-nav-btn.next:hover .btn-stroke-arrow { border-color: #fff; transform: rotate(135deg) translateX(-4px); }
     .chrono-nav-btn:active .btn-stroke-arrow { border-color: var(--accent); } 
 
     /* ============================================================
-        UNPRECEDENTED CATALOG TRIGGER BUTTON 
+        UNPRECEDENTED CATALOG TRIGGER BUTTON
     =========================================================== */
     .unprecedented-button-container {
       display: flex; justify-content: center; align-items: center;
       padding: clamp(5rem, 10vh, 8rem) var(--px); background: var(--bg); position: relative; z-index: 10;
     }
-    
     .organic-btn {
       position: relative; padding: 2rem 5rem; color: var(--accent); font-family: var(--font-ja);
       font-size: 1rem; letter-spacing: 0.25em; font-weight: 300;
@@ -392,7 +396,6 @@
     }
     .organic-btn .btn-text { position: relative; z-index: 2; display: inline-block; }
     .organic-btn .btn-arrow { position: relative; z-index: 2; display: inline-block; transition: transform 0.5s var(--ease-slow); }
-    
     .organic-btn .blob-bg {
       position: absolute; inset: 0; border: 1px solid var(--accent);
       border-radius: 65% 35% 60% 40% / 40% 55% 45% 60%;
@@ -407,24 +410,17 @@
       animation: morphingBlob 12s linear infinite reverse;
       transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
     }
-
     @keyframes morphingBlob {
       0% { border-radius: 65% 35% 60% 40% / 40% 55% 45% 60%; }
       50% { border-radius: 40% 60% 45% 55% / 55% 40% 60% 45%; }
       100% { border-radius: 65% 35% 60% 40% / 40% 55% 45% 60%; }
     }
-
     .organic-btn:hover { color: #ffffff; transform: scale(1.03); }
-    .organic-btn:hover .blob-bg {
-      border-radius: 0%; border-color: var(--fg);
-      background: rgba(196, 168, 130, 0.18);
-      box-shadow: 0 20px 40px rgba(196, 168, 130, 0.15);
-    }
+    .organic-btn:hover .blob-bg { border-radius: 0%; border-color: var(--fg); background: rgba(196, 168, 130, 0.18); box-shadow: 0 20px 40px rgba(196, 168, 130, 0.15); }
     .organic-btn:hover .blob-bg::before { border-radius: 0%; border-color: var(--accent); transform: scale(1.03); }
     .organic-btn:hover .btn-arrow { transform: translateY(4px); }
     .organic-btn.is-active:hover .btn-arrow { transform: translateY(-4px); }
     
-    /* 100%確実に開閉する CSS GRID アコーディオン */
     .catalog-accordion-wrapper {
       display: grid; grid-template-rows: 0fr;
       transition: grid-template-rows 0.8s cubic-bezier(0.16, 1, 0.3, 1);
@@ -444,35 +440,31 @@
     }
     
     /* ============================================================
-        作品リストグリッド側の絶対寸法スケール対比レイアウト 
+        作品リストグリッド
     =========================================================== */
     .catalog-grid {
       display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;
       gap: 5rem 3rem; max-width: 1600px; margin: 0 auto;
     }
     
-    /* 【修正】widthを固定せず、高さ基準で画像を構成させる（小品の配慮は維持） */
     .catalog-item { 
       cursor: pointer; text-align: center; display: flex; flex-direction: column; align-items: center; 
-      width: max-content; /* 画像の固有比率に従う */
+      width: max-content; 
     }
-    
     .catalog-img-wrapper {
       width: max-content; position: relative; margin-bottom: 1.5rem;
       border: 1px solid var(--border); transition: border-color 0.4s var(--ease-fluid), transform 0.4s var(--ease-fluid);
-      background: transparent;
+      background: transparent; max-width: 100%;
     }
     .catalog-item-img { 
-      /* ここでもタイムライン同様に高さで制御。最大260px基準にスケールを乗算 */
-      height: calc(260px * var(--size-scale, 1)); 
-      width: auto !important; display: block; 
+      height: calc(clamp(200px, 40vh, 400px) * var(--size-scale, 1)) !important; 
+      width: auto !important; max-width: 100% !important; display: block; 
+      object-fit: contain !important;
     }
-    
     .catalog-item:hover .catalog-img-wrapper { 
       border-color: var(--accent); transform: translateY(-6px);
       box-shadow: 0 15px 35px rgba(196,168,130,0.12);
     }
-    
     .catalog-item-title { font-size: 0.95rem; color: var(--fg); font-weight: 300; letter-spacing: 0.1em; margin-bottom: 0.4rem; text-align: center; }
     .catalog-item-meta { font-family: var(--font-en); font-size: 0.65rem; color: var(--accent); letter-spacing: 0.05em; text-align: center; }
 
@@ -526,7 +518,7 @@
     .modal-desc { margin-top: 12px; font-size: 0.88rem; color: var(--fg-dim); text-align: justify; line-height: 1.9; }
 
     /* ============================================================
-        RESPONSIVE DESIGN 
+        RESPONSIVE DESIGN (Smartphone & Tablet Architecture)
     =========================================================== */
     @media (max-width: 900px) {
       .nav-links {
@@ -545,13 +537,13 @@
       nav#top-nav { padding: 1rem 1.25rem; }
       .chronology-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
       
-      /* 【修正】スマホ時のタイムライン高さをサイズ比例スケールに連動（絶対に潰れない） */
-      .art-frame img { height: calc(clamp(160px, 32vh, 320px) * var(--mobile-scale, var(--size-scale))) !important; }
+      /* スマホ時のタイムライン高さをサイズ比例スケールに連動（絶対に潰れない） */
+      .art-frame img { height: calc(clamp(200px, 45vh, 400px) * var(--size-scale, 1)) !important; }
       .chronology-track { gap: 3rem; }
       
-      /* カタログのスマホ最適化（スマホ用のスケール変数で高さを補正） */
+      /* カタログのスマホ最適化 */
       .catalog-grid { gap: 3.5rem 1.5rem; }
-      .catalog-item-img { height: calc(160px * var(--mobile-scale, var(--size-scale))); }
+      .catalog-item-img { height: calc(clamp(150px, 30vh, 250px) * var(--size-scale, 1)) !important; }
     }
   </style>
 </head>
@@ -566,7 +558,6 @@
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="#hero" class="js-nav-link">Top</a></li>
       <li><a href="#statement" class="js-nav-link">Statement</a></li>
       <li><a href="#chronology" class="js-nav-link">Chronology</a></li>
       <li><a href="#contact" class="js-nav-link">Contact</a></li>
@@ -578,24 +569,19 @@
   </nav>
 
   <ul class="cinematic-index" id="cinematicIndex">
-    <li class="index-item is-active" data-target="hero">
-      <a href="#hero" class="index-link">
-        <span class="index-label">Top</span><span class="index-num">01</span><div class="index-line"></div>
-      </a>
-    </li>
-    <li class="index-item" data-target="statement">
+    <li class="index-item is-active" data-target="statement">
       <a href="#statement" class="index-link">
-        <span class="index-label">Statement</span><span class="index-num">02</span><div class="index-line"></div>
+        <span class="index-label">Statement</span><span class="index-num">01</span><div class="index-line"></div>
       </a>
     </li>
     <li class="index-item" data-target="chronology">
       <a href="#chronology" class="index-link">
-        <span class="index-label">Chronology</span><span class="index-num">03</span><div class="index-line"></div>
+        <span class="index-label">Chronology</span><span class="index-num">02</span><div class="index-line"></div>
       </a>
     </li>
     <li class="index-item" data-target="contact">
       <a href="#contact" class="index-link">
-        <span class="index-label">Contact</span><span class="index-num">04</span><div class="index-line"></div>
+        <span class="index-label">Contact</span><span class="index-num">03</span><div class="index-line"></div>
       </a>
     </li>
   </ul>
@@ -655,7 +641,7 @@
       <div class="chronology-scroll-container" id="chronoContainer">
         <div class="chronology-track" id="chronoTrack">
           
-          <article class="artwork-node" style="--size-scale: 1.0; --mobile-scale: 1.0;" data-jp="林(3)" data-meta="2026 / 162.1 × 209.1 cm / Oil on canvas" data-desc="大型の縦型カンヴァスを連結させた圧倒的なスケール感を持つ大作。画面の端から端までを一気に貫く長いストローク。">
+          <article class="artwork-node" style="--size-scale: 1.0;" data-jp="林(3)" data-meta="2026 / 162.1 × 209.1 cm / Oil on canvas" data-desc="大型の縦型カンヴァスを連結させた圧倒的なスケール感を持つ大作。画面の端から端までを一気に貫く長いストローク。">
             <div class="art-frame"><img src="images/【M+P100縦】林(3)20251128.jpg" alt="林(3)" loading="lazy"></div>
             <div class="art-caption">
               <h3 class="art-node-title">林(3)</h3>
@@ -665,7 +651,7 @@
             </div>
           </article>
 
-          <article class="artwork-node" style="--size-scale: 0.82; --mobile-scale: 0.95;" data-jp="森" data-meta="2025 / 130.3 × 162.1 cm / Oil on canvas" data-desc="三水の森が内包する複雑な生態系と地脈のエネルギーが、幾重にも重なる鋭利な筆致によってカンヴァスに定着した作品。">
+          <article class="artwork-node" style="--size-scale: 0.82;" data-jp="森" data-meta="2025 / 130.3 × 162.1 cm / Oil on canvas" data-desc="三水の森が内包する複雑な生態系と地脈のエネルギーが、幾重にも重なる鋭利な筆致によってカンヴァスに定着した作品。">
             <div class="art-frame"><img src="images/【F100横】森20251217.jpg" alt="森" loading="lazy"></div>
             <div class="art-caption">
               <h3 class="art-node-title">森</h3>
@@ -675,7 +661,7 @@
             </div>
           </article>
 
-          <article class="artwork-node" style="--size-scale: 0.45; --mobile-scale: 0.65;" data-jp="森（川久保沢）" data-meta="2022 / 31.8 × 41.0 cm / Oil on canvas" data-desc="身近な自然から直感的に色と形を拾い上げた初期の小品。ストロークの勢いがキャンバスに生々しく残っています。">
+          <article class="artwork-node" style="--size-scale: 0.25;" data-jp="森（川久保沢）" data-meta="2022 / 31.8 × 41.0 cm / Oil on canvas" data-desc="身近な自然から直感的に色と形を拾い上げた初期の小品。ストロークの勢いがキャンバスに生々しく残っています。">
             <div class="art-frame"><img src="images/【F6横】森（川久保沢）.jpg" alt="森（川久保沢）" loading="lazy"></div>
             <div class="art-caption">
               <h3 class="art-node-title">森（川久保沢）</h3>
@@ -685,17 +671,17 @@
             </div>
           </article>
 
-          <article class="artwork-node" style="--size-scale: 0.48; --mobile-scale: 0.7;" data-jp="森" data-meta="2022 / 45.5 × 38.0 cm / Oil on canvas" data-desc="縦長の構図の中に木々の垂直性を強調し、密度の高い空間を描き出しています。">
-            <div class="art-frame"><img src="images/【F8縦】森.jpg" alt="森 F8" loading="lazy"></div>
+          <article class="artwork-node" style="--size-scale: 0.3;" data-jp="森" data-meta="2022 / 45.5 × 38.0 cm / Oil on canvas" data-desc="縦長の構図の中に木々の垂直性を強調し、密度の高い空間を描き出しています。">
+            <div class="art-frame"><img src="images/【F8縦】森.jpg" alt="森" loading="lazy"></div>
             <div class="art-caption">
-              <h3 class="art-node-title">森 (F8)</h3>
+              <h3 class="art-node-title">森</h3>
               <p class="art-node-meta">45.5 × 38.0 cm (F8)<br>Oil on canvas</p>
               <div class="timeline-axis"></div>
               <span class="art-node-year">2022</span>
             </div>
           </article>
 
-          <article class="artwork-node" style="--size-scale: 0.88; --mobile-scale: 0.95;" data-jp="無題" data-meta="2022 / 162.1 × 130.3 cm / Oil on canvas" data-desc="柔らかな光を帯びた有機的な塊が、闇の奥底からうごめくように立ち上がる作品。">
+          <article class="artwork-node" style="--size-scale: 1.0;" data-jp="無題" data-meta="2022 / 162.1 × 130.3 cm / Oil on canvas" data-desc="柔らかな光を帯びた有機的な塊が、闇の奥底からうごめくように立ち上がる作品。">
             <div class="art-frame"><img src="images/IMG_8731.JPG" alt="無題" loading="lazy"></div>
             <div class="art-caption">
               <h3 class="art-node-title">無題</h3>
@@ -705,7 +691,7 @@
             </div>
           </article>
 
-          <article class="artwork-node" style="--size-scale: 0.88; --mobile-scale: 0.95;" data-jp="山の中" data-meta="2022 / 162.1 × 130.3 cm / Oil on canvas" data-desc="深い森の奥で交錯する光と影の空間を一度解体し、再構築したかのようなアプローチ。">
+          <article class="artwork-node" style="--size-scale: 1.0;" data-jp="山の中" data-meta="2022 / 162.1 × 130.3 cm / Oil on canvas" data-desc="深い森の奥で交錯する光と影の空間を一度解体し、再構築したかのようなアプローチ。">
             <div class="art-frame"><img src="images/【F100縦】山の中.jpg" alt="山の中" loading="lazy"></div>
             <div class="art-caption">
               <h3 class="art-node-title">山の中</h3>
@@ -715,7 +701,7 @@
             </div>
           </article>
 
-          <article class="artwork-node" style="--size-scale: 0.82; --mobile-scale: 0.92;" data-jp="林(2)" data-meta="2021 / 130.3 × 162.1 cm / Oil on canvas" data-desc="森が内包する生命のエネルギーそのものを鮮烈な色彩として抽出した作品。ピンクやシアンのストローク。">
+          <article class="artwork-node" style="--size-scale: 0.8;" data-jp="林(2)" data-meta="2021 / 130.3 × 162.1 cm / Oil on canvas" data-desc="森が内包する生命のエネルギーそのものを鮮烈な色彩として抽出した作品。ピンクやシアンのストローク。">
             <div class="art-frame"><img src="images/【F100横】林(2).jpg" alt="林(2)" loading="lazy"></div>
             <div class="art-caption">
               <h3 class="art-node-title">林(2)</h3>
@@ -725,7 +711,7 @@
             </div>
           </article>
 
-          <article class="artwork-node" style="--size-scale: 0.92; --mobile-scale: 0.98;" data-jp="森（の息吹）(2)" data-meta="2021 / 162.1 × 162.1 cm / Oil on canvas" data-desc="正方形の特異な画面の中で、色彩が渦を巻くように中心へと収束していく力強いコンポジション。">
+          <article class="artwork-node" style="--size-scale: 1.0;" data-jp="森（の息吹）(2)" data-meta="2021 / 162.1 × 162.1 cm / Oil on canvas" data-desc="正方形の特異な画面の中で、色彩が渦を巻くように中心へと収束していく力強いコンポジション。">
             <div class="art-frame"><img src="images/【S100】森（の息吹）.jpg" alt="森（の息吹）(2)" loading="lazy"></div>
             <div class="art-caption">
               <h3 class="art-node-title">森（の息吹）(2)</h3>
@@ -735,7 +721,7 @@
             </div>
           </article>
           
-          <article class="artwork-node" style="--size-scale: 0.82; --mobile-scale: 0.92;" data-jp="森（の息吹）" data-meta="2021 / 130.3 × 162.1 cm / Oil on canvas" data-desc="森林を単なる自然環境としてではなく、一つの巨大な「胎内」として捉え直した作品です。">
+          <article class="artwork-node" style="--size-scale: 0.8;" data-jp="森（の息吹）" data-meta="2021 / 130.3 × 162.1 cm / Oil on canvas" data-desc="森林を単なる自然環境としてではなく、一つの巨大な「胎内」として捉え直した作品です。">
             <div class="art-frame"><img src="images/【F100横】森（の息吹）.jpg" alt="森の息吹" loading="lazy"></div>
             <div class="art-caption">
               <h3 class="art-node-title">森（の息吹）</h3>
@@ -745,7 +731,7 @@
             </div>
           </article>
 
-          <article class="artwork-node" style="--size-scale: 0.88; --mobile-scale: 0.95;" data-jp="林(2)" data-meta="2021 / 162.1 × 130.3 cm / Oil on canvas" data-desc="白く差し込む光のようなストロークが、木立の隙間を抜ける空気の冷たさと透明感を表現。">
+          <article class="artwork-node" style="--size-scale: 1.0;" data-jp="林(2)" data-meta="2021 / 162.1 × 130.3 cm / Oil on canvas" data-desc="白く差し込む光のようなストロークが、木立の隙間を抜ける空気の冷たさと透明感を表現。">
             <div class="art-frame"><img src="images/【F100縦】林.JPG" alt="林 縦" loading="lazy"></div>
             <div class="art-caption">
               <h3 class="art-node-title">林(2)</h3>
@@ -755,7 +741,7 @@
             </div>
           </article>
 
-          <article class="artwork-node" style="--size-scale: 0.82; --mobile-scale: 0.92;" data-jp="林" data-meta="2021 / 130.3 × 162.1 cm / Oil on canvas" data-desc="水平方向への広がりを意識した構図の中に、縦に貫く長いストロークによる微細な色彩の揺らぎ。">
+          <article class="artwork-node" style="--size-scale: 0.8;" data-jp="林" data-meta="2021 / 130.3 × 162.1 cm / Oil on canvas" data-desc="水平方向への広がりを意識した構図の中に、縦に貫く長いストロークによる微細な色彩の揺らぎ。">
             <div class="art-frame"><img src="images/【F100横】林.jpg" alt="林" loading="lazy"></div>
             <div class="art-caption">
               <h3 class="art-node-title">林</h3>
@@ -765,7 +751,7 @@
             </div>
           </article>
 
-          <article class="artwork-node" style="--size-scale: 0.72; --mobile-scale: 0.85;" data-jp="うねり" data-meta="2018 / 116.7 × 91.0 cm / Oil on canvas" data-desc="「森林」という主題に対する初期のアプローチ。色彩の要素を極限まで削ぎ落とし、形態の「うねり」に焦点を当てる。">
+          <article class="artwork-node" style="--size-scale: 0.55;" data-jp="うねり" data-meta="2018 / 116.7 × 91.0 cm / Oil on canvas" data-desc="「森林」という主題に対する初期のアプローチ。色彩の要素を極限まで削ぎ落とし、形態の「うねり」に焦点を当てる。">
             <div class="art-frame"><img src="images/【F50縦】うねり.jpg" alt="うねり" loading="lazy"></div>
             <div class="art-caption">
               <h3 class="art-node-title">うねり</h3>
@@ -793,84 +779,84 @@
           
           <div class="catalog-grid">
             
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 1.0; --mobile-scale: 1.0;" data-jp="林(3)" data-meta="2026 / 162.1 × 209.1 cm / Oil on canvas" data-desc="大型の縦型カンヴァスを連結させた圧倒的なスケール感を持つ大作です。">
+            <div class="catalog-item js-modal-trigger" style="--size-scale: 1.0;" data-jp="林(3)" data-meta="2026 / 162.1 × 209.1 cm / Oil on canvas" data-desc="大型の縦型カンヴァスを連結させた圧倒的なスケール感を持つ大作です。">
               <div class="catalog-img-wrapper">
                 <img src="images/【M+P100縦】林(3)20251128.jpg" class="catalog-item-img" loading="lazy" alt="林(3)">
               </div>
               <h4 class="catalog-item-title">林(3)</h4><p class="catalog-item-meta">2026 / 162.1 × 209.1 cm</p>
             </div>
 
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.82; --mobile-scale: 0.95;" data-jp="森" data-meta="2025 / 130.3 × 162.1 cm / Oil on canvas" data-desc="三水の森が内包する複雑な生態系と地脈のエネルギー。">
+            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.8;" data-jp="森" data-meta="2025 / 130.3 × 162.1 cm / Oil on canvas" data-desc="三水の森が内包する複雑な生態系と地脈のエネルギー。">
               <div class="catalog-img-wrapper">
                 <img src="images/【F100横】森20251217.jpg" class="catalog-item-img" loading="lazy" alt="森">
               </div>
               <h4 class="catalog-item-title">森</h4><p class="catalog-item-meta">2025 / 130.3 × 162.1 cm</p>
             </div>
 
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.45; --mobile-scale: 0.65;" data-jp="森（川久保沢）" data-meta="2022 / 31.8 × 41.0 cm / Oil on canvas" data-desc="身近な自然から直感的に色と形を拾い上げた初期の小品。">
+            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.25;" data-jp="森（川久保沢）" data-meta="2022 / 31.8 × 41.0 cm / Oil on canvas" data-desc="身近な自然から直感的に色と形を拾い上げた初期の小品。">
               <div class="catalog-img-wrapper">
                 <img src="images/【F6横】森（川久保沢）.jpg" class="catalog-item-img" loading="lazy" alt="森（川久保沢）">
               </div>
               <h4 class="catalog-item-title">森（川久保沢）</h4><p class="catalog-item-meta">2022 / 31.8 × 41.0 cm</p>
             </div>
 
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.48; --mobile-scale: 0.7;" data-jp="森" data-meta="2022 / 45.5 × 38.0 cm / Oil on canvas" data-desc="縦長の構図の中に木々の垂直性を強調し、密度の高い空間を描き出す。">
+            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.3;" data-jp="森" data-meta="2022 / 45.5 × 38.0 cm / Oil on canvas" data-desc="縦長の構図の中に木々の垂直性を強調し、密度の高い空間を描き出す。">
               <div class="catalog-img-wrapper">
                 <img src="images/【F8縦】森.jpg" class="catalog-item-img" loading="lazy" alt="森 F8">
               </div>
-              <h4 class="catalog-item-title">森 (F8)</h4><p class="catalog-item-meta">2022 / 45.5 × 38.0 cm</p>
+              <h4 class="catalog-item-title">森</h4><p class="catalog-item-meta">2022 / 45.5 × 38.0 cm</p>
             </div>
 
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.88; --mobile-scale: 0.95;" data-jp="無題" data-meta="2022 / 162.1 × 130.3 cm / Oil on canvas" data-desc="柔らかな光を帯びた有機的な塊が、闇の奥底からうごめくように立ち上がる。">
+            <div class="catalog-item js-modal-trigger" style="--size-scale: 1.0;" data-jp="無題" data-meta="2022 / 162.1 × 130.3 cm / Oil on canvas" data-desc="柔らかな光を帯びた有機的な塊が、闇の奥底からうごめくように立ち上がる。">
               <div class="catalog-img-wrapper">
                 <img src="images/IMG_8731.JPG" class="catalog-item-img" loading="lazy" alt="無題">
               </div>
               <h4 class="catalog-item-title">無題</h4><p class="catalog-item-meta">2022 / 162.1 × 130.3 cm</p>
             </div>
 
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.88; --mobile-scale: 0.95;" data-jp="山の中" data-meta="2022 / 162.1 × 130.3 cm / Oil on canvas" data-desc="深い森の奥で交錯する光と影の空間を一度解体し、再構築したかのようなアプローチ。">
+            <div class="catalog-item js-modal-trigger" style="--size-scale: 1.0;" data-jp="山の中" data-meta="2022 / 162.1 × 130.3 cm / Oil on canvas" data-desc="深い森の奥で交錯する光と影の空間を一度解体し、再構築したかのようなアプローチ。">
               <div class="catalog-img-wrapper">
                 <img src="images/【F100縦】山の中.jpg" class="catalog-item-img" loading="lazy" alt="山の中">
               </div>
               <h4 class="catalog-item-title">山の中</h4><p class="catalog-item-meta">2022 / 162.1 × 130.3 cm</p>
             </div>
 
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.82; --mobile-scale: 0.92;" data-jp="林(2)" data-meta="2021 / 130.3 × 162.1 cm / Oil on canvas" data-desc="森が内包する生命のエネルギーそのものを鮮烈な色彩として抽出。">
+            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.8;" data-jp="林(2)" data-meta="2021 / 130.3 × 162.1 cm / Oil on canvas" data-desc="森が内包する生命のエネルギーそのものを鮮烈な色彩として抽出。">
               <div class="catalog-img-wrapper">
                 <img src="images/【F100横】林(2).jpg" class="catalog-item-img" loading="lazy" alt="林(2)">
               </div>
               <h4 class="catalog-item-title">林(2)</h4><p class="catalog-item-meta">2021 / 130.3 × 162.1 cm</p>
             </div>
 
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.92; --mobile-scale: 0.98;" data-jp="森（の息吹）(2)" data-meta="2021 / 162.1 × 162.1 cm / Oil on canvas" data-desc="正方形の特異な画面の中で、色彩が渦を巻くように中心へと収束していく。">
+            <div class="catalog-item js-modal-trigger" style="--size-scale: 1.0;" data-jp="森（の息吹）(2)" data-meta="2021 / 162.1 × 162.1 cm / Oil on canvas" data-desc="正方形の特異な画面の中で、色彩が渦を巻くように中心へと収束していく。">
               <div class="catalog-img-wrapper">
                 <img src="images/【S100】森（の息吹）.jpg" class="catalog-item-img" loading="lazy" alt="森（の息吹）(2)">
               </div>
               <h4 class="catalog-item-title">森（の息吹）(2)</h4><p class="catalog-item-meta">2021 / 162.1 × 162.1 cm</p>
             </div>
 
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.82; --mobile-scale: 0.92;" data-jp="森（の息吹）" data-meta="2021 / 130.3 × 162.1 cm / Oil on canvas" data-desc="森林を単なる自然環境としてではなく、一つの巨大な「胎内」として捉え直す。">
+            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.8;" data-jp="森（の息吹）" data-meta="2021 / 130.3 × 162.1 cm / Oil on canvas" data-desc="森林を単なる自然環境としてではなく、一つの巨大な「胎内」として捉え直す。">
               <div class="catalog-img-wrapper">
                 <img src="images/【F100横】森（の息吹）.jpg" class="catalog-item-img" loading="lazy" alt="森の息吹">
               </div>
               <h4 class="catalog-item-title">森（の息吹）</h4><p class="catalog-item-meta">2021 / 130.3 × 162.1 cm</p>
             </div>
 
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.88; --mobile-scale: 0.95;" data-jp="林(2)" data-meta="2021 / 162.1 × 130.3 cm / Oil on canvas" data-desc="白く差し込む光のようなストロークが、空気の冷たさと透明感を表現。">
+            <div class="catalog-item js-modal-trigger" style="--size-scale: 1.0;" data-jp="林(2)" data-meta="2021 / 162.1 × 130.3 cm / Oil on canvas" data-desc="白く差し込む光のようなストロークが、空気の冷たさと透明感を表現。">
               <div class="catalog-img-wrapper">
                 <img src="images/【F100縦】林.JPG" class="catalog-item-img" loading="lazy" alt="林 縦">
               </div>
               <h4 class="catalog-item-title">林(2)</h4><p class="catalog-item-meta">2021 / 162.1 × 130.3 cm</p>
             </div>
 
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.82; --mobile-scale: 0.92;" data-jp="林" data-meta="2021 / 130.3 × 162.1 cm / Oil on canvas" data-desc="水平方向への広がりを意識した構図の中に、縦に貫く長いストローク。">
+            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.8;" data-jp="林" data-meta="2021 / 130.3 × 162.1 cm / Oil on canvas" data-desc="水平方向への広がりを意識した構図の中に、縦に貫く長いストローク。">
               <div class="catalog-img-wrapper">
                 <img src="images/【F100横】林.jpg" class="catalog-item-img" loading="lazy" alt="林">
               </div>
               <h4 class="catalog-item-title">林</h4><p class="catalog-item-meta">2021 / 130.3 × 162.1 cm</p>
             </div>
 
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.72; --mobile-scale: 0.85;" data-jp="うねり" data-meta="2018 / 116.7 × 91.0 cm / Oil on canvas" data-desc="「森林」という主題に対する初期のアプローチ。モノクロームに近い階調。">
+            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.55;" data-jp="うねり" data-meta="2018 / 116.7 × 91.0 cm / Oil on canvas" data-desc="「森林」という主題に対する初期のアプローチ。モノクロームに近い階調。">
               <div class="catalog-img-wrapper">
                 <img src="images/【F50縦】うねり.jpg" class="catalog-item-img" loading="lazy" alt="うねり">
               </div>
@@ -913,7 +899,7 @@
 
   <script>
     /* ============================================================
-        DOM ELEMENTS INITIALIZATION
+        DOM ELEMENTS INITIALIZATION & PRELOADER FALLBACK
     =========================================================== */
     const topNav = document.getElementById('top-nav');
     const hamburger = document.getElementById('hamburger');
@@ -924,18 +910,28 @@
     const chronoContainer = document.getElementById('chronoContainer');
     const chronoTrack = document.getElementById('chronoTrack');
 
-    /* ============================================================
-        PRELOADER CONTROL
-    =========================================================== */
-    window.addEventListener('load', () => {
+    // 【重要バグ修正】画面が真っ暗なままフリーズするバグを完全に撲滅する強制表示システム
+    let preloaderHidden = false;
+    const hidePreloaderAndStart = () => {
+      if (preloaderHidden) return;
+      preloaderHidden = true;
       const preloader = document.getElementById('preloader');
-      setTimeout(() => {
-        preloader.classList.add('is-hidden');
-      }, 800);
+      if (preloader) preloader.classList.add('is-hidden');
+      // プレローダーが消えた瞬間にHeroアニメーションを安全に発火させる
+      document.body.classList.add('is-loaded');
+    };
+
+    // 全リソース読み込み完了時
+    window.addEventListener('load', () => {
+      setTimeout(hidePreloaderAndStart, 600);
     });
 
+    // フェイルセーフ：画像パスエラーなどでloadが発火しない場合でも、1.5秒で強制的に画面を表示する
+    setTimeout(hidePreloaderAndStart, 1500);
+
+
     /* ============================================================
-        SCROLL & ACCURATE DETECT ENGINE
+        SCROLL & ACCURATE DETECT ENGINE (現在地スクロール同期)
     =========================================================== */
     window.addEventListener('scroll', () => {
       const scrollY = window.scrollY;
@@ -947,10 +943,11 @@
       if (scrollY > windowHeight * 0.7) pagetopBtn.classList.add('is-visible');
       else pagetopBtn.classList.remove('is-visible');
 
-      let activeSectionId = 'hero';
+      // 初期検知をStatementに最適化（Top項目を削除したため）
+      let activeSectionId = 'statement';
       const detectionOffset = windowHeight / 2;
 
-      document.querySelectorAll('section[id], hero[id]').forEach(section => {
+      document.querySelectorAll('section[id]').forEach(section => {
         const sectionTop = section.offsetTop - detectionOffset;
         const sectionHeight = section.offsetHeight;
         if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
@@ -995,7 +992,7 @@
     });
 
     /* ============================================================
-        INTERSECTION OBSERVER ENGINE
+        INTERSECTION OBSERVER ENGINE (Fade In Fx)
     =========================================================== */
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -1020,6 +1017,7 @@
     let dragMoveDistance = 0; 
     let dragStartX = 0;
     let dragStartY = 0;
+    let resumeTimer;
 
     // クローニング自動生成処理
     const originalNodes = Array.from(chronoTrack.children);
@@ -1057,7 +1055,7 @@
     };
 
     const runCircularScroll = () => {
-      if (!userInteracted && window.innerWidth > 768) {
+      if (!userInteracted) {
         chronoContainer.scrollLeft += autoScrollSpeed;
         const singleSetWidth = originalNodes.reduce((acc, node) => acc + node.offsetWidth + parseFloat(window.getComputedStyle(chronoTrack).gap || 0), 0);
         if (chronoContainer.scrollLeft >= singleSetWidth * 2) {
@@ -1070,7 +1068,13 @@
 
     const stopAutoCycle = () => {
       userInteracted = true;
-      if (loopFrameId) cancelAnimationFrame(loopFrameId);
+      clearTimeout(resumeTimer);
+    };
+    const startResumeTimer = () => {
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(() => {
+        userInteracted = false;
+      }, 2500);
     };
 
     // 上下の作品範囲内でも完璧に掴んで回せるドラッグ制御
@@ -1086,8 +1090,8 @@
       dragMoveDistance = 0;
     });
 
-    chronoContainer.addEventListener('mouseleave', () => { isDown = false; });
-    chronoContainer.addEventListener('mouseup', () => { isDown = false; });
+    chronoContainer.addEventListener('mouseleave', () => { isDown = false; startResumeTimer(); });
+    chronoContainer.addEventListener('mouseup', () => { isDown = false; startResumeTimer(); });
     chronoContainer.addEventListener('mousemove', (e) => {
       if (!isDown) return;
       e.preventDefault();
@@ -1102,6 +1106,9 @@
     chronoContainer.addEventListener('touchstart', (e) => {
       stopAutoCycle();
       chronoContainer.style.scrollBehavior = 'auto';
+    }, {passive: true});
+    chronoContainer.addEventListener('touchend', () => {
+      startResumeTimer();
     }, {passive: true});
     chronoContainer.addEventListener('touchmove', checkWrapLogic, {passive: true});
 
@@ -1133,6 +1140,7 @@
           cancelAnimationFrame(holdAnimFrame);
           holdAnimFrame = null;
           setTimeout(checkWrapLogic, 50);
+          startResumeTimer();
           return true; 
         }
         return false; 
@@ -1150,6 +1158,7 @@
           chronoContainer.style.scrollBehavior = 'smooth';
           chronoContainer.scrollLeft += 400 * dirMultiplier;
           setTimeout(checkWrapLogic, 450);
+          startResumeTimer();
         }
       });
 
@@ -1167,6 +1176,7 @@
           chronoContainer.style.scrollBehavior = 'smooth';
           chronoContainer.scrollLeft += 400 * dirMultiplier;
           setTimeout(checkWrapLogic, 450);
+          startResumeTimer();
         }
       });
     };
