@@ -206,7 +206,7 @@
     }
 
     /* ============================================================
-        WORK CHRONOLOGY (高密度楕円軌道 ＆ スナップ長押し ＆ 進化版HUD年譜)
+        WORK CHRONOLOGY (完全に重ならない超広角軌道 ＆ 進化版HUD年譜)
     =========================================================== */
     .chronology-section {
       position: relative; z-index: 10; background: var(--bg-cave);
@@ -253,16 +253,33 @@
       display: flex; flex-direction: column; align-items: center; justify-content: center; width: max-content; 
     }
     
-    .art-year-badge {
-      position: relative; margin-bottom: 16px; z-index: 5;
-      font-family: var(--font-en); font-size: 0.78rem; font-weight: 400; color: var(--accent);
-      background: rgba(6, 8, 6, 0.85); padding: 4px 16px; border: 1px solid rgba(196, 168, 130, 0.25);
-      letter-spacing: 0.08em; pointer-events: none; transition: all 0.4s var(--ease-fluid);
-      display: inline-block; text-align: center;
+    /* ============================================================
+        新設：スタイリッシュなタイポグラフィ型 年号バッジ（画像の外・上部に配置）
+    =========================================================== */
+    .art-year-container {
+      position: relative; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; z-index: 5; pointer-events: none;
     }
-    .artwork-node.is-front .art-year-badge { 
-      background: var(--accent); color: var(--bg); border-color: transparent; 
-      font-weight: 500; box-shadow: 0 0 15px var(--accent);
+    .art-year-text {
+      font-family: var(--font-en); font-size: 1.1rem; font-weight: 300; letter-spacing: 0.2em;
+      color: var(--fg); text-shadow: 0 0 10px rgba(255,255,255,0.1); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity: 0.3; display: flex; align-items: center; gap: 12px;
+    }
+    .art-year-text::before, .art-year-text::after {
+      content: ''; display: block; width: 15px; height: 1px; background: rgba(233, 229, 223, 0.2); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .art-year-connector {
+      width: 1px; height: 12px; background: var(--fg); margin-top: 6px; opacity: 0.15; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .artwork-node.is-front .art-year-text {
+      font-size: 1.8rem; font-weight: 300; color: var(--accent); opacity: 1;
+      text-shadow: 0 0 25px rgba(196, 168, 130, 0.5); transform: translateY(-5px);
+    }
+    .artwork-node.is-front .art-year-text::before, .artwork-node.is-front .art-year-text::after {
+      width: 45px; background: var(--accent); box-shadow: 0 0 10px var(--accent);
+    }
+    .artwork-node.is-front .art-year-connector {
+      height: 25px; opacity: 0.8; background: var(--accent); box-shadow: 0 0 10px var(--accent);
     }
 
     .art-frame {
@@ -296,14 +313,17 @@
     }
     .caption-deco-line::before { content: ''; position: absolute; left: 50%; top: -3px; width: 3px; height: 3px; border-radius: 50%; background: var(--fg); transform: translateX(-50%); }
 
-    /* 左右コントロールボタン（フローティング仕様） */
+    /* ============================================================
+        左右コントロールボタン（完全フローティング＆巨大化）
+    =========================================================== */
     .chrono-nav-btn { 
-      position: absolute; top: 42%; transform: translateY(-50%);
-      width: clamp(56px, 5.5vw, 76px); height: clamp(56px, 5.5vw, 76px);
+      position: absolute; top: 40%; transform: translateY(-50%);
+      width: clamp(64px, 6vw, 84px); height: clamp(64px, 6vw, 84px);
       border-radius: 50%; border: 1px solid rgba(196, 168, 130, 0.25); 
       background: rgba(6, 8, 6, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       display: flex; align-items: center; justify-content: center; 
-      z-index: 200; transition: all 0.4s var(--ease-fluid); 
+      z-index: 200; /* 作品群より完全に手前 */
+      transition: all 0.4s var(--ease-fluid); 
       box-shadow: 0 20px 40px rgba(0,0,0,0.6);
     }
     .chrono-nav-btn.prev { left: clamp(1rem, 4vw, 4rem); }
@@ -313,59 +333,49 @@
       transform: translateY(-50%) scale(1.08); box-shadow: 0 0 30px rgba(196, 168, 130, 0.35);
     }
     .chrono-nav-btn:active { transform: translateY(-50%) scale(0.96); }
-    .btn-stroke-arrow { position: absolute; width: 12px; height: 12px; border-top: 2px solid var(--accent); border-left: 2px solid var(--accent); transition: all 0.4s var(--ease-fluid); }
-    .chrono-nav-btn.prev .btn-stroke-arrow { transform: rotate(-45deg); left: calc(50% - 4px); }
-    .chrono-nav-btn.next .btn-stroke-arrow { transform: rotate(135deg); right: calc(50% - 4px); }
+
+    .btn-stroke-arrow { position: absolute; width: 14px; height: 14px; border-top: 2px solid var(--accent); border-left: 2px solid var(--accent); transition: all 0.4s var(--ease-fluid); }
+    .chrono-nav-btn.prev .btn-stroke-arrow { transform: rotate(-45deg); left: calc(50% - 5px); }
+    .chrono-nav-btn.next .btn-stroke-arrow { transform: rotate(135deg); right: calc(50% - 5px); }
     .chrono-nav-btn:hover .btn-stroke-arrow { border-color: #ffffff; }
 
     /* ============================================================
-        修正点2: 大幅サイズアップ ＆ タッチターゲット拡張 HUD年譜タイムライン
+        HUD年譜タイムライン（特大サイズ＆スクロール追従）
     =========================================================== */
     .chrono-timeline-hud {
-      position: relative; width: 100%; max-width: 1000px; margin: 4rem auto 0; padding: 0 40px; z-index: 30; user-select: none;
+      position: relative; width: 100%; max-width: 1100px; margin: 3rem auto 0; padding: 0 40px; z-index: 30; user-select: none;
     }
-    
-    /* 水平スクロールコンテナ（スマホ・タブレットでの押しやすさを120%担保） */
     .tl-hud-scroll-container {
       width: 100%; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding: 24px 0;
     }
     .tl-hud-scroll-container::-webkit-scrollbar { display: none; }
-
     .tl-hud-inner-track {
       position: relative; display: flex; justify-content: space-between; min-width: 100%; gap: 20px; padding: 0 30px;
     }
-    
-    /* 地層のような重厚感のあるタイムラインベース線 */
     .tl-hud-line {
-      position: absolute; top: calc(50% + 18px); left: 30px; right: 30px; height: 2px;
+      position: absolute; top: calc(50% + 20px); left: 30px; right: 30px; height: 2px;
       background: linear-gradient(90deg, transparent, rgba(196, 168, 130, 0.25) 15%, rgba(196, 168, 130, 0.25) 85%, transparent);
       transform: translateY(-50%); z-index: 1;
     }
-    
-    /* 個々の年ボタン：パディングを広く取りクリック・タップミスを完全排除 */
     .tl-hud-item {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       background: none; border: none; cursor: pointer; 
-      width: clamp(54px, 5.5vw, 76px); height: clamp(65px, 8vh, 85px); /* ゆったりとした押しやすいサイズ */
+      width: clamp(64px, 6.5vw, 86px); height: clamp(75px, 8vh, 95px); /* ゆったりと押しやすいサイズ */
       color: var(--muted); position: relative; z-index: 5; flex-shrink: 0;
     }
-    
-    /* 年号テキストの視覚的強調 */
     .tl-hud-item span {
-      font-family: var(--font-en); font-size: clamp(0.95rem, 1.2vw, 1.25rem); /* テキストを大きく美麗に */
+      font-family: var(--font-en); font-size: clamp(1.1rem, 1.4vw, 1.4rem); /* テキストを大きく美麗に */
       letter-spacing: 0.05em; font-weight: 300; opacity: 0.35;
       transform: translateY(0); transition: all 0.4s var(--ease-fluid);
       position: absolute; top: 0; white-space: nowrap;
     }
     .tl-hud-item.is-active span, .tl-hud-item:hover span { opacity: 1; color: var(--accent); font-weight: 400; transform: translateY(-4px); }
-    
-    /* コックピットHUD風ドット */
     .hud-dot { 
       width: 8px; height: 8px; background: rgba(233, 229, 223, 0.3); border-radius: 50%; 
-      transition: all 0.4s var(--ease-fluid); z-index: 2; margin-top: 36px; border: 1px solid transparent;
+      transition: all 0.4s var(--ease-fluid); z-index: 2; margin-top: 40px; border: 1px solid transparent;
     }
     .tl-hud-item.is-active .hud-dot { 
-      background: var(--accent); transform: scale(2.4); 
+      background: var(--accent); transform: scale(2.5); 
       box-shadow: 0 0 16px var(--accent), 0 0 4px rgba(196, 168, 130, 0.6); 
     }
     .tl-hud-item:hover .hud-dot { background: #ffffff; transform: scale(1.5); }
@@ -440,7 +450,7 @@
     =========================================================== */
     @media (max-width: 1024px) {
       .art-frame img { height: calc(clamp(220px, 45vh, 420px) * var(--size-scale, 1)) !important; }
-      .chrono-nav-btn { top: 40%; }
+      .chrono-nav-btn { top: 38%; }
       .chrono-nav-btn.prev { left: 1.5rem; }
       .chrono-nav-btn.next { right: 1.5rem; }
     }
@@ -455,16 +465,19 @@
       .chronology-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
       .chronology-orbit-container { height: clamp(500px, 68vh, 800px); }
       .art-frame img { height: calc(clamp(160px, 35vh, 320px) * var(--mobile-scale, var(--size-scale))) !important; }
-      .chrono-nav-btn { top: 38%; width: 48px; height: 48px; }
-      .chrono-nav-btn.prev { left: 0.75rem; }
-      .chrono-nav-btn.next { right: 0.75rem; }
+      
+      .chrono-nav-btn { top: 36%; width: 52px; height: 52px; }
+      .chrono-nav-btn.prev { left: 0.5rem; }
+      .chrono-nav-btn.next { right: 0.5rem; }
+      
       .organic-btn { padding: 2rem 4.5rem; font-size: 1.05rem; gap: 14px; }
       .catalog-grid { gap: 3.5rem 1.5rem; }
       .catalog-item-img { height: calc(160px * var(--mobile-scale, var(--size-scale))); }
       
       /* HUD年譜のレスポンシブ最適化：横幅が狭い時は等間隔のスクロールトラックへ変化 */
-      .tl-hud-inner-track { justify-content: flex-start; gap: 28px; padding: 0 40px; }
+      .tl-hud-inner-track { justify-content: flex-start; gap: 32px; padding: 0 40px; }
       .tl-hud-line { left: 40px; right: 40px; width: calc(100% - 80px); }
+      .tl-hud-item span { font-size: 0.95rem; top: -8px; }
     }
   </style>
 </head>
@@ -550,7 +563,10 @@
         <div class="orbit-center" id="orbitTrack">
           
           <article class="artwork-node" style="--size-scale: 1.0; --mobile-scale: 1.0;" data-jp="林(3)" data-meta="162.1 × 209.1 cm / Oil on canvas" data-year="2026" data-desc="大型の縦型カンヴァスを連結させた圧倒的なスケール感を持つ大作。画面の端から端までを一気に貫く長いストローク。">
-            <div class="art-year-badge">2026</div>
+            <div class="art-year-container">
+              <div class="art-year-text">2026</div>
+              <div class="art-year-connector"></div>
+            </div>
             <div class="art-frame">
               <img src="images/【M+P100縦】林(3)20251128.jpg" alt="林(3)" loading="lazy">
             </div>
@@ -562,7 +578,10 @@
           </article>
 
           <article class="artwork-node" style="--size-scale: 0.82; --mobile-scale: 0.95;" data-jp="森" data-meta="130.3 × 162.1 cm / Oil on canvas" data-year="2025" data-desc="三水の森が内包する複雑な生態系と地脈のエネルギーが、幾重にも重なる鋭利な筆致によってカンヴァスに定着した作品。">
-            <div class="art-year-badge">2025</div>
+            <div class="art-year-container">
+              <div class="art-year-text">2025</div>
+              <div class="art-year-connector"></div>
+            </div>
             <div class="art-frame">
               <img src="images/【F100横】森20251217.jpg" alt="森" loading="lazy">
             </div>
@@ -574,7 +593,10 @@
           </article>
 
           <article class="artwork-node" style="--size-scale: 0.45; --mobile-scale: 0.65;" data-jp="森（川久保沢）" data-meta="31.8 × 41.0 cm / Oil on canvas" data-year="2022" data-desc="身近な自然から直感的に色と形を拾い上げた初期の小品。ストロークの勢いがキャンバスに生々しく残っています。">
-            <div class="art-year-badge">2022</div>
+            <div class="art-year-container">
+              <div class="art-year-text">2022</div>
+              <div class="art-year-connector"></div>
+            </div>
             <div class="art-frame">
               <img src="images/【F6横】森（川久保沢）.jpg" alt="森（川久保沢）" loading="lazy">
             </div>
@@ -586,7 +608,10 @@
           </article>
 
           <article class="artwork-node" style="--size-scale: 0.58; --mobile-scale: 0.78;" data-jp="森" data-meta="45.5 × 38.0 cm / Oil on canvas" data-year="2022" data-desc="縦長の構図の中に木々の垂直性を強調し、密度の高い空間を描き出しています。">
-            <div class="art-year-badge">2022</div>
+            <div class="art-year-container">
+              <div class="art-year-text">2022</div>
+              <div class="art-year-connector"></div>
+            </div>
             <div class="art-frame">
               <img src="images/【F8縦】森.jpg" alt="森" loading="lazy">
             </div>
@@ -598,7 +623,10 @@
           </article>
 
           <article class="artwork-node" style="--size-scale: 0.88; --mobile-scale: 0.95;" data-jp="無題" data-meta="162.1 × 130.3 cm / Oil on canvas" data-year="2022" data-desc="柔らかな光を帯びた有機的な塊が、闇の奥底からうごめくように立ち上がる作品。">
-            <div class="art-year-badge">2022</div>
+            <div class="art-year-container">
+              <div class="art-year-text">2022</div>
+              <div class="art-year-connector"></div>
+            </div>
             <div class="art-frame">
               <img src="images/IMG_8731.JPG" alt="無題" loading="lazy">
             </div>
@@ -610,7 +638,10 @@
           </article>
 
           <article class="artwork-node" style="--size-scale: 0.88; --mobile-scale: 0.95;" data-jp="山の中" data-meta="162.1 × 130.3 cm / Oil on canvas" data-year="2022" data-desc="深い森の奥で交錯する光と影の空間を一度解体し、再構築したかのようなアプローチ。">
-            <div class="art-year-badge">2022</div>
+            <div class="art-year-container">
+              <div class="art-year-text">2022</div>
+              <div class="art-year-connector"></div>
+            </div>
             <div class="art-frame">
               <img src="images/【F100縦】山の中.jpg" alt="山の中" loading="lazy">
             </div>
@@ -622,7 +653,10 @@
           </article>
 
           <article class="artwork-node" style="--size-scale: 0.82; --mobile-scale: 0.92;" data-jp="林(2)" data-meta="130.3 × 162.1 cm / Oil on canvas" data-year="2021" data-desc="森が内包する生命のエネルギーそのものを鮮烈な色彩として抽出した作品。ピンクやシアンのストローク。">
-            <div class="art-year-badge">2021</div>
+            <div class="art-year-container">
+              <div class="art-year-text">2021</div>
+              <div class="art-year-connector"></div>
+            </div>
             <div class="art-frame">
               <img src="images/【F100横】林(2).jpg" alt="林(2)" loading="lazy">
             </div>
@@ -634,7 +668,10 @@
           </article>
 
           <article class="artwork-node" style="--size-scale: 0.92; --mobile-scale: 0.98;" data-jp="森（の息吹）(2)" data-meta="162.1 × 162.1 cm / Oil on canvas" data-year="2021" data-desc="正方形の特異な画面の中で、色彩が渦を巻くように中心へと収束していく力強いコンポジション。">
-            <div class="art-year-badge">2021</div>
+            <div class="art-year-container">
+              <div class="art-year-text">2021</div>
+              <div class="art-year-connector"></div>
+            </div>
             <div class="art-frame">
               <img src="images/【S100】森（の息吹）.jpg" alt="森（の息吹）(2)" loading="lazy">
             </div>
@@ -646,7 +683,10 @@
           </article>
           
           <article class="artwork-node" style="--size-scale: 0.82; --mobile-scale: 0.92;" data-jp="森（の息吹）" data-meta="130.3 × 162.1 cm / Oil on canvas" data-year="2021" data-desc="森林を単なる自然環境としてではなく、一つの巨大な「胎内」として捉え直した作品です。">
-            <div class="art-year-badge">2021</div>
+            <div class="art-year-container">
+              <div class="art-year-text">2021</div>
+              <div class="art-year-connector"></div>
+            </div>
             <div class="art-frame">
               <img src="images/【F100横】森（の息吹）.jpg" alt="森の息吹" loading="lazy">
             </div>
@@ -658,7 +698,10 @@
           </article>
 
           <article class="artwork-node" style="--size-scale: 0.88; --mobile-scale: 0.95;" data-jp="林(2)" data-meta="162.1 × 130.3 cm / Oil on canvas" data-year="2021" data-desc="白く差し込む光のようなストロークが、木立の隙間を抜ける空気の冷たさと透明感を表現。">
-            <div class="art-year-badge">2021</div>
+            <div class="art-year-container">
+              <div class="art-year-text">2021</div>
+              <div class="art-year-connector"></div>
+            </div>
             <div class="art-frame">
               <img src="images/【F100縦】林.JPG" alt="林 縦" loading="lazy">
             </div>
@@ -670,7 +713,10 @@
           </article>
 
           <article class="artwork-node" style="--size-scale: 0.82; --mobile-scale: 0.92;" data-jp="林" data-meta="130.3 × 162.1 cm / Oil on canvas" data-year="2021" data-desc="水平方向への広がりを意識した構図の中に、縦に貫く長いストロークによる微細な色彩の揺らぎ。">
-            <div class="art-year-badge">2021</div>
+            <div class="art-year-container">
+              <div class="art-year-text">2021</div>
+              <div class="art-year-connector"></div>
+            </div>
             <div class="art-frame">
               <img src="images/【F100横】林.jpg" alt="林" loading="lazy">
             </div>
@@ -682,7 +728,10 @@
           </article>
 
           <article class="artwork-node" style="--size-scale: 0.82; --mobile-scale: 0.92;" data-jp="うねり" data-meta="116.7 × 91.0 cm / Oil on canvas" data-year="2018" data-desc="「森林」という主題に対する初期のアプローチ。色彩の要素を極限まで削ぎ落とし、形態の「うねり」に焦点を当てる。">
-            <div class="art-year-badge">2018</div>
+            <div class="art-year-container">
+              <div class="art-year-text">2018</div>
+              <div class="art-year-connector"></div>
+            </div>
             <div class="art-frame">
               <img src="images/【F50縦】うねり.jpg" alt="うねり" loading="lazy">
             </div>
@@ -816,14 +865,13 @@
     const hamburger = document.getElementById('hamburger');
     const navLinks = document.getElementById('nav-links');
     const pagetopBtn = document.getElementById('pagetopBtn');
-    const topNavLinks = document.querySelectorAll('.js-nav-link');
 
     window.addEventListener('load', () => {
       setTimeout(() => { document.getElementById('preloader').classList.add('is-hidden'); }, 800);
     });
 
     /* ============================================================
-        SCROLL & INTERSECTION DETECT
+        SCROLL DETECT
     =========================================================== */
     window.addEventListener('scroll', () => {
       const scrollY = window.scrollY;
@@ -834,17 +882,6 @@
 
       if (scrollY > windowHeight * 0.7) pagetopBtn.classList.add('is-visible');
       else pagetopBtn.classList.remove('is-visible');
-
-      let activeSectionId = '';
-      const detectionOffset = windowHeight / 2;
-
-      document.querySelectorAll('section[id], hero[id]').forEach(section => {
-        if (scrollY >= section.offsetTop - detectionOffset && scrollY < section.offsetTop - detectionOffset + section.offsetHeight) {
-          activeSectionId = section.getAttribute('id');
-        }
-      });
-
-      topNavLinks.forEach(link => { link.classList.toggle('is-active', link.getAttribute('href').substring(1) === activeSectionId); });
     });
 
     pagetopBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
@@ -875,10 +912,9 @@
 
 
     /* ============================================================
-        ORBIT CAROUSEL SYSTEM (高密度非干渉型。HUDナビ連動)
+        ORBIT CAROUSEL SYSTEM (重なり完全排除・軌道超拡大＆HUD連動)
     =========================================================== */
     const orbitContainer = document.getElementById('chronoContainer');
-    const orbitPath = document.getElementById('orbitPath');
     const artNodes = Array.from(document.querySelectorAll('.artwork-node'));
     const massiveYearDisplay = document.getElementById('massiveYear');
     const hudItems = Array.from(document.querySelectorAll('.tl-hud-item'));
@@ -906,18 +942,14 @@
       const cw = window.innerWidth;
       let rx, ry;
       
+      // 画像同士が絶対に重ならないよう、軌道を画面外へ大きく飛び出させる
       if (cw <= 768) {
-        rx = cw * 0.52; ry = 60;
+        rx = cw * 1.8; ry = 60;
       } else if (cw <= 1024) {
-        rx = cw * 0.46; ry = 100;
+        rx = cw * 1.5; ry = 100;
       } else {
-        rx = Math.min(cw * 0.44, 750);
-        ry = 130; 
-      }
-
-      if (orbitPath) {
-        orbitPath.style.width = `${rx * 2}px`;
-        orbitPath.style.height = `${ry * 2}px`;
+        rx = Math.max(cw * 1.3, 1400); // PCでは最低1400px確保
+        ry = 140; 
       }
 
       let maxCos = -Infinity;
@@ -938,7 +970,6 @@
           const isActive = idx === currentFrontIndex;
           item.classList.toggle('is-active', isActive);
           
-          // 進化版HUDトラッキング：アクティブになった年号ボタンをスムーズに中央へ追従スクロール
           if (isActive && hudScrollContainer) {
             const containerWidth = hudScrollContainer.offsetWidth;
             const itemLeft = item.offsetLeft;
