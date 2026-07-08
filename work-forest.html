@@ -115,7 +115,7 @@
     .nav-hamburger.is-active span:nth-child(3) { top: 9px; transform: rotate(-45deg); }
 
     /* ============================================================
-        ROOM INDEX (右サイド案内：1のTopを削除、3を展開ボタンへ設定)
+        ROOM INDEX (右サイド案内：3ステップ構成)
     =========================================================== */
     .cinematic-index {
       position: fixed; right: clamp(25px, 4vw, 50px); top: 50%; transform: translateY(-50%);
@@ -147,20 +147,33 @@
     .index-item.is-active .index-link { color: var(--accent); }
     .index-item.is-active .index-link:not(:hover) .index-line { width: 55px; height: 2px; background: var(--accent); }
 
-    /* 【リデザイン】スタイリッシュかつ誰にでも分かりやすいトップ戻るボタン */
+    /* ============================================================
+        PAGETOP BUTTON (スタイリッシュ・グラスモーフィズム)
+    =========================================================== */
     .pagetop-btn {
       position: fixed; bottom: 40px; right: clamp(20px, 4vw, 50px); z-index: 499;
-      width: 56px; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      background: rgba(4, 6, 4, 0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(196, 168, 130, 0.35); border-radius: 50%;
+      width: 58px; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(2, 3, 2, 0.6); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(196, 168, 130, 0.3); border-radius: 50%;
       opacity: 0; visibility: hidden; transition: all 0.4s var(--ease-fluid);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
     .pagetop-btn.is-visible { opacity: 1; visibility: visible; }
-    .pagetop-arrow { font-size: 1.15rem; color: var(--accent); transition: transform 0.4s var(--ease-fluid); line-height: 1; }
-    .pagetop-text { font-family: var(--font-en); font-size: 0.55rem; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; margin-top: 2px; transition: color 0.4s; line-height: 1; }
     
-    .pagetop-btn:hover { border-color: var(--accent); background: rgba(196, 168, 130, 0.15); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(196, 168, 130, 0.2); }
+    .pagetop-arrow { 
+      font-size: 1.1rem; color: var(--accent); 
+      transition: transform 0.4s var(--ease-fluid), color 0.4s; line-height: 1; 
+    }
+    .pagetop-text { 
+      font-family: var(--font-en); font-size: 0.55rem; letter-spacing: 0.1em; 
+      color: rgba(233, 229, 223, 0.5); text-transform: uppercase; margin-top: 2px; 
+      transition: color 0.4s; line-height: 1; font-weight: 400;
+    }
+    
+    .pagetop-btn:hover { 
+      border-color: var(--accent); background: rgba(196, 168, 130, 0.12); 
+      transform: translateY(-5px); box-shadow: 0 15px 40px rgba(196, 168, 130, 0.15); 
+    }
     .pagetop-btn:hover .pagetop-arrow { transform: translateY(-3px); color: #fff; }
     .pagetop-btn:hover .pagetop-text { color: #fff; }
 
@@ -185,67 +198,91 @@
     }
 
     /* ============================================================
-        HERO (CINEMATIC ORGANIC DESIGN)
+        HERO: THE ETHEREAL BREATHING CANVAS (前代未聞の流動アニメーション)
     =========================================================== */
     .hero {
       position: relative; height: 100svh; min-height: 600px;
       display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10;
-      overflow: hidden; background: var(--bg);
+      overflow: hidden; background: #000;
     }
 
+    /* レイヤーを統括するラッパー。ロード時にじわっとピントが合う */
     .hero-bg-wrapper {
       position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none;
+      animation: canvasStart 4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-    
-    .hero-bg {
-      position: absolute; top: -5%; left: -5%; width: 110%; height: 110%;
-      background: url('images/【F100横】林.jpg') center/center / cover no-repeat;
-      will-change: transform, filter;
-      animation: cinematicReveal 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards,
-                 cinematicPan 25s ease-in-out 3.5s infinite alternate;
-    }
-    
-    .hero-light-shimmer {
-      position: absolute; inset: 0; z-index: 2;
-      background: linear-gradient(60deg, transparent 20%, rgba(255,255,255,0.08) 50%, transparent 80%);
-      background-size: 300% 300%;
-      animation: shimmerFlow 12s ease-in-out infinite;
-      mix-blend-mode: overlay;
-    }
-    
-    .hero-overlay {
-      position: absolute; inset: 0; z-index: 3;
-      background: radial-gradient(ellipse at center, rgba(2,3,2,0.1) 0%, rgba(2,3,2,0.85) 65%, var(--bg) 100%);
+    @keyframes canvasStart {
+      0% { filter: blur(35px) brightness(0.2); transform: scale(1.1); }
+      100% { filter: blur(0px) brightness(1); transform: scale(1); }
     }
 
-    @keyframes cinematicReveal {
-      0% { filter: brightness(0) blur(30px) saturate(0.5); transform: scale(1.15); }
-      100% { filter: brightness(0.7) blur(0px) saturate(1.1); transform: scale(1); }
+    /* レイヤー1：ベース画像（ゆっくりとパン＆ズーム） */
+    .hero-layer-base {
+      position: absolute; top: -10%; left: -10%; width: 120%; height: 120%;
+      background: url('images/【F100横】林.jpg') center/cover no-repeat;
+      animation: breatheBase 35s ease-in-out infinite alternate;
+      filter: saturate(1.1) contrast(1.1) brightness(0.7);
     }
-    @keyframes cinematicPan {
-      0% { transform: scale(1) translate(0, 0); filter: brightness(0.7) saturate(1.1); }
-      50% { transform: scale(1.05) translate(-1%, 1%); filter: brightness(0.85) saturate(1.15); }
-      100% { transform: scale(1.03) translate(1%, -1%); filter: brightness(0.75) saturate(1.1); }
+    
+    /* レイヤー2：流動レイヤー（画像を反転させ、Y軸に動かすことで垂直の筆致同士が干渉し、水面やオーロラのような波紋を生む究極のCSSトリック） */
+    .hero-layer-fluid {
+      position: absolute; top: -20%; left: -10%; width: 120%; height: 140%;
+      background: url('images/【F100横】林.jpg') center/cover no-repeat;
+      mix-blend-mode: overlay; /* ベース画像と美しく溶け合う */
+      opacity: 0.65;
+      animation: breatheFluid 28s ease-in-out infinite alternate-reverse;
+      filter: hue-rotate(15deg) blur(2px);
     }
-    @keyframes shimmerFlow {
-      0% { background-position: -50% -50%; }
-      50% { background-position: 150% 150%; }
-      100% { background-position: -50% -50%; }
+    
+    /* レイヤー3：漂う生命の光（暖色のオーラが画面をゆっくりと徘徊する） */
+    .hero-layer-aura {
+      position: absolute; width: 70vw; height: 70vw; border-radius: 50%;
+      background: radial-gradient(circle, rgba(238, 220, 180, 0.15) 0%, transparent 60%);
+      mix-blend-mode: color-dodge;
+      animation: driftAura 22s cubic-bezier(0.25, 1, 0.5, 1) infinite alternate;
+    }
+    
+    /* レイヤー4：ディープヴィネット（上下左右を暗く落とし、テキストの圧倒的な視認性を確保） */
+    .hero-layer-vignette {
+      position: absolute; inset: 0; z-index: 5;
+      background: radial-gradient(ellipse at center, rgba(2,3,2,0.1) 0%, rgba(2,3,2,0.85) 75%, #020302 100%);
+      animation: pulseVignette 12s ease-in-out infinite alternate;
     }
 
+    /* 各レイヤーのアニメーションキーフレーム */
+    @keyframes breatheBase {
+      0% { transform: scale(1) translate(0, 0); }
+      100% { transform: scale(1.08) translate(-1.5%, 2%); }
+    }
+    @keyframes breatheFluid {
+      0% { transform: scaleX(-1) scaleY(1.05) translateY(0%); }
+      100% { transform: scaleX(-1) scaleY(1.15) translateY(-5%); }
+    }
+    @keyframes driftAura {
+      0% { top: 10%; left: 10%; transform: scale(0.8); opacity: 0.4; }
+      50% { top: 40%; left: 60%; transform: scale(1.2); opacity: 0.8; }
+      100% { top: 50%; left: 20%; transform: scale(0.9); opacity: 0.3; }
+    }
+    @keyframes pulseVignette {
+      0% { opacity: 0.8; }
+      100% { opacity: 1; }
+    }
+
+    /* メインタイトルテキスト */
     .master-title {
       position: relative; z-index: 10;
       font-family: var(--font-ja); font-size: clamp(5.5rem, 16vw, 15rem); font-weight: 200;
       letter-spacing: 0.05em; color: var(--fg); text-align: center; line-height: 1.1;
       opacity: 0; transform: scale(1.05) translateY(15px);
-      animation: forestOrganicReveal 3s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+      animation: titleReveal 3s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
       will-change: transform, opacity, letter-spacing, filter;
-      text-shadow: 0 10px 40px rgba(0,0,0,0.8), 0 0 60px rgba(196,168,130,0.25);
+      /* 背景に溶け込みつつ、光を放つ重厚なシャドウで文字を浮き上がらせる */
+      text-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 60px rgba(0,0,0,0.8), 0 2px 10px rgba(0,0,0,1);
     }
     
-    @keyframes forestOrganicReveal {
+    @keyframes titleReveal {
       0% { opacity: 0; transform: scale(1.05) translateY(15px); letter-spacing: -0.02em; filter: blur(25px); }
-      50% { opacity: 0.8; filter: blur(8px); }
+      50% { opacity: 0.9; filter: blur(4px); }
       100% { opacity: 1; transform: scale(1) translateY(0); letter-spacing: 0.32em; filter: blur(0px); }
     }
 
@@ -254,10 +291,10 @@
       font-family: var(--font-en); font-size: clamp(0.9rem, 2.5vw, 1.2rem);
       letter-spacing: 0.8em; color: var(--accent); text-transform: uppercase;
       opacity: 0; transform: translateY(10px); filter: blur(5px);
-      animation: subtitleOrganicReveal 2.2s cubic-bezier(0.16, 1, 0.3, 1) 2.2s forwards;
+      animation: subtitleReveal 2.2s cubic-bezier(0.16, 1, 0.3, 1) 2.2s forwards;
       text-shadow: 0 5px 20px rgba(0,0,0,0.9);
     }
-    @keyframes subtitleOrganicReveal {
+    @keyframes subtitleReveal {
       0% { opacity: 0; transform: translateY(10px); filter: blur(5px); }
       100% { opacity: 1; transform: translateY(0); filter: blur(0px); }
     }
@@ -400,17 +437,18 @@
     .chrono-nav-btn:active .btn-stroke-arrow { border-color: var(--accent); } 
 
     /* ============================================================
-        UNPRECEDENTED CATALOG TRIGGER BUTTON (バランスを維持してサイズ拡大)
+        UNPRECEDENTED CATALOG TRIGGER BUTTON (黄金比スケールアップ)
     =========================================================== */
     .unprecedented-button-container {
       display: flex; justify-content: center; align-items: center;
       padding: clamp(5rem, 10vh, 8rem) var(--px); background: var(--bg); position: relative; z-index: 10;
     }
     
+    /* ボタンサイズ・フォント・余白をすべてバランスよく1.2倍程度に拡大 */
     .organic-btn {
-      position: relative; padding: 2.3rem 6rem; color: var(--accent); font-family: var(--font-ja);
-      font-size: 1.1rem; letter-spacing: 0.25em; font-weight: 300;
-      display: inline-flex; align-items: center; justify-content: center; gap: 18px;
+      position: relative; padding: 2.5rem 6.5rem; color: var(--accent); font-family: var(--font-ja);
+      font-size: 1.15rem; letter-spacing: 0.25em; font-weight: 300;
+      display: inline-flex; align-items: center; justify-content: center; gap: 20px;
       transition: color 0.5s var(--ease-slow), transform 0.3s;
     }
     .organic-btn .btn-text { position: relative; z-index: 2; display: inline-block; }
@@ -566,7 +604,8 @@
       .chronology-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
       .art-frame img { height: calc(clamp(160px, 32vh, 320px) * var(--mobile-scale, var(--size-scale))) !important; }
       .chronology-track { gap: 3rem; }
-      .organic-btn { padding: 1.8rem 4.5rem; font-size: 1rem; gap: 12px; }
+      /* スマホ時のボタンサイズも適度に拡大 */
+      .organic-btn { padding: 2rem 4.5rem; font-size: 1.05rem; gap: 14px; }
       .catalog-grid { gap: 3.5rem 1.5rem; }
       .catalog-item-img { height: calc(160px * var(--mobile-scale, var(--size-scale))); }
     }
@@ -618,9 +657,10 @@
   <main>
     <section class="hero" id="hero">
       <div class="hero-bg-wrapper">
-        <div class="hero-bg"></div>
-        <div class="hero-light-shimmer"></div>
-        <div class="hero-overlay"></div>
+        <div class="hero-layer-base"></div>
+        <div class="hero-layer-fluid"></div>
+        <div class="hero-layer-aura"></div>
+        <div class="hero-layer-vignette"></div>
       </div>
       <h1 class="master-title">森林</h1>
       <p class="hero-subtitle" id="heroSub">Forest</p>
@@ -962,7 +1002,6 @@
       if (scrollY > windowHeight * 0.7) pagetopBtn.classList.add('is-visible');
       else pagetopBtn.classList.remove('is-visible');
 
-      // 初期値を空にしてファーストビューでは不点灯、該当セクション侵入で点灯
       let activeSectionId = '';
       const detectionOffset = windowHeight / 2;
 
