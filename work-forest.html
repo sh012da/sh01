@@ -11,7 +11,7 @@
   <link rel="icon" type="image/jpeg" href="images/【M+P100縦】林(3)20251128.jpg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>森林 Forest | Shoichi Tsuda</title>
+  <title>森林 Forest | Tsuda Shoichi</title>
   <meta name="description" content="画面の端から端まで貫く長いストローク。幹の連なりから森林の本質を現前させる油彩作品群「森林」— 津田翔一">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,89 +20,104 @@
   
   <style>
     /* ============================================================
-        DESIGN TOKENS & RESET
+       DESIGN TOKENS & RESET
     =========================================================== */
     :root {
-      --bg:        #020302;
-      --bg-cave:   #060806;
+      --bg:        #060605;
+      --bg2:       #0c0c0a;
+      --bg3:       #111110;
       --fg:        #e9e5df;
-      --fg-dim:    rgba(233, 229, 223, 0.6);
-      --muted:     rgba(233, 229, 223, 0.35);
+      --muted:     rgba(233,229,223,0.44);
+      --dim:       rgba(233,229,223,0.22);
+      --whisper:   rgba(233,229,223,0.10);
       --accent:    #c4a882;
-      --accent-mute: rgba(196, 168, 130, 0.15);
-      --border:    rgba(233, 229, 223, 0.08);
+      --accent2:   #7c9aa0;
+      --border:    rgba(233,229,223,0.08);
+      --border-md: rgba(233,229,223,0.20);
       
       --font-en:   'Cormorant Garamond', serif;
       --font-ja:   'Noto Serif JP', serif;
       
-      --ease-fluid: cubic-bezier(0.25, 1, 0.5, 1);
+      --ease-fluid: cubic-bezier(0.2, 0.8, 0.2, 1);
       --ease-slow:  cubic-bezier(0.16, 1, 0.3, 1);
-      --ease-expo:  cubic-bezier(0.19, 1, 0.22, 1);
-      
-      --px:        clamp(1.5rem, 5vw, 4rem);
+      --px:         clamp(1.5rem, 6vw, 5rem);
+      --cm-scale:   clamp(0.7px, 0.15vw, 1.8px);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { 
-      scroll-behavior: smooth;
-      background: var(--bg); 
-      font-size: 16px;
-    }
+    html { scroll-behavior: smooth; background: var(--bg); font-size: 16px; }
     body {
-      background: var(--bg); color: var(--fg);
-      font-family: var(--font-ja); line-height: 2; letter-spacing: 0.08em;
-      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+      background: transparent;
+      color: var(--fg);
+      font-family: var(--font-ja);
+      line-height: 2.1;
+      letter-spacing: 0.06em;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
     }
     body.is-locked { overflow: hidden; }
     img { max-width: 100%; height: auto; display: block; }
-    a { color: inherit; text-decoration: none; transition: color 0.3s; }
-    button { cursor: pointer; border: none; background: none; color: inherit; font-family: inherit; }
+    a { color: var(--fg); text-decoration: none; transition: opacity 0.4s var(--ease-fluid); }
+    a:hover { opacity: 0.6; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; color: inherit; }
 
     /* ============================================================
-        NAVIGATION & HEADER
+       PRELOADER (Elegant fade-in)
+    =========================================================== */
+    .preloader { position: fixed; inset: 0; z-index: 100000; background: var(--bg); display: flex; align-items: center; justify-content: center; transition: opacity 1.2s var(--ease-slow), visibility 1.2s; }
+    .preloader.is-hidden { opacity: 0; visibility: hidden; }
+    .forest-mist-loader { width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle, rgba(196,168,130,0.15) 0%, transparent 70%); filter: blur(10px); animation: mistPulse 1.8s infinite ease-in-out; }
+    @keyframes mistPulse { 0%, 100% { transform: scale(0.8); opacity: 0.3; } 50% { transform: scale(1.3); opacity: 0.8; } }
+
+    /* ============================================================
+       GLOBAL ARTWORK TEXTURE
+    =========================================================== */
+    .global-texture {
+      position: fixed; inset: 0; z-index: -100; pointer-events: none;
+      background: url('images/【F100横】林.jpg') center/cover no-repeat;
+      opacity: 0.04; filter: grayscale(80%) contrast(1.4);
+    }
+
+    /* ============================================================
+       NAVIGATION
     =========================================================== */
     nav#top-nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 300;
       display: flex; align-items: center; justify-content: space-between;
-      padding: clamp(14px, 3vw, 36px) var(--px);
-      background: transparent; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      padding: clamp(16px, 3vw, 40px) var(--px);
+      background: transparent;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border-bottom: 0.5px solid transparent;
-      transition: background 0.4s ease, border-color 0.4s ease;
+      transition: background 0.6s var(--ease-slow), border-color 0.6s var(--ease-slow), padding 0.6s var(--ease-slow);
     }
-    nav#top-nav.scrolled { background: rgba(6, 8, 6, 0.88); border-color: var(--border); }
+    nav#top-nav.scrolled {
+      background: rgba(6, 6, 5, 0.85); border-color: var(--border);
+      padding-top: clamp(12px, 2vw, 24px); padding-bottom: clamp(12px, 2vw, 24px);
+    }
     .nav-logo-unified {
-      font-family: var(--font-en); font-size: clamp(0.7rem, 2.5vw, 0.9rem);
-      letter-spacing: 0.35em; font-weight: 300; color: var(--accent);
-      text-transform: uppercase; transition: opacity 0.4s ease;
+      font-family: var(--font-en); font-size: clamp(0.75rem, 2.5vw, 0.95rem);
+      letter-spacing: 0.35em; font-weight: 300; color: var(--accent); text-transform: uppercase;
     }
-    .nav-logo-unified:hover { opacity: 0.5; }
-    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
     .nav-links a {
-      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
-      letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase;
-      position: relative; padding: 4px 0; transition: color 0.3s ease;
+      font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.75rem);
+      letter-spacing: 0.3em; color: var(--muted); text-transform: uppercase; transition: color 0.4s var(--ease-fluid);
     }
-    .nav-links a::after {
-      content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
-      background: var(--accent); transform: scaleX(0); transform-origin: right;
-      transition: transform 0.4s var(--ease-fluid);
-    }
-    .nav-links a:hover, .nav-links a.is-active { color: var(--accent); }
-    .nav-links a.is-active::after { transform: scaleX(1); transform-origin: left; }
-
+    .nav-links a:hover { color: var(--accent); }
     .nav-cta {
-      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
-      letter-spacing: 0.25em; text-transform: uppercase;
-      border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem;
-      color: var(--accent); transition: background 0.25s, color 0.25s;
+      font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.7rem);
+      letter-spacing: 0.3em; text-transform: uppercase;
+      border: 0.5px solid rgba(196,168,130,0.3); padding: 0.6rem 1.6rem;
+      color: var(--accent); transition: all 0.4s var(--ease-fluid);
     }
-    .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); border-color: var(--accent); }
+    .nav-cta:hover { background: rgba(196,168,130,0.1); color: #fff; border-color: var(--accent); }
     
-    .nav-hamburger { display: none; width: 32px; height: 20px; position: relative; z-index: 301; }
+    /* Hamburger */
+    .nav-hamburger { display: none; width: 32px; height: 20px; position: relative; z-index: 301; padding: 4px; }
     .nav-hamburger span {
-      display: block; position: absolute; left: 0; width: 100%; height: 1px; background: var(--accent);
-      transition: transform 0.4s var(--ease-fluid), opacity 0.4s, top 0.4s var(--ease-fluid);
+      display: block; position: absolute; left: 0; width: 100%; height: 1px;
+      background: var(--accent); transition: transform 0.5s var(--ease-slow), opacity 0.5s var(--ease-slow), top 0.5s var(--ease-slow);
     }
     .nav-hamburger span:nth-child(1) { top: 0px; }
     .nav-hamburger span:nth-child(2) { top: 9px; }
@@ -111,732 +126,777 @@
     .nav-hamburger.is-active span:nth-child(2) { opacity: 0; }
     .nav-hamburger.is-active span:nth-child(3) { top: 9px; transform: rotate(-45deg); }
 
-    .pagetop-btn {
-      position: fixed; bottom: 40px; right: clamp(20px, 4vw, 50px); z-index: 499;
-      width: 58px; height: 58px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      background: rgba(2, 3, 2, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(196, 168, 130, 0.3); border-radius: 50%;
-      opacity: 0; visibility: hidden; transition: all 0.4s var(--ease-fluid); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    /* Page Nav (Dot Indicator) */
+    .page-nav {
+      position: fixed; right: clamp(20px, 4vw, 50px); top: 50%; transform: translateY(-50%); z-index: 200;
+      display: flex; flex-direction: column; gap: 28px;
+      opacity: 0; visibility: hidden; transition: opacity 0.8s var(--ease-slow), visibility 0.8s;
     }
-    .pagetop-btn.is-visible { opacity: 1; visibility: visible; }
-    .pagetop-btn:hover { border-color: var(--accent); background: rgba(196, 168, 130, 0.12); transform: translateY(-5px); box-shadow: 0 15px 40px rgba(196, 168, 130, 0.15); }
-    .pagetop-arrow { font-size: 1.1rem; color: var(--accent); transition: transform 0.4s var(--ease-fluid), color 0.4s; line-height: 1; }
-    .pagetop-text { font-family: var(--font-en); font-size: 0.55rem; letter-spacing: 0.1em; color: rgba(233, 229, 223, 0.5); text-transform: uppercase; margin-top: 2px; transition: color 0.4s; }
-    .pagetop-btn:hover .pagetop-arrow { transform: translateY(-3px); color: #fff; }
-    .pagetop-btn:hover .pagetop-text { color: #fff; }
+    .page-nav.visible { opacity: 1; visibility: visible; }
+    .page-nav-item { display: flex; align-items: center; gap: 16px; flex-direction: row-reverse; padding: 8px 0; }
+    .page-nav-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--border-md); transition: all 0.4s var(--ease-fluid); flex-shrink: 0; position: relative;
+    }
+    .page-nav-dot::after {
+      content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 0.5px solid transparent; transition: all 0.4s var(--ease-fluid);
+    }
+    .page-nav-label {
+      font-family: var(--font-en); font-size: 11px; letter-spacing: 0.2em;
+      color: rgba(233,229,223,0.3); text-transform: uppercase; transition: color 0.4s var(--ease-fluid); white-space: nowrap;
+    }
+    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot { background: var(--accent); transform: scale(1.2); }
+    .page-nav-item.active .page-nav-dot::after { border-color: rgba(196,168,130,0.4); transform: scale(1.5); }
+    .page-nav-item:hover .page-nav-label { color: rgba(233,229,223,0.9); }
+    .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-        PRELOADER
+       HERO (WITH ARTWORK BACKGROUND)
     =========================================================== */
-    .preloader { position: fixed; inset: 0; z-index: 100000; background: #010401; display: flex; align-items: center; justify-content: center; transition: opacity 1.2s var(--ease-slow), visibility 1.2s; }
-    .preloader.is-hidden { opacity: 0; visibility: hidden; }
-    .forest-mist-loader { width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle, rgba(196,168,130,0.15) 0%, transparent 70%); filter: blur(10px); animation: mistPulse 1.8s infinite ease-in-out; }
-    @keyframes mistPulse { 0%, 100% { transform: scale(0.8); opacity: 0.3; } 50% { transform: scale(1.3); opacity: 0.8; } }
+    .hero {
+      position: relative; height: 100svh; min-height: 600px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 var(--px) clamp(4rem, 10vh, 8rem); overflow: hidden; background: var(--bg);
+    }
+    .hero-ambient {
+      position: absolute; inset: 0; pointer-events: none; z-index: 1;
+      background: url('images/【F100横】林.jpg') center/cover no-repeat;
+      filter: brightness(0.65) saturate(1.1) contrast(1.05);
+      animation: ambientDrift 28s var(--ease-slow) infinite alternate;
+      transform-origin: center;
+    }
+    @keyframes ambientDrift {
+      0% { transform: scale(1.03) translate(0, 0); }
+      100% { transform: scale(1.1) translate(-1.5%, 2%); }
+    }
+    .hero-overlay {
+      position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      background: radial-gradient(ellipse at 50% 40%, transparent 0%, rgba(6,6,5,0.6) 85%),
+                  linear-gradient(to bottom, rgba(6,6,5,0.1) 0%, rgba(6,6,5,0.4) 60%, var(--bg) 100%);
+    }
+    .hero-divider {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 1px; z-index: 3;
+      background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%);
+    }
+    .hero-inner { position: relative; z-index: 4; }
+    
+    .hero-eyebrow {
+      font-family: var(--font-en); font-size: clamp(0.55rem, 1.3vw, 0.65rem);
+      letter-spacing: 0.5em; color: var(--dim); text-transform: uppercase;
+      margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.5rem;
+      opacity: 0; transform: translateX(-20px);
+      transition: opacity 1.2s var(--ease-slow) 0.2s, transform 1.2s var(--ease-slow) 0.2s;
+    }
+    .hero-eyebrow::before { content: ''; width: 32px; height: 0.5px; background: var(--accent2); flex-shrink: 0; opacity: 0.6; transform: scaleX(0); transform-origin: left; transition: transform 1.2s var(--ease-slow) 0.6s; }
+    .hero-eyebrow.revealed { opacity: 1; transform: translateX(0); }
+    .hero-eyebrow.revealed::before { transform: scaleX(1); }
+    
+    .hero-title {
+      font-family: var(--font-ja); font-size: clamp(5.5rem, 19vw, 15rem); font-weight: 200;
+      line-height: 1.05; letter-spacing: 0.08em; color: var(--fg); margin-bottom: clamp(1rem, 2.5vh, 2rem);
+      display: flex; flex-wrap: wrap; text-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    }
+    .char-wrap { display: inline-block; overflow: hidden; padding-right: 0.05em; padding-bottom: 0.1em; }
+    .char-inner {
+      display: inline-block; opacity: 0; filter: blur(24px); transform: translateY(60px) scale(0.85) rotate(-3deg);
+      transition: opacity 2.4s var(--ease-slow), filter 2.4s var(--ease-slow), transform 2.4s var(--ease-slow);
+    }
+    .hero-title.revealed .char-inner { opacity: 1; filter: blur(0); transform: translateY(0) scale(1) rotate(0); }
+    
+    .hero-title-en {
+      font-family: var(--font-en); font-size: clamp(1rem, 3.2vw, 2.2rem);
+      font-weight: 300; font-style: italic; letter-spacing: 0.35em; color: rgba(196,168,130,0.8);
+      opacity: 0; filter: blur(10px); transform: translateY(15px);
+      transition: opacity 2s var(--ease-slow) 1.2s, filter 2s var(--ease-slow) 1.2s, transform 2s var(--ease-slow) 1.2s;
+    }
+    .hero-title-en.revealed { opacity: 1; filter: blur(0); transform: translateY(0); }
+    
+    .hero-meta {
+      display: flex; align-items: center; gap: 2rem; margin-top: clamp(2.5rem, 6vh, 5rem); 
+      opacity: 0; transform: translateY(20px); transition: opacity 1.5s var(--ease-slow) 1.6s, transform 1.5s var(--ease-slow) 1.6s;
+    }
+    .hero-meta.revealed { opacity: 1; transform: translateY(0); }
+    .hero-meta-line { width: 48px; height: 0.5px; background: linear-gradient(to right, var(--accent), var(--accent2)); flex-shrink: 0; }
+    .hero-meta-text { font-family: var(--font-en); font-size: clamp(0.55rem, 1.2vw, 0.65rem); letter-spacing: 0.3em; color: var(--fg); text-transform: uppercase; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+    
+    .hero-scroll {
+      position: absolute; bottom: clamp(2.5rem, 6vh, 4.5rem); right: var(--px); z-index: 4; 
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+      opacity: 0; transition: opacity 1.5s var(--ease-slow) 2.4s;
+    }
+    .hero-scroll.revealed { opacity: 1; }
+    .hero-scroll-label { font-family: var(--font-en); font-size: 0.5rem; letter-spacing: 0.4em; color: var(--whisper); text-transform: uppercase; writing-mode: vertical-rl; }
+    .hero-scroll-track { width: 1px; height: 56px; background: var(--border); position: relative; overflow: hidden; }
+    .hero-scroll-fill {
+      position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+      animation: scrollDrop 2.5s cubic-bezier(0.6, 0.05, 0.4, 1) 2s infinite;
+    }
+    @keyframes scrollDrop { 0% { top: -100%; opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
 
     /* ============================================================
-        HERO
+       CONCEPT SECTION
     =========================================================== */
-    .hero { position: relative; height: 100svh; min-height: 600px; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; overflow: hidden; background: #000; }
-    .hero-bg-wrapper { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; animation: canvasStart 4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    @keyframes canvasStart { 0% { filter: blur(35px) brightness(0.2); transform: scale(1.1); } 100% { filter: blur(0px) brightness(1); transform: scale(1); } }
-    .hero-layer-base { position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; background: url('images/【F100横】林.jpg') center/cover no-repeat; animation: breatheBase 35s ease-in-out infinite alternate; filter: saturate(1.1) contrast(1.1) brightness(0.7); }
-    .hero-layer-fluid { position: absolute; top: -20%; left: -10%; width: 120%; height: 140%; background: url('images/【F100横】林.jpg') center/cover no-repeat; mix-blend-mode: overlay; opacity: 0.65; animation: breatheFluid 28s ease-in-out infinite alternate-reverse; filter: hue-rotate(15deg) blur(2px); }
-    .hero-layer-aura { position: absolute; width: 70vw; height: 70vw; border-radius: 50%; background: radial-gradient(circle, rgba(238, 220, 180, 0.15) 0%, transparent 60%); mix-blend-mode: color-dodge; animation: driftAura 22s cubic-bezier(0.25, 1, 0.5, 1) infinite alternate; }
-    .hero-layer-vignette { position: absolute; inset: 0; z-index: 5; background: radial-gradient(ellipse at center, rgba(2,3,2,0.1) 0%, rgba(2,3,2,0.85) 75%, #020302 100%); animation: pulseVignette 12s ease-in-out infinite alternate; }
-    @keyframes breatheBase { 0% { transform: scale(1) translate(0, 0); } 100% { transform: scale(1.08) translate(-1.5%, 2%); } }
-    @keyframes breatheFluid { 0% { transform: scaleX(-1) scaleY(1.05) translateY(0%); } 100% { transform: scaleX(-1) scaleY(1.15) translateY(-5%); } }
-    @keyframes driftAura { 0% { top: 10%; left: 10%; transform: scale(0.8); opacity: 0.4; } 50% { top: 40%; left: 60%; transform: scale(1.2); opacity: 0.8; } 100% { top: 50%; left: 20%; transform: scale(0.9); opacity: 0.3; } }
-    @keyframes pulseVignette { 0% { opacity: 0.8; } 100% { opacity: 1; } }
-
-    .master-title {
-      position: relative; z-index: 10; font-family: var(--font-ja); font-size: clamp(5.5rem, 16vw, 15rem); font-weight: 200;
-      letter-spacing: 0.05em; color: var(--fg); text-align: center; line-height: 1.1; opacity: 0; transform: scale(1.05) translateY(15px);
-      animation: titleReveal 3s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards; text-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 60px rgba(0,0,0,0.8), 0 2px 10px rgba(0,0,0,1);
+    .concept-section {
+      padding: clamp(7rem, 15vh, 12rem) var(--px); width: 100%; max-width: 1400px; margin: 0 auto;
+      text-align: center; position: relative;
     }
-    @keyframes titleReveal { 0% { opacity: 0; transform: scale(1.05) translateY(15px); letter-spacing: -0.02em; filter: blur(25px); } 50% { opacity: 0.9; filter: blur(4px); } 100% { opacity: 1; transform: scale(1) translateY(0); letter-spacing: 0.32em; filter: blur(0px); } }
-    .hero-subtitle {
-      position: absolute; bottom: 22vh; z-index: 10; font-family: var(--font-en); font-size: clamp(0.9rem, 2.5vw, 1.2rem);
-      letter-spacing: 0.8em; color: var(--accent); text-transform: uppercase; opacity: 0; transform: translateY(10px); filter: blur(5px);
-      animation: subtitleReveal 2.2s cubic-bezier(0.16, 1, 0.3, 1) 2.2s forwards; text-shadow: 0 5px 20px rgba(0,0,0,0.9);
+    .concept-pullquote {
+      font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.3rem, 3.5vw, 2.2rem);
+      line-height: 2.2; color: var(--fg); letter-spacing: 0.1em;
+      margin-bottom: clamp(4rem, 10vh, 6rem); word-break: auto-phrase;
+      opacity: 0; filter: blur(8px); transform: translateY(30px);
+      transition: opacity 1.4s var(--ease-slow), filter 1.4s var(--ease-slow), transform 1.4s var(--ease-slow);
     }
-    @keyframes subtitleReveal { 0% { opacity: 0; transform: translateY(10px); filter: blur(5px); } 100% { opacity: 1; transform: translateY(0); filter: blur(0px); } }
+    .concept-pullquote.in-view { opacity: 1; filter: blur(0); transform: translateY(0); }
+    .concept-pullquote .accent-word { color: var(--accent); position: relative; display: inline-block; }
+    .concept-pullquote .accent-word::after {
+      content: ''; position: absolute; left: 0; bottom: -4px; width: 100%; height: 0.5px; background: rgba(196,168,130,0.5);
+    }
+    
+    .concept-body { display: flex; flex-direction: column; gap: clamp(2rem, 4vh, 3rem); max-width: 880px; margin: 0 auto; }
+    .concept-para {
+      font-size: clamp(0.95rem, 1.8vw, 1.1rem); line-height: 2.4; color: rgba(233,229,223,0.8);
+      letter-spacing: 0.08em; text-align: justify; word-break: auto-phrase;
+      opacity: 0; transform: translateY(24px); transition: opacity 1.2s var(--ease-slow) 0.2s, transform 1.2s var(--ease-slow) 0.2s;
+    }
+    .concept-para.in-view { opacity: 1; transform: translateY(0); }
+    
+    .concept-divider {
+      width: 1px; height: 60px; margin: clamp(2rem, 4vh, 3rem) auto;
+      background: linear-gradient(to bottom, transparent, var(--accent2), transparent);
+      opacity: 0; transition: opacity 1s var(--ease-slow) 0.4s;
+    }
+    .concept-divider.in-view { opacity: 0.6; }
+    
+    .concept-closing {
+      font-family: var(--font-en); font-style: italic; font-weight: 300;
+      font-size: clamp(1rem, 2vw, 1.25rem); line-height: 2; color: var(--accent); 
+      text-align: center; letter-spacing: 0.06em; margin-top: clamp(4rem, 8vh, 6rem);
+      opacity: 0; transform: translateY(20px); transition: opacity 1.2s var(--ease-slow) 0.4s, transform 1.2s var(--ease-slow) 0.4s;
+    }
+    .concept-closing.in-view { opacity: 1; transform: translateY(0); }
 
     /* ============================================================
-        CONCEPT STATEMENT
+       GALLERY GRID
     =========================================================== */
-    .statement-editorial {
-      position: relative; z-index: 10; padding: clamp(10rem, 22vh, 16rem) var(--px);
-      background: var(--bg); overflow: hidden;
-      display: flex; flex-direction: column; align-items: center;
+    .gallery-section {
+      padding: clamp(4rem, 8vh, 8rem) var(--px) clamp(8rem, 15vh, 12rem);
+      max-width: 1920px; margin: 0 auto; background: var(--bg); border-top: 0.5px solid var(--border);
     }
-    .st-bg-typo {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      font-family: var(--font-en); font-size: clamp(10rem, 28vw, 35rem); font-weight: 100;
-      color: transparent; -webkit-text-stroke: 1px rgba(233, 229, 223, 0.02);
-      white-space: nowrap; pointer-events: none; z-index: 0; letter-spacing: -0.02em;
+    .section-label {
+      font-family: var(--font-en); font-size: clamp(0.55rem, 1.2vw, 0.65rem); letter-spacing: 0.5em;
+      color: var(--muted); text-transform: uppercase; text-align: center; margin-bottom: clamp(4rem, 9vh, 7rem);
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
     }
-    .ed-container { position: relative; z-index: 2; width: 100%; max-width: 1400px; display: grid; grid-template-columns: 1fr 1fr; gap: 8vw; align-items: center; }
-    .ed-title-area { display: flex; flex-direction: column; position: relative; }
-    .ed-title-area::before { content: ''; position: absolute; left: -2vw; top: 0; width: 1px; height: 100%; background: rgba(196, 168, 130, 0.3); transform: scaleY(0); transform-origin: top; transition: transform 1.5s var(--ease-expo); }
-    .statement-editorial.in-view .ed-title-area::before { transform: scaleY(1); }
-    .ed-subtitle { font-family: var(--font-en); font-size: clamp(0.6rem, 1vw, 0.8rem); letter-spacing: 0.4em; color: var(--accent); text-transform: uppercase; margin-bottom: 2.5rem; opacity: 0; transform: translateY(20px); transition: opacity 1s ease 0.3s, transform 1s var(--ease-expo) 0.3s; }
-    .ed-title { font-size: clamp(1.4rem, 3.2vw, 3rem); line-height: 1.8; font-weight: 300; letter-spacing: 0.12em; color: var(--fg); }
-    .ed-line { display: block; overflow: hidden; margin-bottom: 0.6em; }
-    .ed-line-inner { display: block; transform: translateY(110%); opacity: 0; transition: transform 1.2s var(--ease-expo), opacity 1s ease; }
-    .statement-editorial.in-view .ed-subtitle { opacity: 1; transform: translateY(0); }
-    .statement-editorial.in-view .ed-line:nth-child(1) .ed-line-inner { transform: translateY(0); opacity: 1; transition-delay: 0.4s; }
-    .statement-editorial.in-view .ed-line:nth-child(2) .ed-line-inner { transform: translateY(0); opacity: 1; transition-delay: 0.55s; }
-    .statement-editorial.in-view .ed-line:nth-child(3) .ed-line-inner { transform: translateY(0); opacity: 1; transition-delay: 0.7s; }
-    .ed-hl { font-style: italic; color: var(--accent); font-weight: 400; }
-    .ed-body-area { display: flex; flex-direction: column; gap: 4rem; margin-top: 10vh; }
-    .ed-para { font-size: clamp(0.95rem, 1.1vw, 1.1rem); line-height: 2.5; color: var(--fg-dim); text-align: justify; position: relative; padding-left: 2vw; opacity: 0; transform: translateX(30px); transition: opacity 1.2s ease, transform 1.2s var(--ease-expo); }
-    .ed-para::before { content: ''; position: absolute; left: 0; top: 1.2em; width: 1vw; height: 1px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 1s var(--ease-expo); }
-    .statement-editorial.in-view .ed-para { opacity: 1; transform: translateX(0); }
-    .statement-editorial.in-view .ed-para::before { transform: scaleX(1); }
-    .statement-editorial.in-view .ed-para:nth-child(1) { transition-delay: 0.9s; }
-    .statement-editorial.in-view .ed-para:nth-child(1)::before { transition-delay: 1.3s; }
-    .statement-editorial.in-view .ed-para:nth-child(2) { transition-delay: 1.1s; }
-    .statement-editorial.in-view .ed-para:nth-child(2)::before { transition-delay: 1.5s; }
-
-    @media (max-width: 900px) {
-      .ed-container { grid-template-columns: 1fr; gap: 4rem; }
-      .ed-body-area { margin-top: 0; }
-      .ed-para { padding-left: 1rem; }
-      .ed-para::before { width: 0.5rem; }
-      .ed-title-area::before { left: -1rem; }
+    .section-label::after { content: ''; width: 1px; height: 24px; background: var(--border-md); }
+    
+    .gallery-grid {
+      display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: center;
+      gap: clamp(3rem, 6vw, 6rem) clamp(2rem, 4vw, 4rem);
     }
+    
+    .gallery-item {
+      display: flex; flex-direction: column; align-items: flex-start; 
+      text-decoration: none; cursor: pointer; max-width: 100%;
+      opacity: 0; transform: translateY(40px); transition: opacity 1s var(--ease-slow), transform 1s var(--ease-slow);
+    }
+    .gallery-item.in-view { opacity: 1; transform: translateY(0); }
+    
+    .gallery-item-img-wrap {
+      width: calc(var(--w-cm) * var(--cm-scale) * var(--zoom, 1));
+      height: calc(var(--h-cm) * var(--cm-scale) * var(--zoom, 1));
+      max-width: 100%; display: flex; justify-content: center; align-items: center;
+      background: #000; overflow: hidden; border: 0.5px solid var(--border);
+      position: relative; transition: border-color 0.6s var(--ease-slow), box-shadow 0.8s var(--ease-slow), transform 0.8s var(--ease-slow);
+    }
+    .gallery-item-img-wrap::before {
+      content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.2); z-index: 1; transition: background 0.6s ease;
+    }
+    .gallery-item-img-wrap img {
+      width: 100%; height: 100%; display: block; object-fit: cover; 
+      filter: grayscale(20%) contrast(1.1); transform: scale(1.02);
+      transition: transform 1.2s var(--ease-slow), filter 0.8s ease;
+    }
+    .gallery-item:hover .gallery-item-img-wrap {
+      border-color: rgba(196,168,130,0.4); box-shadow: 0 24px 50px rgba(0,0,0,0.8); transform: translateY(-8px);
+    }
+    .gallery-item:hover .gallery-item-img-wrap::before { background: transparent; }
+    .gallery-item:hover img { transform: scale(1.08); filter: grayscale(0%) contrast(1); }
+    
+    .gallery-item-cap { padding-top: 1.2rem; text-align: left; width: 100%; }
+    .gallery-item-title {
+      font-family: var(--font-ja); font-size: clamp(0.88rem, 1.4vw, 1.02rem); font-weight: 300;
+      color: var(--fg); letter-spacing: 0.05em; margin-bottom: 0.4rem; display: block; transition: color 0.4s ease;
+    }
+    .gallery-item-meta {
+      font-family: var(--font-en), var(--font-ja); font-size: clamp(0.55rem, 0.9vw, 0.65rem); 
+      color: var(--accent); letter-spacing: 0.1em; display: block; opacity: 0.9;
+    }
+    .gallery-item:hover .gallery-item-title { color: #fff; }
 
     /* ============================================================
-        WORK CHRONOLOGY (完全に重ならない超広角軌道 ＆ 進化版HUD年譜)
+       INTEGRATED CHRONOLOGY SECTION 
     =========================================================== */
     .chronology-section {
-      position: relative; z-index: 10; background: var(--bg-cave);
-      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-      padding: 6rem 0 5rem; overflow: hidden; min-height: 100vh; display: flex; flex-direction: column;
+      padding: clamp(6rem, 14vh, 12rem) var(--px);
+      background: var(--bg2); border-top: 0.5px solid var(--border); position: relative;
+    }
+    .timeline-container { max-width: 1300px; margin: 0 auto; position: relative; }
+    .timeline-spine-wrapper {
+      position: absolute; top: 0; bottom: 0; left: 50%; width: 1px;
+      background: rgba(233,229,223,0.04); transform: translateX(-50%);
+    }
+    .timeline-spine-progress {
+      position: absolute; top: 0; left: 0; width: 1px;
+      background: linear-gradient(to bottom, transparent 0%, var(--accent) 5%, var(--accent) 95%, transparent 100%);
+      height: 0%; transition: height 0.1s linear; box-shadow: 0 0 12px rgba(196,168,130,0.4);
     }
     
-    .massive-bg-year {
-      position: absolute; top: 42%; left: 50%; transform: translate(-50%, -50%);
-      font-family: var(--font-en); font-size: clamp(12rem, 30vw, 42rem); font-weight: 200;
-      color: transparent; -webkit-text-stroke: 1px rgba(196, 168, 130, 0.06);
-      z-index: 0; pointer-events: none; white-space: nowrap; letter-spacing: -0.04em;
-      transition: opacity 0.5s ease, transform 0.8s var(--ease-expo), -webkit-text-stroke-color 0.5s;
+    .tl-entry {
+      position: relative; width: 100%; margin-bottom: clamp(8rem, 18vh, 14rem);
+      opacity: 0; transform: translateY(40px); transition: opacity 1.2s var(--ease-slow), transform 1.2s var(--ease-slow);
     }
-    .massive-bg-year.is-animating {
-      opacity: 0; transform: translate(-50%, -46%) scale(0.96);
-      -webkit-text-stroke-color: rgba(196, 168, 130, 0);
-    }
-
-    .chronology-header {
-      position: relative; z-index: 20; padding: 0 var(--px) 1rem; max-width: 1600px; margin: 0 auto; width: 100%;
-      display: flex; justify-content: space-between; align-items: flex-end;
-    }
-    .chrono-title { font-family: var(--font-en); font-size: 2rem; font-weight: 300; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase; }
-    .chrono-subtitle { font-size: 0.8rem; color: var(--muted); letter-spacing: 0.1em; margin-top: 5px; }
-    .chrono-guide { font-size: 0.75rem; color: var(--accent); letter-spacing: 0.12em; opacity: 0.5; font-family: var(--font-en); text-transform: uppercase; }
-
-    .chronology-orbit-container {
-      position: relative; width: 100%; flex-grow: 1;
-      height: clamp(620px, 78vh, 1150px);
-      overflow: hidden; user-select: none; -webkit-user-select: none;
-      margin-top: 1rem; z-index: 10;
-    }
-
-    .orbit-path {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      border: 1px dashed rgba(196,168,130,0.08); border-radius: 50%; pointer-events: none; z-index: 0;
-    }
-
-    .orbit-center { position: absolute; top: 50%; left: 50%; width: 0; height: 0; z-index: 10; }
+    .tl-entry:last-child { margin-bottom: 0; }
+    .tl-entry.in-view { opacity: 1; transform: translateY(0); }
     
-    .artwork-node {
-      position: absolute; top: 0; left: 0; transform-origin: center center;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; width: max-content; 
+    .tl-year-display {
+      font-family: var(--font-en); font-size: clamp(4rem, 8vw, 6.5rem); font-weight: 300;
+      color: var(--accent); letter-spacing: 0.04em; line-height: 1;
+      margin-bottom: clamp(1.5rem, 3vh, 2.5rem); padding-left: 2%; opacity: 0.9; text-shadow: 0 10px 30px rgba(196,168,130,0.15);
     }
+    .tl-entry:nth-child(even) .tl-year-display { text-align: right; padding-right: 2%; padding-left: 0; }
+
+    .tl-content-wrap { display: flex; justify-content: space-between; align-items: center; gap: clamp(3rem, 6vw, 8rem); }
+    .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
     
-    /* ============================================================
-        新設：スタイリッシュなタイポグラフィ型 年号バッジ（画像の外・上部に配置）
-    =========================================================== */
-    .art-year-container {
-      position: relative; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; z-index: 5; pointer-events: none;
+    .tl-figure {
+      width: 54%; position: relative; border: 0.5px solid var(--border);
+      overflow: hidden; background: #000; cursor: zoom-in; transition: width 0.6s var(--ease-slow);
     }
-    .art-year-text {
-      font-family: var(--font-en); font-size: 1.1rem; font-weight: 300; letter-spacing: 0.2em;
-      color: var(--fg); text-shadow: 0 0 10px rgba(255,255,255,0.1); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-      opacity: 0.3; display: flex; align-items: center; gap: 12px;
-    }
-    .art-year-text::before, .art-year-text::after {
-      content: ''; display: block; width: 15px; height: 1px; background: rgba(233, 229, 223, 0.2); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .art-year-connector {
-      width: 1px; height: 12px; background: var(--fg); margin-top: 6px; opacity: 0.15; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .artwork-node.is-front .art-year-text {
-      font-size: 1.8rem; font-weight: 300; color: var(--accent); opacity: 1;
-      text-shadow: 0 0 25px rgba(196, 168, 130, 0.5); transform: translateY(-5px);
-    }
-    .artwork-node.is-front .art-year-text::before, .artwork-node.is-front .art-year-text::after {
-      width: 45px; background: var(--accent); box-shadow: 0 0 10px var(--accent);
-    }
-    .artwork-node.is-front .art-year-connector {
-      height: 25px; opacity: 0.8; background: var(--accent); box-shadow: 0 0 10px var(--accent);
-    }
-
-    .art-frame {
-      position: relative; width: max-content; box-shadow: 0 45px 85px rgba(0,0,0,0.95);
-      border: 1px solid rgba(233, 229, 223, 0.12); cursor: pointer;
-      background: transparent; transition: border-color 0.5s, box-shadow 0.5s;
-    }
-    .artwork-node.is-front .art-frame { border-color: rgba(196, 168, 130, 0.5); box-shadow: 0 50px 100px rgba(196, 168, 130, 0.15); }
+    .tl-body { width: 40%; position: relative; z-index: 2; transition: width 0.6s var(--ease-slow); }
     
-    .art-frame img {
-      height: calc(clamp(250px, 52vh, 540px) * var(--size-scale, 1)) !important;
-      width: auto !important; display: block; transition: transform 1.5s var(--ease-slow);
-      -webkit-user-drag: none; pointer-events: auto;
-    }
-    .art-frame:hover img { transform: scale(1.03); }
+    /* Layout Variants */
+    .tl-entry.is-f100-h .tl-figure { width: 60%; aspect-ratio: 162.1 / 130.3; }
+    .tl-entry.is-f100-h .tl-body  { width: 34%; }
+    .tl-entry.is-f100-v .tl-figure { width: 44%; aspect-ratio: 130.3 / 162.1; }
+    .tl-entry.is-f100-v .tl-body  { width: 50%; }
+    .tl-entry.is-s100 .tl-figure { width: 50%; aspect-ratio: 1 / 1; }
+    .tl-entry.is-s100 .tl-body  { width: 44%; }
+    .tl-entry.is-f50-v .tl-figure { width: 38%; aspect-ratio: 91 / 116.7; }
+    .tl-entry.is-f50-v .tl-body  { width: 56%; }
+
+    /* M+P100縦 結合 (超横長レイアウト) */
+    .tl-entry.is-mp100-h .tl-content-wrap { flex-direction: column; align-items: center; gap: 4rem; }
+    .tl-entry.is-mp100-h .tl-year-display { text-align: center; padding: 0; }
+    .tl-entry.is-mp100-h .tl-figure { width: 100%; max-width: 1100px; aspect-ratio: 209.1 / 162.1; }
+    .tl-entry.is-mp100-h .tl-body { width: 100%; max-width: 900px; text-align: center; }
+    .tl-entry.is-mp100-h .tl-meta { border-bottom: none; border-top: 0.5px solid var(--border-md); padding-top: 1.5rem; }
     
-    .art-caption { 
-      margin-top: 24px; min-width: 240px; display: flex; flex-direction: column; 
-      align-items: center; text-align: center;
-      opacity: 0; transform: translateY(15px);
-      transition: opacity 0.5s var(--ease-expo), transform 0.5s var(--ease-expo);
-      pointer-events: none;
+    .tl-figure::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.15); transition: background 0.6s ease; pointer-events: none; }
+    .tl-figure img {
+      width: 100%; height: 100%; display: block; object-fit: cover; filter: grayscale(15%) contrast(1.05); transform: scale(1.01);
+      transition: transform 1.2s var(--ease-slow), filter 0.8s ease;
     }
-    .artwork-node.is-front .art-caption { opacity: 1; transform: translateY(0); pointer-events: auto; }
-
-    .art-node-title { font-size: 1.15rem; font-weight: 300; letter-spacing: 0.08em; color: var(--fg); }
-    .art-node-meta { font-family: var(--font-en); font-size: 0.75rem; letter-spacing: 0.05em; color: var(--accent); margin-top: 4px; line-height: 1.5; }
-
-    .caption-deco-line {
-      width: 40px; height: 1px; background: var(--accent); margin: 10px 0 0; position: relative; opacity: 0.4;
+    .tl-figure:hover::after { background: transparent; }
+    .tl-figure:hover img { transform: scale(1.05); filter: grayscale(0%) contrast(1); }
+    
+    .tl-title { font-family: var(--font-ja); font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 300; color: var(--fg); line-height: 1.4; margin-bottom: 0.8rem; letter-spacing: 0.05em; }
+    .tl-meta { 
+      font-family: var(--font-en), var(--font-ja); font-size: clamp(0.65rem, 1vw, 0.75rem); 
+      color: var(--accent); letter-spacing: 0.1em; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border-md);
     }
-    .caption-deco-line::before { content: ''; position: absolute; left: 50%; top: -3px; width: 3px; height: 3px; border-radius: 50%; background: var(--fg); transform: translateX(-50%); }
+    .tl-desc { font-size: clamp(0.88rem, 1.6vw, 0.98rem); line-height: 2.2; color: rgba(233,229,223,0.74); text-align: justify; word-break: auto-phrase; }
+    .tl-desc p { margin-bottom: 1.4em; }
+    .tl-desc p:last-child { margin-bottom: 0; }
+
+    /* Typewriter Style */
+    .tw-char { opacity: 0; display: inline-block; transform: translateY(4px); transition: opacity 0.4s var(--ease-fluid), transform 0.4s var(--ease-fluid); }
+    .tw-cursor { display: inline-block; width: 1px; height: 1em; background-color: var(--accent); margin-left: 4px; vertical-align: baseline; animation: tw-blink 1s infinite; }
+    @keyframes tw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .fade-out { opacity: 0; transition: opacity 0.8s ease; }
 
     /* ============================================================
-        左右コントロールボタン（完全フローティング＆巨大化）
+       CONTACT & FOOTER
     =========================================================== */
-    .chrono-nav-btn { 
-      position: absolute; top: 40%; transform: translateY(-50%);
-      width: clamp(64px, 6vw, 84px); height: clamp(64px, 6vw, 84px);
-      border-radius: 50%; border: 1px solid rgba(196, 168, 130, 0.25); 
-      background: rgba(6, 8, 6, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      display: flex; align-items: center; justify-content: center; 
-      z-index: 200; /* 作品群より完全に手前 */
-      transition: all 0.4s var(--ease-fluid); 
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    .contact-section {
+      position: relative; padding: clamp(8rem, 16vh, 14rem) var(--px); text-align: center;
+      border-top: 0.5px solid var(--border); background: var(--bg); overflow: hidden;
     }
-    .chrono-nav-btn.prev { left: clamp(1rem, 4vw, 4rem); }
-    .chrono-nav-btn.next { right: clamp(1rem, 4vw, 4rem); }
-    .chrono-nav-btn:hover { 
-      border-color: var(--accent); background: rgba(196, 168, 130, 0.16); 
-      transform: translateY(-50%) scale(1.08); box-shadow: 0 0 30px rgba(196, 168, 130, 0.35);
+    .contact-section::before {
+      content: ''; position: absolute; inset: 0; z-index: 0;
+      background: url('images/【F100横】林.jpg') center/cover no-repeat;
+      opacity: 0.12; filter: blur(4px) brightness(0.6) contrast(1.2); pointer-events: none;
     }
-    .chrono-nav-btn:active { transform: translateY(-50%) scale(0.96); }
-
-    .btn-stroke-arrow { position: absolute; width: 14px; height: 14px; border-top: 2px solid var(--accent); border-left: 2px solid var(--accent); transition: all 0.4s var(--ease-fluid); }
-    .chrono-nav-btn.prev .btn-stroke-arrow { transform: rotate(-45deg); left: calc(50% - 5px); }
-    .chrono-nav-btn.next .btn-stroke-arrow { transform: rotate(135deg); right: calc(50% - 5px); }
-    .chrono-nav-btn:hover .btn-stroke-arrow { border-color: #ffffff; }
-
-    /* ============================================================
-        HUD年譜タイムライン（特大サイズ＆スクロール追従）
-    =========================================================== */
-    .chrono-timeline-hud {
-      position: relative; width: 100%; max-width: 1100px; margin: 3rem auto 0; padding: 0 40px; z-index: 30; user-select: none;
+    .contact-section::after {
+      content: ''; position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(to bottom, var(--bg) 0%, transparent 40%, transparent 60%, var(--bg) 100%); pointer-events: none;
     }
-    .tl-hud-scroll-container {
-      width: 100%; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding: 24px 0;
-    }
-    .tl-hud-scroll-container::-webkit-scrollbar { display: none; }
-    .tl-hud-inner-track {
-      position: relative; display: flex; justify-content: space-between; min-width: 100%; gap: 20px; padding: 0 30px;
-    }
-    .tl-hud-line {
-      position: absolute; top: calc(50% + 20px); left: 30px; right: 30px; height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(196, 168, 130, 0.25) 15%, rgba(196, 168, 130, 0.25) 85%, transparent);
-      transform: translateY(-50%); z-index: 1;
-    }
-    .tl-hud-item {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      background: none; border: none; cursor: pointer; 
-      width: clamp(64px, 6.5vw, 86px); height: clamp(75px, 8vh, 95px); /* ゆったりと押しやすいサイズ */
-      color: var(--muted); position: relative; z-index: 5; flex-shrink: 0;
-    }
-    .tl-hud-item span {
-      font-family: var(--font-en); font-size: clamp(1.1rem, 1.4vw, 1.4rem); /* テキストを大きく美麗に */
-      letter-spacing: 0.05em; font-weight: 300; opacity: 0.35;
-      transform: translateY(0); transition: all 0.4s var(--ease-fluid);
-      position: absolute; top: 0; white-space: nowrap;
-    }
-    .tl-hud-item.is-active span, .tl-hud-item:hover span { opacity: 1; color: var(--accent); font-weight: 400; transform: translateY(-4px); }
-    .hud-dot { 
-      width: 8px; height: 8px; background: rgba(233, 229, 223, 0.3); border-radius: 50%; 
-      transition: all 0.4s var(--ease-fluid); z-index: 2; margin-top: 40px; border: 1px solid transparent;
-    }
-    .tl-hud-item.is-active .hud-dot { 
-      background: var(--accent); transform: scale(2.5); 
-      box-shadow: 0 0 16px var(--accent), 0 0 4px rgba(196, 168, 130, 0.6); 
-    }
-    .tl-hud-item:hover .hud-dot { background: #ffffff; transform: scale(1.5); }
-
-    /* ============================================================
-        UNPRECEDENTED CATALOG TRIGGER BUTTON
-    =========================================================== */
-    .unprecedented-button-container { display: flex; justify-content: center; align-items: center; padding: clamp(5rem, 10vh, 8rem) var(--px); background: var(--bg); position: relative; z-index: 10; }
-    .organic-btn {
-      position: relative; padding: 2.5rem 6.5rem; color: var(--accent); font-family: var(--font-ja); font-size: 1.15rem; letter-spacing: 0.25em; font-weight: 300; display: inline-flex; align-items: center; justify-content: center; gap: 20px; transition: color 0.5s var(--ease-slow), transform 0.3s;
-    }
-    .organic-btn .btn-text { position: relative; z-index: 2; display: inline-block; }
-    .organic-btn .btn-arrow { position: relative; z-index: 2; display: inline-block; transition: transform 0.5s var(--ease-slow); }
-    .organic-btn .blob-bg { position: absolute; inset: 0; border: 1px solid var(--accent); border-radius: 65% 35% 60% 40% / 40% 55% 45% 60%; animation: morphingBlob 8s linear infinite; transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1); background: rgba(196, 168, 130, 0.01); z-index: 1; }
-    .organic-btn .blob-bg::before { content: ''; position: absolute; inset: -8px; border: 1px solid rgba(233, 229, 223, 0.12); border-radius: 40% 60% 35% 65% / 60% 40% 60% 40%; animation: morphingBlob 12s linear infinite reverse; transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1); }
-    @keyframes morphingBlob { 0% { border-radius: 65% 35% 60% 40% / 40% 55% 45% 60%; } 50% { border-radius: 40% 60% 45% 55% / 55% 40% 60% 45%; } 100% { border-radius: 65% 35% 60% 40% / 40% 55% 45% 60%; } }
-    .organic-btn:hover { color: #ffffff; transform: scale(1.03); }
-    .organic-btn:hover .blob-bg { border-radius: 0%; border-color: var(--fg); background: rgba(196, 168, 130, 0.18); box-shadow: 0 20px 40px rgba(196, 168, 130, 0.15); }
-    .organic-btn:hover .blob-bg::before { border-radius: 0%; border-color: var(--accent); transform: scale(1.03); }
-    .organic-btn:hover .btn-arrow { transform: translateY(4px); }
-    .organic-btn.is-active:hover .btn-arrow { transform: translateY(-4px); }
+    .contact-section > * { position: relative; z-index: 2; }
     
-    .catalog-accordion-wrapper { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.8s cubic-bezier(0.16, 1, 0.3, 1); background: var(--bg); position: relative; z-index: 10; }
-    .catalog-accordion-wrapper.is-open { grid-template-rows: 1fr; border-top: 1px solid var(--border); }
-    .catalog-overflow-hidden { overflow: hidden; }
-    .catalog-section { padding: 0 var(--px); opacity: 0; transform: translateY(20px); transition: opacity 0.6s var(--ease-fluid), transform 0.6s var(--ease-fluid); }
-    .catalog-accordion-wrapper.is-open .catalog-section { padding: 6rem var(--px) 8rem; opacity: 1; transform: translateY(0); transition-delay: 0.1s; }
-    
-    /* ============================================================
-        作品リストグリッド
-    =========================================================== */
-    .catalog-grid { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 5rem 3rem; max-width: 1600px; margin: 0 auto; }
-    .catalog-item { cursor: pointer; text-align: center; display: flex; flex-direction: column; align-items: center; width: max-content; }
-    .catalog-img-wrapper { width: max-content; position: relative; margin-bottom: 1.5rem; border: 1px solid var(--border); transition: border-color 0.4s var(--ease-fluid), transform 0.4s var(--ease-fluid); background: transparent; }
-    .catalog-item-img { height: calc(260px * var(--size-scale, 1)); width: auto !important; display: block; }
-    .catalog-item:hover .catalog-img-wrapper { border-color: var(--accent); transform: translateY(-6px); box-shadow: 0 15px 35px rgba(196,168,130,0.12); }
-    .catalog-item-title { font-size: 0.95rem; color: var(--fg); font-weight: 300; letter-spacing: 0.1em; margin-bottom: 0.4rem; text-align: center; }
-    .catalog-item-meta { font-family: var(--font-en); font-size: 0.65rem; color: var(--accent); letter-spacing: 0.05em; text-align: center; }
-
-    /* ============================================================
-        FOOTER & CONTACT
-    =========================================================== */
-    .contact-section { position: relative; padding: clamp(7rem, 15vh, 12rem) var(--px); text-align: center; border-top: 1px solid var(--border); background: var(--bg); z-index: 10; }
-    .contact-heading { font-family: var(--font-ja); font-size: clamp(2rem, 4.5vw, 3.4rem); font-weight: 200; line-height: 1.3; color: var(--fg); margin-bottom: 2rem; letter-spacing: 0.08em; }
-    .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.9rem, 1.6vw, 1rem); color: rgba(233,229,223,0.55); margin: 0 auto 3.5rem; max-width: 520px; line-height: 2.4; }
-    .contact-btn { display: inline-flex; align-items: center; justify-content: center; padding: 1.3rem 4rem; background: transparent; color: var(--accent); border: 1px solid var(--accent); font-family: var(--font-en); font-size: clamp(0.65rem, 1.4vw, 0.75rem); letter-spacing: 0.3em; text-transform: uppercase; transition: all 0.5s var(--ease-slow); position: relative; overflow: hidden; z-index: 1; }
+    .contact-heading { font-family: var(--font-ja); font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 2rem; letter-spacing: 0.08em; }
+    .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.9rem, 1.8vw, 1.05rem); color: rgba(233,229,223,0.6); margin: 0 auto 3.5rem; max-width: 500px; line-height: 2.4; }
+    .contact-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+      padding: 1.4rem 4rem; background: transparent; color: var(--accent); border: 1px solid var(--accent);
+      font-family: var(--font-en); font-size: clamp(0.65rem, 1.4vw, 0.75rem); font-weight: 400;
+      letter-spacing: 0.3em; text-transform: uppercase; text-decoration: none;
+      transition: all 0.5s var(--ease-slow); position: relative; overflow: hidden;
+    }
     .contact-btn::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--accent); transform: scaleX(0); transform-origin: right; transition: transform 0.5s var(--ease-slow); z-index: -1; }
-    .contact-btn:hover { color: var(--bg); border-color: transparent; }
+    .contact-btn:hover { color: var(--bg); border-color: transparent; box-shadow: 0 16px 40px rgba(196,168,130,0.3); }
     .contact-btn:hover::before { transform: scaleX(1); transform-origin: left; }
-    footer { padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid rgba(255,255,255,0.05); background: var(--bg); position: relative; z-index: 10; }
-    .footer-logo { font-family: var(--font-ja); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.28); letter-spacing: 0.08em; }
-    .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
 
-    /* ============================================================
-        LIGHTBOX MODAL SYSTEM
-    =========================================================== */
-    .modal { position: fixed; inset: 0; z-index: 200000; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.5s var(--ease-slow), visibility 0.5s; }
-    .modal.is-active { opacity: 1; visibility: visible; }
-    .modal-bg { position: absolute; inset: 0; background: rgba(2,3,2,0.97); backdrop-filter: blur(25px); cursor: zoom-out; }
-    .modal-close { position: absolute; top: 30px; right: clamp(20px, 4vw, 40px); color: var(--fg); font-size: 2.2rem; background: none; border: none; z-index: 10; padding: 10px; cursor: pointer; transition: transform 0.4s var(--ease-expo), color 0.3s; }
-    .modal-close:hover { transform: scale(0.9) rotate(90deg); color: var(--accent); }
-    .modal-content { position: relative; z-index: 1; max-width: 88vw; max-height: 82vh; opacity: 0; transform: scale(0.96) translateY(15px); transition: all 0.7s var(--ease-slow) 0.05s; display: flex; flex-direction: column; align-items: center; }
-    .modal.is-active .modal-content { opacity: 1; transform: scale(1) translateY(0); }
-    .modal-img { max-width: 100%; max-height: 66vh; object-fit: contain; box-shadow: 0 25px 55px rgba(0,0,0,0.85); cursor: zoom-out; }
-    .modal-caption { margin-top: 25px; text-align: center; width: 100%; max-width: 700px; }
-    .modal-title { font-size: 1.15rem; font-weight: 300; letter-spacing: 0.15em; margin-bottom: 6px; color: var(--fg); }
-    .modal-detail { font-family: var(--font-en); font-size: 0.75rem; color: var(--accent); letter-spacing: 0.1em; }
-    .modal-desc { margin-top: 12px; font-size: 0.88rem; color: var(--fg-dim); text-align: justify; line-height: 1.9; }
-
-    /* ============================================================
-        RESPONSIVE DESIGN 
-    =========================================================== */
-    @media (max-width: 1024px) {
-      .art-frame img { height: calc(clamp(220px, 45vh, 420px) * var(--size-scale, 1)) !important; }
-      .chrono-nav-btn { top: 38%; }
-      .chrono-nav-btn.prev { left: 1.5rem; }
-      .chrono-nav-btn.next { right: 1.5rem; }
+    footer {
+      padding: clamp(3rem, 6vh, 5rem) var(--px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; border-top: 0.5px solid var(--border); background: var(--bg);
     }
+    .footer-logo { font-family: var(--font-ja); font-size: clamp(0.8rem, 1.8vw, 0.95rem); font-weight: 300; color: rgba(233,229,223,0.4); letter-spacing: 0.1em; }
+    .footer-copy { font-family: var(--font-en); font-size: clamp(0.55rem, 1.3vw, 0.65rem); letter-spacing: 0.25em; color: var(--dim); }
+
+    /* ============================================================
+       LIGHTBOX (MODAL) & BACK TO TOP
+    =========================================================== */
+    .image-modal { position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.55s var(--ease-slow), visibility 0.55s; }
+    .image-modal.is-active { opacity: 1; visibility: visible; }
+    .modal-bg { position: absolute; inset: 0; background: rgba(6,6,5,0.98); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); cursor: zoom-out; }
+    
+    .modal-close { position: fixed; top: clamp(1rem, 3vh, 2rem); right: var(--px); z-index: 10001; background: none; border: none; color: var(--muted); cursor: pointer; padding: 0.5rem; transition: color 0.3s ease, transform 0.3s var(--ease-slow); }
+    .modal-close:hover { color: var(--fg); transform: scale(1.1) rotate(90deg); }
+    
+    .modal-content { 
+      position: relative; z-index: 10000; width: 100vw; height: 100svh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; 
+      opacity: 0; transform: scale(0.98) translateY(10px); transition: opacity 0.6s var(--ease-slow) 0.1s, transform 0.6s var(--ease-slow) 0.1s; padding: 3rem 1rem 1rem;
+    }
+    .image-modal.is-active .modal-content { opacity: 1; transform: scale(1) translateY(0); }
+    
+    .modal-content img { max-width: 92vw; max-height: 82svh; object-fit: contain; box-shadow: 0 40px 100px rgba(0,0,0,0.9); border: 0.5px solid var(--border-md); cursor: zoom-out; }
+    
+    .modal-caption { text-align: center; padding-bottom: 2vh; }
+    .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(0.9rem, 1.4vw, 1.1rem); font-weight: 200; color: var(--fg); margin-bottom: 0.5rem; letter-spacing: 0.15em; }
+    .modal-caption-meta { font-family: var(--font-en), var(--font-ja); font-size: clamp(0.65rem, 1vw, 0.75rem); font-weight: 300; color: var(--accent); letter-spacing: 0.12em; opacity: 0.85; }
+
+    .back-to-top {
+      position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px);
+      z-index: 9000; width: clamp(64px, 10vw, 90px); height: clamp(64px, 10vw, 90px); border-radius: 50%;
+      background: rgba(196, 168, 130, 0.9); border: 1px solid var(--accent);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--bg);
+      opacity: 0; visibility: hidden; transform: translateY(20px);
+      transition: all 0.4s var(--ease-slow); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
+    }
+    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
+    .back-to-top:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-6px); }
+    .back-to-top svg { width: clamp(20px, 3vw, 32px); height: clamp(20px, 3vw, 32px); margin-bottom: 2px; }
+    .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.9rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
+
+    /* ============================================================
+       RESPONSIVE DESIGN
+    =========================================================== */
     @media (max-width: 900px) {
-      .nav-links { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(2, 3, 2, 0.98); backdrop-filter: blur(25px); flex-direction: column; justify-content: center; gap: 3.5rem; z-index: 299; transform: translateY(-100%); transition: transform 0.6s var(--ease-expo); }
-      .nav-links.is-open { transform: translateY(0); }
-      .nav-hamburger { display: block !important; }
-      .nav-cta { display: none !important; }
+      .timeline-container { padding-left: 40px; } 
+      .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2.5rem; }
+      .tl-figure, .tl-body, 
+      .tl-entry.is-f100-h .tl-figure, .tl-entry.is-f100-h .tl-body,
+      .tl-entry.is-f100-v .tl-figure, .tl-entry.is-f100-v .tl-body,
+      .tl-entry.is-s100 .tl-figure, .tl-entry.is-s100 .tl-body,
+      .tl-entry.is-f50-v .tl-figure, .tl-entry.is-f50-v .tl-body { width: 100%; }
+      
+      .tl-entry.is-mp100-h .tl-year-display { text-align: left !important; }
+      .tl-entry.is-mp100-h .tl-body { text-align: left; }
+
+      .timeline-spine-wrapper { left: 16px; transform: none; }
+      .tl-year-display, .tl-entry:nth-child(even) .tl-year-display { padding-left: 0; margin-bottom: 0.8rem; text-align: left !important; font-size: clamp(3.5rem, 10vw, 4.5rem); }
+      
+      .gallery-item-img-wrap { height: auto !important; width: 100% !important; max-width: 540px; margin: 0 auto; }
+      .gallery-item { align-items: center; width: 100%; }
+      .gallery-item-cap { text-align: center; }
     }
     @media (max-width: 768px) {
-      nav#top-nav { padding: 1rem 1.25rem; }
-      .chronology-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-      .chronology-orbit-container { height: clamp(500px, 68vh, 800px); }
-      .art-frame img { height: calc(clamp(160px, 35vh, 320px) * var(--mobile-scale, var(--size-scale))) !important; }
+      nav#top-nav { padding: 1.25rem 1.5rem; }
+      .nav-links { display: none !important; }
+      .nav-hamburger { display: block !important; }
+      .nav-cta { display: none !important; }
       
-      .chrono-nav-btn { top: 36%; width: 52px; height: 52px; }
-      .chrono-nav-btn.prev { left: 0.5rem; }
-      .chrono-nav-btn.next { right: 0.5rem; }
+      .page-nav.visible { right: 12px; opacity: 0.6; }
+      .page-nav.visible:hover { opacity: 1; }
+      .page-nav-label { display: none; }
       
-      .organic-btn { padding: 2rem 4.5rem; font-size: 1.05rem; gap: 14px; }
-      .catalog-grid { gap: 3.5rem 1.5rem; }
-      .catalog-item-img { height: calc(160px * var(--mobile-scale, var(--size-scale))); }
-      
-      /* HUD年譜のレスポンシブ最適化：横幅が狭い時は等間隔のスクロールトラックへ変化 */
-      .tl-hud-inner-track { justify-content: flex-start; gap: 32px; padding: 0 40px; }
-      .tl-hud-line { left: 40px; right: 40px; width: calc(100% - 80px); }
-      .tl-hud-item span { font-size: 0.95rem; top: -8px; }
+      .hero-title { justify-content: center; text-align: center; }
+      .hero-eyebrow, .hero-meta { justify-content: center; }
+    }
+    @media (max-width: 480px) {
+      .hero-scroll { display: none; }
+      .modal-content img { max-height: 60svh; }
+      .concept-para { text-align: left; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+      .gallery-item, .tl-entry, .reveal-fade, .char-inner { opacity: 1 !important; transform: none !important; filter: none !important; }
+      .hero-ambient { animation: none; }
     }
   </style>
 </head>
-<body>
+<body id="top">
 
   <div class="preloader" id="preloader">
     <div class="forest-mist-loader"></div>
   </div>
 
+  <div class="global-texture" aria-hidden="true"></div>
+
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="#hero" class="js-nav-link">Top</a></li>
-      <li><a href="#statement" class="js-nav-link">Statement</a></li>
-      <li><a href="#chronology" class="js-nav-link">Chronology</a></li>
-      <li><a href="#contact" class="js-nav-link">Contact</a></li>
+      <li><a href="#statement" onclick="closeMenu()">Statement</a></li>
+      <li><a href="#gallery" onclick="closeMenu()">Works</a></li>
+      <li><a href="#chronology" onclick="closeMenu()">Timeline</a></li>
     </ul>
-    <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く"><span></span><span></span><span></span></button>
-    <a href="#contact" class="nav-cta">Contact</a>
+    <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
   </nav>
 
-  <button class="pagetop-btn" id="pagetopBtn" aria-label="ページトップへ戻る"><div class="pagetop-arrow">↑</div><div class="pagetop-text">Top</div></button>
+  <nav class="page-nav" id="pageNav" aria-label="ページ内ナビゲーション">
+    <button class="page-nav-item" data-target="gallery" aria-label="Galleryへ">
+      <div class="page-nav-dot"></div><span class="page-nav-label">Gallery</span>
+    </button>
+    <button class="page-nav-item" data-target="chronology" aria-label="Timelineへ">
+      <div class="page-nav-dot"></div><span class="page-nav-label">Timeline</span>
+    </button>
+  </nav>
 
   <main>
-    <section class="hero" id="hero">
-      <div class="hero-bg-wrapper">
-        <div class="hero-layer-base"></div>
-        <div class="hero-layer-fluid"></div>
-        <div class="hero-layer-aura"></div>
-        <div class="hero-layer-vignette"></div>
+    <section class="hero">
+      <div class="hero-ambient"></div>
+      <div class="hero-overlay"></div> <div class="hero-divider" aria-hidden="true"></div>
+      
+      <div class="hero-inner">
+        <p class="hero-eyebrow" id="heroEyebrow">Series — Forest &nbsp;·&nbsp; Tracing the Essence</p>
+        <h1 class="hero-title" id="heroTitle" aria-label="森林">森林</h1>
+        <p class="hero-title-en" id="heroEn">Forest</p>
+        <div class="hero-meta" id="heroMeta">
+          <div class="hero-meta-line"></div>
+          <span class="hero-meta-text">Echoes of life into...</span>
+        </div>
       </div>
-      <h1 class="master-title">森林</h1>
-      <p class="hero-subtitle" id="heroSub">Forest</p>
+      
+      <div class="hero-scroll" id="heroScroll" aria-hidden="true">
+        <div class="hero-scroll-track">
+          <div class="hero-scroll-fill"></div>
+        </div>
+        <span class="hero-scroll-label">Scroll</span>
+      </div>
     </section>
 
-    <section class="statement-editorial reveal-anim" id="statement">
-      <div class="st-bg-typo">MATRIX</div>
-      <div class="ed-container">
-        
-        <div class="ed-title-area">
-          <p class="ed-subtitle">Concept Statement</p>
-          <h2 class="ed-title">
-            <span class="ed-line"><span class="ed-line-inner">生命の母体としての「うねり」から分岐し、</span></span>
-            <span class="ed-line"><span class="ed-line-inner">極小の筆致の集積へ。</span></span>
-            <span class="ed-line"><span class="ed-line-inner">有機的な森は、やがて<span class="ed-hl">強固な岩</span>へと接近していく。</span></span>
-          </h2>
-        </div>
+    <section class="concept-section" id="statement">
+      <p class="concept-pullquote reveal-fade">
+        生命の母体としての「うねり」から分岐し、極小の筆致の集積へ。<br>有機的な森は、やがて<span class="accent-word">強固な岩</span>へと接近していく。
+      </p>
 
-        <div class="ed-body-area">
-          <p class="ed-para">
-            そもそも、この「森林」シリーズの端緒は、生命を育む母体（マトリックス）としての森を、根源的な「うねり」として捉えることから始まりました。自然界を構成するあらゆる物質を微視的に捉えれば、すべては原子の集積と波動に還元されます。当初は、その波動力学的なエネルギーの奔流から分岐するように、画面の端から端までを一気に貫く長いストロークを用いていました。それは光や風の軌跡といった動的な要素を孕みながら、無数の幹の連なりを生み出し、空間を物理的なマチエールとして立ち上げる試みでした。
-          </p>
-          <p class="ed-para">
-            しかし近年、その表現はより微細で細かい筆致へと移行しています。無数の絵の具の粒子がキャンバス上で極限まで凝集していく過程で、私は「森はやがて岩に近づくのではないか」という確信を深めました。かつてバロック時代の人々が、人工と自然が渾然一体となったグロッタ（洞窟）や「岩の森」に宇宙の真理を見出し、物質の無限の襞（ひだ）のなかに生命の躍動を感じ取ったように。微視的な筆致の堆積は、有機的な植物相を、悠久の地質学的時間を内包した強固な鉱物へと変容させます。それは単なる風景の表象を超え、生命と無機物、波と粒子が交錯する、世界（あるいは単位世界）そのものの構造をキャンバスに現前させる行為なのです。
-          </p>
-        </div>
+      <div class="concept-body">
+        <p class="concept-para reveal-fade">
+          そもそも、この「森林」シリーズの端緒は、生命を育む母体（マトリックス）としての森を、根源的な「うねり」として捉えることから始まりました。自然界を構成するあらゆる物質を微視的に捉えれば、すべては原子の集積と波動に還元されます。当初は、その波動力学的なエネルギーの奔流から分岐するように、画面の端から端までを一気に貫く長いストロークを用いていました。それは光や風の軌跡といった動的な要素を孕みながら、無数の幹の連なりを生み出し、空間を物理的なマチエールとして立ち上げる試みでした。
+        </p>
+
+        <div class="concept-divider reveal-fade" aria-hidden="true"></div>
+
+        <p class="concept-para reveal-fade">
+          しかし近年、その表現はより微細で細かい筆致へと移行しています。無数の絵の具の粒子がキャンバス上で極限まで凝集していく過程で、私は「森はやがて岩に近づくのではないか」という確信を深めました。かつてバロック時代の人々が、人工と自然が渾然一体となったグロッタ（洞窟）や「岩の森」に宇宙の真理を見出し、物質の無限の襞（ひだ）のなかに生命の躍動を感じ取ったように。微視的な筆致の堆積は、有機的な植物相を、悠久の地質学的時間を内包した強固な鉱物へと変容させます。それは単なる風景の表象を超え、生命と無機物、波と粒子が交錯する、世界そのものの構造をキャンバスに現前させる行為なのです。
+        </p>
+      </div>
+
+      <p class="concept-closing reveal-fade">— Tsuda Shoichi</p>
+    </section>
+
+    <section class="gallery-section" id="gallery">
+      <div class="section-label">Works Index</div>
+      <div class="gallery-grid">
+        
+        <a href="#work-hayashi3" class="gallery-item js-scroll-link" style="--w-cm: 209.1; --h-cm: 162.1;">
+          <div class="gallery-item-img-wrap"><img src="images/【M+P100縦】林(3)20251128.jpg" alt="林(3)" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">林(3)</span>
+            <span class="gallery-item-meta">2026 / 162.1 × 209.1 cm / Oil on canvas</span>
+          </div>
+        </a>
+
+        <a href="#work-mori2025" class="gallery-item js-scroll-link" style="--w-cm: 162.1; --h-cm: 130.3;">
+          <div class="gallery-item-img-wrap"><img src="images/【F100横】森20251217.jpg" alt="森" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">森</span>
+            <span class="gallery-item-meta">2025 / 130.3 × 162.1 cm / Oil on canvas</span>
+          </div>
+        </a>
+
+        <a href="#work-f6-yoko" class="gallery-item js-scroll-link" style="--w-cm: 41.0; --h-cm: 31.8; --zoom: 2.4;">
+          <div class="gallery-item-img-wrap"><img src="images/【F6横】森（川久保沢）.jpg" alt="森（川久保沢）" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">森（川久保沢）</span>
+            <span class="gallery-item-meta">2022 / 31.8 × 41.0 cm / Oil on canvas</span>
+          </div>
+        </a>
+
+        <a href="#work-f8-tate" class="gallery-item js-scroll-link" style="--w-cm: 38.0; --h-cm: 45.5; --zoom: 2.4;">
+          <div class="gallery-item-img-wrap"><img src="images/【F8縦】森.jpg" alt="森" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">森</span>
+            <span class="gallery-item-meta">2022 / 45.5 × 38.0 cm / Oil on canvas</span>
+          </div>
+        </a>
+
+        <a href="#work-img8731" class="gallery-item js-scroll-link" style="--w-cm: 130.3; --h-cm: 162.1;">
+          <div class="gallery-item-img-wrap"><img src="images/IMG_8731.JPG" alt="無題" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">無題</span>
+            <span class="gallery-item-meta">2022 / 162.1 × 130.3 cm / Oil on canvas</span>
+          </div>
+        </a>
+
+        <a href="#work-yamanonaka" class="gallery-item js-scroll-link" style="--w-cm: 130.3; --h-cm: 162.1;">
+          <div class="gallery-item-img-wrap"><img src="images/【F100縦】山の中.jpg" alt="山の中" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">山の中</span>
+            <span class="gallery-item-meta">2022 / 162.1 × 130.3 cm / Oil on canvas</span>
+          </div>
+        </a>
+
+        <a href="#work-hayashi2" class="gallery-item js-scroll-link" style="--w-cm: 162.1; --h-cm: 130.3;">
+          <div class="gallery-item-img-wrap"><img src="images/【F100横】林(2).jpg" alt="林(2)" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">林(2)</span>
+            <span class="gallery-item-meta">2021 / 130.3 × 162.1 cm / Oil on canvas</span>
+          </div>
+        </a>
+
+        <a href="#work-morinoibuki-s100" class="gallery-item js-scroll-link" style="--w-cm: 162.1; --h-cm: 162.1;">
+          <div class="gallery-item-img-wrap"><img src="images/【S100】森（の息吹）.jpg" alt="森（の息吹）(2)" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">森（の息吹）(2)</span>
+            <span class="gallery-item-meta">2021 / 162.1 × 162.1 cm / Oil on canvas</span>
+          </div>
+        </a>
+
+        <a href="#work-morinoibuki-yoko" class="gallery-item js-scroll-link" style="--w-cm: 162.1; --h-cm: 130.3;">
+          <div class="gallery-item-img-wrap"><img src="images/【F100横】森（の息吹）.jpg" alt="森（の息吹）" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">森（の息吹）</span>
+            <span class="gallery-item-meta">2021 / 130.3 × 162.1 cm / Oil on canvas</span>
+          </div>
+        </a>
+
+        <a href="#work-hayashi-tate" class="gallery-item js-scroll-link" style="--w-cm: 130.3; --h-cm: 162.1;">
+          <div class="gallery-item-img-wrap"><img src="images/【F100縦】林.JPG" alt="林(2)" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">林(2)</span>
+            <span class="gallery-item-meta">2021 / 162.1 × 130.3 cm / Oil on canvas</span>
+          </div>
+        </a>
+
+        <a href="#work-hayashi-yoko" class="gallery-item js-scroll-link" style="--w-cm: 162.1; --h-cm: 130.3;">
+          <div class="gallery-item-img-wrap"><img src="images/【F100横】林.jpg" alt="林" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">林</span>
+            <span class="gallery-item-meta">2021 / 130.3 × 162.1 cm / Oil on canvas</span>
+          </div>
+        </a>
+
+        <a href="#work-uneri" class="gallery-item js-scroll-link" style="--w-cm: 91.0; --h-cm: 116.7;">
+          <div class="gallery-item-img-wrap"><img src="images/【F50縦】うねり.jpg" alt="うねり" loading="lazy"></div>
+          <div class="gallery-item-cap">
+            <span class="gallery-item-title">うねり</span>
+            <span class="gallery-item-meta">2018 / 116.7 × 91.0 cm / Oil on canvas</span>
+          </div>
+        </a>
 
       </div>
     </section>
 
     <section class="chronology-section" id="chronology">
-      <div class="massive-bg-year" id="massiveYear">2026</div>
-
-      <button class="chrono-nav-btn prev" id="arrowPrev" aria-label="左回転（長押し連続）">
-        <div class="btn-stroke-arrow"></div>
-      </button>
-      <button class="chrono-nav-btn next" id="arrowNext" aria-label="右回転（長押し連続）">
-        <div class="btn-stroke-arrow"></div>
-      </button>
-
-      <div class="chronology-header">
-        <div>
-          <h2 class="chrono-title">Chronology</h2>
-          <p class="chrono-subtitle">森林系列作品年譜 — 2018-2026</p>
+      <div class="timeline-container">
+        <div class="timeline-spine-wrapper">
+          <div class="timeline-spine-progress" id="tl-spine-fill"></div>
         </div>
-        <div class="chrono-guide">
-          <span>← Drag, Hold Arrow, or Click HUD timeline →</span>
-        </div>
-      </div>
 
-      <div class="chronology-orbit-container" id="chronoContainer">
-        <div class="orbit-path" id="orbitPath"></div>
-        <div class="orbit-center" id="orbitTrack">
-          
-          <article class="artwork-node" style="--size-scale: 1.0; --mobile-scale: 1.0;" data-jp="林(3)" data-meta="162.1 × 209.1 cm / Oil on canvas" data-year="2026" data-desc="大型の縦型カンヴァスを連結させた圧倒的なスケール感を持つ大作。画面の端から端までを一気に貫く長いストローク。">
-            <div class="art-year-container">
-              <div class="art-year-text">2026</div>
-              <div class="art-year-connector"></div>
-            </div>
-            <div class="art-frame">
+        <article class="tl-entry is-mp100-h" id="work-hayashi3">
+          <div class="tl-year-display">2026</div>
+          <div class="tl-content-wrap">
+             <div class="tl-figure js-modal-open" data-img-src="images/【M+P100縦】林(3)20251128.jpg">
               <img src="images/【M+P100縦】林(3)20251128.jpg" alt="林(3)" loading="lazy">
+             </div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">林 (3)</h3>
+              <p class="tl-meta">162.1 × 209.1 cm / Oil on canvas</p>
+               <div class="tl-desc">
+                <p>大型の縦型カンヴァスを連結させた圧倒的なスケール感を持つ大作です。画面の端から端までを一気に貫く長いストロークが、樹皮を流れ落ちる雨水や木立を吹き抜ける風の軌跡を視覚化しています。</p>
+                <p>青と赤の複雑な階調が、静寂の中に潜む森の「息づかい」と空間の奥行きを鑑賞者に迫り出させる、本シリーズの一つの到達点と言える作品です。</p>
+              </div>
             </div>
-            <div class="art-caption">
-              <h3 class="art-node-title">林(3)</h3>
-              <p class="art-node-meta">162.1 × 209.1 cm / Oil on canvas</p>
-              <div class="caption-deco-line"></div>
-            </div>
-          </article>
+          </div>
+        </article>
 
-          <article class="artwork-node" style="--size-scale: 0.82; --mobile-scale: 0.95;" data-jp="森" data-meta="130.3 × 162.1 cm / Oil on canvas" data-year="2025" data-desc="三水の森が内包する複雑な生態系と地脈のエネルギーが、幾重にも重なる鋭利な筆致によってカンヴァスに定着した作品。">
-            <div class="art-year-container">
-              <div class="art-year-text">2025</div>
-              <div class="art-year-connector"></div>
+        <article class="tl-entry is-f100-h" id="work-mori2025">
+          <div class="tl-year-display">2025</div>
+          <div class="tl-content-wrap">
+            <div class="tl-figure js-modal-open" data-img-src="images/【F100横】森20251217.jpg">
+              <img src="images/【F100横】森20251217.jpg" alt="森2025" loading="lazy">
             </div>
-            <div class="art-frame">
-              <img src="images/【F100横】森20251217.jpg" alt="森" loading="lazy">
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">森</h3>
+              <p class="tl-meta">130.3 × 162.1 cm / Oil on canvas</p>
+              <div class="tl-desc">
+                <p>三水の森が内包する複雑な生態系と地脈のエネルギーが、幾重にも重なる鋭利な筆致によってカンヴァスに定着した作品です。</p>
+                <p>具体的な形への依存を手放し、手の痕跡とキャンバスの端から端へと続くストロークだけを純粋に追いかけた結果、幾何学的でありながらも有機的な熱を帯びた「森の構造」が析出されました。</p>
+              </div>
             </div>
-            <div class="art-caption">
-              <h3 class="art-node-title">森</h3>
-              <p class="art-node-meta">130.3 × 162.1 cm / Oil on canvas</p>
-              <div class="caption-deco-line"></div>
-            </div>
-          </article>
+          </div>
+        </article>
 
-          <article class="artwork-node" style="--size-scale: 0.45; --mobile-scale: 0.65;" data-jp="森（川久保沢）" data-meta="31.8 × 41.0 cm / Oil on canvas" data-year="2022" data-desc="身近な自然から直感的に色と形を拾い上げた初期の小品。ストロークの勢いがキャンバスに生々しく残っています。">
-            <div class="art-year-container">
-              <div class="art-year-text">2022</div>
-              <div class="art-year-connector"></div>
-            </div>
-            <div class="art-frame">
-              <img src="images/【F6横】森（川久保沢）.jpg" alt="森（川久保沢）" loading="lazy">
-            </div>
-            <div class="art-caption">
-              <h3 class="art-node-title">森（川久保沢）</h3>
-              <p class="art-node-meta">31.8 × 41.0 cm / Oil on canvas</p>
-              <div class="caption-deco-line"></div>
-            </div>
-          </article>
-
-          <article class="artwork-node" style="--size-scale: 0.58; --mobile-scale: 0.78;" data-jp="森" data-meta="45.5 × 38.0 cm / Oil on canvas" data-year="2022" data-desc="縦長の構図の中に木々の垂直性を強調し、密度の高い空間を描き出しています。">
-            <div class="art-year-container">
-              <div class="art-year-text">2022</div>
-              <div class="art-year-connector"></div>
-            </div>
-            <div class="art-frame">
-              <img src="images/【F8縦】森.jpg" alt="森" loading="lazy">
-            </div>
-            <div class="art-caption">
-              <h3 class="art-node-title">森</h3>
-              <p class="art-node-meta">45.5 × 38.0 cm / Oil on canvas</p>
-              <div class="caption-deco-line"></div>
-            </div>
-          </article>
-
-          <article class="artwork-node" style="--size-scale: 0.88; --mobile-scale: 0.95;" data-jp="無題" data-meta="162.1 × 130.3 cm / Oil on canvas" data-year="2022" data-desc="柔らかな光を帯びた有機的な塊が、闇の奥底からうごめくように立ち上がる作品。">
-            <div class="art-year-container">
-              <div class="art-year-text">2022</div>
-              <div class="art-year-connector"></div>
-            </div>
-            <div class="art-frame">
+        <article class="tl-entry is-f100-v" id="work-img8731">
+          <div class="tl-year-display">2022</div>
+          <div class="tl-content-wrap">
+             <div class="tl-figure js-modal-open" data-img-src="images/IMG_8731.JPG">
               <img src="images/IMG_8731.JPG" alt="無題" loading="lazy">
             </div>
-            <div class="art-caption">
-              <h3 class="art-node-title">無題</h3>
-              <p class="art-node-meta">162.1 × 130.3 cm / Oil on canvas</p>
-              <div class="caption-deco-line"></div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">無題</h3>
+              <p class="tl-meta">162.1 × 130.3 cm / Oil on canvas</p>
+               <div class="tl-desc">
+                <p>柔らかな光を帯びた有機的な塊が、闇の奥底からうごめくように立ち上がる作品。特定の植物や地形を描いたものではなく、絵の具の物質性と長いストロークの反復の中で生まれました。まるで森林が隠し持つ骨格や内臓のような、生々しくも神聖な気配を孕んでいます。</p>
+              </div>
             </div>
-          </article>
+          </div>
+        </article>
 
-          <article class="artwork-node" style="--size-scale: 0.88; --mobile-scale: 0.95;" data-jp="山の中" data-meta="162.1 × 130.3 cm / Oil on canvas" data-year="2022" data-desc="深い森の奥で交錯する光と影の空間を一度解体し、再構築したかのようなアプローチ。">
-            <div class="art-year-container">
-              <div class="art-year-text">2022</div>
-              <div class="art-year-connector"></div>
-            </div>
-            <div class="art-frame">
+        <article class="tl-entry is-f100-v" id="work-yamanonaka">
+          <div class="tl-year-display">2022</div>
+          <div class="tl-content-wrap">
+             <div class="tl-figure js-modal-open" data-img-src="images/【F100縦】山の中.jpg">
               <img src="images/【F100縦】山の中.jpg" alt="山の中" loading="lazy">
             </div>
-            <div class="art-caption">
-              <h3 class="art-node-title">山の中</h3>
-              <p class="art-node-meta">162.1 × 130.3 cm / Oil on canvas</p>
-              <div class="caption-deco-line"></div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">山の中</h3>
+              <p class="tl-meta">162.1 × 130.3 cm / Oil on canvas</p>
+               <div class="tl-desc">
+                <p>深い森の奥で交錯する光と影の空間を一度解体し、再構築したかのようなアプローチ。色彩は沈み込み、青と灰色の重厚なマチエールが画面を支配しています。視覚的風景というよりは、山中という「場」が持つ重力や湿度の記憶そのものを定着させる試みです。</p>
+              </div>
             </div>
-          </article>
+          </div>
+        </article>
 
-          <article class="artwork-node" style="--size-scale: 0.82; --mobile-scale: 0.92;" data-jp="林(2)" data-meta="130.3 × 162.1 cm / Oil on canvas" data-year="2021" data-desc="森が内包する生命のエネルギーそのものを鮮烈な色彩として抽出した作品。ピンクやシアンのストローク。">
-            <div class="art-year-container">
-              <div class="art-year-text">2021</div>
-              <div class="art-year-connector"></div>
-            </div>
-            <div class="art-frame">
+        <article class="tl-entry is-f100-h" id="work-hayashi2">
+          <div class="tl-year-display">2021</div>
+          <div class="tl-content-wrap">
+             <div class="tl-figure js-modal-open" data-img-src="images/【F100横】林(2).jpg">
               <img src="images/【F100横】林(2).jpg" alt="林(2)" loading="lazy">
             </div>
-            <div class="art-caption">
-              <h3 class="art-node-title">林(2)</h3>
-              <p class="art-node-meta">130.3 × 162.1 cm / Oil on canvas</p>
-              <div class="caption-deco-line"></div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">林 (2)</h3>
+              <p class="tl-meta">130.3 × 162.1 cm / Oil on canvas</p>
+               <div class="tl-desc">
+                <p>現実の固有色から完全に解放され、森が内包する生命のエネルギーそのものを鮮烈な色彩として抽出した作品です。画面全体を縦に貫くピンクやシアンの長いストロークは、網膜に映る単なる視覚的風景を超え、見る者の神経系に直接訴えかけてくるようなプリミティブな躍動感に満ちています。</p>
+              </div>
             </div>
-          </article>
+          </div>
+        </article>
 
-          <article class="artwork-node" style="--size-scale: 0.92; --mobile-scale: 0.98;" data-jp="森（の息吹）(2)" data-meta="162.1 × 162.1 cm / Oil on canvas" data-year="2021" data-desc="正方形の特異な画面の中で、色彩が渦を巻くように中心へと収束していく力強いコンポジション。">
-            <div class="art-year-container">
-              <div class="art-year-text">2021</div>
-              <div class="art-year-connector"></div>
-            </div>
-            <div class="art-frame">
+        <article class="tl-entry is-s100" id="work-morinoibuki-s100">
+          <div class="tl-year-display">2021</div>
+          <div class="tl-content-wrap">
+             <div class="tl-figure js-modal-open" data-img-src="images/【S100】森（の息吹）.jpg">
               <img src="images/【S100】森（の息吹）.jpg" alt="森（の息吹）(2)" loading="lazy">
             </div>
-            <div class="art-caption">
-              <h3 class="art-node-title">森（の息吹）(2)</h3>
-              <p class="art-node-meta">162.1 × 162.1 cm / Oil on canvas</p>
-              <div class="caption-deco-line"></div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">森（の息吹）(2)</h3>
+              <p class="tl-meta">162.1 × 162.1 cm / Oil on canvas</p>
+               <div class="tl-desc">
+                <p>正方形の特異な画面の中で、色彩が渦を巻くように中心へと収束していく力強いコンポジション。端から端へと大胆に伸びる筆致が描くという身体的行為のリズムを刻み、そのままカンヴァス上の「息吹」として結実しています。</p>
+              </div>
             </div>
-          </article>
-          
-          <article class="artwork-node" style="--size-scale: 0.82; --mobile-scale: 0.92;" data-jp="森（の息吹）" data-meta="130.3 × 162.1 cm / Oil on canvas" data-year="2021" data-desc="森林を単なる自然環境としてではなく、一つの巨大な「胎内」として捉え直した作品です。">
-            <div class="art-year-container">
-              <div class="art-year-text">2021</div>
-              <div class="art-year-connector"></div>
-            </div>
-            <div class="art-frame">
+          </div>
+        </article>
+
+        <article class="tl-entry is-f100-h" id="work-morinoibuki-yoko">
+          <div class="tl-year-display">2021</div>
+          <div class="tl-content-wrap">
+             <div class="tl-figure js-modal-open" data-img-src="images/【F100横】森（の息吹）.jpg">
               <img src="images/【F100横】森（の息吹）.jpg" alt="森の息吹" loading="lazy">
             </div>
-            <div class="art-caption">
-              <h3 class="art-node-title">森（の息吹）</h3>
-              <p class="art-node-meta">130.3 × 162.1 cm / Oil on canvas</p>
-              <div class="caption-deco-line"></div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">森（の息吹）</h3>
+              <p class="tl-meta">130.3 × 162.1 cm / Oil on canvas</p>
+               <div class="tl-desc">
+                <p>森林を単なる自然環境としてではなく、一つの巨大な「胎内」として捉え直した作品です。なめらかで官能的な曲面を持つストロークが絡み合い、画面の奥深くへと視線を誘い込みます。風景画でありながら、脈打つ肉体としての温もりを強く感じさせる仕上がりとなっています。</p>
+              </div>
             </div>
-          </article>
+          </div>
+        </article>
 
-          <article class="artwork-node" style="--size-scale: 0.88; --mobile-scale: 0.95;" data-jp="林(2)" data-meta="162.1 × 130.3 cm / Oil on canvas" data-year="2021" data-desc="白く差し込む光のようなストロークが、木立の隙間を抜ける空気の冷たさと透明感を表現。">
-            <div class="art-year-container">
-              <div class="art-year-text">2021</div>
-              <div class="art-year-connector"></div>
+        <article class="tl-entry is-f100-v" id="work-hayashi-tate">
+          <div class="tl-year-display">2021</div>
+          <div class="tl-content-wrap">
+             <div class="tl-figure js-modal-open" data-img-src="images/【F100縦】林.JPG">
+              <img src="images/【F100縦】林.JPG" alt="林" loading="lazy">
             </div>
-            <div class="art-frame">
-              <img src="images/【F100縦】林.JPG" alt="林 縦" loading="lazy">
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">林 (2)</h3>
+              <p class="tl-meta">162.1 × 130.3 cm / Oil on canvas</p>
+               <div class="tl-desc">
+                <p>白く差し込む光のようなストロークが、木立の隙間を抜ける空気の冷たさと透明感を見事に表現しています。油彩特有の粘り気を残しながらも、上方に向かって薄れていく幹の連なりが、物質の境界が溶けていくような神秘的な空間を創り出しています。</p>
+              </div>
             </div>
-            <div class="art-caption">
-              <h3 class="art-node-title">林(2)</h3>
-              <p class="art-node-meta">162.1 × 130.3 cm / Oil on canvas</p>
-              <div class="caption-deco-line"></div>
-            </div>
-          </article>
+          </div>
+        </article>
 
-          <article class="artwork-node" style="--size-scale: 0.82; --mobile-scale: 0.92;" data-jp="林" data-meta="130.3 × 162.1 cm / Oil on canvas" data-year="2021" data-desc="水平方向への広がりを意識した構図の中に、縦に貫く長いストロークによる微細な色彩の揺らぎ。">
-            <div class="art-year-container">
-              <div class="art-year-text">2021</div>
-              <div class="art-year-connector"></div>
+        <article class="tl-entry is-f100-h" id="work-hayashi-yoko">
+          <div class="tl-year-display">2021</div>
+          <div class="tl-content-wrap">
+             <div class="tl-figure js-modal-open" data-img-src="images/【F100横】林.jpg">
+              <img src="images/【F100横】林.jpg" alt="林 横" loading="lazy">
             </div>
-            <div class="art-frame">
-              <img src="images/【F100横】林.jpg" alt="林" loading="lazy">
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">林</h3>
+              <p class="tl-meta">130.3 × 162.1 cm / Oil on canvas</p>
+               <div class="tl-desc">
+                <p>水平方向への広がりを意識した構図の中に、縦に貫く長いストロークによる微細な色彩の揺らぎが配置されています。森の中の静寂と、葉擦れの微かなざわめきが共存する世界。幹の集積による光の反射と透過だけで「そこにある空間」の本質を捉えた作品です。</p>
+              </div>
             </div>
-            <div class="art-caption">
-              <h3 class="art-node-title">林</h3>
-              <p class="art-node-meta">130.3 × 162.1 cm / Oil on canvas</p>
-              <div class="caption-deco-line"></div>
-            </div>
-          </article>
+          </div>
+        </article>
 
-          <article class="artwork-node" style="--size-scale: 0.82; --mobile-scale: 0.92;" data-jp="うねり" data-meta="116.7 × 91.0 cm / Oil on canvas" data-year="2018" data-desc="「森林」という主題に対する初期のアプローチ。色彩の要素を極限まで削ぎ落とし、形態の「うねり」に焦点を当てる。">
-            <div class="art-year-container">
-              <div class="art-year-text">2018</div>
-              <div class="art-year-connector"></div>
-            </div>
-            <div class="art-frame">
+        <article class="tl-entry is-f50-v" id="work-uneri">
+          <div class="tl-year-display">2018</div>
+          <div class="tl-content-wrap">
+             <div class="tl-figure js-modal-open" data-img-src="images/【F50縦】うねり.jpg">
               <img src="images/【F50縦】うねり.jpg" alt="うねり" loading="lazy">
             </div>
-            <div class="art-caption">
-              <h3 class="art-node-title">うねり</h3>
-              <p class="art-node-meta">116.7 × 91.0 cm / Oil on canvas</p>
-              <div class="caption-deco-line"></div>
+            <div class="tl-body">
+              <h3 class="tl-title" data-typewriter="true">うねり</h3>
+              <p class="tl-meta">116.7 × 91.0 cm / Oil on canvas</p>
+               <div class="tl-desc">
+                <p>「森林」という主題に対する初期のアプローチ。色彩の要素を極限まで削ぎ落とし、モノクロームに近い階調の中で形態の「うねり」そのものに焦点を当てています。後の作品群に繋がる流動的なフォルムの原点とも言える、骨太で力強い筆致が特徴です。</p>
+                <p>ここで試みられたうねるような形態の追求と空間把握は、後に制作される『森（の息吹）』シリーズにおける、生命の胎動を感じさせる官能的でダイナミックな画面構成へと直接的に結実していくことになります。</p>
+              </div>
             </div>
-          </article>
-
-        </div>
-      </div>
-
-      <div class="chrono-timeline-hud">
-        <div class="tl-hud-scroll-container" id="hudScrollContainer">
-          <div class="tl-hud-inner-track">
-            <div class="tl-hud-line"></div>
-            <button class="tl-hud-item" data-idx="0"><span>2026</span><div class="hud-dot"></div></button>
-            <button class="tl-hud-item" data-idx="1"><span>2025</span><div class="hud-dot"></div></button>
-            <button class="tl-hud-item" data-idx="2"><span>2022</span><div class="hud-dot"></div></button>
-            <button class="tl-hud-item" data-idx="3"><span>2022</span><div class="hud-dot"></div></button>
-            <button class="tl-hud-item" data-idx="4"><span>2022</span><div class="hud-dot"></div></button>
-            <button class="tl-hud-item" data-idx="5"><span>2022</span><div class="hud-dot"></div></button>
-            <button class="tl-hud-item" data-idx="6"><span>2021</span><div class="hud-dot"></div></button>
-            <button class="tl-hud-item" data-idx="7"><span>2021</span><div class="hud-dot"></div></button>
-            <button class="tl-hud-item" data-idx="8"><span>2021</span><div class="hud-dot"></div></button>
-            <button class="tl-hud-item" data-idx="9"><span>2021</span><div class="hud-dot"></div></button>
-            <button class="tl-hud-item" data-idx="10"><span>2021</span><div class="hud-dot"></div></button>
-            <button class="tl-hud-item" data-idx="11"><span>2018</span><div class="hud-dot"></div></button>
           </div>
-        </div>
+        </article>
+
+        <div id="work-f6-yoko" style="display:none;"></div>
+        <div id="work-f8-tate" style="display:none;"></div>
+
       </div>
     </section>
 
-    <section class="unprecedented-button-container" id="catalog-trigger-section">
-      <button class="organic-btn" id="btnCatalog" aria-expanded="false" aria-controls="catalogAccordion">
-        <span class="btn-text">系内全作品リストを展開</span>
-        <span class="btn-arrow">↓</span>
-        <div class="blob-bg"></div>
-      </button>
-    </section>
-    
-    <div class="catalog-accordion-wrapper" id="catalogAccordion">
-      <div class="catalog-overflow-hidden">
-        <section class="catalog-section">
-          <div class="catalog-grid">
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 1.0; --mobile-scale: 1.0;" data-jp="林(3)" data-meta="2026 / 162.1 × 209.1 cm / Oil on canvas" data-desc="大型の縦型カンヴァスを連結させた圧倒的なスケール感を持つ大作です。">
-              <div class="catalog-img-wrapper"><img src="images/【M+P100縦】林(3)20251128.jpg" class="catalog-item-img" loading="lazy" alt="林(3)"></div>
-              <h4 class="catalog-item-title">林(3)</h4><p class="catalog-item-meta">2026 / 162.1 × 209.1 cm</p>
-            </div>
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.82; --mobile-scale: 0.95;" data-jp="森" data-meta="2025 / 130.3 × 162.1 cm / Oil on canvas" data-desc="三水の森が内包する複雑な生態系と地脈のエネルギー。">
-              <div class="catalog-img-wrapper"><img src="images/【F100横】森20251217.jpg" class="catalog-item-img" loading="lazy" alt="森"></div>
-              <h4 class="catalog-item-title">森</h4><p class="catalog-item-meta">2025 / 130.3 × 162.1 cm</p>
-            </div>
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.45; --mobile-scale: 0.65;" data-jp="森（川久保沢）" data-meta="2022 / 31.8 × 41.0 cm / Oil on canvas" data-desc="身近な自然から直感的に色と形を拾い上げた初期の小品。">
-              <div class="catalog-img-wrapper"><img src="images/【F6横】森（川久保沢）.jpg" class="catalog-item-img" loading="lazy" alt="森（川久保沢）"></div>
-              <h4 class="catalog-item-title">森（川久保沢）</h4><p class="catalog-item-meta">2022 / 31.8 × 41.0 cm</p>
-            </div>
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.58; --mobile-scale: 0.78;" data-jp="森" data-meta="2022 / 45.5 × 38.0 cm / Oil on canvas" data-desc="縦長の構図の中に木々の垂直性を強調し、密度の高い空間を描き出す。">
-              <div class="catalog-img-wrapper"><img src="images/【F8縦】森.jpg" class="catalog-item-img" loading="lazy" alt="森"></div>
-              <h4 class="catalog-item-title">森</h4><p class="catalog-item-meta">2022 / 45.5 × 38.0 cm</p>
-            </div>
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.88; --mobile-scale: 0.95;" data-jp="無題" data-meta="2022 / 162.1 × 130.3 cm / Oil on canvas" data-desc="柔らかな光を帯びた有機的な塊が、闇の奥底からうごめくように立ち上がる。">
-              <div class="catalog-img-wrapper"><img src="images/IMG_8731.JPG" class="catalog-item-img" loading="lazy" alt="無題"></div>
-              <h4 class="catalog-item-title">無題</h4><p class="catalog-item-meta">2022 / 162.1 × 130.3 cm</p>
-            </div>
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.88; --mobile-scale: 0.95;" data-jp="山の中" data-meta="2022 / 162.1 × 130.3 cm / Oil on canvas" data-desc="深い森の奥で交錯する光と影の空間を一度解体し、再構築したかのようなアプローチ。">
-              <div class="catalog-img-wrapper"><img src="images/【F100縦】山の中.jpg" class="catalog-item-img" loading="lazy" alt="山の中"></div>
-              <h4 class="catalog-item-title">山の中</h4><p class="catalog-item-meta">2022 / 162.1 × 130.3 cm</p>
-            </div>
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.82; --mobile-scale: 0.92;" data-jp="林(2)" data-meta="2021 / 130.3 × 162.1 cm / Oil on canvas" data-desc="森が内包する生命のエネルギーそのものを鮮烈な色彩として抽出。">
-              <div class="catalog-img-wrapper"><img src="images/【F100横】林(2).jpg" class="catalog-item-img" loading="lazy" alt="林(2)"></div>
-              <h4 class="catalog-item-title">林(2)</h4><p class="catalog-item-meta">2021 / 130.3 × 162.1 cm</p>
-            </div>
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.92; --mobile-scale: 0.98;" data-jp="森（の息吹）(2)" data-meta="2021 / 162.1 × 162.1 cm / Oil on canvas" data-desc="正方形の特異な画面の中で、色彩が渦を巻くように中心へと収束していく。">
-              <div class="catalog-img-wrapper"><img src="images/【S100】森（の息吹）.jpg" class="catalog-item-img" loading="lazy" alt="森（の息吹）(2)"></div>
-              <h4 class="catalog-item-title">森（の息吹）(2)</h4><p class="catalog-item-meta">2021 / 162.1 × 162.1 cm</p>
-            </div>
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.82; --mobile-scale: 0.92;" data-jp="森（の息吹）" data-meta="2021 / 130.3 × 162.1 cm / Oil on canvas" data-desc="森林を単なる自然環境としてではなく、一つの巨大な「胎内」として捉え直す。">
-              <div class="catalog-img-wrapper"><img src="images/【F100横】森（の息吹）.jpg" class="catalog-item-img" loading="lazy" alt="森の息吹"></div>
-              <h4 class="catalog-item-title">森（の息吹）</h4><p class="catalog-item-meta">2021 / 130.3 × 162.1 cm</p>
-            </div>
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.88; --mobile-scale: 0.95;" data-jp="林(2)" data-meta="2021 / 162.1 × 130.3 cm / Oil on canvas" data-desc="白く差し込む光のようなストロークが、空気の冷たさと透明感を表現。">
-              <div class="catalog-img-wrapper"><img src="images/【F100縦】林.JPG" class="catalog-item-img" loading="lazy" alt="林 縦"></div>
-              <h4 class="catalog-item-title">林(2)</h4><p class="catalog-item-meta">2021 / 162.1 × 130.3 cm</p>
-            </div>
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.82; --mobile-scale: 0.92;" data-jp="林" data-meta="2021 / 130.3 × 162.1 cm / Oil on canvas" data-desc="水平方向への広がりを意識した構図の中に、縦に貫く長いストローク。">
-              <div class="catalog-img-wrapper"><img src="images/【F100横】林.jpg" class="catalog-item-img" loading="lazy" alt="林"></div>
-              <h4 class="catalog-item-title">林</h4><p class="catalog-item-meta">2021 / 130.3 × 162.1 cm</p>
-            </div>
-            <div class="catalog-item js-modal-trigger" style="--size-scale: 0.82; --mobile-scale: 0.92;" data-jp="うねり" data-meta="2018 / 116.7 × 91.0 cm / Oil on canvas" data-desc="「森林」という主題に対する初期のアプローチ。モノクロームに近い階調。">
-              <div class="catalog-img-wrapper"><img src="images/【F50縦】うねり.jpg" class="catalog-item-img" loading="lazy" alt="うねり"></div>
-              <h4 class="catalog-item-title">うねり</h4><p class="catalog-item-meta">2018 / 116.7 × 91.0 cm</p>
-            </div>
-          </div>
-        </section>
-      </div>
-    </div>
   </main>
 
   <section class="contact-section" id="contact">
-    <p style="font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem); letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase; margin-bottom: 1.5rem;">Contact</p>
+    <p class="section-label" style="text-align: center; margin-bottom: 1.5rem; justify-content: center;">Contact</p>
     <h2 class="contact-heading">お問い合わせ</h2>
-    <p class="contact-body-text">展覧会・作品購入・取材等に関するご相談は、<br>下記フォームよりお気軽にご連絡ください。</p>
-    <a href="contact.html" class="contact-btn">問い合わせフォームへ</a>
+    <p class="contact-body-text">
+      展覧会・作品購入・取材等に関するご相談は、<br>下記フォームよりお気軽にご連絡ください。
+    </p>
+    <a href="contact.html" class="contact-btn">
+      問い合わせフォームへ
+    </a>
   </section>
 
   <footer>
@@ -844,330 +904,305 @@
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
-  <div class="modal" id="modal" aria-hidden="true" role="dialog">
+  <a href="#gallery" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+    <span class="back-to-top-text">TOP</span>
+  </a>
+
+  <div class="image-modal" id="imageModal" aria-hidden="true" role="dialog">
     <div class="modal-bg" id="modalBg"></div>
-    <button class="modal-close" id="modalClose" aria-label="閉じる">×</button>
+    <button class="modal-close" id="modalClose" aria-label="閉じる">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square">
+        <line x1="4" y1="4" x2="20" y2="20"/>
+        <line x1="20" y1="4" x2="4" y2="20"/>
+      </svg>
+    </button>
     <div class="modal-content">
-      <img src="" alt="" class="modal-img" id="modalImg">
+      <img src="" alt="拡大画像" id="modalImg">
       <div class="modal-caption">
-        <h3 class="modal-title" id="modalJp"></h3>
-        <p class="modal-detail" id="modalMeta"></p>
-        <p class="modal-desc" id="modalDesc"></p>
+        <p class="modal-caption-jp" id="modalTitleJp"></p>
+        <p class="modal-caption-meta" id="modalMeta"></p>
       </div>
     </div>
   </div>
 
   <script>
-    /* ============================================================
-        DOM ELEMENTS INITIALIZATION & PRELOADER
-    =========================================================== */
-    const topNav = document.getElementById('top-nav');
-    const hamburger = document.getElementById('hamburger');
-    const navLinks = document.getElementById('nav-links');
-    const pagetopBtn = document.getElementById('pagetopBtn');
-
+    /* ── Preloader ── */
     window.addEventListener('load', () => {
       setTimeout(() => { document.getElementById('preloader').classList.add('is-hidden'); }, 800);
     });
 
-    /* ============================================================
-        SCROLL DETECT
-    =========================================================== */
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      const windowHeight = window.innerHeight;
-      
-      if (scrollY > 50) topNav.classList.add('scrolled');
-      else topNav.classList.remove('scrolled');
-
-      if (scrollY > windowHeight * 0.7) pagetopBtn.classList.add('is-visible');
-      else pagetopBtn.classList.remove('is-visible');
-    });
-
-    pagetopBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
-
-    hamburger.addEventListener('click', () => {
+    /* ── メニューの制御 ── */
+    function toggleMenu() {
+      const links = document.getElementById('nav-links');
+      const hamburger = document.getElementById('hamburger');
+      links.classList.toggle('open');
       hamburger.classList.toggle('is-active');
-      navLinks.classList.toggle('is-open');
       document.body.classList.toggle('is-locked');
-    });
+    }
+    function closeMenu() {
+      document.getElementById('nav-links').classList.remove('open');
+      document.getElementById('hamburger').classList.remove('is-active');
+      document.body.classList.remove('is-locked');
+    }
 
-    document.querySelectorAll('.nav-links a').forEach(link => {
-      link.addEventListener('click', () => {
-        hamburger.classList.remove('is-active');
-        navLinks.classList.remove('is-open');
-        document.body.classList.remove('is-locked');
+    /* ── テキスト分割エンジン (波及的なアニメーション用) ── */
+    function wrapTextInSpans(elementId) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const text = el.textContent.trim();
+      el.textContent = '';
+      [...text].forEach((char, i) => {
+        const wrap = document.createElement('span');
+        wrap.className = 'char-wrap';
+        const inner = document.createElement('span');
+        inner.className = 'char-inner';
+        inner.textContent = char;
+        /* 文字ごとに遅延を変えて波動的な現れ方を演出 */
+        inner.style.transitionDelay = `${(i * 0.15) + 0.3}s`;
+        wrap.appendChild(inner);
+        el.appendChild(wrap);
       });
+    }
+
+    /* ── ファーストビュー アニメーション起動 ── */
+    window.addEventListener('DOMContentLoaded', () => {
+      wrapTextInSpans('heroTitle');
+    });
+    window.addEventListener('load', () => {
+      setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 100);
+      setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'),   300);
+      setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'),      400);
+      setTimeout(() => document.getElementById('heroMeta')?.classList.add('revealed'),    500);
+      setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1200);
     });
 
-    const revealObserver = new IntersectionObserver((entries) => {
+    /* ── Intersection Observer (Fade & Reveal) ── */
+    const io = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in-view');
-          revealObserver.unobserve(entry.target);
-        }
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
       });
-    }, { threshold: 0.15 });
-    document.querySelectorAll('.reveal-anim').forEach(el => revealObserver.observe(el));
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('.gallery-item, .tl-entry, .reveal-fade, .concept-divider').forEach(el => io.observe(el));
 
-
-    /* ============================================================
-        ORBIT CAROUSEL SYSTEM (重なり完全排除・軌道超拡大＆HUD連動)
-    =========================================================== */
-    const orbitContainer = document.getElementById('chronoContainer');
-    const artNodes = Array.from(document.querySelectorAll('.artwork-node'));
-    const massiveYearDisplay = document.getElementById('massiveYear');
-    const hudItems = Array.from(document.querySelectorAll('.tl-hud-item'));
-    const hudScrollContainer = document.getElementById('hudScrollContainer');
-    const numItems = artNodes.length;
-
-    let globalAngle = 0;
-    let targetAngle = null;
-    let autoVelocity = 0.0012; 
-    let isDragging = false;
-    let startX = 0;
-    let totalDragDist = 0;
-    let currentFrontIndex = -1;
-
-    const updateMassiveYear = (year) => {
-      if(massiveYearDisplay.textContent === year) return;
-      massiveYearDisplay.classList.add('is-animating');
-      setTimeout(() => {
-        massiveYearDisplay.textContent = year;
-        massiveYearDisplay.classList.remove('is-animating');
-      }, 400);
-    };
-
-    const renderOrbit = () => {
-      const cw = window.innerWidth;
-      let rx, ry;
-      
-      // 画像同士が絶対に重ならないよう、軌道を画面外へ大きく飛び出させる
-      if (cw <= 768) {
-        rx = cw * 1.8; ry = 60;
-      } else if (cw <= 1024) {
-        rx = cw * 1.5; ry = 100;
-      } else {
-        rx = Math.max(cw * 1.3, 1400); // PCでは最低1400px確保
-        ry = 140; 
+    /* ── Typewriter Engine (Timeline Titles) ── */
+    function prepareTypewriterDOM(el) {
+      if (el.dataset.twPrepared === "true") return;
+      const txt = el.textContent.trim();
+      el.textContent = '';
+      for (let i = 0; i < txt.length; i++) {
+        const span = document.createElement('span');
+        span.className = 'tw-char';
+        span.textContent = txt[i];
+        el.appendChild(span);
       }
+      const cursor = document.createElement('span');
+      cursor.className = 'tw-cursor';
+      el.appendChild(cursor);
+      el.dataset.twPrepared = "true";
+    }
 
-      let maxCos = -Infinity;
-      let frontIdx = 0;
+    function runTypewriter(el) {
+      if (el.dataset.twDone === "true") return;
+      const chars = el.querySelectorAll('.tw-char');
+      const cursor = el.querySelector('.tw-cursor');
+      let idx = 0;
+      function nextChar() {
+        if (idx < chars.length) {
+          chars[idx].style.opacity = '1';
+          chars[idx].style.transform = 'translateY(0)';
+          idx++;
+          setTimeout(() => requestAnimationFrame(nextChar), 50);
+        } else {
+          el.dataset.twDone = "true";
+          if (cursor) {
+            cursor.classList.add('fade-out');
+            setTimeout(() => cursor.remove(), 1000);
+          }
+        }
+      }
+      requestAnimationFrame(nextChar);
+    }
 
-      artNodes.forEach((node, i) => {
-        const baseAngle = globalAngle + (i * (Math.PI * 2) / numItems);
-        const normalizedCos = Math.cos(baseAngle); 
-        if (normalizedCos > maxCos) { maxCos = normalizedCos; frontIdx = i; }
-      });
-
-      if (currentFrontIndex !== frontIdx) {
-        currentFrontIndex = frontIdx;
-        const year = artNodes[frontIdx].getAttribute('data-year');
-        updateMassiveYear(year);
-        
-        hudItems.forEach((item, idx) => {
-          const isActive = idx === currentFrontIndex;
-          item.classList.toggle('is-active', isActive);
-          
-          if (isActive && hudScrollContainer) {
-            const containerWidth = hudScrollContainer.offsetWidth;
-            const itemLeft = item.offsetLeft;
-            const itemWidth = item.offsetWidth;
-            hudScrollContainer.scrollTo({
-              left: itemLeft - (containerWidth / 2) + (itemWidth / 2),
-              behavior: 'smooth'
-            });
+    document.querySelectorAll('[data-typewriter="true"]').forEach(el => {
+      prepareTypewriterDOM(el);
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            obs.unobserve(el);
+            setTimeout(() => requestAnimationFrame(() => runTypewriter(el)), 400);
           }
         });
-      }
-
-      artNodes.forEach((node, i) => {
-        const baseAngle = globalAngle + (i * (Math.PI * 2) / numItems);
-        const x = rx * Math.sin(baseAngle);
-        const y = ry * Math.cos(baseAngle); 
-        const normalizedCos = Math.cos(baseAngle); 
-        
-        const depth = (normalizedCos + 1) / 2; 
-
-        const minScale = cw <= 768 ? 0.38 : 0.48;
-        const currentScale = minScale + (1 - minScale) * depth;
-
-        const brightness = 0.22 + 0.78 * Math.pow(depth, 1.5);
-        const zIndex = Math.round(depth * 100);
-
-        node.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px) scale(${currentScale})`;
-        node.style.zIndex = zIndex;
-        node.style.filter = `brightness(${brightness})`;
-        
-        node.classList.toggle('is-front', i === currentFrontIndex);
-      });
-    };
-
-    const snapToNearest = () => {
-      const step = (Math.PI * 2) / numItems;
-      const currentIndex = Math.round(globalAngle / step);
-      targetAngle = currentIndex * step;
-    };
-
-    const orbitLoop = () => {
-      if (targetAngle !== null) {
-        const diff = targetAngle - globalAngle;
-        globalAngle += diff * 0.1;
-        if (Math.abs(diff) < 0.001) { globalAngle = targetAngle; targetAngle = null; }
-      } else if (!isDragging) {
-        globalAngle += autoVelocity;
-      }
-      renderOrbit();
-      requestAnimationFrame(orbitLoop);
-    };
-    requestAnimationFrame(orbitLoop);
-
-    orbitContainer.addEventListener('mousedown', (e) => { isDragging = true; startX = e.clientX; targetAngle = null; totalDragDist = 0; });
-    window.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      const dx = e.clientX - startX;
-      totalDragDist += Math.abs(dx);
-      startX = e.clientX;
-      globalAngle += dx * 0.0025; 
-    });
-    window.addEventListener('mouseup', () => { if(isDragging){ isDragging = false; snapToNearest(); } });
-    orbitContainer.addEventListener('mouseleave', () => { if(isDragging){ isDragging = false; snapToNearest(); } });
-
-    orbitContainer.addEventListener('touchstart', (e) => { isDragging = true; startX = e.touches[0].clientX; targetAngle = null; totalDragDist = 0; }, {passive: true});
-    window.addEventListener('touchmove', (e) => {
-      if (!isDragging) return;
-      const dx = e.touches[0].clientX - startX;
-      totalDragDist += Math.abs(dx);
-      startX = e.touches[0].clientX;
-      globalAngle += dx * 0.0035;
-    }, {passive: true});
-    window.addEventListener('touchend', () => { if(isDragging){ isDragging = false; snapToNearest(); } });
-
-    const setupHoldButton = (btnId, direction) => {
-      const btn = document.getElementById(btnId);
-      const dirMult = direction === 'next' ? 1 : -1;
-      let holdTimer;
-      let holdAnimFrame;
-      let isHolding = false;
-
-      const startHold = () => {
-        isHolding = false;
-        holdTimer = setTimeout(() => {
-          isHolding = true;
-          targetAngle = null; 
-          const holdLoop = () => {
-            globalAngle += 0.016 * dirMult;
-            holdAnimFrame = requestAnimationFrame(holdLoop);
-          };
-          holdLoop();
-        }, 200);
-      };
-
-      const endHold = () => {
-        clearTimeout(holdTimer);
-        if (isHolding) {
-          cancelAnimationFrame(holdAnimFrame);
-          isHolding = false;
-          snapToNearest();
-        } else {
-          const step = (Math.PI * 2) / numItems;
-          const currentStepIdx = Math.round(globalAngle / step);
-          targetAngle = (currentStepIdx + dirMult) * step;
-        }
-      };
-
-      btn.addEventListener('mousedown', startHold);
-      btn.addEventListener('mouseup', endHold);
-      btn.addEventListener('mouseleave', () => { if(isHolding || holdTimer) endHold(); });
-      btn.addEventListener('touchstart', (e) => { e.preventDefault(); startHold(); }, {passive: false});
-      btn.addEventListener('touchend', endHold);
-    };
-
-    setupHoldButton('arrowPrev', 'prev');
-    setupHoldButton('arrowNext', 'next');
-
-    hudItems.forEach((item) => {
-      item.addEventListener('click', () => {
-        const idx = parseInt(item.getAttribute('data-idx'));
-        const step = (Math.PI * 2) / numItems;
-        const currentLoops = Math.floor(globalAngle / (Math.PI * 2));
-        let baseTarget = -idx * step;
-        
-        let targetAngle1 = baseTarget + currentLoops * (Math.PI * 2);
-        let targetAngle2 = targetAngle1 + (Math.PI * 2);
-        let targetAngle3 = targetAngle1 - (Math.PI * 2);
-        
-        let diff1 = Math.abs(targetAngle1 - globalAngle);
-        let diff2 = Math.abs(targetAngle2 - globalAngle);
-        let diff3 = Math.abs(targetAngle3 - globalAngle);
-        
-        let minDiff = Math.min(diff1, diff2, diff3);
-        if (minDiff === diff1) targetAngle = targetAngle1;
-        else if (minDiff === diff2) targetAngle = targetAngle2;
-        else targetAngle = targetAngle3;
-      });
+      }, { threshold: 0.1, rootMargin: '0px 0px -15% 0px' });
+      obs.observe(el);
     });
 
-    window.addEventListener('resize', renderOrbit);
+    /* ── スクロールイベント (Nav, Timeline Spine, Top Button) ── */
+    const topNav = document.getElementById('top-nav');
+    const pageNav = document.getElementById('pageNav');
+    const navItems = document.querySelectorAll('.page-nav-item');
+    const sections = ['gallery', 'chronology'].map(id => document.getElementById(id));
+    const spineFill = document.getElementById('tl-spine-fill');
+    const tlWrap = document.querySelector('.timeline-container');
+    let ticking = false;
 
-    /* ============================================================
-        GRID ACCORDION EXPANSION
-    =========================================================== */
-    const catalogBtn = document.getElementById('btnCatalog');
-    const catalogAccordion = document.getElementById('catalogAccordion');
-    catalogBtn.addEventListener('click', () => {
-      const isOpen = catalogAccordion.classList.toggle('is-open');
-      catalogBtn.setAttribute('aria-expanded', isOpen);
-      if (isOpen) {
-        catalogBtn.querySelector('.btn-text').textContent = '全作品リストを閉じる';
-        catalogBtn.querySelector('.btn-arrow').textContent = '↑';
-        catalogBtn.classList.add('is-active');
-        setTimeout(() => { window.scrollTo({ top: catalogAccordion.offsetTop - 90, behavior: 'smooth' }); }, 400);
-      } else {
-        catalogBtn.querySelector('.btn-text').textContent = '系内全作品リストを展開';
-        catalogBtn.querySelector('.btn-arrow').textContent = '↓';
-        catalogBtn.classList.remove('is-active');
-      }
-    });
-
-    /* ============================================================
-        LIGHTBOX SYSTEM
-    =========================================================== */
-    const modal = document.getElementById('modal');
-    const modalImg = document.getElementById('modalImg');
-    
-    document.addEventListener('click', (e) => {
-      if (totalDragDist > 7) return; 
-      const targetFrame = e.target.closest('.art-frame, .catalog-img-wrapper');
-      if (targetFrame) {
-        const img = targetFrame.querySelector('img');
-        const node = targetFrame.closest('.artwork-node, .catalog-item');
-        if (img && node) {
-          modalImg.src = img.src;
-          document.getElementById('modalJp').textContent = node.getAttribute('data-jp');
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
           
-          let metaText = node.getAttribute('data-meta');
-          if(node.getAttribute('data-year') && !metaText.includes(node.getAttribute('data-year'))) {
-             metaText = node.getAttribute('data-year') + " / " + metaText;
+          /* Top Nav Glassmorphism */
+          if (scrollY > 80) topNav.classList.add('scrolled');
+          else topNav.classList.remove('scrolled');
+
+          /* Page Nav Visibility & Active State */
+          const checkY = scrollY + window.innerHeight * 0.4;
+          let activeSec = null;
+          sections.forEach(sec => {
+            if (sec && sec.offsetTop <= checkY) activeSec = sec;
+          });
+          navItems.forEach(item => {
+            const target = document.getElementById(item.getAttribute('data-target'));
+            item.classList.toggle('active', target === activeSec);
+          });
+          if (pageNav) {
+            pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.7);
           }
-          document.getElementById('modalMeta').textContent = metaText;
-          document.getElementById('modalDesc').textContent = node.getAttribute('data-desc');
-          
-          modal.classList.add('is-active');
-          document.body.classList.add('is-locked');
+
+          /* Timeline Spine Progress */
+          if (tlWrap && spineFill) {
+            const rect = tlWrap.getBoundingClientRect();
+            const totalH = tlWrap.offsetHeight;
+            if (totalH > 0) {
+              const pct = (window.innerHeight * 0.6 - rect.top) / totalH * 100;
+              spineFill.style.height = Math.max(0, Math.min(100, pct)) + '%';
+            }
+          }
+
+          /* Back to Top */
+          const b2t = document.getElementById('backToTop');
+          if (scrollY > 500) b2t.classList.add('is-visible');
+          else b2t.classList.remove('is-visible');
+
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    /* スムーズスクロール制御 (Page Nav) */
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const target = document.getElementById(item.getAttribute('data-target'));
+        if (target) {
+          const offset = topNav?.offsetHeight || 0;
+          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+        }
+      });
+    });
+
+    document.getElementById('backToTop').addEventListener('click', (e) => {
+      e.preventDefault();
+      if (window.innerWidth <= 768) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        const target = document.getElementById('gallery');
+        if (target) {
+          const offset = topNav?.offsetHeight || 80;
+          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
         }
       }
     });
+
+    /* ── スムーズスクロール制御 (Gallery Grid -> Timeline or Modal) ── */
+    document.querySelectorAll('.js-scroll-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href').substring(1);
+        const targetEl = document.getElementById(targetId);
+        
+        // Timeline内に実体があり、非表示ではない場合は該当箇所までスクロール
+        if (targetEl && targetEl.style.display !== 'none') {
+          const offset = topNav?.offsetHeight || 80;
+          window.scrollTo({ 
+            top: targetEl.getBoundingClientRect().top + window.scrollY - offset - 20, 
+            behavior: 'smooth' 
+          });
+        } else {
+          // Timelineに詳細要素がない（display: none等）の場合はその場でモーダルを開く
+          const imgWrap = link.querySelector('img');
+          const src = imgWrap ? imgWrap.getAttribute('src') : '';
+          const titleEl = link.querySelector('.gallery-item-title');
+          const jp = titleEl ? titleEl.textContent : '';
+          const metaTag = link.querySelector('.gallery-item-meta');
+          const metaText = metaTag ? metaTag.textContent : '';
+          
+          if (src) openModal(src, jp, metaText);
+        }
+      });
+    });
+
+    /* ── Lightbox (Modal) ── */
+    const modal      = document.getElementById('imageModal');
+    const modalImg   = document.getElementById('modalImg');
+    const modalBg    = document.getElementById('modalBg');
+    const modalClose = document.getElementById('modalClose');
+    const titleJpEl  = document.getElementById('modalTitleJp');
+    const metaEl     = document.getElementById('modalMeta');
+
+    const openModal = (src, jp, metaText) => {
+      modalImg.src = src;
+      titleJpEl.textContent = jp || '';
+      metaEl.textContent = metaText || '';
+      modal.classList.add('is-active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('is-locked');
+    };
 
     const closeModal = () => {
       modal.classList.remove('is-active');
+      modal.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('is-locked');
-      setTimeout(() => { modalImg.src = ''; }, 400);
+      setTimeout(() => { modalImg.src = ''; titleJpEl.textContent = ''; metaEl.textContent = ''; }, 600);
     };
-    document.getElementById('modalBg').addEventListener('click', closeModal);
-    document.getElementById('modalClose').addEventListener('click', closeModal);
-    window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('is-active')) closeModal(); });
+
+    // Timelineセクション内の画像クリックでのモーダル開閉
+    document.querySelectorAll('.js-modal-open').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        let src = btn.getAttribute('data-img-src');
+        if (!src && btn.querySelector('img')) src = btn.querySelector('img').getAttribute('src');
+        
+        const block = btn.closest('.tl-entry');
+        let jp = '';
+        let metaText = '';
+
+        if (block) {
+          const jpTitleEl = block.querySelector('.tl-title');
+          jp = jpTitleEl ? jpTitleEl.textContent : '';
+
+          const yearEl = block.querySelector('.tl-year-display');
+          const year = yearEl ? yearEl.textContent.trim() : '';
+
+          const metaTag = block.querySelector('.tl-meta');
+          const meta = metaTag ? metaTag.textContent : '';
+
+          // 制作年とサイズ・マテリアルを結合
+          metaText = year ? `${year} / ${meta}` : meta;
+        } 
+        
+        if (src) openModal(src, jp, metaText);
+      });
+    });
+
+    modalBg.addEventListener('click', closeModal);
+    modalClose.addEventListener('click', closeModal);
+    modalImg.addEventListener('click', closeModal);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('is-active')) closeModal(); });
+
   </script>
 </body>
 </html>
