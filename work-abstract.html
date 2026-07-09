@@ -41,7 +41,6 @@
       --ease:        cubic-bezier(0.16, 1, 0.3, 1);
       --px:          clamp(1.25rem, 6vw, 5rem);
       
-      /* ギャラリーの縮尺係数 (画面幅に応じて可変) */
       --cm-scale:    clamp(2px, 0.3vw, 3.8px);
     }
 
@@ -64,14 +63,12 @@
       position: relative;
     }
 
-    /* ── 背景作品のグローバル設定 ── */
     body::before {
       content: "";
       position: fixed;
       top: 0; left: 0;
       width: 100vw; height: 100vh;
-      /* 機種依存文字のⅣをIVに変更 */
-      background-image: url('images/tHE n0iSe Of ThE PriMItIVe sEA.JPG');
+      background-image: url('images/tHE n0iSe Of ThE PriMItIVe sEA.JPG'); /* 機種依存文字修正済 */
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -176,7 +173,7 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       HERO FIRST VIEW
+       NEW HERO FIRST VIEW (Digital Deterritorialization)
     ============================================================ */
     .hero {
       position: relative;
@@ -189,46 +186,72 @@
       position: absolute; left: 0; right: 0; bottom: 0;
       height: 1px;
       background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.25) 20%, rgba(124,154,160,0.35) 50%, rgba(196,168,130,0.25) 80%, transparent 100%);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 1.8s var(--ease);
     }
+    .hero-divider.revealed { transform: scaleX(1); }
+
     .hero-inner { position: relative; z-index: 2; }
     
     .hero-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem);
-      letter-spacing: 0.5em;
+      letter-spacing: 0.8em; /* Starts wide */
       color: rgba(233,229,223,0.7); text-transform: uppercase;
       margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.2rem;
-      clip-path: inset(0 100% 0 0); transition: clip-path 1.2s var(--ease) 0.2s;
+      opacity: 0; transform: translateX(-10px);
+      transition: opacity 1.2s var(--ease) 0.2s, transform 1.2s var(--ease) 0.2s, letter-spacing 1.2s var(--ease) 0.2s;
       text-shadow: 0 2px 10px rgba(0,0,0,0.8);
     }
     .hero-eyebrow::before {
-      content: ''; width: 24px; height: 1px; background: var(--accent2); flex-shrink: 0;
+      content: ''; width: 0px; height: 1px; background: var(--accent2); flex-shrink: 0;
       box-shadow: 0 0 5px rgba(0,0,0,0.5);
+      transition: width 1s var(--ease) 0.4s;
     }
-    .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
+    .hero-eyebrow.revealed { opacity: 1; transform: translateX(0); letter-spacing: 0.5em; }
+    .hero-eyebrow.revealed::before { width: 24px; }
     
+    /* ── The Cinematic Layer Convergence (スライス結合アニメーション) ── */
     .hero-title {
-      font-family: var(--font-ja); font-size: clamp(5rem, 19vw, 17rem); font-weight: 200;
-      line-height: 0.88; letter-spacing: -0.02em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem);
-      display: flex; gap: 0.05em; overflow: visible;
+      font-family: var(--font-ja); font-size: clamp(5.5rem, 19vw, 17rem); font-weight: 200;
+      line-height: 0.88; margin-bottom: clamp(0.8rem, 2vh, 1.8rem);
+      position: relative; display: inline-block;
       text-shadow: 0 8px 32px rgba(0,0,0,0.85); 
     }
-    .hero-title .char { display: inline-block; opacity: 0; transition: transform 1.4s var(--ease), opacity 0.9s ease; }
-    .hero-title .char:nth-child(1) { transform: translateX(-60px); transition-delay: 0.2s; }
-    .hero-title .char:nth-child(2) { transform: translateX(60px);  transition-delay: 0.35s; }
-    .hero-title.revealed .char { opacity: 1; transform: translateX(0); }
+    .hero-title-base {
+      display: inline-block; opacity: 0; color: var(--fg);
+      transition: opacity 0.6s ease 1.1s; /* 全ての層が合体した直後にフェードインして完全な可読性を担保 */
+    }
+    .hero-title.revealed .hero-title-base { opacity: 1; }
+
+    .hero-title-layer {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      color: var(--color); clip-path: var(--clip);
+      opacity: 0; filter: blur(12px);
+      transform: translateX(var(--start-x)) scale(1.05);
+      transition:
+        transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) var(--delay),
+        filter 1.2s cubic-bezier(0.16, 1, 0.3, 1) var(--delay),
+        opacity 0.8s ease var(--delay),
+        color 0.8s ease 1s; /* 最終的に白(fg)へ収束 */
+      will-change: transform, opacity, filter, color;
+    }
+    .hero-title.revealed .hero-title-layer {
+      opacity: 1; transform: translateX(0) scale(1); filter: blur(0); color: var(--fg);
+    }
     
     .hero-title-en {
       font-family: var(--font-en); font-size: clamp(0.95rem, 3vw, 2rem);
-      font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.85);
-      clip-path: inset(0 100% 0 0); transition: clip-path 1.4s var(--ease) 0.7s;
+      font-weight: 300; font-style: italic; color: rgba(196,168,130,0.85);
+      opacity: 0; transform: translateY(15px); letter-spacing: 0.6em; /* 解体状態からスタート */
+      transition: opacity 1.2s ease 0.6s, transform 1.2s var(--ease) 0.6s, letter-spacing 1.2s var(--ease) 0.6s;
       text-shadow: 0 4px 16px rgba(0,0,0,0.9);
     }
-    .hero-title-en.revealed { clip-path: inset(0 0% 0 0); }
+    .hero-title-en.revealed { opacity: 1; transform: translateY(0); letter-spacing: 0.25em; /* 再生成 */ }
     
     .hero-meta {
       display: flex; align-items: center; gap: 1.8rem;
       margin-top: clamp(2rem, 5vh, 4.5rem); opacity: 0; transform: translateY(14px);
-      transition: opacity 1s ease 1.1s, transform 1s var(--ease) 1.1s;
+      transition: opacity 1s ease 0.9s, transform 1s var(--ease) 0.9s;
     }
     .hero-meta.revealed { opacity: 1; transform: translateY(0); }
     .hero-meta-line {
@@ -244,7 +267,7 @@
     .hero-scroll {
       position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px);
       z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 12px;
-      opacity: 0; transition: opacity 0.9s ease 1.8s;
+      opacity: 0; transition: opacity 0.9s ease 1.5s;
     }
     .hero-scroll.revealed { opacity: 1; }
     .hero-scroll-label {
@@ -268,258 +291,100 @@
     }
 
     /* ============================================================
-       CONTENT SECTIONS 
+       CONTENT SECTIONS (以降は前回から変更なし)
     ============================================================ */
     .concept-section, .statement-section {
-      background: var(--bg);
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      position: relative;
+      background: var(--bg); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); position: relative;
     }
-    .concept-section {
-      padding: clamp(6rem, 13vh, 10rem) var(--px);
-      max-width: 640px; margin: 0 auto; text-align: center;
-      background: transparent; 
-    }
-    .concept-text {
-      font-size: clamp(0.9rem, 2vw, 1.05rem); font-weight: 300; line-height: 2.3;
-      color: rgba(233,229,223,0.9); letter-spacing: 0.08em; text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-    }
+    .concept-section { padding: clamp(6rem, 13vh, 10rem) var(--px); max-width: 640px; margin: 0 auto; text-align: center; background: transparent; }
+    .concept-text { font-size: clamp(0.9rem, 2vw, 1.05rem); font-weight: 300; line-height: 2.3; color: rgba(233,229,223,0.9); letter-spacing: 0.08em; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
 
-    .statement-section {
-      padding: clamp(4rem, 9vh, 7rem) var(--px) clamp(6rem, 13vh, 10rem);
-      border-top: 0.5px solid var(--border);
-    }
+    .statement-section { padding: clamp(4rem, 9vh, 7rem) var(--px) clamp(6rem, 13vh, 10rem); border-top: 0.5px solid var(--border); }
     .statement-inner { max-width: 880px; margin: 0 auto; }
-    
-    .statement-label {
-      font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem);
-      letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase;
-      text-align: center; margin-bottom: clamp(2.5rem, 6vh, 4rem);
-    }
-    .statement-pullquote {
-      font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.3rem, 3.2vw, 2.1rem);
-      line-height: 1.75; color: var(--fg); text-align: center; letter-spacing: 0.03em;
-      margin-bottom: clamp(3rem, 7vh, 5rem);
-      opacity: 0; transform: translateY(20px); transition: opacity 1s var(--ease), transform 1s var(--ease);
-    }
+    .statement-label { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem); letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase; text-align: center; margin-bottom: clamp(2.5rem, 6vh, 4rem); }
+    .statement-pullquote { font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.3rem, 3.2vw, 2.1rem); line-height: 1.75; color: var(--fg); text-align: center; letter-spacing: 0.03em; margin-bottom: clamp(3rem, 7vh, 5rem); opacity: 0; transform: translateY(20px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
     .statement-pullquote.in-view { opacity: 1; transform: translateY(0); }
     .statement-pullquote .accent-word { color: var(--accent); }
     .statement-body { display: flex; flex-direction: column; gap: clamp(1.6rem, 3vh, 2.2rem); }
-    .statement-para {
-      font-size: clamp(0.86rem, 1.7vw, 0.98rem); line-height: 2.25;
-      color: rgba(233,229,223,0.72); letter-spacing: 0.04em; text-align: justify;
-      opacity: 0; transform: translateY(16px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
-    }
+    .statement-para { font-size: clamp(0.86rem, 1.7vw, 0.98rem); line-height: 2.25; color: rgba(233,229,223,0.72); letter-spacing: 0.04em; text-align: justify; opacity: 0; transform: translateY(16px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
     .statement-para.in-view { opacity: 1; transform: translateY(0); }
     .statement-para strong { color: var(--accent); font-weight: 400; }
-    .statement-divider {
-      width: 40px; height: 0.5px; margin: clamp(2.5rem, 5vh, 3.5rem) auto;
-      background: linear-gradient(to right, var(--accent), var(--accent2));
-    }
-    .statement-closing {
-      font-family: var(--font-en); font-style: italic; font-weight: 300;
-      font-size: clamp(0.95rem, 2vw, 1.15rem); line-height: 1.9;
-      color: var(--accent); text-align: center; letter-spacing: 0.04em;
-      opacity: 0; transform: translateY(16px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
-    }
+    .statement-divider { width: 40px; height: 0.5px; margin: clamp(2.5rem, 5vh, 3.5rem) auto; background: linear-gradient(to right, var(--accent), var(--accent2)); }
+    .statement-closing { font-family: var(--font-en); font-style: italic; font-weight: 300; font-size: clamp(0.95rem, 2vw, 1.15rem); line-height: 1.9; color: var(--accent); text-align: center; letter-spacing: 0.04em; opacity: 0; transform: translateY(16px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
     .statement-closing.in-view { opacity: 1; transform: translateY(0); }
 
-    /* ============================================================
-       PERFECT PROPORTIONAL GALLERY GRID
-    ============================================================ */
-    .gallery-section {
-      background: var(--bg); 
-      padding: 0 var(--px) clamp(6rem, 13vh, 10rem); position: relative;
-    }
+    .gallery-section { background: var(--bg); padding: 0 var(--px) clamp(6rem, 13vh, 10rem); position: relative; }
     .gallery-inner { max-width: 1600px; margin: 0 auto; }
-    .section-label {
-      font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem);
-      letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase;
-      text-align: center; margin-bottom: clamp(3rem, 7vh, 5rem);
-    }
-    .gallery-grid {
-      display: flex; flex-wrap: wrap; justify-content: center;
-      align-items: flex-end; gap: clamp(1.5rem, 3vw, 3rem);
-    }
-    .gallery-item {
-      display: flex; flex-direction: column; text-decoration: none; cursor: pointer;
-      align-items: flex-start; opacity: 0; transform: translateY(20px);
-      transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
-      width: fit-content; max-width: 100%;
-    }
+    .section-label { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem); letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase; text-align: center; margin-bottom: clamp(3rem, 7vh, 5rem); }
+    .gallery-grid { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: clamp(1.5rem, 3vw, 3rem); }
+    .gallery-item { display: flex; flex-direction: column; text-decoration: none; cursor: pointer; align-items: flex-start; opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); width: fit-content; max-width: 100%; }
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
-    
-    .gallery-item-img-wrap {
-      width: calc(var(--w-cm) * var(--cm-scale));
-      height: calc(var(--h-cm) * var(--cm-scale));
-      max-width: 100vw; display: flex; justify-content: center; align-items: center;
-      background: transparent; overflow: hidden; border: 0.5px solid var(--border);
-      transition: border-color 0.4s ease, box-shadow 0.5s var(--ease);
-    }
-    .gallery-item-img-wrap img {
-      width: 100%; height: 100%; object-fit: cover;
-      filter: grayscale(15%) brightness(0.85);
-      transition: transform 0.8s var(--ease), filter 0.6s ease;
-    }
-    .gallery-item:hover .gallery-item-img-wrap {
-      border-color: rgba(196,168,130,0.35); box-shadow: 0 16px 40px rgba(0,0,0,0.7);
-    }
-    .gallery-item:hover img {
-      transform: scale(1.03); filter: grayscale(0%) brightness(1.0);
-    }
+    .gallery-item-img-wrap { width: calc(var(--w-cm) * var(--cm-scale)); height: calc(var(--h-cm) * var(--cm-scale)); max-width: 100vw; display: flex; justify-content: center; align-items: center; background: transparent; overflow: hidden; border: 0.5px solid var(--border); transition: border-color 0.4s ease, box-shadow 0.5s var(--ease); }
+    .gallery-item-img-wrap img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(15%) brightness(0.85); transition: transform 0.8s var(--ease), filter 0.6s ease; }
+    .gallery-item:hover .gallery-item-img-wrap { border-color: rgba(196,168,130,0.35); box-shadow: 0 16px 40px rgba(0,0,0,0.7); }
+    .gallery-item:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
     .gallery-item-cap { padding-top: 1rem; text-align: left; width: 100%; }
-    .gallery-item-title {
-      font-family: var(--font-ja); font-size: clamp(0.85rem, 1.4vw, 1rem); font-weight: 300;
-      color: var(--fg); letter-spacing: 0.05em; margin-bottom: 0.3rem; display: block;
-    }
-    .gallery-item-meta {
-      font-family: var(--font-en), var(--font-ja); font-size: clamp(0.6rem, 1.1vw, 0.7rem);
-      color: var(--accent); letter-spacing: 0.1em; opacity: 0.9; display: block;
-    }
+    .gallery-item-title { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.4vw, 1rem); font-weight: 300; color: var(--fg); letter-spacing: 0.05em; margin-bottom: 0.3rem; display: block; }
+    .gallery-item-meta { font-family: var(--font-en), var(--font-ja); font-size: clamp(0.6rem, 1.1vw, 0.7rem); color: var(--accent); letter-spacing: 0.1em; opacity: 0.9; display: block; }
 
-    /* ============================================================
-       INTEGRATED CHRONOLOGY SECTION
-    ============================================================ */
-    .chronology-section {
-      padding: clamp(5rem, 12vh, 10rem) var(--px);
-      background: var(--bg2); 
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border-top: 0.5px solid var(--border); position: relative;
-    }
+    .chronology-section { padding: clamp(5rem, 12vh, 10rem) var(--px); background: var(--bg2); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 0.5px solid var(--border); position: relative; }
     .timeline-container { max-width: 1200px; margin: 0 auto; position: relative; }
-    .timeline-spine-wrapper {
-      position: absolute; top: 0; bottom: 0; left: 50%; width: 1px;
-      background: rgba(233,229,223,0.06); transform: translateX(-50%);
-    }
-    .timeline-spine-progress {
-      position: absolute; top: 0; left: 0; width: 1px;
-      background: linear-gradient(to bottom, transparent 0%, var(--accent) 10%, var(--accent) 90%, transparent 100%);
-      height: 0%; transition: height 0.1s linear;
-    }
-    .tl-entry {
-      position: relative; width: 100%; margin-bottom: clamp(7rem, 16vh, 12rem);
-      opacity: 0; transform: translateY(30px); transition: opacity 1s var(--ease), transform 1s var(--ease);
-    }
+    .timeline-spine-wrapper { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(233,229,223,0.06); transform: translateX(-50%); }
+    .timeline-spine-progress { position: absolute; top: 0; left: 0; width: 1px; background: linear-gradient(to bottom, transparent 0%, var(--accent) 10%, var(--accent) 90%, transparent 100%); height: 0%; transition: height 0.1s linear; }
+    .tl-entry { position: relative; width: 100%; margin-bottom: clamp(7rem, 16vh, 12rem); opacity: 0; transform: translateY(30px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
     .tl-entry:last-child { margin-bottom: 0; }
     .tl-entry.in-view { opacity: 1; transform: translateY(0); }
-    
-    .tl-year-display {
-      font-family: var(--font-en); font-size: clamp(3.5rem, 7vw, 5.5rem); font-weight: 300;
-      color: var(--accent); letter-spacing: 0.02em; line-height: 1;
-      margin-bottom: clamp(1rem, 2vh, 2rem); padding-left: 2%; opacity: 0.85; text-shadow: 0 4px 16px rgba(0,0,0,0.4);
-    }
+    .tl-year-display { font-family: var(--font-en); font-size: clamp(3.5rem, 7vw, 5.5rem); font-weight: 300; color: var(--accent); letter-spacing: 0.02em; line-height: 1; margin-bottom: clamp(1rem, 2vh, 2rem); padding-left: 2%; opacity: 0.85; text-shadow: 0 4px 16px rgba(0,0,0,0.4); }
     .tl-entry:nth-child(even) .tl-year-display { text-align: right; padding-right: 2%; padding-left: 0; }
-
-    .tl-content-wrap {
-      display: flex; justify-content: space-between; align-items: center; gap: clamp(2rem, 5vw, 6rem);
-    }
+    .tl-content-wrap { display: flex; justify-content: space-between; align-items: center; gap: clamp(2rem, 5vw, 6rem); }
     .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
-    .tl-figure {
-      width: 54%; position: relative; border: 0.5px solid var(--border); overflow: hidden;
-      background: rgba(6, 6, 5, 0.4); cursor: zoom-in; transition: width 0.4s ease;
-    }
+    .tl-figure { width: 54%; position: relative; border: 0.5px solid var(--border); overflow: hidden; background: rgba(6, 6, 5, 0.4); cursor: zoom-in; transition: width 0.4s ease; }
     .tl-body { width: 42%; position: relative; z-index: 2; transition: width 0.4s ease; text-shadow: 0 2px 10px rgba(0,0,0,0.6); }
-    
     .tl-entry.is-featured .tl-figure { width: 64%; }
     .tl-entry.is-featured .tl-body   { width: 32%; }
     .tl-entry.is-compact .tl-figure  { width: 40%; }
     .tl-entry.is-compact .tl-body    { width: 52%; }
-    
-    .tl-figure img {
-      width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(12%) brightness(0.85);
-      transition: transform 1s var(--ease), filter 0.6s ease;
-    }
+    .tl-figure img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(12%) brightness(0.85); transition: transform 1s var(--ease), filter 0.6s ease; }
     .tl-figure:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
-    
     .tl-title { font-family: var(--font-ja); font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 300; color: var(--fg); line-height: 1.4; margin-bottom: 0.8rem; letter-spacing: 0.05em; }
     .tl-meta { font-family: var(--font-en), var(--font-ja); font-size: clamp(0.65rem, 1vw, 0.75rem); color: var(--accent); letter-spacing: 0.1em; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border-md); }
     .tl-desc { font-size: clamp(0.88rem, 1.6vw, 0.98rem); line-height: 2.2; color: rgba(233,229,223,0.74); text-align: justify; word-break: auto-phrase; }
     .tl-desc p { margin-bottom: 1.2em; }
     .tl-desc p:last-child { margin-bottom: 0; }
 
-    /* Typewriter */
     .tw-char { opacity: 0; display: inline-block; transition: opacity 0.3s ease; }
     .tw-cursor { display: inline-block; width: 1.5px; height: 1.1em; background-color: var(--accent); margin-left: 2px; vertical-align: middle; animation: tw-blink 0.8s infinite; }
     @keyframes tw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     .fade-out { opacity: 0; transition: opacity 0.8s ease; }
 
-    /* ============================================================
-       CONTACT & FOOTER
-    ============================================================ */
-    .contact-section {
-      padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center;
-      border-top: 0.5px solid var(--border);
-      background: radial-gradient(circle at center, rgba(196,168,130,0.06) 0%, var(--bg) 80%);
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      position: relative;
-    }
-    .contact-heading {
-      font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200;
-      line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em;
-    }
-    .contact-body-text {
-      font-family: var(--font-ja); font-size: clamp(0.85rem, 1.8vw, 0.95rem);
-      color: rgba(233,229,223,0.6); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2;
-    }
-    .contact-btn {
-      display: inline-block; padding: 1.2rem 3.5rem; background: var(--accent); color: var(--bg-base);
-      font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500;
-      letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none;
-      transition: all 0.4s var(--ease); border-radius: 2px;
-    }
+    .contact-section { padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center; border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(196,168,130,0.06) 0%, var(--bg) 80%); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); position: relative; }
+    .contact-heading { font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em; }
+    .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.8vw, 0.95rem); color: rgba(233,229,223,0.6); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2; }
+    .contact-btn { display: inline-block; padding: 1.2rem 3.5rem; background: var(--accent); color: var(--bg-base); font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none; transition: all 0.4s var(--ease); border-radius: 2px; }
     .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3); }
 
-    footer {
-      padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between;
-      align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); 
-      background: var(--bg-base); position: relative;
-    }
+    footer { padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); background: var(--bg-base); position: relative; }
     .footer-logo { font-family: var(--font-ja); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.28); letter-spacing: 0.08em; }
     .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
 
-    /* ============================================================
-       LIGHTBOX & BACK TO TOP
-    ============================================================ */
-    .image-modal {
-      position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center;
-      opacity: 0; visibility: hidden; transition: opacity 0.55s var(--ease), visibility 0.55s;
-    }
+    .image-modal { position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.55s var(--ease), visibility 0.55s; }
     .image-modal.is-active { opacity: 1; visibility: visible; }
     .modal-bg { position: absolute; inset: 0; background: rgba(6,6,5,0.98); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); cursor: zoom-out; }
-    .modal-close {
-      position: fixed; top: clamp(1rem, 3vh, 2rem); right: var(--px); z-index: 10001;
-      background: none; border: none; color: var(--muted); cursor: pointer; padding: 0.5rem;
-      transition: color 0.3s ease, transform 0.3s var(--ease);
-    }
+    .modal-close { position: fixed; top: clamp(1rem, 3vh, 2rem); right: var(--px); z-index: 10001; background: none; border: none; color: var(--muted); cursor: pointer; padding: 0.5rem; transition: color 0.3s ease, transform 0.3s var(--ease); }
     .modal-close:hover { color: var(--fg); transform: scale(1.1) rotate(90deg); }
-    .modal-content {
-      position: relative; z-index: 10000; width: 100vw; height: 100svh;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem;
-      opacity: 0; transform: scale(0.98) translateY(10px);
-      transition: opacity 0.6s var(--ease) 0.1s, transform 0.6s var(--ease) 0.1s; padding: 3rem 1rem 1rem;
-    }
+    .modal-content { position: relative; z-index: 10000; width: 100vw; height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; opacity: 0; transform: scale(0.98) translateY(10px); transition: opacity 0.6s var(--ease) 0.1s, transform 0.6s var(--ease) 0.1s; padding: 3rem 1rem 1rem; }
     .image-modal.is-active .modal-content { opacity: 1; transform: scale(1) translateY(0); }
     .modal-content img { max-width: 92vw; max-height: 82svh; object-fit: contain; box-shadow: 0 40px 100px rgba(0,0,0,0.9); border: 0.5px solid var(--border-md); cursor: zoom-out; }
     .modal-caption { text-align: center; padding-bottom: 2vh; }
     .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(0.9rem, 1.4vw, 1.1rem); font-weight: 200; color: var(--fg); margin-bottom: 0.5rem; letter-spacing: 0.15em; }
     .modal-caption-meta { font-family: var(--font-en), var(--font-ja); font-size: clamp(0.65rem, 1vw, 0.75rem); font-weight: 300; color: var(--accent); letter-spacing: 0.12em; opacity: 0.85; }
 
-    .back-to-top {
-      position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px);
-      z-index: 9000; width: clamp(64px, 10vw, 90px); height: clamp(64px, 10vw, 90px);
-      border-radius: 50%; background: rgba(196, 168, 130, 0.9); border: 1px solid var(--accent);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--bg-base);
-      opacity: 0; visibility: hidden; transform: translateY(20px);
-      transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
-    }
+    .back-to-top { position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px); z-index: 9000; width: clamp(64px, 10vw, 90px); height: clamp(64px, 10vw, 90px); border-radius: 50%; background: rgba(196, 168, 130, 0.9); border: 1px solid var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--bg-base); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6); }
     .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
     .back-to-top:hover { background: var(--fg); color: var(--bg-base); border-color: var(--fg); transform: translateY(-6px); }
     .back-to-top svg { width: clamp(20px, 3vw, 32px); height: clamp(20px, 3vw, 32px); margin-bottom: 2px; }
     .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.9rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
 
-    /* ============================================================
-       RESPONSIVE DESIGN
-    ============================================================ */
     @media (max-width: 860px) {
       .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2rem; }
       .tl-figure, .tl-body, .tl-entry.is-featured .tl-figure, .tl-entry.is-featured .tl-body, .tl-entry.is-compact .tl-figure, .tl-entry.is-compact .tl-body { width: 100%; }
@@ -570,12 +435,20 @@
 
   <main>
     <section class="hero">
-      <div class="hero-divider" aria-hidden="true"></div>
+      <div class="hero-divider" id="heroDivider" aria-hidden="true"></div>
       <div class="hero-inner">
         <p class="hero-eyebrow" id="heroEyebrow">Series — Abstract / Cave &nbsp;·&nbsp; Unit World</p>
+        
+        <!-- ▼ 新設：レイヤー収束による「形態の解体と再生成」を表現するタイトル ▼ -->
         <h1 class="hero-title" id="heroTitle" aria-label="抽象">
-          <span class="char">抽</span><span class="char">象</span>
+          <span class="hero-title-layer" style="--clip: polygon(0 0, 100% 0, 100% 25%, 0 25%); --delay: 0.05s; --start-x: -6vw; --color: var(--accent2);" aria-hidden="true">抽象</span>
+          <span class="hero-title-layer" style="--clip: polygon(0 25%, 100% 25%, 100% 50%, 0 50%); --delay: 0.15s; --start-x: 6vw; --color: var(--accent);" aria-hidden="true">抽象</span>
+          <span class="hero-title-layer" style="--clip: polygon(0 50%, 100% 50%, 100% 75%, 0 75%); --delay: 0.1s; --start-x: -4vw; --color: var(--fg);" aria-hidden="true">抽象</span>
+          <span class="hero-title-layer" style="--clip: polygon(0 75%, 100% 75%, 100% 100%, 0 100%); --delay: 0.2s; --start-x: 5vw; --color: var(--accent2);" aria-hidden="true">抽象</span>
+          <span class="hero-title-base">抽象</span>
         </h1>
+        <!-- ▲ ここまで ▲ -->
+
         <p class="hero-title-en" id="heroEn">Abstract</p>
         <div class="hero-meta" id="heroMeta">
           <div class="hero-meta-line"></div>
@@ -911,9 +784,8 @@
       document.body.classList.remove('is-locked');
     }
 
-    /* ── ファーストビュー アニメーション (DOM構築完了直後に発火) ── */
+    /* ── 新・ファーストビュー アニメーション制御 ── */
     document.addEventListener('DOMContentLoaded', () => {
-      // 安全に要素を取得してクラスを付与する関数
       const reveal = (id, delay) => {
         setTimeout(() => {
           const el = document.getElementById(id);
@@ -921,11 +793,12 @@
         }, delay);
       };
 
-      reveal('heroEyebrow', 150);
-      reveal('heroTitle', 350);
-      reveal('heroEn', 680);
-      reveal('heroMeta', 980);
-      reveal('heroScroll', 1700);
+      reveal('heroDivider', 50);
+      reveal('heroEyebrow', 100);
+      reveal('heroTitle',   200); /* レイヤー結合の発火 */
+      reveal('heroEn',      300);
+      reveal('heroMeta',    700);
+      reveal('heroScroll',  1400);
     });
 
     /* ── Observer (Fade Up & Grid Animation) ── */
@@ -989,7 +862,7 @@
       obs.observe(el);
     });
 
-    /* ── Scroll Interactions (Spine, Nav, Page-Nav) ── */
+    /* ── Scroll Interactions ── */
     const topNav = document.getElementById('top-nav');
     const pageNav = document.getElementById('pageNav');
     const navItems = document.querySelectorAll('.page-nav-item');
@@ -1003,13 +876,11 @@
         window.requestAnimationFrame(() => {
           const scrollY = window.scrollY;
           
-          /* Top Nav Glassmorphism */
           if (topNav) {
             if (scrollY > 50) topNav.classList.add('scrolled');
             else topNav.classList.remove('scrolled');
           }
 
-          /* Page Nav Visibility & Active State */
           const checkY = scrollY + window.innerHeight * 0.4;
           let activeSec = null;
           sections.forEach(sec => {
@@ -1023,7 +894,6 @@
             pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.6);
           }
 
-          /* Timeline Spine Progress */
           if (tlWrap && spineFill) {
             const rect = tlWrap.getBoundingClientRect();
             const totalH = tlWrap.offsetHeight;
@@ -1033,20 +903,17 @@
             }
           }
 
-          /* Back to Top */
           const b2t = document.getElementById('backToTop');
           if (b2t) {
             if (scrollY > 400) b2t.classList.add('is-visible');
             else b2t.classList.remove('is-visible');
           }
-
           ticking = false;
         });
         ticking = true;
       }
     }, { passive: true });
 
-    /* スクロールイベント (Page Nav) */
     navItems.forEach(item => {
       item.addEventListener('click', () => {
         const target = document.getElementById(item.getAttribute('data-target'));
@@ -1073,7 +940,7 @@
       });
     }
 
-    /* ── Lightbox (Modal) / Gallery Grid Scroll & Expand Logic ── */
+    /* ── Lightbox (Modal) / Gallery Grid Control ── */
     const modal      = document.getElementById('imageModal');
     const modalImg   = document.getElementById('modalImg');
     const modalBg    = document.getElementById('modalBg');
@@ -1103,14 +970,12 @@
       }, 560);
     };
 
-    // グリッド作品のクリック時の制御
     document.querySelectorAll('.js-scroll-link').forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         const targetId = link.getAttribute('href').substring(1);
         const targetEl = document.getElementById(targetId);
         
-        // 年譜（Timeline）に該当作品が存在する場合はスムーズスクロール
         if (targetEl && targetEl.style.display !== 'none') {
           const offset = topNav?.offsetHeight || 80;
           window.scrollTo({ 
@@ -1118,7 +983,6 @@
             behavior: 'smooth' 
           });
         } else {
-          // グリッドにしか存在しない作品の場合は、その場で拡大モーダル表示
           const imgEl = link.querySelector('img');
           const jpEl = link.querySelector('.gallery-item-title');
           const metaElNode = link.querySelector('.gallery-item-meta');
@@ -1131,7 +995,6 @@
       });
     });
 
-    // 年譜（Timeline）画像のクリック時の制御
     document.querySelectorAll('.js-modal-open').forEach(btn => {
       btn.addEventListener('click', (e) => {
         let src = btn.getAttribute('data-img-src');
@@ -1152,7 +1015,6 @@
           const metaTag = block.querySelector('.tl-meta');
           const meta = metaTag ? metaTag.textContent : '';
 
-          // 制作年とサイズ・マテリアルを結合
           metaText = year ? `${year} / ${meta}` : meta;
         } 
         
