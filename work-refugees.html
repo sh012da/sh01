@@ -23,24 +23,24 @@
 
   <style>
     /* ============================================================
-        DESIGN TOKENS (Refugees Theme)
+        DESIGN TOKENS
     ============================================================ */
     :root {
-      --bg:        #060605;
-      --bg2:        rgba(12, 12, 10, 0.75);
-      --bg3:        rgba(17, 17, 16, 0.95);
-      --fg:        #e9e5df;
-      --muted:     rgba(233,229,223,0.44);
-      --dim:        rgba(233,229,223,0.22);
-      --whisper:    rgba(233,229,223,0.10);
-      --accent:    #a87560; /* 鉄錆び朱 */
-      --accent2:   #7a746e;
-      --border:    rgba(233,229,223,0.08);
+      --bg: #060605;
+      --bg2: rgba(12, 12, 10, 0.75);
+      --bg3: rgba(17, 17, 16, 0.95);
+      --fg: #e9e5df;
+      --muted: rgba(233,229,223,0.44);
+      --dim: rgba(233,229,223,0.22);
+      --whisper: rgba(233,229,223,0.10);
+      --accent: #a87560; 
+      --accent2: #7a746e;
+      --border: rgba(233,229,223,0.08);
       --border-md: rgba(233,229,223,0.18);
-      --font-en:   'Cormorant Garamond', serif;
-      --font-ja:   'Noto Serif JP', serif;
-      --ease:      cubic-bezier(0.16, 1, 0.3, 1);
-      --px:        clamp(1.25rem, 6vw, 5rem);
+      --font-en: 'Cormorant Garamond', serif;
+      --font-ja: 'Noto Serif JP', serif;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --px: clamp(1.25rem, 6vw, 5rem);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; background: var(--bg); }
@@ -124,7 +124,6 @@
     }
     .nav-cta:hover { background: rgba(168,117,96,0.15); color: var(--fg); }
 
-    /* Page Nav (Right fixed) */
     .page-nav {
       position: fixed;
       right: clamp(10px, 3vw, 30px); top: 50%;
@@ -142,7 +141,7 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-        HERO FIRST VIEW
+        HERO FIRST VIEW (100% Pure CSS Animation)
     ============================================================ */
     .hero {
       position: relative;
@@ -171,30 +170,77 @@
     .hero-divider { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: linear-gradient(to right, transparent 0%, rgba(168,117,96,0.25) 20%, rgba(122,116,110,0.35) 50%, rgba(168,117,96,0.2) 80%, transparent 100%); z-index: 2; }
     .hero-inner { position: relative; z-index: 2; }
     
-    .hero-eyebrow { font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem); letter-spacing: 0.5em; color: var(--fg); opacity: 0.7; text-transform: uppercase; margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.2rem; clip-path: inset(0 100% 0 0); transition: clip-path 1.2s var(--ease) 0.2s; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }
+    .hero-eyebrow { 
+      font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem); letter-spacing: 0.5em; color: var(--fg); text-transform: uppercase; margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.2rem; text-shadow: 0 2px 6px rgba(0,0,0,0.9);
+      opacity: 0.7; 
+      -webkit-clip-path: inset(0 0% 0 0); clip-path: inset(0 0% 0 0); 
+      transform: translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden;
+      animation: revealClip 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+    }
     .hero-eyebrow::before { content: ''; width: 24px; height: 0.5px; background: var(--accent); flex-shrink: 0; opacity: 0.8; }
-    .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
     
     .hero-title { font-family: var(--font-ja); font-size: clamp(5rem, 19vw, 17rem); font-weight: 200; line-height: 0.88; letter-spacing: -0.02em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem); display: flex; gap: 0.05em; overflow: visible; text-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 2px 10px rgba(0,0,0,0.6); }
-    .hero-title .char { display: inline-block; opacity: 0; transition: transform 1.4s var(--ease), opacity 0.9s ease; }
-    .hero-title .char:nth-child(1) { transform: translateX(-60px); transition-delay: 0.2s; }
-    .hero-title .char:nth-child(2) { transform: translateX(60px); transition-delay: 0.35s; }
-    .hero-title.revealed .char { opacity: 1; transform: translateX(0); }
+    .hero-title .char { 
+      display: inline-block; 
+      opacity: 1; 
+      transform: translateX(0) translateZ(0); 
+    }
+    .hero-title .char:nth-child(1) { animation: revealChar1 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both; }
+    .hero-title .char:nth-child(2) { animation: revealChar2 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both; }
     
-    .hero-title-en { font-family: var(--font-en); font-size: clamp(0.95rem, 3vw, 2rem); font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: var(--accent); clip-path: inset(0 100% 0 0); transition: clip-path 1.4s var(--ease) 0.7s; text-shadow: 0 4px 15px rgba(0,0,0,0.8); opacity: 0.8; }
-    .hero-title-en.revealed { clip-path: inset(0 0% 0 0); }
+    .hero-title-en { 
+      font-family: var(--font-en); font-size: clamp(0.95rem, 3vw, 2rem); font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: var(--accent); text-shadow: 0 4px 15px rgba(0,0,0,0.8); 
+      opacity: 0.8; 
+      -webkit-clip-path: inset(0 0% 0 0); clip-path: inset(0 0% 0 0); 
+      transform: translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden;
+      animation: revealClip 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.68s both;
+    }
     
-    .hero-meta { display: flex; align-items: center; gap: 1.8rem; margin-top: clamp(2rem, 5vh, 4.5rem); opacity: 0; transform: translateY(14px); transition: opacity 1s ease 1.1s, transform 1s var(--ease) 1.1s; }
-    .hero-meta.revealed { opacity: 1; transform: translateY(0); }
+    .hero-meta { 
+      display: flex; align-items: center; gap: 1.8rem; margin-top: clamp(2rem, 5vh, 4.5rem); 
+      opacity: 1; 
+      transform: translateY(0) translateZ(0); 
+      animation: revealFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.98s both; 
+    }
     .hero-meta-line { width: 40px; height: 0.5px; background: linear-gradient(to right, var(--accent), var(--accent2)); flex-shrink: 0; }
     .hero-meta-text { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.62rem); letter-spacing: 0.24em; color: var(--fg); opacity: 0.7; text-transform: uppercase; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }
 
-    .hero-scroll { position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0; transition: opacity 0.9s ease 1.8s; }
-    .hero-scroll.revealed { opacity: 1; }
+    .hero-scroll { 
+      position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 12px; 
+      opacity: 1; 
+      animation: revealFade 0.9s ease 1.7s both; 
+    }
     .hero-scroll-label { font-family: var(--font-en); font-size: 0.52rem; letter-spacing: 0.38em; color: var(--fg); opacity: 0.5; text-transform: uppercase; writing-mode: vertical-rl; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
     .hero-scroll-track { width: 1px; height: 48px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden; }
     .hero-scroll-fill { position: absolute; top: -100%; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, var(--accent), transparent); animation: scrollDrop 2.2s ease-in-out 2s infinite; }
+    
     @keyframes scrollDrop { 0% { top: -100%; opacity: 1; } 70% { top: 100%; opacity: 0.4; } 71% { top: -100%; opacity: 0; } 100% { top: -100%; opacity: 0; } }
+
+    /* CSS KEYFRAMES (JS依存を完全に排除) */
+    @-webkit-keyframes revealClip {
+      0% { -webkit-clip-path: inset(0 100% 0 0); clip-path: inset(0 100% 0 0); }
+      100% { -webkit-clip-path: inset(0 0% 0 0); clip-path: inset(0 0% 0 0); }
+    }
+    @keyframes revealClip {
+      0% { -webkit-clip-path: inset(0 100% 0 0); clip-path: inset(0 100% 0 0); }
+      100% { -webkit-clip-path: inset(0 0% 0 0); clip-path: inset(0 0% 0 0); }
+    }
+    @keyframes revealChar1 {
+      0% { opacity: 0; transform: translateX(-60px) translateZ(0); }
+      100% { opacity: 1; transform: translateX(0) translateZ(0); }
+    }
+    @keyframes revealChar2 {
+      0% { opacity: 0; transform: translateX(60px) translateZ(0); }
+      100% { opacity: 1; transform: translateX(0) translateZ(0); }
+    }
+    @keyframes revealFadeUp {
+      0% { opacity: 0; transform: translateY(14px) translateZ(0); }
+      100% { opacity: 1; transform: translateY(0) translateZ(0); }
+    }
+    @keyframes revealFade {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
 
     /* ============================================================
         CONCEPT & STATEMENT SECTION
@@ -203,23 +249,14 @@
     .concept-text { font-size: clamp(0.95rem, 2.4vw, 1.25rem); font-weight: 300; line-height: 2.3; color: rgba(233,229,223,0.9); letter-spacing: 0.08em; margin-bottom: 2.5rem; text-shadow: 0 2px 8px rgba(0,0,0,0.6); word-break: keep-all; overflow-wrap: break-word; }
     .concept-sub { font-size: clamp(0.85rem, 1.6vw, 1.05rem); font-style: italic; color: rgba(233,229,223,0.6); line-height: 1.8; max-width: 800px; margin: 0 auto; letter-spacing: 0.05em; text-align: left; border-left: 1px solid var(--accent); padding-left: 1.5rem; text-shadow: 0 1px 4px rgba(0,0,0,0.8); word-break: keep-all; }
 
-    /* Statement Section */
     .statement-section { padding: clamp(4rem, 9vh, 7rem) var(--px) clamp(6rem, 13vh, 10rem); max-width: 1200px; margin: 0 auto; border-top: 0.5px solid var(--border); position: relative; z-index: 1; }
     .statement-label { font-family: var(--font-en); font-size: clamp(0.58rem, 1.3vw, 0.68rem); letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase; text-align: center; margin-bottom: clamp(2.5rem, 6vh, 4rem); }
     
     .statement-pullquote { 
-      font-family: var(--font-ja); 
-      font-weight: 200; 
-      font-size: clamp(1.4rem, 3.2vw, 2.6rem);
-      line-height: 1.8; 
-      color: var(--fg); 
-      text-align: center; 
-      letter-spacing: 0.06em; 
-      margin-bottom: clamp(3.5rem, 8vh, 5.5rem); 
+      font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.4rem, 3.2vw, 2.6rem); line-height: 1.8; 
+      color: var(--fg); text-align: center; letter-spacing: 0.06em; margin-bottom: clamp(3.5rem, 8vh, 5.5rem); 
       opacity: 0; transform: translateY(20px); transition: opacity 1s var(--ease), transform 1s var(--ease); 
-      text-shadow: 0 4px 12px rgba(0,0,0,0.5);
-      word-break: keep-all;
-      overflow-wrap: break-word;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.5); word-break: keep-all; overflow-wrap: break-word;
     }
     .statement-pullquote.in-view { opacity: 1; transform: translateY(0); }
     
@@ -232,31 +269,16 @@
     .statement-closing.in-view { opacity: 1; transform: translateY(0); }
 
     /* ============================================================
-        GALLERY GRID (Unified & Structured)
+        GALLERY GRID 
     ============================================================ */
-    .gallery-section { 
-      padding: 0 var(--px) clamp(6rem, 13vh, 10rem); 
-      max-width: 1340px; 
-      margin: 0 auto; 
-      position: relative; 
-      z-index: 1; 
-    }
+    .gallery-section { padding: 0 var(--px) clamp(6rem, 13vh, 10rem); max-width: 1340px; margin: 0 auto; position: relative; z-index: 1; }
     .section-label { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem); letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase; text-align: center; margin-bottom: clamp(3rem, 7vh, 5rem); }
     
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(24, 1fr);
-      gap: clamp(4rem, 7vh, 9rem) clamp(1.5rem, 2.5vw, 3rem);
-      align-items: start; 
-    }
-    .gallery-item { 
-      display: flex; flex-direction: column; text-decoration: none; cursor: pointer; 
-      opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); 
-    }
+    .gallery-grid { display: grid; grid-template-columns: repeat(24, 1fr); gap: clamp(4rem, 7vh, 9rem) clamp(1.5rem, 2.5vw, 3rem); align-items: start; }
+    .gallery-item { display: flex; flex-direction: column; text-decoration: none; cursor: pointer; opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
     .gallery-item:focus { outline: 1px dashed var(--accent); outline-offset: 4px; }
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
 
-    /* Custom Placement for Asymmetric Professional Layout */
     .gi-ref00 { grid-column: 2 / span 7; }
     .gi-ref01 { grid-column: 10 / span 14; }
     .gi-ref02 { grid-column: 2 / span 5; }
@@ -270,15 +292,8 @@
     .gi-ref10 { grid-column: 3 / span 8; }
     .gi-ref11 { grid-column: 12 / span 12; }
 
-    .gallery-item-img-wrap { 
-      width: 100%; display: flex; justify-content: center; align-items: center; 
-      background: rgba(0,0,0,0.5); overflow: hidden; border: 0.5px solid var(--border); 
-      transition: border-color 0.4s ease, box-shadow 0.5s var(--ease); backdrop-filter: blur(4px); 
-    }
-    .gallery-item-img-wrap img { 
-      width: 100%; height: auto; object-fit: contain; filter: grayscale(15%) brightness(0.85); 
-      transition: transform 0.8s var(--ease), filter 0.6s ease; 
-    }
+    .gallery-item-img-wrap { width: 100%; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.5); overflow: hidden; border: 0.5px solid var(--border); transition: border-color 0.4s ease, box-shadow 0.5s var(--ease); backdrop-filter: blur(4px); }
+    .gallery-item-img-wrap img { width: 100%; height: auto; object-fit: contain; filter: grayscale(15%) brightness(0.85); transition: transform 0.8s var(--ease), filter 0.6s ease; }
     .gallery-item:hover .gallery-item-img-wrap { border-color: rgba(168,117,96,0.5); box-shadow: 0 16px 40px rgba(0,0,0,0.8); }
     .gallery-item:hover img { transform: scale(1.025); filter: grayscale(0%) brightness(1.0); }
 
@@ -289,14 +304,7 @@
     /* ============================================================
         CHRONOLOGY SECTION
     ============================================================ */
-    .chronology-section { 
-      padding: clamp(5rem, 12vh, 10rem) var(--px); 
-      background: var(--bg2); 
-      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-      border-top: 0.5px solid rgba(168,117,96,0.15); 
-      position: relative; 
-      z-index: 1;
-    }
+    .chronology-section { padding: clamp(5rem, 12vh, 10rem) var(--px); background: var(--bg2); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-top: 0.5px solid rgba(168,117,96,0.15); position: relative; z-index: 1; }
     .timeline-container { max-width: 1000px; margin: 0 auto; position: relative; }
     .timeline-spine-wrapper { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(233,229,223,0.06); transform: translateX(-50%); }
     .timeline-spine-progress { position: absolute; top: 0; left: 0; width: 1px; background: linear-gradient(to bottom, transparent 0%, var(--accent) 10%, var(--accent) 90%, transparent 100%); height: 0%; transition: height 0.1s linear; }
@@ -339,13 +347,7 @@
     /* ============================================================
         CONTACT & FOOTER
     ============================================================ */
-    .contact-section { 
-      padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center; 
-      border-top: 0.5px solid var(--border); 
-      background: radial-gradient(circle at center, rgba(168,117,96,0.1) 0%, rgba(6,6,5,0.85) 70%); 
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      position: relative; z-index: 1;
-    }
+    .contact-section { padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center; border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(168,117,96,0.1) 0%, rgba(6,6,5,0.85) 70%); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); position: relative; z-index: 1; }
     .contact-heading { font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em; text-shadow: 0 4px 12px rgba(0,0,0,0.6); word-break: keep-all; }
     .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.8vw, 0.95rem); color: rgba(233,229,223,0.7); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2; text-shadow: 0 2px 6px rgba(0,0,0,0.8); }
     .contact-btn { display: inline-block; padding: 1.2rem 3.5rem; background: rgba(168,117,96,0.85); color: var(--bg); font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none; transition: all 0.4s var(--ease); border-radius: 2px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
@@ -358,103 +360,30 @@
     /* ============================================================
         BACK TO TOP BUTTON
     ============================================================ */
-    .back-to-top {
-      position: fixed;
-      bottom: clamp(20px, 4vw, 40px);
-      right: clamp(20px, 4vw, 40px);
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background-color: #c4b39a;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 0px;
-      text-decoration: none;
-      z-index: 200;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(20px);
-      transition: all 0.5s var(--ease);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-    }
-    .back-to-top.is-visible {
-      opacity: 0.95;
-      visibility: visible;
-      transform: translateY(0);
-    }
-    .back-to-top:hover {
-      opacity: 1;
-      background-color: #d1c1a9;
-      transform: translateY(-4px);
-    }
-    .back-to-top svg {
-      width: 22px;
-      height: 22px;
-      color: #1a1a1a;
-      stroke-width: 2.5;
-      margin-bottom: -2px;
-    }
-    .back-to-top-text {
-      font-family: var(--font-en);
-      font-size: 11px;
-      color: #1a1a1a;
-      letter-spacing: 0.15em;
-      margin-left: 0.15em;
-    }
+    .back-to-top { position: fixed; bottom: clamp(20px, 4vw, 40px); right: clamp(20px, 4vw, 40px); width: 72px; height: 72px; border-radius: 50%; background-color: #c4b39a; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0px; text-decoration: none; z-index: 200; opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.5s var(--ease); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4); }
+    .back-to-top.is-visible { opacity: 0.95; visibility: visible; transform: translateY(0); }
+    .back-to-top:hover { opacity: 1; background-color: #d1c1a9; transform: translateY(-4px); }
+    .back-to-top svg { width: 22px; height: 22px; color: #1a1a1a; stroke-width: 2.5; margin-bottom: -2px; }
+    .back-to-top-text { font-family: var(--font-en); font-size: 11px; color: #1a1a1a; letter-spacing: 0.15em; margin-left: 0.15em; }
 
     /* ============================================================
-        LIGHTBOX MODAL (Enhanced Design for Professional Use)
+        LIGHTBOX MODAL
     ============================================================ */
     .image-modal { position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.5s var(--ease), visibility 0.5s; }
     .image-modal.is-active { opacity: 1; visibility: visible; }
     .modal-bg { position: absolute; inset: 0; background: rgba(4, 4, 3, 0.96); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); cursor: zoom-out; }
     .modal-close { position: absolute; top: clamp(15px, 4vw, 30px); right: clamp(15px, 4vw, 30px); background: transparent; border: none; color: #fff; cursor: pointer; z-index: 2; padding: 8px; transition: transform 0.3s ease; }
     .modal-close:hover { transform: scale(1.1); }
-    .modal-content {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 94vw;
-      height: 100%;
-      max-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 40px 20px;
-      box-sizing: border-box;
-      opacity: 0;
-      transform: scale(0.97);
-      transition: transform 0.5s var(--ease), opacity 0.5s;
-    }
+    .modal-content { position: relative; z-index: 1; width: 100%; max-width: 94vw; height: 100%; max-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px 20px; box-sizing: border-box; opacity: 0; transform: scale(0.97); transition: transform 0.5s var(--ease), opacity 0.5s; }
     .image-modal.is-active .modal-content { opacity: 1; transform: scale(1); }
-    
-    .modal-img-wrap {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      max-height: 76vh;
-      margin-bottom: 20px;
-    }
-    .modal-content img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      box-shadow: 0 30px 70px rgba(0,0,0,0.8);
-      border: 0.5px solid rgba(233,229,223,0.15);
-    }
-    
-    /* MODAL CAPTION STYLING - Aligned with elegant reference */
+    .modal-img-wrap { flex: 1; display: flex; align-items: center; justify-content: center; width: 100%; max-height: 76vh; margin-bottom: 20px; }
+    .modal-content img { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 30px 70px rgba(0,0,0,0.8); border: 0.5px solid rgba(233,229,223,0.15); }
     .modal-caption { text-align: center; margin-top: 12px; }
     .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(1rem, 2vw, 1.25rem); color: var(--fg); font-weight: 300; letter-spacing: 0.12em; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
     .modal-caption-meta { font-family: var(--font-en); font-size: clamp(0.7rem, 1.2vw, 0.85rem); color: var(--accent); letter-spacing: 0.18em; font-weight: 300; }
 
     /* ============================================================
-        RESPONSIVE DESIGN
+        RESPONSIVE & ACCESSIBILITY
     ============================================================ */
     @media (max-width: 1024px) {
       .gallery-grid { grid-template-columns: repeat(12, 1fr); gap: 3rem 1.5rem; align-items: start; }
@@ -464,61 +393,31 @@
     @media (max-width: 768px) {
       .pc-br { display: none; }
       .sp-br { display: inline; }
-
       .gallery-grid { grid-template-columns: repeat(6, 1fr); gap: 2.5rem 1.25rem; align-items: start; }
       .gallery-item { grid-column: auto / span 3 !important; width: 100% !important; justify-self: stretch !important; }
       .gi-ref01, .gi-ref04, .gi-ref08, .gi-ref10, .gi-ref11 { grid-column: auto / span 6 !important; }
-      
       .gi-ref00 { grid-column: auto / span 6 !important; justify-self: center !important; width: 58% !important; }
       .gi-ref09 { grid-column: auto / span 6 !important; justify-self: center !important; width: 72% !important; }
-
       nav#top-nav { padding: 1rem 1.25rem; justify-content: space-between; align-items: center; }
       .nav-links { display: none !important; }
       .page-nav.visible { right: 8px; opacity: 0.5; }
       .page-nav.visible:hover { opacity: 1; }
       .page-nav-label { display: none; }
-      
-      .tl-content-wrap, 
-      .tl-entry.is-full-figure .tl-content-wrap,
-      .tl-entry:nth-child(even) .tl-content-wrap {
-        flex-direction: column !important;
-        align-items: center;
-        gap: 2.5rem;
-      }
-      .tl-figure, 
-      .tl-body, 
-      .tl-entry.is-featured .tl-figure, 
-      .tl-entry.is-featured .tl-body,
-      .tl-entry.is-full-figure .tl-figure,
-      .tl-entry.is-full-figure .tl-body {
-        width: 100% !important;
-      }
-      
-      .tl-entry:not(.is-full-figure) .tl-figure {
-        width: 80% !important;
-        max-width: 380px;
-        margin: 0 auto;
-      }
-      
+      .tl-content-wrap, .tl-entry.is-full-figure .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column !important; align-items: center; gap: 2.5rem; }
+      .tl-figure, .tl-body, .tl-entry.is-featured .tl-figure, .tl-entry.is-featured .tl-body, .tl-entry.is-full-figure .tl-figure, .tl-entry.is-full-figure .tl-body { width: 100% !important; }
+      .tl-entry:not(.is-full-figure) .tl-figure { width: 80% !important; max-width: 380px; margin: 0 auto; }
       .tl-entry { margin-bottom: clamp(6rem, 12vh, 9rem); }
     }
     @media (max-width: 480px) {
       .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem 1rem; align-items: start; }
       .gallery-item { grid-column: auto / span 1 !important; width: 100% !important; justify-self: stretch !important; }
       .gi-ref01, .gi-ref04, .gi-ref08, .gi-ref10, .gi-ref11 { grid-column: auto / span 2 !important; }
-      
       .gi-ref00 { grid-column: auto / span 2 !important; justify-self: center !important; width: 58% !important; }
       .gi-ref09 { grid-column: auto / span 2 !important; justify-self: center !important; width: 72% !important; }
-
       .hero-scroll { display: none; }
       .modal-img-wrap { max-height: 64vh; }
       .statement-para { text-align: left; }
       .statement-section { padding-left: 1.25rem; padding-right: 1.25rem; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
-      .gallery-item, .tl-entry, .reveal-fade { opacity: 1 !important; transform: none !important; }
-      .hero-bg-image { animation: none !important; }
     }
   </style>
 </head>
@@ -551,17 +450,17 @@
       <div class="hero-bg-image" aria-hidden="true"></div>
       <div class="hero-divider" aria-hidden="true"></div>
       <div class="hero-inner">
-        <p class="hero-eyebrow" id="heroEyebrow">Series — Refugees &nbsp;·&nbsp; Oil on Canvas</p>
-        <h1 class="hero-title" id="heroTitle" aria-label="難民（子ども）">
+        <p class="hero-eyebrow">Series — Refugees &nbsp;·&nbsp; Oil on Canvas</p>
+        <h1 class="hero-title" aria-label="難民（子ども）">
           <span class="char">難</span><span class="char">民</span>
         </h1>
-        <p class="hero-title-en" id="heroEn">Refugees</p>
-        <div class="hero-meta" id="heroMeta">
+        <p class="hero-title-en">Refugees</p>
+        <div class="hero-meta">
           <div class="hero-meta-line"></div>
           <span class="hero-meta-text">Works 2014 – &nbsp;·&nbsp; Syria &nbsp;·&nbsp; Africa &nbsp;·&nbsp; Ifo</span>
         </div>
       </div>
-      <div class="hero-scroll" id="heroScroll" aria-hidden="true">
+      <div class="hero-scroll" aria-hidden="true">
         <div class="hero-scroll-track">
           <div class="hero-scroll-fill"></div>
         </div>
@@ -614,77 +513,66 @@
             <span class="gallery-item-title">マリーエレン</span><span class="gallery-item-meta">2017 / 72.7 × 100.0 cm</span>
           </div>
         </div>
-
         <div class="gallery-item js-scroll-to gi-ref01" data-target="work-sakebi" tabindex="0" role="button">
           <div class="gallery-item-img-wrap" style="aspect-ratio: 162.0 / 130.3;"><img src="images/【F100横】さけび（ガザ）.jpg" alt="さけび（ガザ）" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">さけび（ガザ）</span><span class="gallery-item-meta">2016 / 162.0 × 130.3 cm</span>
           </div>
         </div>
-
         <div class="gallery-item js-modal-open gi-ref02" data-img-src="images/【F6横】飢餓(3).jpg" data-title="飢餓(3)" data-meta="2016 / 41.0 × 31.8 cm / Oil on canvas" tabindex="0" role="button">
           <div class="gallery-item-img-wrap" style="aspect-ratio: 41.0 / 31.8;"><img src="images/【F6横】飢餓(3).jpg" alt="飢餓(3)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">飢餓(3)</span><span class="gallery-item-meta">2016 / 41.0 × 31.8 cm</span>
           </div>
         </div>
-
         <div class="gallery-item js-modal-open gi-ref03" data-img-src="images/【F8横】飢餓(2).jpg" data-title="飢餓(2)" data-meta="2016 / 45.5 × 37.9 cm / Oil on canvas" tabindex="0" role="button">
           <div class="gallery-item-img-wrap" style="aspect-ratio: 45.5 / 37.9;"><img src="images/【F8横】飢餓(2).jpg" alt="飢餓(2)" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">飢餓(2)</span><span class="gallery-item-meta">2016 / 45.5 × 37.9 cm</span>
           </div>
         </div>
-
         <div class="gallery-item js-scroll-to gi-ref04" data-target="work-zenbu" tabindex="0" role="button">
           <div class="gallery-item-img-wrap" style="aspect-ratio: 116.7 / 91.0;"><img src="images/【F50横】「ぜんぶかみさまにいいつけてやるんだから……」（3歳で死んだシリアの難民の子供が最後に言い残した言葉）[2014].jpg" alt="「ぜんぶかみさまにいいつけてやるんだから」" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">「ぜんぶかみさまにいいつけてやるんだから」</span><span class="gallery-item-meta">2014 / 116.7 × 91.0 cm</span>
           </div>
         </div>
-
         <div class="gallery-item js-modal-open gi-ref05" data-img-src="images/【P8横】Phone.jpg" data-title="Phone" data-meta="2016 / 45.5 × 33.3 cm / Oil on canvas" tabindex="0" role="button">
           <div class="gallery-item-img-wrap" style="aspect-ratio: 45.5 / 33.3;"><img src="images/【P8横】Phone.jpg" alt="Phone" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">Phone</span><span class="gallery-item-meta">2016 / 45.5 × 33.3 cm</span>
           </div>
         </div>
-
         <div class="gallery-item js-modal-open gi-ref06" data-img-src="images/【P8横】ポリオ予防接種.jpg" data-title="ポリオ予防接種" data-meta="2016 / 45.5 × 33.3 cm / Oil on canvas" tabindex="0" role="button">
           <div class="gallery-item-img-wrap" style="aspect-ratio: 45.5 / 33.3;"><img src="images/【P8横】ポリオ予防接種.jpg" alt="ポリオ予防接種" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">ポリオ予防接種</span><span class="gallery-item-meta">2016 / 45.5 × 33.3 cm</span>
           </div>
         </div>
-
         <div class="gallery-item js-modal-open gi-ref07" data-img-src="images/【P20縦】ムハマード（9歳）.jpg" data-title="ムハマード（9歳）" data-meta="2016 / 53.0 × 72.7 cm / Oil on canvas" tabindex="0" role="button">
           <div class="gallery-item-img-wrap" style="aspect-ratio: 53.0 / 72.7;"><img src="images/【P20縦】ムハマード（9歳）.jpg" alt="ムハマード（9歳）" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">ムハマード（9歳）</span><span class="gallery-item-meta">2016 / 53.0 × 72.7 cm</span>
           </div>
         </div>
-
         <div class="gallery-item js-modal-open gi-ref08" data-img-src="images/【M60横】視線（イラク）.jpg" data-title="視線（イラク）" data-meta="2016 / 130.3 × 80.3 cm / Oil on canvas" tabindex="0" role="button">
           <div class="gallery-item-img-wrap" style="aspect-ratio: 130.3 / 80.3;"><img src="images/【M60横】視線（イラク）.jpg" alt="視線（イラク）" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">視線（イラク）</span><span class="gallery-item-meta">2016 / 130.3 × 80.3 cm</span>
           </div>
         </div>
-
         <div class="gallery-item js-scroll-to gi-ref09" data-target="work-105" tabindex="0" role="button">
           <div class="gallery-item-img-wrap" style="aspect-ratio: 91.0 / 72.7;"><img src="images/【F30横】1／1057000000（アフリカ）.jpg" alt="1／1057000000" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">1／1057000000</span><span class="gallery-item-meta">— / 91.0 × 72.7 cm</span>
           </div>
         </div>
-
         <div class="gallery-item js-scroll-to gi-ref10" data-target="work-onbu" tabindex="0" role="button">
           <div class="gallery-item-img-wrap" style="aspect-ratio: 116.7 / 91.0;"><img src="images/【F50横】おんぶ（難民の子供、イフォ）.jpg" alt="おんぶ" loading="lazy"></div>
           <div class="gallery-item-cap">
             <span class="gallery-item-title">おんぶ</span><span class="gallery-item-meta">— / 116.7 × 91.0 cm</span>
           </div>
         </div>
-
         <div class="gallery-item js-scroll-to gi-ref11" data-target="work-syria" tabindex="0" role="button">
           <div class="gallery-item-img-wrap" style="aspect-ratio: 162.0 / 130.3;"><img src="images/【F100号横】今、シリア.jpg" alt="今、シリア" loading="lazy"></div>
           <div class="gallery-item-cap">
@@ -700,7 +588,6 @@
         <div class="timeline-spine-wrapper">
           <div class="timeline-spine-progress" id="tl-spine-fill"></div>
         </div>
-
         <article class="tl-entry is-full-figure" id="work-maryellen">
           <div class="tl-year-display">2017</div>
           <div class="tl-content-wrap">
@@ -717,7 +604,6 @@
             </div>
           </div>
         </article>
-
         <article class="tl-entry is-full-figure" id="work-sakebi">
           <div class="tl-year-display">2016</div>
           <div class="tl-content-wrap">
@@ -734,7 +620,6 @@
             </div>
           </div>
         </article>
-
         <article class="tl-entry is-full-figure" id="work-zenbu">
           <div class="tl-year-display">2014</div>
           <div class="tl-content-wrap">
@@ -751,7 +636,6 @@
             </div>
           </div>
         </article>
-
         <article class="tl-entry" id="work-105">
           <div class="tl-year-display">—</div>
           <div class="tl-content-wrap">
@@ -768,7 +652,6 @@
             </div>
           </div>
         </article>
-
         <article class="tl-entry" id="work-onbu">
           <div class="tl-year-display">—</div>
           <div class="tl-content-wrap">
@@ -785,7 +668,6 @@
             </div>
           </div>
         </article>
-
         <article class="tl-entry is-featured is-full-figure" id="work-syria">
           <div class="tl-year-display">—</div>
           <div class="tl-content-wrap">
@@ -802,7 +684,6 @@
             </div>
           </div>
         </article>
-
       </div>
     </section>
   </main>
@@ -850,72 +731,65 @@
   </div>
 
   <script>
-    /* ── ファーストビュー アニメーション ── */
-    window.addEventListener('load', () => {
-      setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 150);
-      setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'),   350);
-      setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'),      680);
-      setTimeout(() => document.getElementById('heroMeta')?.classList.add('revealed'),    980);
-      setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1700);
-    });
-
     /* ── Observer (Fade Up & Grid Animation) ── */
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('in-view');
-        io.unobserve(entry.target);
-      });
-    }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.gallery-item, .tl-entry, .reveal-fade').forEach(el => io.observe(el));
+    document.addEventListener('DOMContentLoaded', () => {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        });
+      }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+      document.querySelectorAll('.gallery-item, .tl-entry, .reveal-fade').forEach(el => io.observe(el));
 
-    /* ── Typewriter Engine ── */
-    function prepareTypewriterDOM(el) {
-      if (el.dataset.twPrepared === "true") return;
-      const txt = el.textContent.trim();
-      el.textContent = '';
-      for (let i = 0; i < txt.length; i++) {
-        const span = document.createElement('span');
-        span.className = 'tw-char';
-        span.textContent = txt[i];
-        el.appendChild(span);
+      /* ── Typewriter Engine ── */
+      function prepareTypewriterDOM(el) {
+        if (el.dataset.twPrepared === "true") return;
+        const txt = el.textContent.trim();
+        el.textContent = '';
+        for (let i = 0; i < txt.length; i++) {
+          const span = document.createElement('span');
+          span.className = 'tw-char';
+          span.textContent = txt[i];
+          el.appendChild(span);
+        }
+        const cursor = document.createElement('span');
+        cursor.className = 'tw-cursor';
+        el.appendChild(cursor);
+        el.dataset.twPrepared = "true";
       }
-      const cursor = document.createElement('span');
-      cursor.className = 'tw-cursor';
-      el.appendChild(cursor);
-      el.dataset.twPrepared = "true";
-    }
-    function runTypewriter(el) {
-      if (el.dataset.twDone === "true") return;
-      const chars = el.querySelectorAll('.tw-char');
-      const cursor = el.querySelector('.tw-cursor');
-      let idx = 0;
-      function nextChar() {
-        if (idx < chars.length) {
-          chars[idx].style.opacity = '1';
-          idx++;
-          setTimeout(() => requestAnimationFrame(nextChar), 45);
-        } else {
-          el.dataset.twDone = "true";
-          if (cursor) {
-            cursor.classList.add('fade-out');
-            setTimeout(() => cursor.remove(), 800);
+      function runTypewriter(el) {
+        if (el.dataset.twDone === "true") return;
+        const chars = el.querySelectorAll('.tw-char');
+        const cursor = el.querySelector('.tw-cursor');
+        let idx = 0;
+        function nextChar() {
+          if (idx < chars.length) {
+            chars[idx].style.opacity = '1';
+            idx++;
+            setTimeout(() => requestAnimationFrame(nextChar), 45);
+          } else {
+            el.dataset.twDone = "true";
+            if (cursor) {
+              cursor.classList.add('fade-out');
+              setTimeout(() => cursor.remove(), 800);
+            }
           }
         }
+        requestAnimationFrame(nextChar);
       }
-      requestAnimationFrame(nextChar);
-    }
-    document.querySelectorAll('[data-typewriter="true"]').forEach(el => {
-      prepareTypewriterDOM(el);
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            obs.unobserve(el);
-            setTimeout(() => requestAnimationFrame(() => runTypewriter(el)), 300);
-          }
-        });
-      }, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
-      obs.observe(el);
+      document.querySelectorAll('[data-typewriter="true"]').forEach(el => {
+        prepareTypewriterDOM(el);
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              obs.unobserve(el);
+              setTimeout(() => requestAnimationFrame(() => runTypewriter(el)), 300);
+            }
+          });
+        }, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
+        obs.observe(el);
+      });
     });
 
     /* ── Scroll Interactions (Spine, Nav, Page-Nav) ── */
@@ -932,11 +806,11 @@
         window.requestAnimationFrame(() => {
           const scrollY = window.scrollY;
 
-          /* Top Nav Glassmorphism */
-          if (scrollY > 50) topNav.classList.add('scrolled');
-          else topNav.classList.remove('scrolled');
+          if (topNav) {
+            if (scrollY > 50) topNav.classList.add('scrolled');
+            else topNav.classList.remove('scrolled');
+          }
 
-          /* Page Nav Visibility & Active State */
           const checkY = scrollY + window.innerHeight * 0.4;
           let activeSec = null;
           sections.forEach(sec => {
@@ -950,7 +824,6 @@
             pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.6);
           }
 
-          /* Timeline Spine Progress */
           if (tlWrap && spineFill) {
             const rect = tlWrap.getBoundingClientRect();
             const totalH = tlWrap.offsetHeight;
@@ -960,10 +833,11 @@
             }
           }
 
-          /* Back to Top Visibility */
           const b2t = document.getElementById('backToTop');
-          if (scrollY > 400) b2t.classList.add('is-visible');
-          else b2t.classList.remove('is-visible');
+          if (b2t) {
+            if (scrollY > 400) b2t.classList.add('is-visible');
+            else b2t.classList.remove('is-visible');
+          }
 
           ticking = false;
         });
@@ -981,18 +855,21 @@
       });
     });
 
-    document.getElementById('backToTop').addEventListener('click', (e) => {
-      e.preventDefault();
-      if (window.innerWidth <= 768) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        const target = document.getElementById('gallery');
-        if (target) {
-          const offset = topNav?.offsetHeight || 80;
-          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+    const b2tBtn = document.getElementById('backToTop');
+    if (b2tBtn) {
+      b2tBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (window.innerWidth <= 768) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          const target = document.getElementById('gallery');
+          if (target) {
+            const offset = topNav?.offsetHeight || 80;
+            window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+          }
         }
-      }
-    });
+      });
+    }
 
     /* ── Smooth Scroll to Chronology ── */
     document.querySelectorAll('.js-scroll-to').forEach(btn => {
@@ -1016,7 +893,7 @@
       });
     });
 
-    /* ── Lightbox Modal Engine (Optimized & Stylized) ── */
+    /* ── Lightbox Modal Engine ── */
     const modal      = document.getElementById('imageModal');
     const modalImg   = document.getElementById('modalImg');
     const modalBg    = document.getElementById('modalBg');
@@ -1025,6 +902,7 @@
     const titleMetaEl = document.getElementById('modalTitleMeta');
 
     const openModal = (src, title, meta) => {
+      if (!modal) return;
       modalImg.src = src;
       titleJpEl.textContent = title || '';
       titleMetaEl.textContent = meta || '';
@@ -1034,6 +912,7 @@
     };
 
     const closeModal = () => {
+      if (!modal) return;
       modal.classList.remove('is-active');
       modal.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('is-locked');
@@ -1056,10 +935,10 @@
       });
     });
 
-    modalBg.addEventListener('click', closeModal);
-    modalClose.addEventListener('click', closeModal);
-    modalImg.addEventListener('click', closeModal);
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('is-active')) closeModal(); });
+    if (modalBg) modalBg.addEventListener('click', closeModal);
+    if (modalClose) modalClose.addEventListener('click', closeModal);
+    if (modalImg) modalImg.addEventListener('click', closeModal);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal && modal.classList.contains('is-active')) closeModal(); });
   </script>
 </body>
 </html>
