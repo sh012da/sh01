@@ -142,7 +142,7 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       HERO FIRST VIEW
+       HERO FIRST VIEW - REDESIGNED "CHROMATIC CONVERGENCE"
     ================================================================ */
     .hero {
       position: relative;
@@ -150,24 +150,37 @@
       display: flex; flex-direction: column; justify-content: flex-end;
       padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); overflow: hidden;
       background-color: var(--bg);
+      /* Custom properties driven by JS for interaction */
+      --mx: 0;
+      --my: 0;
+      --intro-progress: 0;
     }
     
     .hero-bg-wrapper {
       position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
     }
     .hero-bg-image {
-      position: absolute; inset: -5%; 
+      position: absolute; inset: -10%; 
       background-image: url('images/【くにうみ】.jpg'); background-size: cover; background-position: center 25%;
-      mix-blend-mode: lighten; opacity: 0.35; filter: grayscale(15%) contrast(1.1);
-      animation: hero-breathe 35s ease-in-out infinite alternate;
+      mix-blend-mode: lighten; opacity: 0; filter: grayscale(50%) contrast(1.2) blur(10px);
+      transition: opacity 2.5s ease 0.5s, filter 3s ease 0.5s;
+      /* Subtle parallax moving in opposite direction of mouse */
+      transform: translate(calc(var(--mx) * -1.5%), calc(var(--my) * -1.5%)) scale(1.05);
     }
-    @keyframes hero-breathe {
-      0% { transform: scale(1) translate(0, 0); }
-      100% { transform: scale(1.05) translate(-1%, -1.5%); }
+    .hero.revealed .hero-bg-image {
+      opacity: 0.35;
+      filter: grayscale(15%) contrast(1.1) blur(0px);
     }
+    
+    /* The interactive ambient spotlight representing the hidden layers */
     .hero-bg-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(to bottom, rgba(6,6,5,0) 0%, rgba(6,6,5,0.4) 60%, var(--bg) 95%, var(--bg) 100%);
+      background: radial-gradient(
+        circle at calc(50% + (var(--mx) * 30%)) calc(50% + (var(--my) * 30%)), 
+        rgba(6,6,5,0.1) 0%, 
+        rgba(6,6,5,0.7) 40%, 
+        var(--bg) 80%
+      );
     }
 
     .hero-divider {
@@ -175,53 +188,105 @@
       background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%);
       z-index: 2;
     }
-    .hero-inner { position: relative; z-index: 2; }
+    .hero-inner { position: relative; z-index: 2; pointer-events: none; }
+    
     .hero-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem);
       letter-spacing: 0.5em; color: var(--dim); text-transform: uppercase;
       margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.2rem;
-      clip-path: inset(0 100% 0 0); transition: clip-path 1.2s var(--ease) 0.2s;
+      opacity: 0; transform: translateY(10px); transition: opacity 1.2s var(--ease) 1.2s, transform 1.2s var(--ease) 1.2s;
     }
     .hero-eyebrow::before { content: ''; width: 24px; height: 0.5px; background: var(--accent2); flex-shrink: 0; opacity: 0.6; }
-    .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
+    .hero.revealed .hero-eyebrow { opacity: 1; transform: translateY(0); }
     
     .hero-title {
       font-family: var(--font-ja);
       font-size: clamp(4.5rem, 17vw, 15rem); font-weight: 200;
       line-height: 0.88; letter-spacing: -0.02em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem);
       display: flex; gap: 0.05em; overflow: visible;
+      perspective: 1000px;
     }
+    
     .hero-title .char {
-      display: inline-block; opacity: 0;
-      transition: transform 1.4s var(--ease), opacity 0.9s ease;
+      position: relative;
+      display: inline-block;
+      opacity: 0;
+      /* Enter from the depth of the void */
+      transform: translate3d(0, 40px, -150px) rotateX(15deg);
+      transition: transform 1.8s var(--ease), opacity 1.5s ease;
+      transform-style: preserve-3d;
     }
-    .hero-title .char:nth-child(1) { transform: translateY(40px); transition-delay: 0.2s; }
-    .hero-title .char:nth-child(2) { transform: translateY(40px); transition-delay: 0.3s; }
-    .hero-title .char:nth-child(3) { transform: translateY(40px); transition-delay: 0.4s; }
-    .hero-title .char:nth-child(4) { transform: translateY(40px); transition-delay: 0.5s; }
-    .hero-title.revealed .char { opacity: 1; transform: translateY(0); }
+    .hero-title .char:nth-child(1) { transition-delay: 0.1s; }
+    .hero-title .char:nth-child(2) { transition-delay: 0.2s; }
+    .hero-title .char:nth-child(3) { transition-delay: 0.3s; }
+    .hero-title .char:nth-child(4) { transition-delay: 0.4s; }
+    
+    .hero.revealed .hero-title .char { 
+      opacity: 1; 
+      transform: translate3d(0, 0, 0) rotateX(0); 
+    }
+
+    /* THE CHROMATIC UNDERLAYERS - visualizes the "colors hiding in black" */
+    .hero-title .char::before,
+    .hero-title .char::after {
+      content: attr(data-char);
+      position: absolute;
+      top: 0; left: 0;
+      pointer-events: none;
+      /* Initial state: scattered and blurred */
+      opacity: 0;
+      filter: blur(15px);
+      transition: transform 0.8s cubic-bezier(0.1, 0.8, 0.2, 1), filter 0.8s ease, opacity 0.8s ease;
+      will-change: transform, opacity, filter;
+    }
+
+    .hero-title .char::before {
+      color: var(--accent); /* Warm deep tone */
+      z-index: -1;
+      transform: translate(calc(-30px * (1 - var(--intro-progress))), calc(20px * (1 - var(--intro-progress)))) scale(1.05);
+    }
+    .hero-title .char::after {
+      color: var(--accent2); /* Cool deep tone */
+      z-index: -2;
+      transform: translate(calc(30px * (1 - var(--intro-progress))), calc(-20px * (1 - var(--intro-progress)))) scale(1.05);
+    }
+
+    /* Once revealed, they sink into the white text, then respond to the mouse */
+    .hero.is-interactive .hero-title .char::before,
+    .hero.is-interactive .hero-title .char::after {
+      opacity: 0.65;
+      filter: blur(4px);
+    }
+    .hero.is-interactive .hero-title .char::before {
+      /* Moves opposite to the cursor */
+      transform: translate(calc(var(--mx) * -15px), calc(var(--my) * -10px));
+    }
+    .hero.is-interactive .hero-title .char::after {
+      /* Moves with the cursor */
+      transform: translate(calc(var(--mx) * 15px), calc(var(--my) * 10px));
+    }
     
     .hero-title-en {
       font-family: var(--font-en); font-size: clamp(0.95rem, 3vw, 2rem);
       font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.55);
-      clip-path: inset(0 100% 0 0); transition: clip-path 1.4s var(--ease) 0.8s;
+      clip-path: inset(0 100% 0 0); transition: clip-path 1.6s var(--ease) 0.9s;
     }
-    .hero-title-en.revealed { clip-path: inset(0 0% 0 0); }
+    .hero.revealed .hero-title-en { clip-path: inset(0 0% 0 0); }
     
     .hero-meta {
       display: flex; align-items: center; gap: 1.8rem; margin-top: clamp(2rem, 5vh, 4.5rem); 
-      opacity: 0; transform: translateY(14px); transition: opacity 1s ease 1.2s, transform 1s var(--ease) 1.2s;
+      opacity: 0; transform: translateY(14px); transition: opacity 1.2s ease 1.3s, transform 1.2s var(--ease) 1.3s;
     }
-    .hero-meta.revealed { opacity: 1; transform: translateY(0); }
+    .hero.revealed .hero-meta { opacity: 1; transform: translateY(0); }
     .hero-meta-line { width: 40px; height: 0.5px; background: linear-gradient(to right, var(--accent), var(--accent2)); flex-shrink: 0; }
     .hero-meta-text { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.62rem); letter-spacing: 0.24em; color: var(--dim); text-transform: uppercase; }
     
     .hero-scroll {
       position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px); z-index: 2; 
       display: flex; flex-direction: column; align-items: center; gap: 12px;
-      opacity: 0; transition: opacity 0.9s ease 1.8s;
+      opacity: 0; transition: opacity 1.2s ease 2s;
     }
-    .hero-scroll.revealed { opacity: 1; }
+    .hero.revealed .hero-scroll { opacity: 1; }
     .hero-scroll-label { font-family: var(--font-en); font-size: 0.52rem; letter-spacing: 0.38em; color: var(--whisper); text-transform: uppercase; writing-mode: vertical-rl; }
     .hero-scroll-track { width: 1px; height: 48px; background: var(--border); position: relative; overflow: hidden; }
     .hero-scroll-fill {
@@ -413,27 +478,25 @@
     
     .modal-content {
       position: relative; z-index: 10000; max-width: 90vw; margin: auto;
-      display: flex; flex-direction: column; align-items: center; gap: 1rem; /* スペース調整 */
+      display: flex; flex-direction: column; align-items: center; gap: 1rem;
       opacity: 0; transform: scale(0.96) translateY(12px);
       transition: opacity 0.55s var(--ease) 0.08s, transform 0.55s var(--ease) 0.08s;
     }
     .image-modal.is-active .modal-content { opacity: 1; transform: scale(1) translateY(0); }
     
-    /* 拡大表示時の画像を大きく */
     .modal-content img { 
       max-width: 100%; max-height: 82svh; 
       object-fit: contain; box-shadow: 0 32px 80px rgba(0,0,0,0.75); border: 0.5px solid var(--border); cursor: zoom-out; 
     }
     
-    /* スタイリッシュなキャプション実装 */
     .modal-caption { text-align: center; width: 100%; padding: 0.5rem 1rem 0; display: flex; flex-direction: column; gap: 0.6rem; }
     .modal-caption-title { 
-      font-family: var(--font-ja); font-size: clamp(1rem, 1.5vw, 1.25rem); /* タイトルを小さめに */
+      font-family: var(--font-ja); font-size: clamp(1rem, 1.5vw, 1.25rem);
       font-weight: 300; color: var(--fg); letter-spacing: 0.15em; line-height: 1.2;
     }
     .modal-caption-meta { 
       font-family: var(--font-en); font-size: clamp(0.75rem, 1.2vw, 0.9rem); 
-      color: var(--accent); letter-spacing: 0.18em; font-style: normal; /* 添付画像に合わせたセリフ体・非イタリック */
+      color: var(--accent); letter-spacing: 0.18em; font-style: normal;
     }
 
     .back-to-top {
@@ -512,7 +575,7 @@
   </nav>
 
   <main>
-    <section class="hero">
+    <section class="hero" id="hero">
       <div class="hero-bg-wrapper" aria-hidden="true">
         <div class="hero-bg-image"></div>
         <div class="hero-bg-overlay"></div>
@@ -521,7 +584,10 @@
       <div class="hero-inner">
         <p class="hero-eyebrow" id="heroEyebrow">Series — The Black Period &nbsp;·&nbsp; Pencil and mixed media on panel</p>
         <h1 class="hero-title" id="heroTitle" aria-label="黒の時代">
-          <span class="char">黒</span><span class="char">の</span><span class="char">時</span><span class="char">代</span>
+          <span class="char" data-char="黒">黒</span>
+          <span class="char" data-char="の">の</span>
+          <span class="char" data-char="時">時</span>
+          <span class="char" data-char="代">代</span>
         </h1>
         <p class="hero-title-en" id="heroEn">The Black Period</p>
         <div class="hero-meta" id="heroMeta">
@@ -848,14 +914,54 @@
       document.body.classList.remove('is-locked');
     }
 
-    /* ── ファーストビュー アニメーション ── */
+    /* ── ファーストビュー アニメーション "CHROMATIC CONVERGENCE" ── */
     window.addEventListener('load', () => {
-      setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 150);
-      setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'),   350);
-      setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'),      680);
-      setTimeout(() => document.getElementById('heroMeta')?.classList.add('revealed'),    980);
-      setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1700);
+      const heroSec = document.getElementById('hero');
+      
+      // アニメーションの進行管理
+      setTimeout(() => heroSec.style.setProperty('--intro-progress', '1'), 100);
+      setTimeout(() => heroSec.classList.add('revealed'), 300);
+      
+      // 初期アニメーション終了後、インタラクティブ（マウス連動）を許可
+      setTimeout(() => heroSec.classList.add('is-interactive'), 2300);
     });
+
+    /* ── Hero Interactive Spotlight & Parallax Engine ── */
+    const heroEl = document.getElementById('hero');
+    let isMouseMoving = false;
+    let targetX = 0, targetY = 0;
+    let currentX = 0, currentY = 0;
+    let idleTime = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      // 画面中央を0,0とし、-1〜1の範囲に正規化
+      targetX = (e.clientX / window.innerWidth) * 2 - 1;
+      targetY = (e.clientY / window.innerHeight) * 2 - 1;
+      isMouseMoving = true;
+    });
+
+    // モバイルや非操作時に、層が生きているように呼吸（揺らめき）させる
+    function animateHeroLayer() {
+      if (!isMouseMoving) {
+        idleTime += 0.008;
+        targetX = Math.sin(idleTime) * 0.4;
+        targetY = Math.cos(idleTime * 0.7) * 0.4;
+      }
+      
+      // 慣性（Lerp）による滑らかな追従
+      currentX += (targetX - currentX) * 0.04;
+      currentY += (targetY - currentY) * 0.04;
+      
+      heroEl.style.setProperty('--mx', currentX);
+      heroEl.style.setProperty('--my', currentY);
+      
+      requestAnimationFrame(animateHeroLayer);
+    }
+    requestAnimationFrame(animateHeroLayer);
+    
+    // マウスが止まったら再び呼吸アニメーションに戻す
+    setInterval(() => { isMouseMoving = false; }, 3000);
+
 
     /* ── Observer (Fade Up & Grid Animation) ── */
     const io = new IntersectionObserver((entries) => {
@@ -1018,18 +1124,12 @@
       setTimeout(() => { modalImg.src = ''; titleEl.textContent = ''; metaEl.textContent = ''; }, 560);
     };
 
-    /* 【スマートクリックルーター】
-      Galleryのアイテムをクリックした際、
-      1. hrefのリンク先（Chronologyの要素）が存在すれば、そこへスクロールでジャンプ。
-      2. リンク先が存在しない（年譜にない作品）、またはhrefがない場合、その場でモーダルを拡大展開。
-    */
     document.querySelectorAll('.gallery-item').forEach(item => {
       item.addEventListener('click', (e) => {
         const href = item.getAttribute('href');
         if (href && href.startsWith('#')) {
           const target = document.querySelector(href);
           if (target) {
-            // 年譜に該当作品があるためジャンプ（デフォルト動作をキャンセルしてJSで高さを考慮しスクロール）
             e.preventDefault();
             const offset = document.getElementById('top-nav')?.offsetHeight || 80;
             window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
@@ -1037,7 +1137,6 @@
           }
         }
         
-        // 年譜に存在しない作品の場合はその場で拡大展開
         e.preventDefault();
         const imgWrap = item.querySelector('.gallery-item-img-wrap img');
         const src = imgWrap ? imgWrap.getAttribute('src') : '';
@@ -1050,7 +1149,6 @@
       });
     });
 
-    /* 年譜（Chronology）内の画像クリック時 */
     document.querySelectorAll('.tl-figure.js-modal-open').forEach(btn => {
       btn.addEventListener('click', () => {
         const src = btn.getAttribute('data-img-src');
