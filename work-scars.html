@@ -73,7 +73,6 @@
       padding: clamp(1.2rem, 3vw, 2rem) var(--px);
       background: transparent; border-bottom: 1px solid transparent;
       
-      /* アニメーション中は上に隠しておく */
       transform: translateY(-100%);
       opacity: 0;
       transition: opacity 1.2s var(--ease), transform 1.2s var(--ease), background 0.6s, border 0.6s, padding 0.6s;
@@ -81,7 +80,7 @@
     body.is-loaded nav#top-nav {
       transform: translateY(0);
       opacity: 1;
-      transition-delay: 3.5s, 3.5s, 0s, 0s, 0s; /* 初期ロード時のみ遅延 */
+      transition-delay: 3.5s, 3.5s, 0s, 0s, 0s;
     }
     body.is-loaded nav#top-nav.scrolled {
       transition-delay: 0s, 0s, 0s, 0s, 0s;
@@ -112,10 +111,9 @@
       position: relative; height: 100svh; min-height: 650px;
       display: flex; flex-direction: column; justify-content: center; align-items: center;
       padding: 0 var(--px); overflow: hidden;
-      background: var(--bg); /* 初期状態の黒 */
+      background: var(--bg);
     }
 
-    /* 1. バックグラウンドレイヤー (露わになる絵画) */
     .hero-bg-layer { position: absolute; inset: 0; z-index: 1; overflow: hidden; }
     .hero-bg {
       position: absolute; inset: -10%; width: 120%; height: 120%;
@@ -131,7 +129,6 @@
       transform: scale(1) translateZ(0);
     }
     
-    /* 滲み出る「血/絵の具」のエフェクト */
     .hero-bleed {
       position: absolute; inset: 0;
       background: radial-gradient(circle at center, rgba(158, 42, 43, 0.4) 0%, transparent 65%);
@@ -140,7 +137,6 @@
     }
     .hero.is-animating .hero-bleed { opacity: 1; }
 
-    /* 2. キャンバスを切り裂くカーテン */
     .hero-curtain-container {
       position: absolute; top: -30%; left: -30%; right: -30%; bottom: -30%;
       transform: rotate(-10deg); z-index: 5; pointer-events: none;
@@ -159,7 +155,6 @@
       transform: translateY(-50%) scaleX(0); transform-origin: center; border-radius: 50%;
     }
     
-    /* 切り裂くアニメーション */
     .hero.is-animating .slash-line { animation: slashDraw 2s cubic-bezier(0.8, 0, 0.2, 1) forwards; }
     @keyframes slashDraw {
       0% { transform: translateY(-50%) scaleX(0); opacity: 0; }
@@ -171,7 +166,6 @@
     .hero.is-animating .curtain-top { transform: translateY(-100%); transition-delay: 0.6s; }
     .hero.is-animating .curtain-bottom { transform: translateY(100%); transition-delay: 0.6s; }
 
-    /* 3. コンテンツテキスト */
     .hero-inner {
       position: relative; z-index: 10; display: flex; flex-direction: column;
       align-items: center; text-align: center;
@@ -185,14 +179,13 @@
     }
     .hero.is-animating .hero-eyebrow { opacity: 1; transform: translateY(0); }
 
-    /* タイトルの切断と合体 */
     .hero-title-wrap {
       position: relative; display: inline-block;
       font-size: clamp(6rem, 25vw, 15rem); font-weight: 200; line-height: 1; color: var(--fg);
     }
     .title-part { display: block; }
     .part-top {
-      clip-path: polygon(0 0, 100% 0, 100% 55.5%, 0 45.5%); /* 斜めに切断 */
+      clip-path: polygon(0 0, 100% 0, 100% 55.5%, 0 45.5%); 
       transform: translate(-6vw, -4vh) rotate(-3deg);
       opacity: 0; filter: blur(10px);
     }
@@ -209,11 +202,10 @@
                   opacity 2.5s ease 1.2s, filter 2.5s ease 1.2s;
     }
 
-    /* 合体後に浮かび上がる傷跡(赤いアンダーライン) */
     .title-scar {
       position: absolute; top: 50%; left: -5%; width: 110%; height: 2px;
       background: var(--accent); box-shadow: 0 0 25px var(--scar-glow), 0 0 10px var(--accent);
-      transform: rotate(5.7deg) scaleX(0); /* 切断面の角度に合わせる */
+      transform: rotate(5.7deg) scaleX(0); 
       transform-origin: center; mix-blend-mode: screen;
     }
     .hero.is-animating .title-scar {
@@ -268,7 +260,6 @@
     .statement-body p:last-child { margin-bottom: 0; }
     .statement-highlight { border-left: 2px solid var(--accent); padding-left: 2rem; color: var(--fg); font-weight: 300; }
 
-    /* Reveal Animations for Scroll */
     .fade-up { opacity: 0; transform: translateY(40px); transition: opacity 1.2s var(--ease-slow), transform 1.2s var(--ease-slow); }
     .fade-up.in-view { opacity: 1; transform: translateY(0); }
 
@@ -325,6 +316,8 @@
       filter: grayscale(40%) contrast(1.1) brightness(0.8);
       transition: transform 1.5s var(--ease-slow), filter 0.8s var(--ease);
     }
+    .gallery-item.large-span .gallery-img-wrap img { aspect-ratio: auto; max-height: 70vh; }
+    
     .gallery-item:hover .gallery-img-wrap { border-color: rgba(235, 229, 223, 0.3); box-shadow: 0 15px 40px rgba(0,0,0,0.8); }
     .gallery-item:hover img { transform: scale(1.03); filter: grayscale(0%) contrast(1.0) brightness(1.0); }
 
@@ -503,8 +496,8 @@
             キャンバスの上で物質としての絵の具を盛り上げ、削り取る。その行為は、被害者たちの損なわれた皮膚に触れ、彼らの痛みを三次元的な重さとして再構築する試みだった。写真という平坦な記録では零れ落ちてしまう「傷跡の生々しい感触」を、油彩の層が証言する。
           </p>
           <p class="statement-highlight">
-            この「皮膚と傷」という物質的な探求は、やがて私を別の次元へと導くことになった。<br><br>
-            人間の表面に刻まれた傷を見つめ続けるうちに、私の関心は「大地の表面（土）」へと向かっていったのだ。歴史や風土という見えない傷を、泥という物質で形にする。このシリーズで「皮膚の変容」を描き切ったことこそが、後に陶芸を取り入れ、土地の記憶を焼き付ける制作へと至る、最も重要な土壌となったのである。
+            <strong>この「皮膚と傷」という物質的な探求は、やがて私を別の次元へと導くことになった。</strong><br><br>
+            人間の表面に刻まれた傷を見つめ続けるうちに、私の関心は「大地の表面（土）」へと向かっていったのだ。歴史や風土という見えない傷を、泥という物質で形にする。このシリーズで「皮膚の変容」を描き切ったことこそが、後に陶芸を取り入れ、土地の記憶を焼き付ける「左美都」の制作へと至る、最も重要な土壌となったのである。
           </p>
         </div>
       </div>
@@ -530,36 +523,175 @@
           </div>
         </a>
 
-        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】イラクの子ども(2003).jpg" data-ja="イラクの子ども (2003)" data-en="Children of Iraq" data-meta="2016 / 31.8 × 41.0 cm / Oil on canvas">
-          <div class="gallery-img-wrap"><img src="images/【F6横】イラクの子ども(2003).jpg" alt="イラクの子ども" loading="lazy"></div>
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】イラクの子ども(2003).jpg" data-ja="イラクの子ども (2003)" data-en="Children of Iraq (2003)" data-meta="2016 / 31.8 × 41.0 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F6横】イラクの子ども(2003).jpg" alt="イラクの子ども (2003)" loading="lazy"></div>
           <div class="gallery-cap">
             <span class="gallery-title">イラクの子ども (2003)</span><span class="gallery-meta">2016 / F6</span>
           </div>
         </a>
 
-        <a href="#none" class="gallery-item large-span fade-up js-modal-trigger" data-img="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg" data-ja="視線(2)[ティラナ (アルバニア共和国)]" data-en="Gaze (2) [Tirana]" data-meta="2014 / 130.3 × 162.1 cm / Oil on canvas">
-          <div class="gallery-img-wrap"><img src="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg" alt="ティラナ" loading="lazy"></div>
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】トルコへ向かうシリア難民の少女.jpg" data-ja="トルコへ向かうシリア難民の少女" data-en="Syrian Refugee Girl Heading for Turkey" data-meta="2016 / 31.8 × 41.0 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F6横】トルコへ向かうシリア難民の少女.jpg" alt="トルコへ向かうシリア難民の少女" loading="lazy"></div>
           <div class="gallery-cap">
-            <span class="gallery-title">視線(2)[ティラナ]</span><span class="gallery-meta">2014 / F100</span>
+            <span class="gallery-title">トルコへ向かうシリア難民の少女</span><span class="gallery-meta">2016 / F6</span>
           </div>
         </a>
 
-        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F20縦】Acid Attac Victim(2).jpg" data-ja="Acid Attack Victim (2)" data-en="Acid Attack Victim (2)" data-meta="2015 / 72.7 × 60.6 cm / Oil on canvas">
-          <div class="gallery-img-wrap"><img src="images/【F20縦】Acid Attac Victim(2).jpg" alt="AAV 2" loading="lazy"></div>
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】シリア難民の少女（2015）.jpg" data-ja="シリア難民の少女 (2015)" data-en="Syrian Refugee Girl (2015)" data-meta="2016 / 31.8 × 41.0 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F6横】シリア難民の少女（2015）.jpg" alt="シリア難民の少女 (2015)" loading="lazy"></div>
           <div class="gallery-cap">
-            <span class="gallery-title">Acid Attack Victim (2)</span><span class="gallery-meta">2015 / F20</span>
+            <span class="gallery-title">シリア難民の少女 (2015)</span><span class="gallery-meta">2016 / F6</span>
+          </div>
+        </a>
+
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】傷(7).jpg" data-ja="傷(7)" data-en="Scar (7)" data-meta="2016 / 31.8 × 41.0 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F6横】傷(7).jpg" alt="傷(7)" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">傷(7)</span><span class="gallery-meta">2016 / F6</span>
+          </div>
+        </a>
+
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】傷(8).jpg" data-ja="傷(8)" data-en="Scar (8)" data-meta="2016 / 31.8 × 41.0 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F6横】傷(8).jpg" alt="傷(8)" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">傷(8)</span><span class="gallery-meta">2016 / F6</span>
+          </div>
+        </a>
+
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】傷(11).jpg" data-ja="傷(11)" data-en="Scar (11)" data-meta="2016 / 31.8 × 41.0 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F6横】傷(11).jpg" alt="傷(11)" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">傷(11)</span><span class="gallery-meta">2016 / F6</span>
+          </div>
+        </a>
+
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg" data-ja="傷(5) (イスラエルの少女)" data-en="Scar (5) [Israeli Girl]" data-meta="2016 / 31.8 × 41.0 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg" alt="傷(5) (イスラエルの少女)" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">傷(5) (イスラエルの少女)</span><span class="gallery-meta">2016 / F6</span>
           </div>
         </a>
         
-        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg" data-ja="黒人妊婦 [コナーさん]" data-en="Pregnant Black Woman" data-meta="2016 / 31.8 × 41.0 cm / Oil on canvas">
-          <div class="gallery-img-wrap"><img src="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg" alt="黒人妊婦" loading="lazy"></div>
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg" data-ja="黒人妊婦 [コナーさん]" data-en="Pregnant Black Woman [Mrs. Connor]" data-meta="2016 / 31.8 × 41.0 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg" alt="黒人妊婦 [コナーさん]" loading="lazy"></div>
           <div class="gallery-cap">
             <span class="gallery-title">黒人妊婦 [コナーさん]</span><span class="gallery-meta">2016 / F6</span>
           </div>
         </a>
 
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】傷(4).jpg" data-ja="傷(4)" data-en="Scar (4)" data-meta="2015 / 31.8 × 41.0 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F6横】傷(4).jpg" alt="傷(4)" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">傷(4)</span><span class="gallery-meta">2015 / F6</span>
+          </div>
+        </a>
+
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】傷(6).jpg" data-ja="傷(6)" data-en="Scar (6)" data-meta="2015 / 31.8 × 41.0 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F6横】傷(6).jpg" alt="傷(6)" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">傷(6)</span><span class="gallery-meta">2015 / F6</span>
+          </div>
+        </a>
+
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】傷(9)(シャフィク、Shafiq).jpg" data-ja="傷(9) (Shafiq)" data-en="Scar (9) [Shafiq]" data-meta="2015 / 31.8 × 41.0 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F6横】傷(9)(シャフィク、Shafiq).jpg" alt="傷(9) (Shafiq)" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">傷(9) (Shafiq)</span><span class="gallery-meta">2015 / F6</span>
+          </div>
+        </a>
+
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】傷(10).jpg" data-ja="傷(10)" data-en="Scar (10)" data-meta="2015 / 31.8 × 41.0 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F6横】傷(10).jpg" alt="傷(10)" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">傷(10)</span><span class="gallery-meta">2015 / F6</span>
+          </div>
+        </a>
+
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】傷.jpg" data-ja="傷" data-en="Scar" data-meta="2015 / 31.8 × 41.0 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F6横】傷.jpg" alt="傷" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">傷</span><span class="gallery-meta">2015 / F6</span>
+          </div>
+        </a>
+
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】傷(2).jpg" data-ja="傷(2)" data-en="Scar (2)" data-meta="2015 / 31.8 × 41.0 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F6横】傷(2).jpg" alt="傷(2)" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">傷(2)</span><span class="gallery-meta">2015 / F6</span>
+          </div>
+        </a>
+
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】傷(3)(Andrew, 23).jpg" data-ja="傷(3) (Andrew, 23)" data-en="Scar (3) [Andrew, 23]" data-meta="2015 / 31.8 × 41.0 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F6横】傷(3)(Andrew, 23).jpg" alt="傷(3) (Andrew, 23)" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">傷(3) (Andrew, 23)</span><span class="gallery-meta">2015 / F6</span>
+          </div>
+        </a>
+
+        <a href="#none" class="gallery-item large-span fade-up js-modal-trigger" data-img="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg" data-ja="視線(2)[ティラナ (アルバニア共和国)]" data-en="Gaze (2) [Tirana, Republic of Albania]" data-meta="2014 / 130.3 × 162.1 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg" alt="視線(2)[ティラナ (アルバニア共和国)]" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">視線(2)[ティラナ (アルバニア共和国)]</span><span class="gallery-meta">2014 / F100</span>
+          </div>
+        </a>
+
+        <a href="#none" class="gallery-item large-span fade-up js-modal-trigger" data-img="images/【F100横】さけび（ガザ）.jpg" data-ja="さけび" data-en="Shout" data-meta="2014 / 130.3 × 162.1 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F100横】さけび（ガザ）.jpg" alt="さけび" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">さけび</span><span class="gallery-meta">2014 / F100</span>
+          </div>
+        </a>
+
+        <a href="#none" class="gallery-item large-span fade-up js-modal-trigger" data-img="images/【M60横】視線（イラク）.jpg" data-ja="視線（イラク）" data-en="Gaze [Iraq]" data-meta="2014 / 80.3 × 130.3 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【M60横】視線（イラク）.jpg" alt="視線（イラク）" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">視線（イラク）</span><span class="gallery-meta">2014 / M60</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="works-header fade-up" style="margin-top: 8rem;">
+        <h2 class="works-title">AAV<span>Acid Attack Victim</span></h2>
+      </div>
+
+      <div class="gallery-grid">
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F20縦】Acid Attac Victim(2).jpg" data-ja="Acid Attack Victim (2)" data-en="Acid Attack Victim (2)" data-meta="2015 / 72.7 × 60.6 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F20縦】Acid Attac Victim(2).jpg" alt="Acid Attack Victim (2)" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">Acid Attack Victim (2)</span><span class="gallery-meta">2015 / F20</span>
+          </div>
+        </a>
+
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F20縦】Acid Attac Victim(3).jpg" data-ja="Acid Attack Victim (3)" data-en="Acid Attack Victim (3)" data-meta="2015 / 72.7 × 60.6 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F20縦】Acid Attac Victim(3).jpg" alt="Acid Attack Victim (3)" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">Acid Attack Victim (3)</span><span class="gallery-meta">2015 / F20</span>
+          </div>
+        </a>
+
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F20縦】Acid Attac Victim(4).jpg" data-ja="Acid Attack Victim (4)" data-en="Acid Attack Victim (4)" data-meta="2015 / 72.7 × 60.6 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F20縦】Acid Attac Victim(4).jpg" alt="Acid Attack Victim (4)" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">Acid Attack Victim (4)</span><span class="gallery-meta">2015 / F20</span>
+          </div>
+        </a>
+
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F20縦】Acid Attac Victim(5).jpg" data-ja="Acid Attack Victim (5)" data-en="Acid Attack Victim (5)" data-meta="2015 / 72.7 × 60.6 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F20縦】Acid Attac Victim(5).jpg" alt="Acid Attack Victim (5)" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">Acid Attack Victim (5)</span><span class="gallery-meta">2015 / F20</span>
+          </div>
+        </a>
+
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F20縦】Acid Attac Victim(6).jpg" data-ja="Acid Attack Victim (6)" data-en="Acid Attack Victim (6)" data-meta="2015 / 72.7 × 60.6 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F20縦】Acid Attac Victim(6).jpg" alt="Acid Attack Victim (6)" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">Acid Attack Victim (6)</span><span class="gallery-meta">2015 / F20</span>
+          </div>
+        </a>
+
         <a href="#none" class="gallery-item large-span fade-up js-modal-trigger" data-img="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg" data-ja="Acid Attack Victim [Sonali Mukherjee]" data-en="Acid Attack Victim [Sonali Mukherjee]" data-meta="2015 / 130.3 × 162.1 cm / Oil on canvas">
-          <div class="gallery-img-wrap"><img src="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg" alt="Sonali Mukherjee" loading="lazy"></div>
+          <div class="gallery-img-wrap"><img src="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg" alt="Acid Attack Victim [Sonali Mukherjee]" loading="lazy"></div>
           <div class="gallery-cap">
             <span class="gallery-title">Acid Attack Victim [Sonali Mukherjee]</span><span class="gallery-meta">2015 / F100</span>
           </div>
@@ -705,7 +837,6 @@
     document.addEventListener("DOMContentLoaded", () => {
       
       /* ── 1. Cinematic Hero Reveal ── */
-      // ロード直後に発火し、緻密に組まれたCSSアニメーションをトリガー
       setTimeout(() => {
         document.getElementById('hero').classList.add('is-animating');
         document.body.classList.add('is-loaded');
