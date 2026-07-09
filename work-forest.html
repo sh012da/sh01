@@ -150,12 +150,12 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-       HERO (WITH ARTWORK BACKGROUND)
+       HERO (REPLACED WITH TEXT FILE MASTER TITLE ANIMATION)
     =========================================================== */
     .hero {
       position: relative; height: 100svh; min-height: 600px;
-      display: flex; flex-direction: column; justify-content: flex-end;
-      padding: 0 var(--px) clamp(4rem, 10vh, 8rem); overflow: hidden; background: var(--bg);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      padding: 0 var(--px); overflow: hidden; background: var(--bg);
     }
     .hero-ambient {
       position: absolute; inset: 0; pointer-events: none; z-index: 1;
@@ -177,46 +177,31 @@
       position: absolute; left: 0; right: 0; bottom: 0; height: 1px; z-index: 3;
       background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%);
     }
-    .hero-inner { position: relative; z-index: 4; }
+    .hero-inner { position: relative; z-index: 4; display: flex; flex-direction: column; align-items: center; }
     
-    .hero-eyebrow {
-      font-family: var(--font-en); font-size: clamp(0.55rem, 1.3vw, 0.65rem);
-      letter-spacing: 0.5em; color: var(--dim); text-transform: uppercase;
-      margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.5rem;
-      opacity: 0; transform: translateX(-20px);
-      transition: opacity 1.2s var(--ease-slow) 0.2s, transform 1.2s var(--ease-slow) 0.2s;
+    .master-title {
+      font-family: var(--font-ja); font-size: clamp(5.5rem, 16vw, 15rem); font-weight: 200;
+      letter-spacing: 0.05em; color: var(--fg); text-align: center; line-height: 1.1; 
+      opacity: 0; transform: scale(1.05) translateY(15px);
+      animation: titleReveal 3s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards; 
+      text-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 60px rgba(0,0,0,0.8), 0 2px 10px rgba(0,0,0,1);
     }
-    .hero-eyebrow::before { content: ''; width: 32px; height: 0.5px; background: var(--accent2); flex-shrink: 0; opacity: 0.6; transform: scaleX(0); transform-origin: left; transition: transform 1.2s var(--ease-slow) 0.6s; }
-    .hero-eyebrow.revealed { opacity: 1; transform: translateX(0); }
-    .hero-eyebrow.revealed::before { transform: scaleX(1); }
-    
-    .hero-title {
-      font-family: var(--font-ja); font-size: clamp(5.5rem, 19vw, 15rem); font-weight: 200;
-      line-height: 1.05; letter-spacing: 0.08em; color: var(--fg); margin-bottom: clamp(1rem, 2.5vh, 2rem);
-      display: flex; flex-wrap: wrap; text-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    @keyframes titleReveal { 
+      0% { opacity: 0; transform: scale(1.05) translateY(15px); letter-spacing: -0.02em; filter: blur(25px); } 
+      50% { opacity: 0.9; filter: blur(4px); } 
+      100% { opacity: 1; transform: scale(1) translateY(0); letter-spacing: 0.32em; filter: blur(0px); } 
     }
-    .char-wrap { display: inline-block; overflow: hidden; padding-right: 0.05em; padding-bottom: 0.1em; }
-    .char-inner {
-      display: inline-block; opacity: 0; filter: blur(24px); transform: translateY(60px) scale(0.85) rotate(-3deg);
-      transition: opacity 2.4s var(--ease-slow), filter 2.4s var(--ease-slow), transform 2.4s var(--ease-slow);
+    .hero-subtitle {
+      font-family: var(--font-en); font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+      letter-spacing: 0.8em; color: var(--accent); text-transform: uppercase; 
+      opacity: 0; transform: translateY(10px); filter: blur(5px);
+      animation: subtitleReveal 2.2s cubic-bezier(0.16, 1, 0.3, 1) 2.2s forwards; 
+      text-shadow: 0 5px 20px rgba(0,0,0,0.9); margin-top: 1rem;
     }
-    .hero-title.revealed .char-inner { opacity: 1; filter: blur(0); transform: translateY(0) scale(1) rotate(0); }
-    
-    .hero-title-en {
-      font-family: var(--font-en); font-size: clamp(1rem, 3.2vw, 2.2rem);
-      font-weight: 300; font-style: italic; letter-spacing: 0.35em; color: rgba(196,168,130,0.8);
-      opacity: 0; filter: blur(10px); transform: translateY(15px);
-      transition: opacity 2s var(--ease-slow) 1.2s, filter 2s var(--ease-slow) 1.2s, transform 2s var(--ease-slow) 1.2s;
+    @keyframes subtitleReveal { 
+      0% { opacity: 0; transform: translateY(10px); filter: blur(5px); } 
+      100% { opacity: 1; transform: translateY(0); filter: blur(0px); } 
     }
-    .hero-title-en.revealed { opacity: 1; filter: blur(0); transform: translateY(0); }
-    
-    .hero-meta {
-      display: flex; align-items: center; gap: 2rem; margin-top: clamp(2.5rem, 6vh, 5rem); 
-      opacity: 0; transform: translateY(20px); transition: opacity 1.5s var(--ease-slow) 1.6s, transform 1.5s var(--ease-slow) 1.6s;
-    }
-    .hero-meta.revealed { opacity: 1; transform: translateY(0); }
-    .hero-meta-line { width: 48px; height: 0.5px; background: linear-gradient(to right, var(--accent), var(--accent2)); flex-shrink: 0; }
-    .hero-meta-text { font-family: var(--font-en); font-size: clamp(0.55rem, 1.2vw, 0.65rem); letter-spacing: 0.3em; color: var(--fg); text-transform: uppercase; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
     
     .hero-scroll {
       position: absolute; bottom: clamp(2.5rem, 6vh, 4.5rem); right: var(--px); z-index: 4; 
@@ -234,47 +219,68 @@
     @keyframes scrollDrop { 0% { top: -100%; opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
 
     /* ============================================================
-       CONCEPT SECTION
+       STATEMENT EDITORIAL (REPLACED WITH TEXT FILE DESIGN)
     =========================================================== */
-    .concept-section {
-      padding: clamp(7rem, 15vh, 12rem) var(--px); width: 100%; max-width: 1400px; margin: 0 auto;
-      text-align: center; position: relative;
+    .statement-editorial {
+      position: relative; z-index: 10; padding: clamp(10rem, 22vh, 16rem) var(--px);
+      background: var(--bg); overflow: hidden;
+      display: flex; flex-direction: column; align-items: center;
     }
-    .concept-pullquote {
-      font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.3rem, 3.5vw, 2.2rem);
-      line-height: 2.2; color: var(--fg); letter-spacing: 0.1em;
-      margin-bottom: clamp(4rem, 10vh, 6rem); word-break: auto-phrase;
-      opacity: 0; filter: blur(8px); transform: translateY(30px);
-      transition: opacity 1.4s var(--ease-slow), filter 1.4s var(--ease-slow), transform 1.4s var(--ease-slow);
+    .st-bg-typo {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      font-family: var(--font-en); font-size: clamp(6rem, 24vw, 35rem); font-weight: 100;
+      color: transparent; -webkit-text-stroke: 1px rgba(233, 229, 223, 0.03);
+      white-space: nowrap; pointer-events: none;
+      z-index: 0; letter-spacing: -0.02em;
     }
-    .concept-pullquote.in-view { opacity: 1; filter: blur(0); transform: translateY(0); }
-    .concept-pullquote .accent-word { color: var(--accent); position: relative; display: inline-block; }
-    .concept-pullquote .accent-word::after {
-      content: ''; position: absolute; left: 0; bottom: -4px; width: 100%; height: 0.5px; background: rgba(196,168,130,0.5);
+    .ed-container { 
+      position: relative; z-index: 2; width: 100%; max-width: 1400px; display: grid;
+      grid-template-columns: 1fr 1fr; gap: 8vw; align-items: center; 
     }
+    .ed-title-area { display: flex; flex-direction: column; position: relative; }
+    .ed-title-area::before { 
+      content: ''; position: absolute; left: -2vw; top: 0; width: 1px; height: 100%;
+      background: rgba(196, 168, 130, 0.3); transform: scaleY(0); transform-origin: top; transition: transform 1.5s var(--ease-slow);
+    }
+    .statement-editorial.in-view .ed-title-area::before { transform: scaleY(1); }
+    .ed-subtitle { 
+      font-family: var(--font-en); font-size: clamp(0.6rem, 1vw, 0.8rem); letter-spacing: 0.4em; 
+      color: var(--accent); text-transform: uppercase; margin-bottom: 2.5rem; opacity: 0; transform: translateY(20px);
+      transition: opacity 1s ease 0.3s, transform 1s var(--ease-slow) 0.3s; 
+    }
+    .ed-title { font-size: clamp(1.2rem, 2.8vw, 2.8rem); line-height: 1.8; font-weight: 300; letter-spacing: 0.12em; color: var(--fg); }
+    .ed-line { display: block; overflow: hidden; margin-bottom: 0.6em; }
+    .ed-line-inner { display: block; transform: translateY(110%); opacity: 0; transition: transform 1.2s var(--ease-slow), opacity 1s ease; }
     
-    .concept-body { display: flex; flex-direction: column; gap: clamp(2rem, 4vh, 3rem); max-width: 880px; margin: 0 auto; }
-    .concept-para {
-      font-size: clamp(0.95rem, 1.8vw, 1.1rem); line-height: 2.4; color: rgba(233,229,223,0.8);
-      letter-spacing: 0.08em; text-align: justify; word-break: auto-phrase;
-      opacity: 0; transform: translateY(24px); transition: opacity 1.2s var(--ease-slow) 0.2s, transform 1.2s var(--ease-slow) 0.2s;
-    }
-    .concept-para.in-view { opacity: 1; transform: translateY(0); }
+    .statement-editorial.in-view .ed-subtitle { opacity: 1; transform: translateY(0); }
+    .statement-editorial.in-view .ed-line:nth-child(1) .ed-line-inner { transform: translateY(0); opacity: 1; transition-delay: 0.4s; }
+    .statement-editorial.in-view .ed-line:nth-child(2) .ed-line-inner { transform: translateY(0); opacity: 1; transition-delay: 0.55s; }
+    .statement-editorial.in-view .ed-line:nth-child(3) .ed-line-inner { transform: translateY(0); opacity: 1; transition-delay: 0.7s; }
+    .ed-hl { font-style: italic; color: var(--accent); font-weight: 400; }
     
-    .concept-divider {
-      width: 1px; height: 60px; margin: clamp(2rem, 4vh, 3rem) auto;
-      background: linear-gradient(to bottom, transparent, var(--accent2), transparent);
-      opacity: 0; transition: opacity 1s var(--ease-slow) 0.4s;
+    .ed-body-area { display: flex; flex-direction: column; gap: 4rem; margin-top: 10vh; }
+    .ed-para { 
+      font-size: clamp(0.95rem, 1.1vw, 1.1rem); line-height: 2.5; color: rgba(233, 229, 223, 0.8);
+      text-align: justify; position: relative; padding-left: 2vw; opacity: 0; transform: translateX(30px); transition: opacity 1.2s ease, transform 1.2s var(--ease-slow);
     }
-    .concept-divider.in-view { opacity: 0.6; }
-    
-    .concept-closing {
-      font-family: var(--font-en); font-style: italic; font-weight: 300;
-      font-size: clamp(1rem, 2vw, 1.25rem); line-height: 2; color: var(--accent); 
-      text-align: center; letter-spacing: 0.06em; margin-top: clamp(4rem, 8vh, 6rem);
-      opacity: 0; transform: translateY(20px); transition: opacity 1.2s var(--ease-slow) 0.4s, transform 1.2s var(--ease-slow) 0.4s;
+    .ed-para::before { 
+      content: ''; position: absolute; left: 0; top: 1.2em; width: 1vw; height: 1px; background: var(--accent);
+      transform: scaleX(0); transform-origin: left; transition: transform 1s var(--ease-slow); 
     }
-    .concept-closing.in-view { opacity: 1; transform: translateY(0); }
+    .statement-editorial.in-view .ed-para { opacity: 1; transform: translateX(0); }
+    .statement-editorial.in-view .ed-para::before { transform: scaleX(1); }
+    .statement-editorial.in-view .ed-para:nth-child(1) { transition-delay: 0.9s; }
+    .statement-editorial.in-view .ed-para:nth-child(1)::before { transition-delay: 1.3s; }
+    .statement-editorial.in-view .ed-para:nth-child(2) { transition-delay: 1.1s; }
+    .statement-editorial.in-view .ed-para:nth-child(2)::before { transition-delay: 1.5s; }
+
+    @media (max-width: 900px) {
+      .ed-container { grid-template-columns: 1fr; gap: 4rem; }
+      .ed-body-area { margin-top: 0; gap: 2.5rem; }
+      .ed-para { padding-left: 1.5rem; font-size: 1rem; }
+      .ed-para::before { width: 0.8rem; }
+      .ed-title-area::before { left: -1rem; }
+    }
 
     /* ============================================================
        GALLERY GRID
@@ -520,17 +526,15 @@
       .page-nav.visible:hover { opacity: 1; }
       .page-nav-label { display: none; }
       
-      .hero-title { justify-content: center; text-align: center; }
       .hero-eyebrow, .hero-meta { justify-content: center; }
     }
     @media (max-width: 480px) {
       .hero-scroll { display: none; }
       .modal-content img { max-height: 60svh; }
-      .concept-para { text-align: left; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
-      .gallery-item, .tl-entry, .reveal-fade, .char-inner { opacity: 1 !important; transform: none !important; filter: none !important; }
+      .gallery-item, .tl-entry, .char-inner, .master-title, .hero-subtitle, .ed-subtitle, .ed-line-inner, .ed-para, .ed-title-area::before { opacity: 1 !important; transform: none !important; filter: none !important; animation: none !important; }
       .hero-ambient { animation: none; }
     }
   </style>
@@ -571,13 +575,8 @@
       <div class="hero-overlay"></div> <div class="hero-divider" aria-hidden="true"></div>
       
       <div class="hero-inner">
-        <p class="hero-eyebrow" id="heroEyebrow">Series — Forest &nbsp;·&nbsp; Tracing the Essence</p>
-        <h1 class="hero-title" id="heroTitle" aria-label="森林">森林</h1>
-        <p class="hero-title-en" id="heroEn">Forest</p>
-        <div class="hero-meta" id="heroMeta">
-          <div class="hero-meta-line"></div>
-          <span class="hero-meta-text">Echoes of life into...</span>
-        </div>
+        <h1 class="master-title">森林</h1>
+        <p class="hero-subtitle" id="heroSub">Forest</p>
       </div>
       
       <div class="hero-scroll" id="heroScroll" aria-hidden="true">
@@ -588,24 +587,29 @@
       </div>
     </section>
 
-    <section class="concept-section" id="statement">
-      <p class="concept-pullquote reveal-fade">
-        生命の母体としての「うねり」から分岐し、極小の筆致の集積へ。<br>有機的な森は、やがて<span class="accent-word">強固な岩</span>へと接近していく。
-      </p>
+    <section class="statement-editorial" id="statement">
+      <div class="st-bg-typo">MATRIX</div>
+      <div class="ed-container">
+        
+        <div class="ed-title-area">
+          <p class="ed-subtitle">Concept Statement</p>
+          <h2 class="ed-title">
+            <span class="ed-line"><span class="ed-line-inner">生命の母体としての「うねり」から分岐し、</span></span>
+            <span class="ed-line"><span class="ed-line-inner">極小の筆致の集積へ。</span></span>
+            <span class="ed-line"><span class="ed-line-inner">有機的な森は、やがて<span class="ed-hl">強固な岩</span>へと接近していく。</span></span>
+          </h2>
+        </div>
 
-      <div class="concept-body">
-        <p class="concept-para reveal-fade">
-          そもそも、この「森林」シリーズの端緒は、生命を育む母体（マトリックス）としての森を、根源的な「うねり」として捉えることから始まりました。自然界を構成するあらゆる物質を微視的に捉えれば、すべては原子の集積と波動に還元されます。当初は、その波動力学的なエネルギーの奔流から分岐するように、画面の端から端までを一気に貫く長いストロークを用いていました。それは光や風の軌跡といった動的な要素を孕みながら、無数の幹の連なりを生み出し、空間を物理的なマチエールとして立ち上げる試みでした。
-        </p>
+        <div class="ed-body-area">
+          <p class="ed-para">
+            そもそも、この「森林」シリーズの端緒は、生命を育む母体（マトリックス）としての森を、根源的な「うねり」として捉えることから始まりました。自然界を構成するあらゆる物質を微視的に捉えれば、すべては原子の集積と波動に還元されます。当初は、その波動力学的なエネルギーの奔流から分岐するように、画面の端から端までを一気に貫く長いストロークを用いていました。それは光や風の軌跡といった動的な要素を孕みながら、無数の幹の連なりを生み出し、空間を物理的なマチエールとして立ち上げる試みでした。
+          </p>
+          <p class="ed-para">
+            しかし近年、その表現はより微細で細かい筆致へと移行しています。無数の絵の具の粒子がキャンバス上で極限まで凝集していく過程で、私は「森はやがて岩に近づくのではないか」という確信を深めました。かつてバロック時代の人々が、人工と自然が渾然一体となったグロッタ（洞窟）や「岩の森」に宇宙の真理を見出し、物質の無限の襞（ひだ）のなかに生命の躍動を感じ取ったように。微視的な筆致の堆積は、有機的な植物相を、悠久の地質学的時間を内包した強固な鉱物へと変容させます。それは単なる風景の表象を超え、生命と無機物、波と粒子が交錯する、世界（あるいは単位世界）そのものの構造をキャンバスに現前させる行為なのです。
+          </p>
+        </div>
 
-        <div class="concept-divider reveal-fade" aria-hidden="true"></div>
-
-        <p class="concept-para reveal-fade">
-          しかし近年、その表現はより微細で細かい筆致へと移行しています。無数の絵の具の粒子がキャンバス上で極限まで凝集していく過程で、私は「森はやがて岩に近づくのではないか」という確信を深めました。かつてバロック時代の人々が、人工と自然が渾然一体となったグロッタ（洞窟）や「岩の森」に宇宙の真理を見出し、物質の無限の襞（ひだ）のなかに生命の躍動を感じ取ったように。微視的な筆致の堆積は、有機的な植物相を、悠久の地質学的時間を内包した強固な鉱物へと変容させます。それは単なる風景の表象を超え、生命と無機物、波と粒子が交錯する、世界そのものの構造をキャンバスに現前させる行為なのです。
-        </p>
       </div>
-
-      <p class="concept-closing reveal-fade">— Tsuda Shoichi</p>
     </section>
 
     <section class="gallery-section" id="gallery">
@@ -948,35 +952,9 @@
       document.body.classList.remove('is-locked');
     }
 
-    /* ── テキスト分割エンジン (波及的なアニメーション用) ── */
-    function wrapTextInSpans(elementId) {
-      const el = document.getElementById(elementId);
-      if (!el) return;
-      const text = el.textContent.trim();
-      el.textContent = '';
-      [...text].forEach((char, i) => {
-        const wrap = document.createElement('span');
-        wrap.className = 'char-wrap';
-        const inner = document.createElement('span');
-        inner.className = 'char-inner';
-        inner.textContent = char;
-        /* 文字ごとに遅延を変えて波動的な現れ方を演出 */
-        inner.style.transitionDelay = `${(i * 0.15) + 0.3}s`;
-        wrap.appendChild(inner);
-        el.appendChild(wrap);
-      });
-    }
-
     /* ── ファーストビュー アニメーション起動 ── */
-    window.addEventListener('DOMContentLoaded', () => {
-      wrapTextInSpans('heroTitle');
-    });
     window.addEventListener('load', () => {
-      setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 100);
-      setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'),   300);
-      setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'),      400);
-      setTimeout(() => document.getElementById('heroMeta')?.classList.add('revealed'),    500);
-      setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1200);
+      setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 2800);
     });
 
     /* ── Intersection Observer (Fade & Reveal) ── */
@@ -987,7 +965,7 @@
         io.unobserve(entry.target);
       });
     }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
-    document.querySelectorAll('.gallery-item, .tl-entry, .reveal-fade, .concept-divider').forEach(el => io.observe(el));
+    document.querySelectorAll('.gallery-item, .tl-entry, .reveal-fade, .concept-divider, .statement-editorial').forEach(el => io.observe(el));
 
     /* ── Typewriter Engine (Timeline Titles) ── */
     function prepareTypewriterDOM(el) {
