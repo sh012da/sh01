@@ -535,11 +535,14 @@
       .statement-para { text-align: left; }
       .statement-section { padding-left: 1rem; padding-right: 1rem; }
     }
+
+    /* 意図せぬOS設定によるアニメーション無効化を防ぐため一時的にコメントアウト
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
       .gallery-item, .tl-entry, .reveal-fade { opacity: 1 !important; transform: none !important; }
       .hero-ambient { animation: none; }
     }
+    */
   </style>
 </head>
 <body id="top">
@@ -985,13 +988,19 @@
     }
 
     /* ── ファーストビュー アニメーション ── */
-    window.addEventListener('load', () => {
+    const initHeroAnimation = () => {
       setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 150);
       setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'),   350);
       setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'),      680);
       setTimeout(() => document.getElementById('heroMeta')?.classList.add('revealed'),    980);
       setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1700);
-    });
+    };
+
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      initHeroAnimation();
+    } else {
+      window.addEventListener('DOMContentLoaded', initHeroAnimation);
+    }
 
     /* ── Observer (Fade Up & Grid Animation) ── */
     const io = new IntersectionObserver((entries) => {
