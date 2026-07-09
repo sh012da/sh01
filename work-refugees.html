@@ -141,102 +141,145 @@
     .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
-        HERO FIRST VIEW (100% Pure CSS Animation)
+        HERO FIRST VIEW (AVANT-GARDE REDESIGN)
     ============================================================ */
     .hero {
       position: relative;
       height: 100svh; min-height: 580px;
       display: flex; flex-direction: column; justify-content: flex-end;
       padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); overflow: hidden;
-      background: transparent;
+      background: var(--bg); /* Black base for the tear effect */
+    }
+
+    /* 1. Canvas Tear (Background) */
+    .hero-bg-wrapper {
+      position: absolute; inset: -2%; z-index: 0;
+      clip-path: polygon(0 50%, 100% 50%, 100% 50%, 0 50%);
+      animation: tearCanvas 1.2s cubic-bezier(0.77, 0, 0.175, 1) 0.1s forwards;
+      will-change: clip-path;
     }
     .hero-bg-image {
-      position: absolute;
-      inset: -2%;
+      width: 100%; height: 100%;
       background-image: url('images/【F100号横】今、シリア.jpg');
-      background-size: cover;
-      background-position: center 25%;
-      opacity: 0.35;
-      filter: grayscale(15%) contrast(1.1);
+      background-size: cover; background-position: center 25%;
+      opacity: 0.35; filter: grayscale(15%) contrast(1.1);
+      transform: scale(1.15);
+      animation: bgSettle 2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s forwards, heroBreathe 18s ease-out 2.5s infinite alternate;
       -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.7) 60%, rgba(0,0,0,0) 100%);
       mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.7) 60%, rgba(0,0,0,0) 100%);
-      animation: heroBreathe 18s ease-out infinite alternate;
-      z-index: 0;
+      will-change: transform, filter;
     }
-    @keyframes heroBreathe {
-      0% { transform: scale(1); }
-      100% { transform: scale(1.05); }
+    @keyframes tearCanvas {
+      0%   { clip-path: polygon(0 50%, 100% 50%, 100% 50%, 0 50%); }
+      20%  { clip-path: polygon(0 49.5%, 100% 49.5%, 100% 50.5%, 0 50.5%); }
+      100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
     }
+    @keyframes bgSettle { 100% { transform: scale(1); } }
+    @keyframes heroBreathe { 0% { transform: scale(1); } 100% { transform: scale(1.03); } }
+
     .hero-divider { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: linear-gradient(to right, transparent 0%, rgba(168,117,96,0.25) 20%, rgba(122,116,110,0.35) 50%, rgba(168,117,96,0.2) 80%, transparent 100%); z-index: 2; }
     .hero-inner { position: relative; z-index: 2; }
     
+    /* 2. Meta Texts (Decoding / Focusing) */
     .hero-eyebrow { 
       font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem); letter-spacing: 0.5em; color: var(--fg); text-transform: uppercase; margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.2rem; text-shadow: 0 2px 6px rgba(0,0,0,0.9);
-      opacity: 0.7; 
-      -webkit-clip-path: inset(0 0% 0 0); clip-path: inset(0 0% 0 0); 
-      transform: translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden;
-      animation: revealClip 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+      opacity: 0; transform: translateX(-15px); filter: blur(5px);
+      animation: materialiseEyebrow 0.8s ease-out 1.1s forwards;
     }
-    .hero-eyebrow::before { content: ''; width: 24px; height: 0.5px; background: var(--accent); flex-shrink: 0; opacity: 0.8; }
+    .hero-eyebrow::before { content: ''; width: 0px; height: 0.5px; background: var(--accent); flex-shrink: 0; opacity: 0.8; animation: drawLineEyebrow 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 1.5s forwards; }
+    @keyframes materialiseEyebrow { 100% { opacity: 0.7; transform: translateX(0); filter: blur(0); } }
+    @keyframes drawLineEyebrow { 100% { width: 24px; } }
     
-    .hero-title { font-family: var(--font-ja); font-size: clamp(5rem, 19vw, 17rem); font-weight: 200; line-height: 0.88; letter-spacing: -0.02em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem); display: flex; gap: 0.05em; overflow: visible; text-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 2px 10px rgba(0,0,0,0.6); }
+    /* 3. Title (Oil Paint Impact & Smear) */
+    .hero-title { 
+      position: relative;
+      font-family: var(--font-ja); font-size: clamp(5rem, 19vw, 17rem); font-weight: 200; line-height: 0.88; letter-spacing: -0.02em; margin-bottom: clamp(0.8rem, 2vh, 1.8rem); display: flex; gap: 0.05em; overflow: visible; 
+    }
+    /* The Kinetic Smear Background */
+    .hero-title::after {
+      content: ''; position: absolute; top: 50%; left: -2%; width: 104%; height: 2px;
+      background: var(--accent); transform: translateY(-50%) scaleX(0); transform-origin: center;
+      filter: blur(4px); mix-blend-mode: color-dodge; opacity: 0;
+      animation: paintSmear 1.2s cubic-bezier(0.1, 0.9, 0.2, 1) 0.85s forwards;
+      z-index: -1; pointer-events: none; will-change: transform, opacity, filter;
+    }
+    @keyframes paintSmear {
+      0%   { transform: translateY(-50%) scaleX(0); opacity: 1; height: 2px; filter: blur(4px); }
+      30%  { transform: translateY(-50%) scaleX(1); opacity: 0.85; height: 30px; filter: blur(8px); }
+      100% { transform: translateY(-50%) scaleX(1.05); opacity: 0; height: 120px; filter: blur(30px); }
+    }
+
+    /* Base Character (Wireframe) */
     .hero-title .char { 
-      display: inline-block; 
-      opacity: 1; 
-      transform: translateX(0) translateZ(0); 
+      display: inline-block; position: relative;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255,255,255,0.15);
+      opacity: 0;
+      animation: showWireframe 0.1s forwards 0.7s;
     }
-    .hero-title .char:nth-child(1) { animation: revealChar1 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both; }
-    .hero-title .char:nth-child(2) { animation: revealChar2 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both; }
+    @keyframes showWireframe { to { opacity: 1; } }
+
+    /* Impact Character (Solid Paint) */
+    .hero-title .char::before {
+      content: attr(data-char);
+      position: absolute; left: 0; top: 0; color: var(--fg); -webkit-text-stroke: 0px;
+      opacity: 0; filter: blur(25px); transform: scale(1.6) translateY(-10px);
+      line-height: 0.88;
+      animation: paintImpact 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      will-change: transform, opacity, filter;
+    }
+    .hero-title .char:nth-child(1)::before { animation-delay: 0.9s; }
+    .hero-title .char:nth-child(2)::before { animation-delay: 1.05s; }
+
+    @keyframes paintImpact {
+      0%   { opacity: 0; filter: blur(25px); transform: scale(1.6) translateY(-10px); }
+      30%  { opacity: 1; filter: blur(4px); transform: scale(1.05) translateY(0); text-shadow: 0 0 30px var(--accent); }
+      100% { opacity: 1; filter: blur(0px); transform: scale(1) translateY(0); text-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 2px 10px rgba(0,0,0,0.6); }
+    }
     
+    /* 4. Subtitle (Lens Focus) */
     .hero-title-en { 
-      font-family: var(--font-en); font-size: clamp(0.95rem, 3vw, 2rem); font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: var(--accent); text-shadow: 0 4px 15px rgba(0,0,0,0.8); 
-      opacity: 0.8; 
-      -webkit-clip-path: inset(0 0% 0 0); clip-path: inset(0 0% 0 0); 
-      transform: translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden;
-      animation: revealClip 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.68s both;
+      font-family: var(--font-en); font-size: clamp(0.95rem, 3vw, 2rem); font-weight: 300; font-style: italic; color: var(--accent); text-shadow: 0 4px 15px rgba(0,0,0,0.8); 
+      opacity: 0; transform: translateY(10px); letter-spacing: 0.8em; filter: blur(8px);
+      animation: lensFocus 1s cubic-bezier(0.16, 1, 0.3, 1) 1.25s forwards;
+    }
+    @keyframes lensFocus {
+      100% { opacity: 0.8; transform: translateY(0); letter-spacing: 0.25em; filter: blur(0); }
     }
     
+    /* 5. Meta Block */
     .hero-meta { 
       display: flex; align-items: center; gap: 1.8rem; margin-top: clamp(2rem, 5vh, 4.5rem); 
-      opacity: 1; 
-      transform: translateY(0) translateZ(0); 
-      animation: revealFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.98s both; 
+      opacity: 0; transform: translateY(10px); 
+      animation: fadeUpMeta 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.4s forwards; 
     }
-    .hero-meta-line { width: 40px; height: 0.5px; background: linear-gradient(to right, var(--accent), var(--accent2)); flex-shrink: 0; }
+    .hero-meta-line { width: 0px; height: 0.5px; background: linear-gradient(to right, var(--accent), var(--accent2)); flex-shrink: 0; animation: drawMetaLine 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.6s forwards; }
     .hero-meta-text { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.62rem); letter-spacing: 0.24em; color: var(--fg); opacity: 0.7; text-transform: uppercase; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }
+    @keyframes fadeUpMeta { 100% { opacity: 1; transform: translateY(0); } }
+    @keyframes drawMetaLine { 100% { width: 40px; } }
 
+    /* 6. Scroll Indicator (Dripping Oil Paint) */
     .hero-scroll { 
       position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 12px; 
-      opacity: 1; 
-      animation: revealFade 0.9s ease 1.7s both; 
+      opacity: 0; 
+      animation: revealFade 0.8s ease 2s forwards; 
     }
     .hero-scroll-label { font-family: var(--font-en); font-size: 0.52rem; letter-spacing: 0.38em; color: var(--fg); opacity: 0.5; text-transform: uppercase; writing-mode: vertical-rl; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-    .hero-scroll-track { width: 1px; height: 48px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden; }
-    .hero-scroll-fill { position: absolute; top: -100%; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, var(--accent), transparent); animation: scrollDrop 2.2s ease-in-out 2s infinite; }
+    .hero-scroll-track { width: 1px; height: 50px; background: linear-gradient(to bottom, rgba(233,229,223,0.25), transparent); position: relative; }
     
-    @keyframes scrollDrop { 0% { top: -100%; opacity: 1; } 70% { top: 100%; opacity: 0.4; } 71% { top: -100%; opacity: 0; } 100% { top: -100%; opacity: 0; } }
+    .hero-scroll-fill { 
+      position: absolute; top: 0; left: -1.5px; width: 4px; height: 4px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 8px rgba(168,117,96,0.8);
+      animation: oilPaintDrip 2.5s cubic-bezier(0.5, 0, 0.2, 1) 2.2s infinite;
+    }
+    @keyframes oilPaintDrip {
+      0%   { top: 0; transform: scale(1); opacity: 0; }
+      15%  { top: 0; transform: scale(1.2); opacity: 1; }
+      60%  { top: 35px; transform: scaleY(2.5) scaleX(0.6); opacity: 1; }
+      80%  { top: 50px; transform: scale(0.5); opacity: 0; }
+      100% { top: 50px; opacity: 0; }
+    }
 
-    /* CSS KEYFRAMES (JS依存を完全に排除) */
-    @-webkit-keyframes revealClip {
-      0% { -webkit-clip-path: inset(0 100% 0 0); clip-path: inset(0 100% 0 0); }
-      100% { -webkit-clip-path: inset(0 0% 0 0); clip-path: inset(0 0% 0 0); }
-    }
-    @keyframes revealClip {
-      0% { -webkit-clip-path: inset(0 100% 0 0); clip-path: inset(0 100% 0 0); }
-      100% { -webkit-clip-path: inset(0 0% 0 0); clip-path: inset(0 0% 0 0); }
-    }
-    @keyframes revealChar1 {
-      0% { opacity: 0; transform: translateX(-60px) translateZ(0); }
-      100% { opacity: 1; transform: translateX(0) translateZ(0); }
-    }
-    @keyframes revealChar2 {
-      0% { opacity: 0; transform: translateX(60px) translateZ(0); }
-      100% { opacity: 1; transform: translateX(0) translateZ(0); }
-    }
-    @keyframes revealFadeUp {
-      0% { opacity: 0; transform: translateY(14px) translateZ(0); }
-      100% { opacity: 1; transform: translateY(0) translateZ(0); }
-    }
     @keyframes revealFade {
       0% { opacity: 0; }
       100% { opacity: 1; }
@@ -447,12 +490,15 @@
 
   <main>
     <section class="hero">
-      <div class="hero-bg-image" aria-hidden="true"></div>
+      <div class="hero-bg-wrapper" aria-hidden="true">
+        <div class="hero-bg-image"></div>
+      </div>
       <div class="hero-divider" aria-hidden="true"></div>
       <div class="hero-inner">
         <p class="hero-eyebrow">Series — Refugees &nbsp;·&nbsp; Oil on Canvas</p>
+        <!-- data-char属性を使用して、CSS疑似要素で油彩の衝突効果を描画 -->
         <h1 class="hero-title" aria-label="難民（子ども）">
-          <span class="char">難</span><span class="char">民</span>
+          <span class="char" data-char="難">難</span><span class="char" data-char="民">民</span>
         </h1>
         <p class="hero-title-en">Refugees</p>
         <div class="hero-meta">
