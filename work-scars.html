@@ -264,59 +264,55 @@
     .fade-up.in-view { opacity: 1; transform: translateY(0); }
 
     /* ============================================================
-        WORKS GRID
+        WORKS GRID (Masonry Layout)
     =========================================================== */
     .works-header { text-align: center; margin-bottom: clamp(4rem, 8vw, 6rem); }
     .works-title { font-family: var(--font-ja); font-size: clamp(2rem, 4vw, 3rem); font-weight: 200; letter-spacing: 0.15em; }
     .works-title span { display: block; font-family: var(--font-en); font-size: 1rem; color: var(--accent); font-style: italic; letter-spacing: 0.2em; margin-top: 0.5rem; }
 
     .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: clamp(2rem, 4vw, 4rem); max-width: 1400px; margin: 0 auto;
+      column-count: 3;
+      column-gap: clamp(2rem, 4vw, 4rem);
+      max-width: 1400px; 
+      margin: 0 auto;
     }
     
-    @media (min-width: 1024px) {
-      .gallery-grid { grid-template-columns: repeat(3, 1fr); }
-      .gallery-item:nth-child(3n+2) { transform: translateY(5rem); }
-      .gallery-item:nth-child(3n+3) { transform: translateY(10rem); }
-      .gallery-item.large-span { grid-column: span 2; transform: translateY(0) !important; margin-block: 4rem; }
+    @media (max-width: 1024px) {
+      .gallery-grid { column-count: 2; }
     }
-    @media (min-width: 768px) and (max-width: 1023px) {
-      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
-      .gallery-item:nth-child(even) { transform: translateY(4rem); }
-      .gallery-item.large-span { grid-column: span 2; transform: translateY(0) !important; margin-block: 2rem; }
+    @media (max-width: 767px) {
+      .gallery-grid { column-count: 1; }
     }
 
     .gallery-item {
-      display: block; text-decoration: none; cursor: pointer;
+      display: inline-block;
+      width: 100%;
+      text-decoration: none; cursor: pointer;
+      margin-bottom: clamp(3rem, 5vw, 5rem);
+      break-inside: avoid;
+      -webkit-column-break-inside: avoid;
+      page-break-inside: avoid;
       opacity: 0; transform: translateY(40px); transition: all 1.2s var(--ease-slow);
     }
-    .gallery-item.in-view { opacity: 1; }
-    
-    @media (min-width: 1024px) {
-      .gallery-item.in-view:nth-child(3n+2):not(.large-span) { transform: translateY(5rem); }
-      .gallery-item.in-view:nth-child(3n+3):not(.large-span) { transform: translateY(10rem); }
-      .gallery-item.in-view.large-span { transform: translateY(0); }
-    }
-    @media (min-width: 768px) and (max-width: 1023px) {
-      .gallery-item.in-view:nth-child(even):not(.large-span) { transform: translateY(4rem); }
-      .gallery-item.in-view.large-span { transform: translateY(0); }
-    }
-    @media (max-width: 767px) {
-      .gallery-item.in-view { transform: translateY(0); }
+    .gallery-item.in-view { opacity: 1; transform: translateY(0); }
+
+    /* 全幅表示の大作レイアウト */
+    .gallery-item.large-span {
+      column-span: all;
+      margin-block: clamp(2rem, 5vw, 4rem);
     }
 
     .gallery-img-wrap {
       overflow: hidden; position: relative; background: #000;
       border: 1px solid var(--border); transition: border-color 0.8s var(--ease-slow), box-shadow 0.8s var(--ease-slow);
     }
+    
+    /* トリミングを解除し、元の比率を活かす指定 */
     .gallery-img-wrap img {
-      width: 100%; aspect-ratio: 4/3; object-fit: cover;
+      width: 100%; height: auto; display: block;
       filter: grayscale(40%) contrast(1.1) brightness(0.8);
       transition: transform 1.5s var(--ease-slow), filter 0.8s var(--ease);
     }
-    .gallery-item.large-span .gallery-img-wrap img { aspect-ratio: auto; max-height: 70vh; }
     
     .gallery-item:hover .gallery-img-wrap { border-color: rgba(235, 229, 223, 0.3); box-shadow: 0 15px 40px rgba(0,0,0,0.8); }
     .gallery-item:hover img { transform: scale(1.03); filter: grayscale(0%) contrast(1.0) brightness(1.0); }
