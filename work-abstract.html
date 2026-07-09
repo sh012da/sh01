@@ -70,7 +70,8 @@
       position: fixed;
       top: 0; left: 0;
       width: 100vw; height: 100vh;
-      background-image: url('images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG');
+      /* 機種依存文字のⅣをIVに変更 */
+      background-image: url('images/tHE n0iSe Of ThE PriMItIVe sEA.JPG');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -349,7 +350,6 @@
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
     
     .gallery-item-img-wrap {
-      /* キャンバスサイズ(cm)から算出した正確なスケールで描写 */
       width: calc(var(--w-cm) * var(--cm-scale));
       height: calc(var(--h-cm) * var(--cm-scale));
       max-width: 100vw; display: flex; justify-content: center; align-items: center;
@@ -541,11 +541,6 @@
       .statement-section { padding-left: 1rem; padding-right: 1rem; }
       .gallery-item-img-wrap { max-width: 100%; }
     }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
-      .gallery-item, .tl-entry { opacity: 1 !important; transform: none !important; }
-      body::before { background-attachment: scroll; }
-    }
   </style>
 </head>
 <body id="top">
@@ -688,9 +683,9 @@
             </div>
           </a>
           <a href="#work-noise" class="gallery-item js-scroll-link" style="--w-cm: 65.2; --h-cm: 53.0;">
-            <div class="gallery-item-img-wrap"><img src="images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG" alt="tHE n0iSe" loading="lazy"></div>
+            <div class="gallery-item-img-wrap"><img src="images/tHE n0iSe Of ThE PriMItIVe sEA.JPG" alt="tHE n0iSe" loading="lazy"></div>
             <div class="gallery-item-cap">
-              <span class="gallery-item-title">tHE n0iSe Of ThE PriMItⅣe sEA</span><span class="gallery-item-meta">2009 / 65.2 × 53.0 cm / Oil on canvas</span>
+              <span class="gallery-item-title">tHE n0iSe Of ThE PriMItIVe sEA</span><span class="gallery-item-meta">2009 / 65.2 × 53.0 cm / Oil on canvas</span>
             </div>
           </a>
           <a href="#work-damagedealer" class="gallery-item js-scroll-link" style="--w-cm: 91.0; --h-cm: 72.7;">
@@ -779,11 +774,11 @@
         <article class="tl-entry" id="work-noise">
           <div class="tl-year-display">2009</div>
           <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG" style="aspect-ratio: 65.2 / 53.0;">
-              <img src="images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG" alt="tHE n0iSe" loading="lazy">
+            <div class="tl-figure js-modal-open" data-img-src="images/tHE n0iSe Of ThE PriMItIVe sEA.JPG" style="aspect-ratio: 65.2 / 53.0;">
+              <img src="images/tHE n0iSe Of ThE PriMItIVe sEA.JPG" alt="tHE n0iSe" loading="lazy">
             </div>
             <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">tHE n0iSe Of ThE PriMItⅣe sEA</h3>
+              <h3 class="tl-title" data-typewriter="true">tHE n0iSe Of ThE PriMItIVe sEA</h3>
               <p class="tl-meta">65.2 × 53.0 cm / Oil on canvas</p>
               <div class="tl-desc">
                 <p>生命の根源的な混沌。原始の海が発していたであろう不協和音を、激しい色彩の衝突とストロークのノイズによって絵画行為へと昇華しています。</p>
@@ -904,23 +899,33 @@
     function toggleMenu() {
       const links = document.getElementById('nav-links');
       const hamburger = document.getElementById('hamburger');
-      links.classList.toggle('open');
-      hamburger.classList.toggle('is-active');
+      if(links) links.classList.toggle('open');
+      if(hamburger) hamburger.classList.toggle('is-active');
       document.body.classList.toggle('is-locked');
     }
     function closeMenu() {
-      document.getElementById('nav-links').classList.remove('open');
-      document.getElementById('hamburger').classList.remove('is-active');
+      const links = document.getElementById('nav-links');
+      const hamburger = document.getElementById('hamburger');
+      if(links) links.classList.remove('open');
+      if(hamburger) hamburger.classList.remove('is-active');
       document.body.classList.remove('is-locked');
     }
 
-    /* ── ファーストビュー アニメーション ── */
-    window.addEventListener('load', () => {
-      setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 150);
-      setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'),   350);
-      setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'),      680);
-      setTimeout(() => document.getElementById('heroMeta')?.classList.add('revealed'),    980);
-      setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1700);
+    /* ── ファーストビュー アニメーション (DOM構築完了直後に発火) ── */
+    document.addEventListener('DOMContentLoaded', () => {
+      // 安全に要素を取得してクラスを付与する関数
+      const reveal = (id, delay) => {
+        setTimeout(() => {
+          const el = document.getElementById(id);
+          if (el) el.classList.add('revealed');
+        }, delay);
+      };
+
+      reveal('heroEyebrow', 150);
+      reveal('heroTitle', 350);
+      reveal('heroEn', 680);
+      reveal('heroMeta', 980);
+      reveal('heroScroll', 1700);
     });
 
     /* ── Observer (Fade Up & Grid Animation) ── */
@@ -999,8 +1004,10 @@
           const scrollY = window.scrollY;
           
           /* Top Nav Glassmorphism */
-          if (scrollY > 50) topNav.classList.add('scrolled');
-          else topNav.classList.remove('scrolled');
+          if (topNav) {
+            if (scrollY > 50) topNav.classList.add('scrolled');
+            else topNav.classList.remove('scrolled');
+          }
 
           /* Page Nav Visibility & Active State */
           const checkY = scrollY + window.innerHeight * 0.4;
@@ -1028,8 +1035,10 @@
 
           /* Back to Top */
           const b2t = document.getElementById('backToTop');
-          if (scrollY > 400) b2t.classList.add('is-visible');
-          else b2t.classList.remove('is-visible');
+          if (b2t) {
+            if (scrollY > 400) b2t.classList.add('is-visible');
+            else b2t.classList.remove('is-visible');
+          }
 
           ticking = false;
         });
@@ -1048,18 +1057,21 @@
       });
     });
 
-    document.getElementById('backToTop').addEventListener('click', (e) => {
-      e.preventDefault();
-      if (window.innerWidth <= 768) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        const target = document.getElementById('gallery');
-        if (target) {
-          const offset = topNav?.offsetHeight || 80;
-          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+    const b2tBtn = document.getElementById('backToTop');
+    if (b2tBtn) {
+      b2tBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (window.innerWidth <= 768) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          const target = document.getElementById('gallery');
+          if (target) {
+            const offset = topNav?.offsetHeight || 80;
+            window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+          }
         }
-      }
-    });
+      });
+    }
 
     /* ── Lightbox (Modal) / Gallery Grid Scroll & Expand Logic ── */
     const modal      = document.getElementById('imageModal');
@@ -1070,19 +1082,25 @@
     const metaEl     = document.getElementById('modalMeta');
 
     const openModal = (src, jp, metaText) => {
-      modalImg.src = src;
-      titleJpEl.textContent = jp || '';
-      metaEl.textContent = metaText || '';
+      if (!modal) return;
+      if (modalImg) modalImg.src = src;
+      if (titleJpEl) titleJpEl.textContent = jp || '';
+      if (metaEl) metaEl.textContent = metaText || '';
       modal.classList.add('is-active');
       modal.setAttribute('aria-hidden', 'false');
       document.body.classList.add('is-locked');
     };
 
     const closeModal = () => {
+      if (!modal) return;
       modal.classList.remove('is-active');
       modal.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('is-locked');
-      setTimeout(() => { modalImg.src = ''; titleJpEl.textContent = ''; metaEl.textContent = ''; }, 560);
+      setTimeout(() => { 
+        if (modalImg) modalImg.src = ''; 
+        if (titleJpEl) titleJpEl.textContent = ''; 
+        if (metaEl) metaEl.textContent = ''; 
+      }, 560);
     };
 
     // グリッド作品のクリック時の制御
@@ -1100,10 +1118,14 @@
             behavior: 'smooth' 
           });
         } else {
-          // ★ グリッドにしか存在しない作品の場合は、その場で拡大モーダル表示
-          let src = link.querySelector('img').getAttribute('src');
-          let jp = link.querySelector('.gallery-item-title')?.textContent || '';
-          let metaText = link.querySelector('.gallery-item-meta')?.textContent || '';
+          // グリッドにしか存在しない作品の場合は、その場で拡大モーダル表示
+          const imgEl = link.querySelector('img');
+          const jpEl = link.querySelector('.gallery-item-title');
+          const metaElNode = link.querySelector('.gallery-item-meta');
+          
+          let src = imgEl ? imgEl.getAttribute('src') : '';
+          let jp = jpEl ? jpEl.textContent : '';
+          let metaText = metaElNode ? metaElNode.textContent : '';
           openModal(src, jp, metaText);
         }
       });
@@ -1113,7 +1135,8 @@
     document.querySelectorAll('.js-modal-open').forEach(btn => {
       btn.addEventListener('click', (e) => {
         let src = btn.getAttribute('data-img-src');
-        if (!src && btn.querySelector('img')) src = btn.querySelector('img').getAttribute('src');
+        const imgEl = btn.querySelector('img');
+        if (!src && imgEl) src = imgEl.getAttribute('src');
         
         const block = btn.closest('.tl-entry');
         let jp = '';
@@ -1137,10 +1160,12 @@
       });
     });
 
-    modalBg.addEventListener('click', closeModal);
-    modalClose.addEventListener('click', closeModal);
-    modalImg.addEventListener('click', closeModal);
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('is-active')) closeModal(); });
+    if (modalBg) modalBg.addEventListener('click', closeModal);
+    if (modalClose) modalClose.addEventListener('click', closeModal);
+    if (modalImg) modalImg.addEventListener('click', closeModal);
+    document.addEventListener('keydown', e => { 
+      if (e.key === 'Escape' && modal && modal.classList.contains('is-active')) closeModal(); 
+    });
   </script>
 </body>
 </html>
