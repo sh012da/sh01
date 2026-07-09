@@ -12,7 +12,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>傷 / Scars | Tsuda Shoichi</title>
-  <meta name="description" content="津田翔一 作品シリーズ「傷 / Scars」— 理不尽に変容させられた皮膚を描く行為は、やがて大地の記憶（左美都）へと繋がる。">
+  <meta name="description" content="津田翔一 作品シリーズ「傷 / Scars」— 理不尽に変容させられた皮膚を描く行為は、やがて大地の記憶へと繋がる。">
   <meta property="og:title" content="傷 / Scars | Tsuda Shoichi">
   <meta property="og:description" content="皮膚は世界と衝突した記憶のキャンバス。後の左美都へと繋がる転機となったシリーズ。">
   <meta property="og:type" content="website">
@@ -23,69 +23,45 @@
 
   <style>
     /* ============================================================
-        DESIGN TOKENS (Scars Custom Minimal Theme)
+        DESIGN TOKENS
     ============================================================ */
     :root {
-      --bg:        #050505;
-      --bg2:       rgba(10, 10, 10, 0.9);
-      --fg:        #e5e0d8;
-      --muted:     rgba(229, 224, 216, 0.45);
-      --dim:       rgba(229, 224, 216, 0.2);
-      --accent:    #a64337; 
-      --accent2:   #735950;
-      --scar-line: #b52b1d;
-      --border:    rgba(229, 224, 216, 0.09);
+      --bg:        #030303;
+      --bg-glass:  rgba(3, 3, 3, 0.75);
+      --fg:        #ebe5df;
+      --muted:     rgba(235, 229, 223, 0.4);
+      --accent:    #9e2a2b; 
+      --scar-glow: rgba(158, 42, 43, 0.5);
+      --border:    rgba(235, 229, 223, 0.1);
       --font-en:   'Cormorant Garamond', serif;
       --font-ja:   'Noto Serif JP', serif;
-      --ease:      cubic-bezier(0.16, 1, 0.3, 1);
-      --px:        clamp(1.5rem, 6vw, 6rem);
+      --ease:      cubic-bezier(0.25, 1, 0.15, 1);
+      --ease-slow: cubic-bezier(0.16, 1, 0.3, 1);
+      --px:        clamp(1.5rem, 5vw, 5rem);
       --scrollbar-width: 0px; 
     }
 
+    /* ============================================================
+        GLOBAL RESET & TYPOGRAPHY
+    ============================================================ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; background: var(--bg); }
+    html { scroll-behavior: smooth; background: var(--bg); font-size: 16px; }
     body {
       background: transparent; color: var(--fg);
-      font-family: var(--font-ja); line-height: 2.2; letter-spacing: 0.08em;
+      font-family: var(--font-ja); line-height: 2; letter-spacing: 0.08em;
       -webkit-font-smoothing: antialiased; overflow-x: hidden;
-      padding-left: env(safe-area-inset-left); 
-      padding-right: calc(env(safe-area-inset-right) + var(--scrollbar-width));
+      padding-right: var(--scrollbar-width);
       position: relative;
     }
     body.is-locked { overflow: hidden; }
-    img { max-width: 100%; height: auto; display: block; }
+    img { max-width: 100%; height: auto; display: block; object-fit: cover; }
     a { color: var(--fg); text-decoration: none; transition: opacity 0.4s var(--ease); }
     a:hover { opacity: 0.6; }
-
-    .concept-sub, .statement-para, .tl-desc, .contact-body-text {
-      word-break: normal;
-      word-break: auto-phrase;
-      overflow-wrap: break-word;
-      text-align: justify;
-      text-justify: inter-ideograph;
-    }
-
-    /* ============================================================
-        AMBIENT STRUCTURE
-    ============================================================ */
-    .global-ambient-bg {
-      position: fixed; inset: -10%; width: 120vw; height: 120vh;
-      background-image: url('images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg');
-      background-size: cover; background-position: center;
-      filter: blur(80px) brightness(0.15) grayscale(40%);
-      opacity: 0.55; z-index: -3; pointer-events: none;
-    }
-
-    .global-scar-line {
-      position: fixed; top: -10vh; left: 18%; width: 1px; height: 150vh;
-      background: linear-gradient(to bottom, rgba(181,43,29,0.7), rgba(181,43,29,0.1), transparent);
-      transform: rotate(26deg); transform-origin: top center; z-index: -2; pointer-events: none;
-      box-shadow: 0 0 30px rgba(181,43,29,0.3);
-    }
-    .global-scar-line-2 {
-      position: fixed; bottom: -10vh; right: 22%; width: 1.5px; height: 120vh;
-      background: linear-gradient(to top, rgba(229,224,216,0.08), rgba(229,224,216,0.01), transparent);
-      transform: rotate(-16deg); transform-origin: bottom center; z-index: -2; pointer-events: none;
+    
+    /* Noise Overlay for Material Texture (Canvas/Earth) */
+    .noise-overlay {
+      position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
     }
 
     /* ============================================================
@@ -94,988 +70,669 @@
     nav#top-nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 300;
       display: flex; align-items: center; justify-content: space-between;
-      padding-top: clamp(16px, 3vw, 32px);
-      padding-bottom: clamp(16px, 3vw, 32px);
-      padding-left: var(--px);
-      padding-right: calc(var(--px) + var(--scrollbar-width));
-      background: transparent;
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border-bottom: 0.5px solid transparent; transition: background 0.5s var(--ease), border-color 0.5s var(--ease);
+      padding: clamp(1.2rem, 3vw, 2rem) var(--px);
+      background: transparent; border-bottom: 1px solid transparent;
+      
+      /* アニメーション中は上に隠しておく */
+      transform: translateY(-100%);
+      opacity: 0;
+      transition: opacity 1.2s var(--ease), transform 1.2s var(--ease), background 0.6s, border 0.6s, padding 0.6s;
     }
-    nav#top-nav.scrolled { background: rgba(5, 5, 5, 0.85); border-color: var(--border); }
+    body.is-loaded nav#top-nav {
+      transform: translateY(0);
+      opacity: 1;
+      transition-delay: 3.5s, 3.5s, 0s, 0s, 0s; /* 初期ロード時のみ遅延 */
+    }
+    body.is-loaded nav#top-nav.scrolled {
+      transition-delay: 0s, 0s, 0s, 0s, 0s;
+      background: var(--bg-glass); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border); padding-block: clamp(1rem, 2vw, 1.5rem);
+    }
     .nav-logo-unified {
-      font-family: var(--font-en); font-size: clamp(0.75rem, 2.5vw, 0.95rem);
-      letter-spacing: 0.35em; font-weight: 300; color: var(--fg);
-      text-transform: uppercase; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      font-family: var(--font-en); font-size: clamp(0.8rem, 1.5vw, 1rem);
+      letter-spacing: 0.3em; font-weight: 300; text-transform: uppercase;
     }
-    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links { display: flex; gap: 3rem; list-style: none; }
     .nav-links a {
-      font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.75rem);
-      letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase;
-      transition: color 0.3s var(--ease);
+      font-family: var(--font-en); font-size: 0.75rem; letter-spacing: 0.25em;
+      color: var(--muted); text-transform: uppercase; transition: color 0.3s;
     }
     .nav-links a:hover { color: var(--fg); }
     .nav-cta {
-      font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.7rem);
-      letter-spacing: 0.25em; text-transform: uppercase;
-      border: 0.5px solid rgba(229,224,216,0.3); padding: 0.6rem 1.6rem;
-      color: var(--fg); transition: background 0.3s, border-color 0.3s;
+      font-family: var(--font-en); font-size: 0.7rem; letter-spacing: 0.25em;
+      text-transform: uppercase; border: 1px solid var(--muted); padding: 0.6rem 1.8rem;
+      transition: all 0.4s var(--ease);
     }
-    .nav-cta:hover { background: rgba(229,224,216,0.05); border-color: var(--fg); }
-
-    .page-nav {
-      position: fixed; right: calc(clamp(20px, 4vw, 40px) + var(--scrollbar-width)); top: 50%; transform: translateY(-50%); z-index: 200;
-      display: flex; flex-direction: column; gap: 28px; opacity: 0; visibility: hidden;
-      transition: opacity 0.6s var(--ease), visibility 0.6s;
-    }
-    .page-nav.visible { opacity: 1; visibility: visible; }
-    .page-nav-item { display: flex; align-items: center; gap: 14px; flex-direction: row-reverse; cursor: pointer; background: none; border: none; padding: 6px 0; }
-    .page-nav-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(229,224,216,0.25); transition: all 0.4s var(--ease); flex-shrink: 0; }
-    .page-nav-label { font-family: var(--font-en); font-size: 11px; letter-spacing: 0.2em; color: rgba(229,224,216,0.25); text-transform: uppercase; transition: color 0.4s var(--ease); white-space: nowrap; }
-    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot { background: var(--accent); transform: scale(1.5); }
-    .page-nav-item:hover .page-nav-label { color: rgba(229,224,216,0.8); }
-    .page-nav-item.active .page-nav-label { color: var(--fg); }
+    .nav-cta:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
 
     /* ============================================================
-        HERO
+        HERO SECTION (Cinematic "SLASH" Reveal)
     ============================================================ */
     .hero {
       position: relative; height: 100svh; min-height: 650px;
-      display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start;
-      padding: 0 var(--px) clamp(4rem, 10vh, 8rem); overflow: hidden;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      padding: 0 var(--px); overflow: hidden;
+      background: var(--bg); /* 初期状態の黒 */
     }
-    .hero-bg-image {
-      position: absolute; inset: 0;
+
+    /* 1. バックグラウンドレイヤー (露わになる絵画) */
+    .hero-bg-layer { position: absolute; inset: 0; z-index: 1; overflow: hidden; }
+    .hero-bg {
+      position: absolute; inset: -10%; width: 120%; height: 120%;
       background-image: url('images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg');
       background-size: cover; background-position: center;
-      opacity: 0.2; filter: grayscale(20%) contrast(1.15);
-      clip-path: polygon(0 45%, 100% 45%, 100% 55%, 0 55%);
-      transition: clip-path 2.4s var(--ease) 0.3s, opacity 2.4s var(--ease);
-      z-index: 0;
+      filter: grayscale(100%) contrast(1.2) brightness(0.1) blur(20px);
+      transform: scale(1.15) translateZ(0);
+      will-change: transform, filter;
+      transition: filter 4s var(--ease-slow) 0.8s, transform 8s var(--ease-slow) 0.8s;
     }
-    .hero-bg-image.revealed { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); opacity: 0.35; }
-
-    .hero-inner { position: relative; z-index: 2; text-align: left; width: 100%; }
-    .hero-eyebrow { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.8rem); letter-spacing: 0.5em; color: var(--muted); opacity: 0; transform: translateY(15px); transition: opacity 1.5s var(--ease) 0.8s, transform 1.5s var(--ease) 0.8s; text-transform: uppercase; margin-bottom: 1.8rem; display: flex; align-items: center; gap: 1.5rem; }
-    .hero-eyebrow::before { content: ''; width: 40px; height: 1px; background: var(--accent); opacity: 0.7; }
-    .hero-eyebrow.revealed { opacity: 0.9; transform: translateY(0); }
-
-    .hero-title {
-      font-family: var(--font-ja); font-size: clamp(5.5rem, 20vw, 16rem); font-weight: 200;
-      line-height: 0.9; color: var(--fg); margin-bottom: 0.8rem;
-      display: flex; gap: 0.02em; overflow: hidden; padding: 10px 0;
+    .hero.is-animating .hero-bg {
+      filter: grayscale(40%) contrast(1.1) brightness(0.4) blur(0px);
+      transform: scale(1) translateZ(0);
     }
-    .hero-title .char { display: inline-block; opacity: 0; transform: translateY(100%) skewY(5deg); transition: transform 2s var(--ease), opacity 1.2s var(--ease); }
-    .hero-title.revealed .char { opacity: 1; transform: translateY(0) skewY(0); }
     
-    .hero-title-en { font-family: var(--font-en); font-size: clamp(1.2rem, 4vw, 2.4rem); font-style: italic; letter-spacing: 0.35em; color: var(--accent); opacity: 0; transform: scale(0.95); filter: blur(4px); transition: opacity 2s var(--ease) 1.4s, transform 2s var(--ease) 1.4s, filter 1.6s var(--ease) 1.4s; }
-    .hero-title-en.revealed { opacity: 1; transform: scale(1); filter: blur(0); }
+    /* 滲み出る「血/絵の具」のエフェクト */
+    .hero-bleed {
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at center, rgba(158, 42, 43, 0.4) 0%, transparent 65%);
+      mix-blend-mode: multiply; opacity: 0;
+      transition: opacity 5s ease 2s; z-index: 2;
+    }
+    .hero.is-animating .hero-bleed { opacity: 1; }
 
-    .hero-scroll { position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 14px; opacity: 0; transition: opacity 1.2s var(--ease) 2.2s; }
-    .hero-scroll.revealed { opacity: 1; }
-    .hero-scroll-label { font-family: var(--font-en); font-size: 0.55rem; letter-spacing: 0.4em; color: var(--muted); text-transform: uppercase; writing-mode: vertical-rl; }
-    .hero-scroll-track { width: 1px; height: 50px; background: rgba(229,224,216,0.08); position: relative; overflow: hidden; }
-    .hero-scroll-fill { position: absolute; top: -100%; left: 0; width: 100%; height: 100%; background: var(--accent); animation: scrollDrop 2.8s cubic-bezier(0.76, 0, 0.24, 1) infinite; }
-    @keyframes scrollDrop { 0% { top: -100%; } 40% { top: 0; } 80% { top: 100%; } 100% { top: 100%; } }
+    /* 2. キャンバスを切り裂くカーテン */
+    .hero-curtain-container {
+      position: absolute; top: -30%; left: -30%; right: -30%; bottom: -30%;
+      transform: rotate(-10deg); z-index: 5; pointer-events: none;
+    }
+    .curtain {
+      position: absolute; left: 0; width: 100%; height: 50.2%;
+      background: var(--bg); transition: transform 2.5s cubic-bezier(0.76, 0, 0.24, 1);
+      will-change: transform;
+    }
+    .curtain-top { top: 0; transform-origin: top; }
+    .curtain-bottom { bottom: 0; transform-origin: bottom; }
+    
+    .slash-line {
+      position: absolute; top: 50%; left: 15%; width: 70%; height: 2px;
+      background: var(--accent); box-shadow: 0 0 20px var(--accent), 0 0 50px var(--accent);
+      transform: translateY(-50%) scaleX(0); transform-origin: center; border-radius: 50%;
+    }
+    
+    /* 切り裂くアニメーション */
+    .hero.is-animating .slash-line { animation: slashDraw 2s cubic-bezier(0.8, 0, 0.2, 1) forwards; }
+    @keyframes slashDraw {
+      0% { transform: translateY(-50%) scaleX(0); opacity: 0; }
+      15% { transform: translateY(-50%) scaleX(0.1); opacity: 1; height: 1px; }
+      35% { transform: translateY(-50%) scaleX(1); opacity: 1; height: 4px; box-shadow: 0 0 40px var(--accent), 0 0 80px red; }
+      60% { transform: translateY(-50%) scaleX(1); opacity: 1; height: 2px; }
+      100% { transform: translateY(-50%) scaleX(1.3); opacity: 0; }
+    }
+    .hero.is-animating .curtain-top { transform: translateY(-100%); transition-delay: 0.6s; }
+    .hero.is-animating .curtain-bottom { transform: translateY(100%); transition-delay: 0.6s; }
+
+    /* 3. コンテンツテキスト */
+    .hero-inner {
+      position: relative; z-index: 10; display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+    }
+    
+    .hero-eyebrow {
+      font-family: var(--font-en); font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+      letter-spacing: 0.4em; color: var(--muted); text-transform: uppercase;
+      margin-bottom: 2rem; opacity: 0; transform: translateY(20px);
+      transition: all 1.5s var(--ease) 2.2s;
+    }
+    .hero.is-animating .hero-eyebrow { opacity: 1; transform: translateY(0); }
+
+    /* タイトルの切断と合体 */
+    .hero-title-wrap {
+      position: relative; display: inline-block;
+      font-size: clamp(6rem, 25vw, 15rem); font-weight: 200; line-height: 1; color: var(--fg);
+    }
+    .title-part { display: block; }
+    .part-top {
+      clip-path: polygon(0 0, 100% 0, 100% 55.5%, 0 45.5%); /* 斜めに切断 */
+      transform: translate(-6vw, -4vh) rotate(-3deg);
+      opacity: 0; filter: blur(10px);
+    }
+    .part-bottom {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      clip-path: polygon(0 45%, 100% 55%, 100% 100%, 0 100%);
+      transform: translate(6vw, 4vh) rotate(3deg);
+      opacity: 0; filter: blur(10px);
+    }
+    .hero.is-animating .part-top,
+    .hero.is-animating .part-bottom {
+      transform: translate(0, 0) rotate(0deg); opacity: 1; filter: blur(0);
+      transition: transform 2.5s cubic-bezier(0.16, 1, 0.3, 1) 1.2s, 
+                  opacity 2.5s ease 1.2s, filter 2.5s ease 1.2s;
+    }
+
+    /* 合体後に浮かび上がる傷跡(赤いアンダーライン) */
+    .title-scar {
+      position: absolute; top: 50%; left: -5%; width: 110%; height: 2px;
+      background: var(--accent); box-shadow: 0 0 25px var(--scar-glow), 0 0 10px var(--accent);
+      transform: rotate(5.7deg) scaleX(0); /* 切断面の角度に合わせる */
+      transform-origin: center; mix-blend-mode: screen;
+    }
+    .hero.is-animating .title-scar {
+      transform: rotate(5.7deg) scaleX(1);
+      transition: transform 1.5s cubic-bezier(0.75, 0, 0.25, 1) 3.2s;
+    }
+
+    .hero-en {
+      font-family: var(--font-en); font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-style: italic; color: var(--accent); letter-spacing: 0.2em;
+      margin-top: 0.5rem; opacity: 0; filter: blur(5px); transform: translateY(10px);
+      transition: all 1.5s var(--ease) 2.5s;
+    }
+    .hero.is-animating .hero-en { opacity: 1; filter: blur(0); transform: translateY(0); }
+
+    .hero-scroll {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 1rem;
+      opacity: 0; transition: opacity 1.5s var(--ease) 3.8s; z-index: 10;
+    }
+    .hero.is-animating .hero-scroll { opacity: 1; }
+    
+    .scroll-line { width: 1px; height: 70px; background: rgba(235,229,223,0.1); position: relative; overflow: hidden; }
+    .scroll-line::after {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 50%;
+      background: linear-gradient(to bottom, transparent, var(--accent), var(--accent));
+      animation: scrollDown 2.5s infinite cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    @keyframes scrollDown { 0% { transform: translateY(-100%); } 100% { transform: translateY(200%); } }
 
     /* ============================================================
         CONCEPT & STATEMENT
     ============================================================ */
-    .concept-section { padding: clamp(8rem, 20vh, 14rem) var(--px); max-width: 1050px; margin: 0 auto; text-align: center; position: relative; z-index: 1; }
-    .concept-text { font-size: clamp(1.25rem, 3.2vw, 2.1rem); font-weight: 200; line-height: 2.1; color: var(--fg); letter-spacing: 0.12em; margin-bottom: 3.5rem; position: relative; display: inline-block; }
-    .concept-text::after {
-      content: ''; position: absolute; top: 52%; left: -8%; height: 1px;
-      background: var(--scar-line); box-shadow: 0 0 12px var(--scar-line);
-      transform: translateY(-50%) rotate(-1.5deg); z-index: -1; opacity: 0.65;
-      width: calc(var(--local-progress, 0) * 116%); will-change: width;
+    .section-spacing { padding: clamp(6rem, 15vh, 12rem) var(--px); position: relative; z-index: 10; }
+    
+    .concept-container { max-width: 900px; margin: 0 auto; text-align: center; }
+    .concept-heading {
+      font-size: clamp(1.4rem, 3.5vw, 2.2rem); font-weight: 300; line-height: 1.8;
+      letter-spacing: 0.1em; margin-bottom: 3rem; color: var(--fg);
     }
-    .concept-sub { font-size: clamp(0.88rem, 1.8vw, 1.05rem); color: rgba(229,224,216,0.65); line-height: 2.3; max-width: 720px; margin: 0 auto; }
+    .concept-text {
+      font-size: clamp(0.95rem, 1.8vw, 1.05rem); line-height: 2.2; color: var(--muted);
+      text-align: justify; text-justify: inter-ideograph;
+    }
 
-    .statement-section { padding: clamp(5rem, 10vh, 8rem) var(--px) clamp(8rem, 18vh, 12rem); max-width: 940px; margin: 0 auto; position: relative; z-index: 1; border-top: 0.5px solid var(--border); }
-    .statement-label { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.75rem); letter-spacing: 0.5em; color: var(--accent); text-transform: uppercase; text-align: center; margin-bottom: clamp(4rem, 8vh, 6rem); opacity: 0; transform: translateY(15px); transition: all 1.2s var(--ease); }
-    .statement-label.in-view { opacity: 1; transform: translateY(0); }
-    .statement-body { display: flex; flex-direction: column; gap: clamp(2.5rem, 5vh, 3.8rem); position: relative; }
-    .statement-para { font-size: clamp(0.9rem, 1.8vw, 1.05rem); line-height: 2.4; color: rgba(229,224,216,0.85); opacity: 0; transform: translateY(25px); transition: opacity 1.4s var(--ease), transform 1.4s var(--ease); position: relative; z-index: 2; }
-    .statement-para.in-view { opacity: 1; transform: translateY(0); }
-    .statement-para.highlight { padding-left: 2.2rem; border-left: 2px solid var(--accent); color: var(--fg); font-weight: 300; }
-    .statement-para strong { color: var(--accent); font-weight: 400; }
-    .statement-vertical-scar {
-      position: absolute; top: 0; left: -2.5rem; width: 1px;
-      background: linear-gradient(to bottom, var(--scar-line), transparent);
-      height: calc(var(--local-progress, 0) * 115%); opacity: 0.5; z-index: 1; pointer-events: none;
+    .statement-grid { display: grid; grid-template-columns: 1fr 2fr; gap: clamp(3rem, 8vw, 6rem); max-width: 1100px; margin: 0 auto; }
+    .statement-label {
+      font-family: var(--font-en); font-size: 0.8rem; letter-spacing: 0.4em; color: var(--accent);
+      text-transform: uppercase; writing-mode: vertical-rl; transform: rotate(180deg);
     }
+    .statement-body p { margin-bottom: 2.5rem; font-size: clamp(0.95rem, 1.8vw, 1.05rem); line-height: 2.4; color: rgba(235, 229, 223, 0.85); text-align: justify; }
+    .statement-body p:last-child { margin-bottom: 0; }
+    .statement-highlight { border-left: 2px solid var(--accent); padding-left: 2rem; color: var(--fg); font-weight: 300; }
+
+    /* Reveal Animations for Scroll */
+    .fade-up { opacity: 0; transform: translateY(40px); transition: opacity 1.2s var(--ease-slow), transform 1.2s var(--ease-slow); }
+    .fade-up.in-view { opacity: 1; transform: translateY(0); }
 
     /* ============================================================
-        WORKS ARCHIVE GRID
+        WORKS GRID
     ============================================================ */
-    .gallery-section { padding: 0 var(--px) clamp(6rem, 14vh, 12rem); max-width: 1680px; margin: 0 auto; position: relative; z-index: 1; }
-    .section-label { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.75rem); letter-spacing: 0.5em; color: var(--muted); text-transform: uppercase; text-align: center; margin-bottom: 2.5rem; display: flex; align-items: center; justify-content: center; gap: 24px; }
-    .section-label::before, .section-label::after { content: ''; width: 50px; height: 0.5px; background: var(--border); }
-    
-    .gallery-category-title {
-      font-family: var(--font-ja); font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 200;
-      color: var(--fg); text-align: center; margin: 5rem 0 3.5rem; letter-spacing: 0.15em;
-    }
-    .gallery-category-title span {
-      font-family: var(--font-en); font-size: clamp(0.85rem, 1.6vw, 1.1rem);
-      color: var(--accent); display: block; margin-top: 0.6rem; letter-spacing: 0.3em; font-style: italic; font-weight: 300;
-    }
+    .works-header { text-align: center; margin-bottom: clamp(4rem, 8vw, 6rem); }
+    .works-title { font-family: var(--font-ja); font-size: clamp(2rem, 4vw, 3rem); font-weight: 200; letter-spacing: 0.15em; }
+    .works-title span { display: block; font-family: var(--font-en); font-size: 1rem; color: var(--accent); font-style: italic; letter-spacing: 0.2em; margin-top: 0.5rem; }
 
     .gallery-grid {
-      display: grid; grid-template-columns: repeat(24, 1fr);
-      gap: clamp(2rem, 3.5vw, 4.5rem) clamp(1rem, 2vw, 2.5rem);
-      align-items: start; margin-bottom: 6rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: clamp(2rem, 4vw, 4rem); max-width: 1400px; margin: 0 auto;
     }
     
+    @media (min-width: 1024px) {
+      .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+      .gallery-item:nth-child(3n+2) { transform: translateY(5rem); }
+      .gallery-item:nth-child(3n+3) { transform: translateY(10rem); }
+      .gallery-item.large-span { grid-column: span 2; transform: translateY(0) !important; margin-block: 4rem; }
+    }
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .gallery-item:nth-child(even) { transform: translateY(4rem); }
+      .gallery-item.large-span { grid-column: span 2; transform: translateY(0) !important; margin-block: 2rem; }
+    }
+
     .gallery-item {
-      display: flex; flex-direction: column; text-decoration: none; cursor: pointer;
-      position: relative; opacity: 0; transform: translateY(30px);
-      transition: opacity 1s var(--ease), transform 1s var(--ease);
+      display: block; text-decoration: none; cursor: pointer;
+      opacity: 0; transform: translateY(40px); transition: all 1.2s var(--ease-slow);
     }
-    .gallery-item.in-view { opacity: 1; transform: translateY(0); }
-
-    .gi-2016-1  { grid-column: 2 / span 5; }
-    .gi-2016-2  { grid-column: 8 / span 5; margin-top: 4rem; }
-    .gi-2016-3  { grid-column: 14 / span 5; margin-top: 1rem; }
-    .gi-2016-4  { grid-column: 20 / span 4; margin-top: 5rem; }
-    .gi-2016-5  { grid-column: 1 / span 5; margin-top: 2rem; }
-    .gi-2016-6  { grid-column: 7 / span 5; margin-top: 6rem; }
-    .gi-2016-7  { grid-column: 13 / span 5; margin-top: 2rem; }
-    .gi-2016-8  { grid-column: 19 / span 5; margin-top: 0.5rem; }
-    .gi-2016-9  { grid-column: 3 / span 6; margin-top: 3rem; }
-    .gi-2016-10 { grid-column: 11 / span 6; margin-top: 1.5rem; }
-
-    .gi-2015-1  { grid-column: 2 / span 5; }
-    .gi-2015-2  { grid-column: 8 / span 5; margin-top: 3rem; }
-    .gi-2015-3  { grid-column: 14 / span 5; }
-    .gi-2015-4  { grid-column: 20 / span 4; margin-top: 4rem; }
-    .gi-2015-5  { grid-column: 4 / span 5; margin-top: 2rem; }
-    .gi-2015-6  { grid-column: 10 / span 5; margin-top: 6rem; }
-    .gi-2015-7  { grid-column: 16 / span 5; margin-top: 1rem; }
-    .gi-2015-8  { grid-column: 8 / span 6; margin-top: 3rem; }
-
-    .gi-2014-1  { grid-column: 3 / span 8; margin-top: 3rem; }
-    .gi-2014-2  { grid-column: 13 / span 9; margin-top: 1.5rem; }
-    .gi-2014-3  { grid-column: 8 / span 8; margin-top: 4rem; }
-
-    .gi-aav-1   { grid-column: 2 / span 6; }
-    .gi-aav-2   { grid-column: 9 / span 6; margin-top: 4.5rem; }
-    .gi-aav-3   { grid-column: 16 / span 6; margin-top: 1.5rem; }
-    .gi-aav-4   { grid-column: 4 / span 6; margin-top: 3.5rem; }
-    .gi-aav-5   { grid-column: 12 / span 6; margin-top: 2rem; }
-    .gi-aav-6   { grid-column: 6 / span 12; margin-top: 6rem; }
-
-    .gallery-item-img-wrap {
-      width: 100%; position: relative; overflow: hidden; background: #000;
-      font-size: 0; line-height: 0; aspect-ratio: auto;
-      border: 0.5px solid var(--border); transition: border-color 0.6s var(--ease), box-shadow 0.6s var(--ease);
+    .gallery-item.in-view { opacity: 1; }
+    
+    @media (min-width: 1024px) {
+      .gallery-item.in-view:nth-child(3n+2):not(.large-span) { transform: translateY(5rem); }
+      .gallery-item.in-view:nth-child(3n+3):not(.large-span) { transform: translateY(10rem); }
+      .gallery-item.in-view.large-span { transform: translateY(0); }
     }
-    .gallery-item-img-wrap img { width: 100%; height: auto; display: block; filter: grayscale(50%) contrast(1.1) brightness(0.75); transition: transform 1.5s var(--ease), filter 1s var(--ease); }
-    .gallery-item:hover .gallery-item-img-wrap { border-color: rgba(229,224,216,0.4); box-shadow: 0 20px 45px rgba(0,0,0,0.85); }
-    .gallery-item:hover img { transform: scale(1.025); filter: grayscale(0%) contrast(1.05) brightness(1.0); }
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .gallery-item.in-view:nth-child(even):not(.large-span) { transform: translateY(4rem); }
+      .gallery-item.in-view.large-span { transform: translateY(0); }
+    }
+    @media (max-width: 767px) {
+      .gallery-item.in-view { transform: translateY(0); }
+    }
 
-    .gallery-item-cap { padding-top: 1.4rem; text-align: left; line-height: 1.5; }
-    .gallery-item-title { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.4vw, 0.98rem); font-weight: 300; color: var(--fg); letter-spacing: 0.05em; margin-bottom: 0.4rem; display: block; }
-    .gallery-item-meta { font-family: var(--font-en); font-size: clamp(0.65rem, 1.2vw, 0.75rem); color: var(--muted); letter-spacing: 0.1em; display: block; }
+    .gallery-img-wrap {
+      overflow: hidden; position: relative; background: #000;
+      border: 1px solid var(--border); transition: border-color 0.8s var(--ease-slow), box-shadow 0.8s var(--ease-slow);
+    }
+    .gallery-img-wrap img {
+      width: 100%; aspect-ratio: 4/3; object-fit: cover;
+      filter: grayscale(40%) contrast(1.1) brightness(0.8);
+      transition: transform 1.5s var(--ease-slow), filter 0.8s var(--ease);
+    }
+    .gallery-item:hover .gallery-img-wrap { border-color: rgba(235, 229, 223, 0.3); box-shadow: 0 15px 40px rgba(0,0,0,0.8); }
+    .gallery-item:hover img { transform: scale(1.03); filter: grayscale(0%) contrast(1.0) brightness(1.0); }
+
+    .gallery-cap { padding-top: 1.2rem; }
+    .gallery-title { font-size: 0.95rem; font-weight: 300; display: block; margin-bottom: 0.3rem; letter-spacing: 0.1em; }
+    .gallery-meta { font-family: var(--font-en); font-size: 0.75rem; color: var(--muted); letter-spacing: 0.15em; }
 
     /* ============================================================
         CHRONOLOGY TIMELINE
     ============================================================ */
-    .chronology-section { 
-      padding: clamp(6rem, 16vh, 12rem) var(--px); background: var(--bg2); 
-      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-      border-top: 0.5px solid var(--border); position: relative; z-index: 1;
-    }
-    .timeline-container { max-width: 1300px; margin: 0 auto; position: relative; }
+    .timeline-section { background: #050505; border-top: 1px solid var(--border); }
+    .timeline-container { position: relative; max-width: 1200px; margin: 0 auto; }
     
-    .timeline-spine-wrapper { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(229,224,216,0.06); transform: translateX(-50%); }
-    .timeline-spine-progress { 
-      position: absolute; top: 0; left: 0; width: 100%; background: var(--scar-line); 
-      height: calc(var(--local-progress, 0) * 100%); 
-      box-shadow: 0 0 15px var(--scar-line); will-change: height;
+    .timeline-spine {
+      position: absolute; top: 0; bottom: 0; left: 50%; width: 1px;
+      background: var(--border); transform: translateX(-50%);
+    }
+    .timeline-spine-progress {
+      position: sticky; top: 0; left: 0; width: 1px; height: 50vh;
+      background: linear-gradient(to bottom, var(--accent), transparent);
     }
 
-    .tl-entry { position: relative; width: 100%; margin-bottom: clamp(10rem, 22vh, 16rem); display: flex; flex-direction: column; opacity: 0; transform: translateY(40px); transition: opacity 1.2s var(--ease), transform 1.2s var(--ease); }
+    .tl-entry {
+      display: flex; justify-content: space-between; align-items: center; gap: 4vw;
+      margin-bottom: clamp(6rem, 15vh, 12rem); position: relative;
+    }
+    .tl-entry:nth-child(even) { flex-direction: row-reverse; }
     .tl-entry:last-child { margin-bottom: 0; }
-    .tl-entry.in-view { opacity: 1; transform: translateY(0); }
 
-    .tl-year-display { font-family: var(--font-en); font-size: clamp(4.5rem, 9vw, 8.5rem); font-weight: 200; color: transparent; -webkit-text-stroke: 0.5px rgba(229,224,216,0.12); letter-spacing: 0.02em; line-height: 1; position: absolute; top: -10%; left: 0; z-index: 0; pointer-events: none; }
-    .tl-entry:nth-child(even) .tl-year-display { left: auto; right: 0; text-align: right; }
-
-    .tl-content-wrap { display: flex; justify-content: space-between; align-items: center; gap: clamp(3rem, 7vw, 7.5rem); position: relative; z-index: 2; margin-top: clamp(2rem, 4vw, 4rem); }
-    .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
-
-    .tl-figure { 
-      width: 54%; position: relative; overflow: hidden; cursor: zoom-in; 
-      background: #000; font-size: 0; line-height: 0; border: 0.5px solid var(--border); height: fit-content;
-      transition: border-color 0.5s var(--ease);
+    .tl-year {
+      position: absolute; top: -10%; left: 0; z-index: 0; pointer-events: none;
+      font-family: var(--font-en); font-size: clamp(4rem, 10vw, 8rem); line-height: 1;
+      color: transparent; -webkit-text-stroke: 1px rgba(235, 229, 223, 0.05);
     }
-    .tl-figure:hover { border-color: rgba(229,224,216,0.4); }
-    .tl-body { width: 41%; position: relative; z-index: 2; padding: 1.5rem 0; }
+    .tl-entry:nth-child(even) .tl-year { left: auto; right: 0; text-align: right; }
 
-    .tl-entry.is-full-figure .tl-content-wrap { flex-direction: column; align-items: center; gap: clamp(3rem, 5vw, 4.5rem); }
-    .tl-entry.is-full-figure .tl-figure { width: 88%; max-width: 1000px; }
-    .tl-entry.is-full-figure .tl-body { width: 80%; max-width: 800px; text-align: center; }
-
-    .tl-figure img { width: 100%; height: auto; display: block; filter: grayscale(35%) brightness(0.8); transition: transform 1.6s var(--ease), filter 1s var(--ease); }
-    .tl-figure:hover img { transform: scale(1.02); filter: grayscale(0%) brightness(1.0); }
-
-    .tl-title { font-family: var(--font-ja); font-size: clamp(1.35rem, 2.5vw, 2rem); font-weight: 300; color: var(--fg); line-height: 1.5; margin-bottom: 1rem; }
-    .tl-meta { font-family: var(--font-en); font-size: clamp(0.7rem, 1.3vw, 0.8rem); color: var(--accent); letter-spacing: 0.15em; margin-bottom: 2rem; padding-bottom: 1.2rem; border-bottom: 0.5px solid var(--border); text-transform: none; }
-    .tl-desc { font-size: clamp(0.88rem, 1.7vw, 1.02rem); line-height: 2.3; color: rgba(229,224,216,0.75); }
-    .tl-desc p { margin-bottom: 1.2em; }
-    .tl-entry.is-full-figure .tl-desc { text-align: left; }
-
-    .tw-char { opacity: 0; display: inline-block; transition: opacity 0.15s var(--ease); }
-    .tw-cursor { display: inline-block; width: 1px; height: 1.2em; background-color: var(--accent); margin-left: 3px; vertical-align: middle; animation: tw-blink 0.9s infinite; }
-    @keyframes tw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-    .fade-out { opacity: 0; transition: opacity 0.6s var(--ease); }
-
-    /* ============================================================
-        CONTACT & FOOTER
-    ============================================================ */
-    .contact-section { 
-      padding: clamp(8rem, 16vh, 12rem) var(--px); text-align: center; border-top: 0.5px solid var(--border); 
-      background: radial-gradient(circle at center, rgba(166,67,55,0.05) 0%, rgba(5,5,5,1) 80%); 
-      position: relative; z-index: 1;
-    }
-    .contact-heading { font-family: var(--font-ja); font-size: clamp(2rem, 4.5vw, 3.2rem); font-weight: 200; line-height: 1.3; color: var(--fg); margin-bottom: 2rem; letter-spacing: 0.08em; }
-    .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.88rem, 1.8vw, 1rem); color: rgba(229,224,216,0.6); margin: 0 auto 3.5rem; max-width: 520px; }
-    .contact-btn { display: inline-block; padding: 1.2rem 4.5rem; background: transparent; color: var(--fg); font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.75rem); letter-spacing: 0.3em; text-transform: uppercase; border: 0.5px solid var(--fg); transition: all 0.5s var(--ease); }
-    .contact-btn:hover { background: var(--fg); color: #000; transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
+    .tl-figure { width: 50%; position: relative; z-index: 2; cursor: zoom-in; }
+    .tl-figure img { border: 1px solid var(--border); transition: transform 0.6s var(--ease), filter 0.6s var(--ease); filter: grayscale(20%); }
+    .tl-figure:hover img { filter: grayscale(0%); border-color: rgba(235, 229, 223, 0.4); }
     
-    footer { padding: clamp(3rem, 6vh, 5rem) var(--px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; border-top: 0.5px solid var(--border); background: #000; position: relative; z-index: 1; }
-    .footer-logo { font-family: var(--font-ja); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: var(--muted); letter-spacing: 0.15em; }
-    .footer-copy { font-family: var(--font-en); font-size: clamp(0.55rem, 1.3vw, 0.65rem); letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase; }
+    .tl-body { width: 40%; position: relative; z-index: 2; }
+    .tl-title { font-size: clamp(1.2rem, 2.5vw, 1.8rem); font-weight: 300; margin-bottom: 0.5rem; }
+    .tl-meta { font-family: var(--font-en); font-size: 0.8rem; color: var(--accent); margin-bottom: 1.5rem; letter-spacing: 0.1em; }
+    .tl-desc { font-size: clamp(0.9rem, 1.5vw, 1rem); color: var(--muted); line-height: 2.2; text-align: justify; }
 
-    /* ============================================================
-        STYLISH MODAL LIGHTBOX (Customized for high aesthetic value)
-    ============================================================ */
-    .image-modal { position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.5s var(--ease), visibility 0.5s; }
-    .image-modal.is-active { opacity: 1; visibility: visible; }
-    .modal-bg { position: absolute; inset: 0; background: rgba(3,3,3,0.98); cursor: zoom-out; }
-    .modal-close { position: fixed; top: clamp(1.5rem, 4vh, 2.5rem); right: calc(var(--px) + var(--scrollbar-width)); z-index: 10001; background: none; border: none; color: var(--muted); cursor: pointer; padding: 0.5rem; transition: color 0.4s var(--ease), transform 0.4s var(--ease); }
-    .modal-close:hover { color: var(--fg); transform: scale(1.1) rotate(90deg); }
-    
-    .modal-content {
-      position: relative; z-index: 10000; max-width: 90vw; width: fit-content; margin: auto;
-      display: flex; flex-direction: column; align-items: center; gap: 1.8rem;
-      opacity: 0; transform: scale(0.97) translateY(15px); transition: opacity 0.5s var(--ease) 0.05s, transform 0.5s var(--ease) 0.05s;
-    }
-    .image-modal.is-active .modal-content { opacity: 1; transform: scale(1) translateY(0); }
-    
-    .modal-img-wrap { width: 100%; display: flex; justify-content: center; background: transparent; }
-    .modal-content img { max-width: 100%; max-height: 76svh; width: auto; height: auto; object-fit: contain; box-shadow: 0 40px 90px rgba(0,0,0,0.95); cursor: zoom-out; border: 0.5px solid rgba(229,224,216,0.1); }
-    
-    /* Elegant Meta Text Grid for Lightbox */
-    .modal-caption { text-align: center; width: 100%; max-width: 700px; padding: 0 1rem; }
-    .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(1.1rem, 2.2vw, 1.4rem); font-weight: 300; color: var(--fg); margin-bottom: 0.6rem; letter-spacing: 0.15em; }
-    .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.85rem, 1.6vw, 1rem); font-style: italic; color: var(--accent); letter-spacing: 0.15em; margin-bottom: 0.6rem; }
-    .modal-caption-details { font-family: var(--font-en); font-size: clamp(0.7rem, 1.4vw, 0.85rem); color: #a39586; letter-spacing: 0.25em; font-weight: 300; display: block; margin-top: 0.5rem; }
+    .tl-entry.is-full { flex-direction: column; align-items: center; text-align: center; gap: 3rem; }
+    .tl-entry.is-full .tl-figure { width: 90%; max-width: 900px; }
+    .tl-entry.is-full .tl-body { width: 100%; max-width: 800px; }
+    .tl-entry.is-full .tl-desc { text-align: center; text-justify: auto; }
 
-    .back-to-top { position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: calc(clamp(15px, 4vw, 50px) + var(--scrollbar-width)); z-index: 9000; width: clamp(55px, 8vw, 70px); height: clamp(55px, 8vw, 70px); border-radius: 50%; background: transparent; border: 0.5px solid rgba(229,224,216,0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--fg); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.5s var(--ease); cursor: pointer; backdrop-filter: blur(8px); }
-    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
-    .back-to-top:hover { background: var(--fg); border-color: var(--fg); color: #000; transform: translateY(-5px); }
-    .back-to-top svg { width: clamp(18px, 2.5vw, 24px); height: clamp(18px, 2.5vw, 24px); margin-bottom: 2px; }
-    .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.5rem, 1.1vw, 0.65rem); text-transform: uppercase; letter-spacing: 0.15em; line-height: 1; }
-
-    /* ============================================================
-        RESPONSIVE SYSTEM 
-    ============================================================ */
-    @media (max-width: 1200px) {
-      .gallery-grid { grid-template-columns: repeat(12, 1fr); gap: 3.5rem 1.8rem; }
-      .gallery-item { grid-column: auto / span 4 !important; margin-top: 0 !important; }
-      .gi-2014-1, .gi-2014-2, .gi-2014-3, .gi-aav-6 { grid-column: 2 / span 10 !important; }
-    }
     @media (max-width: 860px) {
-      .timeline-container { padding-left: 35px; }
-      .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2.5rem; }
-      .tl-figure, .tl-body { width: 100%; padding: 0; }
-      .timeline-spine-wrapper { left: 15px; transform: none; }
-      .tl-year-display { position: relative; top: 0; left: 0 !important; font-size: clamp(3rem, 10vw, 4.5rem); -webkit-text-stroke: 0; color: var(--accent); opacity: 1; margin-bottom: 0.5rem; }
-      .tl-entry.is-full-figure .tl-figure { width: 100%; }
-      .tl-entry.is-full-figure .tl-body { width: 100%; text-align: left; }
+      .timeline-spine { left: 20px; }
+      .tl-entry, .tl-entry:nth-child(even) { flex-direction: column; align-items: flex-start; padding-left: 50px; gap: 2rem; }
+      .tl-figure, .tl-body { width: 100%; }
+      .tl-year { font-size: 4rem; top: -30px; left: 50px !important; -webkit-text-stroke: 0; color: rgba(158, 42, 43, 0.15); }
+      .tl-entry.is-full { padding-left: 50px; align-items: flex-start; text-align: left; }
+      .tl-entry.is-full .tl-desc { text-align: left; }
     }
+
+    /* ============================================================
+        FOOTER & CONTACT
+    ============================================================ */
+    .contact-section { text-align: center; background: radial-gradient(circle at center, rgba(158, 42, 43, 0.1), var(--bg) 60%); }
+    .contact-title { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 200; margin-bottom: 1.5rem; }
+    .contact-text { color: var(--muted); margin-bottom: 3rem; font-size: 1rem; line-height: 2; }
+    
+    footer {
+      padding: 3rem var(--px); border-top: 1px solid var(--border); background: #000;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;
+    }
+    .footer-logo { font-size: 0.9rem; letter-spacing: 0.15em; color: var(--muted); }
+    .footer-copy { font-family: var(--font-en); font-size: 0.7rem; letter-spacing: 0.2em; color: rgba(235,229,223,0.3); }
+
+    /* ============================================================
+        LIGHTBOX MODAL
+    ============================================================ */
+    .modal {
+      position: fixed; inset: 0; z-index: 9999; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; padding: 2rem;
+      opacity: 0; visibility: hidden; transition: all 0.5s var(--ease);
+    }
+    .modal.is-active { opacity: 1; visibility: visible; }
+    .modal-bg { position: absolute; inset: 0; background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(10px); cursor: zoom-out; }
+    
+    .modal-close {
+      position: absolute; top: 2rem; right: 2rem; background: transparent; border: none;
+      color: var(--fg); cursor: pointer; z-index: 10000; padding: 0.5rem;
+      transition: transform 0.4s;
+    }
+    .modal-close:hover { transform: rotate(90deg); color: var(--accent); }
+
+    .modal-content {
+      position: relative; z-index: 10000; max-width: 90vw; max-height: 85vh;
+      display: flex; flex-direction: column; align-items: center; gap: 1.5rem;
+      transform: translateY(20px) scale(0.98); transition: all 0.5s var(--ease) 0.1s;
+    }
+    .modal.is-active .modal-content { transform: translateY(0) scale(1); }
+    
+    .modal-img { max-width: 100%; max-height: 70vh; object-fit: contain; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+    .modal-cap { text-align: center; }
+    .modal-cap-ja { font-size: 1.2rem; font-weight: 300; letter-spacing: 0.1em; margin-bottom: 0.2rem; }
+    .modal-cap-en { font-family: var(--font-en); font-size: 0.9rem; color: var(--accent); font-style: italic; margin-bottom: 0.5rem; }
+    .modal-cap-meta { font-family: var(--font-en); font-size: 0.75rem; color: var(--muted); letter-spacing: 0.15em; }
+
+    /* Responsive adjustments */
     @media (max-width: 768px) {
-      nav#top-nav { padding-left: 1.5rem; padding-right: calc(1.5rem + var(--scrollbar-width)); }
-      .nav-links { display: none !important; }
-      .page-nav.visible { right: calc(10px + var(--scrollbar-width)); opacity: 0.6; }
-      .page-nav-label { display: none; }
-      .hero-eyebrow { transform: translateY(0); opacity: 1; }
-      .hero-title .char { transform: none; opacity: 1; }
-      .hero-title-en { opacity: 1; transform: none; filter: blur(0); }
-      .gallery-item { grid-column: auto / span 6 !important; }
-      .gi-2014-1, .gi-2014-2, .gi-2014-3, .gi-aav-6 { grid-column: 1 / span 12 !important; }
-    }
-    @media (max-width: 500px) {
-      .hero-scroll { display: none; }
-      .statement-para, .tl-desc, .contact-body-text { text-align: left; }
-      .gallery-grid { grid-template-columns: 1fr; gap: 2.5rem 0; }
-      .gallery-item { grid-column: auto / span 1 !important; }
-      .statement-vertical-scar { display: none; }
-      .statement-para.highlight { padding-left: 1.2rem; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
-      .gallery-item, .tl-entry, .concept-text, .statement-para { opacity: 1 !important; transform: none !important; }
-      .hero-bg-image { animation: none !important; clip-path: none !important; }
+      .nav-links { display: none; }
+      .statement-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .statement-label { writing-mode: horizontal-tb; transform: none; text-align: left; }
     }
   </style>
 </head>
-<body id="top">
+<body>
   
-  <div class="global-ambient-bg" aria-hidden="true"></div>
-  <div class="global-scar-line" aria-hidden="true"></div>
-  <div class="global-scar-line-2" aria-hidden="true"></div>
+  <div class="noise-overlay"></div>
 
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
-    <ul class="nav-links" id="nav-links">
-      <li><a href="index.html#statement">Statement</a></li>
-      <li><a href="index.html#works">Works</a></li>
-      <li><a href="index.html#profile">Profile</a></li>
-      <li><a href="index.html#news">News</a></li>
+    <ul class="nav-links">
+      <li><a href="#statement">Statement</a></li>
+      <li><a href="#works">Works</a></li>
+      <li><a href="#chronology">Timeline</a></li>
     </ul>
-    <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
-  </nav>
-
-  <nav class="page-nav" id="pageNav" aria-label="ページ内ナビゲーション">
-    <button class="page-nav-item" data-target="gallery" aria-label="Galleryへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Gallery</span>
-    </button>
-    <button class="page-nav-item" data-target="chronology" aria-label="Timelineへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Timeline</span>
-    </button>
+    <a href="#contact" class="nav-cta">Contact</a>
   </nav>
 
   <main>
-    <section class="hero">
-      <div class="hero-bg-image" id="heroBg" aria-hidden="true"></div>
+    <!-- Cinematic Hero Section -->
+    <section class="hero" id="hero">
       
+      <!-- 1. Background Image & Bleed Layer -->
+      <div class="hero-bg-layer">
+        <div class="hero-bg"></div>
+        <div class="hero-bleed"></div>
+      </div>
+
+      <!-- 2. Slash & Curtain Animation -->
+      <div class="hero-curtain-container">
+        <div class="curtain curtain-top"></div>
+        <div class="curtain curtain-bottom"></div>
+        <div class="slash-line"></div>
+      </div>
+
+      <!-- 3. Text Content Layer -->
       <div class="hero-inner">
-        <p class="hero-eyebrow" id="heroEyebrow">Series — Scars &nbsp;·&nbsp; Oil on Canvas</p>
-        <h1 class="hero-title" id="heroTitle" aria-label="傷">
-          <span class="char">傷</span>
-        </h1>
-        <p class="hero-title-en" id="heroEn">Scars</p>
+        <p class="hero-eyebrow">Series — Scars &nbsp;·&nbsp; Oil on Canvas</p>
+        
+        <div class="hero-title-wrap">
+          <div class="title-part part-bottom">傷</div>
+          <div class="title-part part-top">傷</div>
+          <div class="title-scar"></div>
+        </div>
+        
+        <p class="hero-en">Scars</p>
+      </div>
+
+      <div class="hero-scroll">
+        <div class="scroll-line"></div>
       </div>
       
-      <div class="hero-scroll" id="heroScroll" aria-hidden="true">
-        <div class="hero-scroll-track">
-          <div class="hero-scroll-fill"></div>
+    </section>
+
+    <!-- Concept Section -->
+    <section class="section-spacing">
+      <div class="concept-container fade-up">
+        <h2 class="concept-heading">皮膚は境界であり、<br>世界と衝突した記憶のキャンバスである。</h2>
+        <p class="concept-text">
+          理不尽な暴力、事故、あるいは戦禍。それらによって変容させられた皮膚を描く行為は、やがて人間の表面から大地の表面へと視線を移し、信州・三水の土を焼き、土地の記憶を抉り出す「左美都（さみず）」のモチーフへと至る、決定的な転機となった。
+        </p>
+      </div>
+    </section>
+
+    <!-- Statement Section -->
+    <section class="section-spacing" id="statement" style="padding-top:0;">
+      <div class="statement-grid fade-up">
+        <div class="statement-label">Series Statement</div>
+        <div class="statement-body">
+          <p>
+            「傷 / Scars」シリーズは、紛争、事故、そして酸攻撃（アシッドアタック）の被害者たちの写真を起点に制作された油彩作品群だ。彼らの傷を絵の具でなぞりながら、私は「表面の崩壊と修復」を描いていた。
+          </p>
+          <p>
+            キャンバスの上で物質としての絵の具を盛り上げ、削り取る。その行為は、被害者たちの損なわれた皮膚に触れ、彼らの痛みを三次元的な重さとして再構築する試みだった。写真という平坦な記録では零れ落ちてしまう「傷跡の生々しい感触」を、油彩の層が証言する。
+          </p>
+          <p class="statement-highlight">
+            この「皮膚と傷」という物質的な探求は、やがて私を別の次元へと導くことになった。<br><br>
+            人間の表面に刻まれた傷を見つめ続けるうちに、私の関心は「大地の表面（土）」へと向かっていったのだ。歴史や風土という見えない傷を、泥という物質で形にする。このシリーズで「皮膚の変容」を描き切ったことこそが、後に陶芸を取り入れ、土地の記憶を焼き付ける制作へと至る、最も重要な土壌となったのである。
+          </p>
         </div>
-        <span class="hero-scroll-label">Scroll</span>
       </div>
     </section>
 
-    <section class="concept-section">
-      <h2 class="concept-text js-scroll-track" data-track-type="width">
-        皮膚は境界であり、<br>世界と衝突した記憶のキャンバスである。
-      </h2>
-      <p class="concept-sub reveal-fade">
-        理不尽な暴力、事故、あるいは戦禍。それらによって変容させられた皮膚を描く行為は、やがて人間の表面から大地の表面へと視線を移し、信州・三水の土を焼き、土地の記憶を抉り出す「左美都（さみず）」のモチーフへと至る、決定的な転機となった。
-      </p>
-    </section>
-
-    <section class="statement-section" id="statement">
-      <p class="statement-label">Series Statement</p>
-      <div class="statement-body js-scroll-track" data-track-type="height">
-        <div class="statement-vertical-scar"></div>
-        <p class="statement-para">
-          「傷 / Scars」シリーズは、紛争、事故、そして酸攻撃（アシッドアタック）の被害者たちの写真を起点に制作された油彩作品群だ。彼らの傷を絵の具でなぞりながら、私は「表面の崩壊と修復」を描いていた。
-        </p>
-        <p class="statement-para">
-          キャンバスの上で物質としての絵の具を盛り上げ、削り取る。その行為は、被害者たちの損なわれた皮膚に触れ、彼らの痛みを三次元的な重さとして再構築する試みだった。写真という平坦な記録では零れ落ちてしまう「傷跡の生々しい感触」を、油彩の層が証言する。
-        </p>
-        <p class="statement-para highlight">
-          <strong>この「皮膚と傷」という物質的な探求は、やがて私を別の次元へと導くことになった。</strong><br>
-          人間の表面に刻まれた傷を見つめ続けるうちに、私の関心は「大地の表面（土）」へと向かっていったのだ。歴史や風土という目えない傷を、泥という物質で形にする。このシリーズで「皮膚の変容」を描き切ったことこそが、後に陶芸を取り入れ、土地の記憶を焼き付ける「左美都」の制作へと至る、最も重要な土壌となったのである。
-        </p>
+    <!-- Works Grid Section -->
+    <section class="section-spacing" id="works" style="background: var(--bg-glass);">
+      <div class="works-header fade-up">
+        <h2 class="works-title">傷<span>Scars</span></h2>
       </div>
-    </section>
-
-    <section class="gallery-section" id="gallery">
-      <div class="section-label">Works Index</div>
-
-      <h3 class="gallery-category-title">傷<span>Scars</span></h3>
+      
       <div class="gallery-grid">
-          
-        <a href="#gallery" class="gallery-item gi-2016-1" data-img-src="images/【F6横】ガザ.jpg" data-title-ja="ガザ" data-title-en="Gaza" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】ガザ.jpg" alt="ガザ" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">ガザ</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】ガザ.jpg" data-ja="ガザ" data-en="Gaza" data-meta="2016 / 31.8 × 41.0 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F6横】ガザ.jpg" alt="ガザ" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">ガザ</span><span class="gallery-meta">2016 / F6</span>
           </div>
         </a>
-        <a href="#gallery" class="gallery-item gi-2016-2" data-img-src="images/【F6横】怪我をした少年.jpg" data-title-ja="怪我をした少年" data-title-en="Injured Boy" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】怪我をした少年.jpg" alt="怪我をした少年" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">怪我をした少年</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
+
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】怪我をした少年.jpg" data-ja="怪我をした少年" data-en="Injured Boy" data-meta="2016 / 31.8 × 41.0 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F6横】怪我をした少年.jpg" alt="怪我をした少年" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">怪我をした少年</span><span class="gallery-meta">2016 / F6</span>
           </div>
         </a>
-        <a href="#gallery" class="gallery-item gi-2016-3" data-img-src="images/【F6横】イラクの子ども(2003).jpg" data-title-ja="イラクの子ども (2003)" data-title-en="Children of Iraq (2003)" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】イラクの子ども(2003).jpg" alt="イラクの子ども (2003)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">イラクの子ども (2003)</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
+
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】イラクの子ども(2003).jpg" data-ja="イラクの子ども (2003)" data-en="Children of Iraq" data-meta="2016 / 31.8 × 41.0 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F6横】イラクの子ども(2003).jpg" alt="イラクの子ども" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">イラクの子ども (2003)</span><span class="gallery-meta">2016 / F6</span>
           </div>
         </a>
-        <a href="#gallery" class="gallery-item gi-2016-4" data-img-src="images/【F6横】トルコへ向かうシリア難民の少女.jpg" data-title-ja="トルコへ向かうシリア難民の少女" data-title-en="Syrian Refugee Girl Heading for Turkey" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】トルコへ向かうシリア難民の少女.jpg" alt="トルコへ向かうシリア難民の少女" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">トルコへ向かうシリア難民の少女</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
+
+        <a href="#none" class="gallery-item large-span fade-up js-modal-trigger" data-img="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg" data-ja="視線(2)[ティラナ (アルバニア共和国)]" data-en="Gaze (2) [Tirana]" data-meta="2014 / 130.3 × 162.1 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg" alt="ティラナ" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">視線(2)[ティラナ]</span><span class="gallery-meta">2014 / F100</span>
           </div>
         </a>
-        <a href="#gallery" class="gallery-item gi-2016-5" data-img-src="images/【F6横】シリア難民の少女（2015）.jpg" data-title-ja="シリア難民の少女 (2015)" data-title-en="Syrian Refugee Girl (2015)" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】シリア難民の少女（2015）.jpg" alt="シリア難民の少女 (2015)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">シリア難民の少女 (2015)</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
-          </div>
-        </a>
-        <a href="#gallery" class="gallery-item gi-2016-6" data-img-src="images/【F6横】傷(7).jpg" data-title-ja="傷(7)" data-title-en="Scar (7)" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(7).jpg" alt="傷(7)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷(7)</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
-          </div>
-        </a>
-        <a href="#gallery" class="gallery-item gi-2016-7" data-img-src="images/【F6横】傷(8).jpg" data-title-ja="傷(8)" data-title-en="Scar (8)" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(8).jpg" alt="傷(8)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷(8)</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
-          </div>
-        </a>
-        <a href="#gallery" class="gallery-item gi-2016-8" data-img-src="images/【F6横】傷(11).jpg" data-title-ja="傷(11)" data-title-en="Scar (11)" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(11).jpg" alt="傷(11)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷(11)</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
+
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F20縦】Acid Attac Victim(2).jpg" data-ja="Acid Attack Victim (2)" data-en="Acid Attack Victim (2)" data-meta="2015 / 72.7 × 60.6 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F20縦】Acid Attac Victim(2).jpg" alt="AAV 2" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">Acid Attack Victim (2)</span><span class="gallery-meta">2015 / F20</span>
           </div>
         </a>
         
-        <a href="#work-scars01" class="gallery-item gi-2016-9" data-img-src="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg" data-title-ja="傷(5) (イスラエルの少女)" data-title-en="Scar (5) [Israeli Girl]" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg" alt="傷(5) (イスラエルの少女)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷(5) (イスラエルの少女)</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
-          </div>
-        </a>
-        <a href="#work-scars08-black" class="gallery-item gi-2016-10" data-img-src="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg" data-title-ja="黒人妊婦 [コナーさん]" data-title-en="Pregnant Black Woman [Mrs. Connor]" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg" alt="黒人妊婦 [コナーさん]" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">黒人妊婦 [コナーさん]</span><span class="gallery-item-meta">2016 / 31.8 × 41.0 cm</span>
+        <a href="#none" class="gallery-item fade-up js-modal-trigger" data-img="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg" data-ja="黒人妊婦 [コナーさん]" data-en="Pregnant Black Woman" data-meta="2016 / 31.8 × 41.0 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg" alt="黒人妊婦" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">黒人妊婦 [コナーさん]</span><span class="gallery-meta">2016 / F6</span>
           </div>
         </a>
 
-        <a href="#work-scars04" class="gallery-item gi-2015-1" data-img-src="images/【F6横】傷(4).jpg" data-title-ja="傷(4)" data-title-en="Scar (4)" data-year="2015" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(4).jpg" alt="傷(4)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷(4)</span><span class="gallery-item-meta">2015 / 31.8 × 41.0 cm</span>
-          </div>
-        </a>
-        <a href="#gallery" class="gallery-item gi-2015-2" data-img-src="images/【F6横】傷(6).jpg" data-title-ja="傷(6)" data-title-en="Scar (6)" data-year="2015" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(6).jpg" alt="傷(6)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷(6)</span><span class="gallery-item-meta">2015 / 31.8 × 41.0 cm</span>
-          </div>
-        </a>
-        <a href="#gallery" class="gallery-item gi-2015-3" data-img-src="images/【F6横】傷(9)(シャフィク、Shafiq).jpg" data-title-ja="傷(9) (Shafiq)" data-title-en="Scar (9) [Shafiq]" data-year="2015" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(9)(シャフィク、Shafiq).jpg" alt="傷(9) (Shafiq)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷(9) (Shafiq)</span><span class="gallery-item-meta">2015 / 31.8 × 41.0 cm</span>
-          </div>
-        </a>
-        <a href="#gallery" class="gallery-item gi-2015-4" data-img-src="images/【F6横】傷(10).jpg" data-title-ja="傷(10)" data-title-en="Scar (10)" data-year="2015" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(10).jpg" alt="傷(10)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷(10)</span><span class="gallery-item-meta">2015 / 31.8 × 41.0 cm</span>
-          </div>
-        </a>
-        
-        <a href="#gallery" class="gallery-item gi-2015-5" data-img-src="images/【F6横】傷.jpg" data-title-ja="傷" data-title-en="Scar" data-year="2015" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】傷.jpg" alt="傷" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷</span><span class="gallery-item-meta">2015 / 31.8 × 41.0 cm</span>
-          </div>
-        </a>
-        <a href="#gallery" class="gallery-item gi-2015-6" data-img-src="images/【F6横】傷(2).jpg" data-title-ja="傷(2)" data-title-en="Scar (2)" data-year="2015" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(2).jpg" alt="傷(2)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷(2)</span><span class="gallery-item-meta">2015 / 31.8 × 41.0 cm</span>
-          </div>
-        </a>
-        <a href="#gallery" class="gallery-item gi-2015-7" data-img-src="images/【F6横】傷(3)(Andrew, 23).jpg" data-title-ja="傷(3) (Andrew, 23)" data-title-en="Scar (3) [Andrew, 23]" data-year="2015" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(3)(Andrew, 23).jpg" alt="傷(3) (Andrew, 23)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷(3) (Andrew, 23)</span><span class="gallery-item-meta">2015 / 31.8 × 41.0 cm</span>
-          </div>
-        </a>
-        <a href="#gallery" class="gallery-item gi-2015-8" data-img-src="images/【F6横】傷(4).jpg" data-title-ja="傷(4)" data-title-en="Scar (4)" data-year="2015" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F6横】傷(4).jpg" alt="傷(4)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">傷(4)</span><span class="gallery-item-meta">2015 / 31.8 × 41.0 cm</span>
-          </div>
-        </a>
-
-        <a href="#work-scars-tirana" class="gallery-item gi-2014-1" data-img-src="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg" data-title-ja="視線(2)[ティラナ (アルバニア共和国)]" data-title-en="Gaze (2) [Tirana, Republic of Albania]" data-year="2014" data-size="130.3 × 162.1 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg" alt="視線(2)[ティラナ (アルバニア共和国)]" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">視線(2)[ティラナ (アルバニア共和国)]</span><span class="gallery-item-meta">2014 / 130.3 × 162.1 cm</span>
-          </div>
-        </a>
-        <a href="#work-scars-sakebi" class="gallery-item gi-2014-2" data-img-src="images/【F100横】さけび（ガザ）.jpg" data-title-ja="さけび" data-title-en="Shout" data-year="2014" data-size="130.3 × 162.1 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F100横】さけび（ガザ）.jpg" alt="さけび" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">さけび</span><span class="gallery-item-meta">2014 / 130.3 × 162.1 cm</span>
-          </div>
-        </a>
-        <a href="#gallery" class="gallery-item gi-2014-3" data-img-src="images/【M60横】視線（イラク）.jpg" data-title-ja="視線（イラク）" data-title-en="Gaze [Iraq]" data-year="2014" data-size="80.3 × 130.3 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【M60横】視線（イラク）.jpg" alt="視線（イラク）" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">視線（イラク）</span><span class="gallery-item-meta">2014 / 80.3 × 130.3 cm</span>
-          </div>
-        </a>
-
-      </div>
-
-      <h3 class="gallery-category-title" style="margin-top: 8rem;">AAV<span>Acid Attack Victim</span></h3>
-      <div class="gallery-grid">
-          
-        <a href="#gallery" class="gallery-item gi-aav-1" data-img-src="images/【F20縦】Acid Attac Victim(2).jpg" data-title-ja="Acid Attack Victim (2)" data-title-en="Acid Attack Victim (2)" data-year="2015" data-size="72.7 × 60.6 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F20縦】Acid Attac Victim(2).jpg" alt="Acid Attack Victim (2)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">Acid Attack Victim (2)</span><span class="gallery-item-meta">2015 / 72.7 × 60.6 cm</span>
-          </div>
-        </a>
-        
-        <a href="#gallery" class="gallery-item gi-aav-2" data-img-src="images/【F20縦】Acid Attac Victim(3).jpg" data-title-ja="Acid Attack Victim (3)" data-title-en="Acid Attack Victim (3)" data-year="2015" data-size="72.7 × 60.6 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F20縦】Acid Attac Victim(3).jpg" alt="Acid Attack Victim (3)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">Acid Attack Victim (3)</span><span class="gallery-item-meta">2015 / 72.7 × 60.6 cm</span>
-          </div>
-        </a>
-
-        <a href="#gallery" class="gallery-item gi-aav-3" data-img-src="images/【F20縦】Acid Attac Victim(4).jpg" data-title-ja="Acid Attack Victim (4)" data-title-en="Acid Attack Victim (4)" data-year="2015" data-size="72.7 × 60.6 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F20縦】Acid Attac Victim(4).jpg" alt="Acid Attack Victim (4)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">Acid Attack Victim (4)</span><span class="gallery-item-meta">2015 / 72.7 × 60.6 cm</span>
-          </div>
-        </a>
-        
-        <a href="#gallery" class="gallery-item gi-aav-4" data-img-src="images/【F20縦】Acid Attac Victim(5).jpg" data-title-ja="Acid Attack Victim (5)" data-title-en="Acid Attack Victim (5)" data-year="2015" data-size="72.7 × 60.6 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F20縦】Acid Attac Victim(5).jpg" alt="Acid Attack Victim (5)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">Acid Attack Victim (5)</span><span class="gallery-item-meta">2015 / 72.7 × 60.6 cm</span>
-          </div>
-        </a>
-
-        <a href="#gallery" class="gallery-item gi-aav-5" data-img-src="images/【F20縦】Acid Attac Victim(6).jpg" data-title-ja="Acid Attack Victim (6)" data-title-en="Acid Attack Victim (6)" data-year="2015" data-size="72.7 × 60.6 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F20縦】Acid Attac Victim(6).jpg" alt="Acid Attack Victim (6)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">Acid Attack Victim (6)</span><span class="gallery-item-meta">2015 / 72.7 × 60.6 cm</span>
-          </div>
-        </a>
-
-        <a href="#work-aav-sonali" class="gallery-item gi-aav-6" data-img-src="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg" data-title-ja="Acid Attack Victim [Sonali Mukherjee]" data-title-en="Acid Attack Victim [Sonali Mukherjee]" data-year="2015" data-size="130.3 × 162.1 cm" data-material="Oil on canvas">
-          <div class="gallery-item-img-wrap"><img src="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg" alt="Acid Attack Victim [Sonali Mukherjee]" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">Acid Attack Victim [Sonali Mukherjee]</span><span class="gallery-item-meta">2015 / 130.3 × 162.1 cm</span>
+        <a href="#none" class="gallery-item large-span fade-up js-modal-trigger" data-img="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg" data-ja="Acid Attack Victim [Sonali Mukherjee]" data-en="Acid Attack Victim [Sonali Mukherjee]" data-meta="2015 / 130.3 × 162.1 cm / Oil on canvas">
+          <div class="gallery-img-wrap"><img src="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg" alt="Sonali Mukherjee" loading="lazy"></div>
+          <div class="gallery-cap">
+            <span class="gallery-title">Acid Attack Victim [Sonali Mukherjee]</span><span class="gallery-meta">2015 / F100</span>
           </div>
         </a>
       </div>
     </section>
 
-    <section class="chronology-section" id="chronology">
-      <div class="timeline-container js-scroll-track" data-track-type="height">
-        <div class="timeline-spine-wrapper">
+    <!-- Chronology Timeline -->
+    <section class="section-spacing timeline-section" id="chronology">
+      <div class="works-header fade-up">
+        <h2 class="works-title">Chronology<span>Timeline</span></h2>
+      </div>
+
+      <div class="timeline-container">
+        <div class="timeline-spine">
           <div class="timeline-spine-progress"></div>
         </div>
 
-        <article class="tl-entry" id="work-scars01">
-          <div class="tl-year-display">2016</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg" data-title-ja="傷(5) (イスラエルの少女)" data-title-en="Scar (5) [Israeli Girl]" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-              <img src="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg" alt="傷(5) (イスラエルの少女)" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">傷(5) (イスラエルの少女)</h3>
-              <p class="tl-meta">31.8 × 41.0 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>顔を覆うように引かれた不鮮明なストロークは、物理的な傷跡であると同時に、記憶のブレ、あるいは存在の揺らぎそのものを表している。</p>
-                <p>油彩特有の粘り気のある筆致は、少女の表情を不確かなものにしながらも、そこに確かな「皮膚の重さ」を残している。</p>
-              </div>
-            </div>
+        <article class="tl-entry fade-up">
+          <div class="tl-year">2016</div>
+          <div class="tl-figure js-modal-trigger" data-img="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg" data-ja="傷(5) (イスラエルの少女)" data-en="Scar (5) [Israeli Girl]" data-meta="2016 / 31.8 × 41.0 cm / Oil on canvas">
+            <img src="images/【F6横】傷(5)(イスラエルの少女、2008年).jpg" alt="傷(5)" loading="lazy">
           </div>
-        </article>
-        
-        <article class="tl-entry" id="work-scars08-black">
-          <div class="tl-year-display">2016</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg" data-title-ja="黒人妊婦 [コナーさん]" data-title-en="Pregnant Black Woman [Mrs. Connor]" data-year="2016" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-              <img src="images/【F6横】黒人妊婦[コナーさん][2014.11.jpg" alt="黒人妊婦 [コナーさん]" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">黒人妊婦 [コナーさん]</h3>
-              <p class="tl-meta">31.8 × 41.0 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>顔の半面を覆うように施された処置と、そこから覗く生々しい皮膚の質感。生命を宿す身体と、外側から加えられた傷という二つの相反するベクトルが一つの画面に同居している。</p>
-                <p>白と黒の対比の中に、痛みの記憶が静かに塗り込められている。</p>
-              </div>
+          <div class="tl-body">
+            <h3 class="tl-title">傷(5) (イスラエルの少女)</h3>
+            <p class="tl-meta">31.8 × 41.0 cm / Oil on canvas</p>
+            <div class="tl-desc">
+              <p>顔を覆うように引かれた不鮮明なストロークは、物理的な傷跡であると同時に、記憶のブレ、あるいは存在の揺らぎそのものを表している。</p>
+              <p>油彩特有の粘り気のある筆致は、少女の表情を不確かなものにしながらも、そこに確かな「皮膚の重さ」を残している。</p>
             </div>
           </div>
         </article>
 
-        <article class="tl-entry is-full-figure" id="work-aav-sonali">
-          <div class="tl-year-display">2015</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg" data-title-ja="Acid Attack Victim [Sonali Mukherjee]" data-title-en="Acid Attack Victim [Sonali Mukherjee]" data-year="2015" data-size="130.3 × 162.1 cm" data-material="Oil on canvas">
-              <img src="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg" alt="Acid Attack Victim [Sonali Mukherjee]" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">Acid Attack Victim [Sonali Mukherjee]</h3>
-              <p class="tl-meta">130.3 × 162.1 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>ソナリ・ムカジーさんを描いた大作。酸によって視力を奪われ、顔の構造を激しく変容させられた彼女の姿を、容赦のないスケールで描き出した。</p>
-                <p>しかし、ここで描かれているのは単なる「被害の凄惨さ」ではない。布を掴む手の骨格、わずかに開かれた口元。崩壊した表面の奥から発せられる圧倒的な「生」への執着だ。この極限の物質としての「顔」を描き切った体験は、私の関心を人間の皮膚から、世界の皮膚たる「土」へと深く沈潜させることになった。</p>
-              </div>
+        <article class="tl-entry is-full fade-up">
+          <div class="tl-year">2015</div>
+          <div class="tl-figure js-modal-trigger" data-img="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg" data-ja="Acid Attack Victim [Sonali Mukherjee]" data-en="Acid Attack Victim [Sonali Mukherjee]" data-meta="2015 / 130.3 × 162.1 cm / Oil on canvas">
+            <img src="images/【F100横】Acid Attac Victim [ソナリ・ムカジー(Sonali Mukherjee)さん].jpg" alt="Sonali" loading="lazy">
+          </div>
+          <div class="tl-body">
+            <h3 class="tl-title">Acid Attack Victim [Sonali Mukherjee]</h3>
+            <p class="tl-meta">130.3 × 162.1 cm / Oil on canvas</p>
+            <div class="tl-desc">
+              <p>ソナリ・ムカジーさんを描いた大作。酸によって視力を奪われ、顔の構造を激しく変容させられた彼女の姿を、容赦のないスケールで描き出した。</p>
+              <p>しかし、ここで描かれているのは単なる「被害の凄惨さ」ではない。布を掴む手の骨格、わずかに開かれた口元。崩壊した表面の奥から発せられる圧倒的な「生」への執着だ。この極限の物質としての「顔」を描き切った体験は、私の関心を人間の皮膚から、世界の皮膚たる「土」へと深く沈潜させることになった。</p>
             </div>
           </div>
         </article>
-
-        <article class="tl-entry" id="work-scars04">
-          <div class="tl-year-display">2015</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F6横】傷(4).jpg" data-title-ja="傷(4)" data-title-en="Scar (4)" data-year="2015" data-size="31.8 × 41.0 cm" data-material="Oil on canvas">
-              <img src="images/【F6横】傷(4).jpg" alt="傷(4)" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">傷(4)</h3>
-              <p class="tl-meta">31.8 × 41.0 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>視線は霞み、背景と皮膚の境界は溶け合っている。私たちが「傷」と呼ぶものは何か。それは外部からの力が介入した痕跡だ。</p>
-                <p>キャンバスに顔料を擦り付ける行為自体が、画面に対する一つの「傷」をつける行為に他ならない。油彩によるこの物質的な格闘は、やがて窯の中で火炎が土に傷をつけ、景色を生み出す陶芸の表現へと必然的に結びついていった。</p>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="tl-entry is-full-figure" id="work-scars-tirana">
-          <div class="tl-year-display">2014</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg" data-title-ja="視線(2)[ティラナ (アルバニア共和国)]" data-title-en="Gaze (2) [Tirana, Republic of Albania]" data-year="2014" data-size="130.3 × 162.1 cm" data-material="Oil on canvas">
-              <img src="images/【F100横】ティラナ［Mar 16, 2008］、ティラナ[アルバニア共和国、2008年]※弾薬庫の爆発で怪我をした少女.jpg" alt="視線(2)[ティラナ (アルバニア共和国)]" loading="lazy">
-             </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">視線(2)[ティラナ (アルバニア共和国)]</h3>
-              <p class="tl-meta">130.3 × 162.1 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>弾薬庫の爆発事故により顔に傷を負った少女。長辺162.1cmという巨大なキャンバスに描かれた横顔は、個人の悲劇を超え、静謐なモニュメントのような強度を持つ。</p>
-                <p>絆創膏の白と、滲むような赤。傷を描きながらも、その奥にある生命の尊厳を浮かび上がらせる。この「表面への痛みの刻印」への眼差しが、のちの大地（土）へのアプローチへと繋がっていく。</p>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="tl-entry is-full-figure" id="work-scars-sakebi">
-          <div class="tl-year-display">2014</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F100横】さけび（ガザ）.jpg" data-title-ja="さけび" data-title-en="Shout" data-year="2014" data-size="130.3 × 162.1 cm" data-material="Oil on canvas">
-              <img src="images/【F100横】さけび（ガザ）.jpg" alt="さけび" loading="lazy">
-             </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">さけび</h3>
-              <p class="tl-meta">130.3 × 162.1 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>2014年に制作された「さけび」。傷シリーズへと本格的に移行する直前の、内面的な葛藤や他者との境界線の揺らぎを油彩の激しいストロークで捉えようとした重要なマイルストーン。</p>
-              </div>
-            </div>
-          </div>
-        </article>
-
+      </div>
+    </section>
+    
+    <section class="section-spacing contact-section" id="contact">
+      <div class="fade-up">
+        <h2 class="contact-title">お問い合わせ</h2>
+        <p class="contact-text">展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。</p>
+        <a href="contact.html" class="nav-cta">問い合わせフォームへ</a>
       </div>
     </section>
   </main>
-
-  <section class="contact-section" id="contact">
-    <p class="section-label" style="text-align: center; margin-bottom: 1.5rem; letter-spacing: 0.3em; color: var(--accent);">Contact</p>
-    <h2 class="contact-heading">お問い合わせ</h2>
-    <p class="contact-body-text">
-      展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。
-    </p>
-    <a href="contact.html" class="contact-btn">
-      問い合わせフォームへ
-    </a>
-  </section>
 
   <footer>
     <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
-  <a href="#gallery" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M18 15l-6-6-6 6"/>
-    </svg>
-    <span class="back-to-top-text">TOP</span>
-  </a>
-
-  <div class="image-modal" id="imageModal" aria-hidden="true" role="dialog">
+  <!-- Lightbox Modal -->
+  <div class="modal" id="imageModal" aria-hidden="true" role="dialog">
     <div class="modal-bg" id="modalBg"></div>
     <button class="modal-close" id="modalClose" aria-label="閉じる">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
         <line x1="4" y1="4" x2="20" y2="20"/>
         <line x1="20" y1="4" x2="4" y2="20"/>
       </svg>
     </button>
     <div class="modal-content">
-      <div class="modal-img-wrap">
-        <img src="" alt="拡大画像" id="modalImg">
-      </div>
-      <div class="modal-caption">
-        <h4 class="modal-caption-jp" id="modalTitleJp"></h4>
-        <p class="modal-caption-en" id="modalTitleEn"></p>
-        <p class="modal-caption-details" id="modalMeta"></p>
+      <img src="" alt="" class="modal-img" id="modalImg">
+      <div class="modal-cap">
+        <h4 class="modal-cap-ja" id="modalJa"></h4>
+        <p class="modal-cap-en" id="modalEn"></p>
+        <p class="modal-cap-meta" id="modalMetaInfo"></p>
       </div>
     </div>
   </div>
 
   <script>
-    /* ── ファーストビュー アニメーション ── */
-    window.addEventListener('load', () => {
-      setTimeout(() => document.getElementById('heroBg')?.classList.add('revealed'), 100);
-      setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 700);
-      setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'), 1100);
-      setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'), 1700);
-      setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 2400);
-    });
-
-    /* ── Intersection Observer for Fade-in Core ── */
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('in-view');
-        io.unobserve(entry.target);
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-    
-    document.querySelectorAll('.gallery-item, .tl-entry, .statement-label, .statement-para, .reveal-fade, .gallery-category-title').forEach(el => io.observe(el));
-
-    /* ── Typewriter Logic ── */
-    function prepareTypewriterDOM(el) {
-      if (el.dataset.twPrepared === "true") return;
-      const txt = el.textContent.trim();
-      el.textContent = '';
-      for (let i = 0; i < txt.length; i++) {
-        const span = document.createElement('span');
-        span.className = 'tw-char';
-        span.textContent = txt[i];
-        el.appendChild(span);
-      }
-      const cursor = document.createElement('span');
-      cursor.className = 'tw-cursor';
-      el.appendChild(cursor);
-      el.dataset.twPrepared = "true";
-    }
-    function runTypewriter(el) {
-      if (el.dataset.twDone === "true") return;
-      const chars = el.querySelectorAll('.tw-char');
-      const cursor = el.querySelector('.tw-cursor');
-      let idx = 0;
-      function nextChar() {
-        if (idx < chars.length) {
-          chars[idx].style.opacity = '1';
-          idx++;
-          setTimeout(() => requestAnimationFrame(nextChar), 35);
-        } else {
-          el.dataset.twDone = "true";
-          if (cursor) {
-            cursor.classList.add('fade-out');
-            setTimeout(() => cursor.remove(), 600);
-          }
-        }
-      }
-      requestAnimationFrame(nextChar);
-    }
-    document.querySelectorAll('[data-typewriter="true"]').forEach(el => {
-      prepareTypewriterDOM(el);
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            obs.unobserve(el);
-            setTimeout(() => requestAnimationFrame(() => runTypewriter(el)), 300);
-          }
-        });
-      }, { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
-      obs.observe(el);
-    });
-
-    /* ── Scroll Tracking Structure ── */
-    const topNav = document.getElementById('top-nav');
-    const pageNav = document.getElementById('pageNav');
-    const navItems = document.querySelectorAll('.page-nav-item');
-    const sections = ['gallery', 'chronology'].map(id => document.getElementById(id));
-    const trackEls = document.querySelectorAll('.js-scroll-track');
-    let ticking = false;
-
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const scrollY = window.scrollY;
-          const viewH = window.innerHeight;
-
-          if (scrollY > 60) topNav.classList.add('scrolled');
-          else topNav.classList.remove('scrolled');
-
-          const checkY = scrollY + viewH * 0.4;
-          let activeSec = null;
-          sections.forEach(sec => {
-            if (sec && sec.offsetTop <= checkY) activeSec = sec;
-          });
-          navItems.forEach(item => {
-            const target = document.getElementById(item.getAttribute('data-target'));
-            item.classList.toggle('active', target === activeSec);
-          });
-          if (pageNav) {
-            pageNav.classList.toggle('visible', scrollY > viewH * 0.7);
-          }
-
-          trackEls.forEach(el => {
-            const rect = el.getBoundingClientRect();
-            let localProg = (viewH - rect.top) / (viewH + rect.height);
-            localProg = Math.max(0, Math.min(1, localProg));
-            el.style.setProperty('--local-progress', localProg);
-          });
-
-          const b2t = document.getElementById('backToTop');
-          if (scrollY > 600) b2t.classList.add('is-visible');
-          else b2t.classList.remove('is-visible');
-
-          ticking = false;
-        });
-        ticking = true;
-      }
-    }, { passive: true });
-
-    navItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const target = document.getElementById(item.getAttribute('data-target'));
-        if (target) {
-          const offset = topNav?.offsetHeight || 0;
-          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
-        }
-      });
-    });
-
-    document.getElementById('backToTop').addEventListener('click', (e) => {
-      e.preventDefault();
-      const target = document.getElementById('gallery');
-      if (target && window.innerWidth > 768) {
-        const offset = topNav?.offsetHeight || 80;
-        window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    });
-
-    /* ── High-Aesthetic Lightbox Engine with Meta Distribution ── */
-    const modal        = document.getElementById('imageModal');
-    const modalImg     = document.getElementById('modalImg');
-    const modalBg      = document.getElementById('modalBg');
-    const modalClose   = document.getElementById('modalClose');
-    const titleJpEl    = document.getElementById('modalTitleJp');
-    const titleEnEl    = document.getElementById('modalTitleEn');
-    const modalMeta    = document.getElementById('modalMeta');
-
-    const lockBody = () => {
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`);
-      document.body.classList.add('is-locked');
-    };
-
-    const unlockBody = () => {
-      document.body.classList.remove('is-locked');
-      document.documentElement.style.setProperty('--scrollbar-width', '0px');
-    };
-
-    const openModal = (data) => {
-      modalImg.src = data.src;
-      titleJpEl.textContent = data.jp || '';
+    document.addEventListener("DOMContentLoaded", () => {
       
-      if (data.en) {
-        titleEnEl.textContent = data.en;
-        titleEnEl.style.display = 'block';
-      } else {
-        titleEnEl.textContent = '';
-        titleEnEl.style.display = 'none';
-      }
-
-      // 年、サイズ、マテリアルを「/」区切りで美しく結合
-      const metaArray = [data.year, data.size, data.material].filter(Boolean);
-      modalMeta.textContent = metaArray.join(' / ');
-      
-      modal.classList.add('is-active');
-      modal.setAttribute('aria-hidden', 'false');
-      lockBody();
-    };
-
-    const closeModal = () => {
-      modal.classList.remove('is-active');
-      modal.setAttribute('aria-hidden', 'true');
-      unlockBody();
+      /* ── 1. Cinematic Hero Reveal ── */
+      // ロード直後に発火し、緻密に組まれたCSSアニメーションをトリガー
       setTimeout(() => {
-        modalImg.src = '';
-        titleJpEl.textContent = '';
-        titleEnEl.textContent = '';
-        modalMeta.textContent = '';
-        titleEnEl.style.display = 'block';
-      }, 500);
-    };
+        document.getElementById('hero').classList.add('is-animating');
+        document.body.classList.add('is-loaded');
+      }, 100);
 
-    // ギャラリーアイテムのクリック制御 (年譜移動 または その場モーダル展開仕様)
-    document.querySelectorAll('.gallery-item').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        const href = btn.getAttribute('href');
-        const targetId = href ? href.replace('#', '') : '';
-        const targetEl = document.getElementById(targetId);
+      /* ── 2. Scroll Interactions & Navigation ── */
+      const topNav = document.getElementById('top-nav');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) topNav.classList.add('scrolled');
+        else topNav.classList.remove('scrolled');
+      }, { passive: true });
 
-        // 下の年譜（タイムライン）に対応する構造がある場合はスムーズスクロール
-        if (targetEl && targetEl.classList.contains('tl-entry')) {
-          const offset = topNav?.offsetHeight || 80;
-          window.scrollTo({
-            top: targetEl.getBoundingClientRect().top + window.scrollY - offset - 30,
-            behavior: 'smooth'
-          });
-        } else {
-          // 上のグリッドのみに存在する作品は、その場でスタイリッシュなモーダルを展開
-          const metaData = {
-            src: btn.getAttribute('data-img-src'),
-            jp: btn.getAttribute('data-title-ja'),
-            en: btn.getAttribute('data-title-en'),
-            year: btn.getAttribute('data-year'),
-            size: btn.getAttribute('data-size'),
-            material: btn.getAttribute('data-material')
-          };
-          openModal(metaData);
-        }
+      /* ── 3. Intersection Observer (Fade Up) ── */
+      const fadeElements = document.querySelectorAll('.fade-up');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+      fadeElements.forEach(el => observer.observe(el));
+
+      /* ── 4. Lightbox Modal Logic ── */
+      const modal = document.getElementById('imageModal');
+      const modalImg = document.getElementById('modalImg');
+      const modalJa = document.getElementById('modalJa');
+      const modalEn = document.getElementById('modalEn');
+      const modalMeta = document.getElementById('modalMetaInfo');
+      const triggers = document.querySelectorAll('.js-modal-trigger');
+
+      const lockScroll = () => {
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`);
+        document.body.classList.add('is-locked');
+      };
+      const unlockScroll = () => {
+        document.body.classList.remove('is-locked');
+        document.documentElement.style.setProperty('--scrollbar-width', '0px');
+      };
+
+      const openModal = (img, ja, en, meta) => {
+        modalImg.src = img;
+        modalJa.textContent = ja;
+        modalEn.textContent = en;
+        modalMeta.textContent = meta;
+        modal.classList.add('is-active');
+        modal.setAttribute('aria-hidden', 'false');
+        lockScroll();
+      };
+
+      const closeModal = () => {
+        modal.classList.remove('is-active');
+        modal.setAttribute('aria-hidden', 'true');
+        unlockScroll();
+        setTimeout(() => { modalImg.src = ''; }, 500);
+      };
+
+      triggers.forEach(trigger => {
+        trigger.addEventListener('click', (e) => {
+          e.preventDefault();
+          const img = trigger.getAttribute('data-img');
+          const ja = trigger.getAttribute('data-ja');
+          const en = trigger.getAttribute('data-en');
+          const meta = trigger.getAttribute('data-meta');
+          openModal(img, ja, en, meta);
+        });
       });
-    });
 
-    // 年譜（Timeline）内の画像クリック時も同様の高品質モーダルをトリガー
-    document.querySelectorAll('.tl-figure.js-modal-open').forEach(fig => {
-      fig.addEventListener('click', () => {
-        const metaData = {
-          src: fig.getAttribute('data-img-src'),
-          jp: fig.getAttribute('data-title-ja'),
-          en: fig.getAttribute('data-title-en'),
-          year: fig.getAttribute('data-year'),
-          size: fig.getAttribute('data-size'),
-          material: fig.getAttribute('data-material')
-        };
-        openModal(metaData);
+      document.getElementById('modalBg').addEventListener('click', closeModal);
+      document.getElementById('modalClose').addEventListener('click', closeModal);
+      document.getElementById('modalImg').addEventListener('click', closeModal);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('is-active')) closeModal();
       });
-    });
 
-    modalBg.addEventListener('click', closeModal);
-    modalClose.addEventListener('click', closeModal);
-    modalImg.addEventListener('click', closeModal);
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('is-active')) closeModal(); });
+    });
   </script>
 </body>
 </html>
