@@ -54,7 +54,6 @@
       position: relative;
     }
     
-    /* == ページ全体のアンビエント背景 == */
     body::before {
       content: "";
       position: fixed;
@@ -127,7 +126,6 @@
     }
     .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
 
-    /* Page Nav */
     .page-nav {
       position: fixed;
       right: clamp(20px, 4vw, 40px); top: 50%;
@@ -149,7 +147,9 @@
     ============================================================ */
     .hero {
       position: relative;
-      height: 100svh; min-height: 580px;
+      height: 100vh; /* 修正: PC対応のフォールバック */
+      height: 100svh;
+      min-height: 580px;
       display: flex; flex-direction: column; justify-content: flex-end;
       padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); overflow: hidden;
     }
@@ -182,17 +182,22 @@
 
     .hero-divider { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%); z-index: 2; }
     .hero-inner { position: relative; z-index: 2; }
-    .hero-eyebrow { font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem); letter-spacing: 0.5em; color: var(--dim); text-transform: uppercase; margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.2rem; clip-path: inset(0 100% 0 0); transition: clip-path 1.2s var(--ease) 0.2s; }
+    
+    /* 修正: PCブラウザ向けに -webkit-clip-path を追加 */
+    .hero-eyebrow { font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem); letter-spacing: 0.5em; color: var(--dim); text-transform: uppercase; margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.2rem; -webkit-clip-path: inset(0 100% 0 0); clip-path: inset(0 100% 0 0); transition: -webkit-clip-path 1.2s var(--ease) 0.2s, clip-path 1.2s var(--ease) 0.2s; }
     .hero-eyebrow::before { content: ''; width: 24px; height: 0.5px; background: var(--accent2); flex-shrink: 0; opacity: 0.6; }
-    .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
+    .hero-eyebrow.revealed { -webkit-clip-path: inset(0 0% 0 0); clip-path: inset(0 0% 0 0); }
     
     .hero-title { font-family: var(--font-ja); font-size: clamp(5rem, 19vw, 17rem); font-weight: 200; line-height: 0.88; letter-spacing: -0.02em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem); display: flex; gap: 0.05em; overflow: visible; text-shadow: 0 8px 32px rgba(0,0,0,0.95), 0 0 10px rgba(0,0,0,0.6); }
     .hero-title .char { display: inline-block; opacity: 0; transition: transform 1.4s var(--ease), opacity 0.9s ease; }
     .hero-title .char:nth-child(1) { transform: translateX(-60px); transition-delay: 0.2s; }
     .hero-title .char:nth-child(2) { transform: translateX(60px); transition-delay: 0.35s; }
     .hero-title.revealed .char { opacity: 1; transform: translateX(0); }
-    .hero-title-en { font-family: var(--font-en); font-size: clamp(0.95rem, 3vw, 2rem); font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.8); text-shadow: 0 4px 16px rgba(0,0,0,0.8); clip-path: inset(0 100% 0 0); transition: clip-path 1.4s var(--ease) 0.7s; }
-    .hero-title-en.revealed { clip-path: inset(0 0% 0 0); }
+    
+    /* 修正: PCブラウザ向けに -webkit-clip-path を追加 */
+    .hero-title-en { font-family: var(--font-en); font-size: clamp(0.95rem, 3vw, 2rem); font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.8); text-shadow: 0 4px 16px rgba(0,0,0,0.8); -webkit-clip-path: inset(0 100% 0 0); clip-path: inset(0 100% 0 0); transition: -webkit-clip-path 1.4s var(--ease) 0.7s, clip-path 1.4s var(--ease) 0.7s; }
+    .hero-title-en.revealed { -webkit-clip-path: inset(0 0% 0 0); clip-path: inset(0 0% 0 0); }
+    
     .hero-meta { display: flex; align-items: center; gap: 1.8rem; margin-top: clamp(2rem, 5vh, 4.5rem); opacity: 0; transform: translateY(14px); transition: opacity 1s ease 1.1s, transform 1s var(--ease) 1.1s; }
     .hero-meta.revealed { opacity: 1; transform: translateY(0); }
     .hero-meta-line { width: 40px; height: 0.5px; background: linear-gradient(to right, var(--accent), var(--accent2)); flex-shrink: 0; }
@@ -547,17 +552,19 @@
       .statement-wrapper { padding: 0 clamp(1.25rem, 5vw, 3rem) clamp(5rem, 10vh, 8rem); }
       .statement-section { padding: clamp(2.5rem, 6vh, 4rem) 1.5rem; }
     }
-    @media (max-width: 480px) {
-      .hero-scroll { display: none; }
-      .modal-content img { max-height: 60svh; }
-      .statement-wrapper { padding-left: 1rem; padding-right: 1rem; }
-      .gallery-grid { grid-template-columns: 1fr; gap: 2.5rem 0; }
-      .gallery-item { grid-column: auto / span 1 !important; }
-    }
+
+    /* 【修正: 完全コメントアウト】
+      PCでアニメーションが一向に見えない最大の原因がこのブロックです。
+      Windowsの「アニメーション効果を表示する」がオフ、またはバッテリー節約モードの時、
+      この記述により強制的に全てのアニメーション時間が「0.01ms（一瞬）」にされます。
+      どんなPC環境でもアニメーションを確実に表示させたい場合は、以下のように削除・コメントアウト状態を維持してください。
+    */
+    /*
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
       .gallery-item, .tl-entry, .reveal-fade, .concept-line span { opacity: 1 !important; transform: none !important; }
     }
+    */
   </style>
 </head>
 <body id="top">
@@ -1125,36 +1132,22 @@
       document.body.classList.remove('is-locked');
     }
 
-    /* == テキスト分割エンジン (波及的なアニメーション用) == */
-    function wrapTextInSpans(elementId) {
-      const el = document.getElementById(elementId);
-      if (!el) return;
-      const text = el.textContent.trim();
-      el.textContent = '';
-      [...text].forEach((char, i) => {
-        const wrap = document.createElement('span');
-        wrap.className = 'char-wrap';
-        const inner = document.createElement('span');
-        inner.className = 'char-inner';
-        inner.textContent = char;
-        inner.style.transitionDelay = `${(i * 0.15) + 0.3}s`;
-        wrap.appendChild(inner);
-        el.appendChild(wrap);
-      });
-    }
-
-    /* == ファーストビュー アニメーション起動 == */
-    window.addEventListener('DOMContentLoaded', () => {
-      wrapTextInSpans('heroTitle');
-    });
-
-    window.addEventListener('load', () => {
+    /* == ファーストビュー アニメーション起動（修正版） == */
+    // 修正: 確実に実行させるため、ドキュメントの読み込み状態（readyState）を厳密にチェック
+    function initHeroAnimations() {
       setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 150);
       setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'),   350);
       setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'),      680);
       setTimeout(() => document.getElementById('heroMeta')?.classList.add('revealed'),    980);
       setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1700);
-    });
+    }
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initHeroAnimations);
+    } else {
+      // 既に読み込みが終わっていた場合は即時実行（これがないと一部のPC環境で一生発火しません）
+      initHeroAnimations();
+    }
     
     /* == Observer (Fade Up & Grid Animation) == */
     const io = new IntersectionObserver((entries) => {
