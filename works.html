@@ -160,7 +160,7 @@
     }
 
     /* ════════════════════════════════════════
-       ★ SIDE LINK NAVIGATION (元デザイン復活・被り対策版)
+       ★ SIDE LINK NAVIGATION
     ════════════════════════════════════════ */
     .side-link-nav {
       position: fixed;
@@ -171,19 +171,16 @@
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      /* 縦幅が狭い時は自動的にgapを縮小 */
       gap: clamp(4px, 1.2vh, 10px);
-      /* ヘッダーとTOPボタンの領域（約200px）を絶対に侵さない */
       max-height: calc(100vh - 200px);
       padding: 10px 4px 10px 10px;
       overflow-y: auto;
       overflow-x: hidden;
-      /* スクロールバーを見せないスマートな仕様 */
-      -ms-overflow-style: none; /* IE/Edge */
-      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; 
+      scrollbar-width: none; 
     }
     .side-link-nav::-webkit-scrollbar {
-      display: none; /* Chrome/Safari */
+      display: none; 
     }
 
     .side-link-nav a {
@@ -197,7 +194,6 @@
       color: rgba(237,233,228, 0.65);
       text-decoration: none;
       letter-spacing: 0.15em;
-      /* 縦幅が狭い時はpaddingも自動縮小 */
       padding: clamp(6px, 1vh, 10px) 1.2rem;
       border: 1px solid rgba(255,255,255,0.06);
       border-radius: 40px;
@@ -477,7 +473,7 @@
     }
 
     /* ════════════════════════════════════════
-       ★ CONTACT & FOOTER
+       ★ CONTACT
     ════════════════════════════════════════ */
     .contact-section { 
       position: relative;
@@ -513,12 +509,20 @@
       color: var(--bg); background: var(--accent); border-color: var(--accent); 
       box-shadow: 0 10px 30px rgba(203,191,176,0.22); transform: translateY(-3px); 
     }
+
+    /* ════════════════════════════════════════
+       ★ FOOTER (完全調整版：中央揃えで被りなし)
+    ════════════════════════════════════════ */
     footer { 
       position: relative; z-index: 1;
-      padding: 3.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; 
+      /* ボタンとのスペースを確保するため、下部に広い余白（6rem）を設定 */
+      padding: 4.5rem 2.5rem 6rem; 
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2rem; 
+      border-top: 0.5px solid rgba(255,255,255,0.06);
+      text-align: center;
     }
-    .footer-logo { font-family: var(--jp); font-size: 16px; font-weight: 300; color: rgba(237,233,228,0.5); letter-spacing: 0.05em; }
-    .footer-copy { font-family: var(--en); font-size: 11px; color: rgba(237,233,228,0.32); letter-spacing: 0.14em; }
+    .footer-logo { font-family: var(--jp); font-size: 14px; font-weight: 300; color: rgba(237,233,228,0.7); letter-spacing: 0.1em; }
+    .footer-copy { font-family: var(--en); font-size: 11px; color: rgba(237,233,228,0.35); letter-spacing: 0.15em; }
 
     /* ════════════════════════════════════════
        ★ TOOLTIP (マウス追従ポップアップ)
@@ -533,40 +537,72 @@
     @media (pointer: coarse) { .mouse-tooltip { display: none !important; } }
 
     /* ════════════════════════════════════════
-       ★ BACK TO TOP BUTTON
+       ★ NEW BACK TO TOP BUTTON (Scroll Typography)
     ════════════════════════════════════════ */
     .back-to-top {
       position: fixed; 
-      bottom: clamp(1.5rem, 5vh, 4rem);
-      right: clamp(15px, 4vw, 50px);
+      bottom: clamp(1.5rem, 4vh, 3rem);
+      right: clamp(1.2rem, 3vw, 2.5rem);
       z-index: 160; 
-      width: clamp(56px, 8vw, 76px); 
-      height: clamp(56px, 8vw, 76px); 
+      width: clamp(54px, 6vw, 64px); 
+      height: clamp(54px, 6vw, 64px); 
       border-radius: 50%;
-      background: rgba(203,191,176, 0.85); 
-      border: 1px solid var(--accent);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      color: var(--bg);
-      opacity: 0; visibility: hidden; transform: translateY(20px);
-      transition: all 0.4s var(--ease-expo); 
+      background: rgba(13, 13, 11, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden; transform: translateY(20px) scale(0.95);
+      transition: all 0.5s var(--ease-expo); 
       cursor: pointer; 
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
       text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      overflow: hidden; /* コンテンツがはみ出さないように */
     }
     .back-to-top.is-visible { 
-      opacity: 1; visibility: visible; transform: translateY(0); 
+      opacity: 1; visibility: visible; transform: translateY(0) scale(1); 
     }
-    .back-to-top:hover { 
-      background: var(--fg); color: var(--bg); border-color: var(--fg); 
-      transform: translateY(-6px); 
+    
+    /* リング部分 */
+    .b2t-ring {
+      position: absolute; inset: -1px; width: calc(100% + 2px); height: calc(100% + 2px);
+      transform: rotate(-90deg); pointer-events: none;
     }
-    .back-to-top svg { 
-      width: clamp(20px, 3vw, 26px); height: clamp(20px, 3vw, 26px); margin-bottom: 2px; 
+    .b2t-ring-bg { stroke: transparent; fill: none; stroke-width: 1; }
+    .b2t-ring-progress {
+      stroke: var(--accent); fill: none; stroke-width: 1.5;
+      stroke-linecap: round; transition: stroke-dashoffset 0.1s linear, stroke 0.4s ease;
     }
-    .back-to-top-text { 
-      font-family: var(--en); font-size: clamp(0.55rem, 1.2vw, 0.75rem); 
-      font-weight: 600; text-transform: uppercase; line-height: 1; 
+
+    /* 中心のコンテンツエリア */
+    .b2t-content {
+      position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
     }
+
+    /* スクロール進捗の数字 (000 ~ 100) */
+    .b2t-percent {
+      font-family: var(--en); font-size: clamp(0.65rem, 1.2vw, 0.75rem); font-weight: 300; 
+      letter-spacing: 0.2em; color: var(--accent); padding-left: 0.2em;
+      transition: opacity 0.4s var(--ease-expo), transform 0.4s var(--ease-expo);
+      position: absolute;
+    }
+    
+    /* ホバー時に現れる矢印 */
+    .b2t-arrow {
+      width: clamp(20px, 2.5vw, 24px); height: clamp(20px, 2.5vw, 24px); color: var(--bg);
+      position: absolute; transform: translateY(150%); opacity: 0;
+      transition: opacity 0.4s var(--ease-expo), transform 0.4s var(--ease-expo);
+    }
+
+    /* ホバーエフェクト：色が反転し、数字から矢印へトランスフォーム */
+    .back-to-top:hover {
+      background: var(--accent); transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(203, 191, 176, 0.25); border-color: var(--accent);
+    }
+    .back-to-top:hover .b2t-ring-progress { stroke: rgba(8,8,8, 0.3); }
+    .back-to-top:hover .b2t-percent { transform: translateY(-150%); opacity: 0; }
+    .back-to-top:hover .b2t-arrow { transform: translateY(0); opacity: 1; }
+
 
     /* ─── RESPONSIVE ─── */
     @media (max-width: 900px) {
@@ -593,21 +629,27 @@
       }
       .scroll-cue { display: none; }
       .side-link-nav { display: none; }
-      .back-to-top { bottom: 1.5rem; right: 1.2rem; width: 50px; height: 50px; }
-      .back-to-top-text { display: none; }
-      .back-to-top svg { margin-bottom: 0; }
+      
+      /* トップに戻るボタンのスマホ最適化 */
+      .back-to-top { width: 50px; height: 50px; bottom: 1.5rem; right: 1.2rem; }
+      .b2t-percent { font-size: 0.65rem; }
     }
     @media (max-width: 480px) {
       .grid { grid-template-columns:1fr; gap:6px; }
       .gi { grid-column:auto !important; grid-row:auto !important; aspect-ratio:3/2 !important; }
       .gi:nth-child(1) { grid-column:auto !important; aspect-ratio:3/2 !important; }
       .contact-btn { padding: 1.2rem 2.4rem; font-size: 0.8rem; width: 100%; max-width: 340px; justify-content: center; }
-      footer { padding: 2.5rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+      /* スマホ時のフッター余白（さらに安全マージン） */
+      footer { padding: 3rem 1.5rem 6.5rem; }
     }
     @media (hover:none) {
       .gi-title,.gi-en { opacity:1 !important; transform:translateY(0) !important; }
       .gi-label { transform:translateY(0) !important; }
       .gi img { filter:grayscale(10%) brightness(0.80); }
+      .back-to-top:hover { transform: none; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); background: rgba(13, 13, 11, 0.6); border-color: rgba(255,255,255,0.04); } /* スマホでのホバー不具合防止 */
+      .back-to-top:hover .b2t-ring-progress { stroke: var(--accent); }
+      .back-to-top:hover .b2t-percent { transform: none; opacity: 1; }
+      .back-to-top:hover .b2t-arrow { opacity: 0; }
     }
     @media (prefers-reduced-motion:reduce) {
       *,*::before,*::after { animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
@@ -841,10 +883,17 @@
   </footer>
 
   <a href="#top" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M18 15l-6-6-6 6"/>
+    <svg class="b2t-ring" viewBox="0 0 60 60">
+      <circle class="b2t-ring-bg" cx="30" cy="30" r="29"></circle>
+      <circle class="b2t-ring-progress" cx="30" cy="30" r="29" id="b2tCircle"></circle>
     </svg>
-    <span class="back-to-top-text">TOP</span>
+    
+    <div class="b2t-content">
+      <span class="b2t-percent" id="b2tPercent">000</span>
+      <svg class="b2t-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+        <path d="M12 19V5M5 12l7-7 7 7" stroke-linecap="square" stroke-linejoin="miter"/>
+      </svg>
+    </div>
   </a>
 
   <div class="mouse-tooltip" id="mouse-tooltip"></div>
@@ -893,7 +942,7 @@
       });
     })();
 
-    /* ── 文字スプリットアニメーション (「作品系」を1文字ずつ表示) ── */
+    /* ── 文字スプリットアニメーション ── */
     const TITLE_JP = '作品系';
     const titleJpEl = document.getElementById('heroTitleJp');
     const BASE_DELAY = 0.70;
@@ -927,6 +976,16 @@
       requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('run')));
     });
 
+    /* ── プログレスリングの初期化 ── */
+    const b2tCircle = document.getElementById('b2tCircle');
+    const b2tPercent = document.getElementById('b2tPercent');
+    const b2tRadius = 29; // SVG内のr値と一致させる
+    const b2tCircumference = 2 * Math.PI * b2tRadius;
+    if (b2tCircle) {
+      b2tCircle.style.strokeDasharray = b2tCircumference;
+      b2tCircle.style.strokeDashoffset = b2tCircumference;
+    }
+
     /* ── スクロールイベントの統合 ── */
     const bg = document.getElementById('bgLayer');
     const topNav = document.getElementById('top-nav');
@@ -941,9 +1000,23 @@
           if (bg) bg.style.transform = `translateY(${scrollY * 0.12}px)`;
           if (scrollY > 50) topNav.classList.add('scrolled');
           else topNav.classList.remove('scrolled');
+          
           if (b2t) {
-            if (scrollY > window.innerHeight * 0.5) b2t.classList.add('is-visible');
+            // ボタン表示・非表示の切り替え
+            if (scrollY > window.innerHeight * 0.3) b2t.classList.add('is-visible');
             else b2t.classList.remove('is-visible');
+
+            // プログレスリングと数字の更新
+            if (b2tCircle && b2tPercent) {
+              const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+              const scrollPercentRaw = docHeight > 0 ? scrollY / docHeight : 0;
+              const scrollPercent = Math.max(0, Math.min(scrollPercentRaw, 1));
+              
+              b2tCircle.style.strokeDashoffset = b2tCircumference - (scrollPercent * b2tCircumference);
+              
+              const percentValue = Math.floor(scrollPercent * 100);
+              b2tPercent.textContent = String(percentValue).padStart(3, '0');
+            }
           }
 
           if (links && links.classList.contains('open')) {
@@ -965,7 +1038,7 @@
       });
     }
 
-    /* ── ランダムグリッド＆画像抽出（スマホ・PC共通化） ── */
+    /* ── ランダムグリッド＆画像抽出 ── */
     (function randomizeGrid() {
       const grid = document.getElementById('grid');
       if (!grid) return;
@@ -1027,7 +1100,6 @@
         var ns = 'http://www.w3.org/2000/svg';
         var perimeter = 2 * ((w - 1) + (h - 1));
 
-        // ホバー時に描画される線
         var trace = document.createElementNS(ns, 'rect');
         trace.setAttribute('x', '0.5');
         trace.setAttribute('y', '0.5');
@@ -1055,7 +1127,6 @@
         });
       });
 
-      // ランダムグリッドの適用後や画像の読み込みを考慮して少し遅延させてビルド
       setTimeout(initAllCards, 500);
       window.addEventListener('resize', initAllCards);
     })();
