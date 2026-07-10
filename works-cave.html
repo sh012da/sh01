@@ -106,41 +106,35 @@
       letter-spacing: 0.35em;
       font-weight: 300; color: var(--accent);
       text-transform: uppercase; transition: opacity 0.4s ease;
+      position: relative; z-index: 2;
     }
     .nav-logo-unified:hover { opacity: 0.5; }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    
+    /* ヘッダー内ページナビゲーションの中央配置 */
+    .nav-links { 
+      display: flex; gap: 2rem; list-style: none;
+      position: absolute; left: 50%; transform: translateX(-50%);
+    }
     .nav-links a {
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
       letter-spacing: 0.25em;
       color: var(--muted); text-transform: uppercase; transition: color 0.3s ease;
+      position: relative;
     }
-    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--accent); }
+    
     .nav-cta {
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
       letter-spacing: 0.25em; text-transform: uppercase;
       border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem;
       color: var(--accent); transition: background 0.25s, color 0.25s;
+      position: relative; z-index: 2;
     }
     .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
 
-    .page-nav {
-      position: fixed;
-      right: clamp(20px, 4vw, 40px); top: 50%;
-      transform: translateY(-50%); z-index: 200;
-      display: flex; flex-direction: column; gap: 24px;
-      opacity: 0; visibility: hidden;
-      transition: opacity 0.6s var(--ease), visibility 0.6s;
-    }
-    .page-nav.visible { opacity: 1; visibility: visible; }
-    .page-nav-item { display: flex; align-items: center; gap: 12px; flex-direction: row-reverse; cursor: pointer; background: none; border: none; padding: 8px 0; }
-    .page-nav-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(233,229,223,0.4); transition: all 0.35s; flex-shrink: 0; }
-    .page-nav-label { font-family: var(--font-en); font-size: 12px; letter-spacing: 0.15em; color: rgba(233,229,223,0.4); text-transform: uppercase; transition: color 0.35s; white-space: nowrap; }
-    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot { background: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px rgba(196,168,130,0.6); }
-    .page-nav-item:hover .page-nav-label { color: rgba(233,229,223,0.85); }
-    .page-nav-item.active .page-nav-label { color: var(--accent); }
-
     /* ============================================================
-        HERO FIRST VIEW (前代未聞の結像アニメーション)
+        HERO FIRST VIEW
     ============================================================ */
     .hero {
       position: relative;
@@ -150,13 +144,12 @@
       display: flex; flex-direction: column; justify-content: flex-end;
       padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); 
       overflow: hidden;
-      perspective: 1000px; /* 3D結像のためのパースペクティブ */
+      perspective: 1000px;
     }
     
-    /* マウス追従用のインタラクティブ背景レイヤー */
     .hero-interactive-bg {
       position: absolute;
-      inset: -5%; /* 視差の余白 */
+      inset: -5%;
       width: 110%;
       height: 110%;
       z-index: 0;
@@ -169,7 +162,6 @@
       will-change: transform;
     }
     
-    /* 空間を穿つ光の線（スリット） */
     .hero-phase-slit {
       position: absolute;
       top: 65%; left: 0; right: 0;
@@ -189,7 +181,6 @@
       100% { transform: scaleX(1) translateY(80px); opacity: 0; filter: blur(8px); }
     }
 
-    /* 「いと（Ito）」の回遊エフェクト */
     .hero-ito-wrap {
       position: absolute;
       inset: 0;
@@ -223,7 +214,6 @@
 
     .hero-divider { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%); z-index: 2; }
     
-    /* マウス追従するテキストラッパー */
     .hero-inner { 
       position: relative; 
       z-index: 2; 
@@ -237,15 +227,12 @@
     
     .hero-title { font-family: var(--font-ja); font-size: clamp(5rem, 19vw, 17rem); font-weight: 200; line-height: 0.88; letter-spacing: -0.02em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem); display: flex; gap: 0.05em; overflow: visible; }
     
-    /* 深淵結像（Abyssal Materialization）エフェクト */
     .hero-title .char { 
       display: inline-block; 
       opacity: 0; 
-      /* 深い深度から手前へ、位相が歪んだ状態から収束する */
       transform: translate3d(0, 80px, -300px) rotateX(-25deg) scale(0.85);
       filter: blur(24px) drop-shadow(0 0 15px var(--accent));
       color: transparent;
-      /* 色収差（RGBのズレ）を影で表現 */
       text-shadow: -20px 0 40px rgba(196,168,130,0.8), 20px 0 40px rgba(124,154,160,0.8);
       transition: transform 2.4s var(--ease-out), 
                   filter 2.4s var(--ease-out), 
@@ -283,7 +270,6 @@
     .hero-scroll-fill { position: absolute; top: -100%; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, var(--accent), transparent); animation: scrollDrop 2.2s ease-in-out 2s infinite; }
     @keyframes scrollDrop { 0% { top: -100%; opacity: 1; } 70% { top: 100%; opacity: 0.4; } 71% { top: -100%; opacity: 0; } 100% { top: -100%; opacity: 0; } }
 
-    /* スマホ向け：インタラクティブ背景の代わりにゆっくりとした呼吸アニメーション */
     @media (max-width: 768px) {
       .hero-interactive-bg {
         animation: ambientBreath 40s ease-in-out infinite alternate;
@@ -630,21 +616,9 @@
     @media (max-width: 768px) {
       nav#top-nav { padding: 1rem 1.25rem; }
       .nav-links { display: none; }
-      .page-nav.visible { right: 8px; opacity: 0.5; }
-      .page-nav.visible:hover { opacity: 1; }
-      .page-nav-label { display: none; }
-      
       .statement-wrapper { padding: 0 clamp(1.25rem, 5vw, 3rem) clamp(5rem, 10vh, 8rem); }
       .statement-section { padding: clamp(2.5rem, 6vh, 4rem) 1.5rem; }
     }
-
-    /* ユーザー環境への配慮（不要な場合はコメントアウトを維持） */
-    /*
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
-      .gallery-item, .tl-entry, .reveal-fade, .concept-line span { opacity: 1 !important; transform: none !important; }
-    }
-    */
   </style>
 </head>
 <body id="top">
@@ -652,21 +626,12 @@
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="index.html#statement">Statement</a></li>
-      <li><a href="index.html#works">Works</a></li>
-      <li><a href="index.html#profile">Profile</a></li>
-      <li><a href="index.html#news">News</a></li>
+      <li><a href="#concept" class="js-nav-link">Concept</a></li>
+      <li><a href="#statement" class="js-nav-link">Statement</a></li>
+      <li><a href="#works" class="js-nav-link">Works</a></li>
+      <li><a href="#chronology" class="js-nav-link">Timeline</a></li>
     </ul>
     <a href="index.html#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
-  </nav>
-
-  <nav class="page-nav" id="pageNav" aria-label="ページ内ナビゲーション">
-    <button class="page-nav-item" data-target="gallery" aria-label="Galleryへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Gallery</span>
-    </button>
-    <button class="page-nav-item" data-target="chronology" aria-label="Timelineへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Timeline</span>
-    </button>
   </nav>
 
   <main>
@@ -1203,32 +1168,12 @@
   </div>
 
   <script>
-    /* == メニューの制御 == */
-    function toggleMenu() {
-      const links = document.getElementById('nav-links');
-      const hamburger = document.getElementById('hamburger');
-      if(links && hamburger) {
-        links.classList.toggle('open');
-        hamburger.classList.toggle('is-active');
-        document.body.classList.toggle('is-locked');
-      }
-    }
-    function closeMenu() {
-      const links = document.getElementById('nav-links');
-      const hamburger = document.getElementById('hamburger');
-      if(links && hamburger) {
-        links.classList.remove('open');
-        hamburger.classList.remove('is-active');
-        document.body.classList.remove('is-locked');
-      }
-    }
-
     /* == 「いと（Ito）」パーティクルの生成 == */
     function initItoParticles() {
       const wrap = document.getElementById('heroItoWrap');
       if (!wrap) return;
       
-      const particleCount = window.innerWidth > 768 ? 12 : 5; // スマホは少なく
+      const particleCount = window.innerWidth > 768 ? 12 : 5;
       const fragment = document.createDocumentFragment();
       
       for(let i = 0; i < particleCount; i++) {
@@ -1261,35 +1206,24 @@
       initHeroAnimations();
     }
     
-    /* == Interactive Parallax (マウス追従による呼吸と深度) == */
+    /* == Interactive Parallax == */
     const heroInner = document.getElementById('heroInner');
     const heroInteractiveBg = document.getElementById('heroInteractiveBg');
-    
-    // スマホ（タッチデバイス）判定
     const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
 
     if (!isTouchDevice) {
       document.addEventListener('mousemove', (e) => {
-        // ファーストビュー以降は計算しない
         if (window.scrollY > window.innerHeight) return;
-        
         requestAnimationFrame(() => {
-          const x = (e.clientX / window.innerWidth - 0.5) * 2; // -1 to 1
+          const x = (e.clientX / window.innerWidth - 0.5) * 2;
           const y = (e.clientY / window.innerHeight - 0.5) * 2;
-          
-          if(heroInteractiveBg) {
-            // 背景は奥へわずかに動く
-            heroInteractiveBg.style.transform = `translate(${x * -1.5}%, ${y * -1.5}%) scale(1.05)`;
-          }
-          if(heroInner) {
-            // 文字は手前へ動く（視差による立体感）
-            heroInner.style.transform = `translate(${x * 15}px, ${y * 15}px)`;
-          }
+          if(heroInteractiveBg) heroInteractiveBg.style.transform = `translate(${x * -1.5}%, ${y * -1.5}%) scale(1.05)`;
+          if(heroInner) heroInner.style.transform = `translate(${x * 15}px, ${y * 15}px)`;
         });
       });
     }
     
-    /* == Observer (Fade Up & Grid Animation) == */
+    /* == Observer == */
     const io = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
@@ -1348,11 +1282,11 @@
       obs.observe(el);
     });
 
-    /* == Scroll Interactions (Spine, Nav, Page-Nav) == */
+    /* == Scroll Interactions (Spine, Header Nav, BackToTop) == */
     const topNav = document.getElementById('top-nav');
-    const pageNav = document.getElementById('pageNav');
-    const navItems = document.querySelectorAll('.page-nav-item');
-    const sections = ['gallery', 'chronology'].map(id => document.getElementById(id));
+    const headerNavItems = document.querySelectorAll('.js-nav-link');
+    const headerSections = ['concept', 'statement', 'works', 'chronology'].map(id => document.getElementById(id));
+    
     const spineFill = document.getElementById('tl-spine-fill');
     const tlWrap = document.querySelector('.timeline-container');
     let ticking = false;
@@ -1366,19 +1300,17 @@
           if (scrollY > 50) topNav.classList.add('scrolled');
           else topNav.classList.remove('scrolled');
 
-          /* Page Nav Visibility & Active State */
+          /* Header Nav Active State (ScrollSpy) */
           const checkY = scrollY + window.innerHeight * 0.4;
-          let activeSec = null;
-          sections.forEach(sec => {
-            if (sec && sec.offsetTop <= checkY) activeSec = sec;
+          let activeHeaderSec = null;
+          headerSections.forEach(sec => {
+            if (sec && sec.offsetTop <= checkY) activeHeaderSec = sec;
           });
-          navItems.forEach(item => {
-            const target = document.getElementById(item.getAttribute('data-target'));
-             item.classList.toggle('active', target === activeSec);
+          headerNavItems.forEach(item => {
+            const targetId = item.getAttribute('href').substring(1);
+            const target = document.getElementById(targetId);
+            item.classList.toggle('active', target === activeHeaderSec);
           });
-          if (pageNav) {
-            pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.6);
-          }
 
           /* Timeline Spine Progress */
           if (tlWrap && spineFill) {
@@ -1401,13 +1333,15 @@
       }
     }, { passive: true });
 
-    /* スムーズスクロール制御 (Page Nav) */
-    navItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const target = document.getElementById(item.getAttribute('data-target'));
-        if (target) {
-          const offset = topNav?.offsetHeight || 0;
-          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+    /* スムーズスクロール制御 (Header Nav) */
+    headerNavItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = item.getAttribute('href').substring(1);
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+          const offset = topNav?.offsetHeight || 80;
+          window.scrollTo({ top: targetEl.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
         }
       });
     });
@@ -1467,7 +1401,6 @@
       setTimeout(() => { modalImg.src = ''; titleJpEl.textContent = ''; metaEl.textContent = ''; }, 560);
     };
 
-    // js-modal-open が付与されている要素のみモーダルを開く
     document.querySelectorAll('.js-modal-open').forEach(btn => {
       btn.addEventListener('click', (e) => {
         let src = btn.getAttribute('data-img-src');
