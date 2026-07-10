@@ -9,7 +9,7 @@
     gtag('config', 'G-5RF8JPF5D8');
   </script>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>TSUDA SHOICHI | 作品系</title>
   <link rel="icon" type="image/jpeg" href="images/【FSM横】IMG_7730.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,27 +30,30 @@
       --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
       --ease-fluid: cubic-bezier(0.76, 0, 0.24, 1);
       --px: clamp(24px, 6vw, 80px);
-      --dock-width: clamp(240px, 18vw, 320px); /* マトリクス・レーンの幅 */
+      --dock-width: clamp(240px, 18vw, 320px);
     }
 
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     html { scroll-behavior: smooth; background: var(--bg); }
     body {
-      background: var(--bg); color: var(--fg);
+      background: transparent; color: var(--fg);
       font-family: var(--jp); -webkit-font-smoothing: antialiased;
       overflow-x: hidden; letter-spacing: 0.05em;
     }
 
-    /* ─── DIGITAL CANVAS BACKGROUND ─── */
+    /* ─── INDEXからのシームレスな体験：全画面アンビエント動画 ─── */
     .bg-layer {
       position: fixed; inset: 0; width: 100%; height: 100%;
-      object-fit: cover; z-index: 0; opacity: 0.15;
-      pointer-events: none; filter: contrast(110%) brightness(80%);
+      object-fit: cover; z-index: -2;
+      opacity: 0.25; /* 動画が暗闇の奥で確実にうごめくように調整 */
+      filter: contrast(120%) brightness(0.8) grayscale(30%);
+      pointer-events: none;
     }
     .bg-vignette {
-      position: fixed; inset: 0; z-index: 1; pointer-events: none;
-      background: radial-gradient(circle at 50% 50%, transparent 20%, rgba(5,5,5,0.95) 100%),
-                  linear-gradient(to bottom, rgba(5,5,5,0.4), var(--bg));
+      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      /* 周辺を暗く落とし込み、動画の存在感を中央に寄せる */
+      background: radial-gradient(circle at 50% 50%, transparent 10%, rgba(5,5,5,0.95) 90%),
+                  linear-gradient(to bottom, rgba(5,5,5,0.4), rgba(5,5,5,0.9));
     }
 
     /* ─── CONCEPTUAL STRUCTURAL LINES ─── */
@@ -78,7 +81,7 @@
       display: flex; align-items: center; justify-content: space-between;
       padding: clamp(20px, 3vw, 40px) var(--px);
       border-bottom: 1px solid var(--border);
-      background: rgba(5, 5, 5, 0.65);
+      background: rgba(5, 5, 5, 0.5); /* より透明感を高め動画を透過 */
       backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       transition: all 0.6s var(--ease-expo);
     }
@@ -107,7 +110,6 @@
       display: flex; flex-direction: column;
       width: var(--dock-width); max-height: 85vh;
       overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none;
-      /* 作品の上に美しく重なる半透明グラデーション */
       background: linear-gradient(to left, rgba(5, 5, 5, 0.95) 75%, rgba(5, 5, 5, 0.0) 100%);
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border-left: 1px solid rgba(255, 255, 255, 0.03);
@@ -137,7 +139,6 @@
     .side-link-item:hover::before { transform: scaleY(1); }
     .side-link-item:hover::after { opacity: 1; }
 
-    /* 数字を廃止した「キャンバス・プロット（幾何学インジケーター）」 */
     .side-link-item .nav-indicator {
       display: block; width: 4px; height: 4px; background: var(--muted); margin-right: 18px;
       flex-shrink: 0; position: relative; z-index: 3; transition: background 0.3s ease;
@@ -161,7 +162,7 @@
     /* ════════════════════════════════════════
        ★ HERO SECTION 
     ════════════════════════════════════════ */
-    .hero { position: relative; z-index: 10; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 120px var(--px) 60px; }
+    .hero { position: relative; z-index: 10; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 120px var(--px) 60px; background: transparent; }
     @media (min-width: 769px) { .hero { padding-right: calc(var(--dock-width) + var(--px)) !important; } }
     .hero-inner { width: 100%; max-width: 1400px; position: relative; }
     .hero-eyebrow { font-family: var(--en); font-size: clamp(0.7rem, 1.5vw, 0.9rem); letter-spacing: 0.5em; color: var(--accent); text-transform: uppercase; margin-bottom: 20px; overflow: hidden; display: flex; align-items: center; gap: 15px; }
@@ -188,87 +189,98 @@
     @keyframes pulseLine { 0% { transform: scaleX(0); transform-origin: left; } 50% { transform: scaleX(1); transform-origin: left; } 51% { transform: scaleX(1); transform-origin: right; } 100% { transform: scaleX(0); transform-origin: right; } }
 
     /* ════════════════════════════════════════
-       ★ ダイナミック・フルブリード・ギャラリー（黒い淵を完全排除）
+       ★ 浮遊するダイナミック・コンステレーション（余白から背景動画が覗く宇宙）
     ════════════════════════════════════════ */
-    /* ギャラリーコンテナの余白を完全ゼロ化 */
-    .gallery { position: relative; z-index: 10; padding: 0; width: 100%; }
-    
-    .gallery-header-wrapper {
-      padding: 80px var(--px) 40px;
-      background: var(--bg);
+    .gallery { 
+      position: relative; z-index: 10; 
+      /* 上下に余白を持たせ、左右のパディングは変数で制御 */
+      padding: 60px var(--px) 160px;
     }
-    @media (min-width: 769px) { .gallery-header-wrapper { padding-right: calc(var(--dock-width) + var(--px)) !important; } }
     
-    .section-header { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 0; opacity: 0; transform: translateY(30px); transition: all 1.2s var(--ease-expo); }
+    /* ヘッダー周りは敷き詰めず、タイトルとしての独立性を確保 */
+    .gallery-header-wrapper {
+      padding: 0 var(--px) 60px; background: transparent;
+    }
+    @media (min-width: 769px) { 
+      .gallery-header-wrapper { padding-right: calc(var(--dock-width) + var(--px)) !important; }
+      .gallery { padding-right: calc(var(--dock-width) + var(--px)) !important; }
+    }
+    
+    .section-header { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); opacity: 0; transform: translateY(30px); transition: all 1.2s var(--ease-expo); }
     .section-header.in-view { opacity: 1; transform: translateY(0); }
     .section-label { font-family: var(--en); font-size: clamp(0.8rem, 1.8vw, 1rem); letter-spacing: 0.4em; color: var(--fg); text-transform: uppercase; }
+    .section-count { font-family: var(--en); font-size: clamp(2rem, 6vw, 4.5rem); font-weight: 100; color: rgba(212, 197, 179, 0.04); line-height: 1; }
 
-    /* 全幅に敷き詰めるシームレスフレックスレイアウト */
-    .grid { display: flex; flex-wrap: wrap; width: 100%; }
+    /* 背景の動画を見せるため、計算された隙間（gap）を意図的に設定 */
+    .grid { 
+      display: grid; 
+      grid-template-columns: repeat(12, 1fr); 
+      gap: clamp(20px, 4vw, 60px); /* このランダムな余白から背後の動画がうごめいて見える */
+      row-gap: clamp(40px, 8vw, 120px);
+    }
 
-    /* 各作品カード。ボーダー、マージン、パディングの一切を排除 */
+    /* 各作品カード。ボーダーレスで闇に浮遊する */
     .gi {
       position: relative; overflow: hidden; cursor: pointer;
-      background: #000; margin: 0; border: none; padding: 0;
-      opacity: 0; transition: opacity 1.5s var(--ease-expo) var(--delay, 0ms);
+      background: rgba(0,0,0,0.5); /* 読み込み前の下地も半透明に */
+      border: none; padding: 0;
+      opacity: 0; filter: blur(8px);
+      transition: opacity 1.5s var(--ease-expo) var(--delay, 0ms), filter 1.5s var(--ease-expo) var(--delay, 0ms), transform 1.5s var(--ease-expo) var(--delay, 0ms);
+      transform: translateY(60px);
     }
-    .gi.in-view { opacity: 1; }
+    .gi.in-view { opacity: 1; filter: blur(0); transform: translateY(0); }
     
-    /* 100%ダイナミックに伸びる設定 */
-    .gi { flex: 0 0 100%; height: 65vh; }
-    
+    /* アシンメトリーでリズミカルな配置（全画面ではなく空間に浮かべる） */
     @media (min-width: 769px) {
-      /* PC環境：画面全体をパズル状に完全に敷き詰める */
-      .gi:nth-child(1) { flex: 0 0 100%; height: 85vh; }
-      .gi:nth-child(2) { flex: 0 0 50%; height: 60vh; }
-      .gi:nth-child(3) { flex: 0 0 50%; height: 60vh; }
-      .gi:nth-child(4) { flex: 0 0 60%; height: 75vh; }
-      .gi:nth-child(5) { flex: 0 0 40%; height: 75vh; }
-      .gi:nth-child(6) { flex: 0 0 33.333%; height: 55vh; }
-      .gi:nth-child(7) { flex: 0 0 33.333%; height: 55vh; }
-      .gi:nth-child(8) { flex: 0 0 33.333%; height: 55vh; }
-      .gi:nth-child(9) { flex: 0 0 40%; height: 70vh; }
-      .gi:nth-child(10){ flex: 0 0 60%; height: 70vh; }
-      .gi:nth-child(11){ flex: 0 0 50%; height: 60vh; }
-      .gi:nth-child(12){ flex: 0 0 50%; height: 60vh; }
+      .gi:nth-child(1) { grid-column: 1 / 11; aspect-ratio: 16/9; } /* 大きく見せる */
+      .gi:nth-child(2) { grid-column: 6 / 13; aspect-ratio: 4/3; margin-top: -80px; } /* 重なるように配置 */
+      .gi:nth-child(3) { grid-column: 1 / 7; aspect-ratio: 1/1; }
+      .gi:nth-child(4) { grid-column: 4 / 12; aspect-ratio: 16/7; }
+      .gi:nth-child(5) { grid-column: 2 / 8; aspect-ratio: 4/5; }
+      .gi:nth-child(6) { grid-column: 7 / 13; aspect-ratio: 3/2; margin-top: 100px; }
+      .gi:nth-child(7) { grid-column: 1 / 9; aspect-ratio: 16/9; }
+      .gi:nth-child(8) { grid-column: 8 / 13; aspect-ratio: 1/1; margin-top: -40px; }
+      .gi:nth-child(9) { grid-column: 3 / 11; aspect-ratio: 3/2; }
+      .gi:nth-child(10){ grid-column: 1 / 6; aspect-ratio: 4/3; }
+      .gi:nth-child(11){ grid-column: 6 / 13; aspect-ratio: 16/9; margin-top: -60px; }
+      .gi:nth-child(12){ grid-column: 4 / 10; aspect-ratio: 3/2; }
     }
 
     .gi a { position: absolute; inset: 0; z-index: 20; text-decoration: none; color: inherit; }
     
-    /* 画像そのものがカードいっぱいに広がる */
     .gi img {
       position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-      transform: scale(1.08); /* 吸い込まれるようなズームアウトへの準備 */
-      filter: grayscale(100%) brightness(0.5) contrast(110%);
+      transform: scale(1.08);
+      filter: grayscale(80%) brightness(0.6) contrast(120%);
       transition: transform 1.8s var(--ease-expo), filter 1.2s ease;
       will-change: transform, filter;
     }
-    .gi:hover img { transform: scale(1.0); filter: grayscale(0%) brightness(0.85) contrast(100%); }
+    .gi:hover img { transform: scale(1.0); filter: grayscale(0%) brightness(0.9) contrast(100%); }
     
-    /* テキストを読ませるための滑らかなオーバーレイ */
+    /* テキストを読ませるための滑らかなオーバーレイ（動画と調和するよう下からグラデーション） */
     .gi-overlay {
       position: absolute; inset: 0; z-index: 2; pointer-events: none;
-      background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 45%);
+      background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 30%, transparent 60%);
       opacity: 0.9; transition: opacity 0.6s ease;
     }
-    .gi:hover .gi-overlay { opacity: 0.4; }
+    .gi:hover .gi-overlay { opacity: 0.5; }
 
     /* 【絶対に隠れない】画像内側の左下に配置されたページ名ラベル */
     .gi-label {
-      position: absolute; bottom: 40px; left: 40px; z-index: 5; pointer-events: none;
+      position: absolute; bottom: clamp(20px, 3vw, 40px); left: clamp(20px, 3vw, 40px); z-index: 5; pointer-events: none;
     }
     
     .gi-title {
-      display: block; font-family: var(--jp); font-weight: 300; font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+      display: block; font-family: var(--jp); font-weight: 300; font-size: clamp(1.4rem, 2vw, 2.2rem);
       letter-spacing: 0.15em; color: var(--fg);
-      text-shadow: 0 5px 25px rgba(0,0,0,0.95), 0 1px 5px rgba(0,0,0,0.8);
+      text-shadow: 0 4px 15px rgba(0,0,0,0.9), 0 1px 5px rgba(0,0,0,1); /* 動画の上でも絶対に読みやすく */
       transition: color 0.4s var(--ease-quad), transform 0.5s var(--ease-expo);
       will-change: transform;
     }
     .gi-en {
       display: block; font-family: var(--en); font-size: clamp(10px, 1.2vw, 13px);
       letter-spacing: 0.4em; color: rgba(255,255,255,0.7); text-transform: uppercase; margin-top: 6px;
-      text-shadow: 0 4px 15px rgba(0,0,0,0.95);
+      text-shadow: 0 4px 15px rgba(0,0,0,0.9);
       transition: color 0.4s var(--ease-quad), transform 0.5s var(--ease-expo);
       will-change: transform;
     }
@@ -280,22 +292,22 @@
        ★ CONTACT & FOOTER 
     ════════════════════════════════════════ */
     .contact-section { 
-      position: relative; z-index: 10; padding: 160px var(--px); text-align: center; background: var(--bg); border-top: 1px solid var(--border);
+      position: relative; z-index: 10; padding: 160px var(--px); text-align: center; background: transparent; border-top: 1px solid var(--border);
     }
     @media (min-width: 769px) { .contact-section { padding-right: calc(var(--dock-width) + var(--px)) !important; } }
 
     .contact-section .section-label { font-family: var(--en); font-size: clamp(0.75rem, 1.5vw, 0.9rem); letter-spacing: 0.4em; color: var(--muted); text-transform: uppercase; margin-bottom: 30px; display: inline-flex; align-items: center; gap: 20px; }
     .contact-section .section-label::before, .contact-section .section-label::after { content:""; width: 30px; height: 1px; background: var(--border-bright); }
-    .contact-section .section-heading { font-family: var(--jp); font-size: clamp(2rem, 5vw, 4rem); font-weight: 200; line-height: 1.3; color: var(--fg); margin-bottom: 30px; letter-spacing: 0.15em; }
-    .contact-body-text { font-family: var(--jp); font-weight: 300; font-size: clamp(0.9rem, 1.5vw, 1.05rem); color: var(--muted); margin: 0 auto 50px; max-width: 600px; line-height: 2.2; }
-    .contact-btn { display: inline-flex; align-items: center; gap: 1.5em; font-family: var(--en); font-size: clamp(0.75rem, 1.5vw, 0.9rem); letter-spacing: 0.3em; text-transform: uppercase; border: 1px solid var(--border-bright); padding: 1.3rem 4rem; color: var(--accent); background: transparent; text-decoration: none; transition: all 0.6s var(--ease-expo); position: relative; }
+    .contact-section .section-heading { font-family: var(--jp); font-size: clamp(2rem, 5vw, 4rem); font-weight: 200; line-height: 1.3; color: var(--fg); margin-bottom: 30px; letter-spacing: 0.15em; text-shadow: 0 4px 20px rgba(0,0,0,0.8); }
+    .contact-body-text { font-family: var(--jp); font-weight: 300; font-size: clamp(0.9rem, 1.5vw, 1.05rem); color: rgba(255,255,255,0.7); margin: 0 auto 50px; max-width: 600px; line-height: 2.2; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+    .contact-btn { display: inline-flex; align-items: center; gap: 1.5em; font-family: var(--en); font-size: clamp(0.75rem, 1.5vw, 0.9rem); letter-spacing: 0.3em; text-transform: uppercase; border: 1px solid var(--border-bright); padding: 1.3rem 4rem; color: var(--accent); background: rgba(5,5,5,0.4); backdrop-filter: blur(10px); text-decoration: none; transition: all 0.6s var(--ease-expo); position: relative; overflow: hidden; }
     .contact-btn::before { content: ''; position: absolute; inset: 0; background: var(--accent); z-index: -1; transform: scaleX(0); transform-origin: right; transition: transform 0.6s var(--ease-expo); }
     .contact-btn:hover { color: var(--bg); border-color: var(--accent); }
     .contact-btn:hover::before { transform: scaleX(1); transform-origin: left; }
 
     footer { 
       position: relative; z-index: 10; padding: 60px var(--px) 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; 
-      border-top: 1px solid var(--border); text-align: center; background: #030303;
+      border-top: 1px solid var(--border); text-align: center; background: rgba(3,3,3,0.9);
     }
     .footer-logo { font-family: var(--jp); font-size: 14px; font-weight: 300; color: var(--accent); letter-spacing: 0.2em; }
     .footer-copy { font-family: var(--en); font-size: 11px; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; }
@@ -312,7 +324,7 @@
     /* ─── BACK TO TOP BUTTON ─── */
     .back-to-top {
       position: fixed; bottom: 40px; right: var(--px); z-index: 160; width: 60px; height: 60px; 
-      background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center;
+      background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center;
       opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.6s var(--ease-expo); cursor: pointer; text-decoration: none; border: 1px solid var(--border);
     }
     .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
@@ -329,6 +341,12 @@
     /* ════════════════════════════════════════
        ★ SMARTPHONE / TABLET RESPONSIVE
     ════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: repeat(2, 1fr); gap: 20px; row-gap: 60px; }
+      .gi { grid-column: auto !important; margin-top: 0 !important; aspect-ratio: 4/3 !important; }
+      .gi:nth-child(3n+1) { grid-column: span 2 !important; aspect-ratio: 16/9 !important; }
+    }
+
     @media (max-width: 768px) {
       nav#top-nav { padding: 20px 24px; }
       .nav-links { display: none; }
@@ -342,12 +360,12 @@
       .nav-hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
       .scroll-cue { display: none; }
       
-      /* 【スマホ最適化】ボトム・スナップレーンへの変形 */
+      /* ボトム・スナップレーンへの変形 */
       .side-link-nav {
         top: auto; bottom: 0; left: 0; right: 0; width: 100%; height: 76px;
         transform: none; flex-direction: row; align-items: center; justify-content: flex-start;
         padding: 0 24px; gap: 10px;
-        background: rgba(5, 5, 5, 0.95);
+        background: rgba(5, 5, 5, 0.85);
         backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
         border-top: 1px solid rgba(255, 255, 255, 0.08); border-left: none;
         overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory;
@@ -355,7 +373,7 @@
       
       .side-link-item {
         flex: 0 0 auto; width: auto; min-width: 140px; height: 48px; padding: 0 20px; margin: 0;
-        background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 4px;
+        background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 4px;
         justify-content: center; align-items: center; scroll-snap-align: start;
       }
       
@@ -365,8 +383,13 @@
       .side-link-item .nav-title { font-size: 12px; opacity: 0.9; transform: none !important; letter-spacing: 0.1em !important; }
       .side-link-item:active { background: rgba(212, 197, 179, 0.2); border-color: var(--accent); color: #ffffff; }
 
-      /* 【絶対に被らない補正】ボトムドックの高さを考慮し、ラベル位置を高く設定 */
-      .gi-label { bottom: 100px; left: 24px; }
+      /* スマホ時の縦並び：左右に隙間を空け、動画のうねりを見せる */
+      .grid { grid-template-columns: 1fr; gap: 40px; }
+      .gi { grid-column: auto !important; aspect-ratio: 1/1 !important; border-radius: 4px; }
+      .gi:nth-child(3n+1) { aspect-ratio: 4/3 !important; }
+      
+      /* ラベル位置の微調整 */
+      .gi-label { bottom: 20px; left: 20px; }
       
       .back-to-top { bottom: 96px; right: 20px; width: 50px; height: 50px; }
       .b2t-ring { width: 52px; height: 52px; }
@@ -376,6 +399,8 @@
 
     @media (max-width: 480px) {
       .contact-btn { width: 100%; padding: 1.3rem 2rem; justify-content: center; }
+      .gi { aspect-ratio: 4/5 !important; }
+      .gi:nth-child(3n+1) { aspect-ratio: 1/1 !important; }
     }
 
     @media (hover: none) {
@@ -392,7 +417,6 @@
   <video id="bgLayer" class="bg-layer" autoplay loop muted playsinline webkit-playsinline disablePictureInPicture preload="auto">
     <source src="images/mov1.mp4" type="video/mp4">
   </video>
-  
   <div class="bg-vignette"></div>
   
   <div id="space-matrix" aria-hidden="true">
