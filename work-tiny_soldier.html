@@ -73,7 +73,7 @@
     .ib { display: inline-block; }
 
     /* ============================================================
-        NAVIGATION
+        NAVIGATION (Integrated Page Nav)
     ============================================================ */
     nav#top-nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 300;
@@ -85,6 +85,7 @@
       transition: background 0.4s ease, border-color 0.4s ease;
     }
     nav#top-nav.scrolled { background: rgba(10,10,9,0.93); border-color: var(--border); }
+    
     .nav-logo-unified {
       position: relative; z-index: 301; flex-shrink: 0;
       font-family: var(--font-en); font-size: clamp(0.7rem, 2.5vw, 0.9rem);
@@ -93,13 +94,18 @@
     }
     .nav-logo-unified:hover { opacity: 0.5; }
     
-    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+    .nav-links { 
+      display: flex; 
+      gap: clamp(1.5rem, 3vw, 3rem); 
+      list-style: none; 
+      align-items: center; 
+    }
     .nav-links a {
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
-      letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase; transition: color 0.3s ease;
-      white-space: nowrap;
+      letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase; 
+      transition: color 0.3s ease; white-space: nowrap; cursor: pointer;
     }
-    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
     
     .nav-cta {
       position: relative; z-index: 301; flex-shrink: 0;
@@ -110,20 +116,6 @@
       margin-left: 1rem; white-space: nowrap;
     }
     .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
-
-    .page-nav {
-      position: fixed; right: clamp(10px, 4vw, 40px); top: 50%;
-      transform: translateY(-50%); z-index: 200;
-      display: flex; flex-direction: column; gap: 24px;
-      opacity: 0; visibility: hidden; transition: opacity 0.6s var(--ease), visibility 0.6s;
-    }
-    .page-nav.visible { opacity: 1; visibility: visible; }
-    .page-nav-item { display: flex; align-items: center; gap: 12px; flex-direction: row-reverse; cursor: pointer; background: none; border: none; padding: 8px 0; }
-    .page-nav-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(233,229,223,0.4); transition: all 0.35s; flex-shrink: 0; }
-    .page-nav-label { font-family: var(--font-en); font-size: 12px; letter-spacing: 0.15em; color: rgba(233,229,223,0.4); text-transform: uppercase; transition: color 0.35s; white-space: nowrap; }
-    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot { background: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px rgba(196,168,130,0.6); }
-    .page-nav-item:hover .page-nav-label { color: rgba(233,229,223,0.85); }
-    .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
         HERO FIRST VIEW (UNIT WORLDS CONCEPT)
@@ -375,10 +367,10 @@
     }
 
     @media (max-width: 768px) {
+      /* スマホでのヘッダー: 名前とボタンのみ表示しスッキリさせる */
       nav#top-nav { padding: 1rem var(--px); display: flex; justify-content: space-between; align-items: center; }
       .nav-links { display: none; }
       .nav-cta { display: inline-block; margin-left: 0; padding: 0.45rem 1rem; }
-      .page-nav { display: none; }
       .gallery-item { width: 100%; }
       .gallery-item-img-wrap { height: auto; width: 100%; border: none; }
       .gallery-item-img-wrap img { width: 100%; height: auto; object-fit: cover; }
@@ -397,22 +389,14 @@
 
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
+    
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html#statement">Statement</a></li>
-      <li><a href="index.html#works">Works</a></li>
-      <li><a href="index.html#profile">Profile</a></li>
-      <li><a href="index.html#news">News</a></li>
+      <li><a href="#statement" class="header-nav-item" data-target="statement">Statement</a></li>
+      <li><a href="#gallery" class="header-nav-item" data-target="gallery">Gallery</a></li>
+      <li><a href="#chronology" class="header-nav-item" data-target="chronology">Timeline</a></li>
     </ul>
+    
     <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
-  </nav>
-
-  <nav class="page-nav" id="pageNav" aria-label="ページ内ナビゲーション">
-    <button class="page-nav-item" data-target="gallery" aria-label="Galleryへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Gallery</span>
-    </button>
-    <button class="page-nav-item" data-target="chronology" aria-label="Timelineへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Timeline</span>
-    </button>
   </nav>
 
   <main>
@@ -908,11 +892,10 @@
       obs.observe(el);
     });
 
-    /* ── Scroll Interactions (Spine, Nav, Page-Nav) ── */
+    /* ── Scroll Interactions (Header Nav & Spine) ── */
     const topNav = document.getElementById('top-nav');
-    const pageNav = document.getElementById('pageNav');
-    const navItems = document.querySelectorAll('.page-nav-item');
-    const sections = ['gallery', 'chronology'].map(id => document.getElementById(id));
+    const headerNavItems = document.querySelectorAll('.header-nav-item');
+    const sections = ['statement', 'gallery', 'chronology'].map(id => document.getElementById(id));
     const spineFill = document.getElementById('tl-spine-fill');
     const tlWrap = document.querySelector('.timeline-container');
     let ticking = false;
@@ -926,19 +909,16 @@
           if (scrollY > 50) topNav.classList.add('scrolled');
           else topNav.classList.remove('scrolled');
 
-          /* Page Nav Visibility & Active State (Desktop only visual) */
+          /* Header Nav Active State (Highlight current section) */
           const checkY = scrollY + window.innerHeight * 0.4;
           let activeSec = null;
           sections.forEach(sec => {
             if (sec && sec.offsetTop <= checkY) activeSec = sec;
           });
-          navItems.forEach(item => {
+          headerNavItems.forEach(item => {
             const target = document.getElementById(item.getAttribute('data-target'));
             item.classList.toggle('active', target === activeSec);
           });
-          if (pageNav && window.innerWidth > 768) {
-            pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.6);
-          }
 
           /* Timeline Spine Progress */
           if (tlWrap && spineFill) {
@@ -963,8 +943,10 @@
       }
     }, { passive: true });
 
-    navItems.forEach(item => {
-      item.addEventListener('click', () => {
+    /* Header Nav Smooth Scroll Click Event */
+    headerNavItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
         const target = document.getElementById(item.getAttribute('data-target'));
         if (target) {
           const offset = topNav?.offsetHeight || 0;
