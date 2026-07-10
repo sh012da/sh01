@@ -69,10 +69,12 @@
     =========================================================== */
     nav#top-nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 300;
-      display: flex; align-items: center; justify-content: space-between;
+      /* 全体のバランスを取るためにGridレイアウトを採用 */
+      display: grid; 
+      grid-template-columns: 1fr auto 1fr; 
+      align-items: center;
       padding: clamp(1.2rem, 3vw, 2rem) var(--px);
       background: transparent; border-bottom: 1px solid transparent;
-      
       transform: translateY(-100%);
       opacity: 0;
       transition: opacity 1.2s var(--ease), transform 1.2s var(--ease), background 0.6s, border 0.6s, padding 0.6s;
@@ -87,22 +89,52 @@
       background: var(--bg-glass); backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border); padding-block: clamp(1rem, 2vw, 1.5rem);
     }
+    
     .nav-logo-unified {
+      justify-self: start; /* 左寄せ */
       font-family: var(--font-en); font-size: clamp(0.8rem, 1.5vw, 1rem);
       letter-spacing: 0.3em; font-weight: 300; text-transform: uppercase;
     }
-    .nav-links { display: flex; gap: 3rem; list-style: none; }
-    .nav-links a {
-      font-family: var(--font-en); font-size: 0.75rem; letter-spacing: 0.25em;
-      color: var(--muted); text-transform: uppercase; transition: color 0.3s;
+    
+    .nav-links { 
+      justify-self: center; /* 中央寄せ */
+      display: flex; gap: 3rem; list-style: none; 
     }
-    .nav-links a:hover { color: var(--fg); }
+    
+    .nav-links a {
+      position: relative;
+      font-family: var(--font-en); font-size: 0.75rem; letter-spacing: 0.25em;
+      color: var(--muted); text-transform: uppercase; transition: color 0.3s var(--ease);
+      padding-bottom: 0.3rem; /* アンダーラインとの余白 */
+    }
+    .nav-links a:hover,
+    .nav-links a.active { 
+      color: var(--fg); opacity: 1; 
+    }
+    
+    /* ページ内案内（現在地）のアンダーラインアニメーション */
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; width: 100%; height: 1px;
+      background-color: var(--accent);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.4s var(--ease);
+    }
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
     .nav-cta {
+      justify-self: end; /* 右寄せ */
       font-family: var(--font-en); font-size: 0.7rem; letter-spacing: 0.25em;
       text-transform: uppercase; border: 1px solid var(--muted); padding: 0.6rem 1.8rem;
       transition: all 0.4s var(--ease);
     }
-    .nav-cta:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+    .nav-cta:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); opacity: 1; }
 
     /* ============================================================
         HERO SECTION (Cinematic "SLASH" Reveal)
@@ -502,6 +534,11 @@
 
     /* Responsive adjustments */
     @media (max-width: 768px) {
+      /* スマホ時はFlexboxに戻して左右配置のみにする */
+      nav#top-nav {
+        display: flex;
+        justify-content: space-between;
+      }
       .nav-links { display: none; }
       .statement-grid { grid-template-columns: 1fr; gap: 2rem; }
       .statement-label { writing-mode: horizontal-tb; transform: none; text-align: left; }
@@ -554,17 +591,15 @@
       
     </section>
 
-    <section class="section-spacing">
+    <section class="section-spacing" id="statement">
       <div class="concept-container fade-up">
         <h2 class="concept-heading">皮膚は境界であり、<br>世界と衝突した記憶のキャンバスである。</h2>
         <p class="concept-text">
           理不尽な暴力、事故、あるいは戦禍。それらによって変容させられた皮膚を描く行為は、やがて人間の表面から大地の表面へと視線を移し、信州・三水の土を焼き、土地の記憶を抉り出す「左美都（さみず）」のモチーフへと至る、決定的な転機となった。
         </p>
       </div>
-    </section>
-
-    <section class="section-spacing" id="statement" style="padding-top:0;">
-      <div class="statement-grid fade-up">
+      
+      <div class="statement-grid fade-up" style="margin-top: 8rem;">
         <div class="statement-label">Series Statement</div>
         <div class="statement-body">
           <p>
@@ -963,7 +998,34 @@
       }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
       fadeElements.forEach(el => observer.observe(el));
 
-      /* ── 4. Lightbox Modal Logic ── */
+      /* ── 4. Scroll Spy (現在地のハイライト) ── */
+      const navItems = document.querySelectorAll('.nav-links a');
+      const spySections = document.querySelectorAll('section[id]');
+      
+      const spyOptions = {
+        root: null,
+        // 画面の中央付近をセクションが通過した時にアクティブを切り替える
+        rootMargin: '-40% 0px -60% 0px', 
+        threshold: 0
+      };
+
+      const spyObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            navItems.forEach(link => {
+              link.classList.remove('active');
+              if (link.getAttribute('href') === `#${id}`) {
+                link.classList.add('active');
+              }
+            });
+          }
+        });
+      }, spyOptions);
+
+      spySections.forEach(section => spyObserver.observe(section));
+
+      /* ── 5. Lightbox Modal Logic ── */
       const modal = document.getElementById('imageModal');
       const modalImg = document.getElementById('modalImg');
       const modalJa = document.getElementById('modalJa');
