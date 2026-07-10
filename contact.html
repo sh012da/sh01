@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<!-- Google Tag Manager -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -8,760 +9,850 @@
   gtag('js', new Date());
   gtag('config', 'G-5RF8JPF5D8');
 </script>
-    <link rel="icon" type="image/jpeg" href="images/【FSM横】IMG_7730.jpg">
+<link rel="icon" type="image/jpeg" href="images/【FSM横】IMG_7730.jpg">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Contact — Tsuda Shoichi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Noto+Serif+JP:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Noto+Serif+JP:wght@200;300;400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:       #080808;
-  --gold:     #b8955a;
-  --gold-dim: rgba(184,149,90,0.15);
-  --white:    #ffffff;
-  --muted:    #666666;
-  --faint:    #333333;
-  --border:   #252525;
-  --font-display: 'Cormorant Garamond', 'Noto Serif JP', 'Times New Roman', serif;
-  --font-sans: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif;
+  --bg-deep: #030303;
+  --bg-cell: rgba(18, 18, 18, 0.4);
+  --border-dim: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(184, 149, 90, 0.3);
+  --accent-gold: #b8955a;
+  --accent-gold-rgb: 184, 149, 90;
+  --text-primary: #ffffff;
+  --text-secondary: #aaaaaa;
+  --text-muted: #666666;
+  --font-serif: 'Cormorant Garamond', 'Noto Serif JP', serif;
+  --font-sans: 'Montserrat', sans-serif;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-html { scroll-behavior: smooth; }
-
-body {
-  background-color: var(--bg);
-  color: var(--white);
-  font-family: var(--font-display);
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: var(--font-serif);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh;
   overflow-x: hidden;
+  overflow-y: auto; 
+}
+
+/* ── ノイズオーバーレイ ── */
+.noise-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* ──────────────────────────────────────────
-   PAGE LAYOUT
+   BENTO GRID LAYOUT
 ────────────────────────────────────────── */
-.contact-page {
-  display: grid;
-  grid-template-columns: 380px 1fr;
+.app-container {
+  position: relative;
+  width: 100%;
   min-height: 100vh;
-  max-width: 1160px;
-  margin: 0 auto;
-  padding: 0 48px;
-  gap: 80px;
-  align-items: start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 1;
+}
+
+.bento-grid {
+  display: grid;
+  width: 100%;
+  max-width: 1440px;
+  height: calc(100vh - 48px);
+  min-height: 760px;
+  grid-template-columns: 320px minmax(0, 1fr) minmax(0, 1fr) 180px;
+  grid-template-rows: 170px 90px 1fr;
+  gap: 16px;
+  position: relative;
+}
+
+.form-contents {
+  display: contents;
 }
 
 /* ──────────────────────────────────────────
-   LEFT PANEL — Info
+   【ブレを完全排除した】極上のフォーカス・アニメーション
 ────────────────────────────────────────── */
-.info-panel {
-  position: sticky;
-  top: 0;
-  padding: 100px 0 80px;
+@keyframes smoothFocus {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes contentRise {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes watermarkEmerge {
+  0% { opacity: 0; transform: translateX(-15px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+/* ── 各セルの基本美学 ── */
+.bento-cell {
+  position: relative;
+  background: var(--bg-cell);
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 48px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: border-color 0.4s ease;
+  will-change: transform, opacity, filter;
+  animation: smoothFocus 1.2s cubic-bezier(0.16, 1, 0.2, 1) backwards;
 }
 
-.ghost-word {
-  font-size: clamp(5rem, 10vw, 8rem);
-  font-weight: 300;
+.bento-cell > * {
+  will-change: transform, opacity, filter;
+  animation: contentRise 1s cubic-bezier(0.16, 1, 0.2, 1) backwards;
+}
+
+.bento-cell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid transparent;
+  border-radius: inherit;
+  pointer-events: none;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  z-index: 10;
+}
+.bento-cell:focus-within::after {
+  border-color: var(--accent-gold);
+  box-shadow: inset 0 0 20px rgba(var(--accent-gold-rgb), 0.05);
+}
+
+.bento-cell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+    rgba(255, 255, 255, 0.04), 
+    transparent 40%
+  );
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.bento-grid:hover .bento-cell::before { opacity: 1; }
+
+/* ── CELL ASSIGNMENTS & ディレイ設定 ── */
+.cell-info    { grid-column: 1 / 2; grid-row: 1 / 4; animation-delay: 0.1s; }
+.cell-inquiry { grid-column: 2 / 4; grid-row: 1 / 2; animation-delay: 0.2s; }
+.cell-name    { grid-column: 2 / 3; grid-row: 2 / 3; animation-delay: 0.3s; }
+.cell-email   { grid-column: 3 / 4; grid-row: 2 / 3; animation-delay: 0.4s; }
+.cell-message { grid-column: 2 / 4; grid-row: 3 / 4; animation-delay: 0.5s; }
+.cell-submit  { grid-column: 4 / 5; grid-row: 1 / 4; animation-delay: 0.6s; }
+.cell-success { grid-column: 2 / 5; grid-row: 1 / 4; display: none; }
+
+.cell-info > * { animation-delay: 0.4s; }
+.cell-inquiry > * { animation-delay: 0.5s; }
+.cell-name > * { animation-delay: 0.6s; }
+.cell-email > * { animation-delay: 0.7s; }
+.cell-message > * { animation-delay: 0.8s; }
+.cell-submit > * { animation-delay: 0.9s; }
+
+
+/* ──────────────────────────────────────────
+   INFO CELL (洗練された情報パネル)
+────────────────────────────────────────── */
+.cell-info {
+  padding: 48px 40px;
+  justify-content: space-between;
+}
+.info-watermark {
+  position: absolute;
+  bottom: -20px;
+  left: -20px;
+  font-size: 7.5rem;
+  font-weight: 200;
   font-style: italic;
-  color: rgba(255,255,255,0.035);
-  line-height: 1;
-  letter-spacing: -0.02em;
-  user-select: none;
-  margin-bottom: -24px;
+  color: rgba(255, 255, 255, 0.015);
+  pointer-events: none;
+  z-index: 0;
+  line-height: 0.8;
+  writing-mode: vertical-rl;
+  animation: watermarkEmerge 1.5s cubic-bezier(0.16, 1, 0.2, 1) backwards;
+  animation-delay: 0.8s !important;
 }
-
-.info-title {
-  font-size: 1.8rem;
-  font-weight: 300;
-  letter-spacing: 0.05em;
-  line-height: 1.3;
+.info-content {
+  position: relative;
+  z-index: 1;
 }
-
-.info-title em {
-  display: block;
-  font-style: italic;
-  color: var(--gold);
-  font-size: 1.1rem;
-  letter-spacing: 0.1em;
-  margin-bottom: 12px;
-  font-weight: 300;
+.main-title {
+  font-size: 2.8rem;
+  font-weight: 200;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
 }
-
-.info-divider {
-  width: 40px;
-  height: 1px;
-  background: var(--gold);
-  opacity: 0.6;
-}
-
-.info-body {
+.sub-title {
   font-family: var(--font-sans);
-  font-size: 0.82rem;
-  color: var(--muted);
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+.info-desc {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
   line-height: 2;
   font-weight: 300;
+  letter-spacing: 0.02em;
+  text-wrap: pretty;
+  word-break: auto-phrase;
 }
 
-.info-details {
+/* ── 究極に洗練させたメタ情報 ── */
+.meta-grid {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 28px;
 }
-
-.info-detail-row {
+.meta-item {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 6px;
+}
+.meta-label {
+  font-family: var(--font-sans);
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  color: rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
 }
 
-.detail-label {
+/* 英語のすぐ下に日本語を配置するための縦並びレイアウト */
+.meta-val-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px; /* マージンを空けすぎず、引き締まった印象に */
+}
+
+.meta-val {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.meta-val[href]:hover { color: var(--accent-gold); }
+.meta-val-ja {
+  font-family: var(--font-serif);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+/* ──────────────────────────────────────────
+   INPUT FIELDS (フォームラベルデザイン)
+────────────────────────────────────────── */
+.field-label {
+  position: absolute;
+  top: 18px;
+  left: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
+  pointer-events: none;
+}
+.field-label .en {
   font-family: var(--font-sans);
   font-size: 0.65rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--gold);
-  opacity: 0.8;
+  color: var(--accent-gold);
 }
-
-.detail-value {
-  font-family: var(--font-sans);
-  font-size: 0.82rem;
-  color: rgba(255,255,255,0.55);
-  line-height: 1.5;
-}
-
-.detail-value a {
-  color: rgba(255,255,255,0.55);
-  text-decoration: none;
-  transition: color 0.3s;
-}
-.detail-value a:hover { color: var(--white); }
-
-.info-bottom {
-  font-family: var(--font-sans);
+.field-label .ja {
+  font-family: var(--font-serif);
   font-size: 0.65rem;
-  letter-spacing: 0.08em;
-  color: var(--faint);
-  line-height: 2;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.1em;
+}
+.req { color: var(--accent-gold); opacity: 0.6; }
+
+.cell-input {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 300;
+  padding: 52px 24px 16px; 
+  z-index: 1;
+  resize: none;
+  appearance: none;
+}
+.cell-input::placeholder {
+  color: rgba(255, 255, 255, 0.15);
 }
 
 /* ──────────────────────────────────────────
-   RIGHT PANEL — Form
+   INQUIRY TYPES
 ────────────────────────────────────────── */
-.form-panel {
-  padding: 100px 0 80px;
-}
-
-/* ── Inquiry Type Cards ── */
-.section-label {
-  font-family: var(--font-sans);
-  font-size: 0.65rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 20px;
-  opacity: 0.8;
-}
-
-.inquiry-grid {
+.inquiry-wrapper {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 60px;
-}
-
-.inquiry-card {
-  position: relative;
-  cursor: pointer;
-}
-
-.inquiry-card input[type="radio"] {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.card-inner {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 22px 20px;
-  border: 1px solid var(--border);
-  transition: border-color 0.35s ease, background-color 0.35s ease, transform 0.15s ease;
-  user-select: none;
-}
-
-.inquiry-card:hover .card-inner {
-  border-color: rgba(184,149,90,0.4);
-  background-color: rgba(184,149,90,0.04);
-}
-
-.inquiry-card input:checked + .card-inner {
-  border-color: var(--gold);
-  background-color: var(--gold-dim);
-}
-
-.inquiry-card:active .card-inner {
-  transform: scale(0.985);
-}
-
-.card-icon {
-  font-size: 1.2rem;
-  opacity: 0.5;
-  transition: opacity 0.35s, color 0.35s;
-  display: block;
-  margin-bottom: 4px;
-}
-
-.inquiry-card input:checked + .card-inner .card-icon {
-  opacity: 1;
-  color: var(--gold);
-}
-
-.card-ja {
-  display: block;
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  font-weight: 400;
-  color: rgba(255,255,255,0.75);
-  transition: color 0.35s;
-  line-height: 1.4;
-}
-
-.card-en {
-  display: block;
-  font-family: var(--font-sans);
-  font-size: 0.65rem;
-  letter-spacing: 0.06em;
-  color: var(--muted);
-  font-weight: 300;
-  transition: color 0.35s;
-}
-
-.inquiry-card input:checked + .card-inner .card-ja {
-  color: var(--white);
-}
-
-.inquiry-card input:checked + .card-inner .card-en {
-  color: rgba(184,149,90,0.8);
-}
-
-/* Check mark */
-.card-check {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 16px;
-  height: 16px;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  transition: background 0.3s, border-color 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.card-check::after {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--gold);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.inquiry-card input:checked ~ .card-check {
-  border-color: var(--gold);
-}
-.inquiry-card input:checked ~ .card-check::after {
-  opacity: 1;
-}
-
-/* ── Floating Label Fields ── */
-.fields-section {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  margin-bottom: 48px;
-}
-
-.form-field {
-  position: relative;
-}
-
-.form-field label {
-  position: absolute;
-  top: 14px;
-  left: 0;
-  font-family: var(--font-sans);
-  font-size: 0.82rem;
-  color: var(--muted);
-  pointer-events: none;
-  transition: top 0.25s ease, font-size 0.25s ease, color 0.25s ease, letter-spacing 0.25s ease;
-  letter-spacing: 0.02em;
-}
-
-.form-field input,
-.form-field textarea {
-  display: block;
-  width: 100%;
-  padding: 14px 0 8px;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--border);
-  color: var(--white);
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 300;
-  letter-spacing: 0.02em;
-  outline: none;
-  transition: border-color 0.35s ease;
-  -webkit-appearance: none;
-  appearance: none;
-}
-
-.form-field textarea {
-  resize: none;
-  min-height: 130px;
-  line-height: 1.8;
-}
-
-.form-field input::placeholder,
-.form-field textarea::placeholder {
-  color: transparent;
-}
-
-/* Float label when focused or filled */
-.form-field input:focus ~ label,
-.form-field input:not(:placeholder-shown) ~ label,
-.form-field textarea:focus ~ label,
-.form-field textarea:not(:placeholder-shown) ~ label {
-  top: -4px;
-  font-size: 0.62rem;
-  color: var(--gold);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.form-field input:focus,
-.form-field textarea:focus {
-  border-bottom-color: var(--gold);
-}
-
-/* Bottom bar animation */
-.form-field::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--gold);
-  transition: width 0.4s ease;
-}
-.form-field:focus-within::after {
-  width: 100%;
-}
-
-/* Char counter */
-.char-counter {
-  font-family: var(--font-sans);
-  font-size: 0.62rem;
-  color: var(--faint);
-  text-align: right;
-  margin-top: 8px;
-  transition: color 0.3s;
-  letter-spacing: 0.04em;
-}
-
-.char-counter.near-limit { color: var(--gold); }
-
-/* Required asterisk */
-.req {
-  color: var(--gold);
-  opacity: 0.6;
-  margin-left: 2px;
-  font-size: 0.7em;
-}
-
-/* ── Submit ── */
-.submit-wrapper {
-  position: relative;
-}
-
-.submit-btn {
-  width: 100%;
-  padding: 20px 0;
-  background: transparent;
-  border: 1px solid rgba(184,149,90,0.5);
-  color: var(--gold);
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  cursor: pointer;
-  outline: none;
-  transition: background 0.4s ease, border-color 0.4s ease, color 0.4s ease, transform 0.15s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.submit-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--gold);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.5s ease;
-}
-
-.submit-btn:hover::before { transform: scaleX(1); }
-.submit-btn:hover { color: var(--bg); border-color: var(--gold); }
-.submit-btn:hover .btn-text { color: var(--bg); }
-.submit-btn:active { transform: scale(0.99); }
-
-.btn-text {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  height: 100%;
+  padding: 52px 24px 24px;
   position: relative;
   z-index: 1;
-  transition: color 0.5s ease;
+}
+.inq-opt {
+  position: relative;
+  cursor: pointer;
+  display: block;
+}
+.inq-opt input {
+  position: absolute;
+  opacity: 0;
+  width: 0; height: 0;
+}
+.inq-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  padding: 16px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.inq-icon {
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  transition: color 0.4s, transform 0.4s;
+}
+.inq-en {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+  transition: color 0.4s;
+}
+.inq-ja {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  transition: color 0.4s;
+}
+.inq-opt:hover .inq-box {
+  border-color: var(--border-hover);
+  background: rgba(255, 255, 255, 0.015);
+}
+.inq-opt input:checked + .inq-box {
+  background: rgba(var(--accent-gold-rgb), 0.08);
+  border-color: var(--accent-gold);
+  box-shadow: 0 4px 20px rgba(var(--accent-gold-rgb), 0.1);
+}
+.inq-opt input:checked + .inq-box .inq-icon,
+.inq-opt input:checked + .inq-box .inq-en,
+.inq-opt input:checked + .inq-box .inq-ja {
+  color: var(--accent-gold);
+}
+.inq-opt input:checked + .inq-box .inq-icon {
+  transform: scale(1.15) translateY(-2px);
+}
+
+@keyframes errorShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* ──────────────────────────────────────────
+   SUBJECT & MESSAGE
+────────────────────────────────────────── */
+.cell-message {
+  display: flex;
+  flex-direction: column;
+}
+.subj-wrap {
+  position: relative;
+  flex: 0 0 84px;
+  border-bottom: 1px solid var(--border-dim);
+}
+.msg-wrap {
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+.msg-wrap .cell-input {
+  flex: 1;
+  padding-bottom: 40px; 
+}
+.char-counter {
+  position: absolute;
+  bottom: 16px;
+  right: 24px;
+  font-family: var(--font-sans);
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  z-index: 2;
+  transition: color 0.3s;
+}
+.char-counter.near-limit { color: var(--accent-gold); }
+
+/* ──────────────────────────────────────────
+   SUBMIT BUTTON
+────────────────────────────────────────── */
+.cell-submit {
+  background: transparent;
+  cursor: pointer;
+  outline: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  border: 1px solid var(--border-dim);
+}
+.submit-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  z-index: 2;
+  color: var(--text-primary);
+  transition: color 0.4s ease;
+}
+.submit-text-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.submit-text {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+.submit-text-ja {
+  font-family: var(--font-serif);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  margin-top: 4px;
+  transition: color 0.4s ease;
+}
+.submit-arrow {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.btn-arrow {
-  display: inline-block;
-  transition: transform 0.3s ease;
+.cell-submit::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 0%; height: 100%;
+  background: var(--accent-gold);
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1;
 }
-.submit-btn:hover .btn-arrow { transform: translateX(6px); }
+.cell-submit:hover::before { width: 100%; }
+.cell-submit:hover .submit-content { color: var(--bg-deep); }
+.cell-submit:hover .submit-text-ja { color: rgba(0, 0, 0, 0.6); }
+.cell-submit:hover .submit-arrow { transform: translateX(12px); }
 
-.submit-btn:disabled {
+.cell-submit:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
-.submit-btn:disabled::before { transform: scaleX(0); }
+.cell-submit:disabled::before { display: none; }
+.cell-submit:disabled:hover .submit-arrow { transform: none; }
 
-/* ── Success State ── */
-.success-state {
-  display: none;
+/* ──────────────────────────────────────────
+   SUCCESS STATE
+────────────────────────────────────────── */
+.cell-success {
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 80px 0;
-  animation: fadeUp 0.6s ease both;
+  background: rgba(var(--accent-gold-rgb), 0.03);
+  border-color: var(--accent-gold);
 }
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.success-mark {
-  width: 56px;
-  height: 56px;
-  border: 1px solid var(--gold);
+.success-icon {
+  width: 68px;
+  height: 68px;
+  border: 1px solid var(--accent-gold);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 32px;
-  animation: drawCircle 0.8s ease both;
+  margin: 0 auto 28px;
+  color: var(--accent-gold);
+  font-size: 1.6rem;
+  animation: scaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.3s;
 }
-
-@keyframes drawCircle {
-  from { transform: scale(0) rotate(-30deg); opacity: 0; }
-  to   { transform: scale(1) rotate(0deg); opacity: 1; }
-}
-
-.success-check {
-  font-size: 1.3rem;
-  color: var(--gold);
-}
-
 .success-title {
-  font-size: 1.5rem;
-  font-weight: 300;
-  letter-spacing: 0.1em;
-  margin-bottom: 16px;
-}
-
-.success-body {
   font-family: var(--font-sans);
-  font-size: 0.82rem;
-  color: var(--muted);
-  line-height: 2;
+  font-size: 1.6rem;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  margin-bottom: 16px;
+  color: var(--text-primary);
 }
-
-/* ── Page entrance animation ── */
-.info-panel,
-.form-panel {
-  animation: fadeIn 0.8s ease both;
+.success-desc {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  line-height: 2.2;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  font-weight: 300;
 }
-
-.form-panel { animation-delay: 0.12s; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes scaleIn {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
 /* ──────────────────────────────────────────
-   RESPONSIVE
+   RESPONSIVE DESIGN
 ────────────────────────────────────────── */
-@media (max-width: 900px) {
-  .contact-page {
-    grid-template-columns: 1fr;
-    gap: 0;
-    padding: 0 28px;
+@media (max-width: 1024px) {
+  .app-container {
+    padding: 16px;
+    align-items: flex-start;
   }
-
-  .info-panel {
-    position: static;
-    padding: 64px 0 40px;
-    gap: 32px;
+  .bento-grid {
+    height: auto;
+    min-height: calc(100vh - 32px);
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto auto auto;
   }
-
-  .ghost-word {
-    font-size: 4rem;
-    margin-bottom: -16px;
+  .cell-info    { grid-column: 1 / 3; grid-row: 1 / 2; }
+  .cell-inquiry { grid-column: 1 / 3; grid-row: 2 / 3; }
+  .cell-name    { grid-column: 1 / 2; grid-row: 3 / 4; }
+  .cell-email   { grid-column: 2 / 3; grid-row: 3 / 4; }
+  .cell-message { grid-column: 1 / 3; grid-row: 4 / 5; height: 380px; }
+  
+  .cell-submit { 
+    grid-column: 1 / 3; grid-row: 5 / 6; 
+    height: 100px; 
   }
-
-  .form-panel {
-    padding: 0 0 80px;
+  .submit-content {
+    flex-direction: row;
+    gap: 24px;
   }
-
-  .inquiry-grid {
-    gap: 8px;
+  .submit-text-group {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 16px;
   }
-
-  .card-inner {
-    padding: 18px 16px;
-  }
+  .submit-text { font-size: 1.1rem; }
+  .submit-text-ja { margin-top: 0; }
+  
+  .cell-success { grid-column: 1 / 3; grid-row: 2 / 6; min-height: 450px; }
 }
 
-@media (max-width: 480px) {
-  .contact-page {
-    padding: 0 20px;
-  }
-
-  .inquiry-grid {
+@media (max-width: 640px) {
+  .bento-grid {
     grid-template-columns: 1fr;
   }
-
-  .card-inner {
-    flex-direction: row;
-    align-items: center;
-    gap: 14px;
-    padding: 16px;
+  .cell-name, .cell-email { grid-column: 1 / 2; }
+  .cell-email { grid-row: 4 / 5; }
+  .cell-message { grid-row: 5 / 6; height: 320px; }
+  .cell-submit { grid-row: 6 / 7; height: 90px; }
+  
+  .inquiry-wrapper {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 12px;
+    padding: 56px 16px 20px;
   }
+  .inq-box {
+    height: 100px;
+    padding: 12px;
+  }
+  .inq-icon { margin-bottom: 8px; width: 24px; height: 24px; }
+  .inq-en { font-size: 0.65rem; }
+  .inq-ja { font-size: 0.65rem; }
 
-  .card-icon { margin-bottom: 0; font-size: 1.1rem; }
-  .card-text { flex: 1; }
-  .card-ja { font-size: 0.8rem; }
+  .cell-info { padding: 36px 24px; }
+  .main-title { font-size: 2.2rem; }
+  .info-desc { font-size: 0.9rem; }
+  
+  .field-label { top: 16px; left: 16px; gap: 6px; }
+  .field-label .en { font-size: 0.6rem; }
+  .field-label .ja { font-size: 0.6rem; }
+  .cell-input { padding: 48px 16px 16px; font-size: 1.05rem; }
+
+  /* スマホでのメタ情報。さらにマージンを詰める */
+  .meta-val-wrapper { gap: 2px;}
+
+  .submit-content { gap: 16px; }
+  .submit-text-group {
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .submit-text { font-size: 0.9rem; letter-spacing: 0.2em; }
+  .submit-text-ja { font-size: 0.7rem; }
 }
 </style>
 </head>
 <body>
 
-<div class="contact-page">
+<!-- 背景ノイズエフェクト -->
+<svg class="noise-overlay" viewBox="0 0 100% 100%" xmlns="http://www.w3.org/2000/svg">
+  <filter id="noiseFilter">
+    <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#noiseFilter)"/>
+</svg>
 
-  <!-- ── LEFT: Info Panel ── -->
-  <aside class="info-panel">
-    <div class="ghost-word">Contact</div>
-
-    <div>
-      <div class="info-title">
-        <em>— お問い合わせ</em>
-        展覧会・作品・<br>取材のご相談を<br>お待ちしています。
+<div class="app-container">
+  <main class="bento-grid" id="bentoGrid">
+    
+    <!-- LEFT: 情報パネル -->
+    <div class="bento-cell cell-info">
+      <div class="info-watermark">CONTACT</div>
+      <div class="info-content">
+        <h1 class="main-title">Contact</h1>
+        <div class="sub-title">— お問い合わせ</div>
+        <p class="info-desc">
+          展覧会への参加・企画のご提案、作品の購入・コレクションに関するご相談、取材やコラボレーションのご依頼など、どうぞお気軽にご連絡ください。
+        </p>
+      </div>
+      
+      <!-- 究極に洗練されたメタ情報エリア -->
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Email</span>
+          <div class="meta-val-wrapper">
+            <a href="mailto:sh012da@gmail.com" class="meta-val">sh012da@gmail.com</a>
+          </div>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Location</span>
+          <div class="meta-val-wrapper">
+            <span class="meta-val">Nagano, Japan</span>
+            <span class="meta-val-ja">日本・長野県</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Response</span>
+          <div class="meta-val-wrapper">
+            <span class="meta-val">3–5 business days</span>
+            <span class="meta-val-ja">３～５日以内に返信いたします</span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="info-divider"></div>
-
-    <p class="info-body">
-      展覧会への参加・企画のご提案、作品の購入・コレクションに関するご相談、<br>
-      取材やコラボレーションのご依頼など、<br>
-      どうぞお気軽にご連絡ください。
-    </p>
-
-    <div class="info-details">
-      <div class="info-detail-row">
-        <span class="detail-label">Email</span>
-        <span class="detail-value">
-          <a href="mailto:sh012da@gmail.com">sh012da@gmail.com</a>
+    <!-- FORM BENTO WRAPPER -->
+    <form id="contactForm" class="form-contents" novalidate>
+      
+      <!-- TOP: 種類選択 -->
+      <div class="bento-cell cell-inquiry" id="inquiryCell">
+        <span class="field-label">
+          <span class="en">INQUIRY TYPE</span>
+          <span class="ja">お問い合わせの種類</span>
+          <span class="req">*</span>
         </span>
-      </div>
-      <div class="info-detail-row">
-        <span class="detail-label">Based in</span>
-        <span class="detail-value">Nagano, Japan</span>
-      </div>
-      <div class="info-detail-row">
-        <span class="detail-label">Response</span>
-        <span class="detail-value">3–5 business days</span>
-      </div>
-    </div>
-
-    <p class="info-bottom">
-      Tsuda Shoichi / 津田翔一<br>
-      Painter &amp; Installation Artist
-    </p>
-  </aside>
-
-  <!-- ── RIGHT: Form Panel ── -->
-  <main class="form-panel">
-
-    <form id="contactForm" novalidate>
-
-      <!-- Inquiry Type -->
-      <div style="margin-bottom: 60px;">
-        <p class="section-label">Inquiry Type / お問い合わせ種別<span class="req">*</span></p>
-        <div class="inquiry-grid">
-
-          <label class="inquiry-card">
+        <div class="inquiry-wrapper">
+          <label class="inq-opt">
             <input type="radio" name="inquiry_type" value="exhibition" required>
-            <div class="card-inner">
-              <svg class="card-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M9 21V9"/></svg>
-              <div class="card-text">
-                <span class="card-ja">展覧会・企画</span>
-                <span class="card-en">Exhibition &amp; Projects</span>
-              </div>
-            </div>
-            <div class="card-check"></div>
+            <span class="inq-box">
+              <svg class="inq-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M9 21V9"/></svg>
+              <span class="inq-en">Exhibition</span>
+              <span class="inq-ja">展覧会・企画</span>
+            </span>
           </label>
-
-          <label class="inquiry-card">
+          <label class="inq-opt">
             <input type="radio" name="inquiry_type" value="acquisition">
-            <div class="card-inner">
-              <svg class="card-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-              <div class="card-text">
-                <span class="card-ja">作品購入・収蔵</span>
-                <span class="card-en">Artworks &amp; Acquisition</span>
-              </div>
-            </div>
-            <div class="card-check"></div>
+            <span class="inq-box">
+              <svg class="inq-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span class="inq-en">Acquisition</span>
+              <span class="inq-ja">作品購入・収蔵</span>
+            </span>
           </label>
-
-          <label class="inquiry-card">
+          <label class="inq-opt">
             <input type="radio" name="inquiry_type" value="media">
-            <div class="card-inner">
-              <svg class="card-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-              <div class="card-text">
-                <span class="card-ja">取材・コラボ</span>
-                <span class="card-en">Media &amp; Editorial</span>
-              </div>
-            </div>
-            <div class="card-check"></div>
+            <span class="inq-box">
+              <svg class="inq-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+              <span class="inq-en">Media</span>
+              <span class="inq-ja">取材・コラボ</span>
+            </span>
           </label>
-
-          <label class="inquiry-card">
+          <label class="inq-opt">
             <input type="radio" name="inquiry_type" value="other">
-            <div class="card-inner">
-              <svg class="card-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-              <div class="card-text">
-                <span class="card-ja">その他</span>
-                <span class="card-en">Other Inquiries</span>
-              </div>
-            </div>
-            <div class="card-check"></div>
+            <span class="inq-box">
+              <svg class="inq-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+              <span class="inq-en">Other</span>
+              <span class="inq-ja">その他</span>
+            </span>
           </label>
-
         </div>
       </div>
 
-      <!-- Text Fields -->
-      <div class="fields-section">
+      <!-- MIDDLE: 名前 & メアド -->
+      <label class="bento-cell cell-name">
+        <span class="field-label">
+          <span class="en">NAME</span>
+          <span class="ja">お名前</span>
+          <span class="req">*</span>
+        </span>
+        <input type="text" name="name" class="cell-input" required autocomplete="name">
+      </label>
+      
+      <label class="bento-cell cell-email">
+        <span class="field-label">
+          <span class="en">EMAIL</span>
+          <span class="ja">メールアドレス</span>
+          <span class="req">*</span>
+        </span>
+        <input type="email" name="email" class="cell-input" required autocomplete="email">
+      </label>
 
-        <div class="form-field">
-          <input type="text" id="name" name="name" placeholder="Name" required autocomplete="name">
-          <label for="name">Name / お名前<span class="req">*</span></label>
-        </div>
-
-        <div class="form-field">
-          <input type="email" id="email" name="email" placeholder="Email" required autocomplete="email">
-          <label for="email">Email / メールアドレス<span class="req">*</span></label>
-        </div>
-
-        <div class="form-field">
-          <input type="text" id="subject" name="subject" placeholder="Subject" autocomplete="off">
-          <label for="subject">Subject / 件名</label>
-        </div>
-
-        <div class="form-field">
-          <textarea id="message" name="message" placeholder="Message" required maxlength="2000"></textarea>
-          <label for="message">Message / メッセージ<span class="req">*</span></label>
-          <div class="char-counter" id="charCounter">0 / 2000</div>
-        </div>
-
-      </div>
-
-      <!-- Submit -->
-      <div class="submit-wrapper">
-        <button type="submit" class="submit-btn" id="submitBtn">
-          <span class="btn-text">
-            Send Message
-            <span class="btn-arrow">→</span>
+      <!-- BOTTOM: 件名 & メッセージ -->
+      <div class="bento-cell cell-message">
+        <label class="subj-wrap">
+          <span class="field-label">
+            <span class="en">SUBJECT</span>
+            <span class="ja">件名</span>
           </span>
-        </button>
+          <input type="text" name="subject" class="cell-input" autocomplete="off">
+        </label>
+        <label class="msg-wrap">
+          <span class="field-label">
+            <span class="en">MESSAGE</span>
+            <span class="ja">お問い合わせ内容</span>
+            <span class="req">*</span>
+          </span>
+          <textarea name="message" id="messageBox" class="cell-input" required maxlength="2000"></textarea>
+          <span id="charCounter" class="char-counter">0 / 2000</span>
+        </label>
       </div>
+
+      <!-- RIGHT: 送信ボタン -->
+      <button type="submit" class="bento-cell cell-submit" id="submitBtn">
+        <div class="submit-content">
+          <div class="submit-text-group" id="submitText">
+            <span class="submit-text">SEND MESSAGE</span>
+            <span class="submit-text-ja">メッセージを送信する</span>
+          </div>
+          <svg class="submit-arrow" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <polyline points="14 6 20 12 14 18"></polyline>
+          </svg>
+        </div>
+      </button>
 
     </form>
 
-    <!-- Success State -->
-    <div class="success-state" id="successState">
-      <div class="success-mark">
-        <span class="success-check">✓</span>
-      </div>
-      <h2 class="success-title">ありがとうございます</h2>
-      <p class="success-body">
-        メッセージを受け取りました。<br>
+    <!-- SUCCESS STATE (送信完了セル) -->
+    <div class="bento-cell cell-success" id="successState">
+      <div class="success-icon">✓</div>
+      <h2 class="success-title">TRANSMISSION COMPLETE</h2>
+      <p class="success-desc">
+        メッセージを受け付けました。<br>
         3〜5営業日以内にご返信いたします。<br><br>
         Thank you for reaching out.
       </p>
     </div>
 
   </main>
-
 </div>
 
 <script>
-  // ── Char counter ──
-  const textarea = document.getElementById('message');
+  // ── マウス連動スポットライトエフェクト ──
+  document.getElementById('bentoGrid').addEventListener("mousemove", (e) => {
+    for(const cell of document.querySelectorAll(".bento-cell")) {
+      const rect = cell.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      cell.style.setProperty("--mouse-x", `${x}px`);
+      cell.style.setProperty("--mouse-y", `${y}px`);
+    }
+  });
+
+  // ── リアルタイム文字数カウンター ──
+  const textarea = document.getElementById('messageBox');
   const counter  = document.getElementById('charCounter');
   textarea.addEventListener('input', () => {
     const len = textarea.value.length;
     counter.textContent = len + ' / 2000';
-    counter.classList.toggle('near-limit', len > 1700);
+    counter.classList.toggle('near-limit', len > 1800);
   });
 
-  // ── Form submit via fetch (no redirect) ──
-  const form        = document.getElementById('contactForm');
-  const submitBtn   = document.getElementById('submitBtn');
+  // ── フォーム送信ロジック（空間置換アニメーション） ──
+  const form = document.getElementById('contactForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const submitText = document.getElementById('submitText');
   const successState = document.getElementById('successState');
+  const inquiryCell = document.getElementById('inquiryCell');
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Basic validation
+    // 未選択のラジオボタンを警告
     const inquiryChecked = form.querySelector('input[name="inquiry_type"]:checked');
     if (!inquiryChecked) {
-      highlightSection();
+      inquiryCell.style.animation = 'none';
+      void inquiryCell.offsetWidth;
+      inquiryCell.style.animation = 'errorShake 0.4s ease';
+      inquiryCell.style.borderColor = 'rgba(255, 60, 60, 0.6)';
+      setTimeout(() => { inquiryCell.style.borderColor = ''; }, 1000);
       return;
     }
 
     submitBtn.disabled = true;
-    submitBtn.querySelector('.btn-text').textContent = 'Sending…';
+    submitText.innerHTML = `
+      <span class="submit-text">SENDING...</span>
+      <span class="submit-text-ja">送信中...</span>
+    `;
 
     const data = new FormData(form);
 
@@ -773,28 +864,25 @@ body {
       });
 
       if (res.ok) {
-        form.style.opacity = '0';
-        form.style.transition = 'opacity 0.5s ease';
-        setTimeout(() => {
-          form.style.display = 'none';
-          successState.style.display = 'block';
-        }, 500);
+        form.style.display = 'none';
+        successState.style.display = 'flex';
+        // 成功セル出現時にもう一度フォーカスアニメーションを発動
+        successState.style.animation = 'smoothFocus 1s cubic-bezier(0.16, 1, 0.2, 1) backwards';
       } else {
         submitBtn.disabled = false;
-        submitBtn.querySelector('.btn-text').innerHTML = 'Retry — try again <span class="btn-arrow">→</span>';
+        submitText.innerHTML = `
+          <span class="submit-text">RETRY ERROR</span>
+          <span class="submit-text-ja">エラーが発生しました</span>
+        `;
       }
     } catch {
       submitBtn.disabled = false;
-      submitBtn.querySelector('.btn-text').innerHTML = 'Send Message <span class="btn-arrow">→</span>';
+      submitText.innerHTML = `
+        <span class="submit-text">RETRY ERROR</span>
+        <span class="submit-text-ja">通信エラー</span>
+      `;
     }
   });
-
-  function highlightSection() {
-    const grid = document.querySelector('.inquiry-grid');
-    grid.style.outline = '1px solid rgba(184,149,90,0.5)';
-    grid.style.transition = 'outline 0.3s';
-    setTimeout(() => { grid.style.outline = 'none'; }, 2000);
-  }
 </script>
 
 </body>
