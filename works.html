@@ -41,19 +41,18 @@
       overflow-x: hidden; letter-spacing: 0.05em;
     }
 
-    /* ─── 全画面アンビエント動画（背景からの圧倒的連続性） ─── */
+    /* ─── 全画面アンビエント動画 ─── */
     .bg-layer {
       position: fixed;
       inset: 0; width: 100vw; height: 100vh;
       object-fit: cover; z-index: -2;
-      /* 動画の主張を抑え、作品とテキストを見やすくするための調整 */
-      opacity: 0.15; 
+      /* 動画が再生されていることを認識しやすくするため透明度を少し上げました */
+      opacity: 0.25; 
       filter: contrast(100%) brightness(0.5) grayscale(40%);
       pointer-events: none;
     }
     .bg-vignette {
       position: fixed; inset: 0; z-index: -1; pointer-events: none;
-      /* 背景との境界を美しく馴染ませるグラデーション */
       background: radial-gradient(circle at 50% 50%, rgba(5,5,5,0.3) 10%, rgba(5,5,5,0.98) 100%),
                   linear-gradient(to bottom, rgba(5,5,5,0.3), rgba(5,5,5,0.95));
     }
@@ -105,7 +104,7 @@
     .nav-hamburger span { display: block; width: 26px; height: 1px; background: var(--fg); margin: 6px 0; transition: all 0.4s var(--ease-fluid); }
 
     /* ════════════════════════════════════════
-       ★ マトリクス・レーン（常時露出型の並行導線・快感UI）
+       ★ マトリクス・レーン
     ════════════════════════════════════════ */
     .side-link-nav {
       position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 150;
@@ -372,6 +371,7 @@
 </head>
 <body id="top">
 
+  <!-- 動画タグには強力に自動再生・インライン再生を強制する属性を付与 -->
   <video id="bgLayer" class="bg-layer" autoplay loop muted playsinline webkit-playsinline disablePictureInPicture preload="auto">
     <source src="images/mov1.mp4" type="video/mp4">
   </video>
@@ -621,22 +621,40 @@
   <div class="mouse-tooltip" id="mouse-tooltip"></div>
 
   <script>
+    // ─── BACKGROUND VIDEO AUTOPLAY FIX ───
     document.addEventListener('DOMContentLoaded', () => {
       const video = document.getElementById('bgLayer');
       if (video) {
+        // JSからも明示的にプロパティをセットし、iOS等の制約を回避
         video.muted = true;
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            const autoPlayOnInteraction = () => {
-               video.play();
-              document.removeEventListener('touchstart', autoPlayOnInteraction);
-              document.removeEventListener('click', autoPlayOnInteraction);
-            };
-            document.addEventListener('touchstart', autoPlayOnInteraction, { once: true, passive: true });
-            document.addEventListener('click', autoPlayOnInteraction, { once: true, passive: true });
-          });
-        }
+        video.playsInline = true;
+        video.setAttribute('playsinline', '');
+
+        const attemptPlay = () => {
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.then(() => {
+              // 再生成功
+            }).catch((error) => {
+              console.warn("動画の自動再生がブラウザにブロックされました。ユーザーのアクションを待機します。", error);
+              
+              // スクロール、タップ、クリックのいずれかのアクションで再生を開始させる
+              const startOnInteraction = () => {
+                video.play();
+                window.removeEventListener('scroll', startOnInteraction);
+                window.removeEventListener('click', startOnInteraction);
+                window.removeEventListener('touchstart', startOnInteraction);
+              };
+              
+              window.addEventListener('scroll', startOnInteraction, { once: true, passive: true });
+              window.addEventListener('click', startOnInteraction, { once: true, passive: true });
+              window.addEventListener('touchstart', startOnInteraction, { once: true, passive: true });
+            });
+          }
+        };
+
+        // 読み込み直後の再生ブロックを回避するため、ほんの少し遅らせて発火
+        setTimeout(attemptPlay, 100);
       }
     });
 
@@ -730,7 +748,6 @@
           if (scrollY > 60) topNav.classList.add('scrolled');
           else topNav.classList.remove('scrolled');
           
-          // 背景マトリクスのパララックス効果は微細に抑え、上品さを維持
           hLines.forEach((line, idx) => line.style.transform = `translateY(${(scrollY * (idx === 0 ? 0.02 : -0.02))}px)`);
           vLines.forEach((line, idx) => line.style.transform = `translateX(${(scrollY * (idx === 0 ? 0.01 : -0.01))}px)`);
 
