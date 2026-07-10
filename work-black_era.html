@@ -54,7 +54,6 @@
       padding-left: env(safe-area-inset-left);
       padding-right: env(safe-area-inset-right);
     }
-    body.is-locked { overflow: hidden; }
     img { max-width: 100%; height: auto; display: block; }
     a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
     a:hover { opacity: 0.45; }
@@ -81,68 +80,59 @@
       letter-spacing: 0.3em;
       font-weight: 300; color: var(--accent);
       text-transform: uppercase; transition: opacity 0.4s ease;
+      position: relative; z-index: 2;
     }
     .nav-logo-unified:hover { opacity: 0.5; }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    
+    .nav-links { 
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex; 
+      gap: clamp(1.5rem, 3vw, 3rem); 
+      list-style: none; 
+    }
     .nav-links a {
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
       letter-spacing: 0.25em;
-      color: var(--muted); text-transform: uppercase; transition: color 0.3s ease;
+      color: var(--muted); text-transform: uppercase; 
+      transition: color 0.3s ease, opacity 0.3s ease;
+      position: relative;
+      padding-bottom: 4px;
     }
-    .nav-links a:hover { color: var(--accent); }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width 0.3s var(--ease), left 0.3s var(--ease);
+    }
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--accent);
+      opacity: 1;
+    }
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 100%;
+      left: 0;
+    }
+
     .nav-cta {
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
       letter-spacing: 0.25em;
       text-transform: uppercase;
       border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem;
       color: var(--accent); transition: background 0.25s, color 0.25s;
+      position: relative; z-index: 2;
     }
-    .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
-    
-    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; position: relative; z-index: 301; width: 30px; height: 20px; }
-    .nav-hamburger span {
-      display: block; position: absolute; left: 0; width: 100%; height: 1px;
-      background: var(--accent); transition: transform 0.4s var(--ease), opacity 0.4s var(--ease), top 0.4s var(--ease);
-    }
-    .nav-hamburger span:nth-child(1) { top: 0px; }
-    .nav-hamburger span:nth-child(2) { top: 9px; }
-    .nav-hamburger span:nth-child(3) { top: 18px; }
-    .nav-hamburger.is-active span:nth-child(1) { top: 9px; transform: rotate(45deg); }
-    .nav-hamburger.is-active span:nth-child(2) { opacity: 0; }
-    .nav-hamburger.is-active span:nth-child(3) { top: 9px; transform: rotate(-45deg); }
-
-    /* Page Nav */
-    .page-nav {
-      position: fixed;
-      right: clamp(20px, 4vw, 40px); top: 50%;
-      transform: translateY(-50%); z-index: 200;
-      display: flex; flex-direction: column; gap: 24px;
-      opacity: 0; visibility: hidden;
-      transition: opacity 0.6s var(--ease), visibility 0.6s;
-    }
-    .page-nav.visible { opacity: 1; visibility: visible; }
-    .page-nav-item {
-      display: flex; align-items: center; gap: 12px; flex-direction: row-reverse;
-      cursor: pointer; background: none; border: none; padding: 8px 0;
-    }
-    .page-nav-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: rgba(233,229,223,0.4); transition: all 0.35s; flex-shrink: 0;
-    }
-    .page-nav-label {
-      font-family: var(--font-en); font-size: 12px; letter-spacing: 0.15em;
-      color: rgba(233,229,223,0.4);
-      text-transform: uppercase; transition: color 0.35s; white-space: nowrap;
-    }
-    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot {
-      background: var(--accent);
-      transform: scale(1.4); box-shadow: 0 0 10px rgba(196,168,130,0.6);
-    }
-    .page-nav-item:hover .page-nav-label { color: rgba(233,229,223,0.85); }
-    .page-nav-item.active .page-nav-label { color: var(--accent); }
+    .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); opacity: 1; }
 
     /* ============================================================
-       HERO FIRST VIEW - REDESIGNED "CHROMATIC CONVERGENCE"
+       HERO FIRST VIEW
     ================================================================ */
     .hero {
       position: relative;
@@ -150,7 +140,6 @@
       display: flex; flex-direction: column; justify-content: flex-end;
       padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); overflow: hidden;
       background-color: var(--bg);
-      /* Custom properties driven by JS for interaction */
       --mx: 0;
       --my: 0;
       --intro-progress: 0;
@@ -164,7 +153,6 @@
       background-image: url('images/【くにうみ】.jpg'); background-size: cover; background-position: center 25%;
       mix-blend-mode: lighten; opacity: 0; filter: grayscale(50%) contrast(1.2) blur(10px);
       transition: opacity 2.5s ease 0.5s, filter 3s ease 0.5s;
-      /* Subtle parallax moving in opposite direction of mouse */
       transform: translate(calc(var(--mx) * -1.5%), calc(var(--my) * -1.5%)) scale(1.05);
     }
     .hero.revealed .hero-bg-image {
@@ -172,7 +160,6 @@
       filter: grayscale(15%) contrast(1.1) blur(0px);
     }
     
-    /* The interactive ambient spotlight representing the hidden layers */
     .hero-bg-overlay {
       position: absolute; inset: 0;
       background: radial-gradient(
@@ -211,7 +198,6 @@
       position: relative;
       display: inline-block;
       opacity: 0;
-      /* Enter from the depth of the void */
       transform: translate3d(0, 40px, -150px) rotateX(15deg);
       transition: transform 1.8s var(--ease), opacity 1.5s ease;
       transform-style: preserve-3d;
@@ -226,14 +212,12 @@
       transform: translate3d(0, 0, 0) rotateX(0); 
     }
 
-    /* THE CHROMATIC UNDERLAYERS - visualizes the "colors hiding in black" */
     .hero-title .char::before,
     .hero-title .char::after {
       content: attr(data-char);
       position: absolute;
       top: 0; left: 0;
       pointer-events: none;
-      /* Initial state: scattered and blurred */
       opacity: 0;
       filter: blur(15px);
       transition: transform 0.8s cubic-bezier(0.1, 0.8, 0.2, 1), filter 0.8s ease, opacity 0.8s ease;
@@ -241,28 +225,25 @@
     }
 
     .hero-title .char::before {
-      color: var(--accent); /* Warm deep tone */
+      color: var(--accent);
       z-index: -1;
       transform: translate(calc(-30px * (1 - var(--intro-progress))), calc(20px * (1 - var(--intro-progress)))) scale(1.05);
     }
     .hero-title .char::after {
-      color: var(--accent2); /* Cool deep tone */
+      color: var(--accent2);
       z-index: -2;
       transform: translate(calc(30px * (1 - var(--intro-progress))), calc(-20px * (1 - var(--intro-progress)))) scale(1.05);
     }
 
-    /* Once revealed, they sink into the white text, then respond to the mouse */
     .hero.is-interactive .hero-title .char::before,
     .hero.is-interactive .hero-title .char::after {
       opacity: 0.65;
       filter: blur(4px);
     }
     .hero.is-interactive .hero-title .char::before {
-      /* Moves opposite to the cursor */
       transform: translate(calc(var(--mx) * -15px), calc(var(--my) * -10px));
     }
     .hero.is-interactive .hero-title .char::after {
-      /* Moves with the cursor */
       transform: translate(calc(var(--mx) * 15px), calc(var(--my) * 10px));
     }
     
@@ -452,7 +433,7 @@
     .contact-btn {
       display: inline-block; padding: 1.2rem 3.5rem; background: var(--accent); color: var(--bg); font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none; transition: all 0.4s var(--ease); border-radius: 2px;
     }
-    .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3); }
+    .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3); opacity: 1; }
 
     footer {
       padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); background: var(--bg); position: relative; z-index: 2;
@@ -461,7 +442,7 @@
     .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
 
     /* ============================================================
-       LIGHTBOX (MODAL) - REDESIGNED
+       LIGHTBOX (MODAL)
     ================================================================ */
     .image-modal {
       position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center;
@@ -508,13 +489,19 @@
       transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
     }
     .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
-    .back-to-top:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-6px); }
+    .back-to-top:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-6px); opacity: 1; }
     .back-to-top svg { width: clamp(20px, 3vw, 32px); height: clamp(20px, 3vw, 32px); margin-bottom: 2px; }
     .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.9rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
 
     /* ============================================================
        RESPONSIVE DESIGN
     ================================================================ */
+    @media (max-width: 900px) {
+      .nav-links {
+        position: static;
+        transform: none;
+      }
+    }
     @media (max-width: 1024px) {
       .concept-keywords-grid { grid-template-columns: 1fr; background: transparent; gap: 1rem; }
       .concept-kw-card { border: 0.5px solid var(--border); padding: 2rem; }
@@ -530,11 +517,7 @@
     @media (max-width: 768px) {
       nav#top-nav { padding: 1rem 1.25rem; justify-content: space-between; align-items: center; }
       .nav-links { display: none !important; }
-      .nav-hamburger { display: none !important; }
       .gallery-section { display: none !important; }
-      .page-nav.visible { right: 8px; opacity: 0.5; }
-      .page-nav.visible:hover { opacity: 1; }
-      .page-nav-label { display: none; }
     }
     @media (max-width: 480px) {
       .hero-scroll { display: none; }
@@ -554,24 +537,11 @@
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="index.html#statement" onclick="closeMenu()">Statement</a></li>
-      <li><a href="works.html"           onclick="closeMenu()">Works</a></li>
-      <li><a href="index.html#profile"   onclick="closeMenu()">Profile</a></li>
-      <li><a href="index.html#news"      onclick="closeMenu()">News</a></li>
+      <li><a href="#statement" class="page-link">Statement</a></li>
+      <li><a href="#gallery" class="page-link">Gallery</a></li>
+      <li><a href="#chronology" class="page-link">Timeline</a></li>
     </ul>
-    <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
-      <span></span><span></span><span></span>
-    </button>
-    <a href="#contact" class="nav-cta" id="nav-cta-btn" onclick="closeMenu()">Contact</a>
-  </nav>
-
-  <nav class="page-nav" id="pageNav" aria-label="ページ内ナビゲーション">
-    <button class="page-nav-item" data-target="gallery" aria-label="Galleryへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Gallery</span>
-    </button>
-    <button class="page-nav-item" data-target="chronology" aria-label="Timelineへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Timeline</span>
-    </button>
+    <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
   </nav>
 
   <main>
@@ -889,40 +859,11 @@
   </div>
 
   <script>
-    /* ── ナビゲーション & メニュー ── */
-    function toggleMenu() {
-      const links = document.getElementById('nav-links');
-      const cta = document.getElementById('nav-cta-btn');
-      const hamburger = document.getElementById('hamburger');
-      links.classList.toggle('open');
-      hamburger.classList.toggle('is-active');
-      if(cta) cta.style.display = links.classList.contains('open') ? 'none' : '';
-      if (links.classList.contains('open')) {
-        document.body.classList.add('is-locked');
-      } else {
-        document.body.classList.remove('is-locked');
-      }
-    }
-    
-    function closeMenu() {
-      const links = document.getElementById('nav-links');
-      const cta = document.getElementById('nav-cta-btn');
-      const hamburger = document.getElementById('hamburger');
-      links.classList.remove('open');
-      hamburger.classList.remove('is-active');
-      if(cta) cta.style.display = '';
-      document.body.classList.remove('is-locked');
-    }
-
     /* ── ファーストビュー アニメーション "CHROMATIC CONVERGENCE" ── */
     window.addEventListener('load', () => {
       const heroSec = document.getElementById('hero');
-      
-      // アニメーションの進行管理
       setTimeout(() => heroSec.style.setProperty('--intro-progress', '1'), 100);
       setTimeout(() => heroSec.classList.add('revealed'), 300);
-      
-      // 初期アニメーション終了後、インタラクティブ（マウス連動）を許可
       setTimeout(() => heroSec.classList.add('is-interactive'), 2300);
     });
 
@@ -934,21 +875,17 @@
     let idleTime = 0;
 
     window.addEventListener('mousemove', (e) => {
-      // 画面中央を0,0とし、-1〜1の範囲に正規化
       targetX = (e.clientX / window.innerWidth) * 2 - 1;
       targetY = (e.clientY / window.innerHeight) * 2 - 1;
       isMouseMoving = true;
     });
 
-    // モバイルや非操作時に、層が生きているように呼吸（揺らめき）させる
     function animateHeroLayer() {
       if (!isMouseMoving) {
         idleTime += 0.008;
         targetX = Math.sin(idleTime) * 0.4;
         targetY = Math.cos(idleTime * 0.7) * 0.4;
       }
-      
-      // 慣性（Lerp）による滑らかな追従
       currentX += (targetX - currentX) * 0.04;
       currentY += (targetY - currentY) * 0.04;
       
@@ -958,8 +895,6 @@
       requestAnimationFrame(animateHeroLayer);
     }
     requestAnimationFrame(animateHeroLayer);
-    
-    // マウスが止まったら再び呼吸アニメーションに戻す
     setInterval(() => { isMouseMoving = false; }, 3000);
 
 
@@ -1024,11 +959,10 @@
       obs.observe(el);
     });
 
-    /* ── Scroll Interactions (Spine, Nav, Page-Nav) ── */
+    /* ── Scroll Interactions (Spine, Nav, ScrollSpy) ── */
     const topNav = document.getElementById('top-nav');
-    const pageNav = document.getElementById('pageNav');
-    const navItems = document.querySelectorAll('.page-nav-item');
-    const sections = ['gallery', 'chronology'].map(id => document.getElementById(id));
+    const pageLinks = document.querySelectorAll('.nav-links a.page-link');
+    const spySections = ['statement', 'gallery', 'chronology'].map(id => document.getElementById(id));
     const spineFill = document.getElementById('tl-spine-fill');
     const tlWrap = document.querySelector('.timeline-container');
     let ticking = false;
@@ -1042,19 +976,28 @@
           if (scrollY > 50) topNav.classList.add('scrolled');
           else topNav.classList.remove('scrolled');
 
-          /* Page Nav Visibility & Active State */
+          /* ScrollSpy - Active State & Underline */
           const checkY = scrollY + window.innerHeight * 0.4;
-          let activeSec = null;
-          sections.forEach(sec => {
-            if (sec && sec.offsetTop <= checkY) activeSec = sec;
+          let activeId = null;
+          
+          spySections.forEach(sec => {
+            if (sec && sec.offsetTop <= checkY) {
+              activeId = sec.getAttribute('id');
+            }
           });
-          navItems.forEach(item => {
-            const target = document.getElementById(item.getAttribute('data-target'));
-            item.classList.toggle('active', target === activeSec);
-          });
-          if (pageNav) {
-            pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.6);
+          
+          // 最下部までスクロールした場合は強制的に最後のセクションをアクティブに
+          if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50) {
+            activeId = 'chronology';
           }
+          
+          pageLinks.forEach(link => {
+            if (link.getAttribute('href') === `#${activeId}`) {
+              link.classList.add('active');
+            } else {
+              link.classList.remove('active');
+            }
+          });
 
           /* Timeline Spine Progress */
           if (tlWrap && spineFill) {
@@ -1077,12 +1020,15 @@
       }
     }, { passive: true });
 
-    navItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const target = document.getElementById(item.getAttribute('data-target'));
-        if (target) {
-          const offset = topNav?.offsetHeight || 0;
-          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+    /* ── Header Smooth Scroll ── */
+    pageLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href').substring(1);
+        const targetSec = document.getElementById(targetId);
+        if (targetSec) {
+          const offset = topNav?.offsetHeight || 80;
+          window.scrollTo({ top: targetSec.offsetTop - offset, behavior: 'smooth' });
         }
       });
     });
