@@ -106,14 +106,37 @@
       text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
     .nav-logo-unified:hover { opacity: 0.5; }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
     .nav-links a {
+      position: relative;
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
       letter-spacing: 0.25em;
       color: var(--muted); text-transform: uppercase; transition: color 0.3s ease;
       text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+      padding-bottom: 6px; /* アンダーバーのための余白 */
     }
-    .nav-links a:hover { color: var(--accent); }
+    /* アンダーバーの実装 */
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width 0.4s var(--ease), opacity 0.4s var(--ease);
+      opacity: 0;
+    }
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 100%;
+      opacity: 1;
+    }
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--accent); }
+    
     .nav-cta {
       font-family: var(--font-en);
       font-size: clamp(0.55rem, 1.5vw, 0.65rem);
@@ -125,22 +148,6 @@
       background: rgba(0,0,0,0.4);
     }
     .nav-cta:hover { background: rgba(168,117,96,0.15); color: var(--fg); }
-
-    .page-nav {
-      position: fixed;
-      right: clamp(10px, 3vw, 30px); top: 50%;
-      transform: translateY(-50%); z-index: 200;
-      display: flex; flex-direction: column; gap: 24px;
-      opacity: 0; visibility: hidden;
-      transition: opacity 0.6s var(--ease), visibility 0.6s;
-    }
-    .page-nav.visible { opacity: 1; visibility: visible; }
-    .page-nav-item { display: flex; align-items: center; gap: 12px; flex-direction: row-reverse; cursor: pointer; background: none; border: none; padding: 8px 0; }
-    .page-nav-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(233,229,223,0.4); transition: all 0.35s; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-    .page-nav-label { font-family: var(--font-en); font-size: 12px; letter-spacing: 0.15em; color: rgba(233,229,223,0.4); text-transform: uppercase; transition: color 0.35s; white-space: nowrap; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot { background: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px rgba(168,117,96,0.6); }
-    .page-nav-item:hover .page-nav-label { color: rgba(233,229,223,0.85); }
-    .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
         HERO FIRST VIEW (AVANT-GARDE REDESIGN)
@@ -347,7 +354,7 @@
     .gi-ref10 { grid-column: 3 / span 8; }
     .gi-ref11 { grid-column: 12 / span 12; }
 
-    /* 修正箇所：画像を隙間なく表示させるために背景色を透明にし、ブロックレベル要素として高さを自動フィットさせます */
+    /* 画像を隙間なく表示させるために背景色を透明にし、ブロックレベル要素として高さを自動フィットさせます */
     .gallery-item-img-wrap { 
       width: 100%; height: auto;
       display: block; 
@@ -383,7 +390,7 @@
     .tl-content-wrap { display: flex; justify-content: space-between; align-items: center; gap: clamp(2rem, 5vw, 6rem); }
     .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
 
-    /* 修正箇所：高さにフィットさせ、黒背景を無くす */
+    /* 高さにあわせ、黒背景を無くす */
     .tl-figure { 
       width: 48%; position: relative; height: auto;
       border: 0.5px solid var(--border); overflow: hidden; background: transparent; cursor: zoom-in; transition: width 0.4s ease;
@@ -395,7 +402,7 @@
 
     .tl-entry.is-full-figure .tl-content-wrap { flex-direction: column; align-items: stretch; gap: clamp(2rem, 4vw, 3.5rem); }
     
-    /* 修正箇所：フルサイズの画像を枠内に隙間なくフィットさせる（幅を画像に合わせる） */
+    /* フルサイズの画像を枠内に隙間なくフィットさせる（幅を画像に合わせる） */
     .tl-entry.is-full-figure .tl-figure { 
       width: fit-content; max-width: 100%; margin: 0 auto; display: block;
       border: 0.5px solid rgba(168,117,96,0.2); background: transparent; box-shadow: 0 10px 40px rgba(0,0,0,0.4);
@@ -476,13 +483,11 @@
       .gi-ref00 { grid-column: auto / span 6 !important; justify-self: center !important; width: 58% !important; }
       .gi-ref09 { grid-column: auto / span 6 !important; justify-self: center !important; width: 72% !important; }
       nav#top-nav { padding: 1rem 1.25rem; justify-content: space-between; align-items: center; }
+      /* スマホではハンバーガーにせず、リンクのみ消して名前とContactのみ表示 */
       .nav-links { display: none !important; }
-      .page-nav.visible { right: 8px; opacity: 0.5; }
-      .page-nav.visible:hover { opacity: 1; }
-      .page-nav-label { display: none; }
       .tl-content-wrap, .tl-entry.is-full-figure .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column !important; align-items: center; gap: 2.5rem; }
       
-      /* 修正箇所：モバイル時もis-full-figureは画像幅に合わせるよう設定 */
+      /* モバイル時もis-full-figureは画像幅に合わせるよう設定 */
       .tl-figure, .tl-body, .tl-entry.is-featured .tl-figure, .tl-entry.is-featured .tl-body, .tl-entry.is-full-figure .tl-body { width: 100% !important; }
       .tl-entry.is-full-figure .tl-figure { width: fit-content !important; max-width: 100% !important; margin: 0 auto; }
       .tl-entry:not(.is-full-figure) .tl-figure { width: 80% !important; max-width: 380px; margin: 0 auto; }
@@ -508,21 +513,11 @@
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="index.html#statement">Statement</a></li>
-      <li><a href="index.html#works">Works</a></li>
-      <li><a href="index.html#profile">Profile</a></li>
-      <li><a href="index.html#news">News</a></li>
+      <li><a href="#statement">Statement</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#chronology">Timeline</a></li>
     </ul>
     <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
-  </nav>
-
-  <nav class="page-nav" id="pageNav" aria-label="ページ内ナビゲーション">
-    <button class="page-nav-item" data-target="gallery" aria-label="Galleryへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Gallery</span>
-    </button>
-    <button class="page-nav-item" data-target="chronology" aria-label="Timelineへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Timeline</span>
-    </button>
   </nav>
 
   <main>
@@ -728,7 +723,7 @@
               <p class="tl-meta">91.0 × 72.7 cm / Oil on canvas</p>
               <div class="tl-desc">
                 <p>10億5700万——アフリカ大陸の人口を示す数字がタイトルに置かれる。この巨大な数の中に、一人の子どもの身体が横たわる。うずくまり、手を組み、頭を伏せている。</p>
-                <p>数は人を匿名化する。10億という規模において、個人の苦痛は統計の誤差となりがちだ。しかしこの絵画は、その巨数の背後にある一つの身体の重さを問う。横たわる子どもに名前はない。しかし、油彩の厚みがその存在に固有の重力を与えている。</p>
+                <p>数は人を匿名化する。10億という規模において、個 internalの苦痛は統計の誤差となりがちだ。しかしこの絵画は、その巨数の背後にある一つの身体の重さを問う。横たわる子どもに名前はない。しかし、油彩の厚みがその存在に固有の重力を与えている。</p>
               </div>
             </div>
           </div>
@@ -873,11 +868,10 @@
       });
     });
 
-    /* ── Scroll Interactions (Spine, Nav, Page-Nav) ── */
+    /* ── Scroll Interactions (Spine, Header Links Active State) ── */
     const topNav = document.getElementById('top-nav');
-    const pageNav = document.getElementById('pageNav');
-    const navItems = document.querySelectorAll('.page-nav-item');
-    const sections = ['gallery', 'chronology'].map(id => document.getElementById(id));
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const sections = ['statement', 'gallery', 'chronology'].map(id => document.getElementById(id)).filter(Boolean);
     const spineFill = document.getElementById('tl-spine-fill');
     const tlWrap = document.querySelector('.timeline-container');
     let ticking = false;
@@ -887,24 +881,28 @@
         window.requestAnimationFrame(() => {
           const scrollY = window.scrollY;
 
+          // Header background
           if (topNav) {
             if (scrollY > 50) topNav.classList.add('scrolled');
             else topNav.classList.remove('scrolled');
           }
 
+          // Header links active state
           const checkY = scrollY + window.innerHeight * 0.4;
           let activeSec = null;
           sections.forEach(sec => {
             if (sec && sec.offsetTop <= checkY) activeSec = sec;
           });
-          navItems.forEach(item => {
-            const target = document.getElementById(item.getAttribute('data-target'));
-            item.classList.toggle('active', target === activeSec);
+          navLinks.forEach(link => {
+            const targetId = link.getAttribute('href').replace('#', '');
+            if (activeSec && activeSec.id === targetId) {
+              link.classList.add('active');
+            } else {
+              link.classList.remove('active');
+            }
           });
-          if (pageNav) {
-            pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.6);
-          }
 
+          // Timeline spine
           if (tlWrap && spineFill) {
             const rect = tlWrap.getBoundingClientRect();
             const totalH = tlWrap.offsetHeight;
@@ -914,6 +912,7 @@
             }
           }
 
+          // Back to top button
           const b2t = document.getElementById('backToTop');
           if (b2t) {
             if (scrollY > 400) b2t.classList.add('is-visible');
@@ -926,12 +925,18 @@
       }
     }, { passive: true });
 
-    navItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const target = document.getElementById(item.getAttribute('data-target'));
-        if (target) {
-          const offset = topNav?.offsetHeight || 0;
-          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+    /* ── Smooth Scroll for Header Links & In-page targets ── */
+    document.querySelectorAll('.nav-links a, #nav-cta-btn').forEach(link => {
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        if (href.startsWith('#')) {
+          e.preventDefault();
+          const targetId = href.replace('#', '');
+          const targetEl = document.getElementById(targetId);
+          if (targetEl) {
+            const offset = topNav?.offsetHeight || 80;
+            window.scrollTo({ top: targetEl.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+          }
         }
       });
     });
@@ -940,19 +945,11 @@
     if (b2tBtn) {
       b2tBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        if (window.innerWidth <= 768) {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-          const target = document.getElementById('gallery');
-          if (target) {
-            const offset = topNav?.offsetHeight || 80;
-            window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
-          }
-        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     }
 
-    /* ── Smooth Scroll to Chronology ── */
+    /* ── Smooth Scroll to Chronology Works ── */
     document.querySelectorAll('.js-scroll-to').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
