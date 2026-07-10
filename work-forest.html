@@ -84,7 +84,7 @@
     =========================================================== */
     nav#top-nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 300;
-      display: flex; align-items: center; justify-content: space-between;
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
       padding: clamp(16px, 3vw, 40px) var(--px);
       background: transparent;
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
@@ -96,58 +96,36 @@
       padding-top: clamp(12px, 2vw, 24px); padding-bottom: clamp(12px, 2vw, 24px);
     }
     .nav-logo-unified {
+      justify-self: start;
       font-family: var(--font-en); font-size: clamp(0.75rem, 2.5vw, 0.95rem);
       letter-spacing: 0.35em; font-weight: 300; color: var(--accent); text-transform: uppercase;
     }
-    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links { 
+      justify-self: center;
+      display: flex; gap: 3rem; list-style: none; 
+    }
+    .nav-links li { position: relative; }
     .nav-links a {
       font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.75rem);
       letter-spacing: 0.3em; color: var(--muted); text-transform: uppercase; transition: color 0.4s var(--ease-fluid);
+      padding-bottom: 6px; position: relative; display: inline-block;
     }
-    .nav-links a:hover { color: var(--accent); }
+    .nav-links a::after {
+      content: ''; position: absolute; left: 0; bottom: 0; width: 100%; height: 1px;
+      background: var(--accent); transform: scaleX(0); transform-origin: center;
+      transition: transform 0.4s var(--ease-fluid);
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); opacity: 1; }
+    .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
+
     .nav-cta {
+      justify-self: end;
       font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.7rem);
       letter-spacing: 0.3em; text-transform: uppercase;
       border: 0.5px solid rgba(196,168,130,0.3); padding: 0.6rem 1.6rem;
       color: var(--accent); transition: all 0.4s var(--ease-fluid);
     }
-    .nav-cta:hover { background: rgba(196,168,130,0.1); color: #fff; border-color: var(--accent); }
-    
-    /* Hamburger */
-    .nav-hamburger { display: none; width: 32px; height: 20px; position: relative; z-index: 301; padding: 4px; }
-    .nav-hamburger span {
-      display: block; position: absolute; left: 0; width: 100%; height: 1px;
-      background: var(--accent); transition: transform 0.5s var(--ease-slow), opacity 0.5s var(--ease-slow), top 0.5s var(--ease-slow);
-    }
-    .nav-hamburger span:nth-child(1) { top: 0px; }
-    .nav-hamburger span:nth-child(2) { top: 9px; }
-    .nav-hamburger span:nth-child(3) { top: 18px; }
-    .nav-hamburger.is-active span:nth-child(1) { top: 9px; transform: rotate(45deg); }
-    .nav-hamburger.is-active span:nth-child(2) { opacity: 0; }
-    .nav-hamburger.is-active span:nth-child(3) { top: 9px; transform: rotate(-45deg); }
-
-    /* Page Nav (Dot Indicator) */
-    .page-nav {
-      position: fixed; right: clamp(20px, 4vw, 50px); top: 50%; transform: translateY(-50%); z-index: 200;
-      display: flex; flex-direction: column; gap: 28px;
-      opacity: 0; visibility: hidden; transition: opacity 0.8s var(--ease-slow), visibility 0.8s;
-    }
-    .page-nav.visible { opacity: 1; visibility: visible; }
-    .page-nav-item { display: flex; align-items: center; gap: 16px; flex-direction: row-reverse; padding: 8px 0; }
-    .page-nav-dot {
-      width: 6px; height: 6px; border-radius: 50%; background: var(--border-md); transition: all 0.4s var(--ease-fluid); flex-shrink: 0; position: relative;
-    }
-    .page-nav-dot::after {
-      content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 0.5px solid transparent; transition: all 0.4s var(--ease-fluid);
-    }
-    .page-nav-label {
-      font-family: var(--font-en); font-size: 11px; letter-spacing: 0.2em;
-      color: rgba(233,229,223,0.3); text-transform: uppercase; transition: color 0.4s var(--ease-fluid); white-space: nowrap;
-    }
-    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot { background: var(--accent); transform: scale(1.2); }
-    .page-nav-item.active .page-nav-dot::after { border-color: rgba(196,168,130,0.4); transform: scale(1.5); }
-    .page-nav-item:hover .page-nav-label { color: rgba(233,229,223,0.9); }
-    .page-nav-item.active .page-nav-label { color: var(--accent); }
+    .nav-cta:hover { background: rgba(196,168,130,0.1); color: #fff; border-color: var(--accent); opacity: 1; }
 
     /* ============================================================
        HERO (MASTER TITLE ANIMATION)
@@ -517,18 +495,19 @@
       .gallery-item-cap { text-align: center; }
     }
     @media (max-width: 768px) {
-      nav#top-nav { padding: 1.25rem 1.5rem; }
+      nav#top-nav { 
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 1.25rem 1.5rem; 
+      }
       .nav-links { display: none !important; }
-      .nav-hamburger { display: block !important; }
-      .nav-cta { display: none !important; }
+      .nav-cta { 
+        display: inline-flex !important; 
+        font-size: 0.6rem; 
+        padding: 0.5rem 1rem; 
+      }
       
-      .page-nav.visible { right: 12px; opacity: 0.6; }
-      .page-nav.visible:hover { opacity: 1; }
-      .page-nav-label { display: none; }
-      
-      /* 新規追加: スマホではギャラリー(作品紹介グリッド)を非表示 */
+      /* スマホではギャラリー(作品紹介グリッド)を非表示 */
       .gallery-section { display: none !important; }
-      .page-nav-item[data-target="gallery"] { display: none !important; }
     }
     @media (max-width: 480px) {
       .hero-scroll { display: none; }
@@ -547,23 +526,11 @@
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="#statement" onclick="closeMenu()">Statement</a></li>
-      <li><a href="#gallery" onclick="closeMenu()">Works</a></li>
-      <li><a href="#chronology" onclick="closeMenu()">Timeline</a></li>
+      <li><a href="#statement">Statement</a></li>
+      <li><a href="#gallery">Works</a></li>
+      <li><a href="#chronology">Timeline</a></li>
     </ul>
-    <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
-      <span></span><span></span><span></span>
-    </button>
     <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
-  </nav>
-
-  <nav class="page-nav" id="pageNav" aria-label="ページ内ナビゲーション">
-    <button class="page-nav-item" data-target="gallery" aria-label="Galleryへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Gallery</span>
-    </button>
-    <button class="page-nav-item" data-target="chronology" aria-label="Timelineへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Timeline</span>
-    </button>
   </nav>
 
   <main>
@@ -935,20 +902,6 @@
       setTimeout(() => { document.getElementById('preloader').classList.add('is-hidden'); }, 800);
     });
 
-    /* ── メニューの制御 ── */
-    function toggleMenu() {
-      const links = document.getElementById('nav-links');
-      const hamburger = document.getElementById('hamburger');
-      links.classList.toggle('open');
-      hamburger.classList.toggle('is-active');
-      document.body.classList.toggle('is-locked');
-    }
-    function closeMenu() {
-      document.getElementById('nav-links').classList.remove('open');
-      document.getElementById('hamburger').classList.remove('is-active');
-      document.body.classList.remove('is-locked');
-    }
-
     /* ── ファーストビュー アニメーション起動 ── */
     window.addEventListener('load', () => {
       setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 2800);
@@ -1016,11 +969,11 @@
       obs.observe(el);
     });
 
-    /* ── スクロールイベント (Nav, Timeline Spine, Top Button) ── */
+    /* ── スクロールイベント (Header Nav, Timeline Spine, Top Button) ── */
     const topNav = document.getElementById('top-nav');
-    const pageNav = document.getElementById('pageNav');
-    const navItems = document.querySelectorAll('.page-nav-item');
-    const sections = ['gallery', 'chronology'].map(id => document.getElementById(id));
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const sections = ['statement', 'gallery', 'chronology'].map(id => document.getElementById(id));
+    
     const spineFill = document.getElementById('tl-spine-fill');
     const tlWrap = document.querySelector('.timeline-container');
     let ticking = false;
@@ -1034,19 +987,17 @@
           if (scrollY > 80) topNav.classList.add('scrolled');
           else topNav.classList.remove('scrolled');
 
-          /* Page Nav Visibility & Active State */
+          /* Header Nav Active State (アンダーバー連動) */
           const checkY = scrollY + window.innerHeight * 0.4;
-          let activeSec = null;
+          let activeSecId = null;
           sections.forEach(sec => {
-            if (sec && sec.offsetTop <= checkY) activeSec = sec;
+            if (sec && sec.offsetTop <= checkY) activeSecId = sec.getAttribute('id');
           });
-          navItems.forEach(item => {
-            const target = document.getElementById(item.getAttribute('data-target'));
-            item.classList.toggle('active', target === activeSec);
+          navLinks.forEach(link => {
+            const href = link.getAttribute('href').substring(1);
+            if (href === activeSecId) link.classList.add('active');
+            else link.classList.remove('active');
           });
-          if (pageNav) {
-            pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.7);
-          }
 
           /* Timeline Spine Progress */
           if (tlWrap && spineFill) {
@@ -1069,10 +1020,12 @@
       }
     }, { passive: true });
 
-    /* スムーズスクロール制御 (Page Nav) */
-    navItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const target = document.getElementById(item.getAttribute('data-target'));
+    /* ── スムーズスクロール制御 (Header Nav) ── */
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href').substring(1);
+        const target = document.getElementById(targetId);
         if (target) {
           const offset = topNav?.offsetHeight || 0;
           window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
