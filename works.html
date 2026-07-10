@@ -30,29 +30,32 @@
       --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
       --ease-fluid: cubic-bezier(0.76, 0, 0.24, 1);
       --px: clamp(24px, 6vw, 80px);
-      --dock-width: clamp(260px, 20vw, 340px); /* 視認性向上のためレーンを拡張 */
+      --dock-width: clamp(260px, 20vw, 340px);
     }
 
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     html { scroll-behavior: smooth; background: var(--bg); }
     body {
-      background: transparent; color: var(--fg);
+      background: var(--bg); color: var(--fg);
       font-family: var(--jp); -webkit-font-smoothing: antialiased;
       overflow-x: hidden; letter-spacing: 0.05em;
     }
 
     /* ─── 全画面アンビエント動画（背景からの圧倒的連続性） ─── */
     .bg-layer {
-      position: fixed; inset: 0; width: 100vw; height: 100vh;
+      position: fixed;
+      inset: 0; width: 100vw; height: 100vh;
       object-fit: cover; z-index: -2;
-      opacity: 0.35; /* 隙間から動画が美しく見えるように明度を調整 */
-      filter: contrast(110%) brightness(0.7) grayscale(20%);
+      /* 動画の主張を抑え、作品とテキストを見やすくするための調整 */
+      opacity: 0.15; 
+      filter: contrast(100%) brightness(0.5) grayscale(40%);
       pointer-events: none;
     }
     .bg-vignette {
       position: fixed; inset: 0; z-index: -1; pointer-events: none;
-      background: radial-gradient(circle at 50% 50%, transparent 10%, rgba(5,5,5,0.95) 100%),
-                  linear-gradient(to bottom, rgba(5,5,5,0.2), rgba(5,5,5,0.85));
+      /* 背景との境界を美しく馴染ませるグラデーション */
+      background: radial-gradient(circle at 50% 50%, rgba(5,5,5,0.3) 10%, rgba(5,5,5,0.98) 100%),
+                  linear-gradient(to bottom, rgba(5,5,5,0.3), rgba(5,5,5,0.95));
     }
 
     /* ─── CONCEPTUAL STRUCTURAL LINES ─── */
@@ -115,7 +118,6 @@
     }
     .side-link-nav::-webkit-scrollbar { display: none; }
 
-    /* 【改善】完全固定されたボックスモデルによりガタつき（ブレ）を100%排除 */
     .side-link-item {
       position: relative; display: flex; align-items: center; justify-content: flex-start;
       width: 100%; height: clamp(52px, 5.5vh, 64px); padding: 0 40px;
@@ -123,14 +125,12 @@
       overflow: hidden; border: none; will-change: color;
     }
     
-    /* ホバー時のマイクロインタラクション（縦線の伸長） */
     .side-link-item::before {
       content: ''; position: absolute; left: 0; top: 0; width: 4px; height: 100%;
       background: var(--accent); transform: scaleY(0); transform-origin: center;
       transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1); will-change: transform; z-index: 2;
     }
     
-    /* ホバー時のプラチナ液体発光（グラデーション） */
     .side-link-item::after {
       content: ''; position: absolute; inset: 0;
       background: linear-gradient(90deg, rgba(212, 197, 179, 0.2) 0%, transparent 100%);
@@ -141,7 +141,6 @@
     .side-link-item:hover::before { transform: scaleY(1); }
     .side-link-item:hover::after { opacity: 1; }
 
-    /* キャンバスプロット（正方形から線への変容） */
     .side-link-item .nav-indicator {
       display: block; width: 4px; height: 4px; background: var(--muted); margin-right: 20px;
       flex-shrink: 0; position: relative; z-index: 3; transition: background 0.3s ease;
@@ -154,7 +153,6 @@
     .side-link-item:hover .nav-indicator { background: transparent; }
     .side-link-item:hover .nav-indicator::after { transform: scaleX(1); }
 
-    /* タイトルテキストの優雅な変容（文字間隔と発光による快感） */
     .side-link-item .nav-title {
       position: relative; z-index: 3; font-family: var(--jp); font-size: clamp(13px, 1.2vw, 15px);
       font-weight: 300; letter-spacing: 0.12em; white-space: nowrap; color: rgba(244, 241, 235, 0.5);
@@ -195,38 +193,31 @@
     .scroll-cue span { font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.4em; color: var(--muted); text-transform: uppercase; }
     .scroll-cue-line { width: 60px; height: 1px; background: linear-gradient(to right, var(--muted), transparent); transform-origin: left; animation: pulseLine 2s infinite var(--ease-fluid); }
     @keyframes pulseLine { 0% { transform: scaleX(0); transform-origin: left; } 50% { transform: scaleX(1); transform-origin: left; } 51% { transform: scaleX(1); transform-origin: right; } 100% { transform: scaleX(0); transform-origin: right; } }
+    @keyframes fadeOnly { 0% { opacity: 0; } 100% { opacity: 1; } }
 
     /* ════════════════════════════════════════
        ★ ダイナミック・フルブリード・コンステレーション
-       （ランダムな隙間から背景が覗き、作品が画面をダイナミックにはみ出す）
     ════════════════════════════════════════ */
     .gallery { 
       position: relative; z-index: 10; 
-      padding: 0 0 200px 0; /* 左右の余白を完全排除し、画面幅100vwを使い切る */
+      padding: 0 0 200px 0; 
       width: 100%; overflow: hidden;
     }
     
-    /* セクションヘッダーのみ安全な領域に配置 */
     .gallery-header-wrapper { padding: 0 var(--px) 60px; background: transparent; position: relative; z-index: 11; }
-    @media (min-width: 769px) { 
-      .gallery-header-wrapper { padding-right: calc(var(--dock-width) + var(--px)) !important; } 
-    }
+    @media (min-width: 769px) { .gallery-header-wrapper { padding-right: calc(var(--dock-width) + var(--px)) !important; } }
     
     .section-header { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); opacity: 0; transform: translateY(30px); transition: all 1.2s var(--ease-expo); }
     .section-header.in-view { opacity: 1; transform: translateY(0); }
     .section-label { font-family: var(--en); font-size: clamp(0.8rem, 1.8vw, 1rem); letter-spacing: 0.4em; color: var(--fg); text-transform: uppercase; }
     .section-count { font-family: var(--en); font-size: clamp(2rem, 6vw, 4.5rem); font-weight: 100; color: rgba(212, 197, 179, 0.04); line-height: 1; }
 
-    /* 意図的でダイナミックな隙間（gap）を計算し、背景の動画を見せる */
     .grid { 
-      display: grid; 
-      grid-template-columns: repeat(12, 1fr); 
-      gap: clamp(20px, 4vw, 50px);
-      row-gap: clamp(100px, 15vh, 200px); /* 巨大な余白による呼吸感 */
+      display: grid; grid-template-columns: repeat(12, 1fr); 
+      gap: clamp(20px, 4vw, 50px); row-gap: clamp(100px, 15vh, 200px);
       width: 100%;
     }
 
-    /* 各作品カード。ボーダー・余白を完全ゼロにし、ダイナミックに浮遊させる */
     .gi {
       position: relative; overflow: hidden; cursor: pointer;
       background: transparent; border: none; padding: 0;
@@ -236,15 +227,14 @@
     }
     .gi.in-view { opacity: 1; filter: blur(0); transform: translateY(0); }
     
-    /* ── PC環境：アシンメトリーで完全に敷き詰めつつ、隙間を設けた極上のレイアウト ── */
     @media (min-width: 769px) {
-      .gi:nth-child(1) { grid-column: 1 / 10; height: 75vh; } /* 大きく左にはみ出す感覚 */
-      .gi:nth-child(2) { grid-column: 8 / 13; height: 55vh; margin-top: -15vh; } /* 右にはみ出し重なる */
+      .gi:nth-child(1) { grid-column: 1 / 10; height: 75vh; }
+      .gi:nth-child(2) { grid-column: 8 / 13; height: 55vh; margin-top: -15vh; }
       .gi:nth-child(3) { grid-column: 2 / 7; height: 60vh; }
-      .gi:nth-child(4) { grid-column: 6 / 13; height: 85vh; margin-top: 10vh; } /* 右端まで使い切る */
+      .gi:nth-child(4) { grid-column: 6 / 13; height: 85vh; margin-top: 10vh; }
       .gi:nth-child(5) { grid-column: 1 / 6; height: 50vh; margin-top: -10vh; }
       .gi:nth-child(6) { grid-column: 7 / 12; height: 65vh; }
-      .gi:nth-child(7) { grid-column: 2 / 10; height: 90vh; margin-top: 15vh; } /* 巨大な中央配置 */
+      .gi:nth-child(7) { grid-column: 2 / 10; height: 90vh; margin-top: 15vh; }
       .gi:nth-child(8) { grid-column: 9 / 13; height: 45vh; margin-top: -20vh; }
       .gi:nth-child(9) { grid-column: 1 / 7; height: 60vh; }
       .gi:nth-child(10){ grid-column: 6 / 13; height: 75vh; margin-top: 10vh; }
@@ -270,10 +260,8 @@
     }
     .gi:hover .gi-overlay { opacity: 0.5; }
 
-    /* 【計算され尽くした安全配置】画像がどれだけ右に伸びても、テキストは絶対にマトリクス・レーンの下（画面外）に隠れない */
     .gi-label {
       position: absolute; bottom: clamp(20px, 4vh, 40px); left: clamp(20px, 4vw, 50px); z-index: 5; pointer-events: none;
-      /* (画面幅) - (左からの位置) - (右ドックの幅) - (安全マージン40px) */
       max-width: calc(100vw - clamp(20px, 4vw, 50px) - var(--dock-width) - 40px);
     }
     
@@ -281,15 +269,13 @@
       display: block; font-family: var(--jp); font-weight: 300; font-size: clamp(1.6rem, 2.5vw, 2.5rem);
       letter-spacing: 0.15em; color: var(--fg);
       text-shadow: 0 4px 20px rgba(0,0,0,0.95), 0 1px 5px rgba(0,0,0,1);
-      transition: color 0.4s var(--ease-quad), transform 0.5s var(--ease-expo);
-      will-change: transform;
+      transition: color 0.4s var(--ease-quad), transform 0.5s var(--ease-expo); will-change: transform;
     }
     .gi-en {
       display: block; font-family: var(--en); font-size: clamp(11px, 1.2vw, 14px);
       letter-spacing: 0.4em; color: rgba(255,255,255,0.7); text-transform: uppercase; margin-top: 6px;
       text-shadow: 0 4px 15px rgba(0,0,0,0.95);
-      transition: color 0.4s var(--ease-quad), transform 0.5s var(--ease-expo);
-      will-change: transform;
+      transition: color 0.4s var(--ease-quad), transform 0.5s var(--ease-expo); will-change: transform;
     }
     
     .gi:hover .gi-title { color: var(--accent); transform: translateX(8px); }
@@ -298,9 +284,7 @@
     /* ════════════════════════════════════════
        ★ CONTACT & FOOTER 
     ════════════════════════════════════════ */
-    .contact-section { 
-      position: relative; z-index: 10; padding: 160px var(--px); text-align: center; background: transparent; border-top: 1px solid var(--border);
-    }
+    .contact-section { position: relative; z-index: 10; padding: 160px var(--px); text-align: center; background: transparent; border-top: 1px solid var(--border); }
     @media (min-width: 769px) { .contact-section { padding-right: calc(var(--dock-width) + var(--px)) !important; } }
 
     .contact-section .section-label { font-family: var(--en); font-size: clamp(0.75rem, 1.5vw, 0.9rem); letter-spacing: 0.4em; color: var(--muted); text-transform: uppercase; margin-bottom: 30px; display: inline-flex; align-items: center; gap: 20px; }
@@ -312,29 +296,18 @@
     .contact-btn:hover { color: var(--bg); border-color: var(--accent); }
     .contact-btn:hover::before { transform: scaleX(1); transform-origin: left; }
 
-    footer { 
-      position: relative; z-index: 10; padding: 60px var(--px) 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; 
-      border-top: 1px solid var(--border); text-align: center; background: rgba(3,3,3,0.9);
-    }
+    footer { position: relative; z-index: 10; padding: 60px var(--px) 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; border-top: 1px solid var(--border); text-align: center; background: rgba(3,3,3,0.9); }
     @media (min-width: 769px) { footer { padding-right: calc(var(--dock-width) + var(--px)) !important; } }
     .footer-logo { font-family: var(--jp); font-size: 14px; font-weight: 300; color: var(--accent); letter-spacing: 0.2em; }
     .footer-copy { font-family: var(--en); font-size: 11px; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; }
 
     /* ─── MOUSE TOOLTIP ─── */
-    .mouse-tooltip {
-      position: fixed; top: 0; left: 0; pointer-events: none; background: rgba(244, 241, 235, 0.98); color: var(--bg);
-      padding: 8px 16px; font-size: 11px; font-family: var(--jp); letter-spacing: 0.1em; font-weight: 400;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.5); opacity: 0; transform: translate(20px, 20px); transition: opacity 0.3s var(--ease-quad); z-index: 99999; white-space: nowrap; border-radius: 0px;
-    }
+    .mouse-tooltip { position: fixed; top: 0; left: 0; pointer-events: none; background: rgba(244, 241, 235, 0.98); color: var(--bg); padding: 8px 16px; font-size: 11px; font-family: var(--jp); letter-spacing: 0.1em; font-weight: 400; box-shadow: 0 15px 35px rgba(0,0,0,0.5); opacity: 0; transform: translate(20px, 20px); transition: opacity 0.3s var(--ease-quad); z-index: 99999; white-space: nowrap; border-radius: 0px; }
     .mouse-tooltip.visible { opacity: 1; }
     @media (pointer: coarse) { .mouse-tooltip { display: none !important; } }
 
     /* ─── BACK TO TOP BUTTON ─── */
-    .back-to-top {
-      position: fixed; bottom: 40px; right: var(--px); z-index: 160; width: 60px; height: 60px; 
-      background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center;
-      opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.6s var(--ease-expo); cursor: pointer; text-decoration: none; border: 1px solid var(--border);
-    }
+    .back-to-top { position: fixed; bottom: 40px; right: var(--px); z-index: 160; width: 60px; height: 60px; background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.6s var(--ease-expo); cursor: pointer; text-decoration: none; border: 1px solid var(--border); }
     .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
     .b2t-ring { position: absolute; inset: -1px; width: 62px; height: 62px; transform: rotate(-90deg); pointer-events: none; }
     .b2t-ring-bg { stroke: transparent; fill: none; }
@@ -350,7 +323,7 @@
        ★ SMARTPHONE / TABLET RESPONSIVE
     ════════════════════════════════════════ */
     @media (max-width: 900px) {
-      .grid { grid-template-columns: 1fr; gap: 0; row-gap: 15vh; } /* 巨大な余白から動画を見せる */
+      .grid { grid-template-columns: 1fr; gap: 0; row-gap: 15vh; } 
       .gi { grid-column: 1 / -1 !important; height: 65vh !important; margin: 0 !important; border-radius: 0; }
     }
 
@@ -367,30 +340,14 @@
       .nav-hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
       .scroll-cue { display: none; }
       
-      /* 【スマホ最適化】一切ブレないボトム・スナップレーンへの変形 */
-      .side-link-nav {
-        top: auto; bottom: 0; left: 0; right: 0; width: 100%; height: 76px;
-        transform: none; flex-direction: row; align-items: center; justify-content: flex-start;
-        padding: 0 24px; gap: 10px;
-        background: rgba(5, 5, 5, 0.85);
-        backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-        border-top: 1px solid rgba(255, 255, 255, 0.08); border-left: none;
-        overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory;
-      }
-      
-      .side-link-item {
-        flex: 0 0 auto; width: auto; min-width: 150px; height: 48px; padding: 0 20px; margin: 0;
-        background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 4px;
-        justify-content: center; align-items: center; scroll-snap-align: start;
-      }
-      
+      .side-link-nav { top: auto; bottom: 0; left: 0; right: 0; width: 100%; height: 76px; transform: none; flex-direction: row; align-items: center; justify-content: flex-start; padding: 0 24px; gap: 10px; background: rgba(5, 5, 5, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-top: 1px solid rgba(255, 255, 255, 0.08); border-left: none; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; }
+      .side-link-item { flex: 0 0 auto; width: auto; min-width: 150px; height: 48px; padding: 0 20px; margin: 0; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 4px; justify-content: center; align-items: center; scroll-snap-align: start; }
       .side-link-item::before, .side-link-item::after { display: none !important; }
       .side-link-item .nav-indicator { width: 5px; height: 5px; background: rgba(212, 197, 179, 0.6); margin-right: 12px; }
       .side-link-item .nav-indicator::after { display: none !important; }
       .side-link-item .nav-title { font-size: 13px; opacity: 0.9; transform: none !important; letter-spacing: 0.1em !important; color: rgba(244, 241, 235, 0.9); }
       .side-link-item:active { background: rgba(212, 197, 179, 0.2); border-color: var(--accent); color: #ffffff; }
 
-      /* スマホ環境での完全視認性確保：ボトムレーンを避ける安全設計 */
       .gi-label { bottom: 100px; left: 24px; max-width: calc(100vw - 48px); }
       
       .back-to-top { bottom: 96px; right: 20px; width: 50px; height: 50px; }
@@ -672,7 +629,7 @@
         if (playPromise !== undefined) {
           playPromise.catch(() => {
             const autoPlayOnInteraction = () => {
-              video.play();
+               video.play();
               document.removeEventListener('touchstart', autoPlayOnInteraction);
               document.removeEventListener('click', autoPlayOnInteraction);
             };
@@ -684,7 +641,6 @@
     });
 
     let menuOpenScrollY = 0;
-
     function toggleMenu() {
       const links = document.getElementById('nav-links');
       const hamburger = document.getElementById('hamburger');
@@ -719,7 +675,7 @@
         link.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
       });
     })();
-
+    
     const TITLE_JP = '作品系';
     const titleJpEl = document.getElementById('heroTitleJp');
     if (titleJpEl) {
@@ -760,24 +716,23 @@
       b2tCircle.style.strokeDashoffset = b2tCircumference;
     }
 
-    const bg = document.getElementById('bgLayer');
     const topNav = document.getElementById('top-nav');
     const b2t = document.getElementById('backToTop');
     const hLines = document.querySelectorAll('.matrix-axis.h');
     const vLines = document.querySelectorAll('.matrix-axis.v');
     let ticking = false;
-
+    
     window.addEventListener('scroll', () => {
       if (!ticking) {
         requestAnimationFrame(() => {
           const scrollY = window.scrollY;
           
-          if (bg) bg.style.transform = `translateY(${scrollY * 0.08}px)`;
           if (scrollY > 60) topNav.classList.add('scrolled');
           else topNav.classList.remove('scrolled');
           
-          hLines.forEach((line, idx) => line.style.transform = `translateY(${(scrollY * (idx === 0 ? 0.05 : -0.05))}px)`);
-          vLines.forEach((line, idx) => line.style.transform = `translateX(${(scrollY * (idx === 0 ? 0.03 : -0.03))}px)`);
+          // 背景マトリクスのパララックス効果は微細に抑え、上品さを維持
+          hLines.forEach((line, idx) => line.style.transform = `translateY(${(scrollY * (idx === 0 ? 0.02 : -0.02))}px)`);
+          vLines.forEach((line, idx) => line.style.transform = `translateX(${(scrollY * (idx === 0 ? 0.01 : -0.01))}px)`);
 
           if (b2t) {
             if (scrollY > window.innerHeight * 0.4) b2t.classList.add('is-visible');
@@ -833,7 +788,7 @@
         el.style.setProperty('--delay', `${delay}ms`);
       });
     })();
-
+    
     const io = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -842,7 +797,7 @@
         }
       });
     }, { threshold: 0.05 });
-
+    
     const secHeader = document.getElementById('secHeader');
     if (secHeader) io.observe(secHeader);
     document.querySelectorAll('.gi').forEach(el => io.observe(el));
