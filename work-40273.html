@@ -2,12 +2,12 @@
 <html lang="ja">
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-5RF8JPF5D8');
-</script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5RF8JPF5D8');
+  </script>
   <link rel="icon" type="image/jpeg" href="images/【play_with_shadow】.jpg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -117,40 +117,39 @@
       text-transform: uppercase; transition: opacity 0.4s ease;
     }
     .nav-logo-unified:hover { opacity: 0.5; }
+    
     .nav-links { display: flex; gap: 2rem; list-style: none; }
     .nav-links a {
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
-      letter-spacing: 0.25em; color: var(--muted-col); text-transform: uppercase; transition: color 0.3s ease;
+      letter-spacing: 0.25em; color: var(--muted-col); text-transform: uppercase; 
+      transition: color 0.3s ease, opacity 0.3s ease;
+      position: relative;
+      padding-bottom: 6px;
+      display: inline-block;
+      opacity: 1; /* グローバルaタグのhover opacity上書き */
     }
-    .nav-links a:hover { color: var(--accent); }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width 0.3s var(--ease-expo);
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); opacity: 1; }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+    
     .nav-cta {
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
       letter-spacing: 0.25em; text-transform: uppercase;
       border: 0.5px solid rgba(203,191,176,0.35); padding: 0.55rem 1.4rem;
       color: var(--accent); transition: background 0.25s, color 0.25s;
     }
-    .nav-cta:hover { background: rgba(203,191,176,0.08); color: var(--fg); }
+    .nav-cta:hover { background: rgba(203,191,176,0.08); color: var(--fg); opacity: 1; }
     
     .nav-hamburger { display: none !important; }
-
-    /* PAGE NAV (Right dots) */
-    .page-nav {
-      position: fixed; right: clamp(20px, 4vw, 40px); top: 50%;
-      transform: translateY(-50%); z-index: 200;
-      display: flex; flex-direction: column; gap: 24px;
-      opacity: 0; visibility: hidden;
-      transition: opacity 0.6s var(--ease), visibility 0.6s;
-    }
-    .page-nav.visible { opacity: 1; visibility: visible; }
-    .page-nav-item {
-      display: flex; align-items: center; gap: 12px; flex-direction: row-reverse;
-      cursor: pointer; background: none; border: none; padding: 8px 0;
-    }
-    .page-nav-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(232,228,219,0.3); transition: all 0.35s; flex-shrink: 0; }
-    .page-nav-label { font-family: var(--font-en); font-size: 12px; letter-spacing: 0.15em; color: rgba(232,228,219,0.3); text-transform: uppercase; transition: color 0.35s; white-space: nowrap; }
-    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot { background: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px rgba(203,191,176,0.6); }
-    .page-nav-item:hover .page-nav-label { color: rgba(232,228,219,0.85); }
-    .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ════════════════════════════════════════
        HERO (CYBER ASSEMBLE EFFECT)
@@ -344,7 +343,7 @@
     .contact-heading { font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em; }
     .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.8vw, 0.95rem); color: var(--text-muted); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2; }
     .contact-btn { display: inline-block; padding: 1.2rem 3.5rem; background: var(--accent); color: var(--bg); font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none; transition: all 0.4s var(--ease); border-radius: 2px; }
-    .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(203,191,176,0.3); }
+    .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(203,191,176,0.3); opacity: 1; }
 
     footer { padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); background: var(--bg); }
     .footer-logo { font-family: var(--font-ja); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.28); letter-spacing: 0.08em; }
@@ -407,10 +406,6 @@
       .concept-keywords { grid-template-columns: 1fr; margin-top: 3rem; }
       
       .gallery-section { display: none !important; }
-      
-      .page-nav.visible { right: 8px; opacity: 0.5; }
-      .page-nav.visible:hover { opacity: 1; }
-      .page-nav-label { display: none; }
 
       .tl-sub-gallery { grid-template-columns: repeat(2, 1fr); }
     }
@@ -439,21 +434,11 @@
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="index.html#statement">Statement</a></li>
-      <li><a href="works.html">Works</a></li>
-      <li><a href="index.html#profile">Profile</a></li>
-      <li><a href="index.html#news">News</a></li>
+      <li><a href="#statement" class="js-scroll-to">Statement</a></li>
+      <li><a href="#gallery" class="js-scroll-to">Gallery</a></li>
+      <li><a href="#chronology" class="js-scroll-to">Timeline</a></li>
     </ul>
-    <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
-  </nav>
-
-  <nav class="page-nav" id="pageNav" aria-label="ページ内ナビゲーション">
-    <button class="page-nav-item" data-target="gallery" aria-label="Galleryへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Gallery</span>
-    </button>
-    <button class="page-nav-item" data-target="chronology" aria-label="Timelineへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Timeline</span>
-    </button>
+    <a href="#contact" class="nav-cta js-scroll-to" id="nav-cta-btn">Contact</a>
   </nav>
 
   <main>
@@ -472,7 +457,7 @@
       </div>
     </section>
 
-    <div class="concept-wrapper">
+    <div class="concept-wrapper" id="statement">
       <div class="concept-top-row">
         <div class="concept-sidebar reveal">
           <p class="concept-sidebar-label">Concept</p>
@@ -841,7 +826,7 @@
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
-  <a href="#gallery" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
+  <a href="#gallery" class="back-to-top js-scroll-to" id="backToTop" aria-label="ページ先頭に戻る">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M18 15l-6-6-6 6"/>
     </svg>
@@ -975,11 +960,10 @@
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
     document.querySelectorAll('.gallery-item, .tl-entry, .reveal').forEach(el => io.observe(el));
 
-    /* ── Scroll Interactions ── */
+    /* ── Scroll Interactions (ナビゲーション・スパイ実装) ── */
     const topNav = document.getElementById('top-nav');
-    const pageNav = document.getElementById('pageNav');
-    const navItems = document.querySelectorAll('.page-nav-item');
-    const sections = ['gallery', 'chronology'].map(id => document.getElementById(id));
+    const headerNavLinks = document.querySelectorAll('.nav-links a');
+    const sections = ['statement', 'gallery', 'chronology'].map(id => document.getElementById(id));
     const spineFill = document.getElementById('tl-spine-fill');
     const tlWrap = document.querySelector('.timeline-container');
     let ticking = false;
@@ -997,13 +981,16 @@
           sections.forEach(sec => {
             if (sec && sec.offsetTop <= checkY) activeSec = sec;
           });
-          navItems.forEach(item => {
-            const target = document.getElementById(item.getAttribute('data-target'));
-            item.classList.toggle('active', target === activeSec);
+          
+          // 今いるセクションに応じてアンダーバーのクラスを付与
+          headerNavLinks.forEach(link => {
+            const targetId = link.getAttribute('href').substring(1);
+            if (activeSec && activeSec.id === targetId) {
+              link.classList.add('active');
+            } else {
+              link.classList.remove('active');
+            }
           });
-          if (pageNav) {
-            pageNav.classList.toggle('visible', scrollY > window.innerHeight * 0.6);
-          }
 
           if (tlWrap && spineFill) {
             const rect = tlWrap.getBoundingClientRect();
@@ -1023,29 +1010,6 @@
         ticking = true;
       }
     }, { passive: true });
-
-    navItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const target = document.getElementById(item.getAttribute('data-target'));
-        if (target) {
-          const offset = topNav?.offsetHeight || 0;
-          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
-        }
-      });
-    });
-
-    document.getElementById('backToTop').addEventListener('click', (e) => {
-      e.preventDefault();
-      if (window.innerWidth <= 768) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        const target = document.getElementById('gallery');
-        if (target) {
-          const offset = topNav?.offsetHeight || 80;
-          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
-        }
-      }
-    });
 
     /* ── Grid Jump Scroll ── */
     document.querySelectorAll('.js-scroll-to').forEach(item => {
