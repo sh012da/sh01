@@ -30,7 +30,7 @@
       --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
       --ease-fluid: cubic-bezier(0.76, 0, 0.24, 1);
       --px: clamp(24px, 6vw, 80px);
-      --dock-width: clamp(240px, 18vw, 320px);
+      --dock-width: clamp(260px, 20vw, 340px); /* 視認性向上のためレーンを拡張 */
     }
 
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -41,19 +41,18 @@
       overflow-x: hidden; letter-spacing: 0.05em;
     }
 
-    /* ─── INDEXからのシームレスな体験：全画面アンビエント動画 ─── */
+    /* ─── 全画面アンビエント動画（背景からの圧倒的連続性） ─── */
     .bg-layer {
-      position: fixed; inset: 0; width: 100%; height: 100%;
+      position: fixed; inset: 0; width: 100vw; height: 100vh;
       object-fit: cover; z-index: -2;
-      opacity: 0.25; /* 動画が暗闇の奥で確実にうごめくように調整 */
-      filter: contrast(120%) brightness(0.8) grayscale(30%);
+      opacity: 0.35; /* 隙間から動画が美しく見えるように明度を調整 */
+      filter: contrast(110%) brightness(0.7) grayscale(20%);
       pointer-events: none;
     }
     .bg-vignette {
       position: fixed; inset: 0; z-index: -1; pointer-events: none;
-      /* 周辺を暗く落とし込み、動画の存在感を中央に寄せる */
-      background: radial-gradient(circle at 50% 50%, transparent 10%, rgba(5,5,5,0.95) 90%),
-                  linear-gradient(to bottom, rgba(5,5,5,0.4), rgba(5,5,5,0.9));
+      background: radial-gradient(circle at 50% 50%, transparent 10%, rgba(5,5,5,0.95) 100%),
+                  linear-gradient(to bottom, rgba(5,5,5,0.2), rgba(5,5,5,0.85));
     }
 
     /* ─── CONCEPTUAL STRUCTURAL LINES ─── */
@@ -81,8 +80,8 @@
       display: flex; align-items: center; justify-content: space-between;
       padding: clamp(20px, 3vw, 40px) var(--px);
       border-bottom: 1px solid var(--border);
-      background: rgba(5, 5, 5, 0.5); /* より透明感を高め動画を透過 */
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      background: rgba(5, 5, 5, 0.4); 
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       transition: all 0.6s var(--ease-expo);
     }
     nav#top-nav.scrolled { padding: 18px var(--px); background: rgba(5, 5, 5, 0.95); border-bottom-color: rgba(212, 197, 179, 0.15); }
@@ -103,61 +102,70 @@
     .nav-hamburger span { display: block; width: 26px; height: 1px; background: var(--fg); margin: 6px 0; transition: all 0.4s var(--ease-fluid); }
 
     /* ════════════════════════════════════════
-       ★ マトリクス・レーン（常時露出型の並行導線）
+       ★ マトリクス・レーン（常時露出型の並行導線・快感UI）
     ════════════════════════════════════════ */
     .side-link-nav {
       position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 150;
       display: flex; flex-direction: column;
       width: var(--dock-width); max-height: 85vh;
       overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none;
-      background: linear-gradient(to left, rgba(5, 5, 5, 0.95) 75%, rgba(5, 5, 5, 0.0) 100%);
+      background: linear-gradient(to left, rgba(5, 5, 5, 0.95) 70%, rgba(5, 5, 5, 0.0) 100%);
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border-left: 1px solid rgba(255, 255, 255, 0.03);
     }
     .side-link-nav::-webkit-scrollbar { display: none; }
 
+    /* 【改善】完全固定されたボックスモデルによりガタつき（ブレ）を100%排除 */
     .side-link-item {
       position: relative; display: flex; align-items: center; justify-content: flex-start;
-      width: 100%; height: clamp(44px, 4.5vh, 56px); padding: 0 32px;
-      color: rgba(244, 241, 235, 0.5); text-decoration: none; background: transparent;
-      overflow: hidden; transition: color 0.3s var(--ease-quad); border: none; will-change: color;
+      width: 100%; height: clamp(52px, 5.5vh, 64px); padding: 0 40px;
+      color: rgba(244, 241, 235, 0.4); text-decoration: none; background: transparent;
+      overflow: hidden; border: none; will-change: color;
     }
     
+    /* ホバー時のマイクロインタラクション（縦線の伸長） */
     .side-link-item::before {
-      content: ''; position: absolute; left: 0; top: 0; width: 3px; height: 100%;
-      background: var(--accent); transform: scaleY(0); transform-origin: center center;
+      content: ''; position: absolute; left: 0; top: 0; width: 4px; height: 100%;
+      background: var(--accent); transform: scaleY(0); transform-origin: center;
       transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1); will-change: transform; z-index: 2;
     }
     
+    /* ホバー時のプラチナ液体発光（グラデーション） */
     .side-link-item::after {
       content: ''; position: absolute; inset: 0;
-      background: linear-gradient(90deg, rgba(212, 197, 179, 0.15) 0%, rgba(212, 197, 179, 0.02) 100%);
-      opacity: 0; transition: opacity 0.4s var(--ease-quad); will-change: opacity; z-index: 0;
+      background: linear-gradient(90deg, rgba(212, 197, 179, 0.2) 0%, transparent 100%);
+      opacity: 0; transition: opacity 0.4s ease; will-change: opacity; z-index: 0;
     }
 
-    .side-link-item:hover { color: #ffffff; background: rgba(255, 255, 255, 0.01); }
+    .side-link-item:hover { background: rgba(255, 255, 255, 0.02); }
     .side-link-item:hover::before { transform: scaleY(1); }
     .side-link-item:hover::after { opacity: 1; }
 
+    /* キャンバスプロット（正方形から線への変容） */
     .side-link-item .nav-indicator {
-      display: block; width: 4px; height: 4px; background: var(--muted); margin-right: 18px;
+      display: block; width: 4px; height: 4px; background: var(--muted); margin-right: 20px;
       flex-shrink: 0; position: relative; z-index: 3; transition: background 0.3s ease;
     }
     .side-link-item .nav-indicator::after {
-      content: ''; position: absolute; top: 50%; left: 0; width: 22px; height: 1px;
+      content: ''; position: absolute; top: 50%; left: 0; width: 24px; height: 1px;
       background: var(--accent); transform: scaleX(0); transform-origin: left center;
       transition: transform 0.5s var(--ease-expo); will-change: transform;
     }
     .side-link-item:hover .nav-indicator { background: transparent; }
     .side-link-item:hover .nav-indicator::after { transform: scaleX(1); }
 
+    /* タイトルテキストの優雅な変容（文字間隔と発光による快感） */
     .side-link-item .nav-title {
-      position: relative; z-index: 3; font-family: var(--jp); font-size: clamp(12px, 1.1vw, 14px);
-      font-weight: 300; letter-spacing: 0.12em; white-space: nowrap;
-      transition: transform 0.5s var(--ease-expo), letter-spacing 0.5s var(--ease-expo), text-shadow 0.3s ease;
-      transform: translateX(0); will-change: transform, letter-spacing;
+      position: relative; z-index: 3; font-family: var(--jp); font-size: clamp(13px, 1.2vw, 15px);
+      font-weight: 300; letter-spacing: 0.12em; white-space: nowrap; color: rgba(244, 241, 235, 0.5);
+      transition: transform 0.5s var(--ease-expo), letter-spacing 0.5s var(--ease-expo), color 0.3s ease, text-shadow 0.3s ease;
+      transform: translateX(0); will-change: transform, letter-spacing, color;
     }
-    .side-link-item:hover .nav-title { font-weight: 400; transform: translateX(8px); letter-spacing: 0.18em; text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); }
+    .side-link-item:hover .nav-title {
+      color: #ffffff;
+      font-weight: 400; transform: translateX(12px); letter-spacing: 0.18em;
+      text-shadow: 0 0 15px rgba(212, 197, 179, 0.8);
+    }
 
     /* ════════════════════════════════════════
        ★ HERO SECTION 
@@ -189,21 +197,19 @@
     @keyframes pulseLine { 0% { transform: scaleX(0); transform-origin: left; } 50% { transform: scaleX(1); transform-origin: left; } 51% { transform: scaleX(1); transform-origin: right; } 100% { transform: scaleX(0); transform-origin: right; } }
 
     /* ════════════════════════════════════════
-       ★ 浮遊するダイナミック・コンステレーション（余白から背景動画が覗く宇宙）
+       ★ ダイナミック・フルブリード・コンステレーション
+       （ランダムな隙間から背景が覗き、作品が画面をダイナミックにはみ出す）
     ════════════════════════════════════════ */
     .gallery { 
       position: relative; z-index: 10; 
-      /* 上下に余白を持たせ、左右のパディングは変数で制御 */
-      padding: 60px var(--px) 160px;
+      padding: 0 0 200px 0; /* 左右の余白を完全排除し、画面幅100vwを使い切る */
+      width: 100%; overflow: hidden;
     }
     
-    /* ヘッダー周りは敷き詰めず、タイトルとしての独立性を確保 */
-    .gallery-header-wrapper {
-      padding: 0 var(--px) 60px; background: transparent;
-    }
+    /* セクションヘッダーのみ安全な領域に配置 */
+    .gallery-header-wrapper { padding: 0 var(--px) 60px; background: transparent; position: relative; z-index: 11; }
     @media (min-width: 769px) { 
-      .gallery-header-wrapper { padding-right: calc(var(--dock-width) + var(--px)) !important; }
-      .gallery { padding-right: calc(var(--dock-width) + var(--px)) !important; }
+      .gallery-header-wrapper { padding-right: calc(var(--dock-width) + var(--px)) !important; } 
     }
     
     .section-header { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); opacity: 0; transform: translateY(30px); transition: all 1.2s var(--ease-expo); }
@@ -211,76 +217,77 @@
     .section-label { font-family: var(--en); font-size: clamp(0.8rem, 1.8vw, 1rem); letter-spacing: 0.4em; color: var(--fg); text-transform: uppercase; }
     .section-count { font-family: var(--en); font-size: clamp(2rem, 6vw, 4.5rem); font-weight: 100; color: rgba(212, 197, 179, 0.04); line-height: 1; }
 
-    /* 背景の動画を見せるため、計算された隙間（gap）を意図的に設定 */
+    /* 意図的でダイナミックな隙間（gap）を計算し、背景の動画を見せる */
     .grid { 
       display: grid; 
       grid-template-columns: repeat(12, 1fr); 
-      gap: clamp(20px, 4vw, 60px); /* このランダムな余白から背後の動画がうごめいて見える */
-      row-gap: clamp(40px, 8vw, 120px);
+      gap: clamp(20px, 4vw, 50px);
+      row-gap: clamp(100px, 15vh, 200px); /* 巨大な余白による呼吸感 */
+      width: 100%;
     }
 
-    /* 各作品カード。ボーダーレスで闇に浮遊する */
+    /* 各作品カード。ボーダー・余白を完全ゼロにし、ダイナミックに浮遊させる */
     .gi {
       position: relative; overflow: hidden; cursor: pointer;
-      background: rgba(0,0,0,0.5); /* 読み込み前の下地も半透明に */
-      border: none; padding: 0;
+      background: transparent; border: none; padding: 0;
       opacity: 0; filter: blur(8px);
       transition: opacity 1.5s var(--ease-expo) var(--delay, 0ms), filter 1.5s var(--ease-expo) var(--delay, 0ms), transform 1.5s var(--ease-expo) var(--delay, 0ms);
       transform: translateY(60px);
     }
     .gi.in-view { opacity: 1; filter: blur(0); transform: translateY(0); }
     
-    /* アシンメトリーでリズミカルな配置（全画面ではなく空間に浮かべる） */
+    /* ── PC環境：アシンメトリーで完全に敷き詰めつつ、隙間を設けた極上のレイアウト ── */
     @media (min-width: 769px) {
-      .gi:nth-child(1) { grid-column: 1 / 11; aspect-ratio: 16/9; } /* 大きく見せる */
-      .gi:nth-child(2) { grid-column: 6 / 13; aspect-ratio: 4/3; margin-top: -80px; } /* 重なるように配置 */
-      .gi:nth-child(3) { grid-column: 1 / 7; aspect-ratio: 1/1; }
-      .gi:nth-child(4) { grid-column: 4 / 12; aspect-ratio: 16/7; }
-      .gi:nth-child(5) { grid-column: 2 / 8; aspect-ratio: 4/5; }
-      .gi:nth-child(6) { grid-column: 7 / 13; aspect-ratio: 3/2; margin-top: 100px; }
-      .gi:nth-child(7) { grid-column: 1 / 9; aspect-ratio: 16/9; }
-      .gi:nth-child(8) { grid-column: 8 / 13; aspect-ratio: 1/1; margin-top: -40px; }
-      .gi:nth-child(9) { grid-column: 3 / 11; aspect-ratio: 3/2; }
-      .gi:nth-child(10){ grid-column: 1 / 6; aspect-ratio: 4/3; }
-      .gi:nth-child(11){ grid-column: 6 / 13; aspect-ratio: 16/9; margin-top: -60px; }
-      .gi:nth-child(12){ grid-column: 4 / 10; aspect-ratio: 3/2; }
+      .gi:nth-child(1) { grid-column: 1 / 10; height: 75vh; } /* 大きく左にはみ出す感覚 */
+      .gi:nth-child(2) { grid-column: 8 / 13; height: 55vh; margin-top: -15vh; } /* 右にはみ出し重なる */
+      .gi:nth-child(3) { grid-column: 2 / 7; height: 60vh; }
+      .gi:nth-child(4) { grid-column: 6 / 13; height: 85vh; margin-top: 10vh; } /* 右端まで使い切る */
+      .gi:nth-child(5) { grid-column: 1 / 6; height: 50vh; margin-top: -10vh; }
+      .gi:nth-child(6) { grid-column: 7 / 12; height: 65vh; }
+      .gi:nth-child(7) { grid-column: 2 / 10; height: 90vh; margin-top: 15vh; } /* 巨大な中央配置 */
+      .gi:nth-child(8) { grid-column: 9 / 13; height: 45vh; margin-top: -20vh; }
+      .gi:nth-child(9) { grid-column: 1 / 7; height: 60vh; }
+      .gi:nth-child(10){ grid-column: 6 / 13; height: 75vh; margin-top: 10vh; }
+      .gi:nth-child(11){ grid-column: 1 / 8; height: 70vh; }
+      .gi:nth-child(12){ grid-column: 8 / 13; height: 60vh; margin-top: -15vh; }
     }
 
     .gi a { position: absolute; inset: 0; z-index: 20; text-decoration: none; color: inherit; }
     
     .gi img {
       position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-      transform: scale(1.08);
-      filter: grayscale(80%) brightness(0.6) contrast(120%);
+      transform: scale(1.06);
+      filter: grayscale(60%) brightness(0.65) contrast(110%);
       transition: transform 1.8s var(--ease-expo), filter 1.2s ease;
       will-change: transform, filter;
     }
     .gi:hover img { transform: scale(1.0); filter: grayscale(0%) brightness(0.9) contrast(100%); }
     
-    /* テキストを読ませるための滑らかなオーバーレイ（動画と調和するよう下からグラデーション） */
     .gi-overlay {
       position: absolute; inset: 0; z-index: 2; pointer-events: none;
-      background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 30%, transparent 60%);
+      background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.3) 30%, transparent 60%);
       opacity: 0.9; transition: opacity 0.6s ease;
     }
     .gi:hover .gi-overlay { opacity: 0.5; }
 
-    /* 【絶対に隠れない】画像内側の左下に配置されたページ名ラベル */
+    /* 【計算され尽くした安全配置】画像がどれだけ右に伸びても、テキストは絶対にマトリクス・レーンの下（画面外）に隠れない */
     .gi-label {
-      position: absolute; bottom: clamp(20px, 3vw, 40px); left: clamp(20px, 3vw, 40px); z-index: 5; pointer-events: none;
+      position: absolute; bottom: clamp(20px, 4vh, 40px); left: clamp(20px, 4vw, 50px); z-index: 5; pointer-events: none;
+      /* (画面幅) - (左からの位置) - (右ドックの幅) - (安全マージン40px) */
+      max-width: calc(100vw - clamp(20px, 4vw, 50px) - var(--dock-width) - 40px);
     }
     
     .gi-title {
-      display: block; font-family: var(--jp); font-weight: 300; font-size: clamp(1.4rem, 2vw, 2.2rem);
+      display: block; font-family: var(--jp); font-weight: 300; font-size: clamp(1.6rem, 2.5vw, 2.5rem);
       letter-spacing: 0.15em; color: var(--fg);
-      text-shadow: 0 4px 15px rgba(0,0,0,0.9), 0 1px 5px rgba(0,0,0,1); /* 動画の上でも絶対に読みやすく */
+      text-shadow: 0 4px 20px rgba(0,0,0,0.95), 0 1px 5px rgba(0,0,0,1);
       transition: color 0.4s var(--ease-quad), transform 0.5s var(--ease-expo);
       will-change: transform;
     }
     .gi-en {
-      display: block; font-family: var(--en); font-size: clamp(10px, 1.2vw, 13px);
+      display: block; font-family: var(--en); font-size: clamp(11px, 1.2vw, 14px);
       letter-spacing: 0.4em; color: rgba(255,255,255,0.7); text-transform: uppercase; margin-top: 6px;
-      text-shadow: 0 4px 15px rgba(0,0,0,0.9);
+      text-shadow: 0 4px 15px rgba(0,0,0,0.95);
       transition: color 0.4s var(--ease-quad), transform 0.5s var(--ease-expo);
       will-change: transform;
     }
@@ -309,6 +316,7 @@
       position: relative; z-index: 10; padding: 60px var(--px) 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; 
       border-top: 1px solid var(--border); text-align: center; background: rgba(3,3,3,0.9);
     }
+    @media (min-width: 769px) { footer { padding-right: calc(var(--dock-width) + var(--px)) !important; } }
     .footer-logo { font-family: var(--jp); font-size: 14px; font-weight: 300; color: var(--accent); letter-spacing: 0.2em; }
     .footer-copy { font-family: var(--en); font-size: 11px; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; }
 
@@ -342,9 +350,8 @@
        ★ SMARTPHONE / TABLET RESPONSIVE
     ════════════════════════════════════════ */
     @media (max-width: 900px) {
-      .grid { grid-template-columns: repeat(2, 1fr); gap: 20px; row-gap: 60px; }
-      .gi { grid-column: auto !important; margin-top: 0 !important; aspect-ratio: 4/3 !important; }
-      .gi:nth-child(3n+1) { grid-column: span 2 !important; aspect-ratio: 16/9 !important; }
+      .grid { grid-template-columns: 1fr; gap: 0; row-gap: 15vh; } /* 巨大な余白から動画を見せる */
+      .gi { grid-column: 1 / -1 !important; height: 65vh !important; margin: 0 !important; border-radius: 0; }
     }
 
     @media (max-width: 768px) {
@@ -360,7 +367,7 @@
       .nav-hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
       .scroll-cue { display: none; }
       
-      /* ボトム・スナップレーンへの変形 */
+      /* 【スマホ最適化】一切ブレないボトム・スナップレーンへの変形 */
       .side-link-nav {
         top: auto; bottom: 0; left: 0; right: 0; width: 100%; height: 76px;
         transform: none; flex-direction: row; align-items: center; justify-content: flex-start;
@@ -372,24 +379,19 @@
       }
       
       .side-link-item {
-        flex: 0 0 auto; width: auto; min-width: 140px; height: 48px; padding: 0 20px; margin: 0;
+        flex: 0 0 auto; width: auto; min-width: 150px; height: 48px; padding: 0 20px; margin: 0;
         background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 4px;
         justify-content: center; align-items: center; scroll-snap-align: start;
       }
       
       .side-link-item::before, .side-link-item::after { display: none !important; }
-      .side-link-item .nav-indicator { width: 5px; height: 5px; background: rgba(212, 197, 179, 0.6); margin-right: 10px; }
+      .side-link-item .nav-indicator { width: 5px; height: 5px; background: rgba(212, 197, 179, 0.6); margin-right: 12px; }
       .side-link-item .nav-indicator::after { display: none !important; }
-      .side-link-item .nav-title { font-size: 12px; opacity: 0.9; transform: none !important; letter-spacing: 0.1em !important; }
+      .side-link-item .nav-title { font-size: 13px; opacity: 0.9; transform: none !important; letter-spacing: 0.1em !important; color: rgba(244, 241, 235, 0.9); }
       .side-link-item:active { background: rgba(212, 197, 179, 0.2); border-color: var(--accent); color: #ffffff; }
 
-      /* スマホ時の縦並び：左右に隙間を空け、動画のうねりを見せる */
-      .grid { grid-template-columns: 1fr; gap: 40px; }
-      .gi { grid-column: auto !important; aspect-ratio: 1/1 !important; border-radius: 4px; }
-      .gi:nth-child(3n+1) { aspect-ratio: 4/3 !important; }
-      
-      /* ラベル位置の微調整 */
-      .gi-label { bottom: 20px; left: 20px; }
+      /* スマホ環境での完全視認性確保：ボトムレーンを避ける安全設計 */
+      .gi-label { bottom: 100px; left: 24px; max-width: calc(100vw - 48px); }
       
       .back-to-top { bottom: 96px; right: 20px; width: 50px; height: 50px; }
       .b2t-ring { width: 52px; height: 52px; }
@@ -399,8 +401,7 @@
 
     @media (max-width: 480px) {
       .contact-btn { width: 100%; padding: 1.3rem 2rem; justify-content: center; }
-      .gi { aspect-ratio: 4/5 !important; }
-      .gi:nth-child(3n+1) { aspect-ratio: 1/1 !important; }
+      .gi { height: 55vh !important; }
     }
 
     @media (hover: none) {
