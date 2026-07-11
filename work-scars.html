@@ -69,7 +69,6 @@
     =========================================================== */
     nav#top-nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 300;
-      /* 全体のバランスを取るためにGridレイアウトを採用 */
       display: grid; 
       grid-template-columns: 1fr auto 1fr; 
       align-items: center;
@@ -91,13 +90,13 @@
     }
     
     .nav-logo-unified {
-      justify-self: start; /* 左寄せ */
+      justify-self: start;
       font-family: var(--font-en); font-size: clamp(0.8rem, 1.5vw, 1rem);
       letter-spacing: 0.3em; font-weight: 300; text-transform: uppercase;
     }
     
     .nav-links { 
-      justify-self: center; /* 中央寄せ */
+      justify-self: center;
       display: flex; gap: 3rem; list-style: none; 
     }
     
@@ -105,7 +104,8 @@
       position: relative;
       font-family: var(--font-en); font-size: 0.75rem; letter-spacing: 0.25em;
       color: var(--muted); text-transform: uppercase; transition: color 0.3s var(--ease);
-      padding-bottom: 0.3rem; /* アンダーラインとの余白 */
+      padding-bottom: 0.3rem;
+      cursor: pointer;
     }
     .nav-links a:hover,
     .nav-links a.active { 
@@ -129,7 +129,7 @@
     }
 
     .nav-cta {
-      justify-self: end; /* 右寄せ */
+      justify-self: end;
       font-family: var(--font-en); font-size: 0.7rem; letter-spacing: 0.25em;
       text-transform: uppercase; border: 1px solid var(--muted); padding: 0.6rem 1.8rem;
       transition: all 0.4s var(--ease);
@@ -475,7 +475,6 @@
     .tl-entry.is-full { flex-direction: column; align-items: center; text-align: center; gap: 3rem; }
     .tl-entry.is-full .tl-figure { width: 90%; max-width: 900px; }
     .tl-entry.is-full .tl-body { width: 100%; max-width: 800px; }
-    /* ★解説文のみを左寄せに指定 */
     .tl-entry.is-full .tl-desc { text-align: left; text-justify: inter-ideograph; }
     
     @media (max-width: 860px) {
@@ -500,6 +499,88 @@
     }
     .footer-logo { font-size: 0.9rem; letter-spacing: 0.15em; color: var(--muted); }
     .footer-copy { font-family: var(--font-en); font-size: 0.7rem; letter-spacing: 0.2em; color: rgba(235,229,223,0.3); }
+
+    /* ============================================================
+        BACK TO TOP (Scroll Progress Ring + Glassmorphism UI)
+    =========================================================== */
+    .back-to-top {
+      position: fixed;
+      bottom: clamp(20px, 4vw, 40px);
+      right: clamp(20px, 4vw, 40px);
+      z-index: 9000;
+      width: clamp(52px, 8vw, 70px);
+      height: clamp(52px, 8vw, 70px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: opacity 0.6s var(--ease), visibility 0.6s, transform 0.6s var(--ease);
+      cursor: pointer;
+    }
+    .back-to-top.is-visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .b2t-inner {
+      position: absolute;
+      inset: 4px;
+      background: rgba(12, 12, 10, 0.5);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.4s var(--ease), transform 0.4s var(--ease);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+    }
+    .b2t-text {
+      font-family: var(--font-en);
+      font-size: clamp(0.6rem, 1.4vw, 0.75rem);
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      color: var(--fg);
+      margin-right: -0.15em;
+      margin-bottom: -1px;
+      transition: color 0.4s var(--ease), transform 0.4s var(--ease);
+    }
+    .b2t-progress {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+      pointer-events: none;
+    }
+    .b2t-progress circle {
+      fill: none;
+      stroke-width: 1.5;
+    }
+    .b2t-progress-bg {
+      stroke: rgba(235, 229, 223, 0.1);
+    }
+    .b2t-progress-value {
+      stroke: var(--accent);
+      stroke-dasharray: 301.6;
+      stroke-dashoffset: 301.6;
+      transition: stroke-dashoffset 0.15s linear, stroke 0.4s var(--ease);
+    }
+    .back-to-top:hover .b2t-inner {
+      background: var(--accent);
+      transform: scale(0.92);
+    }
+    .back-to-top:hover .b2t-text {
+      color: var(--bg);
+      transform: translateY(-2px);
+    }
+    .back-to-top:hover .b2t-progress-value {
+      stroke: var(--fg);
+    }
 
     /* ============================================================
         LIGHTBOX MODAL
@@ -534,7 +615,7 @@
 
     /* Responsive adjustments */
     @media (max-width: 768px) {
-      /* スマホ時はFlexboxに戻して左右配置のみにする */
+      /* スマホ時は左右配置のみにする */
       nav#top-nav {
         display: flex;
         justify-content: space-between;
@@ -552,11 +633,11 @@
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
     <ul class="nav-links">
-      <li><a href="#statement">Statement</a></li>
-      <li><a href="#works">Works</a></li>
-      <li><a href="#chronology">Timeline</a></li>
+      <li><a href="#statement" class="nav-jump">Statement</a></li>
+      <li><a href="#works" class="nav-jump">Works</a></li>
+      <li><a href="#chronology" class="nav-jump">Timeline</a></li>
     </ul>
-    <a href="#contact" class="nav-cta">Contact</a>
+    <a href="index.html#contact" class="nav-cta">Contact</a>
   </nav>
 
   <main>
@@ -819,7 +900,7 @@
 
       <div class="timeline-container">
         <div class="timeline-spine">
-          <div class="timeline-spine-progress"></div>
+          <div class="timeline-spine-progress" id="tl-spine-fill"></div>
         </div>
 
         <article class="tl-entry fade-up" id="work-scars01">
@@ -952,6 +1033,16 @@
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
+  <a href="#top" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
+    <svg class="b2t-progress" viewBox="0 0 100 100">
+      <circle class="b2t-progress-bg" cx="50" cy="50" r="48"></circle>
+      <circle class="b2t-progress-value" id="b2t-progress-value" cx="50" cy="50" r="48"></circle>
+    </svg>
+    <div class="b2t-inner">
+      <span class="b2t-text">TOP</span>
+    </div>
+  </a>
+
   <div class="modal" id="imageModal" aria-hidden="true" role="dialog">
     <div class="modal-bg" id="modalBg"></div>
     <button class="modal-close" id="modalClose" aria-label="閉じる">
@@ -981,10 +1072,87 @@
 
       /* ── 2. Scroll Interactions & Navigation ── */
       const topNav = document.getElementById('top-nav');
+      const b2tBtn = document.getElementById('backToTop');
+      const b2tCircle = document.getElementById('b2t-progress-value');
+      const navLinks = document.querySelectorAll('.nav-jump');
+      const sections = document.querySelectorAll('section[id]');
+      const tlWrap = document.querySelector('.timeline-container');
+      const spineFill = document.getElementById('tl-spine-fill');
+      
+      let ticking = false;
+
       window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) topNav.classList.add('scrolled');
-        else topNav.classList.remove('scrolled');
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            const scrollY = window.scrollY;
+            const winHeight = window.innerHeight;
+
+            /* Top Nav Glassmorphism */
+            if (scrollY > 50) topNav.classList.add('scrolled');
+            else topNav.classList.remove('scrolled');
+
+            /* Back to Top Visibility */
+            if (scrollY > 400) b2tBtn.classList.add('is-visible');
+            else b2tBtn.classList.remove('is-visible');
+
+            /* Circular Progress Ring */
+            const docHeight = document.documentElement.scrollHeight - winHeight;
+            const scrollPct = Math.max(0, Math.min(1, scrollY / docHeight));
+            if (b2tCircle) {
+              const offset = 301.6 - (301.6 * scrollPct);
+              b2tCircle.style.strokeDashoffset = offset;
+            }
+
+            /* Timeline Spine Progress (if exists) */
+            if (tlWrap && spineFill) {
+              const rect = tlWrap.getBoundingClientRect();
+              const totalH = tlWrap.offsetHeight;
+              if (totalH > 0) {
+                const pct = (winHeight * 0.55 - rect.top) / totalH * 100;
+                spineFill.style.height = Math.max(0, Math.min(100, pct)) + '%';
+              }
+            }
+
+            /* Header Nav Active State (Scroll Spy) */
+            const checkY = scrollY + winHeight * 0.4;
+            let currentSection = '';
+            sections.forEach(sec => {
+              if (sec.offsetTop <= checkY && sec.offsetTop + sec.offsetHeight > checkY) {
+                currentSection = sec.getAttribute('id');
+              }
+            });
+
+            navLinks.forEach(link => {
+              link.classList.remove('active');
+              if (link.getAttribute('href').substring(1) === currentSection) {
+                link.classList.add('active');
+              }
+            });
+
+            ticking = false;
+          });
+          ticking = true;
+        }
       }, { passive: true });
+
+      /* Header Nav Smooth Scroll Click Event */
+      navLinks.forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = item.getAttribute('href').substring(1);
+          const targetEl = document.getElementById(targetId);
+          if (targetEl) {
+            const offset = topNav ? topNav.offsetHeight : 0;
+            window.scrollTo({ top: targetEl.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+          }
+        });
+      });
+
+      /* Back To Top - Completely to the top */
+      b2tBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
 
       /* ── 3. Intersection Observer (Fade Up) ── */
       const fadeElements = document.querySelectorAll('.fade-up');
@@ -998,34 +1166,7 @@
       }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
       fadeElements.forEach(el => observer.observe(el));
 
-      /* ── 4. Scroll Spy (現在地のハイライト) ── */
-      const navItems = document.querySelectorAll('.nav-links a');
-      const spySections = document.querySelectorAll('section[id]');
-      
-      const spyOptions = {
-        root: null,
-        // 画面の中央付近をセクションが通過した時にアクティブを切り替える
-        rootMargin: '-40% 0px -60% 0px', 
-        threshold: 0
-      };
-
-      const spyObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const id = entry.target.getAttribute('id');
-            navItems.forEach(link => {
-              link.classList.remove('active');
-              if (link.getAttribute('href') === `#${id}`) {
-                link.classList.add('active');
-              }
-            });
-          }
-        });
-      }, spyOptions);
-
-      spySections.forEach(section => spyObserver.observe(section));
-
-      /* ── 5. Lightbox Modal Logic ── */
+      /* ── 4. Lightbox Modal Logic ── */
       const modal = document.getElementById('imageModal');
       const modalImg = document.getElementById('modalImg');
       const modalJa = document.getElementById('modalJa');
