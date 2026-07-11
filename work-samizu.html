@@ -6,7 +6,6 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-5RF8JPF5D8');
   </script>
   <link rel="icon" type="image/jpeg" href="images/416A0128.jpg">
@@ -99,7 +98,6 @@
     }
     .nav-logo-unified:hover { opacity: 0.6; }
     
-    /* ページ内ジャンプ用・英語表記ヘッダーリンク */
     .nav-links { 
       display: flex; gap: clamp(1.5rem, 3vw, 3rem); list-style: none;
       position: absolute; left: 50%; transform: translateX(-50%);
@@ -115,7 +113,6 @@
     }
     .nav-links a:hover, .nav-links a.active { color: var(--accent); }
     
-    /* スムーズに伸びる下線アニメーション */
     .nav-links a::after {
       content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
       background: var(--accent); transform: scaleX(0); transform-origin: right; 
@@ -134,7 +131,7 @@
     .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
 
     /* ============================================================
-        HERO SECTION
+        HERO SECTION (LOADER & TITLES)
     ================================================================ */
     .noise {
       position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.04;
@@ -144,11 +141,17 @@
       position: fixed; inset: 0; background: var(--bg); z-index: 10000;
       display: flex; justify-content: center; align-items: center;
     }
+    
     .loader-text {
-      font-family: var(--font-en); font-size: 1.5rem; letter-spacing: 0.5em; color: var(--accent);
-      animation: pulse 1.5s infinite alternate;
+      font-family: var(--font-en); font-size: clamp(1.5rem, 4vw, 2.5rem); 
+      letter-spacing: 0.6em; color: var(--accent);
+      animation: cinematic-pulse 2.2s infinite ease-in-out;
     }
-    @keyframes pulse { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+    @keyframes cinematic-pulse {
+      0% { opacity: 0; filter: blur(6px); transform: scale(0.95); }
+      50% { opacity: 1; filter: blur(0px); transform: scale(1); text-shadow: 0 0 20px rgba(196,168,130,0.5); }
+      100% { opacity: 0; filter: blur(6px); transform: scale(1.05); }
+    }
 
     .hero {
       position: relative; height: 100vh; width: 100vw; overflow: hidden;
@@ -171,11 +174,18 @@
       z-index: 5;
       mix-blend-mode: overlay;
     }
+    
+    /* 負荷軽減のため、文字描画中はtext-shadowを外し、完了時（.is-ready）に適用する */
     .hero-title-wrap { 
       position: relative; z-index: 10; text-align: center; color: var(--fg); 
-      text-shadow: 0 4px 30px rgba(0,0,0,0.8); margin-top: 8vh;
-      animation: analog-flicker 4s infinite; /* アナログな明滅エフェクト */
+      margin-top: 8vh;
+      will-change: transform, opacity;
     }
+    .hero-title-wrap.is-ready {
+      text-shadow: 0 4px 30px rgba(0,0,0,0.8);
+      animation: analog-flicker 6s infinite;
+    }
+    
     .hero-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.65rem);
       letter-spacing: 0.3em; color: var(--accent); text-transform: uppercase; margin-bottom: 1rem; display: block;
@@ -187,14 +197,6 @@
     .hero-subtitle { 
       font-family: var(--font-en); font-size: clamp(0.85rem, 2vw, 1.2rem); 
       letter-spacing: 0.4em; font-style: italic; color: var(--accent); 
-    }
-
-    /* デコード中のノイズ文字（砂金のような色合い） */
-    .dud {
-      color: var(--accent);
-      opacity: 0.8;
-      font-family: 'Courier New', monospace; /* 異質なフォントを混ぜてバグ感を出す */
-      text-shadow: 0 0 10px rgba(196,168,130,0.6);
     }
 
     @keyframes analog-flicker {
@@ -385,7 +387,6 @@
     .contact-heading { font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em; }
     .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.8vw, 0.95rem); color: rgba(233,229,223,0.6); margin: 0 auto 3rem; max-width: 500px; line-height: 2.2; }
     
-    /* ── 新しいデザインの問い合わせボタン ── */
     .contact-btn {
       display: inline-flex;
       align-items: center;
@@ -416,7 +417,7 @@
     .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: rgba(232,228,219,0.46); }
 
     /* ============================================================
-        BACK TO TOP (Scroll Progress Ring + Glassmorphism UI)
+        BACK TO TOP
     ================================================================ */
     .back-to-top {
       position: fixed;
@@ -532,18 +533,10 @@
         MOBILE OPTIMIZATION
     ================================================================ */
     @media (max-width: 768px) {
-      nav#top-nav {
-        padding: 1rem var(--px);
-      }
+      nav#top-nav { padding: 1rem var(--px); }
       .nav-logo-unified { flex-shrink: 0; }
-      
-      .nav-links { 
-        display: none; 
-      }
-      
+      .nav-links { display: none; }
       .nav-cta { flex-shrink: 0; padding: 0.45rem 1rem; font-size: 0.6rem; }
-
-      /* フッター・ボタンのレスポンシブ追加 */
       .contact-btn { padding: 1.2rem 2rem; width: 100%; max-width: 320px; }
       footer { padding: 3rem 1.5rem; display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; text-align: left; }
     }
@@ -825,14 +818,14 @@
 
   <script>
     // ============================================================
-    // TEXT SCRAMBLE CLASS (機械的なデコード処理)
+    // TEXT SCRAMBLE CLASS (極限まで描画負荷を削った純粋テキスト操作版)
     // ============================================================
     class TextScramble {
       constructor(el) {
         this.el = el;
-        // 作品のテーマに合わせ、アルファベットや記号に加えて古い漢字や半角カナを混入
         this.chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!<>-_\\/[]{}—=+*^?#ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄ甲乙丙丁戊己庚辛壬癸';
         this.update = this.update.bind(this);
+        this.lastTime = 0; 
       }
       
       setText(newText) {
@@ -842,20 +835,30 @@
         this.queue = [];
         
         for (let i = 0; i < length; i++) {
-          const from = oldText[i] || '';
+          // コンテナが空の場合は、最初から「ノイズ文字」で埋めることで即座に出現の兆しを作る
+          const from = oldText[i] || this.randomChar(); 
           const to = newText[i] || '';
-          const start = Math.floor(Math.random() * 40);
-          const end = start + Math.floor(Math.random() * 40);
+          const start = Math.floor(Math.random() * 5) + Math.floor(i * 1.5);
+          const end = start + Math.floor(Math.random() * 15) + 15;
           this.queue.push({ from, to, start, end });
         }
         
         cancelAnimationFrame(this.frameRequest);
         this.frame = 0;
+        this.lastTime = Date.now();
         this.update();
         return promise;
       }
       
       update() {
+        const now = Date.now();
+        // 約30fpsに制限（スムーズさとターミナル感を両立させる絶妙なライン）
+        if (now - this.lastTime < 30) { 
+          this.frameRequest = requestAnimationFrame(this.update);
+          return;
+        }
+        this.lastTime = now;
+
         let output = '';
         let complete = 0;
         
@@ -869,13 +872,15 @@
               char = this.randomChar();
               this.queue[i].char = char;
             }
-            output += `<span class="dud">${char}</span>`;
+            // HTMLタグ(<span>)の生成を完全にやめ、純粋なテキストのみを結合（カクつきをゼロに）
+            output += char;
           } else {
             output += from;
           }
         }
         
-        this.el.innerHTML = output;
+        // innerHTMLではなくtextContentを使用することで、ブラウザのHTMLパース処理を完全にスキップ
+        this.el.textContent = output;
         
         if (complete === this.queue.length) {
           this.resolve();
@@ -891,39 +896,48 @@
     }
 
     // ============================================================
-    // GSAP HERO ANIMATION
+    // GSAP HERO ANIMATION & LOADER CONTROL
     // ============================================================
-    window.addEventListener("load", () => {
+    
+    // ロード画面の長さを少し縮め、より早くコンテンツへ移行
+    const minLoadTime = new Promise(resolve => setTimeout(resolve, 1100));
+    const windowLoaded = new Promise(resolve => window.addEventListener("load", resolve));
+
+    Promise.all([minLoadTime, windowLoaded]).then(() => {
       const tl = gsap.timeline();
       
-      // テキストスクランブルのインスタンス化
       const fxEyebrow = new TextScramble(document.getElementById('text-eyebrow'));
       const fxTitle = new TextScramble(document.getElementById('text-title'));
       const fxSubtitle = new TextScramble(document.getElementById('text-subtitle'));
 
-      tl.to("#loader", { opacity: 0, duration: 1, ease: "power2.inOut", onComplete: () => document.getElementById("loader").style.display = "none" })
-        .fromTo("#heroImgWrap", { clipPath: "polygon(0% 50%, 100% 50%, 100% 50%, 0% 50%)", scale: 1.1 }, { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", scale: 1, duration: 1.5, ease: "expo.out" }, "-=0.2")
-        .fromTo("#heroImg", { scale: 1.5 }, { scale: 1, duration: 2, ease: "power3.out" }, "-=1.5")
+      tl.to("#loader", { opacity: 0, duration: 0.8, ease: "power2.inOut", onComplete: () => document.getElementById("loader").style.display = "none" })
+        .fromTo("#heroImgWrap", { clipPath: "polygon(0% 50%, 100% 50%, 100% 50%, 0% 50%)" }, { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", duration: 1.6, ease: "power3.inOut" }, "-=0.4")
+        .fromTo("#heroImg", { scale: 1.15 }, { scale: 1, duration: 2.0, ease: "power3.out" }, "<")
         
-        // --- ぶわぶわっと滲みながら浮かび上がるエフェクト（GSAPで制御） ---
+        // 修正点1: ローダーが完全に消える前から、入れ替わるようにタイトルコンテナを浮上させる（-=1.4）
         .fromTo("#heroTitle", 
-          { y: 30, opacity: 0, filter: "blur(20px)", scale: 1.1 }, 
-          { y: 0, opacity: 1, filter: "blur(0px)", scale: 1, duration: 2, ease: "power2.out" }, 
-          "-=1.2"
+          { y: 15, opacity: 0 }, 
+          { y: 0, opacity: 1, duration: 1.5, ease: "power2.out" }, 
+          "-=1.4" 
         )
-        // --- テキストのデコード（スクランブル）開始 ---
+        // 修正点2: コンテナがフェードインし始めるのと「完全に同時（<）」にデコード処理を開始。
+        // 最初からノイズ文字が入っているため、ぼんやりとノイズが浮かび上がる「兆し」が生まれる。
         .add(() => {
-          // タイトル周辺の3行を同時に、しかしわずかな時間差を感じさせながらデコード
-          fxEyebrow.setText('グループ展「ふうけいのまにまに」発表作品 / Series 01');
-          setTimeout(() => fxTitle.setText('左美都の神話と伝承'), 100);
-          setTimeout(() => fxSubtitle.setText('Myth and Tradition of Samizu'), 250);
-        }, "-=1.5")
+          Promise.all([
+            fxEyebrow.setText('グループ展「ふうけいのまにまに」発表作品 / Series 01'),
+            fxTitle.setText('左美都の神話と伝承'),
+            fxSubtitle.setText('Myth and Tradition of Samizu')
+          ]).then(() => {
+            // デコードが全て終わった後に、はじめて重いCSSエフェクト(text-shadow等)を有効化する
+            document.getElementById('heroTitle').classList.add('is-ready');
+          });
+        }, "<")
         
         .to("#bgType", { x: -200, duration: 10, ease: "none", repeat: -1, yoyo: true }, 0);
     });
 
     // ============================================================
-    // ORIGINAL PAGE SCRIPT + NEW FEATURES
+    // ORIGINAL PAGE SCRIPT
     // ============================================================
     (function(){
       const header = document.getElementById('top-nav');
@@ -944,14 +958,12 @@
         
         if(progress) progress.style.width = (scrollPct * 100) + '%';
         
-        /* Back to Top Visibility & Circular Progress Ring */
         if(b2t) b2t.classList.toggle('is-visible', y > 500);
         if(b2tCircle) {
           const offset = 301.6 - (301.6 * scrollPct);
           b2tCircle.style.strokeDashoffset = offset;
         }
 
-        /* Scroll Spy (Header Nav) */
         const checkY = y + window.innerHeight * 0.4;
         let currentSec = null;
         targets.forEach(sec => {
@@ -968,7 +980,6 @@
       document.addEventListener('scroll', onScroll, {passive: true});
       onScroll();
 
-      /* ヘッダーナビゲーションのスムーズスクロール */
       const handleNavClick = (e, targetId) => {
         e.preventDefault();
         const t = document.getElementById(targetId);
@@ -982,7 +993,6 @@
         link.addEventListener('click', (e) => handleNavClick(e, link.getAttribute('href').substring(1)));
       });
 
-      /* Back to Top - Completely to the top */
       if(b2t) {
         b2t.addEventListener('click', (e) => {
           e.preventDefault();
@@ -990,7 +1000,6 @@
         });
       }
 
-      /* Intersection Observer (Fade Up) */
       const revealEls = document.querySelectorAll('.reveal');
       if('IntersectionObserver' in window) {
         const io = new IntersectionObserver(entries => {
@@ -1006,7 +1015,6 @@
         revealEls.forEach(el => el.classList.add('is-visible'));
       }
 
-      /* Lightbox Modal */
       const modal = document.getElementById('imageModal');
       const mImg = document.getElementById('modalImg');
       const mJp = document.getElementById('modalTitleJp');
