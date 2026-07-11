@@ -319,9 +319,10 @@
     }
     .hero-title em { font-style: normal; color: rgba(232,228,219,0.55); }
 
-    body.is-loaded .line-draw { animation: drawReveal 1.6s cubic-bezier(0.1, 1, 0.2, 1) forwards; animation-delay: 0.1s; }
-    body.is-loaded .line-dig { animation: digReveal 1.8s cubic-bezier(0.1, 1, 0.2, 1) forwards; animation-delay: 0.8s; }
-    body.is-loaded .line-return { animation: returnReveal 2.0s cubic-bezier(0.1, 1, 0.2, 1) forwards; animation-delay: 1.6s; }
+    /* 全体的に余裕を持たせたアニメーションタイミング */
+    body.is-loaded .line-draw { animation: drawReveal 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.5s; }
+    body.is-loaded .line-dig { animation: digReveal 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 1.1s; }
+    body.is-loaded .line-return { animation: returnReveal 2.0s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 1.8s; }
     
     @keyframes drawReveal {
       0% { opacity: 0; clip-path: inset(0 100% 0 0); filter: blur(12px); transform: translateX(-30px); }
@@ -338,14 +339,14 @@
 
     .hero-body {
       font-size: clamp(13px, 1.2vw + 10px, 15px); line-height: 2;
-      color: var(--text-muted); opacity: 0; animation: fadeUp 0.9s var(--ease-expo) 2.2s forwards;
+      color: var(--text-muted); opacity: 0; animation: fadeUp 0.9s var(--ease-expo) 2.4s forwards;
       letter-spacing: 0.04em; min-height: 3em;
     }
     .hero-scroll {
       margin-top: 5rem; display: flex; align-items: center; gap: 0.875rem;
       font-family: var(--en); font-size: clamp(0.5rem,1.5vw,0.65rem);
       letter-spacing: 0.22em; color: rgba(232,228,219,0.4); text-transform: uppercase;
-      opacity: 0; animation: fadeIn 1.2s ease 2.6s forwards;
+      opacity: 0; animation: fadeIn 1.2s ease 2.8s forwards;
     }
     .hero-scroll-line { width: 36px; height: 0.5px; background: rgba(232,228,219,0.25); position: relative; overflow: hidden;}
     .hero-scroll-line::after {
@@ -374,7 +375,7 @@
       text-decoration: none;
       text-align: left;
       opacity: 0;
-      animation: fadeUp 0.9s var(--ease-expo) 2.8s forwards;
+      animation: fadeUp 0.9s var(--ease-expo) 3.0s forwards;
       transition: transform 0.6s var(--ease-out-back), background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
       max-width: calc(100% - 3rem);
     }
@@ -1020,11 +1021,18 @@
       .nav-links.open a { font-size: 0.9rem; padding: 0.6rem 0.5rem; display: block; white-space: nowrap; }
       .hero { padding: 8rem 1.5rem 4rem; min-height: 80vh; }
       
+      /* タイトル文字アニメーション・スマホ向けにスムーズに最適化（重いフィルター除去） */
+      body.is-loaded .line-draw { animation-name: drawRevealMobile; }
+      body.is-loaded .line-dig { animation-name: digRevealMobile; }
+      body.is-loaded .line-return { animation-name: returnRevealMobile; }
+      
+      .hero-body { font-size: 11.5px; line-height: 1.85; margin-top: 0.5rem; } /* 少し小さくしてバランス最適化 */
+
       .hero-notice-box { position: relative; bottom: auto; right: auto; align-self: flex-end; flex-direction: column; align-items: flex-start; gap: 0.6rem; padding: 1.2rem 1.5rem; margin-top: 3rem; width: 100%; max-width: 340px; }
       .hero-notice-text { white-space: normal; line-height: 1.8; }
 
       .section { padding: 6rem 1.5rem; }
-      #statement { padding: 8rem 1.5rem; }
+      #statement { padding: 8rem 1.5rem; background-attachment: scroll; background-position: center top; } /* スマホでの背景過剰拡大防止策 */
       .statement-bg-word { font-size: 40vw; }
       
       .opening-stage { margin-bottom: 5rem; min-height: 120vh; }
@@ -1095,6 +1103,20 @@
       .page-nav { display: none; }
     }
 
+    /* スマホ向けに独立させたスムーズなアニメーション処理群 */
+    @keyframes drawRevealMobile {
+      0% { opacity: 0; clip-path: inset(0 100% 0 0); transform: translateX(-20px); }
+      100% { opacity: 1; clip-path: inset(0 0 0 0); transform: translateX(0); }
+    }
+    @keyframes digRevealMobile {
+      0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes returnRevealMobile {
+      0% { opacity: 0; transform: scale(1.05); letter-spacing: 0.1em; color: #ffffff; }
+      100% { opacity: 1; transform: scale(1); letter-spacing: -0.025em; color: var(--text); }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .hero-slide { transition: opacity 0.5s ease-in-out; }
       .hero-slide.active { transform: scale(1); transition: opacity 0.5s ease-in-out; }
@@ -1111,7 +1133,7 @@
 
 <script>
   /* ════════════════════════════════════════════════════════
-     ローダーシステム（体感速度を最高にするための最適化）
+      ローダーシステム（体感速度を最高にするための最適化）
   ════════════════════════════════════════════════════════ */
   (function() {
     function start() { 
@@ -1141,7 +1163,7 @@
 </div>
 
 <div class="works-video-bg" id="works-video-bg" aria-hidden="true">
-  <video autoplay loop muted playsinline>
+  <video autoplay loop muted playsinline webkit-playsinline>
     <source src="images/mov1.mp4" type="video/mp4">
   </video>
   <div class="works-video-overlay"></div>
@@ -1854,9 +1876,20 @@ document.querySelectorAll('.reveal, .news-heading-wrap, .ink-reveal-block').forE
   var worksSection = document.getElementById('works');
   var videoBg      = document.getElementById('works-video-bg');
   if (!worksSection || !videoBg) return;
+  var videoEl = videoBg.querySelector('video');
   new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
-      videoBg.classList[e.isIntersecting ? 'add' : 'remove']('active');
+      if (e.isIntersecting) {
+        videoBg.classList.add('active');
+        if (videoEl && videoEl.paused) {
+          videoEl.play().catch(function(){}); // スマホ等の強制再生対策
+        }
+      } else {
+        videoBg.classList.remove('active');
+        if (videoEl && !videoEl.paused) {
+          videoEl.pause();
+        }
+      }
     });
   }, { threshold: 0.01 }).observe(worksSection);
 })();
