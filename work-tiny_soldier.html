@@ -328,7 +328,7 @@
     .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
 
     /* ============================================================
-        LIGHTBOX (MODAL) & BACK TO TOP
+        LIGHTBOX (MODAL)
     ============================================================ */
     .image-modal { position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.55s var(--ease), visibility 0.55s; }
     .image-modal.is-active { opacity: 1; visibility: visible; }
@@ -343,11 +343,91 @@
     .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(0.9rem, 1.5vw, 1.1rem); font-weight: 300; color: var(--fg); margin-bottom: 0.3rem; letter-spacing: 0.08em; }
     .modal-caption-meta { font-family: var(--font-en); font-size: clamp(0.65rem, 1.1vw, 0.75rem); font-style: italic; color: var(--accent); letter-spacing: 0.15em; }
 
-    .back-to-top { position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px); z-index: 9000; width: clamp(56px, 10vw, 90px); height: clamp(56px, 10vw, 90px); border-radius: 50%; background: rgba(196, 168, 130, 0.85); border: 1px solid var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--bg); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6); }
-    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
-    .back-to-top:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-6px); }
-    .back-to-top svg { width: clamp(20px, 3vw, 32px); height: clamp(20px, 3vw, 32px); margin-bottom: 2px; }
-    .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.9rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
+    /* ============================================================
+       BACK TO TOP (Scroll Progress Ring + Glassmorphism UI)
+    ============================================================ */
+    .back-to-top {
+      position: fixed;
+      bottom: clamp(20px, 4vw, 40px);
+      right: clamp(20px, 4vw, 40px);
+      z-index: 9000;
+      width: clamp(52px, 8vw, 70px);
+      height: clamp(52px, 8vw, 70px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: opacity 0.6s var(--ease), visibility 0.6s, transform 0.6s var(--ease);
+      cursor: pointer;
+    }
+    .back-to-top.is-visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    
+    .b2t-inner {
+      position: absolute;
+      inset: 4px;
+      background: rgba(12, 12, 10, 0.5);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.4s var(--ease), transform 0.4s var(--ease);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+    }
+    
+    .b2t-text {
+      font-family: var(--font-en);
+      font-size: clamp(0.6rem, 1.4vw, 0.75rem);
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      color: var(--fg);
+      margin-right: -0.15em;
+      margin-bottom: -1px;
+      transition: color 0.4s var(--ease), transform 0.4s var(--ease);
+    }
+    
+    .b2t-progress {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+      pointer-events: none;
+    }
+    .b2t-progress circle {
+      fill: none;
+      stroke-width: 1.5;
+    }
+    .b2t-progress-bg {
+      stroke: rgba(233,229,223,0.1);
+    }
+    .b2t-progress-value {
+      stroke: var(--accent);
+      stroke-dasharray: 301.6;
+      stroke-dashoffset: 301.6;
+      transition: stroke-dashoffset 0.15s linear, stroke 0.4s var(--ease);
+    }
+
+    .back-to-top:hover .b2t-inner {
+      background: var(--accent);
+      transform: scale(0.92);
+    }
+    .back-to-top:hover .b2t-text {
+      color: var(--bg);
+      transform: translateY(-2px);
+    }
+    .back-to-top:hover .b2t-progress-value {
+      stroke: var(--fg);
+    }
 
     /* ============================================================
         RESPONSIVE DESIGN
@@ -396,7 +476,7 @@
       <li><a href="#chronology" class="header-nav-item" data-target="chronology">Timeline</a></li>
     </ul>
     
-    <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
+    <a href="index.html#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
   </nav>
 
   <main>
@@ -786,11 +866,14 @@
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
-  <a href="#gallery" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M18 15l-6-6-6 6"/>
+  <a href="#top" class="back-to-top" id="backToTop" aria-label="ページトップへ戻る">
+    <svg class="b2t-progress" viewBox="0 0 100 100">
+      <circle class="b2t-progress-bg" cx="50" cy="50" r="48"></circle>
+      <circle class="b2t-progress-value" id="b2t-progress-value" cx="50" cy="50" r="48"></circle>
     </svg>
-    <span class="back-to-top-text">TOP</span>
+    <div class="b2t-inner">
+      <span class="b2t-text">TOP</span>
+    </div>
   </a>
 
   <div class="image-modal" id="imageModal" aria-hidden="true" role="dialog">
@@ -892,12 +975,13 @@
       obs.observe(el);
     });
 
-    /* ── Scroll Interactions (Header Nav & Spine) ── */
+    /* ── Scroll Interactions (Header Nav, Spine, Back To Top) ── */
     const topNav = document.getElementById('top-nav');
     const headerNavItems = document.querySelectorAll('.header-nav-item');
     const sections = ['statement', 'gallery', 'chronology'].map(id => document.getElementById(id));
     const spineFill = document.getElementById('tl-spine-fill');
     const tlWrap = document.querySelector('.timeline-container');
+    const b2tCircle = document.getElementById('b2t-progress-value');
     let ticking = false;
 
     window.addEventListener('scroll', () => {
@@ -930,11 +1014,18 @@
             }
           }
 
-          /* Back to Top */
+          /* Back to Top Visibility & Progress Ring */
           const b2t = document.getElementById('backToTop');
           if (b2t) {
             if (scrollY > 400) b2t.classList.add('is-visible');
             else b2t.classList.remove('is-visible');
+          }
+          
+          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const scrollPct = Math.max(0, Math.min(1, scrollY / docHeight));
+          if (b2tCircle) {
+            const offset = 301.6 - (301.6 * scrollPct);
+            b2tCircle.style.strokeDashoffset = offset;
           }
 
           ticking = false;
@@ -955,17 +1046,10 @@
       });
     });
 
+    /* Back To Top - Completely to the top (all devices) */
     document.getElementById('backToTop').addEventListener('click', (e) => {
       e.preventDefault();
-      if (window.innerWidth <= 768) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        const target = document.getElementById('gallery');
-        if (target) {
-          const offset = topNav?.offsetHeight || 80;
-          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
-        }
-      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
     /* ── Lightbox (Modal) ── */
