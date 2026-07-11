@@ -41,6 +41,12 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { font-size: 16px; scroll-behavior: smooth; }
 
+    /* 背景のノイズアニメーション (グラファイト/鉛筆の粉の漂いを表現) */
+    @keyframes slow-drift {
+      0% { background-position: 0 0; }
+      100% { background-position: 200px 200px; }
+    }
+
     body::before {
       content: "";
       position: fixed;
@@ -49,6 +55,7 @@
       z-index: 9999;
       opacity: 0.04;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      animation: slow-drift 25s linear infinite;
     }
 
     body {
@@ -82,14 +89,23 @@
     @media (max-width: 1024px) { .cursor-dot, .cursor-outline { display: none; } body, a, button { cursor: auto; } }
 
     /* ============================================================
-       NAVIGATION
+       NAVIGATION (アニメーション追加)
     =========================================================== */
     nav#top-nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 300;
       display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
       padding: clamp(14px, 3vw, 36px) var(--px); background: transparent;
       backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      border-bottom: 0.5px solid transparent; transition: background 0.4s ease, border-color 0.4s ease;
+      border-bottom: 0.5px solid transparent; 
+      /* 初期状態: 上に隠す */
+      transform: translateY(-100%);
+      opacity: 0;
+      transition: transform 1.2s var(--ease) 0.2s, opacity 1.2s ease 0.2s, background 0.4s ease, border-color 0.4s ease;
+    }
+    /* ロード時にふわっと降りてくるクラス */
+    nav#top-nav.loaded {
+      transform: translateY(0);
+      opacity: 1;
     }
     nav#top-nav.scrolled { background: rgba(10,10,9,0.93); border-color: var(--border); }
     
@@ -109,48 +125,56 @@
     }
     .nav-link-item:hover, .nav-link-item.active { color: var(--accent); }
 
-    /* アクティブ時のアンダーバー表示 */
     .nav-link-item::after {
       content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 1px;
+      position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
       background: var(--accent);
-      transform: scaleX(0);
-      transform-origin: right;
+      transform: scaleX(0); transform-origin: right;
       transition: transform 0.4s var(--ease-out);
     }
-    .nav-link-item:hover::after,
-    .nav-link-item.active::after {
-      transform: scaleX(1);
-      transform-origin: left;
+    .nav-link-item:hover::after, .nav-link-item.active::after {
+      transform: scaleX(1); transform-origin: left;
     }
 
     .nav-cta { font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem); letter-spacing: 0.25em; text-transform: uppercase; border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem; color: var(--accent); transition: background 0.25s, color 0.25s; }
     .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
 
     /* ============================================================
-       HERO
+       HERO (背景画像を刷新)
     =========================================================== */
     .hero {
       position: relative; height: 100svh; min-height: 600px;
       display: flex; flex-direction: column; justify-content: center;
       padding: 0 var(--px); overflow: hidden;
     }
-    .hero-video-bg {
-      position: absolute; inset: -5%; width: 110%; height: 110%; object-fit: cover;
-      opacity: 0; filter: grayscale(100%) contrast(1.2) brightness(0.4);
-      transition: opacity 3s ease, transform 10s linear; z-index: 1;
+
+    .hero-image-bg {
+      position: absolute; inset: -5%; width: 110%; height: 110%;
+      background-image: url('images/【a thread】 修正版.jpg');
+      background-size: cover; background-position: center;
+      opacity: 0; filter: grayscale(80%) contrast(1.1) brightness(0.7);
+      transform: scale(1.05);
+      transition: opacity 3s ease, transform 10s ease-out;
+      z-index: 1;
     }
-    .hero-video-bg.loaded { opacity: 0.3; transform: scale(1); }
+    .hero-image-bg.loaded { opacity: 0.5; transform: scale(1); }
+
+    .hero-overlay {
+      position: absolute; inset: 0; z-index: 2;
+      background: linear-gradient(to bottom, rgba(6,6,5,0.2) 0%, rgba(6,6,5,0.6) 60%, rgba(6,6,5,1) 100%);
+    }
     
     .hero-title-wrapper { position: relative; z-index: 4; display: flex; flex-direction: column; align-items: flex-start; margin-top: 10vh; }
-    .hero-title-huge { font-family: var(--font-ja); font-size: clamp(5rem, 20vw, 24rem); font-weight: 200; line-height: 0.8; letter-spacing: -0.04em; color: var(--fg); mix-blend-mode: overlay; display: flex; flex-direction: column; }
+    .hero-title-huge { 
+      font-family: var(--font-ja); font-size: clamp(5rem, 20vw, 24rem); 
+      font-weight: 200; line-height: 0.8; letter-spacing: -0.04em; 
+      color: var(--fg); 
+      text-shadow: 0 15px 40px rgba(0,0,0,0.8);
+      display: flex; flex-direction: column; 
+    }
     .hero-title-huge .char { display: block; opacity: 0; transform: translateY(100px) rotate(-5deg); transition: transform 1.8s var(--ease), opacity 1.5s ease; }
     .hero-title-huge.revealed .char { opacity: 1; transform: translateY(0) rotate(0); }
-    .hero-title-huge.revealed .char:nth-child(2) { transition-delay: 0.15s; margin-left: 15vw; color: transparent; -webkit-text-stroke: 1px var(--fg); }
+    .hero-title-huge.revealed .char:nth-child(2) { transition-delay: 0.15s; margin-left: 15vw; color: transparent; -webkit-text-stroke: 1px var(--fg); text-shadow: none; }
 
     .hero-meta-box { position: absolute; bottom: clamp(2rem, 8vh, 6rem); left: var(--px); z-index: 5; display: flex; flex-direction: column; gap: 1rem; }
     .hero-eyebrow { font-family: var(--font-en); font-size: clamp(0.55rem, 1.2vw, 0.75rem); letter-spacing: 0.4em; color: var(--muted); text-transform: uppercase; display: flex; align-items: center; gap: 1.5rem; overflow: hidden; }
@@ -179,322 +203,79 @@
     /* ============================================================
        GALLERY INDEX (Coverflow)
     =========================================================== */
-    .gallery-carousel-section {
-      position: relative;
-      padding: clamp(5rem, 10vh, 10rem) 0;
-      background: var(--bg2);
-      border-bottom: 1px solid var(--border);
-      overflow: hidden;
-    }
-    .carousel-header {
-      text-align: center; margin-bottom: clamp(2rem, 6vh, 5rem);
-    }
-    .carousel-header h2 {
-      font-family: var(--font-en); font-size: clamp(1.5rem, 4vw, 2.5rem); font-style: italic;
-      color: var(--accent); letter-spacing: 0.2em; font-weight: 300;
-    }
+    .gallery-carousel-section { position: relative; padding: clamp(5rem, 10vh, 10rem) 0; background: var(--bg2); border-bottom: 1px solid var(--border); overflow: hidden; }
+    .carousel-header { text-align: center; margin-bottom: clamp(2rem, 6vh, 5rem); }
+    .carousel-header h2 { font-family: var(--font-en); font-size: clamp(1.5rem, 4vw, 2.5rem); font-style: italic; color: var(--accent); letter-spacing: 0.2em; font-weight: 300; }
     
-    .coverflow-container {
-      position: relative;
-      height: clamp(350px, 50vh, 600px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      perspective: 1200px;
-      user-select: none;
-      touch-action: pan-y;
-    }
-    .coverflow-item {
-      position: absolute;
-      width: clamp(200px, 35vw, 400px);
-      height: auto; 
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.6s ease, filter 0.6s ease;
-      transform-style: preserve-3d;
-      cursor: pointer;
-    }
-    
-    .cf-img-wrap {
-      width: 100%;
-      font-size: 0; line-height: 0;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-      border: 1px solid rgba(233,229,223,0.1);
-      transition: border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
-      background: var(--bg);
-    }
+    .coverflow-container { position: relative; height: clamp(350px, 50vh, 600px); display: flex; align-items: center; justify-content: center; perspective: 1200px; user-select: none; touch-action: pan-y; }
+    .coverflow-item { position: absolute; width: clamp(200px, 35vw, 400px); height: auto; display: flex; flex-direction: column; align-items: center; transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.6s ease, filter 0.6s ease; transform-style: preserve-3d; cursor: pointer; }
+    .cf-img-wrap { width: 100%; font-size: 0; line-height: 0; box-shadow: 0 15px 35px rgba(0,0,0,0.5); border: 1px solid rgba(233,229,223,0.1); transition: border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease; background: var(--bg); }
     .coverflow-item img { width: 100%; height: auto; }
     
-    .coverflow-item.is-active .cf-img-wrap {
-      border-color: rgba(196,168,130,0.6);
-      transform: scale(1.05) translateY(-8px);
-      box-shadow: 0 30px 60px rgba(196,168,130,0.12), 0 15px 25px rgba(0,0,0,0.8);
-    }
-    
-    .coverflow-info {
-      position: absolute; 
-      bottom: -4.5rem; 
-      left: 0; width: 100%; text-align: center;
-      opacity: 0; transform: translateY(-10px); transition: all 0.4s var(--ease); pointer-events: none;
-    }
-    .coverflow-item.is-active .coverflow-info {
-      opacity: 1; transform: translateY(0); transition-delay: 0.15s;
-    }
+    .coverflow-item.is-active .cf-img-wrap { border-color: rgba(196,168,130,0.6); transform: scale(1.05) translateY(-8px); box-shadow: 0 30px 60px rgba(196,168,130,0.12), 0 15px 25px rgba(0,0,0,0.8); }
+    .coverflow-info { position: absolute; bottom: -4.5rem; left: 0; width: 100%; text-align: center; opacity: 0; transform: translateY(-10px); transition: all 0.4s var(--ease); pointer-events: none; }
+    .coverflow-item.is-active .coverflow-info { opacity: 1; transform: translateY(0); transition-delay: 0.15s; }
     .cf-title { font-family: var(--font-ja); font-size: clamp(0.9rem, 2vw, 1.1rem); color: var(--fg); letter-spacing: 0.05em; font-weight: 300; margin-bottom: 0.3rem; }
     .cf-spec { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.65rem; color: var(--accent); letter-spacing: 0.15em; }
-
-    .carousel-hint {
-      position: absolute; bottom: 3%; width: 100%; text-align: center;
-      font-family: var(--font-en); font-size: 0.6rem; color: var(--dim); letter-spacing: 0.3em;
-      text-transform: uppercase; pointer-events: none;
-    }
+    .carousel-hint { position: absolute; bottom: 3%; width: 100%; text-align: center; font-family: var(--font-en); font-size: 0.6rem; color: var(--dim); letter-spacing: 0.3em; text-transform: uppercase; pointer-events: none; }
 
     /* ============================================================
        TIMELINE SECTION
     =========================================================== */
-    .timeline-section { 
-      position: relative;
-      padding: clamp(5rem, 10vh, 12rem) var(--px); 
-      background: var(--bg);
-    }
-    .timeline-header {
-      text-align: center;
-      margin-bottom: clamp(4rem, 8vh, 10rem);
-    }
+    .timeline-section { position: relative; padding: clamp(5rem, 10vh, 12rem) var(--px); background: var(--bg); }
+    .timeline-header { text-align: center; margin-bottom: clamp(4rem, 8vh, 10rem); }
     .timeline-header .section-label-large { margin-bottom: 0.5rem; }
-    .timeline-header p {
-      font-family: var(--font-en); font-size: 0.8rem; color: var(--accent); letter-spacing: 0.3em;
-    }
+    .timeline-header p { font-family: var(--font-en); font-size: 0.8rem; color: var(--accent); letter-spacing: 0.3em; }
 
-    .timeline-container {
-      position: relative;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    .timeline-line {
-      position: absolute;
-      top: 0; bottom: 0; left: 50%;
-      width: 1px;
-      background: var(--border-md);
-      transform: translateX(-50%);
-      z-index: 1;
-    }
-    .timeline-line-progress {
-      position: absolute;
-      top: 0; left: 0; width: 100%;
-      background: var(--accent);
-      height: 0; 
-      transition: height 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-    }
+    .timeline-container { position: relative; max-width: 1200px; margin: 0 auto; }
+    .timeline-line { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: var(--border-md); transform: translateX(-50%); z-index: 1; }
+    .timeline-line-progress { position: absolute; top: 0; left: 0; width: 100%; background: var(--accent); height: 0; transition: height 0.3s cubic-bezier(0.19, 1, 0.22, 1); }
 
-    .timeline-year {
-      position: relative;
-      text-align: center;
-      margin: 8rem 0 4rem;
-      z-index: 2;
-    }
-    .timeline-year-text {
-      display: inline-block;
-      font-family: var(--font-en);
-      font-size: clamp(4rem, 10vw, 7rem);
-      font-weight: 200;
-      color: transparent;
-      -webkit-text-stroke: 1px var(--dim);
-      letter-spacing: 0.15em;
-      transition: color 0.6s ease, text-shadow 0.6s ease, transform 0.6s ease;
-    }
-    .timeline-year.in-view .timeline-year-text {
-      color: var(--accent);
-      -webkit-text-stroke: 1px transparent;
-      text-shadow: 0 0 40px rgba(196,168,130,0.3);
-      transform: scale(1.05);
-    }
+    .timeline-year { position: relative; text-align: center; margin: 8rem 0 4rem; z-index: 2; }
+    .timeline-year-text { display: inline-block; font-family: var(--font-en); font-size: clamp(4rem, 10vw, 7rem); font-weight: 200; color: transparent; -webkit-text-stroke: 1px var(--dim); letter-spacing: 0.15em; transition: color 0.6s ease, text-shadow 0.6s ease, transform 0.6s ease; }
+    .timeline-year.in-view .timeline-year-text { color: var(--accent); -webkit-text-stroke: 1px transparent; text-shadow: 0 0 40px rgba(196,168,130,0.3); transform: scale(1.05); }
 
-    .timeline-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      position: relative;
-      margin-bottom: 12vh;
-      z-index: 2;
-    }
+    .timeline-item { display: flex; align-items: center; justify-content: space-between; width: 100%; position: relative; margin-bottom: 12vh; z-index: 2; }
     .item-left { flex-direction: row; }
     .item-right { flex-direction: row-reverse; }
 
-    .timeline-content-img,
-    .timeline-content-txt {
-      width: 44%;
-    }
+    .timeline-content-img, .timeline-content-txt { width: 44%; }
 
-    .timeline-node {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      width: 14px; height: 14px;
-      background: var(--bg);
-      border: 2px solid var(--accent);
-      border-radius: 50%;
-      z-index: 5;
-      transition: all 0.4s var(--ease-out);
-    }
-    .timeline-item:hover .timeline-node {
-      background: var(--accent);
-      box-shadow: 0 0 20px var(--accent);
-      transform: translate(-50%, -50%) scale(1.4);
-    }
+    .timeline-node { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 14px; height: 14px; background: var(--bg); border: 2px solid var(--accent); border-radius: 50%; z-index: 5; transition: all 0.4s var(--ease-out); }
+    .timeline-item:hover .timeline-node { background: var(--accent); box-shadow: 0 0 20px var(--accent); transform: translate(-50%, -50%) scale(1.4); }
 
-    .timeline-card {
-      display: block;
-      position: relative;
-      text-decoration: none;
-      background: transparent;
-      outline: none;
-      border: none;
-      transition: transform 0.6s var(--ease-out);
-      cursor: pointer;
-      width: 100%;
-    }
-    .timeline-card:hover {
-      transform: translateY(-8px);
-    }
-    .timeline-img-wrap {
-      width: 100%;
-      font-size: 0; line-height: 0; 
-      border: 1px solid rgba(233,229,223,0.1);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-      overflow: hidden;
-      transition: border-color 0.4s ease;
-      background: var(--bg);
-    }
-    .timeline-card:hover .timeline-img-wrap {
-      border-color: var(--accent);
-    }
-    .timeline-img-wrap img {
-      width: 100%; height: auto; 
-      transition: transform 1s var(--ease-out), filter 0.5s ease;
-      filter: grayscale(20%) brightness(0.9);
-    }
-    .timeline-card:hover .timeline-img-wrap img {
-      transform: scale(1.03); 
-      filter: grayscale(0%) brightness(1.05);
-    }
+    .timeline-card { display: block; position: relative; text-decoration: none; background: transparent; outline: none; border: none; transition: transform 0.6s var(--ease-out); cursor: pointer; width: 100%; }
+    .timeline-card:hover { transform: translateY(-8px); }
+    .timeline-img-wrap { width: 100%; font-size: 0; line-height: 0; border: 1px solid rgba(233,229,223,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.4); overflow: hidden; transition: border-color 0.4s ease; background: var(--bg); }
+    .timeline-card:hover .timeline-img-wrap { border-color: var(--accent); }
+    .timeline-img-wrap img { width: 100%; height: auto; transition: transform 1s var(--ease-out), filter 0.5s ease; filter: grayscale(20%) brightness(0.9); }
+    .timeline-card:hover .timeline-img-wrap img { transform: scale(1.03); filter: grayscale(0%) brightness(1.05); }
 
-    .timeline-content-txt {
-      padding: 2.5rem;
-      background: rgba(255, 255, 255, 0.015);
-      border: 1px solid rgba(233, 229, 223, 0.05);
-      border-radius: 8px;
-      backdrop-filter: blur(10px);
-      text-align: justify;
-      transition: transform 0.6s var(--ease-out), border-color 0.6s ease, box-shadow 0.6s ease;
-    }
-    .timeline-item:hover .timeline-content-txt {
-      border-color: rgba(196, 168, 130, 0.3);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-      transform: translateY(-5px);
-    }
+    .timeline-content-txt { padding: 2.5rem; background: rgba(255, 255, 255, 0.015); border: 1px solid rgba(233, 229, 223, 0.05); border-radius: 8px; backdrop-filter: blur(10px); text-align: justify; transition: transform 0.6s var(--ease-out), border-color 0.6s ease, box-shadow 0.6s ease; }
+    .timeline-item:hover .timeline-content-txt { border-color: rgba(196, 168, 130, 0.3); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5); transform: translateY(-5px); }
 
-    .timeline-title { 
-      font-family: var(--font-ja); 
-      font-size: clamp(1.4rem, 2.5vw, 2rem); 
-      font-weight: 300; 
-      color: var(--accent); 
-      letter-spacing: 0.05em;
-      margin-bottom: 0.4rem;
-    }
-    .timeline-spec { 
-      font-family: 'Helvetica Neue', Arial, sans-serif; 
-      font-size: 0.75rem; 
-      color: var(--dim); 
-      letter-spacing: 0.15em; 
-      margin-bottom: 1.8rem;
-    }
-    .timeline-desc {
-      font-size: 0.95rem;
-      line-height: 2.2;
-      color: var(--fg);
-      opacity: 0.85;
-    }
+    .timeline-title { font-family: var(--font-ja); font-size: clamp(1.4rem, 2.5vw, 2rem); font-weight: 300; color: var(--accent); letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+    .timeline-spec { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 0.75rem; color: var(--dim); letter-spacing: 0.15em; margin-bottom: 1.8rem; }
+    .timeline-desc { font-size: 0.95rem; line-height: 2.2; color: var(--fg); opacity: 0.85; }
     .timeline-desc p { margin-bottom: 1.2em; }
     .timeline-desc p:last-child { margin-bottom: 0; }
 
     /* ============================================================
        SUB GALLERY (TIMELINE 2023)
     =========================================================== */
-    .timeline-sub-gallery {
-      width: 100%;
-      margin: -2rem 0 8rem 0;
-      position: relative;
-      z-index: 10;
-      background: var(--bg);
-      padding: 3.5rem;
-      border: 1px solid rgba(233,229,223,0.05);
-      border-radius: 8px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-    }
-    .sub-gallery-group {
-      margin-bottom: 3.5rem;
-    }
-    .sub-gallery-group:last-child {
-      margin-bottom: 0;
-    }
-    .sub-gallery-title {
-      font-family: var(--font-en);
-      font-size: 1.2rem;
-      font-weight: 300;
-      color: var(--accent);
-      margin-bottom: 1.5rem;
-      letter-spacing: 0.15em;
-      border-bottom: 1px solid var(--border-md);
-      padding-bottom: 0.8rem;
-      display: inline-block;
-    }
-    .sub-gallery-title span {
-      font-family: var(--font-ja);
-      font-size: 1.05rem;
-      letter-spacing: 0.05em;
-      margin-right: 0.5rem;
-    }
-    .sub-gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 20px;
-    }
-    .sub-gallery-item {
-      display: block;
-      position: relative;
-      aspect-ratio: 1 / 1;
-      overflow: hidden;
-      border: 1px solid rgba(233,229,223,0.1);
-      cursor: pointer;
-      background: var(--bg2);
-      transition: border-color 0.4s ease, transform 0.4s var(--ease-out), box-shadow 0.4s ease;
-      outline: none;
-      padding: 0;
-    }
-    .sub-gallery-item:hover {
-      border-color: var(--accent);
-      transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-    }
-    .sub-gallery-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: grayscale(40%) brightness(0.9);
-      transition: filter 0.5s ease, transform 0.8s var(--ease-out);
-    }
-    .sub-gallery-item:hover img {
-      filter: grayscale(0%) brightness(1.05);
-      transform: scale(1.05);
-    }
+    .timeline-sub-gallery { width: 100%; margin: -2rem 0 8rem 0; position: relative; z-index: 10; background: var(--bg); padding: 3.5rem; border: 1px solid rgba(233,229,223,0.05); border-radius: 8px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
+    .sub-gallery-group { margin-bottom: 3.5rem; }
+    .sub-gallery-group:last-child { margin-bottom: 0; }
+    .sub-gallery-title { font-family: var(--font-en); font-size: 1.2rem; font-weight: 300; color: var(--accent); margin-bottom: 1.5rem; letter-spacing: 0.15em; border-bottom: 1px solid var(--border-md); padding-bottom: 0.8rem; display: inline-block; }
+    .sub-gallery-title span { font-family: var(--font-ja); font-size: 1.05rem; letter-spacing: 0.05em; margin-right: 0.5rem; }
+    .sub-gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
+    .sub-gallery-item { display: block; position: relative; aspect-ratio: 1 / 1; overflow: hidden; border: 1px solid rgba(233,229,223,0.1); cursor: pointer; background: var(--bg2); transition: border-color 0.4s ease, transform 0.4s var(--ease-out), box-shadow 0.4s ease; outline: none; padding: 0; }
+    .sub-gallery-item:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
+    .sub-gallery-item img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(40%) brightness(0.9); transition: filter 0.5s ease, transform 0.8s var(--ease-out); }
+    .sub-gallery-item:hover img { filter: grayscale(0%) brightness(1.05); transform: scale(1.05); }
 
     /* ============================================================
-       CONTACT & FOOTER
+       CONTACT
     =========================================================== */
     .contact-section { padding: clamp(6rem, 15vh, 10rem) var(--px); text-align: center; border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(196,168,130,0.06) 0%, var(--bg) 70%); }
     .contact-heading { font-family: var(--font-ja); font-size: clamp(1.8rem, 5vw, 3.5rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em; }
@@ -502,197 +283,58 @@
     .contact-btn { display: inline-block; padding: 1.2rem 3rem; background: var(--accent); color: var(--bg); font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none; transition: all 0.4s var(--ease); border-radius: 2px; cursor: none; }
     .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3); }
 
-    /* --- FOOTER --- */
-    footer { 
-      padding: clamp(3rem, 6vh, 5rem) var(--px) clamp(6rem, 15vh, 8rem); 
-      display: flex; 
-      flex-direction: column; 
-      justify-content: center; 
-      align-items: center; 
-      gap: 1.5rem; 
-      border-top: 0.5px solid var(--border); 
-      background: var(--bg); 
+    /* ============================================================
+       FOOTER (指定デザインへ完全統一)
+    =========================================================== */
+    footer {
+      padding: 3rem 2.5rem;
       text-align: center;
+      border-top: 0.5px solid var(--border);
     }
-    .footer-logo { 
-      font-family: var(--font-ja); 
-      font-size: clamp(0.85rem, 2vw, 1rem); 
-      font-weight: 300; 
-      color: var(--accent); 
-      letter-spacing: 0.15em; 
+    .footer-logo {
+      font-family: var(--font-ja);
+      font-size: clamp(0.75rem, 1.8vw, 0.88rem);
+      font-weight: 200;
+      color: rgba(232,228,219,0.28);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
     }
-    .footer-copy { 
-      font-family: var(--font-en); 
-      font-size: clamp(0.55rem, 1.3vw, 0.65rem); 
-      letter-spacing: 0.25em; 
-      color: var(--muted); 
+    .footer-copy {
+      font-family: var(--font-en);
+      font-size: clamp(0.52rem, 1.3vw, 0.62rem);
+      letter-spacing: 0.18em;
+      color: rgba(232,228,219,0.46);
     }
 
     /* ============================================================
-       BACK TO TOP (Scroll Progress Ring + Glassmorphism UI)
+       BACK TO TOP (Scroll Progress Ring)
     =========================================================== */
-    .back-to-top {
-      position: fixed;
-      bottom: clamp(20px, 4vw, 40px);
-      right: clamp(20px, 4vw, 40px);
-      z-index: 9000;
-      width: clamp(52px, 8vw, 70px);
-      height: clamp(52px, 8vw, 70px);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(20px);
-      transition: opacity 0.6s var(--ease), visibility 0.6s, transform 0.6s var(--ease);
-      cursor: none; /* For custom cursor support */
-    }
-    .back-to-top.is-visible {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-    
-    .b2t-inner {
-      position: absolute;
-      inset: 4px;
-      background: rgba(12, 12, 10, 0.5);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.4s var(--ease), transform 0.4s var(--ease);
-      box-shadow: 0 10px 24px rgba(0,0,0,0.4);
-    }
-    
-    .b2t-text {
-      font-family: var(--font-en);
-      font-size: clamp(0.6rem, 1.4vw, 0.75rem);
-      font-weight: 400;
-      letter-spacing: 0.15em;
-      color: var(--fg);
-      margin-right: -0.15em;
-      margin-bottom: -1px;
-      transition: color 0.4s var(--ease), transform 0.4s var(--ease);
-    }
-    
-    .b2t-progress {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      transform: rotate(-90deg);
-      pointer-events: none;
-    }
-    .b2t-progress circle {
-      fill: none;
-      stroke-width: 1.5;
-    }
-    .b2t-progress-bg {
-      stroke: rgba(233,229,223,0.1);
-    }
-    .b2t-progress-value {
-      stroke: var(--accent);
-      stroke-dasharray: 301.6;
-      stroke-dashoffset: 301.6;
-      transition: stroke-dashoffset 0.15s linear, stroke 0.4s var(--ease);
-    }
-
-    .back-to-top:hover .b2t-inner {
-      background: var(--accent);
-      transform: scale(0.92);
-    }
-    .back-to-top:hover .b2t-text {
-      color: var(--bg);
-      transform: translateY(-2px);
-    }
-    .back-to-top:hover .b2t-progress-value {
-      stroke: var(--fg);
-    }
+    .back-to-top { position: fixed; bottom: clamp(20px, 4vw, 40px); right: clamp(20px, 4vw, 40px); z-index: 9000; width: clamp(52px, 8vw, 70px); height: clamp(52px, 8vw, 70px); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; opacity: 0; visibility: hidden; transform: translateY(20px); transition: opacity 0.6s var(--ease), visibility 0.6s, transform 0.6s var(--ease); cursor: none; }
+    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
+    .b2t-inner { position: absolute; inset: 4px; background: rgba(12, 12, 10, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.4s var(--ease), transform 0.4s var(--ease); box-shadow: 0 10px 24px rgba(0,0,0,0.4); }
+    .b2t-text { font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.75rem); font-weight: 400; letter-spacing: 0.15em; color: var(--fg); margin-right: -0.15em; margin-bottom: -1px; transition: color 0.4s var(--ease), transform 0.4s var(--ease); }
+    .b2t-progress { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); pointer-events: none; }
+    .b2t-progress circle { fill: none; stroke-width: 1.5; }
+    .b2t-progress-bg { stroke: rgba(233,229,223,0.1); }
+    .b2t-progress-value { stroke: var(--accent); stroke-dasharray: 301.6; stroke-dashoffset: 301.6; transition: stroke-dashoffset 0.15s linear, stroke 0.4s var(--ease); }
+    .back-to-top:hover .b2t-inner { background: var(--accent); transform: scale(0.92); }
+    .back-to-top:hover .b2t-text { color: var(--bg); transform: translateY(-2px); }
+    .back-to-top:hover .b2t-progress-value { stroke: var(--fg); }
 
     /* ============================================================
        FLOATING TIKTOK BUTTON
     =========================================================== */
-    .floating-tiktok {
-      position: fixed;
-      bottom: clamp(90px, 11vh, 115px);
-      right: clamp(20px, 4vw, 40px);
-      width: 60px;
-      height: 60px;
-      border-radius: 30px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(233, 229, 223, 0.15);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      display: flex;
-      align-items: center;
-      overflow: hidden;
-      z-index: 998;
-      text-decoration: none;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-      cursor: none;
-      
-      opacity: 0; visibility: hidden; transform: translateY(30px);
-      transition: width 0.5s cubic-bezier(0.19, 1, 0.22, 1),
-                  background 0.5s ease, border-color 0.5s ease,
-                  opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .floating-tiktok.visible {
-      opacity: 1; visibility: visible; transform: translateY(0);
-    }
-    .floating-tiktok:hover {
-      width: 250px;
-      background: rgba(196, 168, 130, 0.1);
-      border-color: var(--accent);
-      box-shadow: 0 12px 35px rgba(196, 168, 130, 0.2);
-    }
-    
-    .tiktok-icon-wrap {
-      width: 60px; height: 60px; flex-shrink: 0;
-      display: flex; justify-content: center; align-items: center;
-      position: relative;
-    }
-    .tiktok-icon-wrap svg {
-      width: 20px; height: 20px; fill: var(--fg);
-      transition: fill 0.3s ease, transform 0.5s var(--ease);
-    }
-    .floating-tiktok:hover .tiktok-icon-wrap svg {
-      fill: var(--accent);
-      transform: scale(1.1);
-    }
-    
-    .tiktok-pulse {
-      position: absolute;
-      top: 50%; left: 50%; transform: translate(-50%, -50%);
-      width: 100%; height: 100%;
-      border-radius: 50%;
-      box-shadow: 0 0 0 0 rgba(196, 168, 130, 0.6);
-      animation: pulse-ring 3s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-      z-index: -1;
-    }
-    @keyframes pulse-ring {
-      0% { box-shadow: 0 0 0 0 rgba(196, 168, 130, 0.6); }
-      70% { box-shadow: 0 0 0 20px rgba(196, 168, 130, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(196, 168, 130, 0); }
-    }
-    .floating-tiktok:hover .tiktok-pulse {
-      animation: none;
-    }
-    
-    .tiktok-text {
-      font-family: var(--font-ja); font-size: 0.75rem; letter-spacing: 0.1em; color: var(--fg);
-      white-space: nowrap; padding-right: 25px;
-      opacity: 0; transform: translateX(-15px);
-      transition: opacity 0.4s ease, transform 0.4s var(--ease);
-    }
-    .floating-tiktok:hover .tiktok-text {
-      opacity: 1; transform: translateX(0);
-      transition-delay: 0.1s; 
-    }
+    .floating-tiktok { position: fixed; bottom: clamp(90px, 11vh, 115px); right: clamp(20px, 4vw, 40px); width: 60px; height: 60px; border-radius: 30px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(233, 229, 223, 0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: center; overflow: hidden; z-index: 998; text-decoration: none; box-shadow: 0 10px 30px rgba(0,0,0,0.4); cursor: none; opacity: 0; visibility: hidden; transform: translateY(30px); transition: width 0.5s cubic-bezier(0.19, 1, 0.22, 1), background 0.5s ease, border-color 0.5s ease, opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .floating-tiktok.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+    .floating-tiktok:hover { width: 250px; background: rgba(196, 168, 130, 0.1); border-color: var(--accent); box-shadow: 0 12px 35px rgba(196, 168, 130, 0.2); }
+    .tiktok-icon-wrap { width: 60px; height: 60px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; position: relative; }
+    .tiktok-icon-wrap svg { width: 20px; height: 20px; fill: var(--fg); transition: fill 0.3s ease, transform 0.5s var(--ease); }
+    .floating-tiktok:hover .tiktok-icon-wrap svg { fill: var(--accent); transform: scale(1.1); }
+    .tiktok-pulse { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 0 0 rgba(196, 168, 130, 0.6); animation: pulse-ring 3s infinite cubic-bezier(0.215, 0.61, 0.355, 1); z-index: -1; }
+    @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(196, 168, 130, 0.6); } 70% { box-shadow: 0 0 0 20px rgba(196, 168, 130, 0); } 100% { box-shadow: 0 0 0 0 rgba(196, 168, 130, 0); } }
+    .floating-tiktok:hover .tiktok-pulse { animation: none; }
+    .tiktok-text { font-family: var(--font-ja); font-size: 0.75rem; letter-spacing: 0.1em; color: var(--fg); white-space: nowrap; padding-right: 25px; opacity: 0; transform: translateX(-15px); transition: opacity 0.4s ease, transform 0.4s var(--ease); }
+    .floating-tiktok:hover .tiktok-text { opacity: 1; transform: translateX(0); transition-delay: 0.1s; }
 
     /* ============================================================
        LIGHTBOX MODAL
@@ -735,38 +377,22 @@
       .timeline-year { text-align: left; padding-left: 45px; margin: 3rem 0 2rem; }
       .timeline-item { flex-direction: column !important; margin-bottom: 5rem; }
       
-      .timeline-content-img,
-      .timeline-content-txt {
-        width: 100%; padding-left: 45px;
-      }
-      .timeline-content-txt {
-        background: transparent; border: none; backdrop-filter: none;
-        padding-top: 1.5rem; padding-right: 0; padding-bottom: 0;
-      }
+      .timeline-content-img, .timeline-content-txt { width: 100%; padding-left: 45px; }
+      .timeline-content-txt { background: transparent; border: none; backdrop-filter: none; padding-top: 1.5rem; padding-right: 0; padding-bottom: 0; }
       .timeline-item:hover .timeline-content-txt { transform: translateY(0); box-shadow: none; }
       .timeline-node { left: 20px; top: 25%; transform: translate(-50%, -50%); }
       .timeline-item:hover .timeline-node { transform: translate(-50%, -50%) scale(1.4); }
       
-      .timeline-sub-gallery {
-        padding: 2rem 1.5rem;
-        margin: -1rem 0 6rem 0;
-      }
-      .sub-gallery-grid {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 12px;
-      }
+      .timeline-sub-gallery { padding: 2rem 1.5rem; margin: -1rem 0 6rem 0; }
+      .sub-gallery-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; }
 
-      .floating-tiktok {
-        width: 50px; height: 50px;
-        bottom: clamp(90px, 12vh, 100px);
-      }
+      .floating-tiktok { width: 50px; height: 50px; bottom: clamp(90px, 12vh, 100px); }
       .tiktok-icon-wrap { width: 50px; height: 50px; }
       .tiktok-icon-wrap svg { width: 16px; height: 16px; }
-      .floating-tiktok:hover {
-        width: 50px; 
-        background: rgba(196, 168, 130, 0.2);
-      }
+      .floating-tiktok:hover { width: 50px; background: rgba(196, 168, 130, 0.2); }
       .floating-tiktok:hover .tiktok-text { display: none; }
+
+      footer { padding: 3rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
     }
   </style>
 </head>
@@ -791,9 +417,8 @@
 
   <main>
     <section class="hero" id="hero">
-      <video class="hero-video-bg" id="heroVideo" autoplay loop muted playsinline>
-        <source src="images/background-movie.mp4" type="video/mp4">
-      </video>
+      <div class="hero-image-bg" id="heroImage"></div>
+      <div class="hero-overlay"></div>
       
       <div class="hero-title-wrapper">
         <div class="hero-eyebrow" id="heroEyebrow">
@@ -909,49 +534,22 @@
         </article>
 
         <div class="timeline-sub-gallery fade-up">
-          
           <div class="sub-gallery-group">
             <h4 class="sub-gallery-title"><span>岩間</span> Series</h4>
             <div class="sub-gallery-grid">
-              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間20221226.JPG" data-title="岩間 20221226" data-spec="2022 / デジタル">
-                <img src="images/岩間20221226.JPG" alt="岩間 20221226" loading="lazy">
-              </button>
-              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間20230112.JPG" data-title="岩間 20230112" data-spec="2023 / デジタル">
-                <img src="images/岩間20230112.JPG" alt="岩間 20230112" loading="lazy">
-              </button>
-              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230206.JPG" data-title="岩間 20230206" data-spec="2023 / デジタル">
-                <img src="images/岩間（湘南）20230206.JPG" alt="岩間 20230206" loading="lazy">
-              </button>
-              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230312.JPG" data-title="岩間 20230312" data-spec="2023 / デジタル">
-                <img src="images/岩間（湘南）20230312.JPG" alt="岩間 20230312" loading="lazy">
-              </button>
-              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230315.JPG" data-title="岩間 20230315" data-spec="2023 / デジタル">
-                <img src="images/岩間（湘南）20230315.JPG" alt="岩間 20230315" loading="lazy">
-              </button>
-              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230404.JPG" data-title="岩間 20230404" data-spec="2023 / デジタル">
-                <img src="images/岩間（湘南）20230404.JPG" alt="岩間 20230404" loading="lazy">
-              </button>
-              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230419.JPG" data-title="岩間 20230419" data-spec="2023 / デジタル">
-                <img src="images/岩間（湘南）20230419.JPG" alt="岩間 20230419" loading="lazy">
-              </button>
-              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230427.JPG" data-title="岩間 20230427" data-spec="2023 / デジタル">
-                <img src="images/岩間（湘南）20230427.JPG" alt="岩間 20230427" loading="lazy">
-              </button>
-              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230610.JPG" data-title="岩間 20230610" data-spec="2023 / デジタル">
-                <img src="images/岩間（湘南）20230610.JPG" alt="岩間 20230610" loading="lazy">
-              </button>
-              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230724.JPG" data-title="岩間 20230724" data-spec="2023 / デジタル">
-                <img src="images/岩間（湘南）20230724.JPG" alt="岩間 20230724" loading="lazy">
-              </button>
-              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230813.JPG" data-title="岩間 20230813" data-spec="2023 / デジタル">
-                <img src="images/岩間（湘南）20230813.JPG" alt="岩間 20230813" loading="lazy">
-              </button>
-              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230814.JPG" data-title="岩間 20230814" data-spec="2023 / デジタル">
-                <img src="images/岩間（湘南）20230814.JPG" alt="岩間 20230814" loading="lazy">
-              </button>
-              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230820.JPG" data-title="岩間 20230820" data-spec="2023 / デジタル">
-                <img src="images/岩間（湘南）20230820.JPG" alt="岩間 20230820" loading="lazy">
-              </button>
+              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間20221226.JPG" data-title="岩間 20221226" data-spec="2022 / デジタル"><img src="images/岩間20221226.JPG" alt="岩間 20221226" loading="lazy"></button>
+              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間20230112.JPG" data-title="岩間 20230112" data-spec="2023 / デジタル"><img src="images/岩間20230112.JPG" alt="岩間 20230112" loading="lazy"></button>
+              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230206.JPG" data-title="岩間 20230206" data-spec="2023 / デジタル"><img src="images/岩間（湘南）20230206.JPG" alt="岩間 20230206" loading="lazy"></button>
+              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230312.JPG" data-title="岩間 20230312" data-spec="2023 / デジタル"><img src="images/岩間（湘南）20230312.JPG" alt="岩間 20230312" loading="lazy"></button>
+              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230315.JPG" data-title="岩間 20230315" data-spec="2023 / デジタル"><img src="images/岩間（湘南）20230315.JPG" alt="岩間 20230315" loading="lazy"></button>
+              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230404.JPG" data-title="岩間 20230404" data-spec="2023 / デジタル"><img src="images/岩間（湘南）20230404.JPG" alt="岩間 20230404" loading="lazy"></button>
+              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230419.JPG" data-title="岩間 20230419" data-spec="2023 / デジタル"><img src="images/岩間（湘南）20230419.JPG" alt="岩間 20230419" loading="lazy"></button>
+              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230427.JPG" data-title="岩間 20230427" data-spec="2023 / デジタル"><img src="images/岩間（湘南）20230427.JPG" alt="岩間 20230427" loading="lazy"></button>
+              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230610.JPG" data-title="岩間 20230610" data-spec="2023 / デジタル"><img src="images/岩間（湘南）20230610.JPG" alt="岩間 20230610" loading="lazy"></button>
+              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230724.JPG" data-title="岩間 20230724" data-spec="2023 / デジタル"><img src="images/岩間（湘南）20230724.JPG" alt="岩間 20230724" loading="lazy"></button>
+              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230813.JPG" data-title="岩間 20230813" data-spec="2023 / デジタル"><img src="images/岩間（湘南）20230813.JPG" alt="岩間 20230813" loading="lazy"></button>
+              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230814.JPG" data-title="岩間 20230814" data-spec="2023 / デジタル"><img src="images/岩間（湘南）20230814.JPG" alt="岩間 20230814" loading="lazy"></button>
+              <button class="sub-gallery-item js-modal-open" data-img-src="images/岩間（湘南）20230820.JPG" data-title="岩間 20230820" data-spec="2023 / デジタル"><img src="images/岩間（湘南）20230820.JPG" alt="岩間 20230820" loading="lazy"></button>
             </div>
           </div>
 
@@ -976,24 +574,13 @@
           <div class="sub-gallery-group">
             <h4 class="sub-gallery-title"><span>IMG / Untitled</span> Series</h4>
             <div class="sub-gallery-grid">
-              <button class="sub-gallery-item js-modal-open" data-img-src="images/IMG-0132.JPG" data-title="IMG-0132" data-spec="2023 / デジタル">
-                <img src="images/IMG-0132.JPG" alt="IMG-0132" loading="lazy">
-              </button>
-              <button class="sub-gallery-item js-modal-open" data-img-src="images/IMG-0138.JPG" data-title="IMG-0138" data-spec="2023 / デジタル">
-                <img src="images/IMG-0138.JPG" alt="IMG-0138" loading="lazy">
-              </button>
-              <button class="sub-gallery-item js-modal-open" data-img-src="images/IMG-0143.JPG" data-title="IMG-0143" data-spec="2023 / デジタル">
-                <img src="images/IMG-0143.JPG" alt="IMG-0143" loading="lazy">
-              </button>
-              <button class="sub-gallery-item js-modal-open" data-img-src="images/IMG-0165.JPG" data-title="IMG-0165" data-spec="2023 / デジタル">
-                <img src="images/IMG-0165.JPG" alt="IMG-0165" loading="lazy">
-              </button>
-              <button class="sub-gallery-item js-modal-open" data-img-src="images/img089.jpg" data-title="img089" data-spec="2023 / デジタル">
-                <img src="images/img089.jpg" alt="img089" loading="lazy">
-              </button>
+              <button class="sub-gallery-item js-modal-open" data-img-src="images/IMG-0132.JPG" data-title="IMG-0132" data-spec="2023 / デジタル"><img src="images/IMG-0132.JPG" alt="IMG-0132" loading="lazy"></button>
+              <button class="sub-gallery-item js-modal-open" data-img-src="images/IMG-0138.JPG" data-title="IMG-0138" data-spec="2023 / デジタル"><img src="images/IMG-0138.JPG" alt="IMG-0138" loading="lazy"></button>
+              <button class="sub-gallery-item js-modal-open" data-img-src="images/IMG-0143.JPG" data-title="IMG-0143" data-spec="2023 / デジタル"><img src="images/IMG-0143.JPG" alt="IMG-0143" loading="lazy"></button>
+              <button class="sub-gallery-item js-modal-open" data-img-src="images/IMG-0165.JPG" data-title="IMG-0165" data-spec="2023 / デジタル"><img src="images/IMG-0165.JPG" alt="IMG-0165" loading="lazy"></button>
+              <button class="sub-gallery-item js-modal-open" data-img-src="images/img089.jpg" data-title="img089" data-spec="2023 / デジタル"><img src="images/img089.jpg" alt="img089" loading="lazy"></button>
             </div>
           </div>
-
         </div>
 
         <div class="timeline-year fade-up">
@@ -1240,9 +827,11 @@
       });
     }
 
-    /* ── HERO ANIMATION ── */
+    /* ── HERO & HEADER ANIMATION ── */
     window.addEventListener('load', () => {
-      setTimeout(() => document.getElementById('heroVideo')?.classList.add('loaded'), 100);
+      // トップ画像のフェードイン + ヘッダーが降りてくる
+      setTimeout(() => document.getElementById('heroImage')?.classList.add('loaded'), 100);
+      setTimeout(() => document.getElementById('top-nav')?.classList.add('loaded'), 200);
       setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'), 400);
       setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 800);
       setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1200);
@@ -1377,7 +966,6 @@
     const timelineContainer = document.getElementById('timelineContainer');
     const timelineProgress = document.getElementById('timelineProgress');
     
-    // スクロールスパイ用
     const navLinks = document.querySelectorAll('.nav-link-item');
     const spySections = document.querySelectorAll('section');
 
@@ -1391,7 +979,6 @@
       if (floatingTiktok) floatingTiktok.classList.toggle('visible', scrollY > winHeight * 0.3);
       if (b2tBtn) b2tBtn.classList.toggle('is-visible', scrollY > winHeight * 0.6);
 
-      // BackToTop ボタンのスクロール連動プログレスリング計算
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const scrollPct = Math.max(0, Math.min(1, scrollY / docHeight));
       if (b2tCircle) {
