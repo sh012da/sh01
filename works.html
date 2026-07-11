@@ -30,28 +30,27 @@
       --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
       --ease-fluid: cubic-bezier(0.76, 0, 0.24, 1);
       --px: clamp(20px, 5vw, 80px);
-      --dock-width: clamp(240px, 18vw, 340px);
+      --dock-width: clamp(240px, 20vw, 360px); /* リンクテキストが収まるよう少し余裕を持たせる */
     }
 
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior: smooth; background: var(--bg); }
+    html { scroll-behavior: smooth; background-color: var(--bg); }
     body {
-      background: var(--bg); color: var(--fg);
+      background-color: var(--bg); color: var(--fg);
       font-family: var(--jp); -webkit-font-smoothing: antialiased;
       overflow-x: hidden; letter-spacing: 0.05em;
     }
 
     /* ─── 全画面アンビエント動画 ─── */
     .bg-layer {
-      position: fixed;
-      inset: 0; width: 100vw; height: 100vh;
-      object-fit: cover; z-index: -2;
-      opacity: 0.3; 
+      position: fixed; inset: 0; width: 100vw; height: 100vh;
+      object-fit: cover; z-index: 0; 
+      opacity: 0.35; 
       filter: contrast(100%) brightness(0.6) grayscale(30%);
       pointer-events: none;
     }
     .bg-vignette {
-      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
       background: radial-gradient(circle at 50% 50%, rgba(5,5,5,0.2) 10%, rgba(5,5,5,0.98) 100%),
                   linear-gradient(to bottom, rgba(5,5,5,0.2), rgba(5,5,5,0.95));
     }
@@ -64,7 +63,7 @@
     .axis-h1 { top: 25%; } .axis-h2 { top: 75%; }
     .axis-v1 { left: 15%; } .axis-v2 { left: 85%; }
 
-    #lines-canvas { position:fixed; inset:0; z-index:50; pointer-events:none; }
+    #lines-canvas { position:fixed; inset:0; z-index: 3; pointer-events:none; }
     .flash-line { position:absolute; background: linear-gradient(90deg, transparent, rgba(212,197,179,0.8), transparent); opacity:0; }
     .flash-line.h { left:-100%; height:1px; width:100%; }
     .flash-line.v { top:-100%; width:1px; height:100%; background: linear-gradient(180deg, transparent, rgba(212,197,179,0.8), transparent); }
@@ -104,35 +103,38 @@
 
     /* ════════════════════════════════════════
        ★ マトリクス・レーン (Sidebar Navigation)
+       画像と滑らかに融合させるため境界線を消し、グラデーションを強化
     ════════════════════════════════════════ */
     .side-link-nav {
       position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 150;
-      display: flex; flex-direction: column;
-      width: var(--dock-width); max-height: 85vh;
+      display: flex; flex-direction: column; justify-content: center;
+      width: var(--dock-width); max-height: 90vh;
       overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none;
-      background: linear-gradient(to left, rgba(5, 5, 5, 0.95) 70%, rgba(5, 5, 5, 0.0) 100%);
+      /* 左側は透明にし、右に行くにつれて完全に黒くなるシームレスなグラデーション */
+      background: linear-gradient(to left, rgba(5,5,5,1) 15%, rgba(5,5,5,0.7) 60%, transparent 100%);
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border-left: 1px solid rgba(255, 255, 255, 0.03);
+      border: none;
     }
     .side-link-nav::-webkit-scrollbar { display: none; }
 
     .side-link-item {
       position: relative; display: flex; align-items: center; justify-content: flex-start;
-      width: 100%; height: clamp(48px, 5.5vh, 64px); padding: 0 30px;
+      width: 100%; height: auto; min-height: clamp(48px, 5.5vh, 64px); 
+      padding: 12px 30px; /* テキストが折り返しても良いように上下にパディング */
       color: rgba(244, 241, 235, 0.4); text-decoration: none; background: transparent;
       overflow: hidden; border: none; will-change: color;
     }
     .side-link-item::before {
-      content: ''; position: absolute; left: 0; top: 0; width: 3px; height: 100%;
+      content: ''; position: absolute; right: 0; top: 0; width: 3px; height: 100%;
       background: var(--accent); transform: scaleY(0); transform-origin: center;
       transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1); z-index: 2;
     }
     .side-link-item::after {
       content: ''; position: absolute; inset: 0;
-      background: linear-gradient(90deg, rgba(212, 197, 179, 0.15) 0%, transparent 100%);
+      background: linear-gradient(90deg, transparent 0%, rgba(212, 197, 179, 0.1) 100%);
       opacity: 0; transition: opacity 0.4s ease; z-index: 0;
     }
-    .side-link-item:hover { background: rgba(255, 255, 255, 0.02); }
+    .side-link-item:hover { background: rgba(255, 255, 255, 0.01); }
     .side-link-item:hover::before { transform: scaleY(1); }
     .side-link-item:hover::after { opacity: 1; }
 
@@ -148,9 +150,11 @@
     .side-link-item:hover .nav-indicator { background: transparent; }
     .side-link-item:hover .nav-indicator::after { transform: scaleX(1); }
 
+    /* ページ名が確実に画面に収まるよう自動改行を許可 */
     .side-link-item .nav-title {
       position: relative; z-index: 3; font-family: var(--jp); font-size: clamp(12px, 1.1vw, 14px);
-      font-weight: 300; letter-spacing: 0.1em; white-space: nowrap; color: rgba(244, 241, 235, 0.5);
+      font-weight: 300; letter-spacing: 0.1em; line-height: 1.4; color: rgba(244, 241, 235, 0.5);
+      white-space: normal; word-break: auto-phrase;
       transition: transform 0.5s var(--ease-expo), letter-spacing 0.5s var(--ease-expo), color 0.3s ease, text-shadow 0.3s ease;
       transform: translateX(0);
     }
@@ -160,17 +164,17 @@
     }
 
     /* ════════════════════════════════════════
-       ★ HERO SECTION (アニメーション「残滓」実装)
+       ★ HERO SECTION
     ════════════════════════════════════════ */
     .hero { 
       position: relative; z-index: 10; min-height: 100vh; 
       display: flex; flex-direction: column; justify-content: center; 
       padding: 120px var(--px) 60px; background: transparent; 
     }
+    /* テキスト要素が右メニューに被らないよう保護 */
     @media (min-width: 901px) { .hero { padding-right: calc(var(--dock-width) + var(--px)) !important; } }
     
     .hero-inner { width: 100%; max-width: 1400px; position: relative; }
-    
     .hero-eyebrow { font-family: var(--en); font-size: clamp(0.7rem, 1.5vw, 0.9rem); letter-spacing: 0.5em; color: var(--accent); text-transform: uppercase; margin-bottom: 20px; overflow: hidden; display: flex; align-items: center; gap: 15px; }
     .hero-eyebrow::after { content: ''; height: 1px; flex-grow: 1; background: var(--border-bright); transform: scaleX(0); transform-origin: left; animation: drawLine 1.5s var(--ease-expo) 0.5s forwards; }
     .hero-eyebrow span { display: inline-block; opacity: 0; transform: translateY(100%); animation: clipUp 1.2s var(--ease-expo) 0.2s forwards; }
@@ -178,22 +182,15 @@
     .hero-title-wrapper { position: relative; margin-top: 10px; }
     .hero-title-jp { font-family: var(--jp); font-size: clamp(4rem, 10vw, 9rem); font-weight: 200; letter-spacing: 0.15em; line-height: 1.1; color: var(--fg); display: flex; flex-wrap: wrap; }
     
-    /* 文字本体の出現アニメーション */
     .char { 
       position: relative; display: inline-block; opacity: 0; 
       transform: translateY(30px) scale(0.95); 
-      animation: textManifest 1.4s var(--ease-expo) var(--cd, 0.5s) forwards; 
+      animation: textManifest 1.4s var(--ease-expo) forwards; 
     }
-    /* 残滓（ざんし）レイヤーのアニメーション：ストレスなく滑らかに消散する */
     .char::after {
-      content: attr(data-char);
-      position: absolute; left: 0; top: 0;
-      color: transparent;
-      text-shadow: 0 0 20px rgba(212, 197, 179, 0.9);
-      opacity: 0;
-      pointer-events: none;
-      transform-origin: center;
-      animation: residueDissolve 2.5s cubic-bezier(0.2, 0.8, 0.2, 1) calc(var(--cd, 0s) + 0.3s) forwards;
+      content: attr(data-char); position: absolute; left: 0; top: 0; color: transparent;
+      text-shadow: 0 0 20px rgba(212, 197, 179, 0.9); opacity: 0; pointer-events: none; transform-origin: center;
+      animation: residueDissolve 2.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
     }
 
     @keyframes textManifest { 
@@ -240,12 +237,12 @@
     .section-label { font-family: var(--en); font-size: clamp(0.8rem, 1.8vw, 1rem); letter-spacing: 0.4em; color: var(--fg); text-transform: uppercase; }
     .section-count { font-family: var(--en); font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 100; color: rgba(212, 197, 179, 0.08); line-height: 1; }
 
+    /* 変更：グリッドの右側パディングを0にし、画面いっぱいに展開させる */
     .grid { 
       display: grid; grid-template-columns: repeat(12, 1fr); 
-      gap: clamp(15px, 3vw, 40px); row-gap: clamp(80px, 12vh, 180px);
-      width: 100%; padding: 0 var(--px);
+      gap: clamp(10px, 2vw, 30px); row-gap: clamp(80px, 12vh, 180px);
+      width: 100%; padding-left: var(--px); padding-right: 0;
     }
-    @media (min-width: 901px) { .grid { padding-right: calc(var(--dock-width) + var(--px)); } }
 
     .gi {
       position: relative; overflow: hidden; cursor: pointer;
@@ -257,25 +254,25 @@
     }
     .gi.in-view { opacity: 1; filter: blur(0); transform: translateY(0); }
     
-    /* PC用レイアウト */
+    /* PC用レイアウト：右端(13)まで突き抜け、メニューと美しく重なるよう設計 */
     @media (min-width: 901px) {
-      .gi:nth-child(1) { grid-column: 1 / 10; height: 75vh; }
-      .gi:nth-child(2) { grid-column: 8 / 13; height: 55vh; margin-top: -15vh; }
-      .gi:nth-child(3) { grid-column: 2 / 7; height: 60vh; }
-      .gi:nth-child(4) { grid-column: 6 / 13; height: 85vh; margin-top: 10vh; }
-      .gi:nth-child(5) { grid-column: 1 / 6; height: 50vh; margin-top: -10vh; }
-      .gi:nth-child(6) { grid-column: 7 / 12; height: 65vh; }
-      .gi:nth-child(7) { grid-column: 2 / 10; height: 90vh; margin-top: 15vh; }
-      .gi:nth-child(8) { grid-column: 9 / 13; height: 45vh; margin-top: -20vh; }
-      .gi:nth-child(9) { grid-column: 1 / 7; height: 60vh; }
-      .gi:nth-child(10){ grid-column: 6 / 13; height: 75vh; margin-top: 10vh; }
-      .gi:nth-child(11){ grid-column: 1 / 8; height: 70vh; }
-      .gi:nth-child(12){ grid-column: 8 / 13; height: 60vh; margin-top: -15vh; }
+      .gi:nth-child(1) { grid-column: 1 / 11; height: 85vh; }
+      .gi:nth-child(2) { grid-column: 6 / 13; height: 65vh; margin-top: -15vh; } 
+      .gi:nth-child(3) { grid-column: 1 / 7; height: 60vh; }
+      .gi:nth-child(4) { grid-column: 5 / 13; height: 95vh; margin-top: 10vh; }
+      .gi:nth-child(5) { grid-column: 1 / 8; height: 50vh; margin-top: -10vh; }
+      .gi:nth-child(6) { grid-column: 7 / 13; height: 75vh; }
+      .gi:nth-child(7) { grid-column: 2 / 11; height: 90vh; margin-top: 15vh; }
+      .gi:nth-child(8) { grid-column: 6 / 13; height: 55vh; margin-top: -20vh; }
+      .gi:nth-child(9) { grid-column: 1 / 7; height: 70vh; }
+      .gi:nth-child(10){ grid-column: 7 / 13; height: 85vh; margin-top: 10vh; }
+      .gi:nth-child(11){ grid-column: 1 / 8; height: 60vh; }
+      .gi:nth-child(12){ grid-column: 5 / 13; height: 80vh; margin-top: -15vh; }
     }
 
-    /* タブレット用レイアウト (スタッガード・グリッド) */
+    /* タブレット用レイアウト */
     @media (min-width: 601px) and (max-width: 900px) {
-      .grid { grid-template-columns: repeat(2, 1fr); gap: 20px; row-gap: 60px; }
+      .grid { grid-template-columns: repeat(2, 1fr); gap: 20px; row-gap: 60px; padding-right: var(--px); }
       .gi { grid-column: span 1 !important; height: 50vh !important; margin-top: 0 !important; }
       .gi:nth-child(even) { transform: translateY(40px); }
       .gi.in-view:nth-child(even) { transform: translateY(40px); }
@@ -298,14 +295,16 @@
     }
     .gi:hover .gi-overlay { opacity: 0.6; }
 
+    /* 変更：画像内のページ名（作品名）がメニュー領域に隠れないよう最大幅を設定 */
     .gi-label {
       position: absolute; bottom: clamp(15px, 3vw, 30px); left: clamp(15px, 3vw, 40px); z-index: 5; pointer-events: none;
-      max-width: 90%;
+      max-width: clamp(200px, 35vw, 400px); 
+      word-break: keep-all; overflow-wrap: break-word;
     }
     
     .gi-title {
       display: block; font-family: var(--jp); font-weight: 300; font-size: clamp(1.4rem, 2.5vw, 2.2rem);
-      letter-spacing: 0.15em; color: var(--fg);
+      letter-spacing: 0.15em; color: var(--fg); line-height: 1.3;
       text-shadow: 0 4px 20px rgba(0,0,0,0.9), 0 1px 5px rgba(0,0,0,1);
       transition: color 0.4s var(--ease-quad), transform 0.5s var(--ease-expo);
     }
@@ -383,10 +382,10 @@
       .side-link-item::before, .side-link-item::after { display: none !important; }
       .side-link-item .nav-indicator { width: 4px; height: 4px; background: rgba(212, 197, 179, 0.6); margin-right: 10px; }
       .side-link-item .nav-indicator::after { display: none !important; }
-      .side-link-item .nav-title { font-size: 12px; opacity: 0.9; transform: none !important; letter-spacing: 0.1em !important; color: rgba(244, 241, 235, 0.9); text-shadow: none; }
+      .side-link-item .nav-title { font-size: 12px; opacity: 0.9; transform: none !important; letter-spacing: 0.1em !important; color: rgba(244, 241, 235, 0.9); text-shadow: none; white-space: nowrap; }
       .side-link-item:active { background: rgba(212, 197, 179, 0.2); border-color: var(--accent); color: #ffffff; }
 
-      .gi-label { bottom: 20px; left: 20px; }
+      .gi-label { bottom: 20px; left: 20px; max-width: calc(100vw - 40px); }
       
       .back-to-top { bottom: 85px; right: 15px; width: 46px; height: 46px; }
       .b2t-ring { width: 48px; height: 48px; }
@@ -408,7 +407,7 @@
 </head>
 <body id="top">
 
-  <video id="bgLayer" class="bg-layer" autoplay loop muted playsinline webkit-playsinline disablePictureInPicture poster="images/【FSM横】IMG_7730.jpg">
+  <video id="bgLayer" class="bg-layer" autoplay loop muted="muted" playsinline webkit-playsinline disablePictureInPicture poster="images/【FSM横】IMG_7730.jpg">
     <source src="images/mov1.mp4" type="video/mp4">
   </video>
   <div class="bg-vignette"></div>
@@ -479,7 +478,7 @@
       <p class="hero-eyebrow"><span>Site-specific &nbsp;·&nbsp; Story-driven</span></p>
       
       <div class="hero-title-wrapper">
-        <div class="hero-title-jp" id="heroTitleJp" aria-label="作品系(シーケンス)"></div>
+        <div class="hero-title-jp" id="heroTitleJp" aria-label="作品系(シーケンス)">作品系</div>
         <div class="hero-title-en">WORKS(Sequences)</div>
       </div>
       
@@ -501,7 +500,6 @@
 
   <main class="gallery" id="gallery">
     <div class="grid" id="grid">
-
       <article class="gi" data-images="images/【F100横】森20251217.jpg">
         <img src="images/【F100横】森20251217.jpg" alt="森林">
         <div class="gi-overlay"></div>
@@ -621,7 +619,6 @@
         </div>
         <a href="work-specimen_art.html" aria-label="標本美術" data-tooltip="「標本美術」系（シーケンス）の作品紹介ページにリンクします。"></a>
       </article>
-
     </div>
   </main>
 
@@ -657,35 +654,177 @@
   <div class="mouse-tooltip" id="mouse-tooltip"></div>
 
   <script>
-    // ─── 堅牢な動画自動再生ロジック ───
     document.addEventListener('DOMContentLoaded', () => {
+      // 1. 強力な動画再生ロジック
       const video = document.getElementById('bgLayer');
       if (video) {
         video.muted = true;
         video.defaultMuted = true;
-        video.loop = true;
-        video.playsInline = true;
-
-        const startVideo = () => {
-          const playPromise = video.play();
-          if (playPromise !== undefined) {
-            playPromise.catch(() => {
-              // 自動再生ブロック時：任意のユーザーインタラクションで再生を強制
-              const userInteractEvents = ['touchstart', 'click', 'scroll', 'mousemove'];
-              const forcePlay = () => {
-                video.play();
-                userInteractEvents.forEach(e => window.removeEventListener(e, forcePlay));
-              };
-              userInteractEvents.forEach(e => window.addEventListener(e, forcePlay, { once: true, passive: true }));
-            });
-          }
-        };
-        // 即時実行を避け、レンダリング完了後に発火
-        requestAnimationFrame(() => setTimeout(startVideo, 50));
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            const forcePlay = () => {
+              video.play();
+              ['click', 'touchstart', 'scroll'].forEach(evt => window.removeEventListener(evt, forcePlay));
+            };
+            ['click', 'touchstart', 'scroll'].forEach(evt => window.addEventListener(evt, forcePlay, { once: true, passive: true }));
+          });
+        }
       }
+
+      // 2. タイトルアニメーション（残滓）の生成
+      const titleJpEl = document.getElementById('heroTitleJp');
+      if (titleJpEl) {
+        const text = titleJpEl.textContent.trim();
+        titleJpEl.textContent = ''; 
+        
+        [...text].forEach((ch, i) => {
+          const s = document.createElement('span');
+          s.className = 'char';
+          s.textContent = ch;
+          s.setAttribute('data-char', ch);
+          
+          const delayBase = 0.4 + (i * 0.15);
+          s.style.animationDelay = `${delayBase.toFixed(2)}s`;
+          s.style.setProperty('--cd', `${delayBase.toFixed(2)}s`);
+          titleJpEl.appendChild(s);
+        });
+      }
+
+      // 3. マウスツールチップ
+      const tooltip = document.getElementById('mouse-tooltip');
+      if (tooltip) {
+        document.querySelectorAll('[data-tooltip]').forEach(link => {
+          link.addEventListener('mouseenter', () => {
+            tooltip.textContent = link.getAttribute('data-tooltip') || 'リンクします';
+            tooltip.classList.add('visible');
+          });
+          link.addEventListener('mousemove', (e) => {
+            tooltip.style.left = `${e.clientX + 15}px`;
+            tooltip.style.top = `${e.clientY + 15}px`;
+          });
+          link.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+        });
+      }
+
+      // 4. 背景フラッシュライン
+      const canvas = document.getElementById('lines-canvas');
+      if (canvas) {
+        const LINE_DEFS = [
+          { axis:'h', pos:35, delay: 0.5, dur: 0.9 },
+          { axis:'v', pos:20, delay: 0.7, dur: 1.1 },
+          { axis:'h', pos:65, delay: 0.9, dur: 0.8 },
+          { axis:'v', pos:80, delay: 1.1, dur: 1.2 }
+        ];
+        LINE_DEFS.forEach(def => {
+          const el = document.createElement('div');
+          el.className = `flash-line ${def.axis}`;
+          el.style[def.axis === 'h' ? 'top' : 'left'] = `${def.pos}%`;
+          el.style.setProperty('--dur', `${def.dur}s`);
+          el.style.setProperty('--del', `${def.delay}s`);
+          canvas.appendChild(el);
+          requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('run')));
+        });
+      }
+
+      // 5. Back to Top プログレスリング
+      const b2tCircle = document.getElementById('b2tCircle');
+      const b2tPercent = document.getElementById('b2tPercent');
+      const b2tRadius = 27;
+      const b2tCircumference = 2 * Math.PI * b2tRadius;
+      if (b2tCircle) {
+        b2tCircle.style.strokeDasharray = b2tCircumference;
+        b2tCircle.style.strokeDashoffset = b2tCircumference;
+      }
+
+      // 6. スクロールイベント (ナビゲーション＆プログレス)
+      const topNav = document.getElementById('top-nav');
+      const b2t = document.getElementById('backToTop');
+      const hLines = document.querySelectorAll('.matrix-axis.h');
+      const vLines = document.querySelectorAll('.matrix-axis.v');
+      let ticking = false;
+      
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            const scrollY = window.scrollY;
+            
+            if (scrollY > 60) topNav.classList.add('scrolled');
+            else topNav.classList.remove('scrolled');
+            
+            hLines.forEach((line, idx) => line.style.transform = `translateY(${(scrollY * (idx === 0 ? 0.02 : -0.02))}px)`);
+            vLines.forEach((line, idx) => line.style.transform = `translateX(${(scrollY * (idx === 0 ? 0.01 : -0.01))}px)`);
+
+            if (b2t) {
+              if (scrollY > window.innerHeight * 0.4) b2t.classList.add('is-visible');
+              else b2t.classList.remove('is-visible');
+
+              if (b2tCircle && b2tPercent) {
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const scrollPercent = docHeight > 0 ? Math.max(0, Math.min(scrollY / docHeight, 1)) : 0;
+                b2tCircle.style.strokeDashoffset = b2tCircumference - (scrollPercent * b2tCircumference);
+                b2tPercent.textContent = String(Math.floor(scrollPercent * 100)).padStart(3, '0');
+              }
+            }
+
+            if (document.getElementById('nav-links').classList.contains('open')) {
+              if (Math.abs(scrollY - window.menuOpenScrollY || 0) > 40) closeMenu();
+            }
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+
+      if (b2t) {
+        b2t.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+
+      // 7. ギャラリー画像のランダム並び替え
+      const grid = document.getElementById('grid');
+      if (grid) {
+        const items = Array.from(grid.children);
+        for (let i = items.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [items[i], items[j]] = [items[j], items[i]];
+        }
+        const frag = document.createDocumentFragment();
+        items.forEach(el => frag.appendChild(el));
+        grid.appendChild(frag);
+
+        items.forEach((el, i) => {
+          const imgPool = el.getAttribute('data-images');
+          if (imgPool) {
+            const images = imgPool.split(',').map(s => s.trim());
+            const randomImg = images[Math.floor(Math.random() * images.length)];
+            const imgEl = el.querySelector('img');
+            if (imgEl) imgEl.src = randomImg;
+          }
+          const delay = (i % 4) * 120 + Math.floor(Math.random() * 80);
+          el.style.setProperty('--delay', `${delay}ms`);
+        });
+      }
+      
+      // 8. Intersection Observer (フェードイン用)
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.05 });
+      
+      const secHeader = document.getElementById('secHeader');
+      if (secHeader) io.observe(secHeader);
+      document.querySelectorAll('.gi').forEach(el => io.observe(el));
     });
 
-    let menuOpenScrollY = 0;
+    // グローバル関数 (ハンバーガーメニュー用)
+    window.menuOpenScrollY = 0;
     function toggleMenu() {
       const links = document.getElementById('nav-links');
       const hamburger = document.getElementById('hamburger');
@@ -693,7 +832,7 @@
       const isOpen = links.classList.toggle('open');
       hamburger.classList.toggle('active');
       btn.style.display = isOpen ? 'none' : '';
-      if (isOpen) menuOpenScrollY = window.scrollY;
+      if (isOpen) window.menuOpenScrollY = window.scrollY;
     }
     
     function closeMenu() {
@@ -704,150 +843,6 @@
       hamburger.classList.remove('active');
       btn.style.display = '';
     }
-
-    (() => {
-      const tooltip = document.getElementById('mouse-tooltip');
-      if (!tooltip) return;
-      document.querySelectorAll('[data-tooltip]').forEach(link => {
-        link.addEventListener('mouseenter', () => {
-          tooltip.textContent = link.getAttribute('data-tooltip') || 'リンクします';
-          tooltip.classList.add('visible');
-        });
-        link.addEventListener('mousemove', (e) => {
-          tooltip.style.left = `${e.clientX + 15}px`;
-          tooltip.style.top = `${e.clientY + 15}px`;
-        });
-        link.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
-      });
-    })();
-    
-    // ─── 「残滓」アニメーションのセットアップ ───
-    const TITLE_JP = '作品系';
-    const titleJpEl = document.getElementById('heroTitleJp');
-    if (titleJpEl) {
-      [...TITLE_JP].forEach((ch, i) => {
-        const s = document.createElement('span');
-        s.className = 'char';
-        s.textContent = ch;
-        // 擬似要素で残滓を作るためのデータ属性を付与
-        s.setAttribute('data-char', ch);
-        s.style.setProperty('--cd', `${(0.4 + i * 0.15).toFixed(2)}s`);
-        titleJpEl.appendChild(s);
-      });
-    }
-
-    const canvas = document.getElementById('lines-canvas');
-    if (canvas) {
-      const LINE_DEFS = [
-        { axis:'h', pos:35, delay: 0.5, dur: 0.9 },
-        { axis:'v', pos:20, delay: 0.7, dur: 1.1 },
-        { axis:'h', pos:65, delay: 0.9, dur: 0.8 },
-        { axis:'v', pos:80, delay: 1.1, dur: 1.2 }
-      ];
-      LINE_DEFS.forEach(def => {
-        const el = document.createElement('div');
-        el.className = `flash-line ${def.axis}`;
-        el.style[def.axis === 'h' ? 'top' : 'left'] = `${def.pos}%`;
-        el.style.setProperty('--dur', `${def.dur}s`);
-        el.style.setProperty('--del', `${def.delay}s`);
-        canvas.appendChild(el);
-        requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('run')));
-      });
-    }
-
-    const b2tCircle = document.getElementById('b2tCircle');
-    const b2tPercent = document.getElementById('b2tPercent');
-    const b2tRadius = 27; // 新しい半径に合わせる
-    const b2tCircumference = 2 * Math.PI * b2tRadius;
-    if (b2tCircle) {
-      b2tCircle.style.strokeDasharray = b2tCircumference;
-      b2tCircle.style.strokeDashoffset = b2tCircumference;
-    }
-
-    const topNav = document.getElementById('top-nav');
-    const b2t = document.getElementById('backToTop');
-    const hLines = document.querySelectorAll('.matrix-axis.h');
-    const vLines = document.querySelectorAll('.matrix-axis.v');
-    let ticking = false;
-    
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const scrollY = window.scrollY;
-          
-          if (scrollY > 60) topNav.classList.add('scrolled');
-          else topNav.classList.remove('scrolled');
-          
-          hLines.forEach((line, idx) => line.style.transform = `translateY(${(scrollY * (idx === 0 ? 0.02 : -0.02))}px)`);
-          vLines.forEach((line, idx) => line.style.transform = `translateX(${(scrollY * (idx === 0 ? 0.01 : -0.01))}px)`);
-
-          if (b2t) {
-            if (scrollY > window.innerHeight * 0.4) b2t.classList.add('is-visible');
-            else b2t.classList.remove('is-visible');
-
-            if (b2tCircle && b2tPercent) {
-              const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-              const scrollPercent = docHeight > 0 ? Math.max(0, Math.min(scrollY / docHeight, 1)) : 0;
-              b2tCircle.style.strokeDashoffset = b2tCircumference - (scrollPercent * b2tCircumference);
-              b2tPercent.textContent = String(Math.floor(scrollPercent * 100)).padStart(3, '0');
-            }
-          }
-
-          if (document.getElementById('nav-links').classList.contains('open')) {
-            if (Math.abs(scrollY - menuOpenScrollY) > 40) closeMenu();
-          }
-
-          ticking = false;
-        });
-        ticking = true;
-      }
-    }, { passive: true });
-
-    if (b2t) {
-      b2t.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-    }
-
-    (() => {
-      const grid = document.getElementById('grid');
-      if (!grid) return;
-      const items = Array.from(grid.children);
-
-      for (let i = items.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [items[i], items[j]] = [items[j], items[i]];
-      }
-      const frag = document.createDocumentFragment();
-      items.forEach(el => frag.appendChild(el));
-      grid.appendChild(frag);
-
-      items.forEach((el, i) => {
-        const imgPool = el.getAttribute('data-images');
-        if (imgPool) {
-          const images = imgPool.split(',').map(s => s.trim());
-          const randomImg = images[Math.floor(Math.random() * images.length)];
-          const imgEl = el.querySelector('img');
-          if (imgEl) imgEl.src = randomImg;
-        }
-        const delay = (i % 4) * 120 + Math.floor(Math.random() * 80);
-        el.style.setProperty('--delay', `${delay}ms`);
-      });
-    })();
-    
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in-view');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.05 });
-    
-    const secHeader = document.getElementById('secHeader');
-    if (secHeader) io.observe(secHeader);
-    document.querySelectorAll('.gi').forEach(el => io.observe(el));
   </script>
 </body>
 </html>
