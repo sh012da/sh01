@@ -25,8 +25,9 @@
        DESIGN TOKENS & BASE
     ════════════════════════════════════════ */
     :root {
-      --bg:          #080808;
-      --bg2:         #0c0c0b;
+      --bg-base:     #060605;
+      --bg:          rgba(6, 6, 5, 0.94);
+      --bg2:         rgba(12, 12, 10, 0.95);
       --fg:          #ede9e4;
       --text:        #e8e4db;
       --text-muted:  rgba(232,228,219,0.65);
@@ -345,11 +346,87 @@
     .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(0.95rem, 1.5vw, 1.15rem); font-weight: 300; color: var(--fg); letter-spacing: 0.15em; line-height: 1; }
     .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.7rem, 1.2vw, 0.85rem); font-weight: 400; color: var(--accent); letter-spacing: 0.2em; }
 
-    .back-to-top { position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px); z-index: 9000; width: clamp(56px, 9vw, 80px); height: clamp(56px, 9vw, 80px); border-radius: 50%; background: rgba(203, 191, 176, 0.1); border: 1px solid var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--accent); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); }
-    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
-    .back-to-top:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-6px); }
-    .back-to-top svg { width: clamp(18px, 2.5vw, 24px); height: clamp(18px, 2.5vw, 24px); margin-bottom: 2px; }
-    .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.55rem, 1.2vw, 0.75rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
+    /* ════════════════════════════════════════
+       BACK TO TOP: PROGRESS RING UI
+    ════════════════════════════════════════ */
+    .back-to-top {
+      position: fixed;
+      bottom: clamp(20px, 4vw, 40px);
+      right: clamp(20px, 4vw, 40px);
+      z-index: 9000;
+      width: clamp(52px, 8vw, 70px);
+      height: clamp(52px, 8vw, 70px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: opacity 0.6s var(--ease), visibility 0.6s, transform 0.6s var(--ease);
+      cursor: pointer;
+    }
+    .back-to-top.is-visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .b2t-inner {
+      position: absolute;
+      inset: 4px;
+      background: rgba(12, 12, 11, 0.5); /* --bg2に合わせた暗いトーン */
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.4s var(--ease), transform 0.4s var(--ease);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+    }
+    .b2t-text {
+      font-family: var(--font-en);
+      font-size: clamp(0.6rem, 1.4vw, 0.75rem);
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      color: var(--fg);
+      margin-right: -0.15em;
+      margin-bottom: -1px;
+      transition: color 0.4s var(--ease), transform 0.4s var(--ease);
+    }
+    .b2t-progress {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+      pointer-events: none;
+    }
+    .b2t-progress circle {
+      fill: none;
+      stroke-width: 1.5;
+    }
+    .b2t-progress-bg {
+      stroke: var(--whisper);
+    }
+    .b2t-progress-value {
+      stroke: var(--accent);
+      stroke-dasharray: 301.6;
+      stroke-dashoffset: 301.6;
+      transition: stroke-dashoffset 0.15s linear, stroke 0.4s var(--ease);
+    }
+    .back-to-top:hover .b2t-inner {
+      background: var(--accent);
+      transform: scale(0.92);
+    }
+    .back-to-top:hover .b2t-text {
+      color: var(--bg-base);
+      transform: translateY(-2px);
+    }
+    .back-to-top:hover .b2t-progress-value {
+      stroke: var(--fg);
+    }
 
     /* ════════════════════════════════════════
        KEYFRAMES
@@ -748,11 +825,14 @@
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
-  <a href="#gallery" class="back-to-top js-scroll-to" id="backToTop" aria-label="ページ先頭に戻る">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M18 15l-6-6-6 6"/>
+  <a href="#top" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
+    <svg class="b2t-progress" viewBox="0 0 100 100">
+      <circle class="b2t-progress-bg" cx="50" cy="50" r="48"></circle>
+      <circle class="b2t-progress-value" id="b2t-progress-value" cx="50" cy="50" r="48"></circle>
     </svg>
-    <span class="back-to-top-text">TOP</span>
+    <div class="b2t-inner">
+      <span class="b2t-text">TOP</span>
+    </div>
   </a>
 
   <div class="image-modal" id="imageModal" aria-hidden="true" role="dialog">
@@ -889,7 +969,7 @@
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
     document.querySelectorAll('.gallery-item, .tl-entry, .reveal').forEach(el => io.observe(el));
 
-    /* ── Scroll Interactions ── */
+    /* ── Scroll Interactions & Progress Ring ── */
     const topNav = document.getElementById('top-nav');
     const headerNavLinks = document.querySelectorAll('.nav-links a');
     const sections = ['statement', 'gallery', 'chronology'].map(id => document.getElementById(id));
@@ -901,10 +981,14 @@
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const scrollY = window.scrollY;
-          if (scrollY > 50) topNav.classList.add('scrolled');
-          else topNav.classList.remove('scrolled');
+          const winHeight = window.innerHeight;
 
-          const checkY = scrollY + window.innerHeight * 0.4;
+          if (topNav) {
+            if (scrollY > 50) topNav.classList.add('scrolled');
+            else topNav.classList.remove('scrolled');
+          }
+
+          const checkY = scrollY + winHeight * 0.4;
           let activeSec = null;
           sections.forEach(sec => { if (sec && sec.offsetTop <= checkY) activeSec = sec; });
           
@@ -918,14 +1002,24 @@
             const rect = tlWrap.getBoundingClientRect();
             const totalH = tlWrap.offsetHeight;
             if (totalH > 0) {
-              const pct = (window.innerHeight * 0.55 - rect.top) / totalH * 100;
+              const pct = (winHeight * 0.55 - rect.top) / totalH * 100;
               spineFill.style.height = Math.max(0, Math.min(100, pct)) + '%';
             }
           }
 
+          // Back to Top Button & Progress Ring Update
           const b2t = document.getElementById('backToTop');
-          if (scrollY > 400) b2t.classList.add('is-visible');
-          else b2t.classList.remove('is-visible');
+          const b2tCircle = document.getElementById('b2t-progress-value');
+          if (b2t) {
+            if (scrollY > 400) b2t.classList.add('is-visible');
+            else b2t.classList.remove('is-visible');
+          }
+          if (b2tCircle) {
+            const docHeight = document.documentElement.scrollHeight - winHeight;
+            const scrollPct = Math.max(0, Math.min(1, scrollY / docHeight));
+            const offset = 301.6 - (301.6 * scrollPct);
+            b2tCircle.style.strokeDashoffset = offset;
+          }
 
           ticking = false;
         });
@@ -947,6 +1041,15 @@
         }
       });
     });
+
+    /* ── TOPへ完全に戻るスクロールイベント ── */
+    const b2tBtn = document.getElementById('backToTop');
+    if (b2tBtn) {
+      b2tBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
 
     /* ── Lightbox (Modal) ── */
     const modal      = document.getElementById('imageModal');
