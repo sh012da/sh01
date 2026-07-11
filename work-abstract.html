@@ -69,11 +69,10 @@
       top: 0; left: 0;
       width: 100vw; 
       height: 100vh;
-      height: 100svh; /* スマホのUIバー変動に対応し、正確に画面高さを取得 */
+      height: 100svh;
       background-image: url('images/【Dregs（澱）】 修正後.JPG');
       background-size: cover;
       background-position: center;
-      /* スマホでの異常拡大バグを防ぐため background-attachment: fixed; は削除 */
       z-index: -2;
       filter: brightness(0.8) contrast(1.1);
     }
@@ -101,7 +100,15 @@
       padding: clamp(14px, 3vw, 36px) var(--px);
       background: linear-gradient(to bottom, rgba(6,6,5,0.8) 0%, transparent 100%);
       border-bottom: 0.5px solid transparent;
-      transition: background 0.4s ease, border-color 0.4s ease;
+      
+      /* 初期状態: 画面外＆透明（ふわっと降りてくる演出用） */
+      transform: translateY(-100%);
+      opacity: 0;
+      transition: transform 1.2s var(--ease), opacity 1.2s var(--ease), background 0.4s ease, border-color 0.4s ease;
+    }
+    nav#top-nav.revealed {
+      transform: translateY(0);
+      opacity: 1;
     }
     nav#top-nav.scrolled {
       background: rgba(10, 10, 9, 0.85);
@@ -118,7 +125,6 @@
     }
     .nav-logo-unified:hover { opacity: 0.5; }
     
-    /* センター配置のナビゲーションリンク */
     .nav-links { 
       display: flex; gap: 3rem; list-style: none; 
       position: absolute; left: 50%; transform: translateX(-50%);
@@ -341,9 +347,33 @@
     .contact-btn { display: inline-block; padding: 1.2rem 3.5rem; background: var(--accent); color: var(--bg-base); font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none; transition: all 0.4s var(--ease); border-radius: 2px; }
     .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3); opacity: 1; }
 
-    footer { padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); background: var(--bg-base); position: relative; }
-    .footer-logo { font-family: var(--font-ja); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.28); letter-spacing: 0.08em; }
-    .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
+    /* ============================================================
+       FOOTER (Redesigned)
+    ============================================================ */
+    footer { 
+      padding: clamp(3rem, 6vh, 4rem) var(--px); 
+      text-align: center;
+      border-top: 0.5px solid var(--border); 
+      background: transparent; 
+      position: relative; 
+      display: block;
+    }
+    .footer-logo { 
+      font-family: var(--font-ja); 
+      font-size: clamp(0.75rem, 1.8vw, 0.88rem); 
+      font-weight: 200; 
+      color: rgba(233,229,223,0.28); 
+      letter-spacing: 0.08em; 
+      margin-bottom: 0.5rem; 
+      display: block;
+    }
+    .footer-copy { 
+      font-family: var(--font-en); 
+      font-size: clamp(0.52rem, 1.3vw, 0.62rem); 
+      letter-spacing: 0.18em; 
+      color: var(--muted); 
+      display: block;
+    }
 
     /* ============================================================
        LIGHTBOX (MODAL)
@@ -454,7 +484,18 @@
     @media (max-width: 768px) {
       nav#top-nav { padding: 1rem 1.25rem; justify-content: space-between; align-items: center; }
       .nav-links { display: none !important; }
-      /* スマホでの作品紹介グリッドを非表示に */
+      
+      /* フッターのモバイル用調整 */
+      footer { 
+        padding: 3rem 1.5rem; 
+        display: flex;
+        flex-direction: column; 
+        align-items: flex-start; 
+        gap: 1.5rem; 
+        text-align: left;
+      }
+      .footer-logo { margin-bottom: 0; }
+
       .gallery-section { display: none !important; }
     }
     @media (max-width: 480px) {
@@ -822,6 +863,8 @@
         }, delay);
       };
 
+      // ヘッダーを少し遅延させ、タイトル出現と同時にふわっと降ろす演出 (400msに設定)
+      reveal('top-nav', 400); 
       reveal('heroDivider', 50);
       reveal('heroEyebrow', 100);
       reveal('heroTitle',   200); /* レイヤー結合の発火 */
@@ -910,7 +953,7 @@
             else topNav.classList.remove('scrolled');
           }
 
-          // Nav ScrollSpy (アンダーバー連動)
+          // Nav ScrollSpy
           const checkY = scrollY + winHeight * 0.4;
           let activeSec = null;
           scrollSections.forEach(sec => {
@@ -943,7 +986,7 @@
           }
           if (b2tCircle) {
             const docHeight = document.documentElement.scrollHeight - winHeight;
-            const scrollPct = Math.max(0, Math.min(1, scrollY / docHeight));
+            const scrollPct = Math.max(0, Math.min(1, scrollY / (docHeight || 1)));
             const offset = 301.6 - (301.6 * scrollPct);
             b2tCircle.style.strokeDashoffset = offset;
           }
