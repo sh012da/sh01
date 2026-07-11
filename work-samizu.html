@@ -98,14 +98,33 @@
       text-transform: uppercase; transition: opacity 0.4s ease;
     }
     .nav-logo-unified:hover { opacity: 0.6; }
-    .nav-links { display: flex; gap: 2.2rem; list-style: none; }
+    
+    /* ページ内ジャンプ用・英語表記ヘッダーリンク */
+    .nav-links { 
+      display: flex; gap: clamp(1.5rem, 3vw, 3rem); list-style: none;
+      position: absolute; left: 50%; transform: translateX(-50%);
+    }
     .nav-links a {
+      position: relative;
       font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.75rem);
       letter-spacing: 0.25em;
       color: var(--muted); text-transform: uppercase;
       transition: color 0.3s ease;
+      padding-bottom: 4px;
+      cursor: pointer;
     }
-    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+    
+    /* スムーズに伸びる下線アニメーション */
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
+      background: var(--accent); transform: scaleX(0); transform-origin: right; 
+      transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    .nav-links a:hover::after, .nav-links a.active::after {
+      transform: scaleX(1); transform-origin: left;
+    }
+
     .nav-cta {
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
       letter-spacing: 0.25em; text-transform: uppercase;
@@ -113,34 +132,6 @@
       color: var(--accent); transition: background 0.25s, color 0.25s;
     }
     .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
-
-    /* Page Nav (Right fixed) */
-    .page-nav {
-      position: fixed;
-      right: clamp(15px, 3vw, 30px); top: 50%;
-      transform: translateY(-50%); z-index: 4000;
-      display: flex; flex-direction: column; gap: 24px;
-      opacity: 0; visibility: hidden;
-      transition: opacity 0.6s var(--ease), visibility 0.6s;
-    }
-    .page-nav.visible { opacity: 1; visibility: visible; }
-    .page-nav-item {
-      display: flex; align-items: center; gap: 12px; flex-direction: row-reverse;
-      cursor: pointer; background: none; border: none; padding: 8px 0;
-    }
-    .page-nav-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: rgba(233,229,223,0.3); transition: all 0.35s; flex-shrink: 0;
-    }
-    .page-nav-label {
-      font-family: var(--font-en); font-size: 11px; letter-spacing: 0.18em;
-      color: rgba(233,229,223,0.4); text-transform: uppercase; transition: color 0.35s; white-space: nowrap;
-    }
-    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot {
-      background: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px rgba(196,168,130,0.6);
-    }
-    .page-nav-item:hover .page-nav-label { color: rgba(233,229,223,0.85); }
-    .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
         HERO SECTION
@@ -408,20 +399,90 @@
     .footer-copy { font-family: var(--font-en); font-size: clamp(0.55rem, 1.3vw, 0.65rem); letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; }
 
     /* ============================================================
-        BACK TO TOP BUTTON
+        BACK TO TOP (Scroll Progress Ring + Glassmorphism UI)
     ================================================================ */
     .back-to-top {
-      position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px);
-      z-index: 9000; width: clamp(60px, 9vw, 84px); height: clamp(60px, 9vw, 84px);
-      border-radius: 50%; background: rgba(196, 168, 130, 0.88); border: 1px solid var(--accent);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--bg);
-      opacity: 0; visibility: hidden; transform: translateY(20px);
-      transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
+      position: fixed;
+      bottom: clamp(20px, 4vw, 40px);
+      right: clamp(20px, 4vw, 40px);
+      z-index: 9000;
+      width: clamp(52px, 8vw, 70px);
+      height: clamp(52px, 8vw, 70px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: opacity 0.6s var(--ease), visibility 0.6s, transform 0.6s var(--ease);
+      cursor: pointer;
     }
-    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
-    .back-to-top:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-6px); }
-    .back-to-top svg { width: clamp(18px, 2.5vw, 28px); height: clamp(18px, 2.5vw, 28px); margin-bottom: 2px; }
-    .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.85rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
+    .back-to-top.is-visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    
+    .b2t-inner {
+      position: absolute;
+      inset: 4px;
+      background: rgba(12, 12, 10, 0.5);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.4s var(--ease), transform 0.4s var(--ease);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+    }
+    
+    .b2t-text {
+      font-family: var(--font-en);
+      font-size: clamp(0.6rem, 1.4vw, 0.75rem);
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      color: var(--fg);
+      margin-right: -0.15em;
+      margin-bottom: -1px;
+      transition: color 0.4s var(--ease), transform 0.4s var(--ease);
+    }
+    
+    .b2t-progress {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+      pointer-events: none;
+    }
+    .b2t-progress circle {
+      fill: none;
+      stroke-width: 1.5;
+    }
+    .b2t-progress-bg {
+      stroke: rgba(233,229,223,0.1);
+    }
+    .b2t-progress-value {
+      stroke: var(--accent);
+      stroke-dasharray: 301.6;
+      stroke-dashoffset: 301.6;
+      transition: stroke-dashoffset 0.15s linear, stroke 0.4s var(--ease);
+    }
+
+    .back-to-top:hover .b2t-inner {
+      background: var(--accent);
+      transform: scale(0.92);
+    }
+    .back-to-top:hover .b2t-text {
+      color: var(--bg);
+      transform: translateY(-2px);
+    }
+    .back-to-top:hover .b2t-progress-value {
+      stroke: var(--fg);
+    }
 
     /* ============================================================
         MODAL LIGHTBOX
@@ -464,9 +525,6 @@
       }
       
       .nav-cta { flex-shrink: 0; padding: 0.45rem 1rem; font-size: 0.6rem; }
-      .page-nav.visible { right: 8px; opacity: 0.5; }
-      .page-nav.visible:hover { opacity: 1; }
-      .page-nav-label { display: none; }
     }
   </style>
 </head>
@@ -483,24 +541,11 @@
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="https://sh012da.github.io/sh01/index.html#statement">Statement</a></li>
-      <li><a href="https://sh012da.github.io/sh01/index.html#works">Works</a></li>
-      <li><a href="https://sh012da.github.io/sh01/index.html#profile">Profile</a></li>
-      <li><a href="https://sh012da.github.io/sh01/index.html#news">News</a></li>
+      <li><a href="#statement" class="js-nav-link">Statement</a></li>
+      <li><a href="#works" class="js-nav-link">Works</a></li>
+      <li><a href="#relics" class="js-nav-link">Archives</a></li>
     </ul>
     <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
-  </nav>
-
-  <nav class="page-nav" id="pageNav" aria-label="ページ内案内">
-    <button class="page-nav-item" data-target="statement" aria-label="Statementへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Statement</span>
-    </button>
-    <button class="page-nav-item" data-target="works" aria-label="Installation Viewsへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Views</span>
-    </button>
-    <button class="page-nav-item" data-target="relics" aria-label="Archival Fragmentsへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Archives</span>
-    </button>
   </nav>
 
   <header class="hero">
@@ -731,10 +776,13 @@
   </footer>
 
   <a href="#top" class="back-to-top" id="backToTop" aria-label="ページの先頭へ戻る">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M18 15l-6-6-6 6"/>
+    <svg class="b2t-progress" viewBox="0 0 100 100">
+      <circle class="b2t-progress-bg" cx="50" cy="50" r="48"></circle>
+      <circle class="b2t-progress-value" id="b2t-progress-value" cx="50" cy="50" r="48"></circle>
     </svg>
-    <span class="back-to-top-text">TOP</span>
+    <div class="b2t-inner">
+      <span class="b2t-text">TOP</span>
+    </div>
   </a>
 
   <div class="image-modal" id="imageModal" aria-hidden="true" role="dialog">
@@ -854,14 +902,15 @@
     });
 
     // ============================================================
-    // ORIGINAL PAGE SCRIPT
+    // ORIGINAL PAGE SCRIPT + NEW FEATURES
     // ============================================================
     (function(){
       const header = document.getElementById('top-nav');
       const progress = document.getElementById('progress');
       const b2t = document.getElementById('backToTop');
-      const pageNav = document.getElementById('pageNav');
-      const navItems = document.querySelectorAll('.page-nav-item');
+      const b2tCircle = document.getElementById('b2t-progress-value');
+      
+      const jsNavLinks = document.querySelectorAll('.js-nav-link');
       const targets = ['statement', 'works', 'relics'].map(id => document.getElementById(id));
 
       function onScroll() {
@@ -870,34 +919,57 @@
         if(header) header.classList.toggle('scrolled', y > 50);
         
         const h = document.documentElement.scrollHeight - window.innerHeight;
-        if(progress) progress.style.width = (h > 0 ? (y / h) * 100 : 0) + '%';
+        const scrollPct = h > 0 ? (y / h) : 0;
         
+        if(progress) progress.style.width = (scrollPct * 100) + '%';
+        
+        /* Back to Top Visibility & Circular Progress Ring */
         if(b2t) b2t.classList.toggle('is-visible', y > 500);
+        if(b2tCircle) {
+          const offset = 301.6 - (301.6 * scrollPct);
+          b2tCircle.style.strokeDashoffset = offset;
+        }
 
+        /* Scroll Spy (Header Nav) */
         const checkY = y + window.innerHeight * 0.4;
         let currentSec = null;
         targets.forEach(sec => {
           if (sec && sec.offsetTop <= checkY) currentSec = sec;
         });
-        navItems.forEach(item => {
-          const t = document.getElementById(item.getAttribute('data-target'));
-          item.classList.toggle('active', t === currentSec);
+        
+        jsNavLinks.forEach(link => {
+          const tId = link.getAttribute('href').substring(1);
+          const t = document.getElementById(tId);
+          link.classList.toggle('active', t === currentSec);
         });
-        if(pageNav) pageNav.classList.toggle('visible', y > window.innerHeight * 0.5);
       }
+      
       document.addEventListener('scroll', onScroll, {passive: true});
       onScroll();
 
-      navItems.forEach(item => {
-        item.addEventListener('click', () => {
-          const t = document.getElementById(item.getAttribute('data-target'));
-          if(t) {
-            const offset = header ? header.offsetHeight : 70;
-            window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
-          }
-        });
+      /* ヘッダーナビゲーションのスムーズスクロール */
+      const handleNavClick = (e, targetId) => {
+        e.preventDefault();
+        const t = document.getElementById(targetId);
+        if(t) {
+          const offset = header ? header.offsetHeight : 70;
+          window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+        }
+      };
+
+      jsNavLinks.forEach(link => {
+        link.addEventListener('click', (e) => handleNavClick(e, link.getAttribute('href').substring(1)));
       });
 
+      /* Back to Top - Completely to the top */
+      if(b2t) {
+        b2t.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+
+      /* Intersection Observer (Fade Up) */
       const revealEls = document.querySelectorAll('.reveal');
       if('IntersectionObserver' in window) {
         const io = new IntersectionObserver(entries => {
@@ -913,6 +985,7 @@
         revealEls.forEach(el => el.classList.add('is-visible'));
       }
 
+      /* Lightbox Modal */
       const modal = document.getElementById('imageModal');
       const mImg = document.getElementById('modalImg');
       const mJp = document.getElementById('modalTitleJp');
