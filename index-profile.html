@@ -82,41 +82,41 @@
       font-family: var(--font-en); font-size: clamp(0.7rem, 2.5vw, 0.9rem);
       letter-spacing: 0.3em; font-weight: 300; color: var(--accent);
       text-transform: uppercase; transition: opacity 0.4s ease;
+      position: relative; z-index: 2;
     }
     .nav-logo-unified:hover { opacity: 0.5; }
+
+    /* センター配置のナビゲーションリンク */
+    .nav-links { 
+      display: flex; gap: 3rem; list-style: none; 
+      position: absolute; left: 50%; transform: translateX(-50%);
+    }
+    .nav-links a {
+      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
+      letter-spacing: 0.25em; color: var(--muted); 
+      text-transform: uppercase; transition: color 0.3s ease;
+      position: relative; padding-bottom: 6px;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 100%; height: 1px; background: var(--accent);
+      transform: scaleX(0); transform-origin: center;
+      transition: transform 0.4s var(--ease);
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); opacity: 1; }
+    .nav-links a:hover::after, .nav-links a.active::after {
+      transform: scaleX(1);
+    }
+
     .nav-cta {
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
       letter-spacing: 0.25em; text-transform: uppercase;
       border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem;
       color: var(--accent); transition: background 0.25s, color 0.25s;
       flex-shrink: 0; white-space: nowrap; background: none; cursor: pointer;
+      position: relative; z-index: 2;
     }
     .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
-
-    .page-nav {
-      position: fixed; right: clamp(20px, 4vw, 40px); top: 50%;
-      transform: translateY(-50%); z-index: 200;
-      display: flex; flex-direction: column; gap: 24px;
-      opacity: 0; visibility: hidden; transition: opacity 0.6s var(--ease), visibility 0.6s;
-    }
-    .page-nav.visible { opacity: 1; visibility: visible; }
-    .page-nav-item {
-      display: flex; align-items: center; gap: 12px; flex-direction: row-reverse;
-      cursor: pointer; background: none; border: none; padding: 8px 0;
-    }
-    .page-nav-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: rgba(233,229,223,0.4); transition: all 0.35s; flex-shrink: 0;
-    }
-    .page-nav-label {
-      font-family: var(--font-en); font-size: 12px; letter-spacing: 0.15em;
-      color: rgba(233,229,223,0.4); text-transform: uppercase; transition: color 0.35s; white-space: nowrap;
-    }
-    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot {
-      background: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px rgba(196,168,130,0.6);
-    }
-    .page-nav-item:hover .page-nav-label { color: rgba(233,229,223,0.85); }
-    .page-nav-item.active .page-nav-label { color: var(--accent); }
 
     /* ============================================================
        HERO
@@ -715,20 +715,86 @@
     .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.72rem, 1.2vw, 0.85rem); font-style: italic; color: var(--accent); letter-spacing: 0.15em; }
 
     /* ============================================================
-       BACK TO TOP
+       BACK TO TOP (Progress Ring UI)
     ============================================================ */
     .back-to-top {
-      position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px);
-      z-index: 9000; width: clamp(64px, 10vw, 90px); height: clamp(64px, 10vw, 90px);
-      border-radius: 50%; background: rgba(196, 168, 130, 0.85); border: 1px solid var(--accent);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      color: var(--bg); opacity: 0; visibility: hidden; transform: translateY(20px);
-      transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
+      position: fixed;
+      bottom: clamp(20px, 4vw, 40px);
+      right: clamp(20px, 4vw, 40px);
+      z-index: 9000;
+      width: clamp(52px, 8vw, 70px);
+      height: clamp(52px, 8vw, 70px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: opacity 0.6s var(--ease), visibility 0.6s, transform 0.6s var(--ease);
+      cursor: pointer;
     }
-    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
-    .back-to-top:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-6px); }
-    .back-to-top svg { width: clamp(20px, 3vw, 32px); height: clamp(20px, 3vw, 32px); margin-bottom: 2px; }
-    .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.65rem, 1.5vw, 0.9rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
+    .back-to-top.is-visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .b2t-inner {
+      position: absolute;
+      inset: 4px;
+      background: rgba(12, 12, 10, 0.5); /* --bg2に合わせた暗いトーン */
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.4s var(--ease), transform 0.4s var(--ease);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+    }
+    .b2t-text {
+      font-family: var(--font-en);
+      font-size: clamp(0.6rem, 1.4vw, 0.75rem);
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      color: var(--fg);
+      margin-right: -0.15em;
+      margin-bottom: -1px;
+      transition: color 0.4s var(--ease), transform 0.4s var(--ease);
+    }
+    .b2t-progress {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+      pointer-events: none;
+    }
+    .b2t-progress circle {
+      fill: none;
+      stroke-width: 1.5;
+    }
+    .b2t-progress-bg {
+      stroke: var(--whisper);
+    }
+    .b2t-progress-value {
+      stroke: var(--accent);
+      stroke-dasharray: 301.6;
+      stroke-dashoffset: 301.6;
+      transition: stroke-dashoffset 0.15s linear, stroke 0.4s var(--ease);
+    }
+    .back-to-top:hover .b2t-inner {
+      background: var(--accent);
+      transform: scale(0.92);
+    }
+    .back-to-top:hover .b2t-text {
+      color: var(--bg);
+      transform: translateY(-2px);
+    }
+    .back-to-top:hover .b2t-progress-value {
+      stroke: var(--fg);
+    }
 
     /* ============================================================
        TOOLTIP
@@ -764,9 +830,8 @@
       .act-grid.grid-c { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 768px) {
-      nav#top-nav { padding: 1rem 1.25rem; }
-      .page-nav.visible { right: 8px; opacity: 0.5; }
-      .page-nav-label { display: none; }
+      nav#top-nav { padding: 1rem 1.25rem; justify-content: space-between; align-items: center; }
+      .nav-links { display: none !important; }
       
       .career-row { grid-template-columns: 60px 1fr; gap: 1rem; padding: 1.2rem 0.5rem; margin: 0 -0.5rem; }
       a.career-row.has-link { padding-right: 2.5rem; } /* 矢印のスペース確保 */
@@ -799,19 +864,12 @@
 
   <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#profile" class="js-scroll-to">Profile</a></li>
+      <li><a href="#making" class="js-scroll-to">Making</a></li>
+      <li><a href="#career" class="js-scroll-to">Career</a></li>
+    </ul>
     <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
-  </nav>
-
-  <nav class="page-nav" id="pageNav" aria-label="ページ内ナビゲーション">
-    <button class="page-nav-item" data-target="profile" aria-label="Profileへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Profile</span>
-    </button>
-    <button class="page-nav-item" data-target="making" aria-label="Makingへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Making</span>
-    </button>
-    <button class="page-nav-item" data-target="career" aria-label="Careerへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Career</span>
-    </button>
   </nav>
 
   <main>
@@ -1242,11 +1300,14 @@
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
-  <a href="#top" class="back-to-top" id="backToTop" aria-label="ページの先頭に戻る">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M18 15l-6-6-6 6"/>
+  <a href="#top" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
+    <svg class="b2t-progress" viewBox="0 0 100 100">
+      <circle class="b2t-progress-bg" cx="50" cy="50" r="48"></circle>
+      <circle class="b2t-progress-value" id="b2t-progress-value" cx="50" cy="50" r="48"></circle>
     </svg>
-    <span class="back-to-top-text">TOP</span>
+    <div class="b2t-inner">
+      <span class="b2t-text">TOP</span>
+    </div>
   </a>
 
   <div class="image-modal" id="imageModal" aria-hidden="true" role="dialog">
@@ -1330,10 +1391,9 @@
       '.act-opener, .act-intro-quote, .act-intro-text, .pull-quote-text'
     ).forEach(el => io.observe(el));
 
-    /* ── Scroll interactions ── */
+    /* ── Scroll interactions & Progress Ring ── */
     const topNav   = document.getElementById('top-nav');
-    const pageNav  = document.getElementById('pageNav');
-    const navItems = document.querySelectorAll('.page-nav-item');
+    const headerLinks = document.querySelectorAll('.nav-links a');
     const sections = ['profile', 'making', 'career'].map(id => document.getElementById(id));
     let ticking = false;
 
@@ -1341,31 +1401,57 @@
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const scrollY = window.scrollY;
+          const winHeight = window.innerHeight;
+
           topNav.classList.toggle('scrolled', scrollY > 50);
-          const checkY = scrollY + window.innerHeight * 0.4;
+          
+          const checkY = scrollY + winHeight * 0.4;
           let activeSec = null;
           sections.forEach(sec => { if (sec && sec.offsetTop <= checkY) activeSec = sec; });
-          navItems.forEach(item => {
-            const tgt = document.getElementById(item.getAttribute('data-target'));
-            item.classList.toggle('active', tgt === activeSec);
+          
+          headerLinks.forEach(link => {
+            const targetId = link.getAttribute('href').substring(1);
+            if (activeSec && activeSec.id === targetId) link.classList.add('active');
+            else link.classList.remove('active');
           });
-          pageNav?.classList.toggle('visible', scrollY > window.innerHeight * 0.6);
-          document.getElementById('backToTop')?.classList.toggle('is-visible', scrollY > 400);
+
+          const b2t = document.getElementById('backToTop');
+          const b2tCircle = document.getElementById('b2t-progress-value');
+          if (b2t) {
+            b2t.classList.toggle('is-visible', scrollY > 400);
+          }
+          if (b2tCircle) {
+            const docHeight = document.documentElement.scrollHeight - winHeight;
+            const scrollPct = Math.max(0, Math.min(1, scrollY / (docHeight || 1)));
+            const offset = 301.6 - (301.6 * scrollPct);
+            b2tCircle.style.strokeDashoffset = offset;
+          }
+
           ticking = false;
         });
         ticking = true;
       }
     }, { passive: true });
 
-    navItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const target = document.getElementById(item.getAttribute('data-target'));
+    headerLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        const targetId = link.getAttribute('href').substring(1);
+        const target = document.getElementById(targetId);
         if (target) {
+          e.preventDefault();
           const offset = topNav?.offsetHeight || 0;
           window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
         }
       });
     });
+
+    const b2tBtn = document.getElementById('backToTop');
+    if (b2tBtn) {
+      b2tBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
 
     /* ── Lightbox ── */
     const modal      = document.getElementById('imageModal');
