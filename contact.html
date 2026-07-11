@@ -57,6 +57,68 @@ html, body {
   z-index: 0;
 }
 
+/* ── フローティング戻るボタン (スタイリッシュ・斬新) ── */
+.back-button {
+  position: fixed;
+  top: 32px;
+  left: 32px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  background: rgba(18, 18, 18, 0.6);
+  border: 1px solid var(--border-dim);
+  border-radius: 30px;
+  padding: 6px;
+  text-decoration: none;
+  color: var(--text-primary);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  width: 44px;
+  height: 44px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  animation: smoothFocus 1.2s cubic-bezier(0.16, 1, 0.2, 1) backwards;
+  animation-delay: 0.2s;
+}
+.back-button:hover {
+  width: 140px;
+  border-color: var(--accent-gold);
+  background: rgba(184, 149, 90, 0.1);
+  box-shadow: 0 4px 20px rgba(184, 149, 90, 0.2);
+}
+.back-icon {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.back-button:hover .back-icon {
+  background: var(--accent-gold);
+  color: var(--bg-deep);
+  transform: rotate(-360deg);
+}
+.back-text {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  margin-left: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-15px);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.back-button:hover .back-text {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 /* ──────────────────────────────────────────
    BENTO GRID LAYOUT
 ────────────────────────────────────────── */
@@ -189,7 +251,6 @@ html, body {
 .cell-message > * { animation-delay: 0.8s; }
 .cell-submit > * { animation-delay: 0.9s; }
 
-
 /* ──────────────────────────────────────────
    INFO CELL (洗練された情報パネル)
 ────────────────────────────────────────── */
@@ -241,6 +302,46 @@ html, body {
   word-break: auto-phrase;
 }
 
+/* ── スタイリッシュな注意書きボックス ── */
+.note-box {
+  margin-top: 24px;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 18px;
+  background: linear-gradient(90deg, rgba(184, 149, 90, 0.08) 0%, rgba(184, 149, 90, 0) 100%);
+  border-left: 2px solid var(--accent-gold);
+  border-radius: 0 4px 4px 0;
+  position: relative;
+  overflow: hidden;
+}
+.note-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  color: var(--bg-deep);
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.note-text {
+  font-family: var(--font-serif);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+  line-height: 1.6;
+}
+.note-text strong {
+  color: var(--accent-gold);
+  font-weight: 400;
+  letter-spacing: 0.1em;
+}
+
 /* ── 究極に洗練させたメタ情報 ── */
 .meta-grid {
   position: relative;
@@ -262,12 +363,11 @@ html, body {
   text-transform: uppercase;
 }
 
-/* 英語のすぐ下に日本語を配置するための縦並びレイアウト */
 .meta-val-wrapper {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 4px; /* マージンを空けすぎず、引き締まった印象に */
+  gap: 4px;
 }
 
 .meta-val {
@@ -562,12 +662,16 @@ html, body {
 ────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .app-container {
-    padding: 16px;
+    padding: 80px 16px 16px;
     align-items: flex-start;
+  }
+  .back-button {
+    top: 20px;
+    left: 20px;
   }
   .bento-grid {
     height: auto;
-    min-height: calc(100vh - 32px);
+    min-height: calc(100vh - 96px);
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto auto auto auto;
   }
@@ -597,6 +701,19 @@ html, body {
 }
 
 @media (max-width: 640px) {
+  .app-container {
+    padding: 72px 16px 16px;
+  }
+  .back-button {
+    top: 16px;
+    left: 16px;
+    width: 40px;
+    height: 40px;
+  }
+  .back-icon {
+    width: 26px;
+    height: 26px;
+  }
   .bento-grid {
     grid-template-columns: 1fr;
   }
@@ -628,7 +745,6 @@ html, body {
   .field-label .ja { font-size: 0.6rem; }
   .cell-input { padding: 48px 16px 16px; font-size: 1.05rem; }
 
-  /* スマホでのメタ情報。さらにマージンを詰める */
   .meta-val-wrapper { gap: 2px;}
 
   .submit-content { gap: 16px; }
@@ -652,6 +768,16 @@ html, body {
   <rect width="100%" height="100%" filter="url(#noiseFilter)"/>
 </svg>
 
+<!-- スタイリッシュな戻るボタン -->
+<a href="javascript:history.back()" class="back-button" aria-label="Go Back">
+  <div class="back-icon">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 12H5M12 19l-7-7 7-7"/>
+    </svg>
+  </div>
+  <span class="back-text">RETURN</span>
+</a>
+
 <div class="app-container">
   <main class="bento-grid" id="bentoGrid">
     
@@ -662,8 +788,16 @@ html, body {
         <h1 class="main-title">Contact</h1>
         <div class="sub-title">— お問い合わせ</div>
         <p class="info-desc">
-          展覧会への参加・企画のご提案、作品の購入・コレクションに関するご相談、取材やコラボレーションのご依頼など、どうぞお気軽にご連絡ください。
+          このページの各項目に記載し、お気軽にご連絡ください。展覧会への参加・企画のご提案、作品の購入・コレクションに関するご相談、取材やコラボレーションのご依頼、作品の批評など、何でもお待ちしております。
         </p>
+        <!-- バリデーションに関する注意書き -->
+        <div class="note-box">
+          <span class="note-icon">!</span>
+          <span class="note-text">
+            <strong>※必須事項</strong><br>
+            メッセージの送信には、有効なメールアドレスの入力が必要です。無効な形式の場合、送信エラーとなりますのでご注意ください。
+          </span>
+        </div>
       </div>
       
       <!-- 究極に洗練されたメタ情報エリア -->
@@ -753,7 +887,7 @@ html, body {
           <span class="ja">メールアドレス</span>
           <span class="req">*</span>
         </span>
-        <input type="email" name="email" class="cell-input" required autocomplete="email">
+        <input type="email" name="email" class="cell-input" required pattern="[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$" autocomplete="email">
       </label>
 
       <!-- BOTTOM: 件名 & メッセージ -->
@@ -827,27 +961,63 @@ html, body {
     counter.classList.toggle('near-limit', len > 1800);
   });
 
-  // ── フォーム送信ロジック（空間置換アニメーション） ──
+  // ── 各セルのエラーシェイク関数 ──
+  function triggerError(element) {
+    element.style.animation = 'none';
+    void element.offsetWidth;
+    element.style.animation = 'errorShake 0.4s ease';
+    element.style.borderColor = 'rgba(255, 60, 60, 0.6)';
+    setTimeout(() => { element.style.borderColor = ''; }, 1000);
+  }
+
+  // ── フォーム送信ロジックとバリデーション ──
   const form = document.getElementById('contactForm');
   const submitBtn = document.getElementById('submitBtn');
   const submitText = document.getElementById('submitText');
   const successState = document.getElementById('successState');
+  
   const inquiryCell = document.getElementById('inquiryCell');
+  const nameCell = document.querySelector('.cell-name');
+  const emailCell = document.querySelector('.cell-email');
+  const messageCell = document.querySelector('.cell-message');
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // 未選択のラジオボタンを警告
+    // 1. ラジオボタンバリデーション
     const inquiryChecked = form.querySelector('input[name="inquiry_type"]:checked');
     if (!inquiryChecked) {
-      inquiryCell.style.animation = 'none';
-      void inquiryCell.offsetWidth;
-      inquiryCell.style.animation = 'errorShake 0.4s ease';
-      inquiryCell.style.borderColor = 'rgba(255, 60, 60, 0.6)';
-      setTimeout(() => { inquiryCell.style.borderColor = ''; }, 1000);
+      triggerError(inquiryCell);
       return;
     }
 
+    // 2. 名前のバリデーション
+    const nameInput = form.querySelector('input[name="name"]');
+    if (!nameInput.value.trim()) {
+      triggerError(nameCell);
+      nameInput.focus();
+      return;
+    }
+
+    // 3. メールアドレスの厳密バリデーション
+    const emailInput = form.querySelector('input[name="email"]');
+    // 簡単なRFC互換の正規表現
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    if (!emailInput.value.trim() || !emailRegex.test(emailInput.value)) {
+      triggerError(emailCell);
+      emailInput.focus();
+      return;
+    }
+
+    // 4. メッセージのバリデーション
+    const messageInput = form.querySelector('textarea[name="message"]');
+    if (!messageInput.value.trim()) {
+      triggerError(messageCell);
+      messageInput.focus();
+      return;
+    }
+
+    // バリデーション通過後、送信処理へ
     submitBtn.disabled = true;
     submitText.innerHTML = `
       <span class="submit-text">SENDING...</span>
