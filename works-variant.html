@@ -75,7 +75,15 @@
       padding: clamp(16px, 3vw, 40px) var(--px); background: transparent;
       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       border-bottom: 0.5px solid transparent;
-      transition: background 0.6s var(--ease), border-color 0.6s var(--ease), padding 0.6s var(--ease);
+      /* スムーズな出現のための初期状態設定 */
+      opacity: 0;
+      transform: translateY(-15px);
+      transition: opacity 1.6s var(--ease), transform 1.6s var(--ease), background 0.6s var(--ease), border-color 0.6s var(--ease), padding 0.6s var(--ease);
+    }
+    /* トップビューでのスムーズな表示クラス */
+    nav#top-nav.revealed {
+      opacity: 1;
+      transform: translateY(0);
     }
     nav#top-nav.scrolled {
       background: rgba(6, 6, 5, 0.88); border-color: var(--border);
@@ -107,6 +115,7 @@
       letter-spacing: 0.3em; text-transform: uppercase;
       border: 0.5px solid rgba(196,168,130,0.3); padding: 0.6rem 1.6rem;
       color: var(--accent); transition: all 0.4s var(--ease); border-radius: 2px;
+      display: inline-block;
     }
     .nav-cta:hover { background: rgba(196,168,130,0.1); color: #fff; border-color: var(--accent); }
     
@@ -540,7 +549,7 @@
       <li><a href="#chronology" class="page-link" data-target="chronology">Timeline</a></li>
     </ul>
     <div class="nav-right">
-      <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
+      <a href="contact.html" class="nav-cta" id="nav-cta-btn">Contact</a>
     </div>
   </nav>
 
@@ -613,7 +622,7 @@
               <p class="st-para">
                 見方によってはただの森であり、別の瞬間には身体に見える。その不確かな境界で生まれる存在を、私は<strong>「異体（Variant）」</strong>と名付けました。
               </p>
-              <p class="st-para">
+                <p class="st-para">
                 油彩の物質感と流動的な筆致は、対象の輪郭を意図的に溶かし、無機物である自然と有機的な生命体とをシームレスに繋ぎます。
               </p>
             </div>
@@ -750,7 +759,7 @@
               <h3 class="tl-title" data-typewriter="true">石筍</h3>
               <p class="tl-meta">162.1 × 130.3 cm / Oil on canvas</p>
               <div class="tl-desc">
-                <p>洞窟の中で途方もない時間をかけて形成される石筍をモチーフにした作品です。上方へと伸びゆく硬質な形態の中に、微かに立ち上がる人体の気配を感じさせます。無機物である岩石と、有機的な身体のイメージが画面上で交錯し、静謐でありながらも確かな生命の躍動を定着させています。</p>
+                <p>洞窟の中で途方もない時間をかけて形成される石筍をモチーフにした作品です。上方へと伸びゆく硬質な形態の中に、微かに立ち上がる人体的の気配を感じさせます。無機物である岩石と、有機的な身体のイメージが画面上で交錯し、静謐でありながらも確かな生命の躍動を定着させています。</p>
                 <p>幾重にも重ねられた重厚なマチエールと暗灰色の階調が、深淵なる地の底の時間を鑑賞者に想起させ、見る角度によって風景から屹立する身体へとその姿を変容させます。</p>
               </div>
             </div>
@@ -991,6 +1000,8 @@
       initParticles(); animateParticles();
       const hero = document.getElementById('hero');
       setTimeout(() => hero.classList.add('revealed'), 100);
+      /* ヘッダーの出現フェードをファーストビューの結像と同調してスムーズに開始 */
+      setTimeout(() => document.getElementById('top-nav')?.classList.add('revealed'), 150);
       setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 300);
       setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'), 600);
       setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'), 1000);
@@ -1080,7 +1091,6 @@
           // BackToTop ボタンのスクロール連動プログレスリング計算
           const docHeight = document.documentElement.scrollHeight - window.innerHeight;
           const scrollPct = Math.max(0, Math.min(1, scrollY / docHeight));
-          // stroke-dasharray (301.6) に基づいてオフセットを計算 (1 -> 0 に向かって進む)
           if (b2tCircle) {
             const offset = 301.6 - (301.6 * scrollPct);
             b2tCircle.style.strokeDashoffset = offset;
@@ -1092,7 +1102,8 @@
       }
     }, { passive: true });
 
-    document.querySelectorAll('.page-link, .nav-cta').forEach(link => {
+    /* ページ内アンカーリンク（.page-link）のみにスムーススクロールを限定適用（Contactボタンは除外） */
+    document.querySelectorAll('.page-link').forEach(link => {
       link.addEventListener('click', (e) => {
         const targetId = link.getAttribute('href').substring(1); const target = document.getElementById(targetId);
         if (target) { e.preventDefault(); const offset = topNav?.offsetHeight || 80; window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' }); }
@@ -1135,7 +1146,6 @@
 
     modalBg.addEventListener('click', closeModal); modalClose.addEventListener('click', closeModal); modalImg.addEventListener('click', closeModal);
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('is-active')) closeModal(); });
-
   </script>
 </body>
 </html>
