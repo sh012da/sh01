@@ -70,22 +70,57 @@
 
     /* ─── NAV ─── */
     nav {
-      position: sticky;
-      top: 0; z-index: 200;
+      position: fixed; top: 0; left: 0; width: 100%;
+      z-index: 300;
       display: flex; align-items: center; justify-content: space-between;
       padding: clamp(14px,3vw,36px) var(--px);
-      border-bottom: 0.5px solid var(--border);
-      background: rgba(13,13,11,0.94);
+      border-bottom: 0.5px solid transparent;
+      background: transparent;
       backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: background 0.4s var(--ease), border-color 0.4s var(--ease);
     }
+    nav.scrolled {
+      background: rgba(13,13,11,0.94);
+      border-bottom: 0.5px solid var(--border);
+    }
+    
     .nav-logo {
+      position: relative; z-index: 301;
       font-family: var(--en); font-size: clamp(0.7rem,2.5vw,0.9rem);
       letter-spacing: 0.3em;
       font-weight: 300;
       color: var(--accent); text-decoration: none;
       text-transform: uppercase;
+      transition: opacity 0.3s ease;
     }
+    .nav-logo:hover { opacity: 0.5; }
+
+    /* ヘッダー内ナビゲーションリンク（中央配置・英語ジャンプリンク） */
+    .nav-links { 
+      display: flex; gap: clamp(1.5rem, 2.5vw, 3rem); list-style: none;
+      position: absolute; left: 50%; transform: translateX(-50%);
+    }
+    .nav-links a {
+      font-family: var(--en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
+      letter-spacing: 0.25em; color: var(--text-muted); text-transform: uppercase;
+      position: relative; padding-bottom: 4px; cursor: pointer; transition: color 0.3s ease;
+      text-decoration: none;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+    
+    /* スムーズに伸びる下線アニメーション */
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
+      background: var(--accent); transform: scaleX(0); transform-origin: right; 
+      transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    .nav-links a:hover::after, .nav-links a.active::after {
+      transform: scaleX(1); transform-origin: left;
+    }
+
     .nav-cta {
+      position: relative; z-index: 301;
       font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
       letter-spacing: 0.25em; text-transform: uppercase;
       border: 0.5px solid rgba(184,168,152,0.4); padding: 0.55rem 1.4rem; color: var(--accent);
@@ -102,7 +137,7 @@
       position: relative;
       min-height: 45vh;
       display: flex; flex-direction: column; justify-content: center;
-      padding: clamp(80px,10vh,120px) var(--px) 40px;
+      padding: clamp(120px, 15vh, 160px) var(--px) 40px;
       border-bottom: 0.5px solid var(--border);
     }
     .db-title-main {
@@ -126,9 +161,15 @@
     /* ─── ARCHIVE CATEGORY LAYOUT ─── */
     .archive-section { 
       padding: 60px var(--px) clamp(60px,10vh,120px);
-      max-width: 1600px; margin: 0 auto; scroll-margin-top: 100px; 
+      max-width: 1600px; margin: 0 auto; 
     }
     
+    /* スクロールスパイのターゲット要素となるコンテナ */
+    .scroll-spy-target {
+      scroll-margin-top: 120px; /* ヘッダーの高さ分を考慮してスクロール位置を調整 */
+      padding-top: 2rem;
+    }
+
     .gallery-category-header {
       text-align: center;
       margin-bottom: 3rem;
@@ -189,12 +230,6 @@
       margin-bottom: 0.8rem;
       width: 100%; 
       height: 300px;
-    }
-    @media (max-width: 768px) {
-      .specimen-mount {
-        height: 250px;
-        padding: 10px;
-      }
     }
     .specimen-mount img {
       max-width: 100%;
@@ -261,27 +296,84 @@
       letter-spacing: 0.18em; color: var(--muted-col); 
     }
 
-    /* ─── BACK TO TOP BUTTON ─── */
-    .back-to-top { 
-      position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px); z-index: 9000; 
-      width: clamp(60px, 9vw, 84px); height: clamp(60px, 9vw, 84px); border-radius: 50%; 
-      background: rgba(203, 191, 176, 0.85); border: 1px solid var(--accent); 
-      display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--bg); 
-      opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.4s var(--ease); 
-      cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5); text-decoration: none; 
+    /* ─── BACK TO TOP BUTTON (すりガラスリングUI) ─── */
+    .back-to-top {
+      position: fixed;
+      bottom: clamp(20px, 4vw, 40px);
+      right: clamp(20px, 4vw, 40px);
+      z-index: 9000;
+      width: clamp(52px, 8vw, 70px);
+      height: clamp(52px, 8vw, 70px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: opacity 0.6s var(--ease), visibility 0.6s, transform 0.6s var(--ease);
+      cursor: pointer;
     }
-    .back-to-top.is-visible { 
-      opacity: 1; visibility: visible; transform: translateY(0); 
+    .back-to-top.is-visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
     }
-    .back-to-top:hover { 
-      background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-5px); 
+    .b2t-inner {
+      position: absolute;
+      inset: 4px;
+      background: rgba(12, 12, 10, 0.5);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.4s var(--ease), transform 0.4s var(--ease);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.4);
     }
-    .back-to-top svg { 
-      width: clamp(18px, 2.5vw, 28px); height: clamp(18px, 2.5vw, 28px); margin-bottom: 2px; 
+    .b2t-text {
+      font-family: var(--en);
+      font-size: clamp(0.6rem, 1.4vw, 0.75rem);
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      color: var(--fg);
+      margin-right: -0.15em;
+      margin-bottom: -1px;
+      transition: color 0.4s var(--ease), transform 0.4s var(--ease);
     }
-    .back-to-top-text { 
-      font-family: var(--en); font-size: clamp(0.6rem, 1.4vw, 0.8rem); font-weight: 600; 
-      text-transform: uppercase; line-height: 1; 
+    .b2t-progress {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+      pointer-events: none;
+    }
+    .b2t-progress circle {
+      fill: none;
+      stroke-width: 1.5;
+    }
+    .b2t-progress-bg {
+      stroke: rgba(233,229,223,0.1);
+    }
+    .b2t-progress-value {
+      stroke: var(--accent);
+      stroke-dasharray: 301.6;
+      stroke-dashoffset: 301.6;
+      transition: stroke-dashoffset 0.15s linear, stroke 0.4s var(--ease);
+    }
+    .back-to-top:hover .b2t-inner {
+      background: var(--accent);
+      transform: scale(0.92);
+    }
+    .back-to-top:hover .b2t-text {
+      color: var(--bg);
+      transform: translateY(-2px);
+    }
+    .back-to-top:hover .b2t-progress-value {
+      stroke: var(--fg);
     }
 
     /* ─── LIGHTBOX ─── */
@@ -304,9 +396,9 @@
     
     .lb img { 
       max-width: 95vw; 
-      max-height: 82vh; /* 作品名が入るゆとりを持たせる */
+      max-height: 82vh;
       object-fit: contain; 
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5); /* 標本としての存在感を引き立てる影 */
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5); 
     }
     
     .lb-title {
@@ -319,12 +411,27 @@
       text-align: center;
       line-height: 1.5;
     }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .specimen-mount {
+        height: 250px;
+        padding: 10px;
+      }
+      .nav-links { display: none; }
+    }
   </style>
 </head>
 <body>
 
 <nav id="topNav">
   <a href="index.html" class="nav-logo">Tsuda Shoichi</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#animals" class="js-nav-link">Animals</a></li>
+    <li><a href="#insects" class="js-nav-link">Insects</a></li>
+    <li><a href="#plants" class="js-nav-link">Plants</a></li>
+    <li><a href="#landscapes" class="js-nav-link">Landscapes</a></li>
+  </ul>
   <a href="#contact" class="nav-cta">Contact</a>
 </nav>
 
@@ -337,300 +444,299 @@
 
   <section class="archive-section" id="gallery">
 
-    <div class="gallery-category-header">
-      <p class="section-label">Animals</p>
-      <h2 class="gallery-heading">動物</h2>
-    </div>
+    <div id="animals" class="scroll-spy-target">
+      <div class="gallery-category-header">
+        <p class="section-label">Animals</p>
+        <h2 class="gallery-heading">動物</h2>
+      </div>
 
-    <h3 class="sub-category-header">猫 / Cats</h3>
-    <div class="archive-grid">
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/【縦89mm×横148mm】子猫(16)(マンチカン_Munchkin).jpg" alt="子猫(16)"></div>
-        <span class="specimen-title">子猫(16)</span>
+      <h3 class="sub-category-header">猫 / Cats</h3>
+      <div class="archive-grid">
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/【縦89mm×横148mm】子猫(16)(マンチカン_Munchkin).jpg" alt="子猫(16)"></div>
+          <span class="specimen-title">子猫(16)</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/子猫(2).jpg" alt="子猫(2)"></div>
+          <span class="specimen-title">子猫(2)</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/子猫(4)（スコティッシュフォールド）.jpg" alt="子猫(4)（スコティッシュフォールド）"></div>
+          <span class="specimen-title">子猫(4)（スコティッシュフォールド）</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/子猫(14).jpg" alt="子猫(14)"></div>
+          <span class="specimen-title">子猫(14)</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/子猫(15)（マンチカン）.jpg" alt="子猫(15)（マンチカン）"></div>
+          <span class="specimen-title">子猫(15)（マンチカン）</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/子猫.jpg" alt="子猫"></div>
+          <span class="specimen-title">子猫</span>
+        </div>
       </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/子猫(2).jpg" alt="子猫(2)"></div>
-        <span class="specimen-title">子猫(2)</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/子猫(4)（スコティッシュフォールド）.jpg" alt="子猫(4)（スコティッシュフォールド）"></div>
-        <span class="specimen-title">子猫(4)（スコティッシュフォールド）</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/子猫(14).jpg" alt="子猫(14)"></div>
-        <span class="specimen-title">子猫(14)</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/子猫(15)（マンチカン）.jpg" alt="子猫(15)（マンチカン）"></div>
-        <span class="specimen-title">子猫(15)（マンチカン）</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/子猫.jpg" alt="子猫"></div>
-        <span class="specimen-title">子猫</span>
-      </div>
-    </div>
 
-    <h3 class="sub-category-header">犬 / Dogs</h3>
-    <div class="archive-grid">
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/アラスカンマラミュート.jpg" alt="アラスカンマラミュート"></div>
-        <span class="specimen-title">アラスカンマラミュート</span>
+      <h3 class="sub-category-header">犬 / Dogs</h3>
+      <div class="archive-grid">
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/アラスカンマラミュート.jpg" alt="アラスカンマラミュート"></div>
+          <span class="specimen-title">アラスカンマラミュート</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/キャバリア・キングチャールズ・スパニエル.jpg" alt="キャバリア・キングチャールズ・スパニエル"></div>
+          <span class="specimen-title">キャバリア・キングチャールズ・スパニエル</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/ジャーマン・シェパード・ドッグ.jpg" alt="ジャーマン・シェパード・ドッグ"></div>
+          <span class="specimen-title">ジャーマン・シェパード・ドッグ</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/ブルドッグ.jpg" alt="ブルドッグ"></div>
+          <span class="specimen-title">ブルドッグ</span>
+        </div>
       </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/キャバリア・キングチャールズ・スパニエル.jpg" alt="キャバリア・キングチャールズ・スパニエル"></div>
-        <span class="specimen-title">キャバリア・キングチャールズ・スパニエル</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/ジャーマン・シェパード・ドッグ.jpg" alt="ジャーマン・シェパード・ドッグ"></div>
-        <span class="specimen-title">ジャーマン・シェパード・ドッグ</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/ブルドッグ.jpg" alt="ブルドッグ"></div>
-        <span class="specimen-title">ブルドッグ</span>
-      </div>
-    </div>
 
-    <h3 class="sub-category-header">鳥 / Birds</h3>
-    <div class="archive-grid">
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/シジュウカラ（9.3×11.3）.jpg" alt="シジュウカラ"></div>
-        <span class="specimen-title">シジュウカラ</span>
+      <h3 class="sub-category-header">鳥 / Birds</h3>
+      <div class="archive-grid">
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/シジュウカラ（9.3×11.3）.jpg" alt="シジュウカラ"></div>
+          <span class="specimen-title">シジュウカラ</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/シメ.jpg" alt="シメ"></div>
+          <span class="specimen-title">シメ</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/鷲.jpg" alt="鷲"></div>
+          <span class="specimen-title">鷲</span>
+        </div>
       </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/シメ.jpg" alt="シメ"></div>
-        <span class="specimen-title">シメ</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/鷲.jpg" alt="鷲"></div>
-        <span class="specimen-title">鷲</span>
-      </div>
-    </div>
 
-    <h3 class="sub-category-header">その他 / Other Animals</h3>
-    <div class="archive-grid">
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/【縦89mm×横148mm】アカギツネ(Vulpes vulpes).jpg" alt="アカギツネ"></div>
-        <span class="specimen-title">アカギツネ</span>
+      <h3 class="sub-category-header">その他 / Other Animals</h3>
+      <div class="archive-grid">
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/【縦89mm×横148mm】アカギツネ(Vulpes vulpes).jpg" alt="アカギツネ"></div>
+          <span class="specimen-title">アカギツネ</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/【縦89mm×横148mm】インドゾウ(Elephas maximus indicus).jpg" alt="インドゾウ"></div>
+          <span class="specimen-title">インドゾウ</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/【縦89mm×横148mm】ニホンカモシカ(Capricornis crispus).jpg" alt="ニホンカモシカ(Capricornis crispus)"></div>
+          <span class="specimen-title">ニホンカモシカ(Capricornis crispus)</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/【縦89mm×横148mm】リカオン(Lycaon pictus).jpg" alt="リカオン"></div>
+          <span class="specimen-title">リカオン</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/【縦89mm×横148mm】レッサーパンダ(Ailurus fulgens)(3).jpg" alt="レッサーパンダ(3)"></div>
+          <span class="specimen-title">レッサーパンダ(3)</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/【縦118mm×横96mm】クーズー(Tragelaphus strepsiceros)(2).jpg" alt="クーズー(Tragelaphus strepsiceros)(2)"></div>
+          <span class="specimen-title">クーズー(Tragelaphus strepsiceros)(2)</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/アフリカゾウ.jpg" alt="アフリカゾウ"></div>
+          <span class="specimen-title">アフリカゾウ</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/カバ(2).jpg" alt="カバ(2)"></div>
+          <span class="specimen-title">カバ(2)</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/キタオットセイ.jpg" alt="キタオットセイ"></div>
+          <span class="specimen-title">キタオットセイ</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/キリン(2).jpg" alt="キリン(2)"></div>
+          <span class="specimen-title">キリン(2)</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/クーズー(Tragelaphus strepsiceros).jpg" alt="クーズー(Tragelaphus strepsiceros)"></div>
+          <span class="specimen-title">クーズー(Tragelaphus strepsiceros)</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/クマ.jpg" alt="クマ"></div>
+          <span class="specimen-title">クマ</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/サイ.jpg" alt="サイ"></div>
+          <span class="specimen-title">サイ</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/シマウマの親子.jpg" alt="シマウマの親子"></div>
+          <span class="specimen-title">シマウマの親子</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/チンパンジー.jpg" alt="チンパンジー"></div>
+          <span class="specimen-title">チンパンジー</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/ニホンリス.jpg" alt="ニホンリス"></div>
+          <span class="specimen-title">ニホンリス</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/ホッキョクグマ(子)(Ursus maritimus Phipps).jpg" alt="ホッキョクグマ(子)"></div>
+          <span class="specimen-title">ホッキョクグマ(子)</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/マンドリル.jpg" alt="マンドリル"></div>
+          <span class="specimen-title">マンドリル</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/レッサーパンダ.jpg" alt="レッサーパンダ"></div>
+          <span class="specimen-title">レッサーパンダ</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/海亀.jpg" alt="海亀"></div>
+          <span class="specimen-title">海亀</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/子パンダ.jpg" alt="子パンダ"></div>
+          <span class="specimen-title">子パンダ</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/子ライオン.jpg" alt="子ライオン"></div>
+          <span class="specimen-title">子ライオン</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/鹿.jpg" alt="鹿"></div>
+          <span class="specimen-title">鹿</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/兎(3)（ネザーランドドワーフ）.jpg" alt="兎(3)（ネザーランドドワーフ）"></div>
+          <span class="specimen-title">兎(3)（ネザーランドドワーフ）</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/兎.jpg" alt="兎"></div>
+          <span class="specimen-title">兎</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/豚.jpg" alt="豚"></div>
+          <span class="specimen-title">豚</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/馬、10×11.8cm.jpg" alt="馬"></div>
+          <span class="specimen-title">馬</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/羊.jpg" alt="羊"></div>
+          <span class="specimen-title">羊</span>
+        </div>
       </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/【縦89mm×横148mm】インドゾウ(Elephas maximus indicus).jpg" alt="インドゾウ"></div>
-        <span class="specimen-title">インドゾウ</span>
+    </div> <div id="insects" class="scroll-spy-target">
+      <div class="gallery-category-header">
+        <div class="section-divider"></div>
+        <p class="section-label">Life-size Insects</p>
+        <h2 class="gallery-heading">実寸大昆虫図譜</h2>
+        <p class="gallery-desc">
+          実際のスケールで緻密に描画された昆虫たち。<br>小さな生命のフォルムや色彩を、標本のように克明に記録したシリーズ。
+        </p>
       </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/【縦89mm×横148mm】ニホンカモシカ(Capricornis crispus).jpg" alt="ニホンカモシカ(Capricornis crispus)"></div>
-        <span class="specimen-title">ニホンカモシカ(Capricornis crispus)</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/【縦89mm×横148mm】リカオン(Lycaon pictus).jpg" alt="リカオン"></div>
-        <span class="specimen-title">リカオン</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/【縦89mm×横148mm】レッサーパンダ(Ailurus fulgens)(3).jpg" alt="レッサーパンダ(3)"></div>
-        <span class="specimen-title">レッサーパンダ(3)</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/【縦118mm×横96mm】クーズー(Tragelaphus strepsiceros)(2).jpg" alt="クーズー(Tragelaphus strepsiceros)(2)"></div>
-        <span class="specimen-title">クーズー(Tragelaphus strepsiceros)(2)</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/アフリカゾウ.jpg" alt="アフリカゾウ"></div>
-        <span class="specimen-title">アフリカゾウ</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/カバ(2).jpg" alt="カバ(2)"></div>
-        <span class="specimen-title">カバ(2)</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/キタオットセイ.jpg" alt="キタオットセイ"></div>
-        <span class="specimen-title">キタオットセイ</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/キリン(2).jpg" alt="キリン(2)"></div>
-        <span class="specimen-title">キリン(2)</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/クーズー(Tragelaphus strepsiceros).jpg" alt="クーズー(Tragelaphus strepsiceros)"></div>
-        <span class="specimen-title">クーズー(Tragelaphus strepsiceros)</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/クマ.jpg" alt="クマ"></div>
-        <span class="specimen-title">クマ</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/サイ.jpg" alt="サイ"></div>
-        <span class="specimen-title">サイ</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/シマウマの親子.jpg" alt="シマウマの親子"></div>
-        <span class="specimen-title">シマウマの親子</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/チンパンジー.jpg" alt="チンパンジー"></div>
-        <span class="specimen-title">チンパンジー</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/ニホンリス.jpg" alt="ニホンリス"></div>
-        <span class="specimen-title">ニホンリス</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/ホッキョクグマ(子)(Ursus maritimus Phipps).jpg" alt="ホッキョクグマ(子)"></div>
-        <span class="specimen-title">ホッキョクグマ(子)</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/マンドリル.jpg" alt="マンドリル"></div>
-        <span class="specimen-title">マンドリル</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/レッサーパンダ.jpg" alt="レッサーパンダ"></div>
-        <span class="specimen-title">レッサーパンダ</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/海亀.jpg" alt="海亀"></div>
-        <span class="specimen-title">海亀</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/子パンダ.jpg" alt="子パンダ"></div>
-        <span class="specimen-title">子パンダ</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/子ライオン.jpg" alt="子ライオン"></div>
-        <span class="specimen-title">子ライオン</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/鹿.jpg" alt="鹿"></div>
-        <span class="specimen-title">鹿</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/兎(3)（ネザーランドドワーフ）.jpg" alt="兎(3)（ネザーランドドワーフ）"></div>
-        <span class="specimen-title">兎(3)（ネザーランドドワーフ）</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/兎.jpg" alt="兎"></div>
-        <span class="specimen-title">兎</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/豚.jpg" alt="豚"></div>
-        <span class="specimen-title">豚</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/馬、10×11.8cm.jpg" alt="馬"></div>
-        <span class="specimen-title">馬</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/羊.jpg" alt="羊"></div>
-        <span class="specimen-title">羊</span>
-      </div>
-    </div>
 
+      <h3 class="sub-category-header">蝶・蛾 / Butterflies & Moths</h3>
+      <div class="archive-grid">
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/オウゴンテングアゲハ(雌♀、前翅長68mm)[Teinopalpus auress].jpg" alt="オウゴンテングアゲハ(雌♀、前翅長68mm)"></div>
+          <span class="specimen-title">オウゴンテングアゲハ<br>(雌♀、前翅長68mm)</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/キプリスモルフォ（雄♂、前翅長68mm）[Morpho cypris Westwood].jpg" alt="キプリスモルフォ（雄♂、前翅長68mm）"></div>
+          <span class="specimen-title">キプリスモルフォ<br>（雄♂、前翅長68mm）</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/ニシキオオツバメガ（開翅長90mm、前翅長57mm）[Chrysiridia rhipheus].jpg" alt="ニシキオオツバメガ（開翅長90mm、前翅長57mm）"></div>
+          <span class="specimen-title">ニシキオオツバメガ<br>（開翅長90mm、前翅長57mm）</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/ルソンカラスアゲハ（♂、前翅長63mm）[Papilio chikae].jpg" alt="ルソンカラスアゲハ（♂、前翅長63mm）"></div>
+          <span class="specimen-title">ルソンカラスアゲハ<br>（♂、前翅長63mm）</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/ヒイロツマベニチョウ（ペレン島亜種、雄♂、前翅長48mm）[Hebomoia leucippu detanii].jpg" alt="ヒイロツマベニチョウ（ペレン島亜種、雄♂、前翅長48mm）"></div>
+          <span class="specimen-title">ヒイロツマベニチョウ<br>（ペレン島亜種、雄♂、前翅長48mm）</span>
+        </div>
+      </div>
 
-    <div class="gallery-category-header">
-      <div class="section-divider"></div>
-      <p class="section-label">Life-size Insects</p>
-      <h2 class="gallery-heading">実寸大昆虫図譜</h2>
-      <p class="gallery-desc">
-        実際のスケールで緻密に描画された昆虫たち。<br>小さな生命のフォルムや色彩を、標本のように克明に記録したシリーズ。
-      </p>
-    </div>
+      <h3 class="sub-category-header">甲虫 / Beetles</h3>
+      <div class="archive-grid">
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/オオセンチコガネ※原寸30mm（12.8×9.8cm）.jpg" alt="オオセンチコガネ"></div>
+          <span class="specimen-title">オオセンチコガネ</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/オオテナガブン（タイ産、♂、体長50mm）[Jumnos ruckeri].jpg" alt="オオテナガブン（タイ産、♂、体長50mm）"></div>
+          <span class="specimen-title">オオテナガブン<br>（タイ産、♂、体長50mm）</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/オオルリタマムシ※原寸70mm.jpg" alt="オオルリタマムシ"></div>
+          <span class="specimen-title">オオルリタマムシ</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/カブトムシ※原寸80mm.jpg" alt="カブトムシ"></div>
+          <span class="specimen-title">カブトムシ</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/ニジイロクワガタ（雄♂、67mm） [Phalacrognathus muelleri].jpg" alt="ニジイロクワガタ（雄♂、67mm）"></div>
+          <span class="specimen-title">ニジイロクワガタ<br>（雄♂、67mm）</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/バイオリンムシ（ジャワ産、体長100mm）[Mormolyce phyllodes].jpg" alt="バイオリンムシ（ジャワ産、体長100mm）"></div>
+          <span class="specimen-title">バイオリンムシ<br>（ジャワ産、体長100mm）</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/ハンミョウ（対馬産）2（雄♂、20mm）[Cicindela chinensis].jpg" alt="ハンミョウ（対馬産）2（雄♂、20mm）"></div>
+          <span class="specimen-title">ハンミョウ（対馬産）<br>（雄♂、20mm）</span>
+        </div>
+      </div> 
+    </div> <div id="plants" class="scroll-spy-target">
+      <div class="gallery-category-header">
+        <div class="section-divider"></div>
+        <p class="section-label">Plants</p>
+        <h2 class="gallery-heading">植物</h2>
+      </div>
 
-    <h3 class="sub-category-header">蝶・蛾 / Butterflies & Moths</h3>
-    <div class="archive-grid">
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/オウゴンテングアゲハ(雌♀、前翅長68mm)[Teinopalpus auress].jpg" alt="オウゴンテングアゲハ(雌♀、前翅長68mm)"></div>
-        <span class="specimen-title">オウゴンテングアゲハ<br>(雌♀、前翅長68mm)</span>
+      <div class="archive-grid">
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/マテバシイ.jpg" alt="マテバシイ"></div>
+          <span class="specimen-title">マテバシイ</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/ヤマオダマキ.jpg" alt="ヤマオダマキ"></div>
+          <span class="specimen-title">ヤマオダマキ</span>
+        </div>
       </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/キプリスモルフォ（雄♂、前翅長68mm）[Morpho cypris Westwood].jpg" alt="キプリスモルフォ（雄♂、前翅長68mm）"></div>
-        <span class="specimen-title">キプリスモルフォ<br>（雄♂、前翅長68mm）</span>
+    </div> <div id="landscapes" class="scroll-spy-target">
+      <div class="gallery-category-header">
+        <div class="section-divider"></div>
+        <p class="section-label">Landscapes</p>
+        <h2 class="gallery-heading">風景</h2>
       </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/ニシキオオツバメガ（開翅長90mm、前翅長57mm）[Chrysiridia rhipheus].jpg" alt="ニシキオオツバメガ（開翅長90mm、前翅長57mm）"></div>
-        <span class="specimen-title">ニシキオオツバメガ<br>（開翅長90mm、前翅長57mm）</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/ルソンカラスアゲハ（♂、前翅長63mm）[Papilio chikae].jpg" alt="ルソンカラスアゲハ（♂、前翅長63mm）"></div>
-        <span class="specimen-title">ルソンカラスアゲハ<br>（♂、前翅長63mm）</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/ヒイロツマベニチョウ（ペレン島亜種、雄♂、前翅長48mm）[Hebomoia leucippu detanii].jpg" alt="ヒイロツマベニチョウ（ペレン島亜種、雄♂、前翅長48mm）"></div>
-        <span class="specimen-title">ヒイロツマベニチョウ<br>（ペレン島亜種、雄♂、前翅長48mm）</span>
-      </div>
-    </div>
 
-    <h3 class="sub-category-header">甲虫 / Beetles</h3>
-    <div class="archive-grid">
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/オオセンチコガネ※原寸30mm（12.8×9.8cm）.jpg" alt="オオセンチコガネ"></div>
-        <span class="specimen-title">オオセンチコガネ</span>
+      <div class="archive-grid">
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/ストラスブール.jpg" alt="ストラスブール"></div>
+          <span class="specimen-title">ストラスブール</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/京都【美山】.jpg" alt="京都(美山)"></div>
+          <span class="specimen-title">京都(美山)</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/札幌農学校第二農場.jpg" alt="札幌農学校第二農場"></div>
+          <span class="specimen-title">札幌農学校第二農場</span>
+        </div>
+        <div class="specimen-card">
+          <div class="specimen-mount"><img src="images/インド【チャトルムカ寺院】.jpg" alt="インド(チャトルムカ寺院)"></div>
+          <span class="specimen-title">インド(チャトルムカ寺院)</span>
+        </div>
       </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/オオテナガブン（タイ産、♂、体長50mm）[Jumnos ruckeri].jpg" alt="オオテナガブン（タイ産、♂、体長50mm）"></div>
-        <span class="specimen-title">オオテナガブン<br>（タイ産、♂、体長50mm）</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/オオルリタマムシ※原寸70mm.jpg" alt="オオルリタマムシ"></div>
-        <span class="specimen-title">オオルリタマムシ</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/カブトムシ※原寸80mm.jpg" alt="カブトムシ"></div>
-        <span class="specimen-title">カブトムシ</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/ニジイロクワガタ（雄♂、67mm） [Phalacrognathus muelleri].jpg" alt="ニジイロクワガタ（雄♂、67mm）"></div>
-        <span class="specimen-title">ニジイロクワガタ<br>（雄♂、67mm）</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/バイオリンムシ（ジャワ産、体長100mm）[Mormolyce phyllodes].jpg" alt="バイオリンムシ（ジャワ産、体長100mm）"></div>
-        <span class="specimen-title">バイオリンムシ<br>（ジャワ産、体長100mm）</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/ハンミョウ（対馬産）2（雄♂、20mm）[Cicindela chinensis].jpg" alt="ハンミョウ（対馬産）2（雄♂、20mm）"></div>
-        <span class="specimen-title">ハンミョウ（対馬産）<br>（雄♂、20mm）</span>
-      </div>
-    </div> 
-
-    <div class="gallery-category-header">
-      <div class="section-divider"></div>
-      <p class="section-label">Plants</p>
-      <h2 class="gallery-heading">植物</h2>
-    </div>
-
-    <div class="archive-grid">
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/マテバシイ.jpg" alt="マテバシイ"></div>
-        <span class="specimen-title">マテバシイ</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/ヤマオダマキ.jpg" alt="ヤマオダマキ"></div>
-        <span class="specimen-title">ヤマオダマキ</span>
-      </div>
-    </div>
-
-    <div class="gallery-category-header">
-      <div class="section-divider"></div>
-      <p class="section-label">Landscapes</p>
-      <h2 class="gallery-heading">風景</h2>
-    </div>
-
-    <div class="archive-grid">
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/ストラスブール.jpg" alt="ストラスブール"></div>
-        <span class="specimen-title">ストラスブール</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/京都【美山】.jpg" alt="京都(美山)"></div>
-        <span class="specimen-title">京都(美山)</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/札幌農学校第二農場.jpg" alt="札幌農学校第二農場"></div>
-        <span class="specimen-title">札幌農学校第二農場</span>
-      </div>
-      <div class="specimen-card">
-        <div class="specimen-mount"><img src="images/インド【チャトルムカ寺院】.jpg" alt="インド(チャトルムカ寺院)"></div>
-        <span class="specimen-title">インド(チャトルムカ寺院)</span>
-      </div>
-    </div>
-
-  </section>
+    </div> </section>
   
   <section class="contact-section" id="contact">
     <p class="section-label">Contact</p>
@@ -648,16 +754,18 @@
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
-  <a href="#gallery" class="back-to-top" id="backToTop" aria-label="画像先頭に戻る">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M18 15l-6-6-6 6"/>
+  <a href="#top" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
+    <svg class="b2t-progress" viewBox="0 0 100 100">
+      <circle class="b2t-progress-bg" cx="50" cy="50" r="48"></circle>
+      <circle class="b2t-progress-value" id="b2t-progress-value" cx="50" cy="50" r="48"></circle>
     </svg>
-    <span class="back-to-top-text">TOP</span>
+    <div class="b2t-inner">
+      <span class="b2t-text">TOP</span>
+    </div>
   </a>
 
 </main>
 
-<!-- Lightboxの構造を変更 -->
 <div class="lb" id="lb" onclick="closeLB()">
   <div class="lb-container">
     <img id="lb-img" src="" alt="拡大表示">
@@ -666,35 +774,83 @@
 </div>
 
 <script>
-  /* ── スクロールによるボタンの表示/非表示 ── */
+  const topNav = document.getElementById('topNav');
+  const b2tBtn = document.getElementById('backToTop');
+  const b2tCircle = document.getElementById('b2t-progress-value');
+  const navLinks = document.querySelectorAll('.js-nav-link');
+  const sections = document.querySelectorAll('.scroll-spy-target');
   let ticking = false;
+
+  /* ── スクロールイベント (背景・プログレス・スパイ) ── */
   window.addEventListener('scroll', () => {
     if (!ticking) {
       window.requestAnimationFrame(() => {
-        const b2t = document.getElementById('backToTop');
-        if (window.scrollY > 400) {
-          b2t.classList.add('is-visible');
-        } else {
-          b2t.classList.remove('is-visible');
+        const scrollY = window.scrollY;
+        
+        // Header background toggle
+        if (scrollY > 50) topNav.classList.add('scrolled');
+        else topNav.classList.remove('scrolled');
+
+        // Back to top visibility
+        if (scrollY > 400) b2tBtn.classList.add('is-visible');
+        else b2tBtn.classList.remove('is-visible');
+
+        // Circular progress calculation
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPct = Math.max(0, Math.min(1, scrollY / docHeight));
+        if (b2tCircle) {
+          const offset = 301.6 - (301.6 * scrollPct);
+          b2tCircle.style.strokeDashoffset = offset;
         }
+
+        // Scroll Spy (Highlight header links smoothly)
+        // 判定ラインを画面中央付近に設定
+        const checkY = scrollY + window.innerHeight * 0.4;
+        let currentSection = '';
+
+        sections.forEach(sec => {
+          if (sec.offsetTop <= checkY && sec.offsetTop + sec.offsetHeight > checkY) {
+            currentSection = sec.getAttribute('id');
+          }
+        });
+
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href').substring(1) === currentSection) {
+            link.classList.add('active');
+          }
+        });
+
         ticking = false;
       });
       ticking = true;
     }
   }, { passive: true });
 
-  /* ── ボタンクリックで画像グリッドの先頭へスクロール ── */
-  document.getElementById('backToTop').addEventListener('click', (e) => {
+  /* ── ヘッダーリンクのスムーズスクロール ── */
+  navLinks.forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = item.getAttribute('href').substring(1);
+      const targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        // ヘッダーの高さ分を考慮してスクロール
+        const offset = topNav ? topNav.offsetHeight : 80;
+        window.scrollTo({ 
+          top: targetEl.getBoundingClientRect().top + window.scrollY - offset, 
+          behavior: 'smooth' 
+        });
+      }
+    });
+  });
+
+  /* ── 完全トップへ戻るボタンスムーズスクロール ── */
+  b2tBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    const target = document.getElementById('gallery');
-    if (target) {
-      const topNav = document.getElementById('topNav');
-      const offset = topNav ? topNav.offsetHeight : 0;
-      window.scrollTo({
-        top: target.getBoundingClientRect().top + window.scrollY - offset - 20,
-        behavior: 'smooth'
-      });
-    }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   });
 
   /* ── 画像の拡大表示 (Lightbox) ── */
@@ -702,12 +858,9 @@
   const lbImg = document.getElementById('lb-img');
   const lbTitle = document.getElementById('lb-title');
 
-  // HTML側でonclick属性を書く代わりに、JSで一括してイベントを付与します。
-  // これにより、カード内の画像と作品名を自動的に取得できます。
   document.querySelectorAll('.specimen-card').forEach(card => {
     card.addEventListener('click', function() {
       const src = this.querySelector('img').src;
-      // タイトル内の <br> タグ等も反映させるために innerHTML を使用
       const title = this.querySelector('.specimen-title').innerHTML;
       
       lbImg.src = src;
