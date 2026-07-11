@@ -23,7 +23,7 @@
   <style>
     /* ============================================================
         DESIGN TOKENS & BASE
-    ============================================================ */
+    =========================================================== */
     :root {
       --bg:        #060605;
       --bg2:       #0c0c0a;
@@ -74,7 +74,7 @@
 
     /* ============================================================
         NAVIGATION
-    ============================================================ */
+    =========================================================== */
     nav#top-nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 300;
       display: flex; align-items: center; justify-content: space-between;
@@ -82,9 +82,19 @@
       background: transparent;
       backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
       border-bottom: 0.5px solid transparent;
-      transition: background 0.4s ease, border-color 0.4s ease, padding 0.4s ease;
+      /* ヘッダー降りてくるアニメーション用 */
+      transform: translateY(-100%);
+      opacity: 0;
+      transition: transform 1.2s var(--ease), opacity 1.2s ease, background 0.4s ease, border-color 0.4s ease, padding 0.4s ease;
     }
-    nav#top-nav.scrolled { background: rgba(10,10,9,0.93); border-color: var(--border); }
+    nav#top-nav.is-loaded {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    nav#top-nav.scrolled { 
+      background: rgba(10,10,9,0.93); 
+      border-color: var(--border); 
+    }
     
     .nav-logo-unified {
       position: relative; z-index: 301; flex-shrink: 0;
@@ -120,7 +130,7 @@
 
     /* ============================================================
         HERO FIRST VIEW
-    ============================================================ */
+    =========================================================== */
     .hero {
       position: relative; height: 100svh; min-height: 580px;
       display: flex; flex-direction: column; justify-content: flex-end;
@@ -231,7 +241,7 @@
 
     /* ============================================================
         CONCEPT & STATEMENT
-    ============================================================ */
+    =========================================================== */
     .concept-section { padding: clamp(6rem, 13vh, 10rem) var(--px); max-width: 1000px; margin: 0 auto; text-align: center; position: relative; z-index: 2; }
     .concept-text { font-size: clamp(0.9rem, 2vw, 1.05rem); font-weight: 300; line-height: 2.3; color: rgba(233,229,223,0.85); letter-spacing: 0.08em; }
     .statement-section { padding: clamp(4rem, 9vh, 7rem) var(--px) clamp(6rem, 13vh, 10rem); max-width: 880px; margin: 0 auto; border-top: 0.5px solid var(--border); }
@@ -249,7 +259,7 @@
 
     /* ============================================================
         GALLERY GRID
-    ============================================================ */
+    =========================================================== */
     .gallery-section { padding: 0 var(--px) clamp(6rem, 13vh, 10rem); max-width: 1600px; margin: 0 auto; }
     .section-label { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem); letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase; text-align: center; margin-bottom: clamp(3rem, 7vh, 5rem); }
     .gallery-grid { display: flex; flex-wrap: wrap; gap: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 2.5vw, 2.5rem); justify-content: center; align-items: flex-start; }
@@ -269,7 +279,7 @@
 
     /* ============================================================
         INTEGRATED CHRONOLOGY SECTION
-    ============================================================ */
+    =========================================================== */
     .chronology-section { padding: clamp(5rem, 12vh, 10rem) var(--px); background: var(--bg2); border-top: 0.5px solid var(--border); position: relative; }
     .timeline-container { max-width: 1200px; margin: 0 auto; position: relative; }
     .timeline-spine-wrapper { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(233,229,223,0.06); transform: translateX(-50%); }
@@ -314,20 +324,37 @@
 
     /* ============================================================
         CONTACT & FOOTER
-    ============================================================ */
+    =========================================================== */
     .contact-section { padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center; border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(196,168,130,0.06) 0%, var(--bg) 70%); }
     .contact-heading { font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em; }
     .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.8vw, 0.95rem); color: rgba(233,229,223,0.55); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2; }
     .contact-btn { display: inline-block; padding: 1.2rem 3.5rem; background: var(--accent); color: var(--bg); font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none; transition: all 0.4s var(--ease); border-radius: 2px; }
     .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3); }
 
-    footer { padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); background: var(--bg); }
-    .footer-logo { font-family: var(--font-ja); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.28); letter-spacing: 0.08em; }
-    .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
+    footer {
+      padding: 3rem 2.5rem;
+      text-align: center;
+      border-top: 0.5px solid var(--border);
+      background: var(--bg);
+    }
+    .footer-logo {
+      font-family: var(--font-ja);
+      font-size: clamp(0.75rem, 1.8vw, 0.88rem);
+      font-weight: 200;
+      color: rgba(233,229,223,0.28);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+    }
+    .footer-copy {
+      font-family: var(--font-en);
+      font-size: clamp(0.52rem, 1.3vw, 0.62rem);
+      letter-spacing: 0.18em;
+      color: var(--dim);
+    }
 
     /* ============================================================
         LIGHTBOX (MODAL)
-    ============================================================ */
+    =========================================================== */
     .image-modal { position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.55s var(--ease), visibility 0.55s; }
     .image-modal.is-active { opacity: 1; visibility: visible; }
     .modal-bg { position: absolute; inset: 0; background: rgba(6,6,5,0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); cursor: zoom-out; }
@@ -343,7 +370,7 @@
 
     /* ============================================================
        BACK TO TOP (Scroll Progress Ring)
-    ============================================================ */
+    =========================================================== */
     .back-to-top {
       position: fixed;
       bottom: clamp(20px, 4vw, 40px);
@@ -429,7 +456,7 @@
 
     /* ============================================================
         RESPONSIVE DESIGN (BREAKPOINTS)
-    ============================================================ */
+    =========================================================== */
     @media (max-width: 1024px) {
       /* タブレット〜ノートPC向けの中間制御 */
       nav#top-nav { padding: 1.25rem var(--px); }
@@ -460,6 +487,16 @@
       .gallery-item-img-wrap { height: auto; width: 100%; border: none; }
       .gallery-item-img-wrap img { width: 100%; height: auto; object-fit: cover; }
       .gallery-grid { gap: 3.5rem 1rem; }
+      
+      /* フッターのスマホ向けデザイン適用 */
+      footer {
+        padding: 3rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+        text-align: left;
+      }
     }
 
     @media (max-width: 480px) {
@@ -867,7 +904,7 @@
 
   <footer>
     <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
-    <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
+    <p class="footer-copy">© 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
   <a href="#top" class="back-to-top" id="backToTop" aria-label="ページトップへ戻る">
@@ -915,6 +952,9 @@
       
       // 5. スクロールヒント
       setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 2800);
+
+      // 6. ヘッダーのふわっと降りてくるアニメーション（他のアニメーションと同時期）
+      setTimeout(() => document.getElementById('top-nav')?.classList.add('is-loaded'), 800);
     });
 
     /* ── Observer (Fade Up & Grid Animation) ── */
@@ -1026,7 +1066,7 @@
           }
           
           const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-          const scrollPct = Math.max(0, Math.min(1, scrollY / docHeight));
+          const scrollPct = Math.max(0, Math.min(1, scrollY / (docHeight || 1)));
           if (b2tCircle) {
             const offset = 301.6 - (301.6 * scrollPct);
             b2tCircle.style.strokeDashoffset = offset;
