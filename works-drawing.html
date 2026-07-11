@@ -529,47 +529,90 @@
     }
 
     /* ============================================================
-       BACK TO TOP BUTTON
+       BACK TO TOP (Scroll Progress Ring + Glassmorphism UI)
     =========================================================== */
-    .btt-btn {
+    .back-to-top {
       position: fixed;
       bottom: clamp(20px, 4vw, 40px);
       right: clamp(20px, 4vw, 40px);
-      width: 60px; height: 60px;
+      z-index: 9000;
+      width: clamp(52px, 8vw, 70px);
+      height: clamp(52px, 8vw, 70px);
       border-radius: 50%;
-      background: transparent;
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      z-index: 998;
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; visibility: hidden;
-      transform: translateY(30px) scale(0.8);
-      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-      overflow: hidden;
-      cursor: none;
-      outline: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: opacity 0.6s var(--ease), visibility 0.6s, transform 0.6s var(--ease);
+      cursor: none; /* For custom cursor support */
     }
-    .btt-btn.visible {
-      opacity: 1; visibility: visible; transform: translateY(0) scale(1);
+    .back-to-top.is-visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
     }
-    .btt-btn::before {
-      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    
+    .b2t-inner {
+      position: absolute;
+      inset: 4px;
+      background: rgba(12, 12, 10, 0.5);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.4s var(--ease), transform 0.4s var(--ease);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+    }
+    
+    .b2t-text {
+      font-family: var(--font-en);
+      font-size: clamp(0.6rem, 1.4vw, 0.75rem);
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      color: var(--fg);
+      margin-right: -0.15em;
+      margin-bottom: -1px;
+      transition: color 0.4s var(--ease), transform 0.4s var(--ease);
+    }
+    
+    .b2t-progress {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+      pointer-events: none;
+    }
+    .b2t-progress circle {
+      fill: none;
+      stroke-width: 1.5;
+    }
+    .b2t-progress-bg {
+      stroke: rgba(233,229,223,0.1);
+    }
+    .b2t-progress-value {
+      stroke: var(--accent);
+      stroke-dasharray: 301.6;
+      stroke-dashoffset: 301.6;
+      transition: stroke-dashoffset 0.15s linear, stroke 0.4s var(--ease);
+    }
+
+    .back-to-top:hover .b2t-inner {
       background: var(--accent);
-      border-radius: 50%;
-      transform: scale(0);
-      transition: transform 0.4s var(--ease-out);
-      z-index: 0;
+      transform: scale(0.92);
     }
-    .btt-btn:hover { transform: translateY(-5px) scale(1.1); box-shadow: 0 15px 30px rgba(196,168,130,0.2); }
-    .btt-btn:hover::before { transform: scale(1.05); }
-    .btt-btn:active { transform: translateY(0) scale(0.9); }
-    .btt-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: color 0.3s; }
-    .btt-btn:hover .btt-content { color: var(--bg); }
-    .btt-icon { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; transition: transform 0.3s; }
-    .btt-btn:hover .btt-icon { transform: translateY(-3px); }
-    .btt-text { font-family: var(--font-en); font-size: 9px; font-weight: 600; letter-spacing: 0.1em; }
-    .ripple { position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.6); transform: scale(0); animation: ripple-anim 0.6s linear; pointer-events: none; z-index: 2; }
-    @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
+    .back-to-top:hover .b2t-text {
+      color: var(--bg);
+      transform: translateY(-2px);
+    }
+    .back-to-top:hover .b2t-progress-value {
+      stroke: var(--fg);
+    }
 
     /* ============================================================
        FLOATING TIKTOK BUTTON
@@ -1148,12 +1191,15 @@
     <span class="tiktok-text">日々のデジタルドローイング</span>
   </a>
 
-  <button class="btt-btn" id="bttBtn" aria-label="トップへ戻る">
-    <div class="btt-content">
-      <svg class="btt-icon" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-      <span class="btt-text">TOP</span>
+  <a href="#top" class="back-to-top" id="backToTop" aria-label="ページトップへ戻る">
+    <svg class="b2t-progress" viewBox="0 0 100 100">
+      <circle class="b2t-progress-bg" cx="50" cy="50" r="48"></circle>
+      <circle class="b2t-progress-value" id="b2t-progress-value" cx="50" cy="50" r="48"></circle>
+    </svg>
+    <div class="b2t-inner">
+      <span class="b2t-text">TOP</span>
     </div>
-  </button>
+  </a>
 
   <div class="image-modal" id="imageModal" aria-hidden="true" role="dialog">
     <div class="modal-bg"></div>
@@ -1325,8 +1371,9 @@
 
     /* ── SCROLL INTERACTIONS & TIMELINE PROGRESS ── */
     const topNav = document.getElementById('top-nav');
-    const bttBtn = document.getElementById('bttBtn');
     const floatingTiktok = document.getElementById('floatingTiktok');
+    const b2tBtn = document.getElementById('backToTop');
+    const b2tCircle = document.getElementById('b2t-progress-value');
     const timelineContainer = document.getElementById('timelineContainer');
     const timelineProgress = document.getElementById('timelineProgress');
     
@@ -1342,7 +1389,15 @@
       else topNav.classList.remove('scrolled');
       
       if (floatingTiktok) floatingTiktok.classList.toggle('visible', scrollY > winHeight * 0.3);
-      if (bttBtn) bttBtn.classList.toggle('visible', scrollY > winHeight * 0.6);
+      if (b2tBtn) b2tBtn.classList.toggle('is-visible', scrollY > winHeight * 0.6);
+
+      // BackToTop ボタンのスクロール連動プログレスリング計算
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPct = Math.max(0, Math.min(1, scrollY / docHeight));
+      if (b2tCircle) {
+        const offset = 301.6 - (301.6 * scrollPct);
+        b2tCircle.style.strokeDashoffset = offset;
+      }
 
       if (timelineContainer && timelineProgress) {
         const rect = timelineContainer.getBoundingClientRect();
@@ -1359,7 +1414,6 @@
 
       /* ── Scroll Spy ── */
       let currentSection = '';
-      // 画面の少し上（1/3）を基準にして現在セクションを判定
       const scrollPos = scrollY + winHeight / 3;
 
       spySections.forEach(sec => {
@@ -1377,35 +1431,11 @@
 
     }, { passive: true });
 
-    /* ── SMOOTH SCROLL & BTT CLICK ── */
-    function customScrollToTop(duration = 900) {
-      const startPosition = window.scrollY;
-      let startTime = null;
-      function animation(currentTime) {
-        if (startTime === null) startTime = currentTime;
-        const timeElapsed = currentTime - startTime;
-        const progress = Math.min(timeElapsed / duration, 1);
-        const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-        window.scrollTo(0, startPosition * (1 - ease));
-        if (timeElapsed < duration) requestAnimationFrame(animation);
-      }
-      requestAnimationFrame(animation);
-    }
-
-    if (bttBtn) {
-      bttBtn.addEventListener('click', function(e) {
-        const ripple = document.createElement('span');
-        ripple.classList.add('ripple');
-        this.appendChild(ripple);
-        
-        const rect = this.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height);
-        ripple.style.width = ripple.style.height = `${size}px`;
-        ripple.style.left = `${e.clientX - rect.left - size/2}px`;
-        ripple.style.top = `${e.clientY - rect.top - size/2}px`;
-        
-        setTimeout(() => ripple.remove(), 600);
-        customScrollToTop();
+    /* ── SMOOTH SCROLL FOR BACK TO TOP ── */
+    if (b2tBtn) {
+      b2tBtn.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        window.scrollTo({ top: 0, behavior: 'smooth' }); 
       });
     }
 
