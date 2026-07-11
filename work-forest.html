@@ -80,7 +80,7 @@
     }
 
     /* ============================================================
-       NAVIGATION
+       NAVIGATION (Dropdown Animation Added)
     =========================================================== */
     nav#top-nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 300;
@@ -89,8 +89,19 @@
       background: transparent;
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border-bottom: 0.5px solid transparent;
+      
+      /* アニメーション用の初期状態 */
+      opacity: 0; 
+      transform: translateY(-100%);
+      animation: navDropDown 1.5s var(--ease-slow) 2.4s forwards;
+      
       transition: background 0.6s var(--ease-slow), border-color 0.6s var(--ease-slow), padding 0.6s var(--ease-slow);
     }
+    @keyframes navDropDown {
+      0% { opacity: 0; transform: translateY(-100%); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
     nav#top-nav.scrolled {
       background: rgba(6, 6, 5, 0.85); border-color: var(--border);
       padding-top: clamp(12px, 2vw, 24px); padding-bottom: clamp(12px, 2vw, 24px);
@@ -252,14 +263,6 @@
     .statement-editorial.in-view .ed-para:nth-child(2) { transition-delay: 1.1s; }
     .statement-editorial.in-view .ed-para:nth-child(2)::before { transition-delay: 1.5s; }
 
-    @media (max-width: 900px) {
-      .ed-container { grid-template-columns: 1fr; gap: 4rem; }
-      .ed-body-area { margin-top: 0; gap: 2.5rem; }
-      .ed-para { padding-left: 1.5rem; font-size: 1rem; }
-      .ed-para::before { width: 0.8rem; }
-      .ed-title-area::before { left: -1rem; }
-    }
-
     /* ============================================================
        GALLERY GRID
     =========================================================== */
@@ -400,7 +403,7 @@
     .fade-out { opacity: 0; transition: opacity 0.8s ease; }
 
     /* ============================================================
-       CONTACT & FOOTER
+       CONTACT SECTION
     =========================================================== */
     .contact-section {
       position: relative; padding: clamp(8rem, 16vh, 14rem) var(--px); text-align: center;
@@ -430,14 +433,32 @@
     .contact-btn:hover { color: var(--bg); border-color: transparent; box-shadow: 0 16px 40px rgba(196,168,130,0.3); }
     .contact-btn:hover::before { transform: scaleX(1); transform-origin: left; }
 
+    /* ============================================================
+       FOOTER
+    =========================================================== */
     footer {
-      padding: clamp(3rem, 6vh, 5rem) var(--px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; border-top: 0.5px solid var(--border); background: var(--bg);
+      padding: 3rem 2.5rem;
+      text-align: center;
+      background: var(--bg);
+      border-top: 0.5px solid var(--border);
     }
-    .footer-logo { font-family: var(--font-ja); font-size: clamp(0.8rem, 1.8vw, 0.95rem); font-weight: 300; color: rgba(233,229,223,0.4); letter-spacing: 0.1em; }
-    .footer-copy { font-family: var(--font-en); font-size: clamp(0.55rem, 1.3vw, 0.65rem); letter-spacing: 0.25em; color: var(--dim); }
+    .footer-logo { 
+      font-family: var(--font-ja); 
+      font-size: clamp(0.75rem, 1.8vw, 0.88rem); 
+      font-weight: 200; 
+      color: rgba(232,228,219,0.28); 
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem; 
+    }
+    .footer-copy { 
+      font-family: var(--font-en); 
+      font-size: clamp(0.52rem, 1.3vw, 0.62rem); 
+      letter-spacing: 0.18em; 
+      color: rgba(232,228,219,0.46);
+    }
 
     /* ============================================================
-       LIGHTBOX (MODAL) & BACK TO TOP (Progress Ring + Glassmorphism)
+       LIGHTBOX (MODAL) & BACK TO TOP 
     =========================================================== */
     .image-modal { position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.55s var(--ease-slow), visibility 0.55s; }
     .image-modal.is-active { opacity: 1; visibility: visible; }
@@ -486,7 +507,7 @@
     .b2t-inner {
       position: absolute;
       inset: 4px;
-      background: rgba(12, 12, 10, 0.5); /* 森林ページのトーン (--bg2) */
+      background: rgba(12, 12, 10, 0.5);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-radius: 50%;
@@ -518,31 +539,25 @@
       fill: none;
       stroke-width: 1.5;
     }
-    .b2t-progress-bg {
-      stroke: var(--whisper);
-    }
+    .b2t-progress-bg { stroke: var(--whisper); }
     .b2t-progress-value {
-      stroke: var(--accent);
-      stroke-dasharray: 301.6;
-      stroke-dashoffset: 301.6;
+      stroke: var(--accent); stroke-dasharray: 301.6; stroke-dashoffset: 301.6;
       transition: stroke-dashoffset 0.15s linear, stroke 0.4s var(--ease-slow);
     }
-    .back-to-top:hover .b2t-inner {
-      background: var(--accent);
-      transform: scale(0.92);
-    }
-    .back-to-top:hover .b2t-text {
-      color: var(--bg);
-      transform: translateY(-2px);
-    }
-    .back-to-top:hover .b2t-progress-value {
-      stroke: var(--fg);
-    }
+    .back-to-top:hover .b2t-inner { background: var(--accent); transform: scale(0.92); }
+    .back-to-top:hover .b2t-text { color: var(--bg); transform: translateY(-2px); }
+    .back-to-top:hover .b2t-progress-value { stroke: var(--fg); }
 
     /* ============================================================
-       RESPONSIVE DESIGN
+       RESPONSIVE DESIGN (Media Queries)
     =========================================================== */
     @media (max-width: 900px) {
+      .ed-container { grid-template-columns: 1fr; gap: 4rem; }
+      .ed-body-area { margin-top: 0; gap: 2.5rem; }
+      .ed-para { padding-left: 1.5rem; font-size: 1rem; }
+      .ed-para::before { width: 0.8rem; }
+      .ed-title-area::before { left: -1rem; }
+
       .timeline-container { padding-left: 40px; } 
       .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2.5rem; }
       .tl-figure, .tl-body, 
@@ -557,10 +572,14 @@
       .timeline-spine-wrapper { left: 16px; transform: none; }
       .tl-year-display, .tl-entry:nth-child(even) .tl-year-display { padding-left: 0; margin-bottom: 0.8rem; text-align: left !important; font-size: clamp(3.5rem, 10vw, 4.5rem); }
       
-      .gallery-item-img-wrap { height: auto !important; width: 100% !important; max-width: 540px; margin: 0 auto; }
+      .gallery-item-img-wrap { 
+        height: auto !important; width: 100% !important; max-width: 540px; margin: 0 auto; 
+        aspect-ratio: var(--w-cm) / var(--h-cm); 
+      }
       .gallery-item { align-items: center; width: 100%; }
       .gallery-item-cap { text-align: center; }
     }
+    
     @media (max-width: 768px) {
       nav#top-nav { 
         display: flex; justify-content: space-between; align-items: center;
@@ -572,10 +591,22 @@
         font-size: 0.6rem; 
         padding: 0.5rem 1rem; 
       }
+
+      .gallery-grid { gap: 3rem; }
+      .gallery-item-img-wrap { width: 100% !important; height: auto !important; }
       
-      /* スマホではギャラリー(作品紹介グリッド)を非表示 */
-      .gallery-section { display: none !important; }
+      /* Footer Responsive adjustments */
+      footer { 
+        padding: 3rem 1.5rem; 
+        display: flex;
+        flex-direction: column; 
+        align-items: flex-start; 
+        gap: 1.5rem;
+        text-align: left;
+      }
+      .footer-logo { margin-bottom: 0; }
     }
+    
     @media (max-width: 480px) {
       .hero-scroll { display: none; }
       .modal-content img { max-height: 60svh; }
@@ -936,7 +967,7 @@
 
   <footer>
     <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
-    <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
+    <p class="footer-copy">© 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
   <a href="#top" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
@@ -1101,7 +1132,8 @@
     }, { passive: true });
 
     /* ── スムーズスクロール制御 (Header Nav) ── */
-    navLinks.forEach(link => {
+    const scrollLinks = document.querySelectorAll('.nav-links a');
+    scrollLinks.forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         const targetId = link.getAttribute('href').substring(1);
@@ -1113,7 +1145,7 @@
       });
     });
 
-    // TOPに戻るボタンの挙動を、完全にページトップへ戻る仕様に変更
+    // TOPに戻るボタンの挙動
     const b2tBtn = document.getElementById('backToTop');
     if (b2tBtn) {
       b2tBtn.addEventListener('click', (e) => {
@@ -1123,7 +1155,7 @@
     }
 
     /* ── スムーズスクロール制御 (Gallery Grid -> Timeline or Modal) ── */
-    document.querySelectorAll('.js-scroll-link').forEach(link => {
+    document.querySelectorAll('a.js-scroll-link').forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         const targetId = link.getAttribute('href').substring(1);
