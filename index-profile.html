@@ -72,7 +72,14 @@
       background: transparent;
       backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
       border-bottom: 0.5px solid transparent;
-      transition: background 0.4s ease, border-color 0.4s ease;
+      /* ヘッダーが降りてくるアニメーション設定 */
+      transform: translateY(-100%);
+      opacity: 0;
+      transition: transform 1.2s var(--ease), opacity 1.2s ease, background 0.4s ease, border-color 0.4s ease;
+    }
+    nav#top-nav.is-loaded {
+      transform: translateY(0);
+      opacity: 1;
     }
     nav#top-nav.scrolled {
       background: rgba(10,10,9,0.93);
@@ -683,11 +690,25 @@
     .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3); }
 
     footer {
-      padding: clamp(2rem, 5vh, 4.5rem) var(--px); display: flex; justify-content: space-between;
-      align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); background: var(--bg);
+      padding: 3rem 2.5rem;
+      text-align: center;
+      border-top: 0.5px solid var(--border);
+      background: var(--bg);
     }
-    .footer-logo { font-family: var(--font-ja); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.28); letter-spacing: 0.08em; }
-    .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--muted); }
+    .footer-logo {
+      font-family: var(--font-ja);
+      font-size: clamp(0.75rem, 1.8vw, 0.88rem);
+      font-weight: 200;
+      color: rgba(233,229,223,0.28);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+    }
+    .footer-copy {
+      font-family: var(--font-en);
+      font-size: clamp(0.52rem, 1.3vw, 0.62rem);
+      letter-spacing: 0.18em;
+      color: var(--dim);
+    }
 
     /* ============================================================
        LIGHTBOX
@@ -845,6 +866,16 @@
       .filmstrip { flex-direction: column; width: 100%; left: 0; transform: none; padding: 0 var(--px); overflow-x: visible; }
       .filmstrip::after { display: none; }
       .filmstrip-cell.fs-wide, .filmstrip-cell.fs-port, .filmstrip-cell.fs-sq { width: 100%; aspect-ratio: 3 / 2; }
+
+      /* フッターのスマホ向けデザイン適用 */
+      footer {
+        padding: 3rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+        text-align: left;
+      }
     }
     @media (max-width: 480px) {
       .hero-scroll { display: none; }
@@ -1374,6 +1405,9 @@
       setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'),      680);
       setTimeout(() => document.getElementById('heroMeta')?.classList.add('revealed'),    980);
       setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 1700);
+
+      // ヘッダーが降りてくるアニメーション
+      setTimeout(() => document.getElementById('top-nav')?.classList.add('is-loaded'), 150);
     });
 
     /* ── IntersectionObserver ── */
