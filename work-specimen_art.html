@@ -74,15 +74,42 @@
       z-index: 300;
       display: flex; align-items: center; justify-content: space-between;
       padding: clamp(14px,3vw,36px) var(--px);
-      border-bottom: 0.5px solid transparent;
       background: transparent;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      transition: background 0.4s var(--ease), border-color 0.4s var(--ease);
+      
+      /* 移動(transform)を排除し、透明度のみで静謐にフェードインさせることで文字のブレを防ぐ */
+      opacity: 0;
+      animation: navReveal 1.5s ease-out 0.2s forwards;
+      
+      transition: background 0.6s var(--ease), padding 0.6s var(--ease);
     }
+
+    @keyframes navReveal {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    /* スクロール時に顕微鏡の焦点が合うように、下部から精密なラインが伸びる */
+    nav::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0%;
+      height: 0.5px;
+      background: var(--border-mid);
+      transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
     nav.scrolled {
       background: rgba(13,13,11,0.94);
-      border-bottom: 0.5px solid var(--border);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: clamp(10px,2vw,24px) var(--px);
+    }
+    
+    nav.scrolled::after {
+      width: 100%;
     }
     
     .nav-logo {
@@ -272,28 +299,50 @@
       font-family: var(--jp); font-size: clamp(0.85rem, 1.8vw, 0.92rem); 
       color: var(--text-muted); margin: 0 auto 2.5rem; max-width: 450px; line-height: 2; 
     }
-    .contact-btn { 
-      display: inline-block; padding: 1.1rem 3.2rem; background: var(--accent); 
-      color: var(--bg); font-family: var(--en); font-size: clamp(0.6rem, 1.4vw, 0.7rem); 
-      font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; 
-      text-decoration: none; transition: all 0.4s ease; border-radius: 2px; 
+    
+    /* ─── 新しいデザインの問い合わせボタン ─── */
+    .contact-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--jp);
+      font-size: clamp(0.9rem, 1.5vw, 1rem);
+      letter-spacing: 0.15em;
+      color: #111;
+      background-color: #c5ab83;
+      padding: 1.4rem 5rem;
+      border-radius: 2px;
+      transition: background-color 0.4s var(--ease), transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+      text-decoration: none;
     }
-    .contact-btn:hover { 
-      background: var(--fg); transform: translateY(-3px); 
-      box-shadow: 0 12px 30px rgba(203,191,176,0.25); 
+    .contact-btn:hover {
+      background-color: #d6bc94;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.5);
     }
 
-    footer { 
-      padding: clamp(2rem, 4vh, 3.5rem) var(--px); display: flex; justify-content: space-between; 
-      align-items: center; flex-wrap: wrap; gap: 1rem; border-top: 0.5px solid var(--border); background: var(--bg); 
+    footer {
+      padding: 3rem 2.5rem;
+      text-align: center;
+      background: var(--bg);
+      border-top: 0.5px solid var(--border);
+      position: relative;
+      z-index: 10;
     }
-    .footer-logo { 
-      font-family: var(--jp); font-size: clamp(0.72rem, 1.6vw, 0.82rem); 
-      font-weight: 200; color: rgba(232,228,219,0.25); letter-spacing: 0.08em; 
+    .footer-logo {
+      display: block;
+      font-family: var(--jp);
+      font-size: clamp(0.75rem, 1.8vw, 0.88rem);
+      font-weight: 200;
+      color: rgba(232,228,219,0.28);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
     }
-    .footer-copy { 
-      font-family: var(--en); font-size: clamp(0.52rem, 1.3vw, 0.6rem); 
-      letter-spacing: 0.18em; color: var(--muted-col); 
+    .footer-copy {
+      font-family: var(--en);
+      font-size: clamp(0.52rem, 1.3vw, 0.62rem);
+      letter-spacing: 0.18em;
+      color: rgba(232,228,219,0.46);
     }
 
     /* ─── BACK TO TOP BUTTON (すりガラスリングUI) ─── */
@@ -419,6 +468,10 @@
         padding: 10px;
       }
       .nav-links { display: none; }
+      
+      /* フッター・ボタンのレスポンシブ追加 */
+      .contact-btn { padding: 1.2rem 2rem; width: 100%; max-width: 320px; }
+      footer { padding: 3rem 1.5rem; display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; text-align: left; }
     }
   </style>
 </head>
@@ -629,7 +682,9 @@
           <span class="specimen-title">羊</span>
         </div>
       </div>
-    </div> <div id="insects" class="scroll-spy-target">
+    </div> 
+    
+    <div id="insects" class="scroll-spy-target">
       <div class="gallery-category-header">
         <div class="section-divider"></div>
         <p class="section-label">Life-size Insects</p>
@@ -694,7 +749,9 @@
           <span class="specimen-title">ハンミョウ（対馬産）<br>（雄♂、20mm）</span>
         </div>
       </div> 
-    </div> <div id="plants" class="scroll-spy-target">
+    </div> 
+    
+    <div id="plants" class="scroll-spy-target">
       <div class="gallery-category-header">
         <div class="section-divider"></div>
         <p class="section-label">Plants</p>
@@ -711,7 +768,9 @@
           <span class="specimen-title">ヤマオダマキ</span>
         </div>
       </div>
-    </div> <div id="landscapes" class="scroll-spy-target">
+    </div> 
+    
+    <div id="landscapes" class="scroll-spy-target">
       <div class="gallery-category-header">
         <div class="section-divider"></div>
         <p class="section-label">Landscapes</p>
@@ -736,7 +795,8 @@
           <span class="specimen-title">インド(チャトルムカ寺院)</span>
         </div>
       </div>
-    </div> </section>
+    </div> 
+  </section>
   
   <section class="contact-section" id="contact">
     <p class="section-label">Contact</p>
@@ -744,13 +804,13 @@
     <p class="contact-body-text">
       展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。
     </p>
-    <a href="mailto:info@example.com" class="contact-btn">
+    <a href="contact.html" class="contact-btn">
       問い合わせフォームへ
     </a>
   </section>
 
   <footer>
-    <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
+    <a href="index.html" class="footer-logo">津田 翔一 / Tsuda Shoichi</a>
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
