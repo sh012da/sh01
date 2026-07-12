@@ -76,17 +76,18 @@
     }
 
     /* ============================================================
-       NAV (メインサイト統合)
+       HEADER (Left Name, Center Nav, Right Contact)
     ================================================================ */
-    nav {
-      position: fixed; width: 100%; top: 0; z-index: 999;
+    nav#top-nav {
+      position: fixed; width: 100%; top: 0; z-index: 5000;
       display: flex; align-items: center; justify-content: space-between;
       padding: clamp(24px,4vw,40px) var(--px); background: transparent;
       border-bottom: 1px solid transparent; transform: translateY(-100%);
       opacity: 0; transition: background 0.6s var(--ease-expo), padding 0.6s var(--ease-expo), border-color 0.6s ease, backdrop-filter 0.6s ease, transform 1.2s var(--ease-expo) 0.2s, opacity 1.2s ease 0.2s;
     }
-    body.is-loaded nav { transform: translateY(0); opacity: 1; }
-    nav.nav-scrolled {
+    body.is-loaded nav#top-nav { transform: translateY(0); opacity: 1; }
+    
+    nav#top-nav.nav-scrolled {
       padding: clamp(12px,2vw,24px) var(--px); background: rgba(8, 8, 8, 0.88);
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border-bottom: 0.5px solid rgba(232,228,219,0.08); transition-delay: 0s, 0s, 0s, 0s, 0s, 0s;
@@ -95,54 +96,45 @@
       font-family: var(--en); font-size: clamp(0.7rem,2.5vw,0.9rem);
       letter-spacing: 0.3em; font-weight: 300; color: var(--accent);
       text-transform: uppercase; transition: opacity 0.4s ease, transform 0.4s var(--ease-expo);
+      flex-shrink: 0;
     }
     .nav-logo:hover { opacity: 0.7; transform: scale(0.98); }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    
+    .nav-links { 
+      display: flex; gap: 2.2rem; list-style: none; position: absolute; left: 50%; transform: translateX(-50%); 
+    }
     .nav-links a {
       font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.72rem);
       letter-spacing: 0.25em; color: var(--muted-col); text-transform: uppercase;
-      transition: color 0.3s ease, transform 0.3s ease; display: inline-block; position: relative;
+      transition: color 0.3s ease, transform 0.3s ease; display: inline-block; position: relative; padding-bottom: 6px;
     }
     .nav-links a::after {
-      content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%) scaleX(0);
-      width: 12px; height: 1px; background: var(--accent); transition: transform 0.3s var(--ease-out-back);
+      content: ''; position: absolute; bottom: 0; left: 0; transform: scaleX(0); transform-origin: center;
+      width: 100%; height: 1px; background: var(--accent); transition: transform 0.4s var(--ease-expo);
     }
     .nav-links a:hover, .nav-links a.active { color: var(--accent); }
-    .nav-links a.active::after { transform: translateX(-50%) scaleX(1); }
+    .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
     
     .nav-cta {
       font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
       letter-spacing: 0.25em; text-transform: uppercase;
       border: 0.5px solid rgba(184,168,152,0.4); padding: 0.55rem 1.4rem;
       color: var(--accent); transition: all 0.4s var(--ease-expo); border-radius: 2px;
+      flex-shrink: 0;
     }
     .nav-cta:hover { background: var(--accent); color: var(--bg); box-shadow: 0 4px 16px rgba(203,191,176,0.2); }
-    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
-    .nav-hamburger span { display: block; width: 22px; height: 0.5px; background: var(--accent); margin: 6px 0; transition: all 0.25s; }
 
     /* ============================================================
-       PAGE IN-PAGE NAVIGATION (RIGHT DOTS)
+       TOOLTIP (マウス追従ポップアップ)
     ================================================================ */
-    .page-nav {
-      position: fixed; right: clamp(15px, 3vw, 30px); top: 50%; transform: translateY(-50%);
-      display: flex; flex-direction: column; gap: 1.2rem; z-index: 900;
-      opacity: 0; visibility: hidden; transition: opacity 0.6s var(--ease-expo), visibility 0.6s;
+    .mouse-tooltip {
+      position: fixed; top: 0; left: 0; pointer-events: none; background: rgba(10, 10, 8, 0.95); color: rgba(232, 228, 219, 0.9);
+      padding: 6px 12px; border-radius: 4px; font-size: 11px; font-family: var(--jp); letter-spacing: 0.05em; border: 0.5px solid rgba(203, 191, 176, 0.3);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5); opacity: 0; transform: translate(15px, 15px); transition: opacity 0.2s ease; z-index: 99999;
+      white-space: nowrap; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
     }
-    .page-nav.is-visible { opacity: 1; visibility: visible; }
-    .page-nav-dot {
-      position: relative; width: 8px; height: 8px; border-radius: 50%;
-      border: 1px solid rgba(232,228,219,0.3); background: transparent;
-      transition: all 0.4s var(--ease-out-back); cursor: pointer;
-    }
-    .page-nav-dot::after {
-      content: attr(data-label); position: absolute; right: 24px; top: 50%;
-      transform: translateY(-50%) translateX(10px); font-family: var(--en); font-size: 10px;
-      letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase;
-      opacity: 0; visibility: hidden; transition: all 0.4s ease; white-space: nowrap; pointer-events: none;
-    }
-    .page-nav-dot:hover { border-color: var(--accent); background: rgba(203,191,176,0.2); }
-    .page-nav-dot:hover::after { opacity: 1; visibility: visible; transform: translateY(-50%) translateX(0); }
-    .page-nav-dot.active { background: var(--accent); border-color: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px rgba(203,191,176,0.4); }
+    .mouse-tooltip.visible { opacity: 1; }
+    @media (pointer: coarse) { .mouse-tooltip { display: none !important; } }
 
     /* ---- custom lens cursor (覚知 固有ギミック) ---- */
     @media (hover:hover) and (pointer:fine) {
@@ -194,7 +186,6 @@
       text-transform: uppercase; color: var(--muted-col); margin-bottom: 2rem; opacity: 0;
       animation: fadeUp 1s var(--ease-expo) 1s forwards; }
 
-    /* ─── NEW: 知覚が像を結ぶタイトルアニメーション ─── */
     .hero-title { 
       font-family: var(--jp); font-weight: 200; font-size: clamp(56px, 14vw, 160px); line-height: 1.05;
       display: inline-flex; align-items: flex-end; 
@@ -207,11 +198,9 @@
       font-family: var(--en); font-weight: 200; font-size: 0.4em; align-self: flex-start; margin-top: 0.2em; 
       color: var(--accent); animation: titleFade 1.6s cubic-bezier(0.16, 1, 0.3, 1) 1.0s forwards; 
     }
-    /* 「覚」は左上からブレを伴って定位置へ */
     .hero-title .c1 { 
       color: var(--red); animation: titleFocus1 2s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards; 
     }
-    /* 「知」は右下からブレを伴って定位置へ */
     .hero-title .c2 { 
       color: var(--blue); animation: titleFocus2 2s cubic-bezier(0.16, 1, 0.3, 1) 1.4s forwards; 
     }
@@ -421,32 +410,104 @@
        FOOTER
     ================================================================ */
     footer {
-      border-top: 0.5px solid var(--border); padding: clamp(2.5rem,5vh,4rem) var(--px);
-      display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap: 1.5rem; background: var(--bg);
+      border-top: 0.5px solid var(--border);
+      padding: clamp(3rem, 5vh, 6rem) var(--px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1.2rem;
+      background: var(--bg);
+      text-align: center;
     }
     .footer-logo { font-family: var(--jp); font-size: 13px; letter-spacing: 0.15em; color: var(--text-dim); }
     .footer-copy { font-family: var(--en); font-size: 11px; letter-spacing: 0.2em; color: var(--text-dim); text-transform: uppercase; }
 
     /* ============================================================
-       UTILITIES
+       UTILITIES & BACK TO TOP (Redesigned)
     ================================================================ */
     .lightbox { display:none; position: fixed; inset:0; z-index: 9998; background: rgba(8,8,8,0.98); justify-content:center; align-items:center; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
     .lightbox.active { display:flex; }
     .lightbox__img { max-width: 90vw; max-height: 85vh; object-fit: contain; border: 0.5px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
 
     .back-to-top {
-      position: fixed; bottom: clamp(1.5rem, 5vh, 3.5rem); right: clamp(15px, 4vw, 42px); z-index: 9000;
-      width: clamp(58px, 9vw, 78px); height: clamp(58px, 9vw, 78px); border-radius: 50%;
-      background: rgba(203,191,176,0.88); border: 1px solid var(--accent);
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; flex-direction: column; align-items: center; justify-content: center;
-      color: #15130f; opacity: 0; visibility: hidden; transform: translateY(20px) scale(0.9);
-      transition: opacity 0.5s var(--ease-expo), visibility 0.5s, transform 0.5s var(--ease-expo), background 0.3s, color 0.3s;
-      cursor: pointer; text-decoration: none; box-shadow: 0 10px 28px rgba(0,0,0,0.6);
+      position: fixed;
+      bottom: clamp(20px, 4vw, 40px);
+      right: clamp(20px, 4vw, 40px);
+      z-index: 9000;
+      width: clamp(52px, 8vw, 70px);
+      height: clamp(52px, 8vw, 70px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: opacity 0.6s var(--ease-expo), visibility 0.6s, transform 0.6s var(--ease-expo);
+      cursor: pointer;
     }
-    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
-    .back-to-top:hover { background: var(--fg); transform: translateY(-5px) scale(1.05); box-shadow: 0 16px 38px rgba(0,0,0,0.75); }
-    .back-to-top svg { width: clamp(18px,2.8vw,26px); height: clamp(18px,2.8vw,26px); margin-bottom: 2px; }
-    .back-to-top-text { font-family: var(--en); font-size: clamp(0.58rem,1.3vw,0.74rem); letter-spacing: 0.1em; font-weight: 600; text-transform: uppercase; line-height: 1; }
+    .back-to-top.is-visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .b2t-inner {
+      position: absolute;
+      inset: 4px;
+      background: rgba(12, 12, 12, 0.5); 
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.4s var(--ease-expo), transform 0.4s var(--ease-expo);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+    }
+    .b2t-text {
+      font-family: var(--en);
+      font-size: clamp(0.6rem, 1.4vw, 0.75rem);
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      color: var(--text);
+      margin-right: -0.15em;
+      margin-bottom: -1px;
+      transition: color 0.4s var(--ease-expo), transform 0.4s var(--ease-expo);
+    }
+    .b2t-progress {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+      pointer-events: none;
+    }
+    .b2t-progress circle {
+      fill: none;
+      stroke-width: 1.5;
+    }
+    .b2t-progress-bg {
+      stroke: rgba(232,228,219,0.1);
+    }
+    .b2t-progress-value {
+      stroke: var(--accent);
+      stroke-dasharray: 301.6;
+      stroke-dashoffset: 301.6;
+      transition: stroke-dashoffset 0.15s linear, stroke 0.4s var(--ease-expo);
+    }
+    .back-to-top:hover .b2t-inner {
+      background: var(--accent);
+      transform: scale(0.92);
+    }
+    .back-to-top:hover .b2t-text {
+      color: var(--bg);
+      transform: translateY(-2px);
+    }
+    .back-to-top:hover .b2t-progress-value {
+      stroke: var(--fg);
+    }
 
     /* ============================================================
        RESPONSIVE
@@ -460,12 +521,9 @@
     }
     @media (max-width: 768px) {
       .pc-only { display: none !important; }
-      nav { padding: 1rem 1.25rem; }
-      nav.nav-scrolled { padding: 0.8rem 1.25rem; }
-      .nav-links { display: none; }
-      .nav-hamburger { display: block; }
-      .nav-links.open { display: flex; flex-direction: row; flex-wrap: nowrap; position: fixed; inset: 0; background: rgba(8,8,8,0.98); align-items: center; justify-content: center; gap: 0.6rem; z-index: 300; padding: 1rem; overflow-x: auto; backdrop-filter: blur(16px); }
-      .nav-links.open a { font-size: 0.9rem; padding: 0.6rem 0.5rem; display: block; white-space: nowrap; }
+      nav#top-nav { padding: 1rem 1.25rem; justify-content: space-between; }
+      nav#top-nav.nav-scrolled { padding: 0.8rem 1.25rem; }
+      .nav-links { display: none !important; }
       
       .film-section { height: 250vh; }
       body.cursor-ready { cursor: auto; }
@@ -473,8 +531,7 @@
       .closing .big-kanji { font-size: clamp(80px,24vw,160px); }
       .section { padding: 6rem 1.5rem; }
       .section-tilt { padding-top: calc(6rem + 46px); }
-      footer { padding: 3rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-      .page-nav { display: none; }
+      footer { padding: 3rem 1.5rem; flex-direction: column; align-items: center; gap: 1rem; }
     }
   </style>
 </head>
@@ -494,27 +551,21 @@
   <div class="cursor-dot" id="cursorDot"></div>
   <div class="cursor-ring" id="cursorRing"></div>
 
+  <!-- Redesigned Header: Left Name, Center Nav (Page links + Tooltip), Right Contact -->
   <nav id="top-nav">
-    <a href="https://sh012da.github.io/sh01/" class="nav-logo">Tsuda Shoichi</a>
+    <a href="index.html" class="nav-logo">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="https://sh012da.github.io/sh01/index.html#statement" onclick="closeMenu()">Statement</a></li>
-      <li><a href="https://sh012da.github.io/sh01/index.html#works" onclick="closeMenu()">Works</a></li>
-      <li><a href="https://sh012da.github.io/sh01/index.html#profile" onclick="closeMenu()">Profile</a></li>
-      <li><a href="https://sh012da.github.io/sh01/index.html#news" onclick="closeMenu()">News</a></li>
+      <li><a href="#overview" data-tooltip="概要">Concept</a></li>
+      <li><a href="#corridor" data-tooltip="序章・回廊">Prologue</a></li>
+      <li><a href="#room-red" data-tooltip="紅と藍">Red &amp; Blue</a></li>
+      <li><a href="#forest" data-tooltip="垂直の筆触">Vertical</a></li>
+      <li><a href="#horizon" data-tooltip="地平">Horizon</a></li>
+      <li><a href="#threshold" data-tooltip="境界・扉の先">Threshold</a></li>
     </ul>
-    <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
-      <span></span><span></span><span></span>
-    </button>
-    <a href="https://sh012da.github.io/sh01/contact.html" class="nav-cta" id="nav-cta-btn">Contact</a>
+    <a href="contact.html" class="nav-cta" id="nav-cta-btn">Contact</a>
   </nav>
 
-  <div class="page-nav pc-only" id="page-nav">
-    <a href="#corridor" class="page-nav-dot" data-label="Prologue"></a>
-    <a href="#room-red" class="page-nav-dot" data-label="Red & Blue"></a>
-    <a href="#forest" class="page-nav-dot" data-label="Vertical Strokes"></a>
-    <a href="#horizon" class="page-nav-dot" data-label="Horizon"></a>
-    <a href="#threshold" class="page-nav-dot" data-label="Threshold"></a>
-  </div>
+  <div class="mouse-tooltip" id="mouse-tooltip"></div>
 
   <header class="hero">
     <div class="shatter" aria-hidden="true">
@@ -591,14 +642,12 @@
         <p class="sec-desc reveal">入口を抜けると、奥へとまっすぐに伸びる回廊。両脇には色彩の異なる油彩が連なり、訪れる者は無意識のうちに歩幅を緩める。下の画像にカーソルを重ねると、ぼやけた知覚の表面に焦点が結ばれていく——〈覚知〉の最初の体験。</p>
 
         <div class="perceive-frame reveal" style="aspect-ratio: 21/9;">
-          <!-- 絶対パスに修正 -->
           <img class="layer layer-clear" src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (1).JPG" alt="覚知ka 展示風景 回廊全景">
           <img class="layer layer-blur" src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (1).JPG" alt="">
         </div>
         <p class="perceive-hint reveal"><span></span>カーソルを画像に重ねて、知覚を結んでください</p>
 
         <div class="asym-2 reveal" style="margin-top: clamp(70px,10vh,110px);">
-          <!-- 絶対パスに修正 -->
           <div class="blob-frame"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (9).JPG" alt="覚知ka 回廊端の小品群"></div>
           <div>
             <h3 class="block-ttl">色の濃度が、距離をつくる</h3>
@@ -629,7 +678,6 @@
         <p class="sec-desc reveal">展示の核となる小部屋。垂直に伸びる画面の中で、動脈のような紅と静脈のような藍がせめぎ合う。向かい合う壁の連作は互いを映す鏡のように呼応し、鑑賞者はその真ん中で二つの体温に挟まれる。</p>
 
         <div class="duo-split reveal">
-          <!-- 絶対パスに修正 -->
           <figure><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (2).JPG" alt="覚知ka 紅と藍の部屋 左壁の連作"><figcaption>紅 — Pulse</figcaption></figure>
           <figure><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (3).JPG" alt="覚知ka 紅と藍の部屋 中央壁面"><figcaption>藍 — Vein</figcaption></figure>
         </div>
@@ -640,7 +688,6 @@
             <p class="block-txt">骨格でも臓器でもない、けれど確かに「身体的」な何か。形は常に流動し、紅と藍の境界線は溶け合ったまま固定されることがない。津田の筆致は輪郭を引くのではなく、色と色の摩擦そのものを描き出す。</p>
           </div>
           <div class="perceive-frame" style="aspect-ratio: 4/5;">
-            <!-- 絶対パスに修正 -->
             <img class="layer layer-clear" src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (9).JPG" alt="覚知ka 紅と藍 大画面詳細">
             <img class="layer layer-blur" src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (9).JPG" alt="">
           </div>
@@ -658,7 +705,6 @@
           <h2 class="section-heading" style="margin-top:12px; margin-bottom:0;">垂直の筆触、<br>森のように並ぶ</h2>
         </div>
         <div class="film-track" id="filmTrack">
-          <!-- 絶対パスに修正 -->
           <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (4).JPG" alt="覚知ka 垂直の筆触 黄と黒の連作"><p class="film-cap">01 — 黄、滴る記憶</p></div>
           <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (4)2.JPG" alt="覚知ka 垂直の筆触 連作 近景"><p class="film-cap">02 — 連作、五つの色相</p></div>
           <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (5).JPG" alt="覚知ka 角部屋 虹色の大画面"><p class="film-cap">03 — 虹、空間を満たす</p></div>
@@ -680,13 +726,11 @@
         <p class="sec-desc reveal">部屋の最奥、正面に大きく掛けられた水平の画面。これまでの〈左美都〉シリーズが描いてきた土地の記憶と地続きの、けれど輪郭をすべて手放した風景。垂直の筆触を抜けてきた身体は、ここで初めて静止する。</p>
 
         <div class="perceive-frame reveal" style="aspect-ratio: 16/8;">
-          <!-- 絶対パスに修正 -->
           <img class="layer layer-clear" src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (6).JPG" alt="覚知ka 地平の部屋 全景">
           <img class="layer layer-blur" src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (6).JPG" alt="">
         </div>
 
         <div class="asym-2 reveal" style="margin-top: clamp(70px,10vh,110px);">
-          <!-- 絶対パスに修正 -->
           <div class="blob-frame"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (7).JPG" alt="覚知ka 地平の絵画 別角度"></div>
           <div>
             <h3 class="block-ttl">静止点としての水平線</h3>
@@ -708,7 +752,6 @@
         <p class="sec-desc reveal">会場の奥、開け放たれた扉の向こうには、また別の生活空間が続いている。展示はここで終わるのではなく、日常へとなだらかに溶け出していく。覚知は美術館の中だけで起きるものではない、というささやかな宣言。</p>
 
         <div class="duo-split reveal" style="margin-top:0;">
-          <!-- 絶対パスに修正 -->
           <figure style="aspect-ratio:5/6;"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (8).JPG" alt="覚知ka 開かれた扉と先の空間"><figcaption>境界 — Half-open</figcaption></figure>
           <figure style="aspect-ratio:5/6;"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (9).JPG" alt="覚知ka 出口付近の展示風景"><figcaption>接続 — Beyond</figcaption></figure>
         </div>
@@ -722,7 +765,7 @@
         <div class="big-kanji reveal is-visible" aria-hidden="true">覚知</div>
         <h2 class="reveal">お問い合わせ</h2>
         <p class="reveal">個展「油彩画展 ～＋覚知ka～」、作品、または取材等に関するお問い合わせは、下記よりお気軽にご連絡ください。</p>
-        <a class="closing-btn reveal" href="https://sh012da.github.io/sh01/contact.html">問い合わせフォームへ&ensp;→</a>
+        <a class="closing-btn reveal" href="contact.html">問い合わせフォームへ&ensp;→</a>
       </div>
     </section>
   </main>
@@ -732,9 +775,15 @@
     <p class="footer-copy">© 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
-  <a href="#top" class="back-to-top" id="backToTop" aria-label="先頭へ">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
-    <span class="back-to-top-text">TOP</span>
+  <!-- Redesigned Back to Top Button -->
+  <a href="#top" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
+    <svg class="b2t-progress" viewBox="0 0 100 100">
+      <circle class="b2t-progress-bg" cx="50" cy="50" r="48"></circle>
+      <circle class="b2t-progress-value" id="b2t-progress-value" cx="50" cy="50" r="48"></circle>
+    </svg>
+    <div class="b2t-inner">
+      <span class="b2t-text">TOP</span>
+    </div>
   </a>
 
   <div class="lightbox" id="lightbox" aria-hidden="true">
@@ -743,77 +792,97 @@
 
   <script>
     /* ============================================================
-       NAV SCROLL & TOGGLE
+       NAV SCROLL, ACTIVE STATE & TOOLTIP
     ================================================================ */
-    var menuOpenScrollY = 0;
     (function() {
-      var nav = document.getElementById('top-nav');
-      var links = document.getElementById('nav-links');
-      window.addEventListener('scroll', function() {
-        if(window.scrollY > 60) { nav.classList.add('nav-scrolled'); } else { nav.classList.remove('nav-scrolled'); }
-        if (links.classList.contains('open')) {
-          if (Math.abs(window.scrollY - menuOpenScrollY) > 20) { closeMenu(); }
-        }
-      }, { passive: true });
-    })();
-
-    function toggleMenu() {
-      var links = document.getElementById('nav-links');
-      var btn   = document.getElementById('nav-cta-btn');
-      var isOpen = links.classList.toggle('open');
-      btn.style.display = isOpen ? 'none' : '';
-      if (isOpen) { menuOpenScrollY = window.scrollY; document.body.classList.add('no-scroll'); }
-      else { document.body.classList.remove('no-scroll'); }
-    }
-
-    function closeMenu() {
-      var links = document.getElementById('nav-links');
-      var btn   = document.getElementById('nav-cta-btn');
-      links.classList.remove('open');
-      btn.style.display = '';
-      document.body.classList.remove('no-scroll');
-    }
-
-    /* ============================================================
-       覚知 専用スクリプト (進行状況, 追従, 視差エフェクト)
-    ================================================================ */
-    (function(){
+      const nav = document.getElementById('top-nav');
       const progress = document.getElementById('progress');
-      const pageNav = document.getElementById('page-nav');
-      const navDots = document.querySelectorAll('.page-nav-dot');
-      const targetIds = ['corridor','room-red','forest','horizon','threshold'];
+      const navLinks = document.querySelectorAll('.nav-links a');
+      const targetIds = ['overview', 'corridor', 'room-red', 'forest', 'horizon', 'threshold'];
       const targets = targetIds.map(id => document.getElementById(id));
-      const backUp = document.getElementById('backToTop');
-      const fine = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
-
-      function onScroll(){
+      const tooltip = document.getElementById('mouse-tooltip');
+      
+      const b2t = document.getElementById('backToTop');
+      const b2tCircle = document.getElementById('b2t-progress-value');
+      
+      function onScroll() {
         const y = window.scrollY || document.documentElement.scrollTop;
         const h = document.documentElement.scrollHeight - window.innerHeight;
-        const pct = h > 0 ? (y/h)*100 : 0;
-        if (progress) progress.style.width = pct + '%';
+        const pct = h > 0 ? (y/h) : 0;
         
-        if (backUp) backUp.classList.toggle('is-visible', y > window.innerHeight * 0.5);
-        if (pageNav) pageNav.classList.toggle('is-visible', y > window.innerHeight * 0.5);
+        // Header background toggle
+        if(y > 60) { nav.classList.add('nav-scrolled'); } else { nav.classList.remove('nav-scrolled'); }
+        
+        // Top progress bar
+        if (progress) progress.style.width = (pct * 100) + '%';
+        
+        // Back to top visibility & ring progress
+        if (b2t) b2t.classList.toggle('is-visible', y > window.innerHeight * 0.5);
+        if (b2tCircle) {
+          const offset = 301.6 - (301.6 * pct);
+          b2tCircle.style.strokeDashoffset = offset;
+        }
 
+        // Active link highlighting
         const checkY = y + window.innerHeight * 0.4;
         let current = null;
         targets.forEach(sec => { if (sec && sec.offsetTop <= checkY) current = sec; });
-        navDots.forEach(dot => {
-          dot.classList.toggle('active', document.getElementById(dot.getAttribute('href').substring(1)) === current);
+        
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (current && link.getAttribute('href') === `#${current.id}`) {
+            link.classList.add('active');
+          }
         });
       }
-      document.addEventListener('scroll', onScroll, {passive:true});
+      
+      document.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
 
-      navDots.forEach(dot => {
-        dot.addEventListener('click', e => {
-          e.preventDefault();
-          const t = document.getElementById(dot.getAttribute('href').substring(1));
-          if (t) window.scrollTo({ top: t.offsetTop - 40, behavior: 'smooth' });
+      // Smooth scroll for nav links & Tooltip logic
+      navLinks.forEach(link => {
+        link.addEventListener('click', e => {
+          const href = link.getAttribute('href');
+          if (href.startsWith('#')) {
+            e.preventDefault();
+            const t = document.getElementById(href.substring(1));
+            if (t) window.scrollTo({ top: t.offsetTop - 60, behavior: 'smooth' });
+          }
+        });
+
+        // Tooltip Event Listeners
+        link.addEventListener('mouseenter', () => {
+          if(!tooltip) return;
+          const label = link.getAttribute('data-tooltip');
+          if(label) {
+            tooltip.textContent = label;
+            tooltip.classList.add('visible');
+          }
+        });
+        link.addEventListener('mousemove', (e) => {
+          if(!tooltip) return;
+          tooltip.style.left = (e.clientX + 15) + 'px';
+          tooltip.style.top = (e.clientY + 15) + 'px';
+        });
+        link.addEventListener('mouseleave', () => {
+          if(tooltip) tooltip.classList.remove('visible');
         });
       });
 
-      backUp.addEventListener('click', e => { e.preventDefault(); window.scrollTo({top:0, behavior:'smooth'}); });
+      // Smooth scroll for Back to Top (確実に一番上まで戻す)
+      if (b2t) {
+        b2t.addEventListener('click', e => {
+          e.preventDefault();
+          window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        });
+      }
+    })();
+
+    /* ============================================================
+       覚知 専用スクリプト (視差エフェクト, カスタムカーソル, スクロール横歩き)
+    ================================================================ */
+    (function(){
+      const fine = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
 
       /* reveal on scroll */
       const revealEls = document.querySelectorAll('.reveal');
