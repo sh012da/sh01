@@ -27,8 +27,8 @@
       --bg2:       #0c0c0a;
       --bg3:       #0a0d0c;
       --fg:        #e9e5df;
-      --muted:     rgba(233,229,223,0.44);
-      --dim:       rgba(233,229,223,0.22);
+      --muted:      rgba(233,229,223,0.44);
+      --dim:        rgba(233,229,223,0.22);
       --accent:    #c4a882;
       --accent-soft:#7c9aa0;
       --border:    rgba(233,229,223,0.08);
@@ -83,7 +83,7 @@
     .loader-coords { font-family: var(--font-mono); font-size: 0.55rem; color: var(--dim); letter-spacing: 0.1em; margin-top: 10px; }
 
     /* ============================================================
-        HEADER / FOOTER
+        HEADER (Redesigned: Left Contact, Center Nav, Right Name)
     ================================================================ */
     nav#top-nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 5000;
@@ -98,61 +98,143 @@
       background: rgba(6, 6, 5, 0.93); border-color: var(--border);
       padding: clamp(10px, 2vw, 24px) var(--px);
     }
+    
+    .nav-cta {
+      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
+      letter-spacing: 0.25em; text-transform: uppercase;
+      border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem;
+      color: var(--accent); transition: background 0.25s, color 0.25s;
+      flex-shrink: 0;
+    }
+    .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
+
+    .nav-links { 
+      display: flex; gap: 2.2rem; list-style: none;
+      position: absolute; left: 50%; transform: translateX(-50%);
+    }
+    .nav-links a {
+      font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.75rem);
+      letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase; transition: color 0.3s ease;
+      position: relative; padding-bottom: 6px; display: inline-block;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; left: 0; bottom: 0; width: 100%; height: 1px;
+      background: var(--accent); transform: scaleX(0); transform-origin: center;
+      transition: transform 0.4s var(--ease);
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+    .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
+
+    .nav-right-group {
+      display: flex; align-items: center; gap: 1rem;
+    }
     .nav-logo-unified {
       font-family: var(--font-en); font-size: clamp(0.75rem, 2.5vw, 0.95rem);
       letter-spacing: 0.3em; font-weight: 300; color: var(--accent);
       text-transform: uppercase; transition: opacity 0.4s ease;
     }
     .nav-logo-unified:hover { opacity: 0.6; }
-    .nav-links { display: flex; gap: 2.2rem; list-style: none; }
-    .nav-links a {
-      font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.75rem);
-      letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase; transition: color 0.3s ease;
-    }
-    .nav-links a:hover { color: var(--accent); }
-    .nav-cta {
-      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
-      letter-spacing: 0.25em; text-transform: uppercase;
-      border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem;
-      color: var(--accent); transition: background 0.25s, color 0.25s;
-    }
-    .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
+    
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-hamburger span { display: block; width: 22px; height: 1px; background: var(--accent); margin: 5px 0; transition: all 0.3s; }
 
-    .page-nav {
-      position: fixed; right: clamp(15px, 3vw, 30px); top: 50%;
-      transform: translateY(-50%); z-index: 4000;
-      display: flex; flex-direction: column; gap: 24px;
-      opacity: 0; visibility: hidden; transition: opacity 0.6s var(--ease), visibility 0.6s;
-    }
-    .page-nav.visible { opacity: 1; visibility: visible; }
-    .page-nav-item { display: flex; align-items: center; gap: 12px; flex-direction: row-reverse; cursor: pointer; background: none; border: none; padding: 8px 0; }
-    .page-nav-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(233,229,223,0.3); transition: all 0.35s; flex-shrink: 0; }
-    .page-nav-label { font-family: var(--font-en); font-size: 11px; letter-spacing: 0.18em; color: rgba(233,229,223,0.4); text-transform: uppercase; transition: color 0.35s; white-space: nowrap; }
-    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot { background: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px rgba(196,168,130,0.6); }
-    .page-nav-item:hover .page-nav-label { color: rgba(233,229,223,0.85); }
-    .page-nav-item.active .page-nav-label { color: var(--accent); }
-
+    /* ============================================================
+        FOOTER (Centered Design)
+    ================================================================ */
     footer {
-      padding: clamp(2.5rem, 5vh, 5rem) var(--px); display: flex; justify-content: space-between;
-      align-items: center; flex-wrap: wrap; gap: 1.5rem; border-top: 0.5px solid var(--border); background: var(--bg);
-      position: relative; z-index: 5;
+      padding: clamp(3rem, 5vh, 6rem) var(--px);
+      display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 1.2rem;
+      border-top: 0.5px solid var(--border); background: var(--bg);
+      position: relative; z-index: 5; text-align: center;
     }
     .footer-logo { font-family: var(--font-ja); font-size: clamp(0.8rem, 1.8vw, 0.9rem); font-weight: 200; color: rgba(233,229,223,0.35); letter-spacing: 0.08em; }
     .footer-copy { font-family: var(--font-en); font-size: clamp(0.55rem, 1.3vw, 0.65rem); letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; }
 
+    /* ============================================================
+        BACK TO TOP (Progress Ring UI)
+    ================================================================ */
     .back-to-top {
-      position: fixed; bottom: clamp(1.5rem, 5vh, 4rem); right: clamp(15px, 4vw, 50px);
-      z-index: 9000; width: clamp(60px, 9vw, 84px); height: clamp(60px, 9vw, 84px);
-      border-radius: 50%; background: rgba(196, 168, 130, 0.88); border: 1px solid var(--accent);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--bg);
-      opacity: 0; visibility: hidden; transform: translateY(20px);
-      transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
+      position: fixed;
+      bottom: clamp(20px, 4vw, 40px);
+      right: clamp(20px, 4vw, 40px);
+      z-index: 9000;
+      width: clamp(52px, 8vw, 70px);
+      height: clamp(52px, 8vw, 70px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: opacity 0.6s var(--ease), visibility 0.6s, transform 0.6s var(--ease);
+      cursor: pointer;
     }
-    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
-    .back-to-top:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-6px); }
-    .back-to-top svg { width: clamp(18px, 2.5vw, 28px); height: clamp(18px, 2.5vw, 28px); margin-bottom: 2px; }
-    .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.85rem); font-weight: 600; text-transform: uppercase; line-height: 1; }
+    .back-to-top.is-visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .b2t-inner {
+      position: absolute;
+      inset: 4px;
+      background: rgba(12, 12, 10, 0.5); /* ページトーンに合わせた暗さ */
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.4s var(--ease), transform 0.4s var(--ease);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+    }
+    .b2t-text {
+      font-family: var(--font-en);
+      font-size: clamp(0.6rem, 1.4vw, 0.75rem);
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      color: var(--fg);
+      margin-right: -0.15em;
+      margin-bottom: -1px;
+      transition: color 0.4s var(--ease), transform 0.4s var(--ease);
+    }
+    .b2t-progress {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+      pointer-events: none;
+    }
+    .b2t-progress circle {
+      fill: none;
+      stroke-width: 1.5;
+    }
+    .b2t-progress-bg {
+      stroke: rgba(233,229,223,0.1);
+    }
+    .b2t-progress-value {
+      stroke: var(--accent);
+      stroke-dasharray: 301.6;
+      stroke-dashoffset: 301.6;
+      transition: stroke-dashoffset 0.15s linear, stroke 0.4s var(--ease);
+    }
+    .back-to-top:hover .b2t-inner {
+      background: var(--accent);
+      transform: scale(0.92);
+    }
+    .back-to-top:hover .b2t-text {
+      color: var(--bg);
+      transform: translateY(-2px);
+    }
+    .back-to-top:hover .b2t-progress-value {
+      stroke: var(--fg);
+    }
 
+    /* ============================================================
+        LIGHTBOX MODAL
+    ================================================================ */
     .image-modal {
       position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center;
       opacity: 0; visibility: hidden; transition: opacity 0.5s var(--ease), visibility 0.5s;
@@ -176,15 +258,6 @@
     .modal-caption { text-align: center; width: 100%; padding: 0 1rem; }
     .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(1rem, 1.8vw, 1.35rem); font-weight: 300; color: var(--fg); margin-bottom: 0.3rem; }
     .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.7rem, 1.2vw, 0.85rem); font-style: italic; color: var(--accent); letter-spacing: 0.15em; }
-
-    @media (max-width: 768px) {
-      nav#top-nav { padding: 1rem var(--px); }
-      .nav-links { display: none; }
-      .nav-cta { flex-shrink: 0; padding: 0.45rem 1rem; font-size: 0.6rem; }
-      .page-nav.visible { right: 8px; opacity: 0.5; }
-      .page-nav.visible:hover { opacity: 1; }
-      .page-nav-label { display: none; }
-    }
 
     /* ============================================================
         SIGNATURE — DEPTH RAIL
@@ -242,7 +315,6 @@
       text-transform: uppercase; white-space: nowrap; z-index: 2;
     }
 
-    /* --- Samizu Link Text Gimmick --- */
     .link-samizu {
       position: relative;
       color: var(--accent);
@@ -254,25 +326,13 @@
     .link-samizu::after {
       content: '';
       position: absolute;
-      width: 100%;
-      height: 1px;
-      bottom: 0;
-      left: 0;
-      background-color: var(--accent);
-      transform: scaleX(1);
-      transform-origin: bottom right;
-      transition: transform 0.4s var(--ease);
+      width: 100%; height: 1px; bottom: 0; left: 0;
+      background-color: var(--accent); transform: scaleX(1); transform-origin: bottom right; transition: transform 0.4s var(--ease);
     }
-    .link-samizu:hover {
-      color: #fff;
-      text-shadow: 0 0 8px rgba(196,168,130,0.6);
-    }
-    .link-samizu:hover::after {
-      transform: scaleX(0);
-      transform-origin: bottom left;
-    }
+    .link-samizu:hover { color: #fff; text-shadow: 0 0 8px rgba(196,168,130,0.6); }
+    .link-samizu:hover::after { transform: scaleX(0); transform-origin: bottom left; }
 
-    /* Gimmick: Photo Cluster (Material Style) */
+    /* Gimmick: Photo Cluster */
     .hero-photo-cluster {
       position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden;
     }
@@ -291,30 +351,15 @@
     .hero-photo-plate:hover { box-shadow: 0 25px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.03); z-index: 20; }
     .hero-photo-plate:hover img { filter: sepia(0%) saturate(100%) brightness(1) contrast(1); }
     
-    /* Document Tape Gimmick */
     .tape {
-      position: absolute;
-      top: -8px;
-      left: 50%;
-      transform: translateX(-50%) rotate(-3deg);
-      width: 38%;
-      min-width: 45px;
-      height: 16px;
-      background: rgba(238, 234, 222, 0.9);
+      position: absolute; top: -8px; left: 50%; transform: translateX(-50%) rotate(-3deg);
+      width: 38%; min-width: 45px; height: 16px; background: rgba(238, 234, 222, 0.9);
       box-shadow: 0 2px 4px rgba(0,0,0,0.2), inset 0 0 4px rgba(200, 190, 180, 0.4);
       backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
-      z-index: 10;
-      clip-path: polygon(1% 5%, 4% 0%, 96% 2%, 99% 7%, 100% 95%, 96% 100%, 4% 97%, 0% 94%);
+      z-index: 10; clip-path: polygon(1% 5%, 4% 0%, 96% 2%, 99% 7%, 100% 95%, 96% 100%, 4% 97%, 0% 94%);
     }
     .hero-photo-plate::after {
-      content: attr(data-ref);
-      position: absolute;
-      bottom: 6px;
-      right: 8px;
-      font-family: var(--font-mono);
-      font-size: 0.45rem;
-      color: rgba(30, 28, 25, 0.6);
-      letter-spacing: 0.1em;
+      content: attr(data-ref); position: absolute; bottom: 6px; right: 8px; font-family: var(--font-mono); font-size: 0.45rem; color: rgba(30, 28, 25, 0.6); letter-spacing: 0.1em;
     }
 
     @keyframes cluster-in {
@@ -343,17 +388,9 @@
     .tag-row .counter { color: var(--accent); font-variant-numeric: tabular-nums; }
     .tag-site { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 22px; }
     
-    /* Title with beautiful underline & original text */
     .hero-title { font-family: var(--font-ja); font-weight: 300; font-size: clamp(2.4rem, 5.2vw, 3.8rem); line-height: 1.6; color: var(--fg); margin-bottom: 22px; letter-spacing: 0.08em; }
-    .hero-title .u { 
-        position: relative; 
-        display: inline-block;
-        text-decoration: none;
-    }
-    .hero-title .u::after {
-        content: ''; position: absolute; left: 0; bottom: -4px; width: 100%; height: 2px;
-        background-color: rgba(196,168,130,0.6); 
-    }
+    .hero-title .u { position: relative; display: inline-block; text-decoration: none; }
+    .hero-title .u::after { content: ''; position: absolute; left: 0; bottom: -4px; width: 100%; height: 2px; background-color: rgba(196,168,130,0.6); }
     
     .hero-sub-jp { font-family: var(--font-ja); font-size: 0.95rem; font-weight: 400; color: rgba(233,229,223,0.75); margin-bottom: 6px; }
     .hero-sub-en { font-family: var(--font-en); font-style: italic; font-size: 0.85rem; letter-spacing: 0.12em; color: var(--accent); }
@@ -366,54 +403,6 @@
     .hero-scroll-cue span { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.25em; color: var(--fg); text-transform: uppercase; }
     .hero-scroll-line { width: 1px; height: 30px; background: linear-gradient(to bottom, var(--accent), transparent); animation: line-run 2s ease-in-out infinite; }
     @keyframes line-run { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 50.01% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
-
-    /* モバイル・レスポンシブ (Hero Photo & Placements) */
-    @media(max-width: 860px) {
-      .hero {
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        padding-top: 100px;
-        padding-bottom: 80px;
-      }
-      .hero-photo-cluster { display: none; }
-
-      .hero-photo-plate.main-plate {
-        position: relative; left: auto; top: auto; transform: none;
-        margin: 0 auto -28px;
-        width: 45%; max-width: 170px;
-        animation: mobile-plate-in 1s forwards var(--delay); opacity: 0;
-        z-index: 5;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-      }
-
-      .specimen-tag.hero-tag {
-        margin: 0; width: 100%;
-        padding: 2rem 1.4rem;
-        background: rgba(9, 9, 8, 0.88);
-        z-index: 6;
-      }
-
-      .hero-title {
-        font-size: clamp(1.7rem, 7.5vw, 2.2rem);
-        line-height: 1.5;
-        margin-bottom: 16px;
-      }
-      .hero-sub-jp { font-size: 0.85rem; line-height: 1.5; margin-bottom: 6px; }
-      .hero-sub-en { font-size: 0.72rem; }
-      .tag-row { margin-bottom: 12px; }
-      .tag-site { margin-bottom: 16px; }
-
-      .hero-coord.tl { display: block; top: 85px; bottom: auto; right: var(--px); text-align: right; }
-      .hero-compass { top: 85px; }
-      .hero-watermark { display: none; }
-    }
-    @media(min-width: 861px) {
-      .hero-photo-plate.main-plate { display: none; }
-    }
-    @keyframes mobile-plate-in {
-      to { opacity: 1; transform: rotate(var(--rot)); }
-    }
 
     /* ============================================================
         GENERAL SECTION
@@ -619,6 +608,71 @@
       letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none; transition: all 0.4s var(--ease); border-radius: 2px;
     }
     .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3); }
+
+    /* ============================================================
+        TOOLTIP (マウス追従ポップアップ)
+    ================================================================ */
+    .mouse-tooltip {
+      position: fixed; top: 0; left: 0; pointer-events: none; background: rgba(10, 10, 8, 0.95); color: rgba(233, 229, 223, 0.9);
+      padding: 6px 12px; border-radius: 4px; font-size: 11px; font-family: var(--font-ja); letter-spacing: 0.05em; border: 0.5px solid rgba(196, 168, 130, 0.3);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5); opacity: 0; transform: translate(15px, 15px); transition: opacity 0.2s ease; z-index: 99999;
+      white-space: nowrap; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    }
+    .mouse-tooltip.visible { opacity: 1; }
+    @media (pointer: coarse) { .mouse-tooltip { display: none !important; } }
+
+    /* ============================================================
+        RESPONSIVE Adjustments
+    ================================================================ */
+    @media(max-width: 860px) {
+      .hero {
+        align-items: center; justify-content: center; flex-direction: column;
+        padding-top: 100px; padding-bottom: 80px;
+      }
+      .hero-photo-cluster { display: none; }
+
+      .hero-photo-plate.main-plate {
+        position: relative; left: auto; top: auto; transform: none;
+        margin: 0 auto -28px; width: 45%; max-width: 170px;
+        animation: mobile-plate-in 1s forwards var(--delay); opacity: 0;
+        z-index: 5; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      }
+
+      .specimen-tag.hero-tag { margin: 0; width: 100%; padding: 2rem 1.4rem; background: rgba(9, 9, 8, 0.88); z-index: 6; }
+      .hero-title { font-size: clamp(1.7rem, 7.5vw, 2.2rem); line-height: 1.5; margin-bottom: 16px; }
+      .hero-sub-jp { font-size: 0.85rem; line-height: 1.5; margin-bottom: 6px; }
+      .hero-sub-en { font-size: 0.72rem; }
+      .tag-row { margin-bottom: 12px; }
+      .tag-site { margin-bottom: 16px; }
+
+      .hero-coord.tl { display: block; top: 85px; bottom: auto; right: var(--px); text-align: right; }
+      .hero-compass { top: 85px; }
+      .hero-watermark { display: none; }
+    }
+    @media(min-width: 861px) {
+      .hero-photo-plate.main-plate { display: none; }
+    }
+    @keyframes mobile-plate-in { to { opacity: 1; transform: rotate(var(--rot)); } }
+
+    @media (max-width: 768px) {
+      nav#top-nav {
+        padding: 1rem 1.25rem;
+      }
+      .nav-links { display: none; }
+      .nav-right-group { gap: 1rem; }
+      .nav-hamburger { display: block; }
+      
+      .nav-links.open {
+        display: flex; flex-direction: column; position: fixed; inset: 0;
+        background: rgba(6,6,5,0.98); align-items: center; justify-content: center; gap: 2rem;
+        z-index: 300; padding: 1rem; backdrop-filter: blur(16px);
+      }
+      .nav-links.open a { font-size: 1.1rem; padding: 0.6rem; }
+    }
+    
+    @media (max-width: 480px) {
+      .hero-scroll-cue { display: none; }
+    }
   </style>
 </head>
 <body id="top">
@@ -643,32 +697,20 @@
   </div>
 
   <nav id="top-nav">
-    <a href="https://sh012da.github.io/sh01/" class="nav-logo-unified">Tsuda Shoichi</a>
+    <a href="contact.html" class="nav-cta" id="nav-cta-btn">Contact</a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="https://sh012da.github.io/sh01/index.html#statement">Statement</a></li>
-      <li><a href="https://sh012da.github.io/sh01/index.html#works">Works</a></li>
-      <li><a href="https://sh012da.github.io/sh01/index.html#profile">Profile</a></li>
-      <li><a href="https://sh012da.github.io/sh01/index.html#news">News</a></li>
+      <li><a href="#overview" class="js-scroll-to" data-tooltip="調査概要">Overview</a></li>
+      <li><a href="#plates" class="js-scroll-to" data-tooltip="図版">Plates</a></li>
+      <li><a href="#site-plan" class="js-scroll-to" data-tooltip="配置図">Site Plan</a></li>
+      <li><a href="#specimens" class="js-scroll-to" data-tooltip="出土遺物">Specimens</a></li>
+      <li><a href="#fieldnotes" class="js-scroll-to" data-tooltip="聞き取り調査">Fieldnotes</a></li>
     </ul>
-    <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
-  </nav>
-
-  <nav class="page-nav" id="pageNav" aria-label="ページ内案内">
-    <button class="page-nav-item" data-target="overview" aria-label="調査概要へ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Overview</span>
-    </button>
-    <button class="page-nav-item" data-target="plates" aria-label="図版へ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Plates</span>
-    </button>
-    <button class="page-nav-item" data-target="site-plan" aria-label="配置図へ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Site Plan</span>
-    </button>
-    <button class="page-nav-item" data-target="specimens" aria-label="遺物へ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Specimens</span>
-    </button>
-    <button class="page-nav-item" data-target="fieldnotes" aria-label="聞き取りへ">
-      <div class="page-nav-dot"></div><span class="page-nav-label">Fieldnotes</span>
-    </button>
+    <div class="nav-right-group">
+      <a href="https://sh012da.github.io/sh01/" class="nav-logo-unified">Tsuda Shoichi</a>
+      <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </nav>
 
   <header class="hero" id="hero">
@@ -1037,7 +1079,7 @@
     <p class="eyebrow" style="text-align: center; margin-bottom: 1.5rem;">Contact</p>
     <h2 class="contact-heading">お問い合わせ</h2>
     <p class="contact-body-text">展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。</p>
-    <a class="contact-btn" href="https://sh012da.github.io/sh01/contact.html"><span>問い合わせフォームへ</span></a>
+    <a class="contact-btn" href="contact.html"><span>問い合わせフォームへ</span></a>
   </section>
 
   <footer>
@@ -1045,11 +1087,14 @@
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
-  <a href="#top" class="back-to-top" id="backToTop" aria-label="ページの先頭へ戻る">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M18 15l-6-6-6 6"/>
+  <a href="#top" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
+    <svg class="b2t-progress" viewBox="0 0 100 100">
+      <circle class="b2t-progress-bg" cx="50" cy="50" r="48"></circle>
+      <circle class="b2t-progress-value" id="b2t-progress-value" cx="50" cy="50" r="48"></circle>
     </svg>
-    <span class="back-to-top-text">TOP</span>
+    <div class="b2t-inner">
+      <span class="b2t-text">TOP</span>
+    </div>
   </a>
 
   <div class="image-modal" id="imageModal" aria-hidden="true" role="dialog">
@@ -1068,6 +1113,8 @@
       </div>
     </div>
   </div>
+
+  <div class="mouse-tooltip" id="mouse-tooltip"></div>
 
   <script>
     /* ---------- Loader: cataloguing counter & Decode Gimmick ---------- */
@@ -1141,9 +1188,10 @@
       const header = document.getElementById('top-nav');
       const progress = document.getElementById('progress');
       const b2t = document.getElementById('backToTop');
-      const pageNav = document.getElementById('pageNav');
-      const navItems = document.querySelectorAll('.page-nav-item');
+      const b2tCircle = document.getElementById('b2t-progress-value');
+      const navLinks = document.querySelectorAll('.nav-links a');
       const targets = ['overview', 'plates', 'site-plan', 'specimens', 'fieldnotes'].map(id => document.getElementById(id));
+      const tooltip = document.getElementById('mouse-tooltip');
 
       const depthValue = document.getElementById('depthValue');
       const depthStage = document.getElementById('depthStage');
@@ -1171,30 +1219,69 @@
         }
         if (depthValue) { depthValue.textContent = 'G.L. -' + (pct * 2.8).toFixed(1) + 'm'; }
 
-        if(b2t) b2t.classList.toggle('is-visible', y > 500);
+        if(b2t) b2t.classList.toggle('is-visible', y > 400);
+        if (b2tCircle) {
+          const offset = 301.6 - (301.6 * pct);
+          b2tCircle.style.strokeDashoffset = offset;
+        }
 
         const checkY = y + window.innerHeight * 0.4;
         let currentSec = null, currentStage = stages[0];
         targets.forEach((sec, i) => { if (sec && sec.offsetTop <= checkY) { currentSec = sec; currentStage = stages[i]; } });
-        navItems.forEach(item => {
-          const t = document.getElementById(item.getAttribute('data-target'));
-          item.classList.toggle('active', t === currentSec);
+        
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (currentSec && link.getAttribute('href') === `#${currentSec.id}`) {
+            link.classList.add('active');
+          }
         });
+
         if (depthStage && currentStage) depthStage.textContent = currentStage.label;
-        if(pageNav) pageNav.classList.toggle('visible', y > window.innerHeight * 0.5);
       }
       document.addEventListener('scroll', onScroll, {passive: true});
       onScroll();
 
-      navItems.forEach(item => {
-        item.addEventListener('click', () => {
-          const t = document.getElementById(item.getAttribute('data-target'));
-          if(t) {
-            const offset = header ? header.offsetHeight : 70;
-            window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+      // ナビゲーションリンクのクリックとツールチップ
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          const href = link.getAttribute('href');
+          if (href.startsWith('#')) {
+            e.preventDefault();
+            const targetId = href.substring(1);
+            const target = document.getElementById(targetId);
+            if(target) {
+              const offset = header ? header.offsetHeight : 70;
+              window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+              closeMenu(); 
+            }
           }
         });
+
+        // ツールチップ連動
+        link.addEventListener('mouseenter', () => {
+          if(!tooltip) return;
+          const label = link.getAttribute('data-tooltip');
+          if(label) {
+            tooltip.textContent = label;
+            tooltip.classList.add('visible');
+          }
+        });
+        link.addEventListener('mousemove', (e) => {
+          if(!tooltip) return;
+          tooltip.style.left = (e.clientX + 15) + 'px';
+          tooltip.style.top = (e.clientY + 15) + 'px';
+        });
+        link.addEventListener('mouseleave', () => {
+          if(tooltip) tooltip.classList.remove('visible');
+        });
       });
+
+      if (b2t) {
+        b2t.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
 
       const revealEls = document.querySelectorAll('.reveal');
       const clipEls = document.querySelectorAll('.plate-card');
@@ -1272,6 +1359,18 @@
       mImg.addEventListener('click', closeModal);
       document.addEventListener('keydown', e => { if(e.key === 'Escape' && modal.classList.contains('is-active')) closeModal(); });
     })();
+
+    /* ── Mobile Hamburger Toggle ── */
+    let menuOpenScrollY = 0;
+    window.toggleMenu = function() {
+      const links = document.getElementById('nav-links');
+      const isOpen = links.classList.toggle('open');
+      if (isOpen) menuOpenScrollY = window.scrollY;
+    }
+    window.closeMenu = function() {
+      const links = document.getElementById('nav-links');
+      links.classList.remove('open');
+    }
   </script>
 </body>
 </html>
