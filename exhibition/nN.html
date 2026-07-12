@@ -73,7 +73,7 @@
       position: fixed;
       top: 0; left: 0; height: 3px; width: 0%;
       background: linear-gradient(90deg, var(--accent), var(--accent-soft));
-      z-index: 1000; transition: width 0.1s linear;
+      z-index: 10000; transition: width 0.1s linear;
     }
 
     /* ============================================================
@@ -93,11 +93,12 @@
     }
 
     /* ============================================================
-       NAVIGATION (Light Mode)
+       NAVIGATION (Light Mode) 
+       Left: Name, Center: Links, Right: Contact & Hamburger
     ================================================================ */
     nav#top-nav {
       position: fixed;
-      top: 0; left: 0; width: 100%; z-index: 1000;
+      top: 0; left: 0; width: 100%; z-index: 5000;
       display: flex; align-items: center; justify-content: space-between;
       padding: clamp(14px, 3vw, 36px) max(var(--px), calc((100vw - var(--max-width)) / 2 + var(--px)));
       background: transparent;
@@ -110,65 +111,76 @@
       box-shadow: 0 4px 20px rgba(0,0,0,0.03);
       padding: clamp(10px, 2vw, 24px) max(var(--px), calc((100vw - var(--max-width)) / 2 + var(--px)));
     }
+    
     .nav-logo-unified {
       font-family: var(--font-en);
       font-size: clamp(0.75rem, 2.5vw, 0.95rem);
       letter-spacing: 0.25em; font-weight: 600; color: #ffffff;
-      text-transform: uppercase; transition: color 0.4s ease;
+      text-transform: uppercase; transition: color 0.4s ease, opacity 0.4s ease;
+      position: relative; z-index: 2;
     }
     nav#top-nav.scrolled .nav-logo-unified { color: var(--fg); }
     .nav-logo-unified:hover { opacity: 0.6; }
-    
-    .nav-links { display: flex; gap: 2.2rem; list-style: none; }
+
+    .nav-links { 
+      display: flex; gap: 2.2rem; list-style: none; 
+      position: absolute; left: 50%; transform: translateX(-50%);
+    }
     .nav-links a {
       font-family: var(--font-en); font-size: clamp(0.6rem, 1.5vw, 0.75rem);
       letter-spacing: 0.2em; font-weight: 600;
       color: rgba(255,255,255,0.8); text-transform: uppercase;
+      position: relative; padding-bottom: 6px; display: inline-block;
+      transition: color 0.3s ease;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; left: 0; bottom: 0; width: 100%; height: 2px;
+      background: var(--accent); transform: scaleX(0); transform-origin: center;
+      transition: transform 0.4s var(--ease);
     }
     nav#top-nav.scrolled .nav-links a { color: var(--muted); }
-    nav#top-nav.scrolled .nav-links a:hover { color: var(--accent); }
+    nav#top-nav.scrolled .nav-links a:hover,
+    nav#top-nav.scrolled .nav-links a.active { color: var(--accent); }
+    .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
 
+    .nav-right-group {
+      display: flex; align-items: center; gap: 1rem; position: relative; z-index: 2;
+    }
+    
     .nav-cta {
       font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
       letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600;
       border: 1px solid rgba(255,255,255,0.4); padding: 0.55rem 1.4rem;
       color: #ffffff; border-radius: 30px; transition: all 0.3s;
+      flex-shrink: 0;
     }
     nav#top-nav.scrolled .nav-cta {
       border-color: var(--accent); color: var(--accent); background: transparent;
     }
     nav#top-nav.scrolled .nav-cta:hover { background: var(--accent); color: #fff; }
-    
-    /* Page Nav (Right fixed) */
-    .page-nav {
-      position: fixed;
-      right: clamp(10px, 2vw, 24px); top: 50%;
-      transform: translateY(-50%); z-index: 200;
-      display: flex; flex-direction: column; gap: 24px;
-      opacity: 0; visibility: hidden;
-      transition: opacity 0.6s var(--ease), visibility 0.6s;
-    }
-    .page-nav.visible { opacity: 1; visibility: visible; }
-    .page-nav-item {
-      display: flex; align-items: center; gap: 12px; flex-direction: row-reverse;
-      cursor: pointer; background: none; border: none; padding: 8px 0;
-    }
-    .page-nav-dot {
-      width: 10px; height: 10px; border-radius: 50%;
-      background: var(--border-md); transition: all 0.35s; flex-shrink: 0;
-    }
-    .page-nav-label {
-      font-family: var(--font-en); font-size: 11px; letter-spacing: 0.18em; font-weight: 600;
-      color: var(--dim); text-transform: uppercase; transition: color 0.35s; white-space: nowrap;
-    }
-    .page-nav-item:hover .page-nav-dot, .page-nav-item.active .page-nav-dot {
-      background: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px rgba(230,57,70,0.3);
-    }
-    .page-nav-item:hover .page-nav-label { color: var(--fg); }
-    .page-nav-item.active .page-nav-label { color: var(--accent); }
+
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-hamburger span { display: block; width: 22px; height: 1.5px; background: #fff; margin: 5px 0; transition: all 0.3s; }
+    nav#top-nav.scrolled .nav-hamburger span { background: var(--fg); }
 
     /* ============================================================
-       HERO SECTION 
+        TOOLTIP (マウス追従ポップアップ)
+    ================================================================ */
+    .mouse-tooltip {
+      position: fixed; top: 0; left: 0; pointer-events: none; 
+      background: rgba(26, 27, 30, 0.95); color: #ffffff;
+      padding: 6px 12px; border-radius: 4px; font-size: 11px; 
+      font-family: var(--font-ja); letter-spacing: 0.05em; 
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15); opacity: 0; 
+      transform: translate(15px, 15px); transition: opacity 0.2s ease; 
+      z-index: 99999; white-space: nowrap; 
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    }
+    .mouse-tooltip.visible { opacity: 1; }
+    @media (pointer: coarse) { .mouse-tooltip { display: none !important; } }
+
+    /* ============================================================
+        HERO SECTION 
     ================================================================ */
     .hero {
       position: relative; height: 100svh; min-height: 600px;
@@ -317,7 +329,7 @@
       border-bottom: 2px solid var(--accent); padding-bottom: 2px;
     }
 
-    /* --- Photo Frame (Pop Modern Style) --- */
+    /* --- Photo Frame --- */
     .photo-frame {
       overflow: hidden; background: #fff; position: relative;
       border-radius: 4px; border: 1px solid var(--border-md);
@@ -336,19 +348,17 @@
     .full-bleed .photo-frame:hover { transform: none; box-shadow: none; z-index: auto; }
 
     /* ============================================================
-       CREATIVE PHOTO LAYOUTS (IMMERSIVE & STAGGERED)
+       CREATIVE PHOTO LAYOUTS
     ================================================================ */
-    /* モザイク状の非対称レイアウト */
     .immersive-mosaic {
       display: grid; grid-template-columns: 1.4fr 1fr; gap: clamp(20px, 4vw, 40px);
       align-items: center; margin: clamp(80px, 12vh, 160px) 0;
     }
     .immersive-mosaic .col-right { 
       display: flex; flex-direction: column; gap: clamp(30px, 6vw, 60px); 
-      transform: translateY(40px); /* 右側を全体的に少し下げることで動きを出す */
+      transform: translateY(40px); 
     }
     
-    /* オーバーラップ（画像とテキストの重なり） */
     .overlap-block { position: relative; margin: 160px 0; display: flex; flex-direction: column; align-items: flex-end; }
     .overlap-media { width: 75%; height: clamp(340px, 45vw, 620px); z-index: 1; }
     .overlap-text { 
@@ -360,7 +370,6 @@
     .overlap-block--rev { align-items: flex-start; }
     .overlap-block--rev .overlap-text { align-self: flex-end; margin-top: -120px; border-top: 4px solid var(--accent-soft); }
     
-    /* ギャラリー感のあるスタッガード（互い違い）配置 */
     .staggered-gallery { 
       display: grid; grid-template-columns: 4fr 5fr 4fr; gap: clamp(16px, 3vw, 40px); 
       margin: 140px 0; align-items: center; 
@@ -369,18 +378,15 @@
     .staggered-gallery .photo-frame:nth-child(2) { z-index: 2; box-shadow: 0 20px 50px rgba(0,0,0,0.12); }
     .staggered-gallery .photo-frame:nth-child(3) { transform: translateY(50px); margin-right: 20px; }
 
-    /* 2カラムの非対称没入レイアウト */
     .immersive-2-col { 
       display: grid; grid-template-columns: 1fr 1.3fr; gap: clamp(40px, 8vw, 80px); 
       align-items: center; margin: 140px 0; 
     }
     .immersive-2-col > div:first-child { transform: translateY(-60px); }
     
-    /* テキストスタイル */
     .block-title { font-family: var(--font-ja); font-size: clamp(1.2rem, 2vw, 1.4rem); font-weight: 700; color: var(--fg); margin-bottom: 20px; letter-spacing: 0.05em; }
     .block-text { font-size: 0.9rem; line-height: 2.2; color: var(--muted); margin-bottom: 1.2em; text-align: justify; }
     
-    /* ピル形状のメタタグ */
     .block-meta { 
       font-family: var(--font-en); font-size: 0.6rem; letter-spacing: 0.15em; font-weight: 600;
       color: var(--muted); text-transform: uppercase; display: inline-block; margin-top: 10px;
@@ -390,7 +396,6 @@
     .caption-row { display: flex; justify-content: flex-end; padding-top: 16px; margin-top: 60px; border-top: 1px solid var(--border); }
     .caption-row__text { font-family: var(--font-ja); font-size: 0.7rem; color: var(--dim); letter-spacing: 0.08em; }
 
-    /* Floor Header */
     .floor-header { display: flex; align-items: flex-start; gap: 48px; margin-bottom: 100px; } 
     .floor-number { font-family: var(--font-en); font-weight: 700; font-size: clamp(4rem, 8vw, 7rem); line-height: 1; color: var(--accent-soft); opacity: 0.15; letter-spacing: -0.02em; flex-shrink: 0; user-select: none; position: relative; top: -8px; }
     .floor-label { font-family: var(--font-en); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; display: flex; align-items: center; gap: 14px; }
@@ -399,7 +404,7 @@
     .floor-desc { font-size: 0.95rem; line-height: 2.2; color: var(--muted); letter-spacing: 0.05em; max-width: 680px; }
 
     /* ============================================================
-       ARTISTS GRID (Pop Modernized)
+       ARTISTS GRID 
     ================================================================ */
     .artists-band { margin-top: 80px; }
     .artists-band-title { font-family: var(--font-en); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: var(--fg); margin-bottom: 24px; display: block; border-bottom: 2px solid var(--fg); padding-bottom: 12px; }
@@ -437,10 +442,12 @@
     }
     .contact-btn:hover { background: var(--fg); color: #fff; transform: translateY(-3px); box-shadow: 0 12px 25px rgba(0,0,0,0.15); }
 
+    /* フッター（中央配置に修正） */
     footer {
-      padding: clamp(2rem, 5vh, 4rem) max(var(--px), calc((100vw - var(--max-width)) / 2 + var(--px)));
-      display: flex; justify-content: space-between;
-      align-items: center; flex-wrap: wrap; gap: 1.2rem; border-top: 1px solid var(--border); background: var(--bg);
+      padding: clamp(3rem, 5vh, 6rem) max(var(--px), calc((100vw - var(--max-width)) / 2 + var(--px)));
+      display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 1.2rem;
+      border-top: 1px solid var(--border); background: var(--bg);
+      position: relative; z-index: 5; text-align: center;
     }
     .footer-logo { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.8vw, 0.95rem); font-weight: 700; color: var(--fg); text-decoration: none; letter-spacing: 0.08em; }
     .footer-copy { font-family: var(--font-en); font-size: clamp(0.55rem, 1.3vw, 0.65rem); letter-spacing: 0.15em; font-weight: 600; color: var(--dim); text-transform: uppercase; }
@@ -482,47 +489,113 @@
     .series-nav a.next:hover .dir { transform: translateX(6px); }
 
     /* ============================================================
-       BACK TO TOP BUTTON
+       BACK TO TOP (Progress Ring UI)
     ================================================================ */
     .back-to-top {
-      position: fixed; bottom: clamp(1.5rem, 5vh, 3.5rem); right: clamp(15px, 4vw, 45px);
-      z-index: 9000; width: clamp(56px, 8vw, 76px); height: clamp(56px, 8vw, 76px);
-      border-radius: 50%; background: #ffffff; border: 2px solid var(--fg);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--fg);
-      opacity: 0; visibility: hidden; transform: translateY(16px);
-      transition: all 0.4s var(--ease); cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.1); text-decoration: none;
+      position: fixed;
+      bottom: clamp(20px, 4vw, 40px);
+      right: clamp(20px, 4vw, 40px);
+      z-index: 9000;
+      width: clamp(52px, 8vw, 70px);
+      height: clamp(52px, 8vw, 70px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: opacity 0.6s var(--ease), visibility 0.6s, transform 0.6s var(--ease);
+      cursor: pointer;
     }
-    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
-    .back-to-top:hover { background: var(--fg); color: #ffffff; transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.15); }
-    .back-to-top svg { width: clamp(18px, 2.5vw, 26px); height: clamp(18px, 2.5vw, 26px); margin-bottom: 1px; }
-    .back-to-top-text { font-family: var(--font-en); font-size: clamp(0.58rem, 1.3vw, 0.75rem); font-weight: 700; text-transform: uppercase; line-height: 1; }
+    .back-to-top.is-visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .b2t-inner {
+      position: absolute;
+      inset: 4px;
+      background: rgba(255, 255, 255, 0.85); /* ページトーンに合わせた明るさ */
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.4s var(--ease), transform 0.4s var(--ease);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.1);
+    }
+    .b2t-text {
+      font-family: var(--font-en);
+      font-size: clamp(0.6rem, 1.4vw, 0.75rem);
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      color: var(--fg);
+      margin-right: -0.15em;
+      margin-bottom: -1px;
+      transition: color 0.4s var(--ease), transform 0.4s var(--ease);
+    }
+    .b2t-progress {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+      pointer-events: none;
+    }
+    .b2t-progress circle {
+      fill: none;
+      stroke-width: 1.5;
+    }
+    .b2t-progress-bg {
+      stroke: rgba(0, 0, 0, 0.05);
+    }
+    .b2t-progress-value {
+      stroke: var(--accent);
+      stroke-dasharray: 301.6;
+      stroke-dashoffset: 301.6;
+      transition: stroke-dashoffset 0.15s linear, stroke 0.4s var(--ease);
+    }
+    .back-to-top:hover .b2t-inner {
+      background: var(--accent);
+      transform: scale(0.92);
+    }
+    .back-to-top:hover .b2t-text {
+      color: #fff;
+      transform: translateY(-2px);
+    }
+    .back-to-top:hover .b2t-progress-value {
+      stroke: #fff;
+    }
 
     /* ============================================================
-       LIGHTBOX (MODAL) - 修正済
+       LIGHTBOX MODAL
     ================================================================ */
-    .lightbox { 
-      display: none; position: fixed; inset: 0; z-index: 9999; 
-      background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      justify-content: center; align-items: center; 
-      padding: clamp(20px, 4vw, 40px); /* 画面端に余白を確保 */
-      opacity: 0; transition: opacity 0.3s ease;
+    .image-modal {
+      position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center;
+      opacity: 0; visibility: hidden; transition: opacity 0.5s var(--ease), visibility 0.5s;
     }
-    .lightbox.active { display: flex; opacity: 1; }
-    
-    /* コンテナ全体を使ってフレックスで中央配置 */
-    .lightbox__inner { 
-      position: relative; width: 100%; height: 100%; 
-      display: flex; justify-content: center; align-items: center; 
+    .image-modal.is-active { opacity: 1; visibility: visible; }
+    .modal-bg { position: absolute; inset: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); cursor: zoom-out; }
+    .modal-close {
+      position: fixed; top: clamp(1.5rem, 3vh, 2.5rem); right: var(--px); z-index: 10001;
+      background: none; border: none; color: var(--muted); cursor: pointer; padding: 0.5rem;
+      transition: color 0.3s ease, transform 0.3s var(--ease);
     }
-    
-    /* 縦横最大100%の枠内に収めることで、はみ出し（見切れ）を完全防止 */
-    .lightbox__img { 
-      max-width: 100%; max-height: 100%; 
-      width: auto; height: auto; 
-      object-fit: contain; 
-      box-shadow: 0 20px 60px rgba(0,0,0,0.15); 
-      border: 1px solid var(--border-md); border-radius: 4px; 
+    .modal-close:hover { color: var(--fg); transform: scale(1.1) rotate(90deg); }
+    .modal-content {
+      position: relative; z-index: 10000; max-width: 90vw; margin: auto;
+      display: flex; flex-direction: column; align-items: center; gap: clamp(1rem, 2vh, 1.5rem);
+      opacity: 0; transform: scale(0.96) translateY(12px);
+      transition: opacity 0.5s var(--ease) 0.08s, transform 0.5s var(--ease) 0.08s;
     }
+    .image-modal.is-active .modal-content { opacity: 1; transform: scale(1) translateY(0); }
+    .modal-content img { max-width: 100%; max-height: 78svh; object-fit: contain; box-shadow: 0 32px 80px rgba(0,0,0,0.15); border: 1px solid var(--border-md); cursor: zoom-out; border-radius: 4px; }
+    .modal-caption { text-align: center; width: 100%; padding: 0 1rem; }
+    .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(1rem, 1.8vw, 1.35rem); font-weight: 500; color: var(--fg); margin-bottom: 0.3rem; }
+    .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.7rem, 1.2vw, 0.85rem); font-weight: 600; color: var(--accent-soft); letter-spacing: 0.15em; }
 
     /* ============================================================
        RESPONSIVE DESIGN 
@@ -547,11 +620,18 @@
     @media (max-width: 768px) {
       nav#top-nav { padding: 1.1rem var(--px); justify-content: space-between; }
       .nav-links { display: none !important; }
-      .nav-hamburger { display: none !important; } 
+      .nav-hamburger { display: block !important; } 
       .nav-cta { padding: 0.45rem 1.1rem; font-size: 0.65rem; }
       
-      .page-nav.visible { right: 8px; opacity: 0.7; }
-      .page-nav-label { display: none; }
+      /* Mobile Menu Styles */
+      .nav-links.open {
+        display: flex !important; flex-direction: column; position: fixed; inset: 0;
+        background: rgba(255,255,255,0.98); align-items: center; justify-content: center; gap: 2rem;
+        z-index: 300; padding: 1rem; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      }
+      .nav-links.open a { font-size: 1.1rem; color: var(--fg); }
+      .nav-links.open a:hover { color: var(--accent); }
+
       .series-nav { flex-direction: column; }
       .series-nav a:first-child { border-right: none; border-bottom: 1px solid var(--border); }
       .series-nav a.next { align-items: flex-start; text-align: left; }
@@ -562,21 +642,20 @@
 
   <div class="progress" id="progress"></div>
 
+  <!-- HEADER REBUILT -->
   <nav id="top-nav">
     <a href="https://sh012da.github.io/sh01/" class="nav-logo-unified">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="https://sh012da.github.io/sh01/index.html#statement">Statement</a></li>
-      <li><a href="https://sh012da.github.io/sh01/index.html#works">Works</a></li>
-      <li><a href="https://sh012da.github.io/sh01/index.html#profile">Profile</a></li>
-      <li><a href="https://sh012da.github.io/sh01/index.html#news">News</a></li>
+      <li><a href="#gallery" class="js-scroll-to" data-tooltip="1F ギャラリー">Gallery 1F</a></li>
+      <li><a href="#lobby" class="js-scroll-to" data-tooltip="ロビー">Lobby</a></li>
+      <li><a href="#works" class="js-scroll-to" data-tooltip="作品群">Works</a></li>
     </ul>
-    <a href="#contact" class="nav-cta" id="nav-cta-btn">Contact</a>
-  </nav>
-
-  <nav class="page-nav" id="pageNav" aria-label="ページ内案内">
-    <button class="page-nav-item" data-target="gallery"><div class="page-nav-dot"></div><span class="page-nav-label">Gallery 1F</span></button>
-    <button class="page-nav-item" data-target="lobby"><div class="page-nav-dot"></div><span class="page-nav-label">Lobby</span></button>
-    <button class="page-nav-item" data-target="works"><div class="page-nav-dot"></div><span class="page-nav-label">Works</span></button>
+    <div class="nav-right-group">
+      <a href="contact.html" class="nav-cta" id="nav-cta-btn">Contact</a>
+      <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </nav>
 
   <header class="hero">
@@ -672,7 +751,7 @@
           <div class="floor-intro">
             <p class="floor-label">Works in Space</p>
             <h2 class="floor-title">大空間に現れた「森」の萌芽</h2>
-            <p class="floor-desc">ホクト文化ホール1Fギャラリーは、公共建築特有の長い廊下空間だ。白い壁と磨かれた床が延々と続くその場所に、津田の油彩が展開する。大型作品の物質的な重さと、そこから放たれる色彩の密度は、建物の均質な時間を確かに裂き、無機質な空間に呼吸する森の気配を立ち上がらせていた。</p>
+            <p class="floor-desc">ホクト文化ホール1Fギャラリーは、公共建築特有の長い廊下空間だ。白い壁と磨かれた床が延々と続くその場所に、津田の油彩が展開する。大型作品の物質的な重さと、そこから放たれる色彩の密度は、建物的均質な時間を確かに裂き、無機質な空間に呼吸する森の気配を立ち上がらせていた。</p>
           </div>
         </div>
 
@@ -812,7 +891,7 @@
       <p class="eyebrow" style="text-align: center; margin-bottom: 1.5rem;">Contact</p>
       <h2 class="contact-heading">お問い合わせ</h2>
       <p class="contact-body-text">作品・展示・取材等に関するお問い合わせは、<br>下記フォームよりお気軽にご連絡ください。</p>
-      <a class="contact-btn" href="https://sh012da.github.io/sh01/contact.html"><span>問い合わせフォームへ</span></a>
+      <a class="contact-btn" href="contact.html"><span>問い合わせフォームへ</span></a>
     </div>
   </section>
 
@@ -821,11 +900,17 @@
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
+  <!-- ==========================================
+       BACK TO TOP: PROGRESS RING UI
+  =========================================== -->
   <a href="#top" class="back-to-top" id="backToTop" aria-label="ページの先頭へ戻る">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M18 15l-6-6-6 6"/>
+    <svg class="b2t-progress" viewBox="0 0 100 100">
+      <circle class="b2t-progress-bg" cx="50" cy="50" r="48"></circle>
+      <circle class="b2t-progress-value" id="b2t-progress-value" cx="50" cy="50" r="48"></circle>
     </svg>
-    <span class="back-to-top-text">TOP</span>
+    <div class="b2t-inner">
+      <span class="b2t-text">TOP</span>
+    </div>
   </a>
 
   <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog">
@@ -834,14 +919,17 @@
     </div>
   </div>
 
+  <div class="mouse-tooltip" id="mouse-tooltip"></div>
+
   <script>
     (function(){
       const header = document.getElementById('top-nav');
       const progress = document.getElementById('progress');
       const b2t = document.getElementById('backToTop');
-      const pageNav = document.getElementById('pageNav');
-      const navItems = document.querySelectorAll('.page-nav-item');
+      const b2tCircle = document.getElementById('b2t-progress-value');
+      const navLinks = document.querySelectorAll('.nav-links a');
       const targets = ['gallery', 'lobby', 'works'].map(id => document.getElementById(id));
+      const tooltip = document.getElementById('mouse-tooltip');
 
       function onScroll() {
         const y = window.scrollY || document.documentElement.scrollTop;
@@ -849,32 +937,63 @@
         if(header) header.classList.toggle('scrolled', y > 50);
         
         const h = document.documentElement.scrollHeight - window.innerHeight;
-        if(progress) progress.style.width = (h > 0 ? (y / h) * 100 : 0) + '%';
+        const pct = h > 0 ? (y / h) : 0;
+        if(progress) progress.style.width = (pct * 100) + '%';
         
         if(b2t) b2t.classList.toggle('is-visible', y > 400);
+        if (b2tCircle) {
+          const offset = 301.6 - (301.6 * pct);
+          b2tCircle.style.strokeDashoffset = offset;
+        }
 
         const checkY = y + window.innerHeight * 0.45;
         let currentSec = null;
         targets.forEach(sec => {
           if (sec && sec.offsetTop <= checkY) currentSec = sec;
         });
-        navItems.forEach(item => {
-          const t = document.getElementById(item.getAttribute('data-target'));
-          item.classList.toggle('active', t === currentSec);
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (currentSec && link.getAttribute('href') === `#${currentSec.id}`) {
+            link.classList.add('active');
+          }
         });
-        if(pageNav) pageNav.classList.toggle('visible', y > window.innerHeight * 0.5);
       }
 
       document.addEventListener('scroll', onScroll, {passive: true});
       onScroll();
 
-      navItems.forEach(item => {
-        item.addEventListener('click', () => {
-          const t = document.getElementById(item.getAttribute('data-target'));
-          if(t) {
-            const offset = header ? header.offsetHeight : 70;
-            window.scrollTo({ top: t.offsetTop - offset, behavior: 'smooth' });
+      // ナビゲーションリンクのクリックとツールチップ
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          const href = link.getAttribute('href');
+          if (href.startsWith('#')) {
+            e.preventDefault();
+            const targetId = href.substring(1);
+            const target = document.getElementById(targetId);
+            if(target) {
+              const offset = header ? header.offsetHeight : 70;
+              window.scrollTo({ top: target.offsetTop - offset, behavior: 'smooth' });
+              if (window.closeMenu) window.closeMenu();
+            }
           }
+        });
+
+        // ツールチップ連動
+        link.addEventListener('mouseenter', () => {
+          if(!tooltip) return;
+          const label = link.getAttribute('data-tooltip');
+          if(label) {
+            tooltip.textContent = label;
+            tooltip.classList.add('visible');
+          }
+        });
+        link.addEventListener('mousemove', (e) => {
+          if(!tooltip) return;
+          tooltip.style.left = (e.clientX + 15) + 'px';
+          tooltip.style.top = (e.clientY + 15) + 'px';
+        });
+        link.addEventListener('mouseleave', () => {
+          if(tooltip) tooltip.classList.remove('visible');
         });
       });
 
@@ -884,6 +1003,7 @@
       });
 
       document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        if(anchor.classList.contains('js-scroll-to')) return; // 上で処理済み
         anchor.addEventListener('click', function (e) {
           const href = this.getAttribute('href');
           if(href === '#') return;
@@ -936,6 +1056,18 @@
       });
       document.addEventListener('keydown', e => { if(e.key === 'Escape' && lightbox.classList.contains('active')) lightbox.click(); });
     })();
+
+    /* ── Mobile Hamburger Toggle ── */
+    let menuOpenScrollY = 0;
+    window.toggleMenu = function() {
+      const links = document.getElementById('nav-links');
+      const isOpen = links.classList.toggle('open');
+      if (isOpen) menuOpenScrollY = window.scrollY;
+    }
+    window.closeMenu = function() {
+      const links = document.getElementById('nav-links');
+      links.classList.remove('open');
+    }
   </script>
 </body>
 </html>
