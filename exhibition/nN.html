@@ -94,7 +94,6 @@
 
     /* ============================================================
        NAVIGATION (Light Mode) 
-       Left: Name, Center: Links, Right: Contact & Hamburger
     ================================================================ */
     nav#top-nav {
       position: fixed;
@@ -159,18 +158,8 @@
     }
     nav#top-nav.scrolled .nav-cta:hover { background: var(--accent); color: #fff; }
 
-   .nav-hamburger {
-    display: none !important; /* ここに !important を追加 */
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-　　}
-    .nav-hamburger span { display: block; width: 22px; height: 1.5px; background: #fff; margin: 5px 0; transition: all 0.3s; }
-    nav#top-nav.scrolled .nav-hamburger span { background: var(--fg); }
-
     /* ============================================================
-        TOOLTIP (マウス追従ポップアップ)
+       TOOLTIP (マウス追従ポップアップ)
     ================================================================ */
     .mouse-tooltip {
       position: fixed; top: 0; left: 0; pointer-events: none; 
@@ -186,7 +175,7 @@
     @media (pointer: coarse) { .mouse-tooltip { display: none !important; } }
 
     /* ============================================================
-        HERO SECTION 
+       HERO SECTION 
     ================================================================ */
     .hero {
       position: relative; height: 100svh; min-height: 600px;
@@ -448,7 +437,7 @@
     }
     .contact-btn:hover { background: var(--fg); color: #fff; transform: translateY(-3px); box-shadow: 0 12px 25px rgba(0,0,0,0.15); }
 
-    /* フッター（中央配置に修正） */
+    /* フッター（中央配置） */
     footer {
       padding: clamp(3rem, 5vh, 6rem) max(var(--px), calc((100vw - var(--max-width)) / 2 + var(--px)));
       display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 1.2rem;
@@ -523,7 +512,7 @@
     .b2t-inner {
       position: absolute;
       inset: 4px;
-      background: rgba(255, 255, 255, 0.85); /* ページトーンに合わせた明るさ */
+      background: rgba(255, 255, 255, 0.85); 
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-radius: 50%;
@@ -577,7 +566,7 @@
     }
 
     /* ============================================================
-       LIGHTBOX MODAL
+       LIGHTBOX MODAL (修正・統一版)
     ================================================================ */
     .image-modal {
       position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center;
@@ -588,7 +577,7 @@
     .modal-close {
       position: fixed; top: clamp(1.5rem, 3vh, 2.5rem); right: var(--px); z-index: 10001;
       background: none; border: none; color: var(--muted); cursor: pointer; padding: 0.5rem;
-      transition: color 0.3s ease, transform 0.3s var(--ease);
+      transition: color 0.3s ease, transform 0.3s var(--ease); display: flex; align-items: center; justify-content: center;
     }
     .modal-close:hover { color: var(--fg); transform: scale(1.1) rotate(90deg); }
     .modal-content {
@@ -599,9 +588,6 @@
     }
     .image-modal.is-active .modal-content { opacity: 1; transform: scale(1) translateY(0); }
     .modal-content img { max-width: 100%; max-height: 78svh; object-fit: contain; box-shadow: 0 32px 80px rgba(0,0,0,0.15); border: 1px solid var(--border-md); cursor: zoom-out; border-radius: 4px; }
-    .modal-caption { text-align: center; width: 100%; padding: 0 1rem; }
-    .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(1rem, 1.8vw, 1.35rem); font-weight: 500; color: var(--fg); margin-bottom: 0.3rem; }
-    .modal-caption-en { font-family: var(--font-en); font-size: clamp(0.7rem, 1.2vw, 0.85rem); font-weight: 600; color: var(--accent-soft); letter-spacing: 0.15em; }
 
     /* ============================================================
        RESPONSIVE DESIGN 
@@ -623,20 +609,27 @@
       .overview__body { grid-template-columns: 1fr; gap: 40px; }
       .overview__specs { padding-left: 0; border-left: none; border-top: 2px solid var(--bg3); padding-top: 32px; }
     }
+    
     @media (max-width: 768px) {
-      nav#top-nav { padding: 1.1rem var(--px); justify-content: space-between; }
-      .nav-links { display: none !important; }
-      .nav-hamburger { display: block !important; } 
-      .nav-cta { padding: 0.45rem 1.1rem; font-size: 0.65rem; }
-      
-      /* Mobile Menu Styles */
-      .nav-links.open {
-        display: flex !important; flex-direction: column; position: fixed; inset: 0;
-        background: rgba(255,255,255,0.98); align-items: center; justify-content: center; gap: 2rem;
-        z-index: 300; padding: 1rem; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      /* モバイルでのヘッダー折り返し処理（ハンバーガーメニュー廃止） */
+      nav#top-nav { 
+        padding: 0.8rem var(--px); 
+        flex-wrap: wrap; 
+        justify-content: space-between; 
       }
-      .nav-links.open a { font-size: 1.1rem; color: var(--fg); }
-      .nav-links.open a:hover { color: var(--accent); }
+      .nav-logo-unified { order: 1; }
+      .nav-right-group { order: 2; }
+      .nav-cta { padding: 0.45rem 1.1rem; font-size: 0.65rem; }
+      .nav-links {
+        order: 3;
+        position: static;
+        transform: none;
+        width: 100%;
+        display: flex !important;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 0.8rem;
+      }
 
       .series-nav { flex-direction: column; }
       .series-nav a:first-child { border-right: none; border-bottom: 1px solid var(--border); }
@@ -648,7 +641,6 @@
 
   <div class="progress" id="progress"></div>
 
-  <!-- HEADER REBUILT -->
   <nav id="top-nav">
     <a href="https://sh012da.github.io/sh01/" class="nav-logo-unified">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
@@ -658,9 +650,6 @@
     </ul>
     <div class="nav-right-group">
       <a href="https://sh012da.github.io/sh01/contact.html" class="nav-cta" id="nav-cta-btn">Contact</a>
-      <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
-        <span></span><span></span><span></span>
-      </button>
     </div>
   </nav>
 
@@ -906,9 +895,6 @@
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
-  <!-- ==========================================
-       BACK TO TOP: PROGRESS RING UI
-  =========================================== -->
   <a href="#top" class="back-to-top" id="backToTop" aria-label="ページの先頭へ戻る">
     <svg class="b2t-progress" viewBox="0 0 100 100">
       <circle class="b2t-progress-bg" cx="50" cy="50" r="48"></circle>
@@ -919,9 +905,15 @@
     </div>
   </a>
 
-  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog">
-    <div class="lightbox__inner">
-      <img src="" alt="拡大表示" id="lbImg" class="lightbox__img" />
+  <div class="image-modal" id="image-modal" aria-hidden="true" role="dialog">
+    <div class="modal-bg"></div>
+    <button class="modal-close" id="modal-close" aria-label="閉じる">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 6L6 18M6 6l12 12"/>
+      </svg>
+    </button>
+    <div class="modal-content">
+      <img src="" alt="拡大表示" id="modal-img" />
     </div>
   </div>
 
@@ -979,7 +971,6 @@
             if(target) {
               const offset = header ? header.offsetHeight : 70;
               window.scrollTo({ top: target.offsetTop - offset, behavior: 'smooth' });
-              if (window.closeMenu) window.closeMenu();
             }
           }
         });
@@ -1022,6 +1013,7 @@
         });
       });
 
+      // スクロールアニメーション（Intersection Observer）
       const revealEls = document.querySelectorAll('.reveal, [data-reveal]');
       if('IntersectionObserver' in window) {
         const io = new IntersectionObserver(entries => {
@@ -1038,42 +1030,43 @@
         revealEls.forEach(el => el.classList.add('is-visible'));
       }
 
-      const lightbox = document.getElementById('lightbox');
-      const lbImg = document.getElementById('lbImg');
+      // --- ライトボックス（画像拡大表示）の処理を修正 ---
+      const modal = document.getElementById('image-modal');
+      const modalImg = document.getElementById('modal-img');
+      const modalClose = document.getElementById('modal-close');
+      const modalBg = document.querySelector('.modal-bg');
 
+      // 拡大トリガーの設定
       document.querySelectorAll('.photo-frame, [data-src]').forEach(trigger => {
         trigger.addEventListener('click', () => {
           const img = trigger.querySelector('img');
           const targetSrc = trigger.getAttribute('data-src') || (img ? img.src : null);
           if(targetSrc) {
-            lbImg.src = targetSrc;
-            lightbox.classList.add('active');
-            lightbox.setAttribute('aria-hidden', 'false');
+            modalImg.src = targetSrc;
+            modal.classList.add('is-active');
+            modal.setAttribute('aria-hidden', 'false');
             document.body.classList.add('is-locked');
           }
         });
       });
 
-      lightbox.addEventListener('click', () => {
-        lightbox.classList.remove('active');
-        lightbox.setAttribute('aria-hidden', 'true');
+      // 閉じる関数
+      const closeModal = () => {
+        modal.classList.remove('is-active');
+        modal.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('is-locked');
-        setTimeout(() => { lbImg.src = ''; }, 300);
-      });
-      document.addEventListener('keydown', e => { if(e.key === 'Escape' && lightbox.classList.contains('active')) lightbox.click(); });
-    })();
+        // CSSのtransition(0.5s)が終わった後に画像をクリア
+        setTimeout(() => { modalImg.src = ''; }, 500); 
+      };
 
-    /* ── Mobile Hamburger Toggle ── */
-    let menuOpenScrollY = 0;
-    window.toggleMenu = function() {
-      const links = document.getElementById('nav-links');
-      const isOpen = links.classList.toggle('open');
-      if (isOpen) menuOpenScrollY = window.scrollY;
-    }
-    window.closeMenu = function() {
-      const links = document.getElementById('nav-links');
-      links.classList.remove('open');
-    }
+      // 閉じるイベントの割り当て（ボタン、背景クリック、Escキー）
+      if(modalClose) modalClose.addEventListener('click', closeModal);
+      if(modalBg) modalBg.addEventListener('click', closeModal);
+      document.addEventListener('keydown', e => { 
+        if(e.key === 'Escape' && modal.classList.contains('is-active')) closeModal(); 
+      });
+
+    })();
   </script>
 </body>
 </html>
