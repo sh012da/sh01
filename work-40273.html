@@ -44,20 +44,39 @@
       --reveal-size: clamp(150px, 25vw, 400px);
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; background: var(--bg); }
+    *, *::before, *::after { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+    
+    html, body { 
+      width: 100%;
+      height: 100%;
+      scroll-behavior: smooth; 
+      background: var(--bg); 
+      overflow-x: hidden;
+    }
 
     body {
-      background: var(--bg);
       color: var(--text);
       font-family: var(--font-ja);
       line-height: 2.1;
       letter-spacing: 0.06em;
       -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
+      -moz-osx-font-smoothing: grayscale;
+      position: relative;
       padding-left: env(safe-area-inset-left);
       padding-right: env(safe-area-inset-right);
     }
+
+    /* 全体のスクロール横ブレを完全に防ぐラッパー */
+    .page-wrapper {
+      width: 100%;
+      overflow-x: hidden;
+      position: relative;
+    }
+
     body.is-locked { overflow: hidden; }
     img { max-width: 100%; height: auto; display: block; }
     a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
@@ -127,21 +146,24 @@
       background: var(--bg); cursor: crosshair;
     }
 
-    /* 背景層1: 暗く沈んだキャンバス */
+    /* 背景層1: 暗く沈んだキャンバス (GPUアクセラレーション適用) */
     .hero-bg-dim {
-      position: absolute; inset: -2%; z-index: 0;
+      position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; z-index: 0;
       background: url('images/in_front_of_Shinagawa_Station.jpg') center/cover no-repeat;
       filter: blur(12px) grayscale(70%) brightness(0.2);
-      transform: scale(1.02); transition: transform 10s ease-out;
+      transform: translate3d(0, 0, 0) scale(1.02); transition: transform 10s ease-out;
+      backface-visibility: hidden;
     }
     
-    /* 背景層2: マスクで透過される鮮やかな真実の風景 */
+    /* 背景層2: マスクで透過される鮮やかな真実の風景 (GPUアクセラレーション適用) */
     .hero-bg-reveal {
-      position: absolute; inset: -2%; z-index: 1;
+      position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; z-index: 1;
       background: url('images/in_front_of_Shinagawa_Station.jpg') center/cover no-repeat;
       -webkit-mask-image: radial-gradient(circle var(--reveal-size) at var(--mx, 50%) var(--my, 50%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 35%, rgba(0,0,0,0) 100%);
       mask-image: radial-gradient(circle var(--reveal-size) at var(--mx, 50%) var(--my, 50%), rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 35%, rgba(0,0,0,0) 100%);
-      pointer-events: none; transform: scale(1.02);
+      pointer-events: none; 
+      transform: translate3d(0, 0, 0) scale(1.02);
+      backface-visibility: hidden;
     }
     
     /* 画像への微細なノイズテクスチャ */
@@ -262,14 +284,14 @@
     .scale-l   { --grid-h: 320px; --tl-fig-w: 46%; --tl-txt-w: 48%; --tl-img-h: clamp(300px, 55vh, 500px); }
     .scale-s   { --grid-h: 240px; --tl-fig-w: 38%; --tl-txt-w: 56%; --tl-img-h: clamp(220px, 40vh, 380px); }
 
-    .gallery-section { padding: 0 var(--px) clamp(6rem, 13vh, 10rem); max-width: 1600px; margin: 0 auto; border-top: 0.5px solid var(--border); }
+    .gallery-section { padding: 0 var(--px) clamp(6rem, 13vh, 10rem); max-width: 1600px; margin: 0 auto; border-top: 0.5px solid var(--border); display: block !important; }
     .section-label-center { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem); letter-spacing: 0.44em; color: var(--muted-col); text-transform: uppercase; text-align: center; margin-bottom: clamp(3rem, 7vh, 5rem); margin-top: clamp(3rem, 7vh, 5rem); }
     
     .gallery-grid { display: flex; flex-wrap: wrap; gap: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 2.5vw, 2.5rem); justify-content: center; align-items: center; } 
     .gallery-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; cursor: pointer; opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); width: fit-content; max-width: 100%; }
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
     
-    .gallery-item-img-wrap { height: var(--item-height, 320px); width: max-content; display: flex; justify-content: center; align-items: center; background: #0c0c0b; overflow: hidden; border: 0.5px solid var(--border); transition: border-color 0.4s ease, box-shadow 0.5s var(--ease); }
+    .gallery-item-img-wrap { height: var(--item-height, 320px); width: max-content; max-width: 100%; display: flex; justify-content: center; align-items: center; background: #0c0c0b; overflow: hidden; border: 0.5px solid var(--border); transition: border-color 0.4s ease, box-shadow 0.5s var(--ease); }
     .gallery-item.is-portrait { --item-height: var(--grid-h); }
     .gallery-item.is-landscape { --item-height: calc(var(--grid-h) * 0.75); }
     
@@ -325,7 +347,6 @@
     .contact-heading { font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em; }
     .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.8vw, 0.95rem); color: var(--text-muted); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2; }
     
-    /* ── 新しいデザインの問い合わせボタン ── */
     .contact-btn {
       display: inline-flex;
       align-items: center;
@@ -414,7 +435,7 @@
     .b2t-inner {
       position: absolute;
       inset: 4px;
-      background: rgba(12, 12, 11, 0.5); /* --bg2に合わせた暗いトーン */
+      background: rgba(12, 12, 11, 0.5);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-radius: 50%;
@@ -475,7 +496,7 @@
     @keyframes pulseBar   { 0%,100% { opacity:0.2; } 50% { opacity:1; } }
 
     /* ════════════════════════════════════════
-       RESPONSIVE DESIGN
+       RESPONSIVE DESIGN (スマホ対応再構築)
     ════════════════════════════════════════ */
     @media (max-width: 1024px) {
       .concept-keywords { grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -492,14 +513,25 @@
     @media (max-width: 768px) {
       nav#top-nav { padding: 1rem 1.25rem; }
       .nav-links { display: none !important; }
+      
       .concept-wrapper { padding: 60px var(--px); }
       .concept-top-row { flex-direction: column; gap: 2rem; }
       .concept-sidebar { flex-direction: row; align-items: baseline; gap: 1.5rem; flex: auto; }
       .concept-sidebar-num { font-size: 2.5rem; }
       .concept-keywords { grid-template-columns: 1fr; margin-top: 3rem; }
-      .gallery-section { display: none !important; }
+      
+      /* ギャラリー一覧をスマホ向けに2カラム化 */
+      .scale-xxl { --grid-h: 260px; }
+      .scale-xl  { --grid-h: 220px; }
+      .scale-l   { --grid-h: 180px; }
+      .scale-s   { --grid-h: 140px; }
+      .gallery-section { padding-bottom: 5rem; }
+      .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem 1rem; }
+      .gallery-item { width: 100%; max-width: 100%; }
+      .gallery-item-img-wrap { width: 100%; height: var(--item-height); }
+      .gallery-item-img-wrap img { width: 100%; height: 100%; object-fit: contain; }
+
       .tl-sub-gallery { grid-template-columns: repeat(2, 1fr); }
-      /* Reveal size adjustment for mobile */
       :root { --reveal-size: 180px; }
       
       /* フッター・ボタンのレスポンシブ追加 */
@@ -507,6 +539,11 @@
       footer { padding: 3rem 1.5rem; display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; text-align: left; }
     }
     @media (max-width: 480px) {
+      .scale-xxl { --grid-h: 200px; }
+      .scale-xl  { --grid-h: 180px; }
+      .scale-l   { --grid-h: 160px; }
+      .scale-s   { --grid-h: 120px; }
+      .gallery-grid { grid-template-columns: 1fr; }
       .modal-content img { max-height: 60svh; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -518,27 +555,347 @@
 </head>
 <body id="top">
 
-  <section class="series-hero" id="heroSec">
-    <div class="hero-bg-dim"></div>
-    <div class="hero-bg-reveal"></div>
-    <div class="hero-fade-bottom"></div>
-
-    <div class="series-hero-ghost" aria-hidden="true" id="heroGhost">40273</div>
-    <div class="series-hero-inner">
-      <p class="series-eyebrow" id="heroEyebrow">Series · 40273 · Traces</p>
-      <h1 class="series-title-en" id="heroTitle">40273</h1>
-      <p class="series-title-jp" id="heroTitleJp">40273</p>
-      <p class="series-sub" id="heroSub">風景のノイズを透過する。残された線と余白が織りなす、日常のイマージュ。</p>
-      <div class="series-rule"></div>
-    </div>
+  <div class="page-wrapper">
     
-    <div class="scroll-cue" aria-hidden="true">
-      <div class="scroll-cue-line"></div>
-      <span>Scroll</span>
-    </div>
-  </section>
+    <section class="series-hero" id="heroSec">
+      <div class="hero-bg-dim"></div>
+      <div class="hero-bg-reveal"></div>
+      <div class="hero-fade-bottom"></div>
 
-  <nav id="top-nav">
+      <div class="series-hero-ghost" aria-hidden="true" id="heroGhost">40273</div>
+      <div class="series-hero-inner">
+        <p class="series-eyebrow" id="heroEyebrow">Series · 40273 · Traces</p>
+        <h1 class="series-title-en" id="heroTitle">40273</h1>
+        <p class="series-title-jp" id="heroTitleJp">40273</p>
+        <p class="series-sub" id="heroSub">風景のノイズを透過する。残された線と余白が織りなす、日常のイマージュ。</p>
+        <div class="series-rule"></div>
+      </div>
+      
+      <div class="scroll-cue" aria-hidden="true">
+        <div class="scroll-cue-line"></div>
+        <span>Scroll</span>
+      </div>
+    </section>
+
+    <main>
+      <div class="concept-wrapper" id="statement">
+        <div class="concept-top-row">
+          <div class="concept-sidebar reveal">
+            <p class="concept-sidebar-label">Concept</p>
+            <p class="concept-sidebar-num">06</p>
+          </div>
+          <div class="concept-main reveal" style="transition-delay:0.12s">
+            <p class="concept-credit">Series Commentary — Tsuda Shoichi</p>
+            <p class="concept-lead">見慣れたはずの光景は、輪郭線を抽出されることで、全く新しい「余白」を生み出す。</p>
+            <p class="concept-text">本シリーズ「40273」は、日常の中に存在する人物や風景、そして彼らが落とす影を、限定された色彩と<em>ゆらぐ輪郭線</em>によって再構築する試みである。過剰な情報に溢れた現実の風景から、色彩の大部分を剥ぎ取ることで、そこに残された「線」と「空白」が、かえって強い実在感を放ち始める。</p>
+            <p class="concept-text">画面の大半を占める白い空白は、単なる未完成の領域ではない。それは鑑賞者の記憶や無意識が投影されるスクリーンであり、ノイズから解放された<em>純粋な視覚体験</em>への入り口として機能する。</p>
+          </div>
+        </div>
+
+        <div class="concept-keywords">
+          <div class="concept-kw reveal" style="transition-delay:0.05s">
+            <p class="concept-kw-num">01</p>
+            <p class="concept-kw-title">線の抽出とゆらぎ</p>
+            <p class="concept-kw-desc">被写体を規定する境界線のみを残す。震えるような線描は、対象の不確かさと、そこに宿る生命の律動を同時に表現する。</p>
+          </div>
+          <div class="concept-kw reveal" style="transition-delay:0.12s">
+            <p class="concept-kw-num">02</p>
+            <p class="concept-kw-title">色彩の再定義</p>
+            <p class="concept-kw-desc">現実の固有色から離れ、シアンやマゼンタ、イエローといった原色に近いノイズのような色彩を配置することで、現実と虚構の境界を曖昧にする。</p>
+          </div>
+          <div class="concept-kw reveal" style="transition-delay:0.20s">
+            <p class="concept-kw-num">03</p>
+            <p class="concept-kw-title">空白の雄弁さ</p>
+            <p class="concept-kw-desc">描かれないことで立ち上がる空間。情報を削ぎ落とすことで、鑑賞者は自らの記憶を補完し、作品との対話を深めていく。</p>
+          </div>
+        </div>
+      </div>
+
+      <section class="gallery-section" id="gallery">
+        <p class="section-label-center">Works Index</p>
+        <div class="gallery-grid">
+          <a href="#work-september-lodge" class="gallery-item scale-l is-portrait js-scroll-to">
+            <div class="gallery-item-img-wrap"><img src="images/セプテンバーLODGE！2014.jpg" alt="セプテンバーLODGE！2014" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">セプテンバーLODGE！2014</span><span class="gallery-item-meta">2014 / 53.0 × 53.0 cm</span>
+            </div>
+          </a>
+          <a href="#work-09" class="gallery-item scale-s is-landscape js-scroll-to">
+            <div class="gallery-item-img-wrap"><img src="images/【風力発電所のイマージュ(銚子)】.jpg" alt="風力発電所のイマージュ(銚子)" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">風力発電所のイマージュ（銚子）</span><span class="gallery-item-meta">2010 / 21.0 × 29.7 cm</span>
+            </div>
+          </a>
+          <a href="#work-08" class="gallery-item scale-s is-landscape js-scroll-to">
+            <div class="gallery-item-img-wrap"><img src="images/【波のイマージュ(銚子、君ヶ浜)】.jpg" alt="波のイマージュ(銚子、君ヶ浜)" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">波のイマージュ（銚子、君ヶ浜）</span><span class="gallery-item-meta">2010 / 21.0 × 29.7 cm</span>
+            </div>
+          </a>
+          <a href="#work-07" class="gallery-item scale-s is-landscape js-scroll-to">
+            <div class="gallery-item-img-wrap"><img src="images/【灯台のイマージュ(銚子、犬吠)】.jpg" alt="灯台のイマージュ(銚子、犬吠)" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">灯台のイマージュ（銚子、犬吠）</span><span class="gallery-item-meta">2010 / 21.0 × 29.7 cm</span>
+            </div>
+          </a>
+          <a href="#work-06" class="gallery-item scale-xl is-landscape js-scroll-to">
+            <div class="gallery-item-img-wrap"><img src="images/【landscape(Hiraizumi)】.jpg" alt="【landscape(Hiraizumi)】" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">【landscape(Hiraizumi)】</span><span class="gallery-item-meta">2010 / 97.0 × 130.3 cm</span>
+            </div>
+          </a>
+          <a href="#work-a-girl" class="gallery-item scale-s is-portrait js-scroll-to">
+            <div class="gallery-item-img-wrap"><img src="images/【a_girl】 (4).jpg" alt="【a_girl】(4)" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">【a_girl】(4)</span><span class="gallery-item-meta">2010 / 29.7 × 21.0 cm</span>
+            </div>
+          </a>
+          <a href="#work-05" class="gallery-item scale-xxl is-portrait js-scroll-to">
+            <div class="gallery-item-img-wrap"><img src="images/【play_with_shadow】.jpg" alt="影と遊ぶ" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">影と遊ぶ</span><span class="gallery-item-meta">2010 / 145.5 × 97.0 cm</span>
+            </div>
+          </a>
+          <a href="#work-04" class="gallery-item scale-xl is-portrait js-scroll-to">
+            <div class="gallery-item-img-wrap"><img src="images/in_front_of_Shinagawa_Station.jpg" alt="品川駅前" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">品川駅前</span><span class="gallery-item-meta">2010 / 116.7 × 91.0 cm</span>
+            </div>
+          </a>
+          <a href="#work-03" class="gallery-item scale-xl is-portrait js-scroll-to">
+            <div class="gallery-item-img-wrap"><img src="images/@_the_beach.jpg" alt="ビーチにて" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">ビーチにて</span><span class="gallery-item-meta">2010 / 116.7 × 91.0 cm</span>
+            </div>
+          </a>
+          <a href="#work-02" class="gallery-item scale-s is-landscape js-scroll-to">
+            <div class="gallery-item-img-wrap"><img src="images/【室内のイマージュ(2)】.jpg" alt="室内のイマージュ(2)" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">室内のイマージュ(2)</span><span class="gallery-item-meta">2010 / 22.0 × 27.3 cm</span>
+            </div>
+          </a>
+          <a href="#work-01" class="gallery-item scale-l is-landscape js-scroll-to">
+            <div class="gallery-item-img-wrap"><img src="images/【室内のイマージュ】.jpg" alt="室内のイマージュ" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">室内のイマージュ</span><span class="gallery-item-meta">2010 / 72.7 × 91.0 cm</span>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section class="chronology-section" id="chronology">
+        <div class="timeline-container">
+          <div class="timeline-spine-wrapper">
+            <div class="timeline-spine-progress" id="tl-spine-fill"></div>
+          </div>
+
+          <article class="tl-entry scale-l" id="work-september-lodge">
+            <div class="tl-year-display">2014</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/セプテンバーLODGE！2014.jpg" data-title="セプテンバーLODGE！2014" data-meta="2014 / 53.0 × 53.0 cm / Oil on canvas">
+                <img src="images/セプテンバーLODGE！2014.jpg" alt="セプテンバーLODGE！2014" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title js-cyber-title">セプテンバーLODGE！2014</h3>
+                <p class="tl-title-en">September LODGE! 2014</p>
+                <p class="tl-meta">2014 / 53.0 × 53.0 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>2014年9月27日、秋晴れの空の下で起きた御嶽山の噴火。戦後最悪の火山災害となったこの出来事を伝える信濃毎日新聞の報道写真が、本作の源流となっている。紅葉を楽しむ多くの登山者で賑わっていた山頂のロッジは、突如として降り注いだ火山灰により、一瞬にして灰色の世界へと呑み込まれた。</p>
+                  <p>本作では、その惨状をあえて「雪山」を思わせるような純白の余白と、鮮烈な青空のコントラストへと反転させている。人物の衣服に施された赤や黄色の限定的な色彩だけが、無機質な白の空間において生命のノイズのように際立つ。現実の悲劇的な光景の輪郭線を抽出し、色彩を再定義することで、失われた日常の記憶と自然の不条理を静かにキャンバスへと定着させた一作である。</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="tl-entry scale-s" id="work-09">
+            <div class="tl-year-display">2010</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【風力発電所のイマージュ(銚子)】.jpg" data-title="風力発電所のイマージュ（銚子）" data-meta="2010 / 21.0 × 29.7 cm / Pen on board">
+                <img src="images/【風力発電所のイマージュ(銚子)】.jpg" alt="風力発電所のイマージュ(銚子)" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title js-cyber-title">風力発電所のイマージュ（銚子）</h3>
+                <p class="tl-title-en">Image of Wind Farm (Choshi)</p>
+                <p class="tl-meta">2010 / 21.0 × 29.7 cm / Pen on board</p>
+                <div class="tl-desc">
+                  <p>銚子の海岸線に立ち並ぶ巨大な風力発電のプロペラ群。人工的な直線と自然の有機的な境界線が交錯する光景を、限定的な色彩の線で抽出している。</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="tl-entry scale-s" id="work-08">
+            <div class="tl-year-display">2010</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【波のイマージュ(銚子、君ヶ浜)】.jpg" data-title="波のイマージュ（銚子、君ヶ浜）" data-meta="2010 / 21.0 × 29.7 cm / Pen on board">
+                <img src="images/【波のイマージュ(銚子、君ヶ浜)】.jpg" alt="波のイマージュ(銚子、君ヶ浜)" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title js-cyber-title">波のイマージュ（銚子、君ヶ浜）</h3>
+                <p class="tl-title-en">Image of Waves (Choshi, Kimigahama)</p>
+                <p class="tl-meta">2010 / 21.0 × 29.7 cm / Pen on board</p>
+                <div class="tl-desc">
+                  <p>君ヶ浜に打ち寄せる波のフラクタルな輪郭。絶えず形を変え続ける水面の瞬間を、シアンやマゼンタのノイズのような線で捉えている。</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="tl-entry scale-s" id="work-07">
+            <div class="tl-year-display">2010</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【灯台のイマージュ(銚子、犬吠)】.jpg" data-title="灯台のイマージュ（銚子、犬吠）" data-meta="2010 / 21.0 × 29.7 cm / Pen on board">
+                <img src="images/【灯台のイマージュ(銚子、犬吠)】.jpg" alt="灯台のイマージュ(銚子、犬吠)" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title js-cyber-title">灯台のイマージュ（銚子、犬吠）</h3>
+                <p class="tl-title-en">Image of Lighthouse (Choshi, Inubo)</p>
+                <p class="tl-meta">2010 / 21.0 × 29.7 cm / Pen on board</p>
+                <div class="tl-desc">
+                  <p>犬吠埼灯台の屹立するシルエット。空と海の境界が白い余白に完全に溶け込み、微細な線描だけが潮風のざわめきや光の瞬きを暗示している。</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="tl-entry scale-xl" id="work-06">
+            <div class="tl-year-display">2010</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【landscape(Hiraizumi)】.jpg" data-title="【landscape(Hiraizumi)】" data-meta="2010 / 97.0 × 130.3 cm / Oil on canvas">
+                <img src="images/【landscape(Hiraizumi)】.jpg" alt="【landscape(Hiraizumi)】" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title js-cyber-title">【landscape(Hiraizumi)】</h3>
+                <p class="tl-title-en">Untitled</p>
+                <p class="tl-meta">2010 / 97.0 × 130.3 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>風景の一部、あるいは水面の反射や地形の俯瞰図のようにも見える抽象度の高い作品。細かな線の集積と、所々に現れる滲んだような色彩が、無機質なキャンバスに有機的な広がりを与えている。</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="tl-entry scale-s" id="work-a-girl">
+            <div class="tl-year-display">2010</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【a_girl】 (4).jpg" data-title="【a_girl】" data-meta="2010 / 29.7 × 21.0 cm / Lithograph">
+                <img src="images/【a_girl】 (4).jpg" alt="【a_girl】(4)" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title js-cyber-title">【a_girl】</h3>
+                <p class="tl-title-en">Lithograph</p>
+                <p class="tl-meta">2010 / 29.7 × 21.0 cm / Lithograph</p>
+                <div class="tl-desc">
+                  <p>対象を直接描くのではなく、フィルター（版）を通してイメージを出力するプロセスそのものが、私たちが現実の光景をどう知覚し、記憶しているかという不確かさと重なり合う。</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="tl-entry scale-xxl" id="work-05">
+            <div class="tl-year-display">2010</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【play_with_shadow】.jpg" data-title="影と遊ぶ" data-meta="2010 / 145.5 × 97.0 cm / Oil on canvas">
+                <img src="images/【play_with_shadow】.jpg" alt="影と遊ぶ" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title js-cyber-title">影と遊ぶ</h3>
+                <p class="tl-title-en">play with shadow</p>
+                <p class="tl-meta">2010 / 145.5 × 97.0 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>明るい路地を歩く少女と、路面に反射するその影。光と影の反転、そして実像と虚像のコントラストが日常の風景を異化させる。</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="tl-entry scale-xl" id="work-04">
+            <div class="tl-year-display">2010</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/in_front_of_Shinagawa_Station.jpg" data-title="品川駅前" data-meta="2010 / 116.7 × 91.0 cm / Oil on canvas">
+                <img src="images/in_front_of_Shinagawa_Station.jpg" alt="品川駅前" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title js-cyber-title">品川駅前</h3>
+                <p class="tl-title-en">in_front_of_Shinagawa_Station</p>
+                <p class="tl-meta">2010 / 116.7 × 91.0 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>都市の雑踏の一角、駅前に立つ人々のシルエットを抽出した作品。床のタイルのパターンが赤い線で細かく描かれる一方で、人物や建物的ディテールは徹底して白く抜かれている。</p>
+                  <p>無数の人々が行き交うターミナル駅という空間を、これほどまでに静謐で空虚な空間として提示することで、現代都市における個人の匿名性と孤独感が浮き彫りになる。</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="tl-entry scale-xl" id="work-03">
+            <div class="tl-year-display">2010</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/@_the_beach.jpg" data-title="ビーチにて" data-meta="2010 / 116.7 × 91.0 cm / Oil on canvas">
+                <img src="images/@_the_beach.jpg" alt="ビーチにて" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title js-cyber-title">ビーチにて</h3>
+                <p class="tl-title-en">@_the_beach</p>
+                <p class="tl-meta">2010 / 116.7 × 91.0 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>記憶の中の夏の陽炎のような、実体と幻影の狭間を描き出している。</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="tl-entry scale-s" id="work-02">
+            <div class="tl-year-display">2010</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【室内のイマージュ(2)】.jpg" data-title="室内のイマージュ(2)" data-meta="2010 / 22.0 × 27.3 cm / Oil on canvas">
+                <img src="images/【室内のイマージュ(2)】.jpg" alt="室内のイマージュ(2)" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title js-cyber-title">室内のイマージュ(2)</h3>
+                <p class="tl-title-en">Image in the room (2)</p>
+                <p class="tl-meta">2010 / 22.0 × 27.3 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>存在の不確かさと儚さが、抑制された色彩を通して静かに語りかけてくる。</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="tl-entry scale-l" id="work-01">
+            <div class="tl-year-display">2010</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【室内のイマージュ】.jpg" data-title="室内のイマージュ" data-meta="2010 / 72.7 × 91.0 cm / Oil on canvas">
+                <img src="images/【室内のイマージュ】.jpg" alt="室内のイマージュ" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title js-cyber-title">室内のイマージュ</h3>
+                <p class="tl-title-en">Image in the room</p>
+                <p class="tl-meta">2010 / 72.7 × 91.0 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>机、椅子、そしてそこに佇む人物らしき輪郭。見慣れた室内の風景が、断片的な線描によって解体され、再構成されている。</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <section class="contact-section" id="contact">
+        <p class="section-label" style="text-align: center; margin-bottom: 1.5rem; letter-spacing:0.4em; font-family:var(--font-en); color:var(--muted-col);">CONTACT</p>
+        <h2 class="contact-heading">お問い合わせ</h2>
+        <p class="contact-body-text">
+          展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。
+        </p>
+        <a href="contact.html" class="contact-btn">問い合わせフォームへ</a>
+      </section>
+
+      <footer>
+        <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
+        <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
+      </footer>
+    </main>
+  </div> <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
       <li><a href="#statement" class="js-scroll-to">Statement</a></li>
@@ -547,326 +904,6 @@
     </ul>
     <a href="contact.html" class="nav-cta" id="nav-cta-btn">Contact</a>
   </nav>
-
-  <main>
-    <div class="concept-wrapper" id="statement">
-      <div class="concept-top-row">
-        <div class="concept-sidebar reveal">
-          <p class="concept-sidebar-label">Concept</p>
-          <p class="concept-sidebar-num">06</p>
-        </div>
-        <div class="concept-main reveal" style="transition-delay:0.12s">
-          <p class="concept-credit">Series Commentary — Tsuda Shoichi</p>
-          <p class="concept-lead">見慣れたはずの光景は、輪郭線を抽出されることで、全く新しい「余白」を生み出す。</p>
-          <p class="concept-text">本シリーズ「40273」は、日常の中に存在する人物や風景、そして彼らが落とす影を、限定された色彩と<em>ゆらぐ輪郭線</em>によって再構築する試みである。過剰な情報に溢れた現実の風景から、色彩の大部分を剥ぎ取ることで、そこに残された「線」と「空白」が、かえって強い実在感を放ち始める。</p>
-          <p class="concept-text">画面の大半を占める白い空白は、単なる未完成の領域ではない。それは鑑賞者の記憶や無意識が投影されるスクリーンであり、ノイズから解放された<em>純粋な視覚体験</em>への入り口として機能する。</p>
-        </div>
-      </div>
-
-      <div class="concept-keywords">
-        <div class="concept-kw reveal" style="transition-delay:0.05s">
-          <p class="concept-kw-num">01</p>
-          <p class="concept-kw-title">線の抽出とゆらぎ</p>
-          <p class="concept-kw-desc">被写体を規定する境界線のみを残す。震えるような線描は、対象の不確かさと、そこに宿る生命の律動を同時に表現する。</p>
-        </div>
-        <div class="concept-kw reveal" style="transition-delay:0.12s">
-          <p class="concept-kw-num">02</p>
-          <p class="concept-kw-title">色彩の再定義</p>
-          <p class="concept-kw-desc">現実の固有色から離れ、シアンやマゼンタ、イエローといった原色に近いノイズのような色彩を配置することで、現実と虚構の境界を曖昧にする。</p>
-        </div>
-        <div class="concept-kw reveal" style="transition-delay:0.20s">
-          <p class="concept-kw-num">03</p>
-          <p class="concept-kw-title">空白の雄弁さ</p>
-          <p class="concept-kw-desc">描かれないことで立ち上がる空間。情報を削ぎ落とすことで、鑑賞者は自らの記憶を補完し、作品との対話を深めていく。</p>
-        </div>
-      </div>
-    </div>
-
-    <section class="gallery-section" id="gallery">
-      <p class="section-label-center">Works Index</p>
-      <div class="gallery-grid">
-        <a href="#work-september-lodge" class="gallery-item scale-l is-portrait js-scroll-to">
-          <div class="gallery-item-img-wrap"><img src="images/セプテンバーLODGE！2014.jpg" alt="セプテンバーLODGE！2014" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">セプテンバーLODGE！2014</span><span class="gallery-item-meta">2014 / 53.0 × 53.0 cm</span>
-          </div>
-        </a>
-        <a href="#work-09" class="gallery-item scale-s is-landscape js-scroll-to">
-          <div class="gallery-item-img-wrap"><img src="images/【風力発電所のイマージュ(銚子)】.jpg" alt="風力発電所のイマージュ(銚子)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">風力発電所のイマージュ（銚子）</span><span class="gallery-item-meta">2010 / 21.0 × 29.7 cm</span>
-          </div>
-        </a>
-        <a href="#work-08" class="gallery-item scale-s is-landscape js-scroll-to">
-          <div class="gallery-item-img-wrap"><img src="images/【波のイマージュ(銚子、君ヶ浜)】.jpg" alt="波のイマージュ(銚子、君ヶ浜)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">波のイマージュ（銚子、君ヶ浜）</span><span class="gallery-item-meta">2010 / 21.0 × 29.7 cm</span>
-          </div>
-        </a>
-        <a href="#work-07" class="gallery-item scale-s is-landscape js-scroll-to">
-          <div class="gallery-item-img-wrap"><img src="images/【灯台のイマージュ(銚子、犬吠)】.jpg" alt="灯台のイマージュ(銚子、犬吠)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">灯台のイマージュ（銚子、犬吠）</span><span class="gallery-item-meta">2010 / 21.0 × 29.7 cm</span>
-          </div>
-        </a>
-        <a href="#work-06" class="gallery-item scale-xl is-landscape js-scroll-to">
-          <div class="gallery-item-img-wrap"><img src="images/【landscape(Hiraizumi)】.jpg" alt="【landscape(Hiraizumi)】" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">【landscape(Hiraizumi)】</span><span class="gallery-item-meta">2010 / 97.0 × 130.3 cm</span>
-          </div>
-        </a>
-        <a href="#work-a-girl" class="gallery-item scale-s is-portrait js-scroll-to">
-          <div class="gallery-item-img-wrap"><img src="images/【a_girl】 (4).jpg" alt="【a_girl】(4)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">【a_girl】(4)</span><span class="gallery-item-meta">2010 / 29.7 × 21.0 cm</span>
-          </div>
-        </a>
-        <a href="#work-05" class="gallery-item scale-xxl is-portrait js-scroll-to">
-          <div class="gallery-item-img-wrap"><img src="images/【play_with_shadow】.jpg" alt="影と遊ぶ" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">影と遊ぶ</span><span class="gallery-item-meta">2010 / 145.5 × 97.0 cm</span>
-          </div>
-        </a>
-        <a href="#work-04" class="gallery-item scale-xl is-portrait js-scroll-to">
-          <div class="gallery-item-img-wrap"><img src="images/in_front_of_Shinagawa_Station.jpg" alt="品川駅前" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">品川駅前</span><span class="gallery-item-meta">2010 / 116.7 × 91.0 cm</span>
-          </div>
-        </a>
-        <a href="#work-03" class="gallery-item scale-xl is-portrait js-scroll-to">
-          <div class="gallery-item-img-wrap"><img src="images/@_the_beach.jpg" alt="ビーチにて" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">ビーチにて</span><span class="gallery-item-meta">2010 / 116.7 × 91.0 cm</span>
-          </div>
-        </a>
-        <a href="#work-02" class="gallery-item scale-s is-landscape js-scroll-to">
-          <div class="gallery-item-img-wrap"><img src="images/【室内のイマージュ(2)】.jpg" alt="室内のイマージュ(2)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">室内のイマージュ(2)</span><span class="gallery-item-meta">2010 / 22.0 × 27.3 cm</span>
-          </div>
-        </a>
-        <a href="#work-01" class="gallery-item scale-l is-landscape js-scroll-to">
-          <div class="gallery-item-img-wrap"><img src="images/【室内のイマージュ】.jpg" alt="室内のイマージュ" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">室内のイマージュ</span><span class="gallery-item-meta">2010 / 72.7 × 91.0 cm</span>
-          </div>
-        </a>
-      </div>
-    </section>
-
-    <section class="chronology-section" id="chronology">
-      <div class="timeline-container">
-        <div class="timeline-spine-wrapper">
-          <div class="timeline-spine-progress" id="tl-spine-fill"></div>
-        </div>
-
-        <article class="tl-entry scale-l" id="work-september-lodge">
-          <div class="tl-year-display">2014</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/セプテンバーLODGE！2014.jpg" data-title="セプテンバーLODGE！2014" data-meta="2014 / 53.0 × 53.0 cm / Oil on canvas">
-              <img src="images/セプテンバーLODGE！2014.jpg" alt="セプテンバーLODGE！2014" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title js-cyber-title">セプテンバーLODGE！2014</h3>
-              <p class="tl-title-en">September LODGE! 2014</p>
-              <p class="tl-meta">2014 / 53.0 × 53.0 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>2014年9月27日、秋晴れの空の下で起きた御嶽山の噴火。戦後最悪の火山災害となったこの出来事を伝える信濃毎日新聞の報道写真が、本作の源流となっている。紅葉を楽しむ多くの登山者で賑わっていた山頂のロッジは、突如として降り注いだ火山灰により、一瞬にして灰色の世界へと呑み込まれた。</p>
-                <p>本作では、その惨状をあえて「雪山」を思わせるような純白の余白と、鮮烈な青空のコントラストへと反転させている。人物の衣服に施された赤や黄色の限定的な色彩だけが、無機質な白の空間において生命のノイズのように際立つ。現実の悲劇的な光景の輪郭線を抽出し、色彩を再定義することで、失われた日常の記憶と自然の不条理を静かにキャンバスへと定着させた一作である。</p>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="tl-entry scale-s" id="work-09">
-          <div class="tl-year-display">2010</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【風力発電所のイマージュ(銚子)】.jpg" data-title="風力発電所のイマージュ（銚子）" data-meta="2010 / 21.0 × 29.7 cm / Pen on board">
-              <img src="images/【風力発電所のイマージュ(銚子)】.jpg" alt="風力発電所のイマージュ(銚子)" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title js-cyber-title">風力発電所のイマージュ（銚子）</h3>
-              <p class="tl-title-en">Image of Wind Farm (Choshi)</p>
-              <p class="tl-meta">2010 / 21.0 × 29.7 cm / Pen on board</p>
-              <div class="tl-desc">
-                <p>銚子の海岸線に立ち並ぶ巨大な風力発電のプロペラ群。人工的な直線と自然の有機的な境界線が交錯する光景を、限定的な色彩の線で抽出している。</p>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="tl-entry scale-s" id="work-08">
-          <div class="tl-year-display">2010</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【波のイマージュ(銚子、君ヶ浜)】.jpg" data-title="波のイマージュ（銚子、君ヶ浜）" data-meta="2010 / 21.0 × 29.7 cm / Pen on board">
-              <img src="images/【波のイマージュ(銚子、君ヶ浜)】.jpg" alt="波のイマージュ(銚子、君ヶ浜)" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title js-cyber-title">波のイマージュ（銚子、君ヶ浜）</h3>
-              <p class="tl-title-en">Image of Waves (Choshi, Kimigahama)</p>
-              <p class="tl-meta">2010 / 21.0 × 29.7 cm / Pen on board</p>
-              <div class="tl-desc">
-                <p>君ヶ浜に打ち寄せる波のフラクタルな輪郭。絶えず形を変え続ける水面の瞬間を、シアンやマゼンタのノイズのような線で捉えている。</p>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="tl-entry scale-s" id="work-07">
-          <div class="tl-year-display">2010</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【灯台のイマージュ(銚子、犬吠)】.jpg" data-title="灯台のイマージュ（銚子、犬吠）" data-meta="2010 / 21.0 × 29.7 cm / Pen on board">
-              <img src="images/【灯台のイマージュ(銚子、犬吠)】.jpg" alt="灯台のイマージュ(銚子、犬吠)" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title js-cyber-title">灯台のイマージュ（銚子、犬吠）</h3>
-              <p class="tl-title-en">Image of Lighthouse (Choshi, Inubo)</p>
-              <p class="tl-meta">2010 / 21.0 × 29.7 cm / Pen on board</p>
-              <div class="tl-desc">
-                <p>犬吠埼灯台の屹立するシルエット。空と海の境界が白い余白に完全に溶け込み、微細な線描だけが潮風のざわめきや光の瞬きを暗示している。</p>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="tl-entry scale-xl" id="work-06">
-          <div class="tl-year-display">2010</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【landscape(Hiraizumi)】.jpg" data-title="【landscape(Hiraizumi)】" data-meta="2010 / 97.0 × 130.3 cm / Oil on canvas">
-              <img src="images/【landscape(Hiraizumi)】.jpg" alt="【landscape(Hiraizumi)】" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title js-cyber-title">【landscape(Hiraizumi)】</h3>
-              <p class="tl-title-en">Untitled</p>
-              <p class="tl-meta">2010 / 97.0 × 130.3 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>風景の一部、あるいは水面の反射や地形の俯瞰図のようにも見える抽象度の高い作品。細かな線の集積と、所々に現れる滲んだような色彩が、無機質なキャンバスに有機的な広がりを与えている。</p>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="tl-entry scale-s" id="work-a-girl">
-          <div class="tl-year-display">2010</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【a_girl】 (4).jpg" data-title="【a_girl】" data-meta="2010 / 29.7 × 21.0 cm / Lithograph">
-              <img src="images/【a_girl】 (4).jpg" alt="【a_girl】(4)" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title js-cyber-title">【a_girl】</h3>
-              <p class="tl-title-en">Lithograph</p>
-              <p class="tl-meta">2010 / 29.7 × 21.0 cm / Lithograph</p>
-              <div class="tl-desc">
-                <p>対象を直接描くのではなく、フィルター（版）を通してイメージを出力するプロセスそのものが、私たちが現実の光景をどう知覚し、記憶しているかという不確かさと重なり合う。</p>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="tl-entry scale-xxl" id="work-05">
-          <div class="tl-year-display">2010</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【play_with_shadow】.jpg" data-title="影と遊ぶ" data-meta="2010 / 145.5 × 97.0 cm / Oil on canvas">
-              <img src="images/【play_with_shadow】.jpg" alt="影と遊ぶ" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title js-cyber-title">影と遊ぶ</h3>
-              <p class="tl-title-en">play with shadow</p>
-              <p class="tl-meta">2010 / 145.5 × 97.0 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>明るい路地を歩く少女と、路面に反射するその影。光と影の反転、そして実像と虚像のコントラストが日常の風景を異化させる。</p>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="tl-entry scale-xl" id="work-04">
-          <div class="tl-year-display">2010</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/in_front_of_Shinagawa_Station.jpg" data-title="品川駅前" data-meta="2010 / 116.7 × 91.0 cm / Oil on canvas">
-              <img src="images/in_front_of_Shinagawa_Station.jpg" alt="品川駅前" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title js-cyber-title">品川駅前</h3>
-              <p class="tl-title-en">in_front_of_Shinagawa_Station</p>
-              <p class="tl-meta">2010 / 116.7 × 91.0 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>都市の雑踏の一角、駅前に立つ人々のシルエットを抽出した作品。床のタイルのパターンが赤い線で細かく描かれる一方で、人物や建物的ディテールは徹底して白く抜かれている。</p>
-                <p>無数の人々が行き交うターミナル駅という空間を、これほどまでに静謐で空虚な空間として提示することで、現代都市における個人の匿名性と孤独感が浮き彫りになる。</p>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="tl-entry scale-xl" id="work-03">
-          <div class="tl-year-display">2010</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/@_the_beach.jpg" data-title="ビーチにて" data-meta="2010 / 116.7 × 91.0 cm / Oil on canvas">
-              <img src="images/@_the_beach.jpg" alt="ビーチにて" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title js-cyber-title">ビーチにて</h3>
-              <p class="tl-title-en">@_the_beach</p>
-              <p class="tl-meta">2010 / 116.7 × 91.0 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>記憶の中の夏の陽炎のような、実体と幻影の狭間を描き出している。</p>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="tl-entry scale-s" id="work-02">
-          <div class="tl-year-display">2010</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【室内のイマージュ(2)】.jpg" data-title="室内のイマージュ(2)" data-meta="2010 / 22.0 × 27.3 cm / Oil on canvas">
-              <img src="images/【室内のイマージュ(2)】.jpg" alt="室内のイマージュ(2)" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title js-cyber-title">室内のイマージュ(2)</h3>
-              <p class="tl-title-en">Image in the room (2)</p>
-              <p class="tl-meta">2010 / 22.0 × 27.3 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>存在の不確かさと儚さが、抑制された色彩を通して静かに語りかけてくる。</p>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="tl-entry scale-l" id="work-01">
-          <div class="tl-year-display">2010</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【室内のイマージュ】.jpg" data-title="室内のイマージュ" data-meta="2010 / 72.7 × 91.0 cm / Oil on canvas">
-              <img src="images/【室内のイマージュ】.jpg" alt="室内のイマージュ" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title js-cyber-title">室内のイマージュ</h3>
-              <p class="tl-title-en">Image in the room</p>
-              <p class="tl-meta">2010 / 72.7 × 91.0 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>机、椅子、そしてそこに佇む人物らしき輪郭。見慣れた室内の風景が、断片的な線描によって解体され、再構成されている。</p>
-              </div>
-            </div>
-          </div>
-        </article>
-
-      </div>
-    </section>
-
-  </main>
-
-  <section class="contact-section" id="contact">
-    <p class="section-label" style="text-align: center; margin-bottom: 1.5rem; letter-spacing:0.4em; font-family:var(--font-en); color:var(--muted-col);">CONTACT</p>
-    <h2 class="contact-heading">お問い合わせ</h2>
-    <p class="contact-body-text">
-      展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。
-    </p>
-    <a href="contact.html" class="contact-btn">問い合わせフォームへ</a>
-  </section>
-
-  <footer>
-    <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
-    <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
-  </footer>
 
   <a href="#top" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
     <svg class="b2t-progress" viewBox="0 0 100 100">
