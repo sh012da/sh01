@@ -45,7 +45,7 @@
     html { 
       scroll-behavior: smooth; 
       overflow-x: hidden;
-      width: 100vw;
+      width: 100%;
     }
     body {
       background: var(--bg);
@@ -110,6 +110,8 @@
       font-family: var(--en); font-size: clamp(0.7rem,2.5vw,0.9rem);
       letter-spacing: 0.3em; font-weight: 300; color: var(--accent);
       text-decoration: none; text-transform: uppercase; transition: opacity 0.4s ease, transform 0.4s var(--ease-expo);
+      position: relative;
+      z-index: 1000;
     }
     .nav-logo:hover { opacity: 0.7; transform: scale(0.98); }
     .nav-links { display: flex; gap: 2rem; list-style: none; }
@@ -133,11 +135,12 @@
       border: 0.5px solid rgba(184,168,152,0.4); padding: 0.55rem 1.4rem;
       color: var(--accent); text-decoration: none; transition: all 0.4s var(--ease-expo);
       border-radius: 2px;
+      z-index: 1000;
     }
     .nav-cta:hover { background: var(--accent); color: var(--bg); box-shadow: 0 4px 16px rgba(203,191,176,0.2); }
     .nav-hamburger { display: none; background: none;
       border: none; cursor: pointer; padding: 4px; z-index: 1000; position: relative;}
-    .nav-hamburger span { display: block; width: 22px; height: 0.5px;
+    .nav-hamburger span { display: block; width: 22px; height: 1px;
       background: var(--accent); margin: 6px 0; transition: all 0.25s; }
 
     /* ════════════════════════════════════════
@@ -464,7 +467,7 @@
     .statement-bg-word.word2 { top: 60%; font-size: 22vw; animation-delay: -7s; }
     #statement > * { position: relative; z-index: 1; }
 
-    .s-eyebrow {
+    .s-eyebrow reveal {
       display: inline-flex; align-items: center; justify-content: center; gap: 1.2rem;
       margin-bottom: 8rem;
       font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
@@ -573,7 +576,7 @@
     .concept-tag:hover {
       transform: translateY(-12px) scale(1.02);
       background: rgba(255,255,255,0.04);
-      border-color: rgba(203,191,176,0.3); box-shadow: 0 24px 48px rgba(0,0,0,0.5), 0 0 20px rgba(203,191,176,0.1);
+      border-color: rgba(203,191,176,0.3); box-shadow: 0 24px 48px rgba(0,0,0,0.5), 0 0 20px rgba(203,191,176,0.15);
     }
     .concept-tag > * { position: relative; z-index: 1; }
     .concept-tag-num {
@@ -952,9 +955,7 @@
     .contact-btn { display: inline-flex; align-items: center; gap: 0.7em; font-family: var(--en); font-size: clamp(0.7rem, 1.5vw, 0.85rem); letter-spacing: 0.25em; text-transform: uppercase; border: 1px solid rgba(203,191,176,0.5); border-radius: 40px; padding: 1.2rem 3.5rem; color: var(--accent); background: rgba(203,191,176,0.04); text-decoration: none; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: all 0.5s var(--ease-out-back); }
     .contact-btn:hover { color: var(--bg); background: var(--accent); border-color: var(--accent); box-shadow: 0 12px 36px rgba(203,191,176,0.3); transform: translateY(-4px) scale(1.02); }
 
-    footer {
-      padding: 3rem 2.5rem; text-align: center;
-    }
+    footer { padding: 3rem 2.5rem; text-align: center; }
     .footer-logo { font-family: var(--jp); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(232,228,219,0.28); letter-spacing: 0.08em; margin-bottom: 0.5rem; }
     .footer-copy { font-family: var(--en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--text-dim); }
 
@@ -1026,10 +1027,76 @@
       
       nav { padding: 1rem 1.25rem; }
       nav.nav-scrolled { padding: 0.8rem 1.25rem; }
-      .nav-links { display: none; }
-      .nav-hamburger { display: block; }
-      .nav-links.open { display: flex; flex-direction: row; flex-wrap: nowrap; position: fixed; inset: 0; background: rgba(10,10,8,0.98); align-items: center; justify-content: center; gap: 0.6rem; z-index: 300; padding: 1rem; overflow-x: auto; backdrop-filter: blur(16px); }
-      .nav-links.open a { font-size: 0.9rem; padding: 0.6rem 0.5rem; display: block; white-space: nowrap; }
+      
+      /* Morphing Hamburger Button Style */
+      .nav-hamburger {
+        display: block !important;
+        z-index: 1000;
+        position: relative;
+      }
+      .nav-hamburger span {
+        display: block;
+        width: 24px;
+        height: 1.5px;
+        background: var(--accent);
+        margin: 6px 0;
+        transition: transform 0.3s var(--ease-expo), opacity 0.3s ease, background-color 0.3s ease;
+      }
+      .nav-hamburger.open span:nth-child(1) {
+        transform: translateY(7.5px) rotate(45deg);
+      }
+      .nav-hamburger.open span:nth-child(2) {
+        opacity: 0;
+      }
+      .nav-hamburger.open span:nth-child(3) {
+        transform: translateY(-7.5px) rotate(-45deg);
+      }
+      
+      /* Perfected Overlay with Zero Horizontal Scrolling */
+      .nav-links {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        background: rgba(8, 8, 8, 0.98);
+        gap: 2.2rem;
+        z-index: 998;
+        padding: 2rem;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        overflow: hidden;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-20px);
+        transition: opacity 0.4s var(--ease-expo), transform 0.4s var(--ease-expo), visibility 0.4s;
+        list-style: none;
+      }
+      .nav-links.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+      .nav-links a {
+        font-family: var(--en);
+        font-size: 1.15rem !important; /* Elegant, balanced and perfectly responsive */
+        letter-spacing: 0.25em;
+        padding: 0.6rem 1.2rem;
+        display: block;
+        white-space: nowrap;
+        color: var(--muted-col);
+        transition: color 0.3s ease, transform 0.3s var(--ease-out-back);
+        text-align: center;
+      }
+      .nav-links a:hover, .nav-links a.active {
+        color: var(--accent);
+        transform: scale(1.05);
+      }
       
       /* スクロール時のガクつきを防止するためsvhを維持 */
       .hero { padding: 8rem 1.5rem 4rem; min-height: 100svh; }
@@ -1052,8 +1119,8 @@
       .section { padding: 6rem 1.5rem; }
       
       /* ════════════════════════════════════════
-         STATEMENT BACKGROUND IMAGE ADJUSTMENT (MOBILE)
-      ════════════════════════════════════════ */
+          STATEMENT BACKGROUND IMAGE ADJUSTMENT (MOBILE)
+       ════════════════════════════════════════ */
       #statement { 
         padding: 8rem 1.5rem; 
         /* iOS Safariのfixedバグ回避のためscrollを明示 */
@@ -1204,7 +1271,7 @@
     <li class="sp-only"><a href="works.html">Works</a></li>
     <li class="sp-only"><a href="index-profile.html">Profile</a></li>
 
-    <li><a href="#news" onclick="closeMenu()">News</a></li>
+    <li class="pc-only"><a href="#news" onclick="closeMenu()">News</a></li>
   </ul>
   <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
     <span></span><span></span><span></span>
@@ -1294,7 +1361,7 @@
         <p class="concept-tag-term">脱領土化・再領土化</p>
         <p class="concept-tag-en-label">Deterritorialization / Reterritorialization</p>
         <p class="concept-tag-desc">油彩の描画過程で形や意味を解体し（脱領土化）、そこで見いだされた〈いと〉を絵画・映像・立体・空間へと多層的に再解釈し、再編成していく（再領土化）一連の運動です。</p>
-           </div>
+            </div>
       <div class="concept-tag reveal" style="transition-delay:.45s">
         <span class="concept-tag-num">04</span>
         <p class="concept-tag-term">系（シーケンス）</p>
@@ -1835,9 +1902,15 @@ var menuOpenScrollY = 0;
 
 function toggleMenu() {
   var links = document.getElementById('nav-links');
+  var hamburger = document.getElementById('hamburger');
   var btn   = document.getElementById('nav-cta-btn');
+  
   var isOpen = links.classList.toggle('open');
-  btn.style.display = isOpen ? 'none' : '';
+  hamburger.classList.toggle('open');
+  
+  if (btn) {
+    btn.style.display = isOpen ? 'none' : '';
+  }
   
   // スマホメニュー展開中の背面スクロールをロック
   if (isOpen) {
@@ -1850,9 +1923,16 @@ function toggleMenu() {
 
 function closeMenu() {
   var links = document.getElementById('nav-links');
+  var hamburger = document.getElementById('hamburger');
   var btn   = document.getElementById('nav-cta-btn');
+  
   links.classList.remove('open');
-  btn.style.display = '';
+  if (hamburger) {
+    hamburger.classList.remove('open');
+  }
+  if (btn) {
+    btn.style.display = '';
+  }
   document.body.classList.remove('no-scroll');
 }
 
