@@ -178,7 +178,8 @@
        HERO SECTION 
     ================================================================ */
     .hero {
-      position: relative; height: 100svh; min-height: 600px;
+      position: relative; 
+      min-height: 100svh; /* スマホで文字が溢れても伸びるように修正 */
       display: flex; align-items: flex-end; overflow: hidden;
       background: #111;
     }
@@ -198,7 +199,8 @@
 
     .hero-content {
       position: relative; z-index: 2; width: 100%;
-      padding: 0 var(--px) clamp(100px, 16vh, 160px); 
+      /* スクロールバーとの重なりを防ぐため、下部のpaddingをしっかり確保 */
+      padding: 0 var(--px) clamp(130px, 18vh, 180px); 
       color: #ffffff;
     }
 
@@ -244,8 +246,8 @@
 
     /* Scroll Indicator */
     .hero-scroll {
-      position: absolute; bottom: clamp(30px, 8vh, 50px); left: 50%; z-index: 100;
-      display: flex; flex-direction: column; align-items: center; gap: clamp(12px, 2vh, 18px);
+      position: absolute; bottom: clamp(20px, 5vh, 40px); left: 50%; z-index: 100;
+      display: flex; flex-direction: column; align-items: center; gap: clamp(10px, 2vh, 16px);
       text-decoration: none; cursor: pointer; opacity: 0;
       transform: translateX(-50%);
       animation: textBlurRevealCenter 2s ease 1.8s both; 
@@ -566,7 +568,7 @@
     }
 
     /* ============================================================
-       LIGHTBOX MODAL (修正・統一版)
+       LIGHTBOX MODAL 
     ================================================================ */
     .image-modal {
       position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center;
@@ -611,7 +613,7 @@
     }
     
     @media (max-width: 768px) {
-      /* モバイルでのヘッダー折り返し処理（ハンバーガーメニュー廃止） */
+      /* モバイルでのヘッダー折り返し処理 */
       nav#top-nav { 
         padding: 0.8rem var(--px); 
         flex-wrap: wrap; 
@@ -629,6 +631,29 @@
         justify-content: center;
         gap: 1.5rem;
         margin-top: 0.8rem;
+      }
+
+      /* 文字要素とSCROLLインジケーターの被り（重なり）防止用調整 */
+      .hero-content {
+        /* スマホ時は下部の安全余白を120pxに固定し、文字が落ちてきてもスクロールに被らせない */
+        padding-bottom: 120px; 
+      }
+      .hero-title {
+        font-size: clamp(26px, 7.5vw, 32px);
+      }
+      .hero-meta {
+        margin-top: 24px;
+        gap: 16px 20px; /* 余白を詰めて縦伸びを抑制 */
+      }
+      .hero-scroll {
+        bottom: 15px; /* 配置を少しだけ下に逃す */
+        gap: 8px;
+      }
+      .hero-scroll-label {
+        font-size: 0.6rem;
+      }
+      .hero-scroll-track {
+        height: 40px; /* 縦線を短くして占有面積を減らす */
       }
 
       .series-nav { flex-direction: column; }
@@ -1030,7 +1055,7 @@
         revealEls.forEach(el => el.classList.add('is-visible'));
       }
 
-      // --- ライトボックス（画像拡大表示）の処理を修正 ---
+      // ライトボックス（画像拡大表示）の処理
       const modal = document.getElementById('image-modal');
       const modalImg = document.getElementById('modal-img');
       const modalClose = document.getElementById('modal-close');
