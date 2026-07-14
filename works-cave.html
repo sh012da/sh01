@@ -24,11 +24,11 @@
     ============================================================ */
     :root {
       --bg:        #060605;
-      --bg2:       rgba(12, 12, 10, 0.85);
-      --bg3:       #111110;
+      --bg2:        rgba(12, 12, 10, 0.85);
+      --bg3:        #111110;
       --fg:        #e9e5df;
       --muted:     rgba(233,229,223,0.44);
-      --dim:       rgba(233,229,223,0.22);
+      --dim:        rgba(233,229,223,0.22);
       --whisper:   rgba(233,229,223,0.10);
       --accent:    #c4a882;
       --accent2:   #7c9aa0;
@@ -40,8 +40,20 @@
       --ease-out:  cubic-bezier(0.19, 1, 0.22, 1);
       --px:        clamp(1.25rem, 6vw, 5rem);
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+
+    *, *::before, *::after { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+
+    html { 
+      scroll-behavior: smooth; 
+      overflow-x: hidden;
+      width: 100%;
+      height: 100%;
+    }
+
     body {
       background-color: var(--bg);
       color: var(--fg);
@@ -49,40 +61,89 @@
       line-height: 2.1;
       letter-spacing: 0.06em;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
+      width: 100%;
+      position: relative;
       padding-left: env(safe-area-inset-left);
       padding-right: env(safe-area-inset-right);
+    }
+    
+    /* 画面全体のスクロール横ブレ（ガタつき）を根本的に防ぐラッパー */
+    .page-wrapper {
+      width: 100%;
+      overflow-x: hidden;
       position: relative;
     }
     
-    /* 背景のベース（最深部） */
+    /* 背景のベース（最深部）- 100vwによるスクロールバー干渉（横揺れ）を防ぐためwidth: 100%に変更 */
     body::before {
-      content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      content: ""; 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%;
       background-image: url('images/【S100】明るい洞窟(3)20250826.jpg');
-      background-size: cover; background-position: center;
-      opacity: 0.2; filter: blur(15px) brightness(0.3) contrast(1.2) grayscale(20%);
-      z-index: -10; pointer-events: none;
+      background-size: cover; 
+      background-position: center;
+      opacity: 0.2; 
+      filter: blur(15px) brightness(0.3) contrast(1.2) grayscale(20%);
+      z-index: -10; 
+      pointer-events: none;
+      transform: translate3d(0, 0, 0); /* GPUアクセラレーション強制 */
     }
+
     body::after {
-      content: ""; position: fixed; inset: 0;
+      content: ""; 
+      position: fixed; 
+      inset: 0;
       background: radial-gradient(circle at center, transparent 0%, rgba(6, 6, 5, 0.85) 100%);
-      z-index: -9; pointer-events: none;
+      z-index: -9; 
+      pointer-events: none;
+      transform: translate3d(0, 0, 0);
     }
-    body.is-locked { overflow: hidden; }
-    img { max-width: 100%; height: auto; display: block; }
-    a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
-    a:hover { opacity: 0.45; }
-    .sp-only { display: none; }
+
+    body.is-locked { 
+      overflow: hidden; 
+    }
+
+    img { 
+      max-width: 100%; 
+      height: auto; 
+      display: block; 
+    }
+
+    a { 
+      color: var(--fg); 
+      text-decoration: none; 
+      transition: opacity 0.3s ease; 
+    }
+
+    a:hover { 
+      opacity: 0.45; 
+    }
+
+    .sp-only { 
+      display: none; 
+    }
 
     /* ============================================================
         NAVIGATION
     ============================================================ */
     nav#top-nav {
-      position: fixed; top: 0; left: 0; width: 100%; z-index: 300;
-      display: flex; align-items: center; justify-content: space-between;
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      z-index: 300;
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between;
       padding: clamp(14px, 3vw, 36px) var(--px);
       background: transparent;
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px); 
+      -webkit-backdrop-filter: blur(8px);
       border-bottom: 0.5px solid transparent;
       
       /* アニメーション用初期設定（上に隠す） */
@@ -90,87 +151,156 @@
       opacity: 0;
       transition: transform 1.4s var(--ease), opacity 1.4s ease, background 0.4s ease, border-color 0.4s ease;
     }
+
     nav#top-nav.revealed {
       transform: translateY(0);
       opacity: 1;
     }
-    nav#top-nav.scrolled { background: rgba(10,10,9,0.85); border-color: var(--border); }
+
+    nav#top-nav.scrolled { 
+      background: rgba(10,10,9,0.85); 
+      border-color: var(--border); 
+    }
     
     .nav-logo-unified {
-      font-family: var(--font-en); font-size: clamp(0.7rem, 2.5vw, 0.9rem);
-      letter-spacing: 0.35em; font-weight: 300; color: var(--accent);
-      text-transform: uppercase; transition: opacity 0.4s ease;
-      position: relative; z-index: 2;
+      font-family: var(--font-en); 
+      font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+      letter-spacing: 0.35em; 
+      font-weight: 300; 
+      color: var(--accent);
+      text-transform: uppercase; 
+      transition: opacity 0.4s ease;
+      position: relative; 
+      z-index: 2;
     }
-    .nav-logo-unified:hover { opacity: 0.5; }
+
+    .nav-logo-unified:hover { 
+      opacity: 0.5; 
+    }
     
     .nav-links { 
-      display: flex; gap: 2rem; list-style: none;
-      position: absolute; left: 50%; transform: translateX(-50%);
+      display: flex; 
+      gap: 2rem; 
+      list-style: none;
+      position: absolute; 
+      left: 50%; 
+      transform: translateX(-50%);
     }
+
     .nav-links a {
-      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.72rem);
-      letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase; transition: color 0.3s ease;
+      font-family: var(--font-en); 
+      font-size: clamp(0.55rem, 1.5vw, 0.72rem);
+      letter-spacing: 0.25em; 
+      color: var(--muted); 
+      text-transform: uppercase; 
+      transition: color 0.3s ease;
       position: relative;
     }
-    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+    .nav-links a:hover, .nav-links a.active { 
+      color: var(--accent); 
+    }
     
     .nav-cta {
-      font-family: var(--font-en); font-size: clamp(0.55rem, 1.5vw, 0.65rem);
-      letter-spacing: 0.25em; text-transform: uppercase;
-      border: 0.5px solid rgba(196,168,130,0.35); padding: 0.55rem 1.4rem;
-      color: var(--accent); transition: background 0.25s, color 0.25s;
-      position: relative; z-index: 2;
+      font-family: var(--font-en); 
+      font-size: clamp(0.55rem, 1.5vw, 0.65rem);
+      letter-spacing: 0.25em; 
+      text-transform: uppercase;
+      border: 0.5px solid rgba(196,168,130,0.35); 
+      padding: 0.55rem 1.4rem;
+      color: var(--accent); 
+      transition: background 0.25s, color 0.25s;
+      position: relative; 
+      z-index: 2;
     }
-    .nav-cta:hover { background: rgba(196,168,130,0.08); color: var(--fg); }
+
+    .nav-cta:hover { 
+      background: rgba(196,168,130,0.08); 
+      color: var(--fg); 
+    }
 
     /* ============================================================
         HERO FIRST VIEW
     ============================================================ */
     .hero {
-      position: relative; height: 100vh; height: 100svh; min-height: 580px;
-      display: flex; flex-direction: column; justify-content: flex-end;
+      position: relative; 
+      height: 100vh; 
+      height: 100svh; 
+      min-height: 580px;
+      display: flex; 
+      flex-direction: column; 
+      justify-content: flex-end;
       padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); 
-      overflow: hidden; perspective: 1000px;
+      overflow: hidden; 
+      perspective: 1000px;
     }
     
-    /* 洗練された背景フェードイン演出 */
+    /* 背景フェードイン演出（100vwによるブレを完全に防ぐために100%ベースで設計） */
     .hero-interactive-bg {
-      position: absolute; inset: -5%; width: 110%; height: 110%; z-index: 0;
+      position: absolute; 
+      inset: -5%; 
+      width: 110%; 
+      height: 110%; 
+      z-index: 0;
       background-image: url('images/【S100】明るい洞窟(2)20250812.jpg');
-      background-size: cover; background-position: center;
+      background-size: cover; 
+      background-position: center;
       
       /* 初期状態：暗くぼかして少し拡大 */
       opacity: 0;
-      transform: scale(1.15);
+      transform: scale(1.15) translate3d(0,0,0);
       filter: blur(16px) brightness(0.1) saturate(0.3);
       transition: opacity 3s ease, transform 4s cubic-bezier(0.2, 0.8, 0.2, 1), filter 3.5s ease;
       will-change: transform, opacity, filter;
+      backface-visibility: hidden;
     }
+
     .hero-interactive-bg.revealed {
       opacity: 0.65;
-      transform: scale(1);
+      transform: scale(1) translate3d(0,0,0);
       filter: blur(0px) brightness(0.5) contrast(1.1) saturate(0.85);
     }
     
     .hero-phase-slit {
-      position: absolute; top: 65%; left: 0; right: 0; height: 1px;
+      position: absolute; 
+      top: 65%; 
+      left: 0; 
+      right: 0; 
+      height: 1px;
       background: radial-gradient(circle at center, var(--accent) 0%, rgba(124,154,160,0.8) 50%, transparent 100%);
-      z-index: 1; opacity: 0; transform: scaleX(0); mix-blend-mode: screen;
+      z-index: 1; 
+      opacity: 0; 
+      transform: scaleX(0); 
+      mix-blend-mode: screen;
     }
-    .hero-phase-slit.revealed { animation: phasePuncture 2.5s var(--ease-out) forwards; }
+
+    .hero-phase-slit.revealed { 
+      animation: phasePuncture 2.5s var(--ease-out) forwards; 
+    }
+
     @keyframes phasePuncture {
       0% { transform: scaleX(0); opacity: 0; filter: brightness(2); }
       30% { transform: scaleX(1); opacity: 0.9; filter: brightness(2) blur(1px); }
       100% { transform: scaleX(1) translateY(80px); opacity: 0; filter: blur(8px); }
     }
 
-    .hero-ito-wrap { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
-    .hero-ito {
-      position: absolute; top: -150px; width: 1px;
-      background: linear-gradient(to bottom, transparent, rgba(196,168,130,0.6), transparent);
-      opacity: 0; transform: translateY(0);
+    .hero-ito-wrap { 
+      position: absolute; 
+      inset: 0; 
+      z-index: 1; 
+      overflow: hidden; 
+      pointer-events: none; 
     }
+
+    .hero-ito {
+      position: absolute; 
+      top: -150px; 
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, rgba(196,168,130,0.6), transparent);
+      opacity: 0; 
+      transform: translateY(0);
+    }
+
     @keyframes itoFall {
       0% { transform: translateY(0) scaleY(1); opacity: 0; }
       20% { opacity: 0.8; transform: translateY(20vh) scaleY(2); }
@@ -179,56 +309,243 @@
     }
 
     .hero::after {
-      content: ""; position: absolute; inset: 0; z-index: 1;
-      background: linear-gradient(to bottom, transparent 20%, rgba(6,6,5,0.7) 75%, var(--bg) 100%); pointer-events: none;
+      content: ""; 
+      position: absolute; 
+      inset: 0; 
+      z-index: 1;
+      background: linear-gradient(to bottom, transparent 20%, rgba(6,6,5,0.7) 75%, var(--bg) 100%); 
+      pointer-events: none;
     }
-    .hero-divider { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%); z-index: 2; }
+
+    .hero-divider { 
+      position: absolute; 
+      left: 0; 
+      right: 0; 
+      bottom: 0; 
+      height: 1px; 
+      background: linear-gradient(to right, transparent 0%, rgba(196,168,130,0.15) 20%, rgba(124,154,160,0.25) 50%, rgba(196,168,130,0.12) 80%, transparent 100%); 
+      z-index: 2; 
+    }
     
-    .hero-inner { position: relative; z-index: 2; transition: transform 0.2s var(--ease); will-change: transform; }
+    .hero-inner { 
+      position: relative; 
+      z-index: 2; 
+      transition: transform 0.2s var(--ease); 
+      will-change: transform; 
+    }
     
-    .hero-eyebrow { font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem); letter-spacing: 0.5em; color: var(--dim); text-transform: uppercase; margin-bottom: clamp(1.5rem, 4vh, 3rem); display: flex; align-items: center; gap: 1.2rem; -webkit-clip-path: inset(0 100% 0 0); clip-path: inset(0 100% 0 0); transition: -webkit-clip-path 1.2s var(--ease) 0.2s, clip-path 1.2s var(--ease) 0.2s; }
-    .hero-eyebrow::before { content: ''; width: 24px; height: 0.5px; background: var(--accent2); flex-shrink: 0; opacity: 0.6; }
-    .hero-eyebrow.revealed { -webkit-clip-path: inset(0 0% 0 0); clip-path: inset(0 0% 0 0); }
+    .hero-eyebrow { 
+      font-family: var(--font-en); 
+      font-size: clamp(0.56rem, 1.3vw, 0.63rem); 
+      letter-spacing: 0.5em; 
+      color: var(--dim); 
+      text-transform: uppercase; 
+      margin-bottom: clamp(1.5rem, 4vh, 3rem); 
+      display: flex; 
+      align-items: center; 
+      gap: 1.2rem; 
+      -webkit-clip-path: inset(0 100% 0 0); 
+      clip-path: inset(0 100% 0 0); 
+      transition: -webkit-clip-path 1.2s var(--ease) 0.2s, clip-path 1.2s var(--ease) 0.2s; 
+    }
+
+    .hero-eyebrow::before { 
+      content: ''; 
+      width: 24px; 
+      height: 0.5px; 
+      background: var(--accent2); 
+      flex-shrink: 0; 
+      opacity: 0.6; 
+    }
+
+    .hero-eyebrow.revealed { 
+      -webkit-clip-path: inset(0 0% 0 0); 
+      clip-path: inset(0 0% 0 0); 
+    }
     
-    .hero-title { font-family: var(--font-ja); font-size: clamp(5rem, 19vw, 17rem); font-weight: 200; line-height: 0.88; letter-spacing: -0.02em; color: var(--fg); margin-bottom: clamp(0.8rem, 2vh, 1.8rem); display: flex; gap: 0.05em; overflow: visible; }
+    .hero-title { 
+      font-family: var(--font-ja); 
+      font-size: clamp(5rem, 19vw, 17rem); 
+      font-weight: 200; 
+      line-height: 0.88; 
+      letter-spacing: -0.02em; 
+      color: var(--fg); 
+      margin-bottom: clamp(0.8rem, 2vh, 1.8rem); 
+      display: flex; 
+      gap: 0.05em; 
+      overflow: visible; 
+    }
+
     .hero-title .char { 
-      display: inline-block; opacity: 0; 
-      transform: translate3d(0, 80px, -300px) rotateX(-25deg) scale(0.85); filter: blur(24px) drop-shadow(0 0 15px var(--accent)); color: transparent;
+      display: inline-block; 
+      opacity: 0; 
+      transform: translate3d(0, 80px, -300px) rotateX(-25deg) scale(0.85); 
+      filter: blur(24px) drop-shadow(0 0 15px var(--accent)); 
+      color: transparent;
       text-shadow: -20px 0 40px rgba(196,168,130,0.8), 20px 0 40px rgba(124,154,160,0.8);
       transition: transform 2.4s var(--ease-out), filter 2.4s var(--ease-out), opacity 1.8s ease, text-shadow 2.4s var(--ease-out), color 2.4s var(--ease-out);
     }
+
     .hero-title .char:nth-child(1) { transition-delay: 0.15s; }
     .hero-title .char:nth-child(2) { transition-delay: 0.4s; }
+    
     .hero-title.revealed .char { 
-      opacity: 1; transform: translate3d(0, 0, 0) rotateX(0deg) scale(1);
-      filter: blur(0px) drop-shadow(0 0 0 transparent); color: var(--fg);
+      opacity: 1; 
+      transform: translate3d(0, 0, 0) rotateX(0deg) scale(1);
+      filter: blur(0px) drop-shadow(0 0 0 transparent); 
+      color: var(--fg);
       text-shadow: 0 8px 32px rgba(0,0,0,0.95), 0 0 10px rgba(0,0,0,0.6);
     }
     
-    .hero-title-en { font-family: var(--font-en); font-size: clamp(0.95rem, 3vw, 2rem); font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(196,168,130,0.8); text-shadow: 0 4px 16px rgba(0,0,0,0.8); transform: translateY(20px); -webkit-clip-path: inset(0 100% 0 0); clip-path: inset(0 100% 0 0); transition: transform 1.6s var(--ease) 0.8s, -webkit-clip-path 1.4s var(--ease) 0.8s, clip-path 1.4s var(--ease) 0.8s; }
-    .hero-title-en.revealed { transform: translateY(0); -webkit-clip-path: inset(0 0% 0 0); clip-path: inset(0 0% 0 0); }
-    
-    .hero-meta { display: flex; align-items: center; gap: 1.8rem; margin-top: clamp(2rem, 5vh, 4.5rem); opacity: 0; transform: translateY(14px); transition: opacity 1s ease 1.3s, transform 1s var(--ease) 1.3s; }
-    .hero-meta.revealed { opacity: 1; transform: translateY(0); }
-    .hero-meta-line { width: 40px; height: 0.5px; background: linear-gradient(to right, var(--accent), var(--accent2)); flex-shrink: 0; }
-    .hero-meta-text { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.62rem); letter-spacing: 0.24em; color: var(--dim); text-transform: uppercase; }
+    .hero-title-en { 
+      font-family: var(--font-en); 
+      font-size: clamp(0.95rem, 3vw, 2rem); 
+      font-weight: 300; 
+      font-style: italic; 
+      letter-spacing: 0.25em; 
+      color: rgba(196,168,130,0.8); 
+      text-shadow: 0 4px 16px rgba(0,0,0,0.8); 
+      transform: translateY(20px); 
+      -webkit-clip-path: inset(0 100% 0 0); 
+      clip-path: inset(0 100% 0 0); 
+      transition: transform 1.6s var(--ease) 0.8s, -webkit-clip-path 1.4s var(--ease) 0.8s, clip-path 1.4s var(--ease) 0.8s; 
+    }
 
-    .hero-scroll { position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0; transition: opacity 0.9s ease 1.8s; }
-    .hero-scroll.revealed { opacity: 1; }
-    .hero-scroll-label { font-family: var(--font-en); font-size: 0.52rem; letter-spacing: 0.38em; color: var(--whisper); text-transform: uppercase; writing-mode: vertical-rl; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
-    .hero-scroll-track { width: 1px; height: 48px; background: rgba(255,255,255,0.15); position: relative; overflow: hidden; }
-    .hero-scroll-fill { position: absolute; top: -100%; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, var(--accent), transparent); animation: scrollDrop 2.2s ease-in-out 2s infinite; }
+    .hero-title-en.revealed { 
+      transform: translateY(0); 
+      -webkit-clip-path: inset(0 0% 0 0); 
+      clip-path: inset(0 0% 0 0); 
+    }
+    
+    .hero-meta { 
+      display: flex; 
+      align-items: center; 
+      gap: 1.8rem; 
+      margin-top: clamp(2rem, 5vh, 4.5rem); 
+      opacity: 0; 
+      transform: translateY(14px); 
+      transition: opacity 1s ease 1.3s, transform 1s var(--ease) 1.3s; 
+    }
+
+    .hero-meta.revealed { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+
+    .hero-meta-line { 
+      width: 40px; 
+      height: 0.5px; 
+      background: linear-gradient(to right, var(--accent), var(--accent2)); 
+      flex-shrink: 0; 
+    }
+
+    .hero-meta-text { 
+      font-family: var(--font-en); 
+      font-size: clamp(0.54rem, 1.2vw, 0.62rem); 
+      letter-spacing: 0.24em; 
+      color: var(--dim); 
+      text-transform: uppercase; 
+    }
+
+    .hero-scroll { 
+      position: absolute; 
+      bottom: clamp(2rem, 5vh, 4rem); 
+      right: var(--px); 
+      z-index: 2; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      gap: 12px; 
+      opacity: 0; 
+      transition: opacity 0.9s ease 1.8s; 
+    }
+
+    .hero-scroll.revealed { 
+      opacity: 1; 
+    }
+
+    .hero-scroll-label { 
+      font-family: var(--font-en); 
+      font-size: 0.52rem; 
+      letter-spacing: 0.38em; 
+      color: var(--whisper); 
+      text-transform: uppercase; 
+      writing-mode: vertical-rl; 
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8); 
+    }
+
+    .hero-scroll-track { 
+      width: 1px; 
+      height: 48px; 
+      background: rgba(255,255,255,0.15); 
+      position: relative; 
+      overflow: hidden; 
+    }
+
+    .hero-scroll-fill { 
+      position: absolute; 
+      top: -100%; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      background: linear-gradient(to bottom, var(--accent), transparent); 
+      animation: scrollDrop 2.2s ease-in-out 2s infinite; 
+    }
+
     @keyframes scrollDrop { 0% { top: -100%; opacity: 1; } 70% { top: 100%; opacity: 0.4; } 71% { top: -100%; opacity: 0; } 100% { top: -100%; opacity: 0; } }
 
     /* ============================================================
         CONCEPT SECTION 
     ============================================================ */
-    .concept-section { padding: clamp(6rem, 15vh, 10rem) var(--px); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; z-index: 5; }
-    .concept-text { font-size: clamp(1.05rem, 2.2vw, 1.4rem); font-weight: 300; line-height: 2.4; letter-spacing: 0.12em; text-align: center; color: rgba(255, 255, 255, 0.95); text-shadow: 0 4px 20px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.6); }
-    .concept-text-sub { margin-top: 3rem; font-size: clamp(0.9rem, 1.8vw, 1.15rem); font-weight: 200; line-height: 2.4; letter-spacing: 0.12em; text-align: center; color: rgba(233,229,223,0.8); text-shadow: 0 4px 16px rgba(0,0,0,0.9); }
-    .concept-line { display: block; overflow: hidden; margin-bottom: 0.4em; }
-    .concept-line span { display: inline-block; transform: translateY(100%); opacity: 0; transition: transform 1.2s var(--ease), opacity 1.2s ease; }
-    .concept-section.in-view .concept-line span { transform: translateY(0); opacity: 1; }
+    .concept-section { 
+      padding: clamp(6rem, 15vh, 10rem) var(--px); 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center; 
+      position: relative; 
+      z-index: 5; 
+    }
+
+    .concept-text { 
+      font-size: clamp(1.05rem, 2.2vw, 1.4rem); 
+      font-weight: 300; 
+      line-height: 2.4; 
+      letter-spacing: 0.12em; 
+      text-align: center; 
+      color: rgba(255, 255, 255, 0.95); 
+      text-shadow: 0 4px 20px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.6); 
+    }
+
+    .concept-text-sub { 
+      margin-top: 3rem; 
+      font-size: clamp(0.9rem, 1.8vw, 1.15rem); 
+      font-weight: 200; 
+      line-height: 2.4; 
+      letter-spacing: 0.12em; 
+      text-align: center; 
+      color: rgba(233,229,223,0.8); 
+      text-shadow: 0 4px 16px rgba(0,0,0,0.9); 
+    }
+
+    .concept-line { 
+      display: block; 
+      overflow: hidden; 
+      margin-bottom: 0.4em; 
+    }
+
+    .concept-line span { 
+      display: inline-block; 
+      transform: translateY(100%); 
+      opacity: 0; 
+      transition: transform 1.2s var(--ease), opacity 1.2s ease; 
+    }
+
+    .concept-section.in-view .concept-line span { 
+      transform: translateY(0); 
+      opacity: 1; 
+    }
+
     .concept-text .concept-line:nth-child(1) span { transition-delay: 0.1s; }
     .concept-text .concept-line:nth-child(2) span { transition-delay: 0.3s; }
     .concept-text .concept-line:nth-child(3) span { transition-delay: 0.5s; }
@@ -238,40 +555,198 @@
     /* ============================================================
         SERIES STATEMENT 
     ============================================================ */
-    .statement-wrapper { padding: 0 clamp(1.5rem, 6vw, 6rem) clamp(6rem, 13vh, 10rem); position: relative; z-index: 5; }
-    .statement-section { position: relative; max-width: 1000px; margin: 0 auto; padding: clamp(3rem, 8vh, 5rem) clamp(2rem, 6vw, 5rem); background: rgba(10, 10, 9, 0.6); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 4px; box-shadow: 0 40px 80px rgba(0,0,0,0.8); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
-    .statement-header { margin-bottom: clamp(2.5rem, 6vh, 4rem); border-bottom: 1px solid rgba(233,229,223,0.1); padding-bottom: 1.2rem; }
-    .statement-label { display: flex; align-items: center; gap: 12px; font-family: var(--font-en); font-size: clamp(0.6rem, 1.2vw, 0.7rem); letter-spacing: 0.4em; color: var(--accent); text-transform: uppercase; }
-    .statement-label::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+    .statement-wrapper { 
+      padding: 0 clamp(1.5rem, 6vw, 6rem) clamp(6rem, 13vh, 10rem); 
+      position: relative; 
+      z-index: 5; 
+    }
 
-    .statement-pullquote { font-family: var(--font-ja); font-weight: 300; font-size: clamp(1.4rem, 2.5vw, 1.8rem); line-height: 1.8; color: #ffffff; text-align: left; letter-spacing: 0.05em; margin-bottom: clamp(3rem, 7vh, 4.5rem); border-left: 2px solid var(--accent); padding-left: clamp(1.2rem, 3vw, 2.5rem); opacity: 0; transform: translateY(20px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
-    .statement-pullquote.in-view { opacity: 1; transform: translateY(0); }
-    .statement-pullquote .accent-word { color: var(--accent); font-weight: 400; }
+    .statement-section { 
+      position: relative; 
+      max-width: 1000px; 
+      margin: 0 auto; 
+      padding: clamp(3rem, 8vh, 5rem) clamp(2rem, 6vw, 5rem); 
+      background: rgba(10, 10, 9, 0.6); 
+      border: 1px solid rgba(255, 255, 255, 0.06); 
+      border-radius: 4px; 
+      box-shadow: 0 40px 80px rgba(0,0,0,0.8); 
+      backdrop-filter: blur(24px); 
+      -webkit-backdrop-filter: blur(24px); 
+    }
 
-    .statement-body { display: flex; flex-direction: column; gap: clamp(2rem, 4vh, 2.8rem); }
-    .statement-para { font-size: clamp(0.95rem, 1.6vw, 1.1rem); line-height: 2.3; color: rgba(245,245,245,0.88); letter-spacing: 0.08em; text-align: justify; opacity: 0; transform: translateY(16px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
-    .statement-para.in-view { opacity: 1; transform: translateY(0); }
-    rt { font-size: 0.6em; color: var(--accent); letter-spacing: 0.02em; transform: translateY(2px); }
-    .statement-para strong { color: var(--accent); font-weight: 500; }
-    .statement-closing { font-family: var(--font-en); font-style: italic; font-weight: 300; font-size: clamp(1rem, 2vw, 1.2rem); line-height: 1.9; color: var(--accent); text-align: right; letter-spacing: 0.04em; margin-top: 4rem; opacity: 0; transform: translateY(16px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
-    .statement-closing::before { content: ''; display: inline-block; width: 40px; height: 1px; background: var(--accent); vertical-align: middle; margin-right: 16px; opacity: 0.6; }
-    .statement-closing.in-view { opacity: 1; transform: translateY(0); }
+    .statement-header { 
+      margin-bottom: clamp(2.5rem, 6vh, 4rem); 
+      border-bottom: 1px solid rgba(233,229,223,0.1); 
+      padding-bottom: 1.2rem; 
+    }
+
+    .statement-label { 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+      font-family: var(--font-en); 
+      font-size: clamp(0.6rem, 1.2vw, 0.7rem); 
+      letter-spacing: 0.4em; 
+      color: var(--accent); 
+      text-transform: uppercase; 
+    }
+
+    .statement-label::before { 
+      content: ''; 
+      width: 6px; 
+      height: 6px; 
+      border-radius: 50%; 
+      background: var(--accent); 
+      box-shadow: 0 0 10px var(--accent); 
+    }
+
+    .statement-pullquote { 
+      font-family: var(--font-ja); 
+      font-weight: 300; 
+      font-size: clamp(1.4rem, 2.5vw, 1.8rem); 
+      line-height: 1.8; 
+      color: #ffffff; 
+      text-align: left; 
+      letter-spacing: 0.05em; 
+      margin-bottom: clamp(3rem, 7vh, 4.5rem); 
+      border-left: 2px solid var(--accent); 
+      padding-left: clamp(1.2rem, 3vw, 2.5rem); 
+      opacity: 0; 
+      transform: translateY(20px); 
+      transition: opacity 1s var(--ease), transform 1s var(--ease); 
+    }
+
+    .statement-pullquote.in-view { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+
+    .statement-pullquote .accent-word { 
+      color: var(--accent); 
+      font-weight: 400; 
+    }
+
+    .statement-body { 
+      display: flex; 
+      flex-direction: column; 
+      gap: clamp(2rem, 4vh, 2.8rem); 
+    }
+
+    .statement-para { 
+      font-size: clamp(0.95rem, 1.6vw, 1.1rem); 
+      line-height: 2.3; 
+      color: rgba(245,245,245,0.88); 
+      letter-spacing: 0.08em; 
+      text-align: justify; 
+      opacity: 0; 
+      transform: translateY(16px); 
+      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); 
+    }
+
+    .statement-para.in-view { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+
+    rt { 
+      font-size: 0.6em; 
+      color: var(--accent); 
+      letter-spacing: 0.02em; 
+      transform: translateY(2px); 
+    }
+
+    .statement-para strong { 
+      color: var(--accent); 
+      font-weight: 500; 
+    }
+
+    .statement-closing { 
+      font-family: var(--font-en); 
+      font-style: italic; 
+      font-weight: 300; 
+      font-size: clamp(1rem, 2vw, 1.2rem); 
+      line-height: 1.9; 
+      color: var(--accent); 
+      text-align: right; 
+      letter-spacing: 0.04em; 
+      margin-top: 4rem; 
+      opacity: 0; 
+      transform: translateY(16px); 
+      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); 
+    }
+
+    .statement-closing::before { 
+      content: ''; 
+      display: inline-block; 
+      width: 40px; 
+      height: 1px; 
+      background: var(--accent); 
+      vertical-align: middle; 
+      margin-right: 16px; 
+      opacity: 0.6; 
+    }
+
+    .statement-closing.in-view { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
 
     /* ============================================================
-        GALLERY GRID
+        GALLERY GRID (レスポンシブ完全対応：スマホでも美しく表示)
     ============================================================ */
-    .gallery-section { padding: 0 var(--px) clamp(6rem, 13vh, 10rem); max-width: 1600px; margin: 0 auto; position: relative; z-index: 5; }
-    .section-label { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem); letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase; text-align: center; margin-bottom: clamp(3rem, 7vh, 5rem); }
-    
-    .gallery-grid { display: grid; grid-template-columns: repeat(24, 1fr); gap: clamp(1.2rem, 2vw, 2.5rem) clamp(0.8rem, 1.5vw, 2rem); align-items: start; }
-    .gallery-item { display: flex; flex-direction: column; text-decoration: none; cursor: pointer; opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
-    .gallery-item.in-view { opacity: 1; transform: translateY(0); }
+    .gallery-section { 
+      padding: 0 var(--px) clamp(6rem, 13vh, 10rem); 
+      max-width: 1600px; 
+      margin: 0 auto; 
+      position: relative; 
+      z-index: 5; 
+      display: block !important; /* スマホ時のdisplay: noneを解除 */
+    }
 
+    .section-label { 
+      font-family: var(--font-en); 
+      font-size: clamp(0.54rem, 1.2vw, 0.61rem); 
+      letter-spacing: 0.44em; 
+      color: var(--muted); 
+      text-transform: uppercase; 
+      text-align: center; 
+      margin-bottom: clamp(3rem, 7vh, 5rem); 
+    }
+    
+    .gallery-grid { 
+      display: grid; 
+      grid-template-columns: repeat(24, 1fr); 
+      gap: clamp(1.2rem, 2vw, 2.5rem) clamp(0.8rem, 1.5vw, 2rem); 
+      align-items: start; 
+    }
+
+    .gallery-item { 
+      display: flex; 
+      flex-direction: column; 
+      text-decoration: none; 
+      cursor: pointer; 
+      opacity: 0; 
+      transform: translateY(20px); 
+      transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); 
+    }
+
+    .gallery-item.in-view { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+
+    /* デスクトップ用グリッドカラム配置 */
     .gi-cave3      { grid-column: 4 / span 8; }
     .gi-cave2      { grid-column: 14 / span 8; }
-    .gi-ouro, .gi-fukuro { grid-column: 1 / -1; width: 100vw; max-width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; }
-    .gi-ouro .gallery-item-img-wrap, .gi-fukuro .gallery-item-img-wrap { border-left: none; border-right: none; }
-    .gi-ouro .gallery-item-cap, .gi-fukuro .gallery-item-cap { padding-left: var(--px); padding-right: var(--px); }
+    .gi-ouro, .gi-fukuro { 
+      grid-column: 1 / -1; 
+      width: 100%; 
+      position: relative; 
+    }
+    .gi-ouro .gallery-item-cap, .gi-fukuro .gallery-item-cap { 
+      padding-left: 0; 
+      padding-right: 0; 
+    }
     .gi-sanmyaku   { grid-column: 2 / span 10; }
     .gi-samizu     { grid-column: 14 / span 10; }
     .gi-kakuchi    { grid-column: 3 / span 6; }
@@ -285,80 +760,402 @@
     .gi-mon        { grid-column: 11 / span 4; }
     .gi-intocave   { grid-column: 17 / span 4; }
 
-    .gallery-item-img-wrap { width: 100%; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); overflow: hidden; border: 0.5px solid rgba(255,255,255,0.1); transition: border-color 0.4s ease, box-shadow 0.5s var(--ease); }
-    .gallery-item-img-wrap img { width: 100%; height: auto; object-fit: contain; filter: grayscale(15%) brightness(0.85); transition: transform 0.8s var(--ease), filter 0.6s ease; }
-    .gallery-item:hover .gallery-item-img-wrap { border-color: rgba(196,168,130,0.4); box-shadow: 0 16px 40px rgba(0,0,0,0.7); }
-    .gallery-item:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
-    .gallery-item-cap { padding-top: 0.8rem; text-align: left; }
-    .gallery-item-title { font-family: var(--font-ja); font-size: clamp(0.8rem, 1.2vw, 0.95rem); font-weight: 300; color: var(--fg); letter-spacing: 0.05em; margin-bottom: 0.2rem; display: block; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
-    .gallery-item-meta { font-family: var(--font-en), var(--font-ja); font-size: clamp(0.55rem, 1vw, 0.65rem); color: var(--accent); letter-spacing: 0.1em; opacity: 0.9; display: block; text-shadow: 0 2px 6px rgba(0,0,0,0.8); }
+    .gallery-item-img-wrap { 
+      width: 100%; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      background: rgba(0,0,0,0.5); 
+      backdrop-filter: blur(4px); 
+      -webkit-backdrop-filter: blur(4px); 
+      overflow: hidden; 
+      border: 0.5px solid rgba(255,255,255,0.1); 
+      transition: border-color 0.4s ease, box-shadow 0.5s var(--ease); 
+    }
+
+    .gallery-item-img-wrap img { 
+      width: 100%; 
+      height: auto; 
+      object-fit: contain; 
+      filter: grayscale(15%) brightness(0.85); 
+      transition: transform 0.8s var(--ease), filter 0.6s ease; 
+    }
+
+    .gallery-item:hover .gallery-item-img-wrap { 
+      border-color: rgba(196,168,130,0.4); 
+      box-shadow: 0 16px 40px rgba(0,0,0,0.7); 
+    }
+
+    .gallery-item:hover img { 
+      transform: scale(1.03); 
+      filter: grayscale(0%) brightness(1.0); 
+    }
+
+    .gallery-item-cap { 
+      padding-top: 0.8rem; 
+      text-align: left; 
+    }
+
+    .gallery-item-title { 
+      font-family: var(--font-ja); 
+      font-size: clamp(0.8rem, 1.2vw, 0.95rem); 
+      font-weight: 300; 
+      color: var(--fg); 
+      letter-spacing: 0.05em; 
+      margin-bottom: 0.2rem; 
+      display: block; 
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8); 
+    }
+
+    .gallery-item-meta { 
+      font-family: var(--font-en), var(--font-ja); 
+      font-size: clamp(0.55rem, 1vw, 0.65rem); 
+      color: var(--accent); 
+      letter-spacing: 0.1em; 
+      opacity: 0.9; 
+      display: block; 
+      text-shadow: 0 2px 6px rgba(0,0,0,0.8); 
+    }
 
     /* ============================================================
         CHRONOLOGY SECTION
     ============================================================ */
-    .chronology-section { padding: clamp(5rem, 12vh, 10rem) var(--px); background: rgba(12, 12, 10, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 0.5px solid rgba(255,255,255,0.05); position: relative; z-index: 5; }
-    .timeline-container { max-width: 1200px; margin: 0 auto; position: relative; }
-    .timeline-spine-wrapper { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(233,229,223,0.08); transform: translateX(-50%); }
-    .timeline-spine-progress { position: absolute; top: 0; left: 0; width: 1px; background: linear-gradient(to bottom, transparent 0%, var(--accent) 10%, var(--accent) 90%, transparent 100%); height: 0%; transition: height 0.1s linear; }
+    .chronology-section { 
+      padding: clamp(5rem, 12vh, 10rem) var(--px); 
+      background: rgba(12, 12, 10, 0.6); 
+      backdrop-filter: blur(12px); 
+      -webkit-backdrop-filter: blur(12px); 
+      border-top: 0.5px solid rgba(255,255,255,0.05); 
+      position: relative; 
+      z-index: 5; 
+    }
 
-    .tl-entry { position: relative; width: 100%; margin-bottom: clamp(7rem, 16vh, 12rem); opacity: 0; transform: translateY(30px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
-    .tl-entry:last-child { margin-bottom: 0; }
-    .tl-entry.in-view { opacity: 1; transform: translateY(0); }
+    .timeline-container { 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      position: relative; 
+    }
 
-    .tl-year-display { font-family: var(--font-en); font-size: clamp(3.5rem, 7vw, 5.5rem); font-weight: 300; color: var(--accent); letter-spacing: 0.02em; line-height: 1; margin-bottom: clamp(1rem, 2vh, 2rem); padding-left: 2%; opacity: 0.9; text-shadow: 0 4px 16px rgba(0,0,0,0.8); }
-    .tl-entry:nth-child(even) .tl-year-display { text-align: left; }
-    .tl-content-wrap { display: flex; justify-content: space-between; align-items: center; gap: clamp(2rem, 5vw, 6rem); }
-    .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
+    .timeline-spine-wrapper { 
+      position: absolute; 
+      top: 0; 
+      bottom: 0; 
+      left: 50%; 
+      width: 1px; 
+      background: rgba(233,229,223,0.08); 
+      transform: translateX(-50%); 
+    }
 
-    .tl-figure { width: 54%; position: relative; border: 0.5px solid rgba(255,255,255,0.1); overflow: hidden; background: rgba(0,0,0,0.5); cursor: zoom-in; transition: width 0.4s ease; }
-    .tl-body { width: 42%; position: relative; z-index: 2; transition: width 0.4s ease; text-shadow: 0 2px 10px rgba(0,0,0,0.9); }
+    .timeline-spine-progress { 
+      position: absolute; 
+      top: 0; 
+      left: 0; 
+      width: 1px; 
+      background: linear-gradient(to bottom, transparent 0%, var(--accent) 10%, var(--accent) 90%, transparent 100%); 
+      height: 0%; 
+      transition: height 0.1s linear; 
+    }
+
+    .tl-entry { 
+      position: relative; 
+      width: 100%; 
+      margin-bottom: clamp(7rem, 16vh, 12rem); 
+      opacity: 0; 
+      transform: translateY(30px); 
+      transition: opacity 1s var(--ease), transform 1s var(--ease); 
+    }
+
+    .tl-entry:last-child { 
+      margin-bottom: 0; 
+    }
+
+    .tl-entry.in-view { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+
+    .tl-year-display { 
+      font-family: var(--font-en); 
+      font-size: clamp(3.5rem, 7vw, 5.5rem); 
+      font-weight: 300; 
+      color: var(--accent); 
+      letter-spacing: 0.02em; 
+      line-height: 1; 
+      margin-bottom: clamp(1rem, 2vh, 2rem); 
+      padding-left: 2%; 
+      opacity: 0.9; 
+      text-shadow: 0 4px 16px rgba(0,0,0,0.8); 
+    }
+
+    .tl-entry:nth-child(even) .tl-year-display { 
+      text-align: left; 
+    }
+
+    .tl-content-wrap { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      gap: clamp(2rem, 5vw, 6rem); 
+    }
+
+    .tl-entry:nth-child(even) .tl-content-wrap { 
+      flex-direction: row-reverse; 
+    }
+
+    .tl-figure { 
+      width: 54%; 
+      position: relative; 
+      border: 0.5px solid rgba(255,255,255,0.1); 
+      overflow: hidden; 
+      background: rgba(0,0,0,0.5); 
+      cursor: zoom-in; 
+      transition: width 0.4s ease; 
+    }
+
+    .tl-body { 
+      width: 42%; 
+      position: relative; 
+      z-index: 2; 
+      transition: width 0.4s ease; 
+      text-shadow: 0 2px 10px rgba(0,0,0,0.9); 
+    }
+
     .tl-entry.is-featured .tl-figure { width: 64%; }
     .tl-entry.is-featured .tl-body   { width: 32%; }
     #work-ritornello .tl-figure { width: 48%; } #work-ritornello .tl-body   { width: 46%; }
     #work-mon .tl-figure { width: 46%; } #work-mon .tl-body   { width: 48%; }
 
-    .tl-entry.is-full-figure .tl-content-wrap { flex-direction: column; align-items: stretch; gap: clamp(2rem, 4vw, 3.5rem); }
-    .tl-entry.is-full-figure .tl-figure { width: 100%; max-height: 75vh; border: 0.5px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; }
-    .tl-entry.is-full-figure .tl-figure img { width: 100%; max-height: 75vh; object-fit: contain; }
-    .tl-entry.is-full-figure .tl-body { width: 100%; max-width: 1000px; margin: 0 auto; }
-    .tl-entry.is-bleed .tl-figure { width: 100vw; max-width: 100vw; max-height: none; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; border-left: none; border-right: none; }
-    .tl-entry.is-bleed .tl-figure img { max-height: none; }
-    .tl-entry.is-bleed .tl-body { padding-left: var(--px); padding-right: var(--px); }
+    .tl-entry.is-full-figure .tl-content-wrap { 
+      flex-direction: column; 
+      align-items: stretch; 
+      gap: clamp(2rem, 4vw, 3.5rem); 
+    }
 
-    .tl-entry.is-dual-figure .tl-figure { border: none; background: none; overflow: visible; cursor: default; position: relative; display: block; width: 70%; padding: 0; } 
-    .tl-entry.is-dual-figure .tl-body { width: 26%; } 
+    .tl-entry.is-full-figure .tl-figure { 
+      width: 100%; 
+      max-height: 75vh; 
+      border: 0.5px solid rgba(255,255,255,0.1); 
+      background: rgba(0,0,0,0.5); 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+    }
+
+    .tl-entry.is-full-figure .tl-figure img { 
+      width: 100%; 
+      max-height: 75vh; 
+      object-fit: contain; 
+    }
+
+    .tl-entry.is-full-figure .tl-body { 
+      width: 100%; 
+      max-width: 1000px; 
+      margin: 0 auto; 
+    }
+
+    /* is-bleedスタイルの100vwによるスマホスクロール横ぶれバグを根本的に解消 */
+    .tl-entry.is-bleed .tl-figure { 
+      width: 100%; 
+      max-width: 100%; 
+      max-height: none; 
+      position: relative; 
+      left: 0; 
+      right: 0; 
+      margin-left: 0; 
+      margin-right: 0; 
+    }
+
+    .tl-entry.is-bleed .tl-figure img { 
+      max-height: none; 
+    }
+
+    .tl-entry.is-bleed .tl-body { 
+      padding-left: 0; 
+      padding-right: 0; 
+    }
+
+    .tl-entry.is-dual-figure .tl-figure { 
+      border: none; 
+      background: none; 
+      overflow: visible; 
+      cursor: default; 
+      position: relative; 
+      display: block; 
+      width: 70%; 
+      padding: 0; 
+    } 
+
+    .tl-entry.is-dual-figure .tl-body { 
+      width: 26%; 
+    } 
     
-    .tl-img-main, .tl-img-sub { border: 0.5px solid rgba(255,255,255,0.1); overflow: hidden; cursor: zoom-in; background: rgba(0,0,0,0.5); transition: border-color 0.4s ease, box-shadow 0.5s var(--ease); }
-    .tl-img-main img, .tl-img-sub img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(12%) brightness(0.85); transition: transform 1s var(--ease), filter 0.6s ease; }
-    .tl-img-main:hover img, .tl-img-sub:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
-    .tl-img-main:hover, .tl-img-sub:hover { border-color: rgba(196,168,130,0.4); }
+    .tl-img-main, .tl-img-sub { 
+      border: 0.5px solid rgba(255,255,255,0.1); 
+      overflow: hidden; 
+      cursor: zoom-in; 
+      background: rgba(0,0,0,0.5); 
+      transition: border-color 0.4s ease, box-shadow 0.5s var(--ease); 
+    }
 
-    .tl-img-main { width: 100%; aspect-ratio: 6 / 5; position: relative; z-index: 1; }
-    .tl-img-sub { width: 44%; aspect-ratio: 4 / 3; position: absolute; right: 0; bottom: 0; z-index: 2; box-shadow: 0 24px 56px rgba(0,0,0,0.7); }
-    .tl-figure img { width: 100%; height: auto; display: block; filter: grayscale(12%) brightness(0.85); transition: transform 1s var(--ease), filter 0.6s ease; }
-    .tl-figure:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
+    .tl-img-main img, .tl-img-sub img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+      display: block; 
+      filter: grayscale(12%) brightness(0.85); 
+      transition: transform 1s var(--ease), filter 0.6s ease; 
+    }
 
-    .tl-title { font-family: var(--font-ja); font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 300; color: var(--fg); line-height: 1.4; margin-bottom: 0.8rem; }
-    .tl-meta { font-family: var(--font-en), var(--font-ja); font-size: clamp(0.65rem, 1vw, 0.75rem); color: var(--accent); letter-spacing: 0.1em; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border-md); }
-    .tl-desc { font-size: clamp(0.85rem, 1.6vw, 0.95rem); line-height: 2.1; color: rgba(245,245,245,0.85); text-align: justify; }
-    .tl-desc p { margin-bottom: 1.2em; } .tl-desc p:last-child { margin-bottom: 0; }
+    .tl-img-main:hover img, .tl-img-sub:hover img { 
+      transform: scale(1.03); 
+      filter: grayscale(0%) brightness(1.0); 
+    }
 
-    .tw-char { opacity: 0; display: inline-block; transition: opacity 0.3s ease; }
-    .tw-cursor { display: inline-block; width: 1.5px; height: 1.1em; background-color: var(--accent); margin-left: 2px; vertical-align: middle; animation: tw-blink 0.8s infinite; }
+    .tl-img-main:hover, .tl-img-sub:hover { 
+      border-color: rgba(196,168,130,0.4); 
+    }
+
+    .tl-img-main { 
+      width: 100%; 
+      aspect-ratio: 6 / 5; 
+      position: relative; 
+      z-index: 1; 
+    }
+
+    .tl-img-sub { 
+      width: 44%; 
+      aspect-ratio: 4 / 3; 
+      position: absolute; 
+      right: 0; 
+      bottom: 0; 
+      z-index: 2; 
+      box-shadow: 0 24px 56px rgba(0,0,0,0.7); 
+    }
+
+    .tl-figure img { 
+      width: 100%; 
+      height: auto; 
+      display: block; 
+      filter: grayscale(12%) brightness(0.85); 
+      transition: transform 1s var(--ease), filter 0.6s ease; 
+    }
+
+    .tl-figure:hover img { 
+      transform: scale(1.03); 
+      filter: grayscale(0%) brightness(1.0); 
+    }
+
+    .tl-title { 
+      font-family: var(--font-ja); 
+      font-size: clamp(1.4rem, 2.5vw, 2.2rem); 
+      font-weight: 300; 
+      color: var(--fg); 
+      line-height: 1.4; 
+      margin-bottom: 0.8rem; 
+    }
+
+    .tl-meta { 
+      font-family: var(--font-en), var(--font-ja); 
+      font-size: clamp(0.65rem, 1vw, 0.75rem); 
+      color: var(--accent); 
+      letter-spacing: 0.1em; 
+      margin-bottom: 2rem; 
+      padding-bottom: 1.5rem; 
+      border-bottom: 0.5px solid var(--border-md); 
+    }
+
+    .tl-desc { 
+      font-size: clamp(0.85rem, 1.6vw, 0.95rem); 
+      line-height: 2.1; 
+      color: rgba(245,245,245,0.85); 
+      text-align: justify; 
+    }
+
+    .tl-desc p { 
+      margin-bottom: 1.2em; 
+    } 
+
+    .tl-desc p:last-child { 
+      margin-bottom: 0; 
+    }
+
+    .tw-char { 
+      opacity: 0; 
+      display: inline-block; 
+      transition: opacity 0.3s ease; 
+    }
+
+    .tw-cursor { 
+      display: inline-block; 
+      width: 1.5px; 
+      height: 1.1em; 
+      background-color: var(--accent); 
+      margin-left: 2px; 
+      vertical-align: middle; 
+      animation: tw-blink 0.8s infinite; 
+    }
+
     @keyframes tw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     .fade-out { opacity: 0; transition: opacity 0.8s ease; }
 
     /* ============================================================
         CONTACT SECTION
     ============================================================ */
-    .contact-section { padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center; background: rgba(12, 12, 10, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 0.5px solid rgba(255,255,255,0.05); position: relative; z-index: 5; }
-    .contact-heading { font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em; text-shadow: 0 4px 16px rgba(0,0,0,0.8); }
-    .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.8vw, 0.95rem); color: rgba(245,245,245,0.7); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
-    .contact-btn { display: inline-block; padding: 1.2rem 3.5rem; background: var(--accent); color: var(--bg); font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.72rem); font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none; transition: all 0.4s var(--ease); border-radius: 2px; }
-    .contact-btn:hover { background: var(--fg); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(196,168,130,0.3); }
+    .contact-section { 
+      padding: clamp(7rem, 15vh, 11rem) var(--px); 
+      text-align: center; 
+      background: rgba(12, 12, 10, 0.6); 
+      backdrop-filter: blur(12px); 
+      -webkit-backdrop-filter: blur(12px); 
+      border-top: 0.5px solid rgba(255,255,255,0.05); 
+      position: relative; 
+      z-index: 5; 
+    }
+
+    .contact-heading { 
+      font-family: var(--font-ja); 
+      font-size: clamp(2rem, 5vw, 3.5rem); 
+      font-weight: 200; 
+      line-height: 1.2; 
+      color: var(--fg); 
+      margin-bottom: 1.8rem; 
+      letter-spacing: 0.05em; 
+      text-shadow: 0 4px 16px rgba(0,0,0,0.8); 
+    }
+
+    .contact-body-text { 
+      font-family: var(--font-ja); 
+      font-size: clamp(0.85rem, 1.8vw, 0.95rem); 
+      color: rgba(245,245,245,0.7); 
+      margin: 0 auto 3rem; 
+      max-width: 450px; 
+      line-height: 2.2; 
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8); 
+    }
+
+    .contact-btn { 
+      display: inline-block; 
+      padding: 1.2rem 3.5rem; 
+      background: var(--accent); 
+      color: var(--bg); 
+      font-family: var(--font-en); 
+      font-size: clamp(0.6rem, 1.4vw, 0.72rem); 
+      font-weight: 500; 
+      letter-spacing: 0.25em; 
+      text-transform: uppercase; 
+      text-decoration: none; 
+      transition: all 0.4s var(--ease); 
+      border-radius: 2px; 
+    }
+
+    .contact-btn:hover { 
+      background: var(--fg); 
+      transform: translateY(-3px); 
+      box-shadow: 0 12px 30px rgba(196,168,130,0.3); 
+    }
 
     /* ============================================================
-        FOOTER (指定デザインへ統一)
+        FOOTER
     ============================================================ */
     footer {
       padding: 3rem 2.5rem;
@@ -368,6 +1165,7 @@
       position: relative;
       z-index: 5;
     }
+
     .footer-logo {
       font-family: var(--font-ja);
       font-size: clamp(0.75rem, 1.8vw, 0.88rem);
@@ -376,6 +1174,7 @@
       letter-spacing: 0.08em;
       margin-bottom: 0.5rem;
     }
+
     .footer-copy {
       font-family: var(--font-en);
       font-size: clamp(0.52rem, 1.3vw, 0.62rem);
@@ -386,625 +1185,866 @@
     /* ============================================================
         LIGHTBOX (MODAL)
     ============================================================ */
-    .image-modal { position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.55s var(--ease), visibility 0.55s; }
-    .image-modal.is-active { opacity: 1; visibility: visible; }
-    .modal-bg { position: absolute; inset: 0; background: rgba(6,6,5,0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); cursor: zoom-out; }
-    .modal-close { position: fixed; top: clamp(1rem, 3vh, 2rem); right: var(--px); z-index: 10001; background: none; border: none; color: var(--muted); cursor: pointer; padding: 0.5rem; transition: color 0.3s ease, transform 0.3s var(--ease); }
-    .modal-close:hover { color: var(--fg); transform: scale(1.1) rotate(90deg); }
-    .modal-content { position: relative; z-index: 10000; width: 100vw; height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; opacity: 0; transform: scale(0.96) translateY(12px); transition: opacity 0.55s var(--ease) 0.08s, transform 0.55s var(--ease) 0.08s; padding: 3rem 1rem 1rem; }
-    .image-modal.is-active .modal-content { opacity: 1; transform: scale(1) translateY(0); }
-    .modal-content img { max-width: 92vw; max-height: 82svh; object-fit: contain; box-shadow: 0 40px 100px rgba(0,0,0,0.9); border: 0.5px solid var(--border-md); cursor: zoom-out; }
-    .modal-caption { text-align: center; padding-bottom: 2vh; }
-    .modal-caption-jp { font-family: var(--font-ja); font-size: clamp(0.9rem, 1.4vw, 1.1rem); font-weight: 200; color: var(--fg); margin-bottom: 0.5rem; letter-spacing: 0.15em; }
-    .modal-caption-meta { font-family: var(--font-en), var(--font-ja); font-size: clamp(0.65rem, 1vw, 0.75rem); font-weight: 300; color: var(--accent); letter-spacing: 0.12em; opacity: 0.85; }
+    .image-modal { 
+      position: fixed; 
+      inset: 0; 
+      z-index: 9999; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      opacity: 0; 
+      visibility: hidden; 
+      transition: opacity 0.55s var(--ease), visibility 0.55s; 
+    }
+
+    .image-modal.is-active { 
+      opacity: 1; 
+      visibility: visible; 
+    }
+
+    .modal-bg { 
+      position: absolute; 
+      inset: 0; 
+      background: rgba(6,6,5,0.96); 
+      backdrop-filter: blur(16px); 
+      -webkit-backdrop-filter: blur(16px); 
+      cursor: zoom-out; 
+    }
+
+    .modal-close { 
+      position: fixed; 
+      top: clamp(1rem, 3vh, 2rem); 
+      right: var(--px); 
+      z-index: 10001; 
+      background: none; 
+      border: none; 
+      color: var(--muted); 
+      cursor: pointer; 
+      padding: 0.5rem; 
+      transition: color 0.3s ease, transform 0.3s var(--ease); 
+    }
+
+    .modal-close:hover { 
+      color: var(--fg); 
+      transform: scale(1.1) rotate(90deg); 
+    }
+
+    .modal-content { 
+      position: relative; 
+      z-index: 10000; 
+      width: 100vw; 
+      height: 100svh; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 1.5rem; 
+      opacity: 0; 
+      transform: scale(0.96) translateY(12px); 
+      transition: opacity 0.55s var(--ease) 0.08s, transform 0.55s var(--ease) 0.08s; 
+      padding: 3rem 1rem 1rem; 
+    }
+
+    .image-modal.is-active .modal-content { 
+      opacity: 1; 
+      transform: scale(1) translateY(0); 
+    }
+
+    .modal-content img { 
+      max-width: 92vw; 
+      max-height: 82svh; 
+      object-fit: contain; 
+      box-shadow: 0 40px 100px rgba(0,0,0,0.9); 
+      border: 0.5px solid var(--border-md); 
+      cursor: zoom-out; 
+    }
+
+    .modal-caption { 
+      text-align: center; 
+      padding-bottom: 2vh; 
+    }
+
+    .modal-caption-jp { 
+      font-family: var(--font-ja); 
+      font-size: clamp(0.9rem, 1.4vw, 1.1rem); 
+      font-weight: 200; 
+      color: var(--fg); 
+      margin-bottom: 0.5rem; 
+      letter-spacing: 0.15em; 
+    }
+
+    .modal-caption-meta { 
+      font-family: var(--font-en), var(--font-ja); 
+      font-size: clamp(0.65rem, 1vw, 0.75rem); 
+      font-weight: 300; 
+      color: var(--accent); 
+      letter-spacing: 0.12em; 
+      opacity: 0.85; 
+    }
     
     /* ============================================================
        BACK TO TOP
     ============================================================ */
-    .back-to-top { position: fixed; bottom: clamp(20px, 4vw, 40px); right: clamp(20px, 4vw, 40px); z-index: 9000; width: clamp(52px, 8vw, 70px); height: clamp(52px, 8vw, 70px); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; opacity: 0; visibility: hidden; transform: translateY(20px); transition: opacity 0.6s var(--ease), visibility 0.6s, transform 0.6s var(--ease); cursor: pointer; }
-    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
-    .b2t-inner { position: absolute; inset: 4px; background: rgba(12, 12, 10, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.4s var(--ease), transform 0.4s var(--ease); box-shadow: 0 10px 24px rgba(0,0,0,0.4); }
-    .b2t-text { font-family: var(--font-en); font-size: clamp(0.6rem, 1.4vw, 0.75rem); font-weight: 400; letter-spacing: 0.15em; color: var(--fg); margin-right: -0.15em; margin-bottom: -1px; transition: color 0.4s var(--ease), transform 0.4s var(--ease); }
-    .b2t-progress { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); pointer-events: none; }
-    .b2t-progress circle { fill: none; stroke-width: 1.5; }
-    .b2t-progress-bg { stroke: rgba(233,229,223,0.1); }
-    .b2t-progress-value { stroke: var(--accent); stroke-dasharray: 301.6; stroke-dashoffset: 301.6; transition: stroke-dashoffset 0.15s linear, stroke 0.4s var(--ease); }
-    .back-to-top:hover .b2t-inner { background: var(--accent); transform: scale(0.92); }
-    .back-to-top:hover .b2t-text { color: var(--bg); transform: translateY(-2px); }
-    .back-to-top:hover .b2t-progress-value { stroke: var(--fg); }
+    .back-to-top { 
+      position: fixed; 
+      bottom: clamp(20px, 4vw, 40px); 
+      right: clamp(20px, 4vw, 40px); 
+      z-index: 9000; 
+      width: clamp(52px, 8vw, 70px); 
+      height: clamp(52px, 8vw, 70px); 
+      border-radius: 50%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      text-decoration: none; 
+      opacity: 0; 
+      visibility: hidden; 
+      transform: translateY(20px); 
+      transition: opacity 0.6s var(--ease), visibility 0.6s, transform 0.6s var(--ease); 
+      cursor: pointer; 
+    }
+
+    .back-to-top.is-visible { 
+      opacity: 1; 
+      visibility: visible; 
+      transform: translateY(0); 
+    }
+
+    .b2t-inner { 
+      position: absolute; 
+      inset: 4px; 
+      background: rgba(12, 12, 10, 0.5); 
+      backdrop-filter: blur(12px); 
+      -webkit-backdrop-filter: blur(12px); 
+      border-radius: 50%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      transition: background 0.4s var(--ease), transform 0.4s var(--ease); 
+      box-shadow: 0 10px 24px rgba(0,0,0,0.4); 
+    }
+
+    .b2t-text { 
+      font-family: var(--font-en); 
+      font-size: clamp(0.6rem, 1.4vw, 0.75rem); 
+      font-weight: 400; 
+      letter-spacing: 0.15em; 
+      color: var(--fg); 
+      margin-right: -0.15em; 
+      margin-bottom: -1px; 
+      transition: color 0.4s var(--ease), transform 0.4s var(--ease); 
+    }
+
+    .b2t-progress { 
+      position: absolute; 
+      inset: 0; 
+      width: 100%; 
+      height: 100%; 
+      transform: rotate(-90deg); 
+      pointer-events: none; 
+    }
+
+    .b2t-progress circle { 
+      fill: none; 
+      stroke-width: 1.5; 
+    }
+
+    .b2t-progress-bg { 
+      stroke: rgba(233,229,223,0.1); 
+    }
+
+    .b2t-progress-value { 
+      stroke: var(--accent); 
+      stroke-dasharray: 301.6; 
+      stroke-dashoffset: 301.6; 
+      transition: stroke-dashoffset 0.15s linear, stroke 0.4s var(--ease); 
+    }
+
+    .back-to-top:hover .b2t-inner { 
+      background: var(--accent); 
+      transform: scale(0.92); 
+    }
+
+    .back-to-top:hover .b2t-text { 
+      color: var(--bg); 
+      transform: translateY(-2px); 
+    }
+
+    .back-to-top:hover .b2t-progress-value { 
+      stroke: var(--fg); 
+    }
 
     /* ============================================================
         RESPONSIVE DESIGN ADJUSTMENTS
     ============================================================ */
     @media (max-width: 980px) {
-      .gallery-grid { grid-template-columns: repeat(12, 1fr); gap: 2.5rem 1.2rem; }
+      .gallery-grid { 
+        grid-template-columns: repeat(12, 1fr); 
+        gap: 2.5rem 1.2rem; 
+      }
       .gi-sanmyaku, .gi-samizu { grid-column: 1 / span 12; }
-      .gi-cave3, .gi-cave2, .gi-kakuchi, .gi-asayake, .gi-yuyake, .gi-suiheisen, .gi-sofar { grid-column: auto / span 6; }
-      .gi-vole, .gi-ritornello { grid-column: auto / span 5; }
-      .gi-untitled, .gi-mon, .gi-intocave { grid-column: auto / span 4; }
+      .gi-cave3, .gi-cave2, .gi-kakuchi, .gi-asayake, .gi-yuyake, .gi-suiheisen, .gi-sofar { grid-column: span 6; }
+      .gi-vole, .gi-ritornello { grid-column: span 6; }
+      .gi-untitled, .gi-mon, .gi-intocave { grid-column: span 4; }
     }
+
     @media (max-width: 860px) {
-      .timeline-container { padding-left: 36px; }
-      .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2rem; }
-      .tl-figure, .tl-body, .tl-entry.is-featured .tl-figure, .tl-entry.is-featured .tl-body { width: 100% !important; }
-      .timeline-spine-wrapper { left: 16px; transform: none; }
-      .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; font-size: clamp(2.5rem, 8vw, 3.5rem); }
-      .tl-entry.is-bleed .tl-figure { width: 100vw !important; max-width: 100vw !important; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; }
-      .tl-entry.is-bleed .tl-body { width: 100% !important; padding-left: 1.25rem; padding-right: 1.25rem; }
-      .tl-entry.is-dual-figure .tl-figure { width: 100% !important; padding: 0; }
-      .tl-img-sub { position: static; width: 100%; margin-top: 1.25rem; box-shadow: none; }
+      .timeline-container { 
+        padding-left: 36px; 
+      }
+      .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { 
+        flex-direction: column; 
+        align-items: flex-start; 
+        gap: 2rem; 
+      }
+      .tl-figure, .tl-body, .tl-entry.is-featured .tl-figure, .tl-entry.is-featured .tl-body { 
+        width: 100% !important; 
+      }
+      .timeline-spine-wrapper { 
+        left: 16px; 
+        transform: none; 
+      }
+      .tl-year-display { 
+        padding-left: 0; 
+        margin-bottom: 0.5rem; 
+        text-align: left !important; 
+        font-size: clamp(2.5rem, 8vw, 3.5rem); 
+      }
+      .tl-entry.is-bleed .tl-figure { 
+        width: 100% !important; 
+        max-width: 100% !important; 
+        position: relative; 
+        left: 0; 
+        right: 0; 
+        margin-left: 0; 
+        margin-right: 0; 
+      }
+      .tl-entry.is-bleed .tl-body { 
+        width: 100% !important; 
+        padding-left: 0; 
+        padding-right: 0; 
+      }
+      .tl-entry.is-dual-figure .tl-figure { 
+        width: 100% !important; 
+        padding: 0; 
+      }
+      .tl-img-sub { 
+        position: static; 
+        width: 100%; 
+        margin-top: 1.25rem; 
+        box-shadow: none; 
+      }
     }
+
     @media (max-width: 768px) {
-      nav#top-nav { padding: 1rem 1.25rem; }
-      .nav-links { display: none; }
+      nav#top-nav { 
+        padding: 1rem 1.25rem; 
+      }
+      .nav-links { 
+        display: none; 
+      }
       
-      /* 新規: スマホ時には作品紹介セクション(Gallery)を非表示にする */
-      .gallery-section { display: none !important; }
+      /* Worksをスマホでも美しく見せるための2カラム化（非表示の代わりに最適化） */
+      .gallery-section { 
+        display: block !important; 
+        padding: 0 1.25rem clamp(5rem, 10vh, 8rem);
+      }
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem 1rem;
+      }
+      .gi-cave3, .gi-cave2, .gi-sanmyaku, .gi-samizu, .gi-kakuchi, .gi-asayake, .gi-yuyake, .gi-suiheisen, .gi-sofar, .gi-vole, .gi-ritornello, .gi-untitled, .gi-mon, .gi-intocave {
+        grid-column: span 1;
+      }
+      .gi-ouro, .gi-fukuro {
+        grid-column: span 2;
+      }
       
-      .statement-wrapper { padding: 0 clamp(1.25rem, 5vw, 3rem) clamp(5rem, 10vh, 8rem); }
-      .statement-section { padding: clamp(2.5rem, 6vh, 4rem) 1.5rem; }
+      .statement-wrapper { 
+        padding: 0 clamp(1.25rem, 5vw, 3rem) clamp(5rem, 10vh, 8rem); 
+      }
+      .statement-section { 
+        padding: clamp(2.5rem, 6vh, 4rem) 1.5rem; 
+      }
       
       /* スマホ時のフッター調整 */
-      footer { padding: 3rem 1.5rem; display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; text-align: left; }
-      .footer-logo { margin-bottom: 0; }
+      footer { 
+        padding: 3rem 1.5rem; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        gap: 1.5rem; 
+        text-align: center; 
+      }
+      .footer-logo { 
+        margin-bottom: 0; 
+      }
       
       /* スマホ時の背景ブレスアニメーションをフェードイン後に実行 */
-      .hero-interactive-bg.revealed { animation: ambientBreath 40s ease-in-out 4s infinite alternate; }
+      .hero-interactive-bg.revealed { 
+        animation: ambientBreath 40s ease-in-out 4s infinite alternate; 
+      }
     }
+
     @keyframes ambientBreath {
-      0% { transform: scale(1); }
-      100% { transform: scale(1.15); }
+      0% { transform: scale(1) translate3d(0,0,0); }
+      100% { transform: scale(1.15) translate3d(0,0,0); }
     }
   </style>
 </head>
 <body id="top">
 
-  <nav id="top-nav">
-    <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
-    <ul class="nav-links" id="nav-links">
-      <li><a href="#concept" class="js-nav-link">Concept</a></li>
-      <li><a href="#statement" class="js-nav-link">Statement</a></li>
-      <li><a href="#works" class="js-nav-link">Works</a></li>
-      <li><a href="#chronology" class="js-nav-link">Timeline</a></li>
-    </ul>
-   <a href="contact.html" class="nav-cta" id="nav-cta-btn">Contact</a>
-  </nav>
+  <!-- 横スクロール・スクロール時のぶれを確実に排除するためのラッパーコンテナ -->
+  <div class="page-wrapper">
 
-  <main>
-    <section class="hero">
-      <div class="hero-interactive-bg" id="heroInteractiveBg" aria-hidden="true"></div>
-      <div class="hero-ito-wrap" id="heroItoWrap" aria-hidden="true"></div>
-      <div class="hero-phase-slit" id="heroPhaseSlit" aria-hidden="true"></div>
-      <div class="hero-divider" aria-hidden="true"></div>
-      
-      <div class="hero-inner" id="heroInner">
-        <p class="hero-eyebrow" id="heroEyebrow">Series — Depth & Threshold &nbsp;·&nbsp; Light & Darkness</p>
-        <h1 class="hero-title" id="heroTitle" aria-label="洞窟">
-          <span class="char">洞</span><span class="char">窟</span>
-        </h1>
-        <p class="hero-title-en" id="heroEn">The Cave</p>
-        <div class="hero-meta" id="heroMeta">
-          <div class="hero-meta-line"></div>
-          <span class="hero-meta-text">Beyond the Threshold</span>
-        </div>
-      </div>
-      
-      <div class="hero-scroll" id="heroScroll" aria-hidden="true">
-        <div class="hero-scroll-track">
-          <div class="hero-scroll-fill"></div>
-        </div>
-        <span class="hero-scroll-label">Scroll</span>
-      </div>
-    </section>
+    <nav id="top-nav">
+      <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#concept" class="js-nav-link">Concept</a></li>
+        <li><a href="#statement" class="js-nav-link">Statement</a></li>
+        <li><a href="#works" class="js-nav-link">Works</a></li>
+        <li><a href="#chronology" class="js-nav-link">Timeline</a></li>
+      </ul>
+      <a href="contact.html" class="nav-cta" id="nav-cta-btn">Contact</a>
+    </nav>
 
-    <section class="concept-section reveal-fade" id="concept">
-      <p class="concept-text">
-        <span class="concept-line"><span>慣れた日常に、ふと開いた未知。</span></span>
-        <span class="concept-line"><span>描くことによって穿たれる位相、「洞窟」。</span></span>
-        <span class="concept-line"><span>すぐ隣にある層への招待状。</span></span>
-      </p>
-      <p class="concept-text-sub">
-        <span class="concept-line"><span>《洞窟》とは、断片ともつれから成る複数の世界（系）のうちのひとつ。</span></span>
-        <span class="concept-line"><span>世界（系）を単一では無く、並存する宇宙として捉える。</span></span>
-      </p>
-    </section>
-
-    <div class="statement-wrapper" id="statement">
-      <section class="statement-section">
-        <div class="statement-header">
-          <p class="statement-label">Series Statement</p>
+    <main>
+      <section class="hero">
+        <div class="hero-interactive-bg" id="heroInteractiveBg" aria-hidden="true"></div>
+        <div class="hero-ito-wrap" id="heroItoWrap" aria-hidden="true"></div>
+        <div class="hero-phase-slit" id="heroPhaseSlit" aria-hidden="true"></div>
+        <div class="hero-divider" aria-hidden="true"></div>
+        
+        <div class="hero-inner" id="heroInner">
+          <p class="hero-eyebrow" id="heroEyebrow">Series — Depth & Threshold &nbsp;·&nbsp; Light & Darkness</p>
+          <h1 class="hero-title" id="heroTitle" aria-label="洞窟">
+            <span class="char">洞</span><span class="char">窟</span>
+          </h1>
+          <p class="hero-title-en" id="heroEn">The Cave</p>
+          <div class="hero-meta" id="heroMeta">
+            <div class="hero-meta-line"></div>
+            <span class="hero-meta-text">Beyond the Threshold</span>
+          </div>
         </div>
         
-        <p class="statement-pullquote reveal-fade">
-          《洞窟》とは、見慣れた日常や生まれ育った風景に穿たれた<br class="sp-only">「<span class="accent-word">位相</span>」、<br class="sp-only">知覚領域（層、または領土）です。
-        </p>
-        
-        <div class="statement-body">
-          <p class="statement-para reveal-fade">
-            私が描く「洞窟」は、物理的な岩の空洞や、遠い秘境の光景ではありません。それは、私たちが日々暮らしている身近な風景や、生まれ育った場所のすぐ隣に存在する層——「<strong><ruby>隣層<rt>りんそう</rt></ruby></strong>」を視覚化するための試みです。
-          </p>
-          <p class="statement-para reveal-fade">
-            日常の風景に、ふと気が付く（＝<ruby>位相<rt>いそう</rt></ruby>を<ruby>穿<rt>うが</rt></ruby>つ）と、「<strong><ruby>いと<rt>物語</rt></ruby></strong>」が顔を覗かせます。キャンバスに描かれる深い奥行きは、現実空間の遠近法を再現するだけではありません。それは見る者の意識を奥へ奥へと引き込み、日常の隣層へと誘うための引力として機能します。
-          </p>
-          <p class="statement-para reveal-fade">
-            例えば、光のあたる表層から光の届かない深度の境界のグラデーションを探求することで、支持体そのものが未知の知覚領域（層）へつながる「入り口」へと変容します。暗がりへの没入は、かすかな恐怖と同時に、胎内に回帰するような根源的な安堵を呼び覚ますでしょう。
-          </p>
-          <p class="statement-para reveal-fade">
-            私たちの世界は決して単一ではなく、無数の断片、<strong><ruby>いと<rt>物語</rt></ruby></strong>がもつれ合うように並存しています。そのなかのひとつ、つまり「<strong><ruby>単位世界<rt>たんいせかい</rt></ruby></strong>」＝洞窟の前に立つとき、あなた自身のすぐ隣で息づく<br class="sp-only">「<span class="accent-word">気配</span>」<br class="sp-only">を感じていただけるはずです。
-          </p>
+        <div class="hero-scroll" id="heroScroll" aria-hidden="true">
+          <div class="hero-scroll-track">
+            <div class="hero-scroll-fill"></div>
+          </div>
+          <span class="hero-scroll-label">Scroll</span>
         </div>
-        
-        <p class="statement-closing reveal-fade">Tsuda Shoichi</p>
       </section>
-    </div>
 
-    <section class="gallery-section" id="works">
-      <div class="section-label" id="gallery">Works Index</div>
-      <div class="gallery-grid">
-        
-        <a href="#work-cave3" class="gallery-item gi-cave3 js-scroll-link">
-          <div class="gallery-item-img-wrap"><img src="images/【S100】明るい洞窟(3)20250826.jpg" alt="明るい洞窟(3)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">明るい洞窟 (3)</span>
-            <span class="gallery-item-meta">2025 / 162.1 × 162.1 cm / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-cave2" class="gallery-item gi-cave2 js-scroll-link">
-          <div class="gallery-item-img-wrap"><img src="images/【S100】明るい洞窟(2)20250812.jpg" alt="明るい洞窟(2)" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">明るい洞窟 (2)</span>
-            <span class="gallery-item-meta">2025 / 162.1 × 162.1 cm / Oil on canvas</span>
-          </div>
-        </a>
+      <section class="concept-section reveal-fade" id="concept">
+        <p class="concept-text">
+          <span class="concept-line"><span>慣れた日常に、ふと開いた未知。</span></span>
+          <span class="concept-line"><span>描くことによって穿たれる位相、「洞窟」。</span></span>
+          <span class="concept-line"><span>すぐ隣にある層への招待状。</span></span>
+        </p>
+        <p class="concept-text-sub">
+          <span class="concept-line"><span>《洞窟》とは、断片ともつれから成る複数の世界（系）のうちのひとつ。</span></span>
+          <span class="concept-line"><span>世界（系）を単一では無く、並存する宇宙として捉える。</span></span>
+        </p>
+      </section>
 
-        <a href="#work-ouro" class="gallery-item gi-ouro js-scroll-link">
-          <div class="gallery-item-img-wrap"><img src="images/往路（左美都から善光寺平へ ）.jpg" alt="往路（左美都から善光寺平へ）" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">往路<br>（左美都から善光寺平へ）</span>
-            <span class="gallery-item-meta">2025 / 162.1 cm × 可変 / Oil on canvas</span>
+      <div class="statement-wrapper" id="statement">
+        <section class="statement-section">
+          <div class="statement-header">
+            <p class="statement-label">Series Statement</p>
           </div>
-        </a>
-        <a href="#work-fukuro" class="gallery-item gi-fukuro js-scroll-link">
-          <div class="gallery-item-img-wrap"><img src="images/復路（善光寺平から左美都へ ）.jpg" alt="復路（善光寺平から左美都へ）" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">復路<br>（善光寺平から左美都へ）</span>
-            <span class="gallery-item-meta">2025 / 162.1 cm × 可変 / Oil on canvas</span>
+          
+          <p class="statement-pullquote reveal-fade">
+            《洞窟》とは、見慣れた日常や生まれ育った風景に穿たれた<br class="sp-only">「<span class="accent-word">位相</span>」、<br class="sp-only">知覚領域（層、または領土）です。
+          </p>
+          
+          <div class="statement-body">
+            <p class="statement-para reveal-fade">
+              私が描く「洞窟」は、物理的な岩の空洞や、遠い秘境の光景ではありません。それは、私たちが日々暮らしている身近な風景や、生まれ育った場所のすぐ隣に存在する層——「<strong><ruby>隣層<rt>りんそう</rt></ruby></strong>」を視覚化するための試みです。
+            </p>
+            <p class="statement-para reveal-fade">
+              日常の風景に、ふと気が付く（＝<ruby>位相<rt>いそう</rt></ruby>を<ruby>穿<rt>うが</rt></ruby>つ）と、「<strong><ruby>いと<rt>物語</rt></ruby></strong>」が顔を覗かせます。キャンバスに描かれる深い奥行きは、現実空間の遠近法を再現するだけではありません。それは見る者の意識を奥へ奥へと引き込み、日常の隣層へと誘うための引力として機能します。
+            </p>
+            <p class="statement-para reveal-fade">
+              例えば、光のあたる表層から光の届かない深度の境界のグラデーションを探求することで、支持体そのものが未知の知覚領域（層）へつながる「入り口」へと変容します。暗がりへの没入は、かすかな恐怖と同時に、胎内に回帰するような根源的な安堵を呼び覚ますでしょう。
+            </p>
+            <p class="statement-para reveal-fade">
+              私たちの世界は決して単一ではなく、無数の断片、<strong><ruby>いと<rt>物語</rt></ruby></strong>がもつれ合うように並存しています。そのなかのひとつ、つまり「<strong><ruby>単位世界<rt>たんいせかい</rt></ruby></strong>」＝洞窟の前に立つとき、あなた自身のすぐ隣で息づく<br class="sp-only">「<span class="accent-word">気配</span>」<br class="sp-only">を感じていただけるはずです。
+            </p>
           </div>
-        </a>
-        
-        <a href="#work-sanmyaku" class="gallery-item gi-sanmyaku js-scroll-link">
-          <div class="gallery-item-img-wrap"><img src="images/【縦5×横6m】山脈.jpg" alt="山脈" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">山脈</span>
-            <span class="gallery-item-meta">2024 / 500.0 × 600.0 cm / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-samizu" class="gallery-item gi-samizu js-scroll-link">
-          <div class="gallery-item-img-wrap"><img src="images/【F100縦×3】左美都.jpg" alt="左美都" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">左美都</span>
-            <span class="gallery-item-meta">2023 / 162.1 × 390.9 cm / Oil on canvas</span>
-          </div>
-        </a>
-
-        <a href="#work-kakuchi" class="gallery-item gi-kakuchi js-scroll-link">
-          <div class="gallery-item-img-wrap"><img src="images/【P100縦】+覚知ka.jpg" alt="+覚知ka" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">+覚知ka</span>
-            <span class="gallery-item-meta">2022 / 162.1 × 112.1 cm / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-asayake" class="gallery-item gi-asayake js-scroll-link">
-          <div class="gallery-item-img-wrap"><img src="images/【F100横】朝焼け.jpg" alt="朝焼け" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">朝焼け</span>
-            <span class="gallery-item-meta">2021 / 130.3 × 162.1 cm / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-yuyake" class="gallery-item gi-yuyake js-scroll-link">
-          <div class="gallery-item-img-wrap"><img src="images/【F100縦】夕焼け.jpg" alt="夕焼け" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">夕焼け</span>
-            <span class="gallery-item-meta">2021 / 162.1 × 130.3 cm / Oil on canvas</span>
-          </div>
-        </a>
-
-        <a href="#work-suiheisen" class="gallery-item gi-suiheisen js-scroll-link">
-          <div class="gallery-item-img-wrap"><img src="images/【S100】水平線.jpg" alt="水平線" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">水平線</span>
-            <span class="gallery-item-meta">2021 / 162.1 × 162.1 cm / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-sofar" class="gallery-item gi-sofar js-scroll-link">
-          <div class="gallery-item-img-wrap"><img src="images/【S100】so far.jpg" alt="明るい洞窟" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">明るい洞窟</span>
-            <span class="gallery-item-meta">2019 / 162.1 × 162.1 cm / Oil on canvas</span>
-          </div>
-        </a>
-
-        <a href="#work-vole" class="gallery-item gi-vole js-scroll-link">
-          <div class="gallery-item-img-wrap"><img src="images/【F60縦】Vol'e（ヴォー’レ）.jpg" alt="Vol'e（ヴォー’レ）" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">Vol'e（ヴォー’レ）</span>
-            <span class="gallery-item-meta">2020 / 130.3 × 97.0 cm / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-ritornello" class="gallery-item gi-ritornello js-scroll-link">
-          <div class="gallery-item-img-wrap"><img src="images/【F50縦】ritornello_of_bright_cave(2).jpg" alt="ritornello_of_bright_cave" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">ritornello_of_bright_cave</span>
-            <span class="gallery-item-meta">2019 / 116.7 × 91.0 cm / Oil on canvas</span>
-          </div>
-        </a>
-
-        <a href="#work-untitled" class="gallery-item gi-untitled js-scroll-link">
-          <div class="gallery-item-img-wrap"><img src="images/【P15横】IMG_8024.jpg" alt="Untitled" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">Untitled</span>
-            <span class="gallery-item-meta">2020 / 50.0 × 65.2 cm / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-mon" class="gallery-item gi-mon js-scroll-link">
-          <div class="gallery-item-img-wrap"><img src="images/【F30縦】門.jpg" alt="門" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">門</span>
-            <span class="gallery-item-meta">2017 / 91.0 × 72.7 cm / Oil on canvas</span>
-          </div>
-        </a>
-        <a href="#work-intocave" class="gallery-item gi-intocave js-scroll-link">
-          <div class="gallery-item-img-wrap"><img src="images/【F15横】into_cave.jpg" alt="into_cave" loading="lazy"></div>
-          <div class="gallery-item-cap">
-            <span class="gallery-item-title">into_cave</span>
-            <span class="gallery-item-meta">2017 / 53.0 × 65.2 cm / Oil on canvas</span>
-          </div>
-        </a>
-
+          
+          <p class="statement-closing reveal-fade">Tsuda Shoichi</p>
+        </section>
       </div>
-    </section>
 
-    <section class="chronology-section" id="chronology">
-      <div class="timeline-container">
-        <div class="timeline-spine-wrapper">
-          <div class="timeline-spine-progress" id="tl-spine-fill"></div>
+      <section class="gallery-section" id="works">
+        <div class="section-label" id="gallery">Works Index</div>
+        <div class="gallery-grid">
+          
+          <a href="#work-cave3" class="gallery-item gi-cave3 js-scroll-link">
+            <div class="gallery-item-img-wrap"><img src="images/【S100】明るい洞窟(3)20250826.jpg" alt="明るい洞窟(3)" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">明るい洞窟 (3)</span>
+              <span class="gallery-item-meta">2025 / 162.1 × 162.1 cm / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-cave2" class="gallery-item gi-cave2 js-scroll-link">
+            <div class="gallery-item-img-wrap"><img src="images/【S100】明るい洞窟(2)20250812.jpg" alt="明るい洞窟(2)" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">明るい洞窟 (2)</span>
+              <span class="gallery-item-meta">2025 / 162.1 × 162.1 cm / Oil on canvas</span>
+            </div>
+          </a>
+
+          <a href="#work-ouro" class="gallery-item gi-ouro js-scroll-link">
+            <div class="gallery-item-img-wrap"><img src="images/往路（左美都から善光寺平へ ）.jpg" alt="往路（左美都から善光寺平へ）" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">往路（左美都から善光寺平へ）</span>
+              <span class="gallery-item-meta">2025 / 162.1 cm × 可変 / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-fukuro" class="gallery-item gi-fukuro js-scroll-link">
+            <div class="gallery-item-img-wrap"><img src="images/復路（善光寺平から左美都へ ）.jpg" alt="復路（善光寺平から左美都へ）" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">復路（善光寺平から左美都へ）</span>
+              <span class="gallery-item-meta">2025 / 162.1 cm × 可変 / Oil on canvas</span>
+            </div>
+          </a>
+          
+          <a href="#work-sanmyaku" class="gallery-item gi-sanmyaku js-scroll-link">
+            <div class="gallery-item-img-wrap"><img src="images/【縦5×横6m】山脈.jpg" alt="山脈" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">山脈</span>
+              <span class="gallery-item-meta">2024 / 500.0 × 600.0 cm / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-samizu" class="gallery-item gi-samizu js-scroll-link">
+            <div class="gallery-item-img-wrap"><img src="images/【F100縦×3】左美都.jpg" alt="左美都" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">左美都</span>
+              <span class="gallery-item-meta">2023 / 162.1 × 390.9 cm / Oil on canvas</span>
+            </div>
+          </a>
+
+          <a href="#work-kakuchi" class="gallery-item gi-kakuchi js-scroll-link">
+            <div class="gallery-item-img-wrap"><img src="images/【P100縦】+覚知ka.jpg" alt="+覚知ka" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">+覚知ka</span>
+              <span class="gallery-item-meta">2022 / 162.1 × 112.1 cm / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-asayake" class="gallery-item gi-asayake js-scroll-link">
+            <div class="gallery-item-img-wrap"><img src="images/【F100横】朝焼け.jpg" alt="朝焼け" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">朝焼け</span>
+              <span class="gallery-item-meta">2021 / 130.3 × 162.1 cm / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-yuyake" class="gallery-item gi-yuyake js-scroll-link">
+            <div class="gallery-item-img-wrap"><img src="images/【F100縦】夕焼け.jpg" alt="夕焼け" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">夕焼け</span>
+              <span class="gallery-item-meta">2021 / 162.1 × 130.3 cm / Oil on canvas</span>
+            </div>
+          </a>
+
+          <a href="#work-suiheisen" class="gallery-item gi-suiheisen js-scroll-link">
+            <div class="gallery-item-img-wrap"><img src="images/【S100】水平線.jpg" alt="水平線" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">水平線</span>
+              <span class="gallery-item-meta">2021 / 162.1 × 162.1 cm / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-sofar" class="gallery-item gi-sofar js-scroll-link">
+            <div class="gallery-item-img-wrap"><img src="images/【S100】so far.jpg" alt="明るい洞窟" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">明るい洞窟</span>
+              <span class="gallery-item-meta">2019 / 162.1 × 162.1 cm / Oil on canvas</span>
+            </div>
+          </a>
+
+          <a href="#work-vole" class="gallery-item gi-vole js-scroll-link">
+            <div class="gallery-item-img-wrap"><img src="images/【F60縦】Vol'e（ヴォー’レ）.jpg" alt="Vol'e（ヴォー’レ）" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">Vol'e（ヴォー’レ）</span>
+              <span class="gallery-item-meta">2020 / 130.3 × 97.0 cm / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-ritornello" class="gallery-item gi-ritornello js-scroll-link">
+            <div class="gallery-item-img-wrap"><img src="images/【F50縦】ritornello_of_bright_cave(2).jpg" alt="ritornello_of_bright_cave" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">ritornello_of_bright_cave</span>
+              <span class="gallery-item-meta">2019 / 116.7 × 91.0 cm / Oil on canvas</span>
+            </div>
+          </a>
+
+          <a href="#work-untitled" class="gallery-item gi-untitled js-scroll-link">
+            <div class="gallery-item-img-wrap"><img src="images/【P15横】IMG_8024.jpg" alt="Untitled" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">Untitled</span>
+              <span class="gallery-item-meta">2020 / 50.0 × 65.2 cm / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-mon" class="gallery-item gi-mon js-scroll-link">
+            <div class="gallery-item-img-wrap"><img src="images/【F30縦】門.jpg" alt="門" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">門</span>
+              <span class="gallery-item-meta">2017 / 91.0 × 72.7 cm / Oil on canvas</span>
+            </div>
+          </a>
+          <a href="#work-intocave" class="gallery-item gi-intocave js-scroll-link">
+            <div class="gallery-item-img-wrap"><img src="images/【F15横】into_cave.jpg" alt="into_cave" loading="lazy"></div>
+            <div class="gallery-item-cap">
+              <span class="gallery-item-title">into_cave</span>
+              <span class="gallery-item-meta">2017 / 53.0 × 65.2 cm / Oil on canvas</span>
+            </div>
+          </a>
+
         </div>
+      </section>
 
-        <article class="tl-entry is-featured" id="work-cave3">
-          <div class="tl-year-display">2025</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【S100】明るい洞窟(3)20250826.jpg">
-              <img src="images/【S100】明るい洞窟(3)20250826.jpg" alt="明るい洞窟(3)" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">明るい洞窟 (3)</h3>
-              <p class="tl-meta">162.1 × 162.1 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>(2)から続く連作であり、本シリーズの現時点での到達点の一つ。青から緑、そして桃色へと移ろう色彩のスペクトルが、深い闇の奥底で脈打つ生命の胎動を思わせる。</p>
-                <p>絵画の表面から深層へ、そして再び表面へと、鑑賞者の意識を激しく往還させる一枚である。</p>
-              </div>
-            </div>
+      <section class="chronology-section" id="chronology">
+        <div class="timeline-container">
+          <div class="timeline-spine-wrapper">
+            <div class="timeline-spine-progress" id="tl-spine-fill"></div>
           </div>
-        </article>
 
-        <article class="tl-entry is-featured" id="work-cave2">
-          <div class="tl-year-display">2025</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【S100】明るい洞窟(2)20250812.jpg">
-              <img src="images/【S100】明るい洞窟(2)20250812.jpg" alt="明るい洞窟(2)" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">明るい洞窟 (2)</h3>
-              <p class="tl-meta">162.1 × 162.1 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>「往路」へと連なる2025年の探求を象徴する一枚。かつての「明るい洞窟」から6年の歳月を経て、内なる空間の解釈はより複雑な光の屈折へと深化正している。</p>
-                <p>画面を構成する青の結晶は、静寂の中にある鋭利な緊張感を孕み、視線を深淵へと引きずり込む。</p>
+          <article class="tl-entry is-featured" id="work-cave3">
+            <div class="tl-year-display">2025</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【S100】明るい洞窟(3)20250826.jpg">
+                <img src="images/【S100】明るい洞窟(3)20250826.jpg" alt="明るい洞窟(3)" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title" data-typewriter="true">明るい洞窟 (3)</h3>
+                <p class="tl-meta">162.1 × 162.1 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>(2)から続く連作であり、本シリーズの現時点での到達点の一つ。青から緑、そして桃色へと移ろう色彩のスペクトルが、深い闇の奥底で脈打つ生命の胎動を思わせる。</p>
+                  <p>絵画の表面から深層へ、そして再び表面へと、鑑賞者の意識を激しく往還させる一枚である。</p>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <article class="tl-entry is-full-figure is-bleed" id="work-ouro">
-          <div class="tl-year-display">2025</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/往路（左美都から善光寺平へ ）.jpg">
-              <img src="images/往路（左美都から善光寺平へ ）.jpg" alt="往路（左美都から善光寺平へ）" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">往路（左美都から善光寺平へ）</h3>
-              <p class="tl-meta">162.1 cm × 可変 / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>左美都の谷を発ち、善光寺平へと向かう道行きをそのまま画面の流れに変換した横長の連作。冷たい青と緑が支配する画面の左半分は、深い森と渓流に包まれた往路の入り口の気配を留めている。</p>
-                <p>右へ進むにつれて青は次第に温度を上げ、赤や桃色を帯びた光の塊へと変容していく。これは地理的な移動の記録であると同時に、洞窟の奥（左美都）から光の射す平地（善光寺平）へと抜けていく、シリーズそのものの主題を再演する一枚でもある。</p>
+          <article class="tl-entry is-featured" id="work-cave2">
+            <div class="tl-year-display">2025</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【S100】明るい洞窟(2)20250812.jpg">
+                <img src="images/【S100】明るい洞窟(2)20250812.jpg" alt="明るい洞窟(2)" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title" data-typewriter="true">明るい洞窟 (2)</h3>
+                <p class="tl-meta">162.1 × 162.1 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>「往路」へと連なる2025年の探求を象徴する一枚。かつての「明るい洞窟」から6年の歳月を経て、内なる空間の解釈はより複雑な光の屈折へと深化正している。</p>
+                  <p>画面を構成する青の結晶は、静寂の中にある鋭利な緊張感を孕み、視線を深淵へと引きずり込む。</p>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <article class="tl-entry is-full-figure is-bleed" id="work-fukuro">
-          <div class="tl-year-display">2025</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/復路（善光寺平から左美都へ ）.jpg">
-              <img src="images/復路（善光寺平から左美都へ ）.jpg" alt="復路（善光寺平から左美都へ）" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">復路（善光寺平から左美都へ）</h3>
-              <p class="tl-meta">162.1 cm × 可変 / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>「往路」と対をなす本作は、善光寺平から左美都へと戻る帰路を描く。画面は淡く解けるような桃色と白から始まり、進むにつれて鋭く尖った結晶状の青へと姿を変えていく——光に満ちた場所から、再び洞窟の奥深くへ沈んでいく感覚の反転である。</p>
-                <p>「往路」が光へ向かう上昇の軌跡だとすれば、「復路」はその逆運動、すなわち根源へと還っていく下降の軌跡だ。二作を並べて見るとき、《洞窟》シリーズが繰り返し描いてきた表層と深層の往還が、一対の絵画として完結する。</p>
+          <article class="tl-entry is-full-figure is-bleed" id="work-ouro">
+            <div class="tl-year-display">2025</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/往路（左美都から善光寺平へ ）.jpg">
+                <img src="images/往路（左美都から善光寺平へ ）.jpg" alt="往路（左美都から善光寺平へ）" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title" data-typewriter="true">往路（左美都から善光寺平へ）</h3>
+                <p class="tl-meta">162.1 cm × 可変 / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>左美都の谷を発ち、善光寺平へと向かう道行きをそのまま画面の流れに変換した横長の連作。冷たい青と緑が支配する画面の左半分は、深い森と渓流に包まれた往路の入り口の気配を留めている。</p>
+                  <p>右へ進むにつれて青は次第に温度を上げ、赤や桃色を帯びた光の塊へと変容していく。これは地理的な移動 of 記録であると同時に、洞窟の奥（左美都）から光の射す平地（善光寺平）へと抜けていく、シリーズそのものの主題を再演する一枚でもある。</p>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <article class="tl-entry is-featured is-dual-figure" id="work-sanmyaku">
-          <div class="tl-year-display">2024</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure">
-              <div class="tl-img-main js-modal-open" data-img-src="images/【縦5×横6m】山脈.jpg">
-                <img src="images/【縦5×横6m】山脈.jpg" alt="山脈" loading="lazy">
+          <article class="tl-entry is-full-figure is-bleed" id="work-fukuro">
+            <div class="tl-year-display">2025</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/復路（善光寺平から左美都へ ）.jpg">
+                <img src="images/復路（善光寺平から左美都へ ）.jpg" alt="復路（善光寺平から左美都へ）" loading="lazy">
               </div>
-              <div class="tl-img-sub js-modal-open" data-img-src="images/山脈.jpg">
-                <img src="images/山脈.jpg" alt="山脈（別アングル）" loading="lazy">
-              </div>
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">山脈</h3>
-              <p class="tl-meta">500.0 × 600.0 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>これまでの連作の集大成として制作された大作。縦5メートル、横6メートルという圧倒的なスケールは、鑑賞者を絵画の前に立たせるのではなく、その内部へと取り込んでしまう。連なる稜線は、もはや遠景としての風景ではなく、身体ごと包み込む洞窟そのものとして立ち現れる。</p>
-                <p>分割されたパネルの継ぎ目は、地殻のひび割れのような痕跡として残され、巨大な画面に呼吸するような揺らぎを与えている。光が差し込む白い塊と、奥に沈む青や赤の層が、表層と深層の往還という《洞窟》シリーズの主題を、これまでにない密度で結晶化させている。</p>
+              <div class="tl-body">
+                <h3 class="tl-title" data-typewriter="true">復路（善光寺平から左美都へ）</h3>
+                <p class="tl-meta">162.1 cm × 可変 / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>「往路」と対をなす本作は、善光寺平から左美都へと戻る帰路を描く。画面は淡く解けるような桃色と白から始まり、進むにつれて鋭く尖った結晶状の青へと姿を変えていく——光に満ちた場所から、再び洞窟の奥深くへ沈んでいく感覚の反転である。</p>
+                  <p>「往路」が光へ向かう上昇の軌跡だとすれば、「復路」はその逆運動、すなわち根源へと還っていく下降の軌跡だ。二作を並べて見るとき、《洞窟》シリーズが繰り返し描いてきた表層と深層の往還が、一対の絵画として完結する。</p>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <article class="tl-entry is-full-figure" id="work-samizu">
-          <div class="tl-year-display">2023</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F100縦×3】左美都.jpg">
-              <img src="images/【F100縦×3】左美都.jpg" alt="左美都" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">左美都</h3>
-              <p class="tl-meta">162.1 × 390.9 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>三面のキャンバスを連結し、左美都の地に伝わる神話と地質的記憶を一望のもとに描き出した作品。画面を貫く赤の連なりは、地中に眠る伝承の血脈のように、三つの画面をひとつの物語として繋いでいる。</p>
-                <p>淡いベージュの余白と、内側に押し込められた赤や桃色の塊との対比は、表に語られることのない土地の記憶が、絵画の奥でなお息づいていることを示している。</p>
+          <article class="tl-entry is-featured is-dual-figure" id="work-sanmyaku">
+            <div class="tl-year-display">2024</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure">
+                <div class="tl-img-main js-modal-open" data-img-src="images/【縦5×横6m】山脈.jpg">
+                  <img src="images/【縦5×横6m】山脈.jpg" alt="山脈" loading="lazy">
+                </div>
+                <div class="tl-img-sub js-modal-open" data-img-src="images/山脈.jpg">
+                  <img src="images/山脈.jpg" alt="山脈（別アングル）" loading="lazy">
+                </div>
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title" data-typewriter="true">山脈</h3>
+                <p class="tl-meta">500.0 × 600.0 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>これまでの連作の集大成として制作された大作。縦5メートル、横6メートルという圧倒的なスケールは、鑑賞者を絵画の前に立たせるのではなく、その内部へと取り込んでしまう。連なる稜線は、もはや遠景としての風景ではなく、身体ごと包み込む洞窟そのものとして立ち現れる。</p>
+                  <p>分割されたパネルの継ぎ目は、地殻のひび割れのような痕跡として残され、巨大な画面に呼吸するような揺らぎを与えている。光が差し込む白い塊と、奥に沈む青や赤の層が、表層と深層の往還という《洞窟》シリーズの主題を、これまでにない密度で結晶化させている。</p>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <article class="tl-entry" id="work-kakuchi">
-          <div class="tl-year-display">2022</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【P100縦】+覚知ka.jpg">
-              <img src="images/【P100縦】+覚知ka.jpg" alt="+覚知ka" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">+覚知ka</h3>
-              <p class="tl-meta">162.1 × 112.1 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>「覚知」という、知覚がふいに像を結ぶ瞬間を主題とした作品。垂直に伸びる白い形態の連なりは、暗がりの中で何かに気づいた刹那の身体の緊張を思わせる。</p>
-                <p>赤の滴りが縦に走ることで、認識が生まれる以前の混沌と、像として結晶化した後の静けさが、ひとつの画面の中で同時に提示されている。</p>
+          <article class="tl-entry is-full-figure" id="work-samizu">
+            <div class="tl-year-display">2023</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【F100縦×3】左美都.jpg">
+                <img src="images/【F100縦×3】左美都.jpg" alt="左美都" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title" data-typewriter="true">左美都</h3>
+                <p class="tl-meta">162.1 × 390.9 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>三面のキャンバスを連結し、左美都の地に伝わる神話と地質的記憶を一望のもとに描き出した作品。画面を貫く赤の連なりは、地中に眠る伝承の血脈のように、三つの画面をひとつの物語として繋いでいる。</p>
+                  <p>淡いベージュの余白と、内側に押し込められた赤や桃色の塊との対比は、表に語られることのない土地の記憶が、絵画の奥でなお息づいていることを示している。</p>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <article class="tl-entry" id="work-asayake">
-          <div class="tl-year-display">2021</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F100横】朝焼け.jpg">
-              <img src="images/【F100横】朝焼け.jpg" alt="朝焼け" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">朝焼け</h3>
-              <p class="tl-meta">130.3 × 162.1 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>夜の終わりに差し込む最初の光を捉えた一枚。暗がりの底から浮かび上がる黄や紅の帯は、洞窟の内側から外界の気配を初めて感じ取る瞬間のようでもある。</p>
-                <p>「夕焼け」が内へと沈んでいく光であるのに対し、「朝焼け」はそこから再び表層へと立ち上がろうとする光であり、シリーズの中で対をなす一枚として位置づけられる。</p>
+          <article class="tl-entry" id="work-kakuchi">
+            <div class="tl-year-display">2022</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【P100縦】+覚知ka.jpg">
+                <img src="images/【P100縦】+覚知ka.jpg" alt="+覚知ka" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title" data-typewriter="true">+覚知ka</h3>
+                <p class="tl-meta">162.1 × 112.1 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>「覚知」という、知覚がふいに像を結ぶ瞬間を主題とした作品。垂直に伸びる白い形態の連なりは、暗がりの中で何かに気づいた刹那の身体の緊張を思わせる。</p>
+                  <p>赤の滴りが縦に走ることで、認識が生まれる以前の混沌と、像として結晶化した後の静けさが、ひとつの画面の中で同時に提示されている。</p>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <article class="tl-entry" id="work-suiheisen">
-          <div class="tl-year-display">2021</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【S100】水平線.jpg">
-              <img src="images/【S100】水平線.jpg" alt="水平線" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">水平線</h3>
-              <p class="tl-meta">162.1 × 162.1 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>洞窟の奥から外界を望むように、画面の彼方に水平線が引かれる。内なる暗がりと外の光が、ひとつの地平で接する瞬間を捉えた作品である。</p>
-                <p>視線は深層から表層へ、表層から深層へと往復し続け、絵画そのものが境界=入り口として機能し始める。</p>
+          <article class="tl-entry" id="work-asayake">
+            <div class="tl-year-display">2021</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【F100横】朝焼け.jpg">
+                <img src="images/【F100横】朝焼け.jpg" alt="朝焼け" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title" data-typewriter="true">朝焼け</h3>
+                <p class="tl-meta">130.3 × 162.1 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>夜の終わりに差し込む最初の光を捉えた一枚。暗がりの底から浮かび上がる黄や紅の帯は、洞窟の内側から外界の気配を初めて感じ取る瞬間のようでもある。</p>
+                  <p>「夕焼け」が内へと沈んでいく光であるのに対し、「朝焼け」はそこから再び表層へと立ち上がろうとする光であり、シリーズの中で対をなす一枚として位置づけられる。</p>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <article class="tl-entry" id="work-yuyake">
-          <div class="tl-year-display">2021</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F100縦】夕焼け.jpg">
-              <img src="images/【F100縦】夕焼け.jpg" alt="夕焼け" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">夕焼け</h3>
-              <p class="tl-meta">162.1 × 130.3 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>光が消えゆく瞬間の空を、洞窟の入り口から見上げるような構図で描いた一枚。暮れていく光は、内側の暗がりへと誘う最後の境界線として機能する。</p>
+          <article class="tl-entry" id="work-suiheisen">
+            <div class="tl-year-display">2021</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【S100】水平線.jpg">
+                <img src="images/【S100】水平線.jpg" alt="水平線" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title" data-typewriter="true">水平線</h3>
+                <p class="tl-meta">162.1 × 162.1 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>洞窟の奥から外界を望むように、画面の彼方に水平線が引かれる。内なる暗がりと外の光が、ひとつの地平で接する瞬間を捉えた作品である。</p>
+                  <p>視線は深層から表層へ、表層から深層へと往復し続け、絵画そのものが境界=入り口として機能し始める。</p>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <article class="tl-entry" id="work-vole">
-          <div class="tl-year-display">2020</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F60縦】Vol'e（ヴォー’レ）.jpg">
-              <img src="images/【F60縦】Vol'e（ヴォー’レ）.jpg" alt="Vol'e（ヴォー’レ）" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">Vol'e（ヴォー’レ）</h3>
-              <p class="tl-meta">130.3 × 97.0 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>飛翔と落下、上昇と下降が同居する不安定な空間構成。重力から解き放たれたかのような筆致が、洞窟内部の不確かな方向感覚を呼び起こす。</p>
+          <article class="tl-entry" id="work-yuyake">
+            <div class="tl-year-display">2021</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【F100縦】夕焼け.jpg">
+                <img src="images/【F100縦】夕焼け.jpg" alt="夕焼け" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title" data-typewriter="true">夕焼け</h3>
+                <p class="tl-meta">162.1 × 130.3 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>光が消えゆく瞬間の空を、洞窟の入り口から見上げるような構図で描いた一枚。暮れていく光は、内側の暗がりへと誘う最後の境界線として機能する。</p>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <article class="tl-entry" id="work-untitled">
-          <div class="tl-year-display">2020</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【P15横】IMG_8024.jpg">
-              <img src="images/【P15横】IMG_8024.jpg" alt="Untitled" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">Untitled</h3>
-              <p class="tl-meta">50.0 × 65.2 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>小品ながら、画面の中心に据えられた暗部が深い奥行きを生み出す。タイトルを持たないことで、鑑賞者自身の記憶や経験が空洞を満たす余地として残されている。</p>
+          <article class="tl-entry" id="work-vole">
+            <div class="tl-year-display">2020</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【F60縦】Vol'e（ヴォー’レ）.jpg">
+                <img src="images/【F60縦】Vol'e（ヴォー’レ）.jpg" alt="Vol'e（ヴォー’レ）" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title" data-typewriter="true">Vol'e（ヴォー’レ）</h3>
+                <p class="tl-meta">130.3 × 97.0 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>飛翔と落下、上昇と下降が同居する不安定な空間構成。重力から解き放たれたかのような筆致が、洞窟内部の不確かな方向感覚を呼び起こす。</p>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <article class="tl-entry is-featured" id="work-sofar">
-          <div class="tl-year-display">2019</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【S100】so far.jpg">
-              <img src="images/【S100】so far.jpg" alt="明るい洞窟" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">明るい洞窟</h3>
-              <p class="tl-meta">162.1 × 162.1 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>「ここまで」を意味する隠れたタイトルは、洞窟探索の一時的な到達点を示すと同時に、絵画制作そのものの現在地をも暗示する。重ねられた絵の具の層が、辿ってきた時間の堆積を物語る。</p>
-                <p>暗部と明部のコントラストは、外側の光が届く限界線=洞窟の「現在地」を描き出している。</p>
+          <article class="tl-entry" id="work-untitled">
+            <div class="tl-year-display">2020</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【P15横】IMG_8024.jpg">
+                <img src="images/【P15横】IMG_8024.jpg" alt="Untitled" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title" data-typewriter="true">Untitled</h3>
+                <p class="tl-meta">50.0 × 65.2 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>小品ながら、画面の中心に据えられた暗部が深い奥行きを生み出す。タイトルを持たないことで、鑑賞者自身の記憶や経験が空洞を満たす余地として残されている。</p>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <article class="tl-entry" id="work-ritornello">
-          <div class="tl-year-display">2019</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F50縦】ritornello_of_bright_cave(2).jpg">
-              <img src="images/【F50縦】ritornello_of_bright_cave(2).jpg" alt="ritornello_of_bright_cave" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">ritornello_of_bright_cave</h3>
-              <p class="tl-meta">116.7 × 91.0 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>音楽用語「リトルネッロ（反復句）」を借りたタイトルが示す通り、明るい洞窟のモチーフが画面の中で繰り返し回帰する。光の反復は、暗闇の中で確かな道しるべとなる。</p>
+          <article class="tl-entry is-featured" id="work-sofar">
+            <div class="tl-year-display">2019</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【S100】so far.jpg">
+                <img src="images/【S100】so far.jpg" alt="明るい洞窟" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title" data-typewriter="true">明るい洞窟</h3>
+                <p class="tl-meta">162.1 × 162.1 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>「ここまで」を意味する隠れたタイトルは、洞窟探索の一時的な到達点を示すと同時に、絵画制作そのものの現在地をも暗示する。重ねられた絵の具の層が、辿ってきた時間の堆積を物語る。</p>
+                  <p>暗部と明部のコントラストは、外側の光が届く限界線=洞窟の「現在地」を描き出している。</p>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <article class="tl-entry is-featured" id="work-taki">
-          <div class="tl-year-display">2019</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F50縦×２】滝.jpg">
-              <img src="images/【F50縦×２】滝.jpg" alt="滝" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">滝</h3>
-              <p class="tl-meta">116.7 × 182.0 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>二面のキャンバスを連ねることで、垂直に落下し続ける水の運動と時間の持続を表現している。流れ落ちる水音は、洞窟の闇の奥へと響き渡る境界の合図でもある。</p>
+          <article class="tl-entry" id="work-ritornello">
+            <div class="tl-year-display">2019</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【F50縦】ritornello_of_bright_cave(2).jpg">
+                <img src="images/【F50縦】ritornello_of_bright_cave(2).jpg" alt="ritornello_of_bright_cave" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title" data-typewriter="true">ritornello_of_bright_cave</h3>
+                <p class="tl-meta">116.7 × 91.0 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>音楽用語「リトルネッロ（反復句）」を借りたタイトルが示す通り、明るい洞窟のモチーフが画面の中で繰り返し回帰する。光の反復は、暗闇の中で確かな道しるべとなる。</p>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <article class="tl-entry" id="work-mon">
-          <div class="tl-year-display">2017</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F30縦】門.jpg">
-              <img src="images/【F30縦】門.jpg" alt="門" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">門</h3>
-              <p class="tl-meta">91.0 × 72.7 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>《洞窟》シリーズの起点となる作品の一つ。「門」というモチーフは、内と外、光と闇を分かつ閾そのものを直接的に主題化している。</p>
+          <article class="tl-entry is-featured" id="work-taki">
+            <div class="tl-year-display">2019</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【F50縦×２】滝.jpg">
+                <img src="images/【F50縦×２】滝.jpg" alt="滝" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title" data-typewriter="true">滝</h3>
+                <p class="tl-meta">116.7 × 182.0 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>二面のキャンバスを連ねることで、垂直に落下し続ける水の運動と時間の持続を表現している。流れ落ちる水音は、洞窟の闇の奥へと響き渡る境界の合図でもある。</p>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <article class="tl-entry" id="work-intocave">
-          <div class="tl-year-display">2017</div>
-          <div class="tl-content-wrap">
-            <div class="tl-figure js-modal-open" data-img-src="images/【F15横】into_cave.jpg">
-              <img src="images/【F15横】into_cave.jpg" alt="into_cave" loading="lazy">
-            </div>
-            <div class="tl-body">
-              <h3 class="tl-title" data-typewriter="true">into_cave</h3>
-              <p class="tl-meta">53.0 × 65.2 cm / Oil on canvas</p>
-              <div class="tl-desc">
-                <p>シリーズの出発点となった作品。洞窟という空間的主題への最初のアプローチであり、以降の連作を貫く「内なる空間」への関心の原点がここに記されている。</p>
+          <article class="tl-entry" id="work-mon">
+            <div class="tl-year-display">2017</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【F30縦】門.jpg">
+                <img src="images/【F30縦】門.jpg" alt="門" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title" data-typewriter="true">門</h3>
+                <p class="tl-meta">91.0 × 72.7 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>《洞窟》シリーズの起点となる作品の一つ。「門」というモチーフは、内と外、光と闇を分かつ閾そのものを直接的に主題化している。</p>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
-        
-      </div>
+          </article>
+
+          <article class="tl-entry" id="work-intocave">
+            <div class="tl-year-display">2017</div>
+            <div class="tl-content-wrap">
+              <div class="tl-figure js-modal-open" data-img-src="images/【F15横】into_cave.jpg">
+                <img src="images/【F15横】into_cave.jpg" alt="into_cave" loading="lazy">
+              </div>
+              <div class="tl-body">
+                <h3 class="tl-title" data-typewriter="true">into_cave</h3>
+                <p class="tl-meta">53.0 × 65.2 cm / Oil on canvas</p>
+                <div class="tl-desc">
+                  <p>シリーズの出発点となった作品。洞窟という空間的主題への最初のアプローチであり、以降の連作を貫く「内なる空間」への関心の原点がここに記されている。</p>
+                </div>
+              </div>
+            </div>
+          </article>
+          
+        </div>
+      </section>
+    </main>
+
+    <div id="profile"></div>
+    <div id="news"></div>
+    <section class="contact-section" id="contact">
+      <p class="section-label" style="text-align: center; margin-bottom: 1.5rem;">Contact</p>
+      <h2 class="contact-heading">お問い合わせ</h2>
+      <p class="contact-body-text">
+        展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。
+      </p>
+      <a href="contact.html" class="contact-btn">
+        問い合わせフォームへ
+      </a>
     </section>
-  </main>
 
-  <div id="profile"></div>
-  <div id="news"></div>
-  <section class="contact-section" id="contact">
-    <p class="section-label" style="text-align: center; margin-bottom: 1.5rem;">Contact</p>
-    <h2 class="contact-heading">お問い合わせ</h2>
-    <p class="contact-body-text">
-      展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。
-    </p>
-    <a href="contact.html" class="contact-btn">
-      問い合わせフォームへ
-    </a>
-  </section>
+    <footer>
+      <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
+      <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
+    </footer>
 
-  <footer>
-    <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
-    <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
-  </footer>
-
-  <a href="#top" class="back-to-top" id="backToTop" aria-label="ページトップへ戻る">
-    <svg class="b2t-progress" viewBox="0 0 100 100">
-      <circle class="b2t-progress-bg" cx="50" cy="50" r="48"></circle>
-      <circle class="b2t-progress-value" id="b2t-progress-value" cx="50" cy="50" r="48"></circle>
-    </svg>
-    <div class="b2t-inner">
-      <span class="b2t-text">TOP</span>
-    </div>
-  </a>
-
-  <div class="image-modal" id="imageModal" aria-hidden="true" role="dialog">
-    <div class="modal-bg" id="modalBg"></div>
-    <button class="modal-close" id="modalClose" aria-label="閉じる">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square">
-        <line x1="4" y1="4" x2="20" y2="20"/>
-        <line x1="20" y1="4" x2="4" y2="20"/>
+    <a href="#top" class="back-to-top" id="backToTop" aria-label="ページトップへ戻る">
+      <svg class="b2t-progress" viewBox="0 0 100 100">
+        <circle class="b2t-progress-bg" cx="50" cy="50" r="48"></circle>
+        <circle class="b2t-progress-value" id="b2t-progress-value" cx="50" cy="50" r="48"></circle>
       </svg>
-    </button>
-    <div class="modal-content">
-      <img src="" alt="拡大画像" id="modalImg">
-      <div class="modal-caption">
-        <p class="modal-caption-jp" id="modalTitleJp"></p>
-        <p class="modal-caption-meta" id="modalMeta"></p>
+      <div class="b2t-inner">
+        <span class="b2t-text">TOP</span>
+      </div>
+    </a>
+
+    <div class="image-modal" id="imageModal" aria-hidden="true" role="dialog">
+      <div class="modal-bg" id="modalBg"></div>
+      <button class="modal-close" id="modalClose" aria-label="閉じる">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square">
+          <line x1="4" y1="4" x2="20" y2="20"/>
+          <line x1="20" y1="4" x2="4" y2="20"/>
+        </svg>
+      </button>
+      <div class="modal-content">
+        <img src="" alt="拡大画像" id="modalImg">
+        <div class="modal-caption">
+          <p class="modal-caption-jp" id="modalTitleJp"></p>
+          <p class="modal-caption-meta" id="modalMeta"></p>
+        </div>
       </div>
     </div>
-  </div>
+
+  </div> <!-- /page-wrapper -->
 
   <script>
     /* == 「いと（Ito）」パーティクルの生成 == */
