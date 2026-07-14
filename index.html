@@ -10,7 +10,7 @@
 </script>
   <link rel="icon" type="image/jpeg" href="images/【FSM横】IMG_7730.jpg">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="description" content="津田翔一 Tsuda Shoichi - 長野県を起点に、油彩・映像・立体・インスタレーションで制作するアーティスト。">
   <meta property="og:title" content="Tsuda Shoichi | 津田 翔一">
   <meta property="og:description" content="油彩を起点に、映像・立体・インスタレーションへと展開する多層的な制作。土地の記憶、時が堆積した痕跡を解体し、新たな物語を空間に編み直す。">
@@ -42,7 +42,11 @@
       --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
       --px:          clamp(16px, 5vw, 64px);
     }
-    html { scroll-behavior: smooth; }
+    html { 
+      scroll-behavior: smooth; 
+      overflow-x: hidden;
+      width: 100vw;
+    }
     body {
       background: var(--bg);
       color: var(--text);
@@ -50,9 +54,11 @@
       line-height: 1.7;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      width: 100%;
       word-break: normal;
       line-break: strict;
       overflow-wrap: break-word;
+      position: relative;
     }
     body.no-scroll { overflow: hidden; }
 
@@ -84,7 +90,6 @@
       padding: clamp(24px,4vw,40px) var(--px);
       background: transparent;
       border-bottom: 1px solid transparent;
-      
       transform: translateY(-100%);
       opacity: 0;
       transition: background 0.6s var(--ease-expo), padding 0.6s var(--ease-expo), border-color 0.6s ease, backdrop-filter 0.6s ease, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, opacity 1.2s ease 0.2s;
@@ -131,7 +136,7 @@
     }
     .nav-cta:hover { background: var(--accent); color: var(--bg); box-shadow: 0 4px 16px rgba(203,191,176,0.2); }
     .nav-hamburger { display: none; background: none;
-      border: none; cursor: pointer; padding: 4px; }
+      border: none; cursor: pointer; padding: 4px; z-index: 1000; position: relative;}
     .nav-hamburger span { display: block; width: 22px; height: 0.5px;
       background: var(--accent); margin: 6px 0; transition: all 0.25s; }
 
@@ -270,12 +275,14 @@
     }
 
     /* ════════════════════════════════════════
-        HERO
+        HERO (svhを使用しスクロールぶれを防止)
     ════════════════════════════════════════ */
     .hero {
       position: relative;
       padding: 12rem 2.5rem 7rem;
-      border-bottom: 0.5px solid var(--border); min-height: 100vh; display: flex; flex-direction: column;
+      border-bottom: 0.5px solid var(--border); 
+      min-height: 100svh; /* vhからsvhに変更 */
+      display: flex; flex-direction: column;
       justify-content: center; overflow: hidden;
     }
     .hero-slideshow { position: absolute; inset: 0; z-index: 0; }
@@ -284,11 +291,11 @@
       object-fit: cover; object-position: center 30%; 
       opacity: 0; transform: scale(1);
       transition: opacity 2.5s ease-in-out, transform 2.5s ease-in-out; 
-      will-change: opacity, transform;
+      will-change: opacity; /* スマホ負担減のためtransformを外す */
     }
     .hero-slide.active { 
       opacity: 1; 
-      transform: scale(1.1);
+      transform: scale(1.05); /* 拡大率を抑えめにしてパフォーマンス向上 */
       transition: opacity 2.5s ease-in-out, transform 10s linear; 
     }
     .hero-overlay { position: absolute; inset: 0; z-index: 1;
@@ -316,7 +323,7 @@
       gap: 0.1em;
     }
     .hero-title span {
-      display: block; opacity: 0; position: relative; will-change: transform, opacity, filter;
+      display: block; opacity: 0; position: relative; will-change: transform, opacity;
     }
     .hero-title em { font-style: normal; color: rgba(232,228,219,0.55); }
 
@@ -433,7 +440,9 @@
       padding: 14rem 2.5rem 16rem;
       background-color: var(--bg);
       background-image: linear-gradient(rgba(8,8,8,0.6),rgba(8,8,8,0.75)),url('images/【津田翔一】展示の様子１.jpg');
-      background-size: cover; background-position: center; background-attachment: fixed;
+      background-size: cover; background-position: center; 
+      /* PC環境のみfixedを残し、カクつきを防ぐ */
+      background-attachment: fixed;
       overflow: hidden; display: flex; flex-direction: column;
       align-items: center; text-align: center;
     }
@@ -469,7 +478,8 @@
     .opening-stage {
       position: relative;
       width: 100%; max-width: 1200px;
-      margin: 0 auto 10rem; min-height: 120vh;
+      margin: 0 auto 10rem; 
+      min-height: 120svh; /* vhからsvhに変更 */
       display: block; text-align: center;
     }
     .opening-question, .opening-ito {
@@ -479,14 +489,14 @@
       position: sticky;
     }
     .opening-question {
-      top: 28vh;
+      top: 28svh; /* vhからsvhに変更 */
       z-index: 10;
       opacity: 0.15;
       transform: scale(0.98);
       pointer-events: none;
       transition: opacity 0.8s ease, filter 0.8s ease;
     }
-    .opening-ito { top: 54vh; z-index: 5; }
+    .opening-ito { top: 54svh; /* vhからsvhに変更 */ z-index: 5; }
 
     .concept-question {
       font-family: var(--jp);
@@ -583,7 +593,7 @@
       color: rgba(232,228,219,0.78); letter-spacing: 0.04em; }
 
     /* ════════════════════════════════════════
-        REVEAL
+        REVEAL (アニメーション)
     ════════════════════════════════════════ */
     .reveal { 
       opacity: 0;
@@ -604,7 +614,7 @@
       opacity: 0; 
       transform: translateY(60px) scale(0.92); 
       filter: blur(16px);
-      will-change: transform, opacity, filter;
+      will-change: transform, opacity;
     }
     .ink-reveal-block.visible {
       animation: inkRevealBlock 1.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
@@ -720,7 +730,7 @@
     }
 
     /* ════════════════════════════════════════
-        ARCHIVE CTA BUTTON (Redesigned)
+        ARCHIVE CTA BUTTON
     ════════════════════════════════════════ */
     .cta-wrapper { text-align: center; margin-top: 10rem; width: 100%; display: flex; justify-content: center; }
     
@@ -735,7 +745,6 @@
       -webkit-tap-highlight-color: transparent;
     }
     
-    /* ヘッダー配置用サイズ調整バリエーション */
     .works-archive-cta--header {
       padding: 2.5rem 3.5rem;
       max-width: 320px;
@@ -983,7 +992,7 @@
       body { overflow-wrap: break-word; }
       .concept-question, .concept-para, .tl-desc { overflow-wrap: break-word; }
       
-      .tl-outer { max-width: 100%; }
+      .tl-outer { max-width: 100%; box-sizing: border-box; }
       .tl-entry { flex-direction: column; align-items: flex-start; position: relative; padding-top: 3.5rem; scroll-margin-top: 140px; }
       .tl-spine-zone { left: 24px; }
       .tl-dot-wrap { left: 24px; top: 12px; }
@@ -994,7 +1003,7 @@
       .tl-year-btn { justify-content: flex-start; flex-direction: row-reverse; gap: 10px; }
       .tl-year-num { font-size: 1.8rem; transform-origin: left center; }
       
-      .tl-content-col { padding-left: 56px; flex-direction: column; gap: 2rem; width: 100%; }
+      .tl-content-col { padding-left: 56px; flex-direction: column; gap: 2rem; width: 100%; box-sizing: border-box; }
       .tl-img-link { width: 100% !important; max-width: 550px; }
       .tl-info { padding-top: 0; }
       .tl-desc { max-width: 100%; }
@@ -1021,16 +1030,23 @@
       .nav-hamburger { display: block; }
       .nav-links.open { display: flex; flex-direction: row; flex-wrap: nowrap; position: fixed; inset: 0; background: rgba(10,10,8,0.98); align-items: center; justify-content: center; gap: 0.6rem; z-index: 300; padding: 1rem; overflow-x: auto; backdrop-filter: blur(16px); }
       .nav-links.open a { font-size: 0.9rem; padding: 0.6rem 0.5rem; display: block; white-space: nowrap; }
-      .hero { padding: 8rem 1.5rem 4rem; min-height: 80vh; }
       
-      /* タイトル文字アニメーション・スマホ向けにスムーズに最適化（重いフィルター除去） */
+      /* スクロール時のガクつきを防止するためsvhを維持 */
+      .hero { padding: 8rem 1.5rem 4rem; min-height: 100svh; }
+      
+      /* アニメーションの軽量化：blurなどの重いフィルターを解除してGPU負荷を下げる */
+      .reveal { filter: none !important; transition: opacity 1.2s ease, transform 1.2s ease; }
+      .ink-reveal-block { filter: none !important; }
+      .concept-question { filter: none !important; text-shadow: none; }
+      .tl-entry { filter: none !important; transition: opacity 1.2s ease, transform 1.2s ease; }
+
       body.is-loaded .line-draw { animation-name: drawRevealMobile; }
       body.is-loaded .line-dig { animation-name: digRevealMobile; }
       body.is-loaded .line-return { animation-name: returnRevealMobile; }
       
       .hero-body { font-size: 11.5px; line-height: 1.85; margin-top: 0.5rem; }
 
-      .hero-notice-box { position: relative; bottom: auto; right: auto; align-self: flex-end; flex-direction: column; align-items: flex-start; gap: 0.6rem; padding: 1.2rem 1.5rem; margin-top: 3rem; width: 100%; max-width: 340px; }
+      .hero-notice-box { position: relative; bottom: auto; right: auto; align-self: flex-end; flex-direction: column; align-items: flex-start; gap: 0.6rem; padding: 1.2rem 1.5rem; margin-top: 3rem; width: 100%; max-width: 340px; box-sizing: border-box; }
       .hero-notice-text { white-space: normal; line-height: 1.8; }
 
       .section { padding: 6rem 1.5rem; }
@@ -1040,16 +1056,18 @@
       ════════════════════════════════════════ */
       #statement { 
         padding: 8rem 1.5rem; 
+        /* iOS Safariのfixedバグ回避のためscrollを明示 */
         background-attachment: scroll; 
-        background-size: 100% auto; 
+        background-size: cover; 
         background-position: center top; 
         background-repeat: no-repeat;
       }
       .statement-bg-word { font-size: 35vw; }
       
-      .opening-stage { margin-bottom: 5rem; min-height: 120vh; }
-      .opening-question { top: 22vh; padding: 0 1rem; width: 100%; box-sizing: border-box; opacity: 0.3 !important; filter: blur(0px); transform: scale(0.98); }
-      .opening-ito { top: 45vh; padding: 0 1rem; width: 100%; box-sizing: border-box; }
+      /* vhをsvhに置換してブレ防止 */
+      .opening-stage { margin-bottom: 5rem; min-height: 120svh; }
+      .opening-question { top: 22svh; padding: 0 1rem; width: 100%; box-sizing: border-box; opacity: 0.3 !important; transform: scale(0.98); }
+      .opening-ito { top: 45svh; padding: 0 1rem; width: 100%; box-sizing: border-box; }
 
       .concept-question { font-size: 1.35rem; line-height: 1.9; }
       .concept-para.ito-intro { font-size: 0.95rem; line-height: 2; }
@@ -1060,7 +1078,6 @@
       .concept-tags { grid-template-columns: 1fr; gap: 1.5rem; }
       #works { padding: 6rem 1.5rem 8rem; }
       
-      /* works-header スマホでの横並びと上部ボタン調整 */
       .works-header { margin-bottom: 4rem; flex-direction: row; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1.2rem; }
       .works-header > div:first-child { flex: 0 1 auto; min-width: 0; }
       .works-header-line-wrap { display: none; }
@@ -1078,7 +1095,7 @@
       .works-archive-cta--header .archive-btn__arrow { margin-top: 0.4rem; width: 24px; height: 10px; }
       .works-archive-cta--header:hover .archive-btn__arrow { width: 32px; }
 
-      .works-archive-cta { padding: 2.2rem 1.5rem; width: 100%; max-width: 320px; }
+      .works-archive-cta { padding: 2.2rem 1.5rem; width: 100%; max-width: 320px; box-sizing: border-box; }
       .works-archive-cta:not(.works-archive-cta--header) .cta-label-en { font-size: 0.8rem; margin-bottom: 0.4rem; }
       .works-archive-cta:not(.works-archive-cta--header) .cta-label-ja { font-size: 1.15rem; white-space: nowrap; }
       .works-archive-cta:not(.works-archive-cta--header) .archive-btn__arrow { margin-top: 1rem; width: 28px; }
@@ -1107,7 +1124,7 @@
       .news-body { padding-right: 1rem; }
 
       .contact-section { padding: 8rem 1.5rem; }
-      .contact-btn { padding: 1.2rem 2.4rem; font-size: 0.8rem; width: 100%; max-width: 340px; justify-content: center; }
+      .contact-btn { padding: 1.2rem 2.4rem; font-size: 0.8rem; width: 100%; max-width: 340px; justify-content: center; box-sizing: border-box; }
       footer { padding: 3rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
       .page-nav { display: none; }
     }
@@ -1150,13 +1167,11 @@
         document.body.classList.add('is-loaded'); 
       }
     }
-    // DOM構築が完了した段階で最優先で起動開始
     document.addEventListener('DOMContentLoaded', start);
     window.addEventListener('load', start);
     if (document.fonts && document.fonts.ready) { 
       document.fonts.ready.then(start); 
     }
-    // 重いフォントのダウンロード待ちによる遅延を防ぐため、フォールバック時間を400msに短縮
     setTimeout(start, 400); 
   })();
 </script>
@@ -1197,7 +1212,6 @@
   <a href="contact.html" class="nav-cta" id="nav-cta-btn">Contact</a>
 </nav>
 
-
 <section class="hero">
   <div class="hero-slideshow" aria-hidden="true">
     <img class="hero-slide active" src="images/416A0035.jpg" alt="" loading="eager" fetchpriority="high">
@@ -1225,7 +1239,6 @@
     <span class="hero-notice-en">Latest News — 2026.07.03</span>
     <span class="hero-notice-text">若手作家公募個展「トライアル・ギャラリー」の展示ページを公開しました。</span>
   </a>
-
 </section>
 
 <section id="statement" class="section">
@@ -1504,7 +1517,7 @@
 
 <script>
 /* ════════════════════════════════════════════════════════
-   ツールチップ機能 完全版 (外部サイト ＆ 作品リンク ＆ 全作品アーカイブ)
+   ツールチップ機能 
 ════════════════════════════════════════════════════════ */
 (function() {
   var tooltip = document.getElementById('mouse-tooltip');
@@ -1513,7 +1526,6 @@
   var targetLinks = document.querySelectorAll('a[target="_blank"], [data-tooltip]');
   targetLinks.forEach(function(link) {
     link.addEventListener('mouseenter', function() {
-      // HTML要素の data-tooltip 属性を取得、なければデフォルトのテキストを使用
       var customText = link.getAttribute('data-tooltip');
       tooltip.textContent = customText ? customText : '外部サイトが別のタブで開きます';
       tooltip.classList.add('visible');
@@ -1798,7 +1810,7 @@ var WORKS_DATA = [
 })();
 
 /* ════════════════════════════════════════════════════════
-   NAV SCROLL & TOGGLE
+   NAV SCROLL & TOGGLE (スマホ用スクロールロック追加)
 ════════════════════════════════════════════════════════ */
 var menuOpenScrollY = 0;
 
@@ -1827,8 +1839,12 @@ function toggleMenu() {
   var isOpen = links.classList.toggle('open');
   btn.style.display = isOpen ? 'none' : '';
   
+  // スマホメニュー展開中の背面スクロールをロック
   if (isOpen) {
+    document.body.classList.add('no-scroll');
     menuOpenScrollY = window.scrollY;
+  } else {
+    document.body.classList.remove('no-scroll');
   }
 }
 
@@ -1837,6 +1853,7 @@ function closeMenu() {
   var btn   = document.getElementById('nav-cta-btn');
   links.classList.remove('open');
   btn.style.display = '';
+  document.body.classList.remove('no-scroll');
 }
 
 /* ════════════════════════════════════════════════════════
@@ -2072,7 +2089,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ════════════════════════════════════════════════════════
-   ARCHIVE BUTTON SVG ANIMATION (汎用化対応)
+   ARCHIVE BUTTON SVG ANIMATION
 ════════════════════════════════════════════════════════ */
 (function() {
   var btns = document.querySelectorAll('.works-archive-cta');
