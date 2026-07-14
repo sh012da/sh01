@@ -467,14 +467,22 @@
     .statement-bg-word.word2 { top: 60%; font-size: 22vw; animation-delay: -7s; }
     #statement > * { position: relative; z-index: 1; }
 
-    .s-eyebrow reveal {
-      display: inline-flex; align-items: center; justify-content: center; gap: 1.2rem;
+    /* Statement見出しをスタイリッシュに背景に馴染ませる */
+    .s-eyebrow {
+      display: inline-flex; align-items: center; justify-content: center; gap: 2rem;
       margin-bottom: 8rem;
-      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
-      letter-spacing: 0.28em; color: var(--muted-col); text-transform: uppercase;
+      font-family: var(--en); font-size: clamp(0.7rem, 2vw, 0.85rem);
+      letter-spacing: 0.8em; 
+      color: rgba(232, 228, 219, 0.12); /* ギリギリ可読性があるうっすらとした色 */
+      text-transform: uppercase;
+      text-shadow: 0 4px 24px rgba(0,0,0,0.8);
+      user-select: none;
     }
-    .s-eyebrow::before, .s-eyebrow::after { content:"";
-      width: 40px; height: 0.5px; background: rgba(232,228,219,0.2); }
+    .s-eyebrow::before, .s-eyebrow::after { 
+      content:"";
+      width: 80px; height: 0.5px; 
+      background: rgba(232, 228, 219, 0.08); 
+    }
 
     #top-of-concept { scroll-margin-top: 120px; }
 
@@ -1263,7 +1271,7 @@
 <nav id="top-nav">
   <a href="#" class="nav-logo">Tsuda Shoichi</a>
   <ul class="nav-links" id="nav-links">
-    <li><a href="#statement" onclick="closeMenu()">Statement</a></li>
+    <li class="pc-only"><a href="#statement" onclick="closeMenu()">Statement</a></li>
     
     <li class="pc-only"><a href="#works" onclick="closeMenu()">Works</a></li>
     <li class="pc-only"><a href="#profile" onclick="closeMenu()">Profile</a></li>
@@ -1898,6 +1906,16 @@ var menuOpenScrollY = 0;
       }
     }
   }, { passive: true });
+
+  // 背景タップでメニューを閉じる処理
+  if(links) {
+    links.addEventListener('click', function(e) {
+      // e.targetがlinks自身（リンク等の子要素ではない）場合のみ発火
+      if (e.target === this) {
+        closeMenu();
+      }
+    });
+  }
 })();
 
 function toggleMenu() {
