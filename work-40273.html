@@ -346,6 +346,12 @@
     .tl-entry:nth-child(even) .tl-figure {
       justify-content: flex-end;
     }
+
+    /* 縦長のメイン画像を横長画像の横幅と揃える（縦幅＝横幅になるよう幅を1/1.414に縮小） */
+    .tl-entry.is-portrait-entry .tl-figure {
+      width: calc(var(--tl-fig-w, 54%) / 1.414);
+    }
+
     .tl-body { width: var(--tl-txt-w, 42%); position: relative; z-index: 2; transition: width 0.4s ease; }
     
     .tl-figure img { 
@@ -373,12 +379,18 @@
     .tl-desc p:last-child { margin-bottom: 0; }
 
     /* ── サブギャラリーのレイアウト ── */
-    .tl-sub-gallery { margin-top: clamp(3rem, 6vh, 5rem); width: 100%; border-top: 0.5px solid var(--border-md); padding-top: clamp(2rem, 4vh, 3rem); }
+    .tl-sub-gallery { 
+      --sub-gap: clamp(10px, 1.5vw, 20px);
+      margin-top: clamp(3rem, 6vh, 5rem); 
+      width: 100%; 
+      border-top: 0.5px solid var(--border-md); 
+      padding-top: clamp(2rem, 4vh, 3rem); 
+    }
     
     /* 風力発電所用（横長グリッド: Gridレイアウト） */
     .tl-sub-gallery.is-landscape-grid { 
       display: grid; 
-      gap: clamp(10px, 1.5vw, 20px); 
+      gap: var(--sub-gap); 
       grid-template-columns: repeat(4, 1fr); 
     }
     .tl-sub-gallery.is-landscape-grid .tl-sub-item { 
@@ -401,39 +413,36 @@
     .tl-sub-gallery.is-landscape-grid .tl-sub-item:hover { border-color: rgba(203,191,176,0.4); box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
     .tl-sub-gallery.is-landscape-grid .tl-sub-item:hover img { transform: scale(1.05); filter: grayscale(0%) brightness(1.0); }
 
-    /* a_girl用（縦長グリッド：メイン画像と完全に同じサイズ・スタイルで左寄せ） */
+    /* a_girl用（縦長グリッド：横並び一列で、縦幅を横長グリッドの横幅に合わせる） */
     .tl-sub-gallery.is-portrait-grid { 
       display: flex; 
-      flex-wrap: wrap; 
-      justify-content: flex-start; 
-      gap: clamp(1.5rem, 3vw, 3rem); 
+      flex-direction: row; /* 横一列に配置 */
+      flex-wrap: wrap;
+      align-items: flex-start; /* 上寄せ */
+      justify-content: flex-start; /* 左寄せ */
+      gap: var(--sub-gap); 
     }
+    /* 横長グリッドのアイテムの幅は calc((100% - 3 * var(--sub-gap)) / 4)。
+       縦長アイテムの高さをこれと同じにするため、幅を / 1.414 とする。 */
     .tl-sub-gallery.is-portrait-grid .tl-sub-item { 
-      width: var(--tl-fig-w, 38%); 
-      flex: 0 0 var(--tl-fig-w, 38%);
-      aspect-ratio: auto; 
-      border: none; 
+      width: calc(((100% - 3 * var(--sub-gap)) / 4) / 1.414);
+      aspect-ratio: 1 / 1.414; 
+      border: 0.5px solid var(--border); 
+      overflow: hidden; 
       display: flex; 
-      align-items: flex-start;
       cursor: zoom-in;
       text-decoration: none;
+      transition: border-color 0.4s ease, box-shadow 0.4s ease;
     }
     .tl-sub-gallery.is-portrait-grid .tl-sub-item img { 
-      width: auto; 
-      max-width: 100%; 
-      height: auto; 
-      max-height: var(--tl-img-h, 600px); 
-      object-fit: contain; 
-      border: 0.5px solid var(--border); 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
       filter: grayscale(12%) brightness(0.85); 
-      transition: transform 1s var(--ease), filter 0.6s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+      transition: transform 1s var(--ease), filter 0.6s ease;
     }
-    .tl-sub-gallery.is-portrait-grid .tl-sub-item:hover img {
-      transform: scale(1.02); 
-      border-color: rgba(203,191,176,0.4); 
-      box-shadow: 0 16px 40px rgba(0,0,0,0.5); 
-      filter: grayscale(0%) brightness(1.0); 
-    }
+    .tl-sub-gallery.is-portrait-grid .tl-sub-item:hover { border-color: rgba(203,191,176,0.4); box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+    .tl-sub-gallery.is-portrait-grid .tl-sub-item:hover img { transform: scale(1.02); filter: grayscale(0%) brightness(1.0); }
 
     /* ════════════════════════════════════════
        CONTACT & FOOTER
@@ -600,6 +609,10 @@
       .timeline-container { padding-left: 36px; } 
       .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2rem; }
       .tl-figure, .tl-body { width: 100% !important; justify-content: flex-start !important; }
+      
+      /* a_girl のメイン画像（縦長）もタブレット幅では100%幅にフィットさせる */
+      .tl-entry.is-portrait-entry .tl-figure { width: 100% !important; }
+
       .tl-figure img { max-height: 60vh !important; }
       .timeline-spine-wrapper { left: 16px; transform: none; }
       .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; font-size: clamp(2.5rem, 8vw, 3.5rem); }
@@ -865,8 +878,8 @@
             </div>
           </article>
 
-          <!-- ▼a_girl のメイン記事とサブギャラリー -->
-          <article class="tl-entry scale-s" id="work-a-girl">
+          <!-- ▼a_girl のメイン記事とサブギャラリー (is-portrait-entry を付与して縦サイズを調整) -->
+          <article class="tl-entry scale-s is-portrait-entry" id="work-a-girl">
             <div class="tl-year-display">2010</div>
             <div class="tl-content-wrap">
               <div class="tl-figure js-modal-open" data-img-src="images/【a_girl】.jpg" data-title="【a_girl】" data-meta="2010 / 29.7 × 21.0 cm / Lithograph">
@@ -883,7 +896,7 @@
             </div>
             
             <!-- a_girlの連作（縦長用レイアウトクラス is-portrait-grid） -->
-            <!-- flexboxによるサイズ同期でメイン画像と完全一致させます -->
+            <!-- flexboxの「横一列」によるサイズ同期でメイン画像と完全一致させます -->
             <div class="tl-sub-gallery is-portrait-grid">
               <a href="#" class="tl-sub-item js-modal-open" data-img-src="images/【a_girl】 (2).jpg" data-title="【a_girl】(2)" data-meta="2010 / 29.7 × 21.0 cm / Lithograph">
                 <img src="images/【a_girl】 (2).jpg" alt="【a_girl】(2)" loading="lazy">
@@ -1232,7 +1245,14 @@
     const titleJpEl  = document.getElementById('modalTitleJp');
     const metaEl     = document.getElementById('modalMeta');
 
+    let modalTimeoutId = null; // タイマー管理用変数
+
     const openModal = (src, title, meta) => {
+      // 連続クリック時に画像が消えるバグを修正：タイマーが残っていればキャンセル
+      if (modalTimeoutId) {
+        clearTimeout(modalTimeoutId);
+        modalTimeoutId = null;
+      }
       modalImg.src = src;
       titleJpEl.textContent = title || '';
       metaEl.textContent = meta || '';
@@ -1240,11 +1260,22 @@
       modal.setAttribute('aria-hidden', 'false');
       document.body.classList.add('is-locked');
     };
+    
     const closeModal = () => {
       modal.classList.remove('is-active');
       modal.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('is-locked');
-      setTimeout(() => { modalImg.src = ''; titleJpEl.textContent = ''; metaEl.textContent = ''; }, 560);
+      
+      // アニメーション完了後に中身をクリアするが、すぐに再度開かれた場合はキャンセルできるようにIDを保存
+      if (modalTimeoutId) {
+        clearTimeout(modalTimeoutId);
+      }
+      modalTimeoutId = setTimeout(() => { 
+        modalImg.src = ''; 
+        titleJpEl.textContent = ''; 
+        metaEl.textContent = ''; 
+        modalTimeoutId = null;
+      }, 560);
     };
 
     document.querySelectorAll('.js-modal-open').forEach(btn => {
