@@ -52,8 +52,7 @@
     
     html, body { 
       width: 100%;
-      height: 100%;
-      scroll-behavior: smooth; 
+      min-height: 100vh; /* height:100%から修正。スクロールバグを防止 */
       background: var(--bg); 
       overflow-x: hidden;
     }
@@ -70,7 +69,6 @@
       padding-right: env(safe-area-inset-right);
     }
 
-    /* 全体のスクロール横ブレを完全に防ぐラッパー */
     .page-wrapper {
       width: 100%;
       overflow-x: hidden;
@@ -146,7 +144,6 @@
       background: var(--bg); cursor: crosshair;
     }
 
-    /* 背景層1: 暗く沈んだキャンバス (GPUアクセラレーション適用) */
     .hero-bg-dim {
       position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; z-index: 0;
       background: url('images/in_front_of_Shinagawa_Station.jpg') center/cover no-repeat;
@@ -155,7 +152,6 @@
       backface-visibility: hidden;
     }
     
-    /* 背景層2: マスクで透過される鮮やかな真実の風景 (GPUアクセラレーション適用) */
     .hero-bg-reveal {
       position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; z-index: 1;
       background: url('images/in_front_of_Shinagawa_Station.jpg') center/cover no-repeat;
@@ -166,14 +162,12 @@
       backface-visibility: hidden;
     }
     
-    /* 画像への微細なノイズテクスチャ */
     .hero-bg-reveal::before {
       content: ''; position: absolute; inset: 0;
       background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)" opacity="0.06"/%3E%3C/svg%3E');
       mix-blend-mode: overlay; pointer-events: none;
     }
 
-    /* 次のセクションへのスムーストランジション */
     .hero-fade-bottom {
       position: absolute; bottom: 0; left: 0; width: 100%; height: 30vh;
       background: linear-gradient(to bottom, transparent, var(--bg));
@@ -283,14 +277,13 @@
     .scale-l   { --grid-h: 320px; --tl-fig-w: 46%; --tl-txt-w: 48%; --tl-img-h: clamp(300px, 55vh, 500px); }
     .scale-s   { --grid-h: 240px; --tl-fig-w: 38%; --tl-txt-w: 56%; --tl-img-h: clamp(220px, 40vh, 380px); }
 
-    .gallery-section { padding: 0 var(--px) clamp(6rem, 13vh, 10rem); max-width: 1600px; margin: 0 auto; border-top: 0.5px solid var(--border); display: block !important; }
+    .gallery-section { padding: 0 var(--px) clamp(6rem, 13vh, 10rem); max-width: 1600px; margin: 0 auto; border-top: 0.5px solid var(--border); display: block; }
     .section-label-center { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.61rem); letter-spacing: 0.44em; color: var(--muted-col); text-transform: uppercase; text-align: center; margin-bottom: clamp(3rem, 7vh, 5rem); margin-top: clamp(3rem, 7vh, 5rem); }
     
-    .gallery-grid { display: flex; flex-wrap: wrap; gap: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 2.5vw, 2.5rem); justify-content: center; align-items: center; } 
+    .gallery-grid { display: flex; flex-wrap: wrap; gap: clamp(4rem, 7vw, 7rem) clamp(3rem, 5vw, 5rem); justify-content: center; align-items: center; } 
     .gallery-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; cursor: pointer; opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); width: fit-content; max-width: 100%; }
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
     
-    /* 余白を無くし画像に100%フィットさせる実装 */
     .gallery-item-img-wrap { 
       height: var(--item-height, 320px); 
       width: fit-content; 
@@ -302,7 +295,7 @@
       line-height: 0;
     }
     .gallery-item.is-portrait { --item-height: var(--grid-h); }
-    .gallery-item.is-landscape { --item-height: calc(var(--grid-h) * 0.75); }
+    .gallery-item.is-landscape { --item-height: calc(var(--grid-h) * 0.707); }
     
     .gallery-item-img-wrap img { 
       height: 100%; 
@@ -319,7 +312,7 @@
       filter: grayscale(0%) brightness(1.0); 
     }
     
-    .gallery-item-cap { padding-top: 1rem; text-align: left; width: 100%; }
+    .gallery-item-cap { padding-top: 1.5rem; text-align: left; width: 100%; }
     .gallery-item-title { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.4vw, 1rem); font-weight: 300; color: var(--fg); letter-spacing: 0.05em; margin-bottom: 0.4rem; display: block; }
     .gallery-item-meta { font-family: var(--font-en); font-size: clamp(0.65rem, 1.1vw, 0.75rem); color: var(--accent); letter-spacing: 0.14em; display: block; }
 
@@ -341,7 +334,6 @@
     .tl-content-wrap { display: flex; justify-content: space-between; align-items: center; gap: clamp(2rem, 5vw, 6rem); }
     .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
     
-    /* タイムライン側の画像フィット実装 */
     .tl-figure { 
       width: var(--tl-fig-w, 54%); 
       position: relative; 
@@ -379,10 +371,19 @@
     .tl-desc p { margin-bottom: 1.2em; }
     .tl-desc p:last-child { margin-bottom: 0; }
 
-    /* サブギャラリーの画像フィット実装（余白なしのcover） */
-    .tl-sub-gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(10px, 1.5vw, 20px); margin-top: clamp(3rem, 6vh, 5rem); width: 100%; border-top: 0.5px solid var(--border-md); padding-top: clamp(2rem, 4vh, 3rem); }
-    .tl-sub-item { aspect-ratio: 4 / 3; border: 0.5px solid var(--border); overflow: hidden; cursor: zoom-in; display: block; transition: border-color 0.4s ease, box-shadow 0.4s ease; }
-    .tl-sub-item img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(15%) brightness(0.85); transition: transform 1s var(--ease), filter 0.6s ease; }
+    /* サブギャラリーの画像フィット実装（比率を可変にして美しく配置） */
+    .tl-sub-gallery { display: grid; gap: clamp(10px, 1.5vw, 20px); margin-top: clamp(3rem, 6vh, 5rem); width: 100%; border-top: 0.5px solid var(--border-md); padding-top: clamp(2rem, 4vh, 3rem); }
+    
+    /* 風力発電所用（横長グリッド） */
+    .tl-sub-gallery.is-landscape-grid { grid-template-columns: repeat(4, 1fr); }
+    .tl-sub-gallery.is-landscape-grid .tl-sub-item { aspect-ratio: 1.414 / 1; }
+    
+    /* a_girl用（縦長グリッド） */
+    .tl-sub-gallery.is-portrait-grid { grid-template-columns: repeat(3, 1fr); }
+    .tl-sub-gallery.is-portrait-grid .tl-sub-item { aspect-ratio: 1 / 1.414; }
+
+    .tl-sub-item { border: 0.5px solid var(--border); overflow: hidden; cursor: zoom-in; display: block; transition: border-color 0.4s ease, box-shadow 0.4s ease; text-decoration: none; }
+    .tl-sub-item img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(15%) brightness(0.85); transition: transform 1s var(--ease), filter 0.6s ease; display: block; }
     .tl-sub-item:hover { border-color: rgba(203,191,176,0.4); box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
     .tl-sub-item:hover img { transform: scale(1.05); filter: grayscale(0%) brightness(1.0); }
 
@@ -554,7 +555,10 @@
       .tl-figure img { max-height: 60vh !important; }
       .timeline-spine-wrapper { left: 16px; transform: none; }
       .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; font-size: clamp(2.5rem, 8vw, 3.5rem); }
-      .tl-sub-gallery { grid-template-columns: repeat(3, 1fr); }
+      
+      /* タブレット・スマホでのサブギャラリー列数調整 */
+      .tl-sub-gallery.is-landscape-grid { grid-template-columns: repeat(3, 1fr); }
+      .tl-sub-gallery.is-portrait-grid { grid-template-columns: repeat(2, 1fr) !important; }
     }
     @media (max-width: 768px) {
       nav#top-nav { padding: 1rem 1.25rem; }
@@ -565,18 +569,10 @@
       .concept-sidebar { flex-direction: row; align-items: baseline; gap: 1.5rem; flex: auto; }
       .concept-keywords { grid-template-columns: 1fr; margin-top: 3rem; }
       
-      /* ギャラリー一覧をスマホ向けに2カラム化 */
-      .scale-xxl { --grid-h: 260px; }
-      .scale-xl  { --grid-h: 220px; }
-      .scale-l   { --grid-h: 180px; }
-      .scale-s   { --grid-h: 140px; }
-      .gallery-section { padding-bottom: 5rem; }
-      .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem 1rem; }
-      .gallery-item { width: 100%; max-width: 100%; }
-      .gallery-item-img-wrap { width: fit-content; height: auto; max-width: 100%; }
-      .gallery-item-img-wrap img { width: 100%; height: auto; max-height: var(--item-height); }
+      /* ギャラリー一覧をスマホ向けに完全非表示化 */
+      .gallery-section { display: none !important; }
 
-      .tl-sub-gallery { grid-template-columns: repeat(2, 1fr); }
+      .tl-sub-gallery.is-landscape-grid { grid-template-columns: repeat(2, 1fr); }
       :root { --reveal-size: 180px; }
       
       /* フッター・ボタンのレスポンシブ追加 */
@@ -584,11 +580,6 @@
       footer { padding: 3rem 1.5rem; display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; text-align: left; }
     }
     @media (max-width: 480px) {
-      .scale-xxl { --grid-h: 200px; }
-      .scale-xl  { --grid-h: 180px; }
-      .scale-l   { --grid-h: 160px; }
-      .scale-s   { --grid-h: 120px; }
-      .gallery-grid { grid-template-columns: 1fr; }
       .modal-content img { max-height: 60svh; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -658,6 +649,8 @@
       <section class="gallery-section" id="gallery">
         <p class="section-label-center">Works Index</p>
         <div class="gallery-grid">
+
+          <!-- ▼年譜に存在する作品（js-scroll-to で年譜位置へ移動） -->
           <a href="#work-september-lodge" class="gallery-item scale-l is-portrait js-scroll-to">
             <div class="gallery-item-img-wrap"><img src="images/セプテンバーLODGE！2014.jpg" alt="セプテンバーLODGE！2014" loading="lazy"></div>
             <div class="gallery-item-cap">
@@ -670,28 +663,33 @@
               <span class="gallery-item-title">風力発電所のイマージュ（銚子）</span><span class="gallery-item-meta">2010 / 21.0 × 29.7 cm</span>
             </div>
           </a>
-          <a href="#work-08" class="gallery-item scale-s is-landscape js-scroll-to">
+          
+          <!-- ▼ギャラリーにしか存在しない作品（js-modal-open でその場拡大） -->
+          <a href="#" class="gallery-item scale-s is-landscape js-modal-open" data-img-src="images/【波のイマージュ(銚子、君ヶ浜)】.jpg" data-title="波のイマージュ（銚子、君ヶ浜）" data-meta="2010 / 21.0 × 29.7 cm / Pen on board">
             <div class="gallery-item-img-wrap"><img src="images/【波のイマージュ(銚子、君ヶ浜)】.jpg" alt="波のイマージュ(銚子、君ヶ浜)" loading="lazy"></div>
             <div class="gallery-item-cap">
               <span class="gallery-item-title">波のイマージュ（銚子、君ヶ浜）</span><span class="gallery-item-meta">2010 / 21.0 × 29.7 cm</span>
             </div>
           </a>
-          <a href="#work-07" class="gallery-item scale-s is-landscape js-scroll-to">
+          <a href="#" class="gallery-item scale-s is-landscape js-modal-open" data-img-src="images/【灯台のイマージュ(銚子、犬吠)】.jpg" data-title="灯台のイマージュ（銚子、犬吠）" data-meta="2010 / 21.0 × 29.7 cm / Pen on board">
             <div class="gallery-item-img-wrap"><img src="images/【灯台のイマージュ(銚子、犬吠)】.jpg" alt="灯台のイマージュ(銚子、犬吠)" loading="lazy"></div>
             <div class="gallery-item-cap">
               <span class="gallery-item-title">灯台のイマージュ（銚子、犬吠）</span><span class="gallery-item-meta">2010 / 21.0 × 29.7 cm</span>
             </div>
           </a>
+
+          <!-- ▼年譜に存在する作品（js-scroll-to で年譜位置へ移動） -->
           <a href="#work-06" class="gallery-item scale-xl is-landscape js-scroll-to">
             <div class="gallery-item-img-wrap"><img src="images/【landscape(Hiraizumi)】.jpg" alt="【landscape(Hiraizumi)】" loading="lazy"></div>
             <div class="gallery-item-cap">
               <span class="gallery-item-title">【landscape(Hiraizumi)】</span><span class="gallery-item-meta">2010 / 97.0 × 130.3 cm</span>
             </div>
           </a>
+          <!-- a_girlは無印の一枚のみグリッドに配置 -->
           <a href="#work-a-girl" class="gallery-item scale-s is-portrait js-scroll-to">
-            <div class="gallery-item-img-wrap"><img src="images/【a_girl】 (4).jpg" alt="【a_girl】(4)" loading="lazy"></div>
+            <div class="gallery-item-img-wrap"><img src="images/【a_girl】.jpg" alt="【a_girl】" loading="lazy"></div>
             <div class="gallery-item-cap">
-              <span class="gallery-item-title">【a_girl】(4)</span><span class="gallery-item-meta">2010 / 29.7 × 21.0 cm</span>
+              <span class="gallery-item-title">【a_girl】</span><span class="gallery-item-meta">2010 / 29.7 × 21.0 cm</span>
             </div>
           </a>
           <a href="#work-05" class="gallery-item scale-xxl is-portrait js-scroll-to">
@@ -712,12 +710,16 @@
               <span class="gallery-item-title">ビーチにて</span><span class="gallery-item-meta">2010 / 116.7 × 91.0 cm</span>
             </div>
           </a>
-          <a href="#work-02" class="gallery-item scale-s is-landscape js-scroll-to">
+          
+          <!-- ▼ギャラリーにしか存在しない作品（js-modal-open でその場拡大） -->
+          <a href="#" class="gallery-item scale-s is-landscape js-modal-open" data-img-src="images/【室内のイマージュ(2)】.jpg" data-title="室内のイマージュ(2)" data-meta="2010 / 22.0 × 27.3 cm / Oil on canvas">
             <div class="gallery-item-img-wrap"><img src="images/【室内のイマージュ(2)】.jpg" alt="室内のイマージュ(2)" loading="lazy"></div>
             <div class="gallery-item-cap">
               <span class="gallery-item-title">室内のイマージュ(2)</span><span class="gallery-item-meta">2010 / 22.0 × 27.3 cm</span>
             </div>
           </a>
+
+          <!-- ▼年譜に存在する作品（js-scroll-to で年譜位置へ移動） -->
           <a href="#work-01" class="gallery-item scale-l is-landscape js-scroll-to">
             <div class="gallery-item-img-wrap"><img src="images/【室内のイマージュ】.jpg" alt="室内のイマージュ" loading="lazy"></div>
             <div class="gallery-item-cap">
@@ -751,6 +753,7 @@
             </div>
           </article>
 
+          <!-- ▼風力発電所のイマージュ（銚子）とサブギャラリー -->
           <article class="tl-entry scale-s" id="work-09">
             <div class="tl-year-display">2010</div>
             <div class="tl-content-wrap">
@@ -766,39 +769,33 @@
                 </div>
               </div>
             </div>
-          </article>
-
-          <article class="tl-entry scale-s" id="work-08">
-            <div class="tl-year-display">2010</div>
-            <div class="tl-content-wrap">
-              <div class="tl-figure js-modal-open" data-img-src="images/【波のイマージュ(銚子、君ヶ浜)】.jpg" data-title="波のイマージュ（銚子、君ヶ浜）" data-meta="2010 / 21.0 × 29.7 cm / Pen on board">
-                <img src="images/【波のイマージュ(銚子、君ヶ浜)】.jpg" alt="波のイマージュ(銚子、君ヶ浜)" loading="lazy">
-              </div>
-              <div class="tl-body">
-                <h3 class="tl-title js-cyber-title">波のイマージュ（銚子、君ヶ浜）</h3>
-                <p class="tl-title-en">Image of Waves (Choshi, Kimigahama)</p>
-                <p class="tl-meta">2010 / 21.0 × 29.7 cm / Pen on board</p>
-                <div class="tl-desc">
-                  <p>君ヶ浜に打ち寄せる波のフラクタルな輪郭。絶えず形を変え続ける水面の瞬間を、シアンやマゼンタのノイズのような線で捉えている。</p>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article class="tl-entry scale-s" id="work-07">
-            <div class="tl-year-display">2010</div>
-            <div class="tl-content-wrap">
-              <div class="tl-figure js-modal-open" data-img-src="images/【灯台のイマージュ(銚子、犬吠)】.jpg" data-title="灯台のイマージュ（銚子、犬吠）" data-meta="2010 / 21.0 × 29.7 cm / Pen on board">
-                <img src="images/【灯台のイマージュ(銚子、犬吠)】.jpg" alt="灯台のイマージュ(銚子、犬吠)" loading="lazy">
-              </div>
-              <div class="tl-body">
-                <h3 class="tl-title js-cyber-title">灯台のイマージュ（銚子、犬吠）</h3>
-                <p class="tl-title-en">Image of Lighthouse (Choshi, Inubo)</p>
-                <p class="tl-meta">2010 / 21.0 × 29.7 cm / Pen on board</p>
-                <div class="tl-desc">
-                  <p>犬吠埼灯台の屹立するシルエット。空と海の境界が白い余白に完全に溶け込み、微細な線描だけが潮風のざわめきや光の瞬きを暗示している。</p>
-                </div>
-              </div>
+            
+            <!-- 風力発電所の連作（横長用レイアウトクラス is-landscape-grid） -->
+            <div class="tl-sub-gallery is-landscape-grid">
+              <a href="#" class="tl-sub-item js-modal-open" data-img-src="images/【風力発電所のイマージュ(銚子)】(2).jpg" data-title="風力発電所のイマージュ（銚子）(2)" data-meta="2010 / 21.0 × 29.7 cm / Pen on board">
+                <img src="images/【風力発電所のイマージュ(銚子)】(2).jpg" alt="風力発電所のイマージュ(銚子)(2)" loading="lazy">
+              </a>
+              <a href="#" class="tl-sub-item js-modal-open" data-img-src="images/【風力発電所のイマージュ(銚子)】(3).jpg" data-title="風力発電所のイマージュ（銚子）(3)" data-meta="2010 / 21.0 × 29.7 cm / Pen on board">
+                <img src="images/【風力発電所のイマージュ(銚子)】(3).jpg" alt="風力発電所のイマージュ(銚子)(3)" loading="lazy">
+              </a>
+              <a href="#" class="tl-sub-item js-modal-open" data-img-src="images/【風力発電所のイマージュ(銚子)】(4).jpg" data-title="風力発電所のイマージュ（銚子）(4)" data-meta="2010 / 21.0 × 29.7 cm / Pen on board">
+                <img src="images/【風力発電所のイマージュ(銚子)】(4).jpg" alt="風力発電所のイマージュ(銚子)(4)" loading="lazy">
+              </a>
+              <a href="#" class="tl-sub-item js-modal-open" data-img-src="images/【風力発電所のイマージュ(銚子)】(5).jpg" data-title="風力発電所のイマージュ（銚子）(5)" data-meta="2010 / 21.0 × 29.7 cm / Pen on board">
+                <img src="images/【風力発電所のイマージュ(銚子)】(5).jpg" alt="風力発電所のイマージュ(銚子)(5)" loading="lazy">
+              </a>
+              <a href="#" class="tl-sub-item js-modal-open" data-img-src="images/【風力発電所のイマージュ(銚子)】(6).jpg" data-title="風力発電所のイマージュ（銚子）(6)" data-meta="2010 / 21.0 × 29.7 cm / Pen on board">
+                <img src="images/【風力発電所のイマージュ(銚子)】(6).jpg" alt="風力発電所のイマージュ(銚子)(6)" loading="lazy">
+              </a>
+              <a href="#" class="tl-sub-item js-modal-open" data-img-src="images/【風力発電所のイマージュ(銚子)】(7).jpg" data-title="風力発電所のイマージュ（銚子）(7)" data-meta="2010 / 21.0 × 29.7 cm / Pen on board">
+                <img src="images/【風力発電所のイマージュ(銚子)】(7).jpg" alt="風力発電所のイマージュ(銚子)(7)" loading="lazy">
+              </a>
+              <a href="#" class="tl-sub-item js-modal-open" data-img-src="images/【風力発電所のイマージュ(銚子)】(8).jpg" data-title="風力発電所のイマージュ（銚子）(8)" data-meta="2010 / 21.0 × 29.7 cm / Pen on board">
+                <img src="images/【風力発電所のイマージュ(銚子)】(8).jpg" alt="風力発電所のイマージュ(銚子)(8)" loading="lazy">
+              </a>
+              <a href="#" class="tl-sub-item js-modal-open" data-img-src="images/【風力発電所のイマージュ(銚子)】(9).jpg" data-title="風力発電所のイマージュ（銚子）(9)" data-meta="2010 / 21.0 × 29.7 cm / Pen on board">
+                <img src="images/【風力発電所のイマージュ(銚子)】(9).jpg" alt="風力発電所のイマージュ(銚子)(9)" loading="lazy">
+              </a>
             </div>
           </article>
 
@@ -819,11 +816,12 @@
             </div>
           </article>
 
+          <!-- ▼a_girl のメイン記事とサブギャラリー -->
           <article class="tl-entry scale-s" id="work-a-girl">
             <div class="tl-year-display">2010</div>
             <div class="tl-content-wrap">
-              <div class="tl-figure js-modal-open" data-img-src="images/【a_girl】 (4).jpg" data-title="【a_girl】" data-meta="2010 / 29.7 × 21.0 cm / Lithograph">
-                <img src="images/【a_girl】 (4).jpg" alt="【a_girl】(4)" loading="lazy">
+              <div class="tl-figure js-modal-open" data-img-src="images/【a_girl】.jpg" data-title="【a_girl】" data-meta="2010 / 29.7 × 21.0 cm / Lithograph">
+                <img src="images/【a_girl】.jpg" alt="【a_girl】" loading="lazy">
               </div>
               <div class="tl-body">
                 <h3 class="tl-title js-cyber-title">【a_girl】</h3>
@@ -833,6 +831,19 @@
                   <p>対象を直接描くのではなく、フィルター（版）を通してイメージを出力するプロセスそのものが、私たちが現実の光景をどう知覚し、記憶しているかという不確かさと重なり合う。</p>
                 </div>
               </div>
+            </div>
+            
+            <!-- a_girlの連作（縦長用レイアウトクラス is-portrait-grid） -->
+            <div class="tl-sub-gallery is-portrait-grid">
+              <a href="#" class="tl-sub-item js-modal-open" data-img-src="images/【a_girl】 (2).jpg" data-title="【a_girl】(2)" data-meta="2010 / 29.7 × 21.0 cm / Lithograph">
+                <img src="images/【a_girl】 (2).jpg" alt="【a_girl】(2)" loading="lazy">
+              </a>
+              <a href="#" class="tl-sub-item js-modal-open" data-img-src="images/【a_girl】 (3).jpg" data-title="【a_girl】(3)" data-meta="2010 / 29.7 × 21.0 cm / Lithograph">
+                <img src="images/【a_girl】 (3).jpg" alt="【a_girl】(3)" loading="lazy">
+              </a>
+              <a href="#" class="tl-sub-item js-modal-open" data-img-src="images/【a_girl】 (4).jpg" data-title="【a_girl】(4)" data-meta="2010 / 29.7 × 21.0 cm / Lithograph">
+                <img src="images/【a_girl】 (4).jpg" alt="【a_girl】(4)" loading="lazy">
+              </a>
             </div>
           </article>
 
@@ -888,23 +899,6 @@
             </div>
           </article>
 
-          <article class="tl-entry scale-s" id="work-02">
-            <div class="tl-year-display">2010</div>
-            <div class="tl-content-wrap">
-              <div class="tl-figure js-modal-open" data-img-src="images/【室内のイマージュ(2)】.jpg" data-title="室内のイマージュ(2)" data-meta="2010 / 22.0 × 27.3 cm / Oil on canvas">
-                <img src="images/【室内のイマージュ(2)】.jpg" alt="室内のイマージュ(2)" loading="lazy">
-              </div>
-              <div class="tl-body">
-                <h3 class="tl-title js-cyber-title">室内のイマージュ(2)</h3>
-                <p class="tl-title-en">Image in the room (2)</p>
-                <p class="tl-meta">2010 / 22.0 × 27.3 cm / Oil on canvas</p>
-                <div class="tl-desc">
-                  <p>存在の不確かさと儚さが、抑制された色彩を通して静かに語りかけてくる。</p>
-                </div>
-              </div>
-            </div>
-          </article>
-
           <article class="tl-entry scale-l" id="work-01">
             <div class="tl-year-display">2010</div>
             <div class="tl-content-wrap">
@@ -948,7 +942,7 @@
       <li><a href="#gallery" class="js-scroll-to">Gallery</a></li>
       <li><a href="#chronology" class="js-scroll-to">Timeline</a></li>
     </ul>
-    <a href="contact.html" class="nav-cta" id="nav-cta-btn">Contact</a>
+    <a href="#contact" class="nav-cta js-scroll-to" id="nav-cta-btn">Contact</a>
   </nav>
 
   <a href="#top" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
@@ -998,13 +992,11 @@
 
     function animateReveal() {
       if (!isHovering) {
-        // マウスが乗っていない時はキャンバス内を静かに光が漂う
         targetX = 50 + Math.cos(revealAngle) * 20;
         targetY = 50 + Math.sin(revealAngle * 1.3) * 20;
         revealAngle += 0.006;
       }
       
-      // スムーズな追従 (Lerp)
       mouseX += (targetX - mouseX) * 0.08;
       mouseY += (targetY - mouseY) * 0.08;
       
@@ -1022,7 +1014,7 @@
       constructor(el) {
         this.el = el;
         this.originalText = el.innerText.trim();
-        this.chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!<>-_\\/[]{}—=+*^?#ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄ甲乙丙丁';
+        this.chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!<>-_\/[]{}—=+*^?#ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄ甲乙丙丁';
         this.spans = [];
         this.init();
       }
@@ -1097,8 +1089,8 @@
 
     /* ── Scroll Interactions & Progress Ring ── */
     const topNav = document.getElementById('top-nav');
-    const headerNavLinks = document.querySelectorAll('.nav-links a');
-    const sections = ['statement', 'gallery', 'chronology'].map(id => document.getElementById(id));
+    const headerNavLinks = document.querySelectorAll('.nav-links a, #nav-cta-btn');
+    const sections = ['statement', 'gallery', 'chronology', 'contact'].map(id => document.getElementById(id));
     const spineFill = document.getElementById('tl-spine-fill');
     const tlWrap = document.querySelector('.timeline-container');
     let ticking = false;
@@ -1119,9 +1111,12 @@
           sections.forEach(sec => { if (sec && sec.offsetTop <= checkY) activeSec = sec; });
           
           headerNavLinks.forEach(link => {
-            const targetId = link.getAttribute('href').substring(1);
-            if (activeSec && activeSec.id === targetId) link.classList.add('active');
-            else link.classList.remove('active');
+            const href = link.getAttribute('href');
+            if(href && href.startsWith('#')) {
+              const targetId = href.substring(1);
+              if (activeSec && activeSec.id === targetId) link.classList.add('active');
+              else link.classList.remove('active');
+            }
           });
 
           if (tlWrap && spineFill) {
@@ -1153,16 +1148,18 @@
       }
     }, { passive: true });
 
-    /* ── Grid Jump Scroll ── */
-    document.querySelectorAll('.js-scroll-to').forEach(item => {
-      item.addEventListener('click', (e) => {
-        const href = item.getAttribute('href');
-        if (href && href.startsWith('#')) {
+    /* ── Grid Jump Scroll (完全に修復) ── */
+    document.querySelectorAll('.js-scroll-to').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href && href.startsWith('#') && href !== '#') {
           e.preventDefault();
-          const target = document.querySelector(href);
-          if (target) {
-            const offset = topNav?.offsetHeight || 80;
-            window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+          const targetId = href.substring(1);
+          const targetEl = document.getElementById(targetId);
+          if (targetEl) {
+            const offset = document.getElementById('top-nav')?.offsetHeight || 80;
+            const targetPosition = targetEl.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({ top: targetPosition, behavior: 'smooth' });
           }
         }
       });
@@ -1201,10 +1198,12 @@
     };
 
     document.querySelectorAll('.js-modal-open').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', function(e) {
         e.preventDefault();
-        const src = btn.getAttribute('data-img-src');
-        if (src) openModal(src, btn.getAttribute('data-title'), btn.getAttribute('data-meta'));
+        const src = this.getAttribute('data-img-src');
+        if (src) {
+          openModal(src, this.getAttribute('data-title'), this.getAttribute('data-meta'));
+        }
       });
     });
 
