@@ -347,9 +347,13 @@
       justify-content: flex-end;
     }
 
-    /* 縦長のメイン画像を横長画像の横幅と揃える（縦幅＝横幅になるよう幅を1/1.414に縮小） */
+    /* 縦長メイン画像(a_girl)の縦幅を横長画像(風力)の横幅と完全に揃える（1/1.414 に縮小） */
     .tl-entry.is-portrait-entry .tl-figure {
-      width: calc(var(--tl-fig-w, 54%) / 1.414);
+      width: calc(var(--tl-fig-w, 54%) * 0.7071);
+    }
+    /* 高さがclampで制限されるのを防ぐ */
+    .tl-entry.is-portrait-entry .tl-figure img {
+      max-height: none !important;
     }
 
     .tl-body { width: var(--tl-txt-w, 42%); position: relative; z-index: 2; transition: width 0.4s ease; }
@@ -387,11 +391,11 @@
       padding-top: clamp(2rem, 4vh, 3rem); 
     }
     
-    /* 風力発電所用（横長グリッド: Gridレイアウト） */
+    /* 風力発電所用（横長グリッド: 3列に変更して1枚を少し大きく） */
     .tl-sub-gallery.is-landscape-grid { 
       display: grid; 
       gap: var(--sub-gap); 
-      grid-template-columns: repeat(4, 1fr); 
+      grid-template-columns: repeat(3, 1fr); 
     }
     .tl-sub-gallery.is-landscape-grid .tl-sub-item { 
       aspect-ratio: 1.414 / 1; 
@@ -413,7 +417,7 @@
     .tl-sub-gallery.is-landscape-grid .tl-sub-item:hover { border-color: rgba(203,191,176,0.4); box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
     .tl-sub-gallery.is-landscape-grid .tl-sub-item:hover img { transform: scale(1.05); filter: grayscale(0%) brightness(1.0); }
 
-    /* a_girl用（縦長グリッド：横並び一列で、縦幅を横長グリッドの横幅に合わせる） */
+    /* a_girl用（縦長グリッド：横並び一列で、縦幅を横長3列グリッドの横幅に合わせる） */
     .tl-sub-gallery.is-portrait-grid { 
       display: flex; 
       flex-direction: row; /* 横一列に配置 */
@@ -422,10 +426,10 @@
       justify-content: flex-start; /* 左寄せ */
       gap: var(--sub-gap); 
     }
-    /* 横長グリッドのアイテムの幅は calc((100% - 3 * var(--sub-gap)) / 4)。
-       縦長アイテムの高さをこれと同じにするため、幅を / 1.414 とする。 */
+    /* 横長グリッド(3列)の1アイテムの幅は calc((100% - 2 * var(--sub-gap)) / 3)。
+       縦長アイテムの縦の長さをこれと全く同じにするため、横幅を / 1.414 (×0.7071) で計算。 */
     .tl-sub-gallery.is-portrait-grid .tl-sub-item { 
-      width: calc(((100% - 3 * var(--sub-gap)) / 4) / 1.414);
+      width: calc(((100% - 2 * var(--sub-gap)) / 3) * 0.7071);
       aspect-ratio: 1 / 1.414; 
       border: 0.5px solid var(--border); 
       overflow: hidden; 
@@ -617,13 +621,17 @@
       .timeline-spine-wrapper { left: 16px; transform: none; }
       .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; font-size: clamp(2.5rem, 8vw, 3.5rem); }
       
-      /* タブレットでの風力発電所サブギャラリー列数調整 */
+      /* タブレットでの風力発電所サブギャラリー列数調整 (3列のまま) */
       .tl-sub-gallery.is-landscape-grid { grid-template-columns: repeat(3, 1fr); }
     }
     @media (max-width: 768px) {
       nav#top-nav { padding: 1rem 1.25rem; }
       .nav-links { display: none !important; }
       
+      /* スマホ時のヘッダーは「名前」と「Contact」のみ。ハンバーガーメニューは出しません */
+      .nav-logo-unified { display: block; }
+      .nav-cta { display: inline-flex !important; }
+
       .concept-wrapper { padding: 60px var(--px); }
       .concept-top-row { flex-direction: column; gap: 2rem; }
       .concept-sidebar { flex-direction: row; align-items: baseline; gap: 1.5rem; flex: auto; }
@@ -1005,7 +1013,8 @@
       <li><a href="#gallery" class="js-scroll-to">Gallery</a></li>
       <li><a href="#chronology" class="js-scroll-to">Timeline</a></li>
     </ul>
-    <a href="#contact" class="nav-cta js-scroll-to" id="nav-cta-btn">Contact</a>
+    <!-- hrefを直接contact.htmlへ変更。js-scroll-toは外しました -->
+    <a href="contact.html" class="nav-cta" id="nav-cta-btn">Contact</a>
   </nav>
 
   <a href="#top" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
@@ -1152,8 +1161,8 @@
 
     /* ── Scroll Interactions & Progress Ring ── */
     const topNav = document.getElementById('top-nav');
-    const headerNavLinks = document.querySelectorAll('.nav-links a, #nav-cta-btn');
-    const sections = ['statement', 'gallery', 'chronology', 'contact'].map(id => document.getElementById(id));
+    const headerNavLinks = document.querySelectorAll('.nav-links a'); // btnは除外
+    const sections = ['statement', 'gallery', 'chronology'].map(id => document.getElementById(id));
     const spineFill = document.getElementById('tl-spine-fill');
     const tlWrap = document.querySelector('.timeline-container');
     let ticking = false;
