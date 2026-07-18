@@ -1036,7 +1036,7 @@
       nav { padding: 1rem 1.25rem; }
       nav.nav-scrolled { padding: 0.8rem 1.25rem; }
       
-      /* Morphing Hamburger Button Style: "Aura & Thread" (前代未聞の最高デザイン) */
+      /* Morphing Hamburger Button Style: "Aura & Thread" (最適化版) */
       .nav-hamburger {
         display: flex !important;
         align-items: center;
@@ -1057,31 +1057,32 @@
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
       }
 
+      /* 邪魔にならないようinsetを調整し、透明度を下げたオーラ */
       .nav-hamburger::before,
       .nav-hamburger::after {
         content: '';
         position: absolute;
-        inset: -5px;
+        inset: -2px; /* ★はみ出しを抑える */
         border-radius: 50%;
         border: 1px solid transparent;
         transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         pointer-events: none;
       }
 
-      /* 外側のオーラ（ゆっくり回転する光のリング） */
+      /* 外側のオーラ（ゆっくり回転する光のリング：邪魔にならない程度に弱く） */
       .nav-hamburger::before {
-        border-top-color: rgba(203, 191, 176, 0.5);
-        border-right-color: rgba(203, 191, 176, 0.1);
+        border-top-color: rgba(203, 191, 176, 0.3); /* ★透明度低下 */
+        border-right-color: rgba(203, 191, 176, 0.05); /* ★透明度低下 */
         border-bottom-color: transparent;
         border-left-color: transparent;
-        animation: spinRing 4s linear infinite;
+        animation: spinRing 6s linear infinite; /* ★回転をゆっくりに */
       }
       
-      /* 内側のパルス（呼吸するようなエフェクト） */
+      /* 内側のパルス（呼吸するようなエフェクト：柔らかく） */
       .nav-hamburger::after {
         inset: 0px;
         box-shadow: 0 0 0 rgba(203, 191, 176, 0);
-        animation: pulseRing 3s ease-in-out infinite alternate;
+        animation: pulseRing 4s ease-in-out infinite alternate; /* ★ゆっくりに */
       }
 
       @keyframes spinRing {
@@ -1090,12 +1091,12 @@
       }
 
       @keyframes pulseRing {
-        0% { box-shadow: inset 0 0 4px rgba(203, 191, 176, 0.05), 0 0 4px rgba(203, 191, 176, 0.05); }
-        100% { box-shadow: inset 0 0 12px rgba(203, 191, 176, 0.2), 0 0 16px rgba(203, 191, 176, 0.3); }
+        0% { box-shadow: inset 0 0 2px rgba(203, 191, 176, 0.05), 0 0 2px rgba(203, 191, 176, 0.05); }
+        100% { box-shadow: inset 0 0 8px rgba(203, 191, 176, 0.15), 0 0 10px rgba(203, 191, 176, 0.2); }
       }
 
       .nav-hamburger:active {
-        transform: scale(0.85);
+        transform: scale(0.9);
       }
 
       /* ハンバーガーの線（いと）コンテナ */
@@ -1118,62 +1119,54 @@
         border-radius: 2px;
         transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         transform-origin: center;
-        box-shadow: 0 0 6px rgba(203, 191, 176, 0.5);
+        box-shadow: 0 0 4px rgba(203, 191, 176, 0.3); /* ★光を少し抑える */
       }
 
       /* 線の長さと動きの非対称性（アート感・前代未聞感） */
-      .nav-hamburger .hamburger-lines span:nth-child(1) {
-        width: 24px;
-      }
+      .nav-hamburger .hamburger-lines span:nth-child(1) { width: 24px; }
       .nav-hamburger .hamburger-lines span:nth-child(2) {
         width: 14px;
-        animation: threadBreathe 4s ease-in-out infinite alternate;
+        animation: threadBreathe 5s ease-in-out infinite alternate;
       }
-      .nav-hamburger .hamburger-lines span:nth-child(3) {
-        width: 18px;
-      }
+      .nav-hamburger .hamburger-lines span:nth-child(3) { width: 18px; }
 
       @keyframes threadBreathe {
-        0% { transform: translateX(-4px); width: 12px; opacity: 0.7; }
-        100% { transform: translateX(4px); width: 18px; opacity: 1; }
+        0% { transform: translateX(-3px); width: 14px; opacity: 0.8; }
+        100% { transform: translateX(3px); width: 18px; opacity: 1; }
       }
 
       /* メニュー展開時（.open）のスタイル */
       .nav-hamburger.open {
-        background: rgba(203, 191, 176, 0.15);
-        border-color: rgba(203, 191, 176, 0.6);
-        box-shadow: 0 0 30px rgba(203, 191, 176, 0.3);
+        background: rgba(203, 191, 176, 0.1); /* ★少し控えめに */
+        border-color: rgba(203, 191, 176, 0.4);
+        box-shadow: 0 0 20px rgba(203, 191, 176, 0.2);
         transform: rotate(90deg);
       }
 
       .nav-hamburger.open::before {
-        border-top-color: rgba(232, 228, 219, 0.8);
-        border-right-color: rgba(232, 228, 219, 0.8);
-        border-bottom-color: rgba(232, 228, 219, 0.8);
-        border-left-color: rgba(232, 228, 219, 0.8);
-        inset: -2px;
-        animation-duration: 8s;
-        opacity: 0.5;
+        border-top-color: rgba(232, 228, 219, 0.4); /* ★控えめに */
+        border-right-color: rgba(232, 228, 219, 0.4);
+        border-bottom-color: rgba(232, 228, 219, 0.4);
+        border-left-color: rgba(232, 228, 219, 0.4);
+        inset: -1px;
+        animation-duration: 10s;
+        opacity: 0.4;
       }
 
       .nav-hamburger.open .hamburger-lines span:nth-child(1) {
         width: 26px;
         transform: translateY(6.25px) rotate(-45deg);
         background: #ffffff;
-        box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
       }
-
       .nav-hamburger.open .hamburger-lines span:nth-child(2) {
-        width: 0;
-        opacity: 0;
-        animation: none;
+        width: 0; opacity: 0; animation: none;
       }
-
       .nav-hamburger.open .hamburger-lines span:nth-child(3) {
         width: 26px;
         transform: translateY(-6.25px) rotate(45deg);
         background: #ffffff;
-        box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
       }
       
       /* Perfected Overlay with Zero Horizontal Scrolling */
@@ -1183,43 +1176,126 @@
         align-items: center;
         justify-content: center;
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        height: 100dvh;
-        background: rgba(8, 8, 8, 0.98);
-        gap: 2.2rem;
+        top: 0; left: 0;
+        width: 100vw; height: 100dvh;
+        background: rgba(8, 8, 8, 0.95); /* ★少し透明度を下げて背後を見せる */
+        gap: 1.5rem; /* ★間隔を少し詰める */
         z-index: 998;
-        padding: 2rem;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+        padding: 2rem 1.5rem; /* ★横幅を広く取れるように */
+        backdrop-filter: blur(24px); /* ★強いブラーで美しく */
+        -webkit-backdrop-filter: blur(24px);
         overflow: hidden;
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(-20px);
-        transition: opacity 0.4s var(--ease-expo), transform 0.4s var(--ease-expo), visibility 0.4s;
+        opacity: 0; visibility: hidden;
+        transform: scale(1.05); /* ★フワッと手前に来るように */
+        transition: opacity 0.5s var(--ease-expo), transform 0.5s var(--ease-expo), visibility 0.5s;
         list-style: none;
+        perspective: 1000px; /* ★3D効果の基点 */
       }
+      
       .nav-links.open {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
+        opacity: 1; visibility: visible;
+        transform: scale(1);
       }
+
+      /* リンクを包むliに3Dトランスフォームを適用 */
+      .nav-links li {
+        width: 100%;
+        max-width: 360px;
+        opacity: 0;
+        transform: translateY(40px) rotateX(20deg); /* 下から起き上がるように */
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .nav-links.open li {
+        opacity: 1;
+        transform: translateY(0) rotateX(0deg);
+      }
+      
+      /* 順番にフワッと出現するディレイ */
+      .nav-links.open li:nth-child(1) { transition-delay: 0.10s; }
+      .nav-links.open li:nth-child(2) { transition-delay: 0.15s; }
+      .nav-links.open li:nth-child(3) { transition-delay: 0.20s; }
+      .nav-links.open li:nth-child(4) { transition-delay: 0.25s; }
+      .nav-links.open li:nth-child(5) { transition-delay: 0.30s; }
+      .nav-links.open li:nth-child(6) { transition-delay: 0.35s; }
+
       .nav-links a {
         font-family: var(--en);
-        font-size: 1.15rem !important; /* Elegant, balanced and perfectly responsive */
-        letter-spacing: 0.25em;
-        padding: 0.6rem 1.2rem;
-        display: block;
-        white-space: nowrap;
-        color: var(--muted-col);
-        transition: color 0.3s ease, transform 0.3s var(--ease-out-back);
-        text-align: center;
+        font-size: 1.6rem !important; /* ★巨大でスタイリッシュ */
+        font-weight: 300;
+        letter-spacing: 0.3em;
+        padding: 1.6rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* ★文字と矢印を両端に */
+        width: 100%;
+        color: rgba(232, 228, 219, 0.7);
+        text-decoration: none;
+        
+        /* 圧倒的な「モノリス（結晶）」デザイン */
+        background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%);
+        border-top: 0.5px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 0.5px solid rgba(0, 0, 0, 0.8);
+        border-radius: 12px;
+        box-shadow: 
+          0 10px 30px rgba(0,0,0,0.5),
+          inset 0 1px 0 rgba(255,255,255,0.03);
+        
+        position: relative;
+        overflow: hidden;
+        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        -webkit-tap-highlight-color: transparent;
       }
-      .nav-links a:hover, .nav-links a.active {
+
+      /* リンクにホログラムの「いと」が走る */
+      .nav-links a::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 50%; height: 100%;
+        background: linear-gradient(to right, transparent, rgba(203, 191, 176, 0.15), transparent);
+        transform: skewX(-30deg);
+        transition: left 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 0;
+      }
+
+      /* 独自のスタイリッシュ矢印 */
+      .nav-links a::after {
+        content: '→';
+        font-family: var(--jp);
+        font-size: 1.2rem;
         color: var(--accent);
-        transform: scale(1.05);
+        opacity: 0.3;
+        transform: translateX(-15px);
+        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        z-index: 1;
+      }
+
+      .nav-links a span {
+        position: relative;
+        z-index: 1;
+      }
+
+      .nav-links a:hover, .nav-links a:active {
+        color: var(--fg);
+        transform: translateY(-4px) scale(1.02);
+        background: linear-gradient(135deg, rgba(203, 191, 176, 0.1) 0%, rgba(255,255,255,0.01) 100%);
+        border-top-color: rgba(203, 191, 176, 0.4);
+        box-shadow: 
+          0 15px 40px rgba(0,0,0,0.8),
+          0 0 20px rgba(203, 191, 176, 0.15),
+          inset 0 1px 0 rgba(255,255,255,0.1);
+        text-shadow: 0 0 12px rgba(203, 191, 176, 0.4);
+      }
+
+      .nav-links a:hover::before, .nav-links a:active::before {
+        left: 200%;
+      }
+
+      .nav-links a:hover::after, .nav-links a:active::after {
+        opacity: 1;
+        transform: translateX(0);
+        text-shadow: 0 0 8px var(--accent);
       }
       
       /* スクロール時のガクつきを防止するためsvhを維持 */
