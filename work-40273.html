@@ -52,9 +52,10 @@
     
     html, body { 
       width: 100%;
-      min-height: 100vh; /* height:100%から修正。スクロールバグを防止 */
+      min-height: 100vh;
       background: var(--bg); 
       overflow-x: hidden;
+      scroll-behavior: smooth;
     }
 
     body {
@@ -371,21 +372,68 @@
     .tl-desc p { margin-bottom: 1.2em; }
     .tl-desc p:last-child { margin-bottom: 0; }
 
-    /* サブギャラリーの画像フィット実装（比率を可変にして美しく配置） */
-    .tl-sub-gallery { display: grid; gap: clamp(10px, 1.5vw, 20px); margin-top: clamp(3rem, 6vh, 5rem); width: 100%; border-top: 0.5px solid var(--border-md); padding-top: clamp(2rem, 4vh, 3rem); }
+    /* ── サブギャラリーのレイアウト ── */
+    .tl-sub-gallery { margin-top: clamp(3rem, 6vh, 5rem); width: 100%; border-top: 0.5px solid var(--border-md); padding-top: clamp(2rem, 4vh, 3rem); }
     
-    /* 風力発電所用（横長グリッド） */
-    .tl-sub-gallery.is-landscape-grid { grid-template-columns: repeat(4, 1fr); }
-    .tl-sub-gallery.is-landscape-grid .tl-sub-item { aspect-ratio: 1.414 / 1; }
-    
-    /* a_girl用（縦長グリッド） */
-    .tl-sub-gallery.is-portrait-grid { grid-template-columns: repeat(3, 1fr); }
-    .tl-sub-gallery.is-portrait-grid .tl-sub-item { aspect-ratio: 1 / 1.414; }
+    /* 風力発電所用（横長グリッド: Gridレイアウト） */
+    .tl-sub-gallery.is-landscape-grid { 
+      display: grid; 
+      gap: clamp(10px, 1.5vw, 20px); 
+      grid-template-columns: repeat(4, 1fr); 
+    }
+    .tl-sub-gallery.is-landscape-grid .tl-sub-item { 
+      aspect-ratio: 1.414 / 1; 
+      border: 0.5px solid var(--border); 
+      overflow: hidden; 
+      cursor: zoom-in; 
+      display: block; 
+      transition: border-color 0.4s ease, box-shadow 0.4s ease; 
+      text-decoration: none; 
+    }
+    .tl-sub-gallery.is-landscape-grid .tl-sub-item img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+      filter: grayscale(15%) brightness(0.85); 
+      transition: transform 1s var(--ease), filter 0.6s ease; 
+      display: block; 
+    }
+    .tl-sub-gallery.is-landscape-grid .tl-sub-item:hover { border-color: rgba(203,191,176,0.4); box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+    .tl-sub-gallery.is-landscape-grid .tl-sub-item:hover img { transform: scale(1.05); filter: grayscale(0%) brightness(1.0); }
 
-    .tl-sub-item { border: 0.5px solid var(--border); overflow: hidden; cursor: zoom-in; display: block; transition: border-color 0.4s ease, box-shadow 0.4s ease; text-decoration: none; }
-    .tl-sub-item img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(15%) brightness(0.85); transition: transform 1s var(--ease), filter 0.6s ease; display: block; }
-    .tl-sub-item:hover { border-color: rgba(203,191,176,0.4); box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
-    .tl-sub-item:hover img { transform: scale(1.05); filter: grayscale(0%) brightness(1.0); }
+    /* a_girl用（縦長グリッド：メイン画像と完全に同じサイズ・スタイルで左寄せ） */
+    .tl-sub-gallery.is-portrait-grid { 
+      display: flex; 
+      flex-wrap: wrap; 
+      justify-content: flex-start; 
+      gap: clamp(1.5rem, 3vw, 3rem); 
+    }
+    .tl-sub-gallery.is-portrait-grid .tl-sub-item { 
+      width: var(--tl-fig-w, 38%); 
+      flex: 0 0 var(--tl-fig-w, 38%);
+      aspect-ratio: auto; 
+      border: none; 
+      display: flex; 
+      align-items: flex-start;
+      cursor: zoom-in;
+      text-decoration: none;
+    }
+    .tl-sub-gallery.is-portrait-grid .tl-sub-item img { 
+      width: auto; 
+      max-width: 100%; 
+      height: auto; 
+      max-height: var(--tl-img-h, 600px); 
+      object-fit: contain; 
+      border: 0.5px solid var(--border); 
+      filter: grayscale(12%) brightness(0.85); 
+      transition: transform 1s var(--ease), filter 0.6s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+    .tl-sub-gallery.is-portrait-grid .tl-sub-item:hover img {
+      transform: scale(1.02); 
+      border-color: rgba(203,191,176,0.4); 
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5); 
+      filter: grayscale(0%) brightness(1.0); 
+    }
 
     /* ════════════════════════════════════════
        CONTACT & FOOTER
@@ -556,9 +604,8 @@
       .timeline-spine-wrapper { left: 16px; transform: none; }
       .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; font-size: clamp(2.5rem, 8vw, 3.5rem); }
       
-      /* タブレット・スマホでのサブギャラリー列数調整 */
+      /* タブレットでの風力発電所サブギャラリー列数調整 */
       .tl-sub-gallery.is-landscape-grid { grid-template-columns: repeat(3, 1fr); }
-      .tl-sub-gallery.is-portrait-grid { grid-template-columns: repeat(2, 1fr) !important; }
     }
     @media (max-width: 768px) {
       nav#top-nav { padding: 1rem 1.25rem; }
@@ -572,7 +619,9 @@
       /* ギャラリー一覧をスマホ向けに完全非表示化 */
       .gallery-section { display: none !important; }
 
-      .tl-sub-gallery.is-landscape-grid { grid-template-columns: repeat(2, 1fr); }
+      /* スマホでは連作のサブギャラリーを非表示にし、メイン画像のみ表示 */
+      .tl-sub-gallery { display: none !important; }
+
       :root { --reveal-size: 180px; }
       
       /* フッター・ボタンのレスポンシブ追加 */
@@ -834,6 +883,7 @@
             </div>
             
             <!-- a_girlの連作（縦長用レイアウトクラス is-portrait-grid） -->
+            <!-- flexboxによるサイズ同期でメイン画像と完全一致させます -->
             <div class="tl-sub-gallery is-portrait-grid">
               <a href="#" class="tl-sub-item js-modal-open" data-img-src="images/【a_girl】 (2).jpg" data-title="【a_girl】(2)" data-meta="2010 / 29.7 × 21.0 cm / Lithograph">
                 <img src="images/【a_girl】 (2).jpg" alt="【a_girl】(2)" loading="lazy">
