@@ -138,10 +138,10 @@
       z-index: 1000;
     }
     .nav-cta:hover { background: var(--accent); color: var(--bg); box-shadow: 0 4px 16px rgba(203,191,176,0.2); }
-    .nav-hamburger { display: none; background: none;
-      border: none; cursor: pointer; padding: 4px; z-index: 1000; position: relative;}
-    .nav-hamburger span { display: block; width: 22px; height: 1px;
-      background: var(--accent); margin: 6px 0; transition: all 0.25s; }
+    
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; z-index: 1000; position: relative;}
+    .nav-hamburger .hamburger-lines { display: flex; flex-direction: column; }
+    .nav-hamburger .hamburger-lines span { display: block; width: 22px; height: 1px; background: var(--accent); margin: 6px 0; transition: all 0.25s; }
 
     /* ════════════════════════════════════════
         PAGE IN-PAGE NAVIGATION (RIGHT DOTS)
@@ -1036,28 +1036,144 @@
       nav { padding: 1rem 1.25rem; }
       nav.nav-scrolled { padding: 0.8rem 1.25rem; }
       
-      /* Morphing Hamburger Button Style */
+      /* Morphing Hamburger Button Style: "Aura & Thread" (前代未聞の最高デザイン) */
       .nav-hamburger {
-        display: block !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 56px;
+        height: 56px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 0.5px solid rgba(232, 228, 219, 0.15);
+        border-radius: 50%;
         z-index: 1000;
         position: relative;
+        cursor: pointer;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
       }
-      .nav-hamburger span {
-        display: block;
+
+      .nav-hamburger::before,
+      .nav-hamburger::after {
+        content: '';
+        position: absolute;
+        inset: -5px;
+        border-radius: 50%;
+        border: 1px solid transparent;
+        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        pointer-events: none;
+      }
+
+      /* 外側のオーラ（ゆっくり回転する光のリング） */
+      .nav-hamburger::before {
+        border-top-color: rgba(203, 191, 176, 0.5);
+        border-right-color: rgba(203, 191, 176, 0.1);
+        border-bottom-color: transparent;
+        border-left-color: transparent;
+        animation: spinRing 4s linear infinite;
+      }
+      
+      /* 内側のパルス（呼吸するようなエフェクト） */
+      .nav-hamburger::after {
+        inset: 0px;
+        box-shadow: 0 0 0 rgba(203, 191, 176, 0);
+        animation: pulseRing 3s ease-in-out infinite alternate;
+      }
+
+      @keyframes spinRing {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      @keyframes pulseRing {
+        0% { box-shadow: inset 0 0 4px rgba(203, 191, 176, 0.05), 0 0 4px rgba(203, 191, 176, 0.05); }
+        100% { box-shadow: inset 0 0 12px rgba(203, 191, 176, 0.2), 0 0 16px rgba(203, 191, 176, 0.3); }
+      }
+
+      .nav-hamburger:active {
+        transform: scale(0.85);
+      }
+
+      /* ハンバーガーの線（いと）コンテナ */
+      .hamburger-lines {
+        position: relative;
         width: 24px;
+        height: 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* 個別の線 */
+      .nav-hamburger .hamburger-lines span {
+        display: block;
         height: 1.5px;
         background: var(--accent);
-        margin: 6px 0;
-        transition: transform 0.3s var(--ease-expo), opacity 0.3s ease, background-color 0.3s ease;
+        margin: 0;
+        border-radius: 2px;
+        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        transform-origin: center;
+        box-shadow: 0 0 6px rgba(203, 191, 176, 0.5);
       }
-      .nav-hamburger.open span:nth-child(1) {
-        transform: translateY(7.5px) rotate(45deg);
+
+      /* 線の長さと動きの非対称性（アート感・前代未聞感） */
+      .nav-hamburger .hamburger-lines span:nth-child(1) {
+        width: 24px;
       }
-      .nav-hamburger.open span:nth-child(2) {
+      .nav-hamburger .hamburger-lines span:nth-child(2) {
+        width: 14px;
+        animation: threadBreathe 4s ease-in-out infinite alternate;
+      }
+      .nav-hamburger .hamburger-lines span:nth-child(3) {
+        width: 18px;
+      }
+
+      @keyframes threadBreathe {
+        0% { transform: translateX(-4px); width: 12px; opacity: 0.7; }
+        100% { transform: translateX(4px); width: 18px; opacity: 1; }
+      }
+
+      /* メニュー展開時（.open）のスタイル */
+      .nav-hamburger.open {
+        background: rgba(203, 191, 176, 0.15);
+        border-color: rgba(203, 191, 176, 0.6);
+        box-shadow: 0 0 30px rgba(203, 191, 176, 0.3);
+        transform: rotate(90deg);
+      }
+
+      .nav-hamburger.open::before {
+        border-top-color: rgba(232, 228, 219, 0.8);
+        border-right-color: rgba(232, 228, 219, 0.8);
+        border-bottom-color: rgba(232, 228, 219, 0.8);
+        border-left-color: rgba(232, 228, 219, 0.8);
+        inset: -2px;
+        animation-duration: 8s;
+        opacity: 0.5;
+      }
+
+      .nav-hamburger.open .hamburger-lines span:nth-child(1) {
+        width: 26px;
+        transform: translateY(6.25px) rotate(-45deg);
+        background: #ffffff;
+        box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
+      }
+
+      .nav-hamburger.open .hamburger-lines span:nth-child(2) {
+        width: 0;
         opacity: 0;
+        animation: none;
       }
-      .nav-hamburger.open span:nth-child(3) {
-        transform: translateY(-7.5px) rotate(-45deg);
+
+      .nav-hamburger.open .hamburger-lines span:nth-child(3) {
+        width: 26px;
+        transform: translateY(-6.25px) rotate(45deg);
+        background: #ffffff;
+        box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
       }
       
       /* Perfected Overlay with Zero Horizontal Scrolling */
@@ -1127,7 +1243,7 @@
       .section { padding: 6rem 1.5rem; }
       
       /* ════════════════════════════════════════
-          STATEMENT BACKGROUND IMAGE ADJUSTMENT (MOBILE)
+         STATEMENT BACKGROUND IMAGE ADJUSTMENT (MOBILE)
        ════════════════════════════════════════ */
       #statement { 
         padding: 8rem 1.5rem; 
@@ -1281,8 +1397,11 @@
 
     <li class="pc-only"><a href="#news" onclick="closeMenu()">News</a></li>
   </ul>
+  
   <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
-    <span></span><span></span><span></span>
+    <div class="hamburger-lines">
+      <span></span><span></span><span></span>
+    </div>
   </button>
   <a href="contact.html" class="nav-cta" id="nav-cta-btn">Contact</a>
 </nav>
