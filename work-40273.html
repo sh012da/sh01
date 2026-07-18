@@ -258,7 +258,6 @@
     }
     .concept-main { flex: 1 1 auto; max-width: 1060px; }
     .concept-sidebar-label { font-family: var(--font-en); font-size: clamp(0.58rem,1.4vw,0.72rem); letter-spacing: 0.4em; color: var(--muted-col); text-transform: uppercase; line-height: 1; }
-    .concept-sidebar-num { font-family: var(--font-en); font-size: clamp(3rem,7vw,6rem); font-weight: 300; line-height: 1; color: rgba(255,255,255,0.04); letter-spacing: -0.02em; }
     .concept-credit { font-family: var(--font-en); font-size: 0.65rem; letter-spacing: 0.25em; color: rgba(237,233,228,0.26); text-transform: uppercase; margin-bottom: 2.2rem; }
     .concept-lead { font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.2rem,3vw,1.8rem); letter-spacing: 0.05em; line-height: 1.9; color: rgba(237,233,228,0.92); margin-bottom: 3rem; }
     .concept-text { font-size: clamp(0.92rem,1.8vw,1.06rem); font-weight: 300; line-height: 2.3; color: var(--text-muted); letter-spacing: 0.04em; margin-bottom: 2rem; }
@@ -291,13 +290,34 @@
     .gallery-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; cursor: pointer; opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); width: fit-content; max-width: 100%; }
     .gallery-item.in-view { opacity: 1; transform: translateY(0); }
     
-    .gallery-item-img-wrap { height: var(--item-height, 320px); width: max-content; max-width: 100%; display: flex; justify-content: center; align-items: center; background: #0c0c0b; overflow: hidden; border: 0.5px solid var(--border); transition: border-color 0.4s ease, box-shadow 0.5s var(--ease); }
+    /* 余白を無くし画像に100%フィットさせる実装 */
+    .gallery-item-img-wrap { 
+      height: var(--item-height, 320px); 
+      width: fit-content; 
+      max-width: 100%; 
+      display: inline-block; 
+      background: transparent; 
+      overflow: hidden; 
+      transition: border-color 0.4s ease, box-shadow 0.5s var(--ease); 
+      line-height: 0;
+    }
     .gallery-item.is-portrait { --item-height: var(--grid-h); }
     .gallery-item.is-landscape { --item-height: calc(var(--grid-h) * 0.75); }
     
-    .gallery-item-img-wrap img { height: 100%; width: auto; display: block; object-fit: contain; filter: grayscale(15%) brightness(0.85); transition: transform 0.8s var(--ease), filter 0.6s ease; }
-    .gallery-item:hover .gallery-item-img-wrap { border-color: rgba(203,191,176,0.35); box-shadow: 0 16px 40px rgba(0,0,0,0.5); }
-    .gallery-item:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
+    .gallery-item-img-wrap img { 
+      height: 100%; 
+      width: auto; 
+      display: block; 
+      border: 0.5px solid var(--border);
+      filter: grayscale(15%) brightness(0.85); 
+      transition: transform 0.8s var(--ease), filter 0.6s ease, border-color 0.4s ease, box-shadow 0.5s var(--ease); 
+    }
+    .gallery-item:hover img { 
+      border-color: rgba(203,191,176,0.35); 
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5); 
+      transform: scale(1.03); 
+      filter: grayscale(0%) brightness(1.0); 
+    }
     
     .gallery-item-cap { padding-top: 1rem; text-align: left; width: 100%; }
     .gallery-item-title { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.4vw, 1rem); font-weight: 300; color: var(--fg); letter-spacing: 0.05em; margin-bottom: 0.4rem; display: block; }
@@ -321,11 +341,36 @@
     .tl-content-wrap { display: flex; justify-content: space-between; align-items: center; gap: clamp(2rem, 5vw, 6rem); }
     .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: row-reverse; }
     
-    .tl-figure { width: var(--tl-fig-w, 54%); position: relative; border: 0.5px solid var(--border); overflow: hidden; background: #0c0c0b; cursor: zoom-in; transition: width 0.4s ease; display: flex; align-items: center; justify-content: center; }
+    /* タイムライン側の画像フィット実装 */
+    .tl-figure { 
+      width: var(--tl-fig-w, 54%); 
+      position: relative; 
+      cursor: zoom-in; 
+      display: flex; 
+      align-items: center; 
+      justify-content: flex-start; 
+    }
+    .tl-entry:nth-child(even) .tl-figure {
+      justify-content: flex-end;
+    }
     .tl-body { width: var(--tl-txt-w, 42%); position: relative; z-index: 2; transition: width 0.4s ease; }
     
-    .tl-figure img { width: 100%; height: auto; max-height: var(--tl-img-h, 600px); display: block; object-fit: contain; filter: grayscale(12%) brightness(0.85); transition: transform 1s var(--ease), filter 0.6s ease; }
-    .tl-figure:hover img { transform: scale(1.03); filter: grayscale(0%) brightness(1.0); }
+    .tl-figure img { 
+      width: auto; 
+      max-width: 100%; 
+      height: auto; 
+      max-height: var(--tl-img-h, 600px); 
+      display: block; 
+      border: 0.5px solid var(--border); 
+      filter: grayscale(12%) brightness(0.85); 
+      transition: transform 1s var(--ease), filter 0.6s ease, border-color 0.4s ease, box-shadow 0.4s ease; 
+    }
+    .tl-figure:hover img { 
+      transform: scale(1.02); 
+      border-color: rgba(203,191,176,0.4); 
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5); 
+      filter: grayscale(0%) brightness(1.0); 
+    }
     
     .tl-title { font-family: var(--font-ja); font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 300; color: var(--fg); line-height: 1.4; margin-bottom: 0.4rem; }
     .tl-title-en { font-family: var(--font-en); font-size: clamp(0.7rem, 1.2vw, 0.85rem); color: var(--muted-col); letter-spacing: 0.15em; margin-bottom: 1.2rem; }
@@ -334,9 +379,10 @@
     .tl-desc p { margin-bottom: 1.2em; }
     .tl-desc p:last-child { margin-bottom: 0; }
 
+    /* サブギャラリーの画像フィット実装（余白なしのcover） */
     .tl-sub-gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(10px, 1.5vw, 20px); margin-top: clamp(3rem, 6vh, 5rem); width: 100%; border-top: 0.5px solid var(--border-md); padding-top: clamp(2rem, 4vh, 3rem); }
-    .tl-sub-item { aspect-ratio: 4 / 3; border: 0.5px solid var(--border); background: #0c0c0b; overflow: hidden; cursor: zoom-in; display: flex; align-items: center; justify-content: center; transition: border-color 0.4s ease, box-shadow 0.4s ease; }
-    .tl-sub-item img { width: 100%; height: 100%; object-fit: contain; filter: grayscale(15%) brightness(0.85); transition: transform 1s var(--ease), filter 0.6s ease; }
+    .tl-sub-item { aspect-ratio: 4 / 3; border: 0.5px solid var(--border); overflow: hidden; cursor: zoom-in; display: block; transition: border-color 0.4s ease, box-shadow 0.4s ease; }
+    .tl-sub-item img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(15%) brightness(0.85); transition: transform 1s var(--ease), filter 0.6s ease; }
     .tl-sub-item:hover { border-color: rgba(203,191,176,0.4); box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
     .tl-sub-item:hover img { transform: scale(1.05); filter: grayscale(0%) brightness(1.0); }
 
@@ -504,7 +550,7 @@
     @media (max-width: 860px) {
       .timeline-container { padding-left: 36px; } 
       .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2rem; }
-      .tl-figure, .tl-body { width: 100% !important; }
+      .tl-figure, .tl-body { width: 100% !important; justify-content: flex-start !important; }
       .tl-figure img { max-height: 60vh !important; }
       .timeline-spine-wrapper { left: 16px; transform: none; }
       .tl-year-display { padding-left: 0; margin-bottom: 0.5rem; text-align: left !important; font-size: clamp(2.5rem, 8vw, 3.5rem); }
@@ -517,7 +563,6 @@
       .concept-wrapper { padding: 60px var(--px); }
       .concept-top-row { flex-direction: column; gap: 2rem; }
       .concept-sidebar { flex-direction: row; align-items: baseline; gap: 1.5rem; flex: auto; }
-      .concept-sidebar-num { font-size: 2.5rem; }
       .concept-keywords { grid-template-columns: 1fr; margin-top: 3rem; }
       
       /* ギャラリー一覧をスマホ向けに2カラム化 */
@@ -528,8 +573,8 @@
       .gallery-section { padding-bottom: 5rem; }
       .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem 1rem; }
       .gallery-item { width: 100%; max-width: 100%; }
-      .gallery-item-img-wrap { width: 100%; height: var(--item-height); }
-      .gallery-item-img-wrap img { width: 100%; height: 100%; object-fit: contain; }
+      .gallery-item-img-wrap { width: fit-content; height: auto; max-width: 100%; }
+      .gallery-item-img-wrap img { width: 100%; height: auto; max-height: var(--item-height); }
 
       .tl-sub-gallery { grid-template-columns: repeat(2, 1fr); }
       :root { --reveal-size: 180px; }
@@ -582,7 +627,6 @@
         <div class="concept-top-row">
           <div class="concept-sidebar reveal">
             <p class="concept-sidebar-label">Concept</p>
-            <p class="concept-sidebar-num">06</p>
           </div>
           <div class="concept-main reveal" style="transition-delay:0.12s">
             <p class="concept-credit">Series Commentary — Tsuda Shoichi</p>
@@ -895,7 +939,9 @@
         <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
       </footer>
     </main>
-  </div> <nav id="top-nav">
+  </div> 
+
+  <nav id="top-nav">
     <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
       <li><a href="#statement" class="js-scroll-to">Statement</a></li>
