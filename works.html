@@ -18,10 +18,10 @@
   <style>
     /* ─── ARCHITECTURAL TOKENS ─── */
     :root {
-      --bg:         #030303; /* より深く美しい漆黒 */
+      --bg:         #030303; 
       --fg:         #f4f1eb;
       --muted:      #8a8279;
-      --accent:     #e5d3b3; /* 発光感のあるシャンパンゴールド */
+      --accent:     #e5d3b3; 
       --border:     rgba(255, 255, 255, 0.05);
       --border-bright: rgba(229, 211, 179, 0.3);
 
@@ -80,7 +80,7 @@
 
 
     /* ════════════════════════════════════════
-       ★ HEADER (完全変更なし)
+       ★ HEADER
     ════════════════════════════════════════ */
     nav#top-nav {
       position: fixed; width: 100%; top: 0; left: 0; z-index: 999;
@@ -143,8 +143,7 @@
 
 
     /* ════════════════════════════════════════
-       ★ 超進化：Floating Glass Dock (サイドナビ)
-       ※どのページリンクも1発アクセス。圧倒的に美しくストレスフリー。
+       ★ Floating Glass Dock (サイドナビ)
     ════════════════════════════════════════ */
     .side-link-nav {
       position: fixed; right: 2vw; top: 50%; transform: translateY(-50%); z-index: 150;
@@ -186,14 +185,13 @@
 
 
     /* ════════════════════════════════════════
-       ★ HERO SECTION (光と非対称の美)
+       ★ HERO SECTION
     ════════════════════════════════════════ */
     .hero { 
       position: relative; z-index: 10; min-height: 100vh; 
       display: flex; flex-direction: column; justify-content: center; 
       padding: 0 var(--px); background: transparent; overflow: hidden;
     }
-    /* 背後のアンビエントな光 */
     .hero-glow {
       position: absolute; top: 40%; left: 30%; width: 600px; height: 600px;
       background: radial-gradient(circle, rgba(229, 211, 179, 0.12) 0%, transparent 70%);
@@ -237,7 +235,7 @@
 
 
     /* ════════════════════════════════════════
-       ★ ダイナミック・ギャラリー (Spotlight / Masonry)
+       ★ RANDOM DYNAMIC GALLERY (スポットライト)
     ════════════════════════════════════════ */
     .gallery { 
       position: relative; z-index: 10; padding: 0 0 150px 0; width: 100%; 
@@ -251,23 +249,31 @@
 
     .grid { 
       display: grid; grid-template-columns: repeat(12, 1fr); 
+      grid-auto-flow: dense; /* 空きを詰めるMasonry風の振る舞い */
       gap: clamp(16px, 2vw, 32px); row-gap: clamp(40px, 8vw, 100px);
       width: 100%; max-width: 1600px; margin: 0 auto; padding: 0 var(--px);
       transition: all 0.6s ease;
     }
 
-    /* 魔法のエフェクト：ホバーしていない画像を暗く・ぼかす (Spotlight Effect) */
+    /* 魔法のエフェクト：ホバーしていない画像を暗く・ぼかす */
     @media (hover: hover) {
       .grid:has(.gi:hover) .gi:not(:hover) {
-        opacity: 0.25; filter: grayscale(80%) blur(5px); transform: scale(0.98);
+        opacity: 0.25 !important; filter: grayscale(80%) blur(5px); transform: scale(0.98);
       }
     }
 
     .gi {
       position: relative; overflow: hidden; cursor: pointer;
       background: #050505; border-radius: 12px;
-      opacity: 0; transform: translateY(60px);
-      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--delay, 0ms);
+      opacity: 0; 
+      /* JSから割り当てられる変数を用いてサイズやズレをランダム化 */
+      grid-column: span var(--c-span, 6);
+      aspect-ratio: var(--c-ratio, 16/9);
+      margin-top: var(--c-mt, 0px);
+      transform: translateY(60px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--delay, 0ms), 
+                  transform 0.4s var(--ease-out-back), 
+                  box-shadow 0.4s ease;
     }
     .gi.in-view { opacity: 1; transform: translateY(0); }
     
@@ -275,22 +281,6 @@
       transform: scale(1.02); z-index: 20; box-shadow: 0 40px 80px rgba(0,0,0,0.8);
     }
     
-    /* アバンギャルドなアスペクト比固定レイアウト */
-    @media (min-width: 901px) {
-      .gi:nth-child(1) { grid-column: 1 / 8; aspect-ratio: 16/10; }
-      .gi:nth-child(2) { grid-column: 9 / 13; aspect-ratio: 3/4; margin-top: 120px; } 
-      .gi:nth-child(3) { grid-column: 2 / 6; aspect-ratio: 1/1; margin-top: -80px; }
-      .gi:nth-child(4) { grid-column: 7 / 13; aspect-ratio: 16/9; }
-      .gi:nth-child(5) { grid-column: 1 / 6; aspect-ratio: 4/5; margin-top: -40px; }
-      .gi:nth-child(6) { grid-column: 7 / 12; aspect-ratio: 21/9; margin-top: 80px; }
-      .gi:nth-child(7) { grid-column: 3 / 10; aspect-ratio: 16/9; margin-top: 60px; }
-      .gi:nth-child(8) { grid-column: 11 / 13; aspect-ratio: 1/1; margin-top: -120px; }
-      .gi:nth-child(9) { grid-column: 1 / 7; aspect-ratio: 16/9; margin-top: 40px; }
-      .gi:nth-child(10){ grid-column: 8 / 13; aspect-ratio: 4/5; margin-top: 100px; }
-      .gi:nth-child(11){ grid-column: 2 / 7; aspect-ratio: 1/1; margin-top: -60px; }
-      .gi:nth-child(12){ grid-column: 8 / 12; aspect-ratio: 16/9; }
-    }
-
     .gi a { position: absolute; inset: 0; z-index: 30; text-decoration: none; color: inherit; }
     
     .gi img {
@@ -379,7 +369,7 @@
 
 
     /* ════════════════════════════════════════
-       ★ FOOTER (完全変更なし)
+       ★ FOOTER
     ════════════════════════════════════════ */
     footer {
       position: relative; z-index: 10;
@@ -399,11 +389,7 @@
     }
 
 
-    /* ─── マウスツールチップ & BACK TO TOP ─── */
-    .mouse-tooltip { position: fixed; top: 0; left: 0; pointer-events: none; background: rgba(244, 241, 235, 0.95); color: var(--bg); padding: 8px 14px; font-size: 11px; font-family: var(--jp); letter-spacing: 0.1em; font-weight: 400; box-shadow: 0 10px 30px rgba(0,0,0,0.5); opacity: 0; transform: translate(20px, 20px); transition: opacity 0.3s var(--ease-quad); z-index: 99999; white-space: nowrap; border-radius: 4px; }
-    .mouse-tooltip.visible { opacity: 1; }
-    @media (pointer: coarse) { .mouse-tooltip { display: none !important; } }
-
+    /* ─── BACK TO TOP ─── */
     .back-to-top { position: fixed; bottom: 30px; right: var(--px); z-index: 160; width: 54px; height: 54px; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.6s var(--ease-expo); cursor: pointer; text-decoration: none; border: 1px solid var(--border); border-radius: 50%; }
     .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
     .b2t-ring { position: absolute; inset: -1px; width: 56px; height: 56px; transform: rotate(-90deg); pointer-events: none; }
@@ -438,18 +424,17 @@
       .side-link-item:active { transform: scale(0.92); }
       .side-link-item .nav-title { font-size: 13px; font-weight: 400; color: #fff; }
       
-      .back-to-top { bottom: 100px; } /* ドックと被らないよう上に退避 */
+      .back-to-top { bottom: 100px; } 
       
-      /* グリッドレイアウトを1列に */
+      /* スマホでは一律のレイアウトで強制上書き（美しさを担保） */
       .grid { grid-template-columns: 1fr; gap: 40px; padding: 0; } 
-      .gi { grid-column: 1 / -1 !important; aspect-ratio: 4/5 !important; margin: 0 !important; border-radius: 12px; }
+      .gi { grid-column: 1 / -1 !important; aspect-ratio: 4/5 !important; margin-top: 0 !important; border-radius: 12px; }
       .gi-label { bottom: 20px; left: 20px; }
       .scroll-cue { display: none; }
       
       footer { padding-bottom: 120px; }
     }
 
-    /* ヘッダー＆フッター用のスマホ指定（元コードそのまま） */
     @media (max-width: 768px) {
       nav#top-nav { padding: 1rem 1.25rem; }
       nav#top-nav.scrolled { padding: 0.8rem 1.25rem; }
@@ -477,7 +462,7 @@
   </div>
   <div id="lines-canvas" aria-hidden="true"></div>
 
-  <!-- HEADER (変更不可) -->
+  <!-- HEADER -->
   <nav id="top-nav">
     <a href="index.html" class="nav-logo">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
@@ -552,7 +537,7 @@
     </div>
   </section>
 
-  <!-- GALLERY -->
+  <!-- DYNAMIC RANDOM GALLERY -->
   <div class="gallery-header-wrapper">
     <div class="section-header" id="secHeader">
       <span class="section-label">Selected Works &nbsp;— &nbsp;Series</span>
@@ -561,6 +546,7 @@
   </div>
 
   <main class="gallery" id="gallery">
+    <!-- JSによって順番、サイズ、マージンが完全ランダムに再構築されます -->
     <div class="grid" id="grid">
       <article class="gi" data-images="images/【F100横】森20251217.jpg">
         <img src="images/【F100横】森20251217.jpg" alt="森林">
@@ -569,7 +555,7 @@
           <span class="gi-title">森林</span>
           <span class="gi-en">Fragmented Forest</span>
         </div>
-        <a href="work-forest.html" aria-label="森林" data-tooltip="「森林」シリーズへ"></a>
+        <a href="work-forest.html" aria-label="森林"></a>
       </article>
 
       <article class="gi" data-images="images/416A0035.jpg">
@@ -579,7 +565,7 @@
           <span class="gi-title">左美都の神話と伝承</span>
           <span class="gi-en">Myth and Tradition</span>
         </div>
-        <a href="work-samizu.html" aria-label="左美都の神話と伝承" data-tooltip="「左美都の神話と伝承」シリーズへ"></a>
+        <a href="work-samizu.html" aria-label="左美都の神話と伝承"></a>
       </article>
 
       <article class="gi" data-images="images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg">
@@ -589,7 +575,7 @@
           <span class="gi-title">異体</span>
           <span class="gi-en">Variant Forms</span>
         </div>
-        <a href="works-variant.html" aria-label="異体" data-tooltip="「異体」シリーズへ"></a>
+        <a href="works-variant.html" aria-label="異体"></a>
       </article>
 
       <article class="gi" data-images="images/【S100】so far.jpg">
@@ -599,7 +585,7 @@
           <span class="gi-title">洞窟</span>
           <span class="gi-en">The Cave</span>
         </div>
-        <a href="works-cave.html" aria-label="洞窟" data-tooltip="「洞窟」シリーズへ"></a>
+        <a href="works-cave.html" aria-label="洞窟"></a>
       </article>
 
       <article class="gi" data-images="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg">
@@ -609,7 +595,7 @@
           <span class="gi-title">素描</span>
           <span class="gi-en">Drawings</span>
         </div>
-        <a href="works-drawing.html" aria-label="素描" data-tooltip="「素描」シリーズへ"></a>
+        <a href="works-drawing.html" aria-label="素描"></a>
       </article>
 
       <article class="gi" data-images="images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG">
@@ -619,7 +605,7 @@
           <span class="gi-title">抽象</span>
           <span class="gi-en">Abstract</span>
         </div>
-        <a href="work-abstract.html" aria-label="抽象" data-tooltip="「抽象」シリーズへ"></a>
+        <a href="work-abstract.html" aria-label="抽象"></a>
       </article>
 
       <article class="gi" data-images="images/【F100横】さけび（ガザ）.jpg">
@@ -629,7 +615,7 @@
           <span class="gi-title">傷</span>
           <span class="gi-en">Scars</span>
         </div>
-        <a href="work-scars.html" aria-label="傷" data-tooltip="「傷」シリーズへ"></a>
+        <a href="work-scars.html" aria-label="傷"></a>
       </article>
       
       <article class="gi" data-images="images/【F100号横】今、シリア.jpg">
@@ -639,7 +625,7 @@
           <span class="gi-title">難民(子ども)</span>
           <span class="gi-en">Refugees</span>
         </div>
-        <a href="work-refugees.html" aria-label="難民(子ども)" data-tooltip="「難民(子ども)」シリーズへ"></a>
+        <a href="work-refugees.html" aria-label="難民(子ども)"></a>
       </article>
 
       <article class="gi" data-images="images/【F25縦】少年兵（アフリカ）.jpg">
@@ -649,7 +635,7 @@
           <span class="gi-title">子ども兵士</span>
           <span class="gi-en">Tiny Soldiers</span>
         </div>
-        <a href="work-tiny_soldier.html" aria-label="子ども兵士" data-tooltip="「子ども兵士」シリーズへ"></a>
+        <a href="work-tiny_soldier.html" aria-label="子ども兵士"></a>
       </article>
 
       <article class="gi" data-images="images/before_clouds_are_captured.jpg">
@@ -659,7 +645,7 @@
           <span class="gi-title">黒の時代</span>
           <span class="gi-en">The Black Period</span>
         </div>
-        <a href="work-black_era.html" aria-label="黒の時代" data-tooltip="「黒の時代」シリーズへ"></a>
+        <a href="work-black_era.html" aria-label="黒の時代"></a>
       </article>
 
       <article class="gi" data-images="images/@_the_beach.jpg">
@@ -669,7 +655,7 @@
           <span class="gi-title">40273</span>
           <span class="gi-en">20100405</span>
         </div>
-        <a href="work-40273.html" aria-label="2010年～2011年" data-tooltip="「40273」シリーズへ"></a>
+        <a href="work-40273.html" aria-label="2010年～2011年"></a>
       </article>
 
       <article class="gi" data-images="images/子猫4（スコティッシュフォールド）.jpg">
@@ -679,7 +665,7 @@
           <span class="gi-title">標本美術</span>
           <span class="gi-en">Specimen Art</span>
         </div>
-        <a href="work-specimen_art.html" aria-label="標本美術" data-tooltip="「標本美術」シリーズへ"></a>
+        <a href="work-specimen_art.html" aria-label="標本美術"></a>
       </article>
     </div>
   </main>
@@ -698,7 +684,7 @@
     </div>
   </section>
 
-  <!-- FOOTER (変更不可) -->
+  <!-- FOOTER -->
   <footer>
     <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
@@ -716,8 +702,6 @@
       </svg>
     </div>
   </a>
-
-  <div class="mouse-tooltip" id="mouse-tooltip"></div>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -751,21 +735,6 @@
           const delayBase = 0.4 + (i * 0.15);
           s.style.animationDelay = `${delayBase.toFixed(2)}s`;
           titleJpEl.appendChild(s);
-        });
-      }
-
-      const tooltip = document.getElementById('mouse-tooltip');
-      if (tooltip) {
-        document.querySelectorAll('[data-tooltip]').forEach(link => {
-          link.addEventListener('mouseenter', () => {
-            tooltip.textContent = link.getAttribute('data-tooltip') || '';
-            tooltip.classList.add('visible');
-          });
-          link.addEventListener('mousemove', (e) => {
-            tooltip.style.left = `${e.clientX + 15}px`;
-            tooltip.style.top = `${e.clientY + 15}px`;
-          });
-          link.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
         });
       }
 
@@ -837,13 +806,52 @@
         });
       }
 
+      /* ====================================================================
+         ★ DYNAMIC RANDOM GRID (並び順・サイズ・ズレの完全シャッフル)
+      ==================================================================== */
       const grid = document.getElementById('grid');
       if (grid) {
+        // 1. 作品要素の取得と配列自体のシャッフル（表示される順序をランダム化）
         const items = Array.from(grid.children);
+        for (let i = items.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [items[i], items[j]] = [items[j], items[i]];
+        }
+        
+        // 2. 空間を美しく埋めるためのレイアウト・プリセット群を定義し、これもシャッフル
+        const layoutPresets = [
+          { span: 7, ratio: '16/10', mt: '0px' },
+          { span: 5, ratio: '3/4',   mt: '80px' },
+          { span: 4, ratio: '1/1',   mt: '-40px' },
+          { span: 8, ratio: '16/9',  mt: '60px' },
+          { span: 5, ratio: '4/5',   mt: '0px' },
+          { span: 7, ratio: '21/9',  mt: '100px' },
+          { span: 8, ratio: '16/9',  mt: '40px' },
+          { span: 4, ratio: '1/1',   mt: '-60px' },
+          { span: 6, ratio: '16/9',  mt: '0px' },
+          { span: 6, ratio: '4/5',   mt: '80px' },
+          { span: 5, ratio: '1/1',   mt: '-40px' },
+          { span: 7, ratio: '16/9',  mt: '40px' }
+        ];
+        for (let i = layoutPresets.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [layoutPresets[i], layoutPresets[j]] = [layoutPresets[j], layoutPresets[i]];
+        }
+
+        // 3. シャッフル済みの作品要素にランダムなレイアウト変数を割り当ててDOMに再挿入
+        const frag = document.createDocumentFragment();
         items.forEach((el, i) => {
+          const preset = layoutPresets[i];
+          el.style.setProperty('--c-span', preset.span);
+          el.style.setProperty('--c-ratio', preset.ratio);
+          el.style.setProperty('--c-mt', preset.mt);
+          
           const delay = (i % 4) * 120 + Math.floor(Math.random() * 80);
           el.style.setProperty('--delay', `${delay}ms`);
+          
+          frag.appendChild(el);
         });
+        grid.appendChild(frag);
       }
       
       const io = new IntersectionObserver(entries => {
