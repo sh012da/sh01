@@ -78,6 +78,37 @@
     @keyframes sweepH { 0% { left:-100%; opacity:0; } 10% { opacity:1; } 40% { opacity:1; height: 2px; } 100% { left:100%; opacity:0; } }
     @keyframes sweepV { 0% { top:-100%; opacity:0; } 10% { opacity:1; } 40% { opacity:1; width: 2px; } 100% { top:100%; opacity:0; } }
 
+    /* ─── 画面全体を貫くホバー光線 (レーザービーム) ─── */
+    .global-light-line {
+      position: fixed; left: 0; width: 100vw; 
+      height: 2px; /* 単なる線ではなく、太さを持たせる */
+      z-index: 140; /* ドック(150)の背後、コンテンツの手前。グラス越しに光る */
+      pointer-events: none;
+      mix-blend-mode: screen; /* 発光合成。下の要素を一切隠さず照らし出す */
+      
+      /* 左から右へエネルギーが高まるグラデーション */
+      background: linear-gradient(90deg, 
+        rgba(229, 211, 179, 0) 0%, 
+        rgba(229, 211, 179, 0.4) 40%, 
+        rgba(255, 255, 255, 0.9) 95%,
+        rgba(255, 255, 255, 1) 100%
+      );
+      /* レーザーのような強い光彩(オーラ) */
+      box-shadow: 0 0 10px rgba(229, 211, 179, 0.8), 0 0 30px rgba(229, 211, 179, 0.4);
+      
+      /* 左端から右端へシュッと伸びる */
+      transform: scaleX(0); transform-origin: left; opacity: 0;
+      
+      /* 上下移動、幅の変化、光るアニメーションをすべて滑らかに */
+      transition: transform 0.6s var(--ease-expo), opacity 0.4s ease, top 0.4s var(--ease-expo);
+    }
+    .global-light-line.is-active {
+      transform: scaleX(1); opacity: 1;
+    }
+    @media (max-width: 900px) {
+      .global-light-line { display: none !important; }
+    }
+
 
     /* ════════════════════════════════════════
        ★ HEADER
@@ -144,7 +175,6 @@
 
     /* ════════════════════════════════════════
        ★ PC用 Floating Glass Dock (サイドナビ)
-       ※ホバー時に「左端へ伸びる光の筋」アニメーションを実装
     ════════════════════════════════════════ */
     .mobile-series-toggle, .mobile-nav-overlay, .mobile-nav-header { display: none; }
 
@@ -169,7 +199,7 @@
       transition: background 0.4s ease, color 0.4s ease, transform 0.2s ease; overflow: hidden;
     }
     
-    /* 左端のインジケーター（縦線） */
+    /* 左端のインジケーター（アクセント） */
     .side-link-item::before {
       content: ''; position: absolute; left: 0; top: 25%; width: 3px; height: 50%;
       background: var(--accent); border-radius: 0 4px 4px 0;
@@ -177,30 +207,20 @@
       z-index: 2;
     }
 
-    /* 右から左端へ向かってシュッと伸びる光の筋 */
-    .side-link-item::after {
-      content: ''; position: absolute; bottom: 0; right: 0; width: 100%; height: 1px;
-      background: linear-gradient(to left, transparent 0%, rgba(229, 211, 179, 0.2) 40%, rgba(229, 211, 179, 0.9) 100%);
-      transform: scaleX(0); transform-origin: right;
-      opacity: 0; transition: transform 0.6s var(--ease-expo), opacity 0.4s ease;
-      z-index: 2; pointer-events: none;
-    }
-
     .side-link-item .nav-title {
       font-family: var(--jp); font-size: 13px; font-weight: 300; letter-spacing: 0.1em;
       transition: transform 0.4s var(--ease-expo), color 0.3s ease; z-index: 3;
     }
 
-    /* スムーズで上品なホバー連動エフェクト */
+    /* ホバー時のテキストスライド連動 */
     @media (hover: hover) {
       .side-link-item:hover {
         background: rgba(255, 255, 255, 0.04); color: #ffffff; 
       }
       .side-link-item:hover .nav-title {
-        transform: translateX(8px); /* テキストが少しだけ右へスライド */
+        transform: translateX(8px); 
       }
       .side-link-item:hover::before { transform: scaleY(1); opacity: 1; }
-      .side-link-item:hover::after { transform: scaleX(1); opacity: 1; }
     }
     
     .side-link-item:active {
@@ -394,7 +414,6 @@
        ★ スマホ・タブレット最適化 (ボトムシート実装)
     ════════════════════════════════════════ */
     @media (max-width: 900px) {
-      /* スマホ用トリガーボタン */
       .mobile-series-toggle {
         display: flex; align-items: center; justify-content: center; gap: 8px;
         position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
@@ -410,7 +429,6 @@
       .mobile-series-toggle.is-hidden { transform: translate(-50%, 150%); opacity: 0; pointer-events: none; }
       .mobile-series-toggle svg { color: var(--accent); }
 
-      /* 背景暗転オーバーレイ */
       .mobile-nav-overlay {
         display: block; position: fixed; inset: 0; z-index: 145;
         background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
@@ -418,7 +436,6 @@
       }
       .mobile-nav-overlay.is-active { opacity: 1; pointer-events: auto; }
 
-      /* ボトムシート */
       .side-link-nav {
         top: auto; bottom: 0; left: 0; right: 0; transform: translateY(100%);
         width: 100%; max-width: 100%; height: auto; max-height: 85vh;
@@ -443,7 +460,6 @@
       .mobile-nav-title { font-family: var(--en); font-size: 14px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; }
       .mobile-nav-close { background: none; border: none; color: var(--muted); cursor: pointer; padding: 4px; display: flex; }
 
-      /* スマホでは2列のカードグリッド */
       .side-link-item {
         flex: 0 0 calc(50% - 6px); padding: 18px 10px; border-radius: 16px;
         background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.02);
@@ -451,9 +467,6 @@
       }
       .side-link-item:hover, .side-link-item:active { background: rgba(255,255,255,0.08); transform: scale(0.96); border-color: rgba(255,255,255,0.1); }
       .side-link-item .nav-title { font-size: 13px; font-weight: 300; white-space: normal; line-height: 1.4; color: rgba(244, 241, 235, 0.85); transform: none !important; }
-      
-      /* スマホでは光の筋等を非表示 */
-      .side-link-item::after, .side-link-item::before { display: none; }
       
       .grid { grid-template-columns: 1fr; gap: 40px; padding: 0; } 
       .gi { grid-column: 1 / -1 !important; aspect-ratio: 4/5 !important; margin-top: 0 !important; border-radius: 12px; }
@@ -518,7 +531,7 @@
   </button>
   <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="toggleMobileSeries()"></div>
 
-  <!-- FLOATING GLASS DOCK -->
+  <!-- FLOATING GLASS DOCK (PCはサイドナビ / スマホはボトムシート) -->
   <nav class="side-link-nav" id="sideLinkNav" aria-label="シリーズ別インデックス">
     <div class="mobile-nav-header">
       <span class="mobile-nav-title">Series Index</span>
@@ -597,7 +610,6 @@
   </div>
 
   <main class="gallery" id="gallery">
-    <!-- ランダムグリッド -->
     <div class="grid" id="grid">
       <article class="gi" data-images="images/【F100横】森20251217.jpg">
         <img src="images/【F100横】森20251217.jpg" alt="森林">
@@ -768,7 +780,7 @@
       } else {
         sideNav.classList.add('is-open');
         navOverlay.classList.add('is-active');
-        document.body.style.overflow = 'hidden'; // 背面のスクロールを防止してUX向上
+        document.body.style.overflow = 'hidden'; 
       }
     }
 
@@ -844,11 +856,9 @@
           requestAnimationFrame(() => {
             const scrollY = window.scrollY;
             
-            // ヘッダー背景
             if (scrollY > 60) topNav.classList.add('scrolled');
             else topNav.classList.remove('scrolled');
 
-            // Back To Top 表示/進捗
             if (b2t) {
               if (scrollY > window.innerHeight * 0.4) b2t.classList.add('is-visible');
               else b2t.classList.remove('is-visible');
@@ -861,7 +871,6 @@
               }
             }
 
-            // モバイル用ボトムトリガーの表示制御 (スクロールダウンで隠す/アップで表示)
             if (mobileToggle && window.innerWidth <= 900) {
               if (scrollY > lastScrollY && scrollY > 200) {
                 mobileToggle.classList.add('is-hidden');
@@ -871,7 +880,6 @@
             }
             lastScrollY = scrollY;
 
-            // スマホヘッダーメニューをスクロールで閉じる
             if (document.getElementById('nav-links').classList.contains('open')) {
               if (Math.abs(scrollY - window.menuOpenScrollY || 0) > 40) closeMenu();
             }
@@ -888,17 +896,34 @@
         });
       }
 
+      /* ===== 画面全体を左から右へ貫くホバー光線 (レーザービーム) ===== */
+      const globalLight = document.createElement('div');
+      globalLight.className = 'global-light-line';
+      document.body.appendChild(globalLight);
+
+      document.querySelectorAll('.side-link-item').forEach(item => {
+        item.addEventListener('mouseenter', () => {
+          if (window.innerWidth > 900) {
+            const rect = item.getBoundingClientRect();
+            // アイテムの垂直中央を光が貫通する（数pxのズレを微調整）
+            globalLight.style.top = `${rect.top + rect.height / 2 - 1}px`;
+            globalLight.classList.add('is-active');
+          }
+        });
+        item.addEventListener('mouseleave', () => {
+          globalLight.classList.remove('is-active');
+        });
+      });
+
       /* ===== ランダムグリッドの実装 ===== */
       const grid = document.getElementById('grid');
       if (grid) {
-        // 作品要素の順序をシャッフル
         const items = Array.from(grid.children);
         for (let i = items.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [items[i], items[j]] = [items[j], items[i]];
         }
         
-        // レイアウト定義群のシャッフル
         const layoutPresets = [
           { span: 7, ratio: '16/10', mt: '0px' },
           { span: 5, ratio: '3/4',   mt: '80px' },
@@ -918,7 +943,6 @@
           [layoutPresets[i], layoutPresets[j]] = [layoutPresets[j], layoutPresets[i]];
         }
 
-        // 変数割り当てと再挿入
         const frag = document.createDocumentFragment();
         items.forEach((el, i) => {
           const preset = layoutPresets[i];
