@@ -18,27 +18,25 @@
   <style>
     /* ─── ARCHITECTURAL TOKENS ─── */
     :root {
-      --bg:         #050505;
+      --bg:         #030303; /* より深く美しい漆黒 */
       --fg:         #f4f1eb;
       --muted:      #8a8279;
-      --accent:     #d4c5b3;
+      --accent:     #e5d3b3; /* 発光感のあるシャンパンゴールド */
       --border:     rgba(255, 255, 255, 0.05);
-      --border-bright: rgba(212, 197, 179, 0.3);
+      --border-bright: rgba(229, 211, 179, 0.3);
 
       --text:        #e8e4db;
       --text-muted:  rgba(232,228,219,0.68);
       --text-dim:    rgba(232,228,219,0.46);
-      --border-mid:  rgba(232,228,219,0.25);
       --muted-col:   #938c84;
       
       --en: 'Cormorant Garamond', serif;
       --jp: 'Noto Serif JP', serif;
+      
       --ease-quad: cubic-bezier(0.25, 1, 0.5, 1);
       --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
-      --ease-fluid: cubic-bezier(0.76, 0, 0.24, 1);
       --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
-      --px: clamp(20px, 5vw, 80px);
-      --dock-width: clamp(200px, 18vw, 320px);
+      --px: clamp(20px, 5vw, 60px);
     }
 
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -49,22 +47,22 @@
       overflow-x: hidden; letter-spacing: 0.05em;
     }
 
-    /* ─── 全画面アンビエント動画 ─── */
+    /* ─── アンビエント動画 ─── */
     .bg-layer {
       position: fixed; inset: 0; width: 100vw; height: 100vh;
       object-fit: cover; z-index: 0; 
-      opacity: 0.35; 
-      filter: contrast(100%) brightness(0.6) grayscale(30%);
+      opacity: 0.25; 
+      filter: contrast(110%) brightness(0.5) grayscale(40%);
       pointer-events: none;
     }
     .bg-vignette {
       position: fixed; inset: 0; z-index: 1; pointer-events: none;
-      background: radial-gradient(circle at 50% 50%, rgba(5,5,5,0.2) 10%, rgba(5,5,5,0.98) 100%),
-                  linear-gradient(to bottom, rgba(5,5,5,0.2), rgba(5,5,5,0.95));
+      background: radial-gradient(circle at 50% 50%, transparent 10%, rgba(3,3,3,0.95) 100%),
+                  linear-gradient(to bottom, rgba(3,3,3,0.3), var(--bg));
     }
 
-    /* ─── CONCEPTUAL STRUCTURAL LINES ─── */
-    #space-matrix { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
+    /* ─── 空間グリッドライン ─── */
+    #space-matrix { position: fixed; inset: 0; z-index: 2; pointer-events: none; opacity: 0.6; }
     .matrix-axis { position: absolute; background: var(--border); transition: all 1s var(--ease-expo); }
     .matrix-axis.h { left: 0; width: 100%; height: 1px; }
     .matrix-axis.v { top: 0; width: 1px; height: 100%; }
@@ -72,16 +70,17 @@
     .axis-v1 { left: 15%; } .axis-v2 { left: 85%; }
 
     #lines-canvas { position:fixed; inset:0; z-index: 3; pointer-events:none; }
-    .flash-line { position:absolute; background: linear-gradient(90deg, transparent, rgba(212,197,179,0.8), transparent); opacity:0; }
+    .flash-line { position:absolute; background: linear-gradient(90deg, transparent, rgba(229,211,179,0.8), transparent); opacity:0; }
     .flash-line.h { left:-100%; height:1px; width:100%; }
-    .flash-line.v { top:-100%; width:1px; height:100%; background: linear-gradient(180deg, transparent, rgba(212,197,179,0.8), transparent); }
+    .flash-line.v { top:-100%; width:1px; height:100%; background: linear-gradient(180deg, transparent, rgba(229,211,179,0.8), transparent); }
     .flash-line.h.run { animation: sweepH var(--dur, 0.8s) var(--ease-expo) var(--del, 0s) 1 forwards; }
     .flash-line.v.run { animation: sweepV var(--dur, 0.8s) var(--ease-expo) var(--del, 0s) 1 forwards; }
     @keyframes sweepH { 0% { left:-100%; opacity:0; } 10% { opacity:1; } 40% { opacity:1; height: 2px; } 100% { left:100%; opacity:0; } }
     @keyframes sweepV { 0% { top:-100%; opacity:0; } 10% { opacity:1; } 40% { opacity:1; width: 2px; } 100% { top:100%; opacity:0; } }
 
+
     /* ════════════════════════════════════════
-       ★ HEADER 
+       ★ HEADER (完全変更なし)
     ════════════════════════════════════════ */
     nav#top-nav {
       position: fixed; width: 100%; top: 0; left: 0; z-index: 999;
@@ -142,298 +141,219 @@
     .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; z-index: 310; }
     .nav-hamburger span { display: block; width: 22px; height: 0.5px; background: var(--accent); margin: 6px 0; transition: all 0.25s; }
 
+
     /* ════════════════════════════════════════
-       ★ マトリクス・レーン (PC用 ブレのない完璧なサイドナビゲーション)
+       ★ 超進化：Floating Glass Dock (サイドナビ)
+       ※どのページリンクも1発アクセス。圧倒的に美しくストレスフリー。
     ════════════════════════════════════════ */
     .side-link-nav {
-      position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 150;
-      display: flex; flex-direction: column; justify-content: center;
-      width: var(--dock-width); max-height: 90vh;
+      position: fixed; right: 2vw; top: 50%; transform: translateY(-50%); z-index: 150;
+      width: 240px; max-height: 80vh;
       overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none;
-      background: linear-gradient(to left, rgba(5,5,5,0.7) 0%, rgba(5,5,5,0.2) 80%, transparent 100%);
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      border: none; padding: 30px 0;
+      background: rgba(10, 10, 10, 0.45);
+      backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px; padding: 16px 12px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
+      display: flex; flex-direction: column; gap: 4px;
     }
     .side-link-nav::-webkit-scrollbar { display: none; }
-    .side-link-nav::before {
-      content: ''; position: absolute; left: 0; top: 10%; width: 1px; height: 80%;
-      background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.03), transparent);
-    }
 
     .side-link-item {
       position: relative; display: flex; align-items: center; justify-content: flex-start;
-      width: 100%; height: auto; min-height: clamp(44px, 5vh, 56px); 
-      padding: 10px 30px;
-      color: rgba(244, 241, 235, 0.4); text-decoration: none; background: transparent;
-      border: none;
-      overflow: hidden; /* 波紋エフェクトがはみ出さないように */
-      /* トランジションは色と影だけ。サイズや位置は絶対に変えない */
-      transition: background 0.25s ease, box-shadow 0.25s ease;
-      user-select: none; -webkit-user-drag: none;
+      width: 100%; padding: 12px 16px; border-radius: 12px;
+      color: rgba(244, 241, 235, 0.5); text-decoration: none;
+      transition: all 0.4s var(--ease-expo); overflow: hidden;
     }
-
-    /* 右端のアクティブライン (伸縮アニメーションをなくし、透明度でフワッと出すことでブレを防止) */
     .side-link-item::before {
-      content: ''; position: absolute; right: 0; top: 0; width: 3px; height: 100%;
-      background: var(--accent); opacity: 0;
-      transition: opacity 0.25s ease, box-shadow 0.25s ease; z-index: 2;
+      content: ''; position: absolute; left: 0; top: 25%; width: 3px; height: 50%;
+      background: var(--accent); border-radius: 0 4px 4px 0;
+      transform: scaleY(0); opacity: 0; transition: all 0.4s var(--ease-out-back);
     }
-
-    /* ★ コンテンツラッパー (レイアウトを崩さずに中身だけを沈み込ませるための仕掛け) */
-    .side-link-content {
-      display: flex; align-items: center; width: 100%; position: relative; z-index: 3;
-      transform-origin: left center;
-      transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    @media (hover: hover) {
+      .side-link-item:hover {
+        background: rgba(255, 255, 255, 0.08); color: #ffffff; padding-left: 24px;
+      }
+      .side-link-item:hover::before { transform: scaleY(1); opacity: 1; }
     }
-
-    /* === Dynamic Focus Effect (PCホバー・クリック時) === */
-    @media (hover: hover) and (pointer: fine) {
-      /* 改善：他要素を暗くする処理（ブレ・チラつきの最大の原因）を完全削除 */
-
-      /* ホバー時：背景をほんの少し明るくし、右端の線を表示 */
-      .side-link-item:hover { 
-        background: rgba(255, 255, 255, 0.04);
-      }
-      .side-link-item:hover::before { 
-        opacity: 1; 
-        box-shadow: -2px 0 10px rgba(212, 197, 179, 0.4); 
-      }
-
-      /* インジケーターと文字の色変化（サイズは変えない） */
-      .side-link-item:hover .nav-indicator { 
-        background: var(--accent); 
-        box-shadow: 0 0 8px var(--accent); 
-      }
-      .side-link-item:hover .nav-title {
-        color: #ffffff; 
-        text-shadow: 0 0 10px rgba(212, 197, 179, 0.5);
-      }
-
-      /* ★ 改善：ガタつかずに「深く沈む」究極のクリック感 ★ */
-      .side-link-item:active {
-        /* 背景を暗くし、内側に深く落ちる影をつけることで物理的な「凹み」を表現 */
-        background: rgba(0, 0, 0, 0.5);
-        box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(0,0,0,0.5);
-        transition: background 0.05s, box-shadow 0.05s;
-      }
-      /* ボタン外枠は動かさず、中身だけを斜め下へ沈み込ませる（完璧な押しごたえ） */
-      .side-link-item:active .side-link-content {
-        transform: scale(0.96) translate(2px, 2px);
-      }
-      /* 押し込んだ瞬間に強烈に発光させる */
-      .side-link-item:active .nav-indicator {
-        background: #fff;
-        box-shadow: 0 0 15px #fff, 0 0 20px var(--accent);
-        transition: all 0.05s;
-      }
-      .side-link-item:active .nav-title {
-        color: #fff;
-        text-shadow: 0 0 20px rgba(255, 255, 255, 1);
-        transition: all 0.05s;
-      }
+    .side-link-item:active {
+      transform: scale(0.96); background: rgba(0, 0, 0, 0.5);
     }
-
-    /* インジケーター */
-    .side-link-item .nav-indicator {
-      display: block; width: 4px; height: 4px; background: rgba(244, 241, 235, 0.3); margin-right: 15px;
-      flex-shrink: 0; transition: all 0.25s ease;
-      border-radius: 50%;
-    }
-
-    /* テキスト */
     .side-link-item .nav-title {
-      font-family: var(--jp); font-size: clamp(12px, 1vw, 13px);
-      font-weight: 300; letter-spacing: 0.1em; line-height: 1.4; color: rgba(244, 241, 235, 0.6);
-      white-space: normal; word-break: auto-phrase;
-      transition: color 0.25s ease, text-shadow 0.25s ease;
+      font-family: var(--jp); font-size: 13px; font-weight: 300; letter-spacing: 0.1em;
+      transition: color 0.3s ease; z-index: 2;
     }
 
-    /* ─── CYBER RIPPLE EFFECT (PC・スマホ両対応のクリック波紋) ─── */
-    .cyber-ripple {
-      position: absolute;
-      width: 2px; height: 2px;
-      background: radial-gradient(circle, rgba(212, 197, 179, 0.5) 0%, transparent 70%);
-      border: 1px solid rgba(212, 197, 179, 0.8);
-      border-radius: 50%;
-      transform: translate(-50%, -50%) scale(1);
-      opacity: 1; pointer-events: none;
-      animation: cyberRippleAnim 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      z-index: 1;
-    }
-    @keyframes cyberRippleAnim {
-      0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 2px; }
-      100% { transform: translate(-50%, -50%) scale(120); opacity: 0; border-width: 0px; }
-    }
 
     /* ════════════════════════════════════════
-       ★ HERO SECTION
+       ★ HERO SECTION (光と非対称の美)
     ════════════════════════════════════════ */
     .hero { 
       position: relative; z-index: 10; min-height: 100vh; 
       display: flex; flex-direction: column; justify-content: center; 
-      padding: 120px var(--px) 60px; background: transparent; 
+      padding: 0 var(--px); background: transparent; overflow: hidden;
     }
-    @media (min-width: 901px) { .hero { padding-right: calc(var(--dock-width) + var(--px)) !important; } }
+    /* 背後のアンビエントな光 */
+    .hero-glow {
+      position: absolute; top: 40%; left: 30%; width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(229, 211, 179, 0.12) 0%, transparent 70%);
+      transform: translate(-50%, -50%); pointer-events: none; z-index: -1;
+      animation: pulseGlow 8s infinite alternate ease-in-out;
+    }
+    @keyframes pulseGlow { 0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.8); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); } }
+
+    .hero-inner { width: 100%; max-width: 1400px; margin: 0 auto; position: relative; }
     
-    .hero-inner { width: 100%; max-width: 1400px; position: relative; }
-    .hero-eyebrow { font-family: var(--en); font-size: clamp(0.7rem, 1.5vw, 0.9rem); letter-spacing: 0.5em; color: var(--accent); text-transform: uppercase; margin-bottom: 20px; overflow: hidden; display: flex; align-items: center; gap: 15px; }
+    .hero-eyebrow { font-family: var(--en); font-size: clamp(0.7rem, 1.5vw, 0.9rem); letter-spacing: 0.5em; color: var(--accent); text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; overflow: hidden;}
     .hero-eyebrow::after { content: ''; height: 1px; flex-grow: 1; background: var(--border-bright); transform: scaleX(0); transform-origin: left; animation: drawLine 1.5s var(--ease-expo) 0.5s forwards; }
     .hero-eyebrow span { display: inline-block; opacity: 0; transform: translateY(100%); animation: clipUp 1.2s var(--ease-expo) 0.2s forwards; }
     
     .hero-title-wrapper { position: relative; margin-top: 10px; }
-    .hero-title-jp { font-family: var(--jp); font-size: clamp(4rem, 10vw, 9rem); font-weight: 200; letter-spacing: 0.15em; line-height: 1.1; color: var(--fg); display: flex; flex-wrap: wrap; }
+    .hero-title-jp { font-family: var(--jp); font-size: clamp(4rem, 10vw, 9rem); font-weight: 200; letter-spacing: 0.15em; line-height: 1.1; color: var(--fg); text-shadow: 0 0 40px rgba(229, 211, 179, 0.2); display: flex; flex-wrap: wrap; }
     
     .char { 
       position: relative; display: inline-block; opacity: 0; 
       transform: translateY(30px) scale(0.95); 
       animation: textManifest 1.4s var(--ease-expo) forwards; 
     }
-    .char::after {
-      content: attr(data-char); position: absolute; left: 0; top: 0; color: transparent;
-      text-shadow: 0 0 20px rgba(212, 197, 179, 0.9); opacity: 0; pointer-events: none; transform-origin: center;
-      animation: residueDissolve 2.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-    }
+    @keyframes textManifest { 0% { opacity: 0; transform: translateY(30px) scale(0.95); filter: blur(10px); } 100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); } }
 
-    @keyframes textManifest { 
-      0% { opacity: 0; transform: translateY(30px) scale(0.95); filter: blur(10px); } 
-      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); } 
-    }
-    @keyframes residueDissolve {
-      0% { opacity: 0.8; transform: translateY(0) scale(1.02) skewX(5deg); filter: blur(4px); }
-      50% { opacity: 0.4; transform: translateY(-10px) scale(1.05) skewX(10deg); filter: blur(8px); }
-      100% { opacity: 0; transform: translateY(-20px) scale(1.1) skewX(15deg); filter: blur(15px); }
-    }
-
-    .hero-title-en { font-family: var(--en); font-size: clamp(1rem, 2.5vw, 2.2rem); font-weight: 300; letter-spacing: 0.4em; color: var(--muted); margin-top: 15px; margin-left: 0.1em; opacity: 0; transform: translateY(20px); animation: fadeUp 1.2s var(--ease-expo) 1.2s forwards; }
+    .hero-title-en { font-family: var(--en); font-size: clamp(1rem, 2.5vw, 2.2rem); font-weight: 300; letter-spacing: 0.4em; color: var(--accent); margin-top: 15px; margin-left: 0.2em; opacity: 0; transform: translateY(20px); animation: fadeUp 1.2s var(--ease-expo) 1.2s forwards; }
     
     @keyframes clipUp { 0% { opacity: 0; transform: translateY(100%); } 100% { opacity: 1; transform: translateY(0); } }
     @keyframes drawLine { 0% { transform: scaleX(0); } 100% { transform: scaleX(1); } }
     @keyframes fadeUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
 
-    .hero-sub { margin-top: clamp(30px, 5vh, 60px); font-family: var(--jp); font-weight: 300; font-size: clamp(0.9rem, 1.8vw, 1.2rem); letter-spacing: 0.3em; color: var(--accent); overflow: hidden; max-width: 600px; line-height: 1.8; }
+    .hero-sub { margin-top: clamp(30px, 5vh, 60px); font-family: var(--jp); font-weight: 300; font-size: clamp(0.9rem, 1.8vw, 1.2rem); letter-spacing: 0.3em; color: var(--muted); overflow: hidden; max-width: 600px; line-height: 1.8; }
     .hero-sub span { display: inline-block; opacity: 0; transform: translateY(100%); animation: clipUp 1.2s var(--ease-expo) 1.4s forwards; }
     .hero-rule { margin-top: 20px; width: 0; height: 1px; background: linear-gradient(90deg, var(--accent), transparent); animation: drawLineWidth 1.5s var(--ease-expo) 1.6s forwards; }
     @keyframes drawLineWidth { 0% { width: 0; } 100% { width: clamp(150px, 20vw, 250px); } }
     
     .scroll-cue { position: absolute; bottom: 40px; left: var(--px); display: flex; align-items: center; gap: 15px; opacity: 0; animation: fadeOnly 1s ease 2s forwards; }
     .scroll-cue span { font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.4em; color: var(--muted); text-transform: uppercase; }
-    .scroll-cue-line { width: 60px; height: 1px; background: linear-gradient(to right, var(--muted), transparent); transform-origin: left; animation: pulseLine 2s infinite var(--ease-fluid); }
+    .scroll-cue-line { width: 60px; height: 1px; background: linear-gradient(to right, var(--muted), transparent); transform-origin: left; animation: pulseLine 2s infinite var(--ease-expo); }
     @keyframes pulseLine { 0% { transform: scaleX(0); transform-origin: left; } 50% { transform: scaleX(1); transform-origin: left; } 51% { transform: scaleX(1); transform-origin: right; } 100% { transform: scaleX(0); transform-origin: right; } }
     @keyframes fadeOnly { 0% { opacity: 0; } 100% { opacity: 1; } }
 
+
     /* ════════════════════════════════════════
-       ★ ダイナミック・フルブリード・コンステレーション
+       ★ ダイナミック・ギャラリー (Spotlight / Masonry)
     ════════════════════════════════════════ */
     .gallery { 
-      position: relative; z-index: 10; 
-      padding: 0 0 150px 0; 
-      width: 100%; overflow: hidden;
+      position: relative; z-index: 10; padding: 0 0 150px 0; width: 100%; 
     }
-    
-    .gallery-header-wrapper { padding: 0 var(--px) 40px; background: transparent; position: relative; z-index: 11; }
-    @media (min-width: 901px) { .gallery-header-wrapper { padding-right: calc(var(--dock-width) + var(--px)) !important; } }
+    .gallery-header-wrapper { padding: 0 var(--px) 60px; max-width: 1600px; margin: 0 auto; position: relative; z-index: 11; }
     
     .section-header { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); opacity: 0; transform: translateY(30px); transition: all 1.2s var(--ease-expo); }
     .section-header.in-view { opacity: 1; transform: translateY(0); }
     .section-label { font-family: var(--en); font-size: clamp(0.8rem, 1.8vw, 1rem); letter-spacing: 0.4em; color: var(--fg); text-transform: uppercase; }
-    .section-count { font-family: var(--en); font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 100; color: rgba(212, 197, 179, 0.08); line-height: 1; }
+    .section-count { font-family: var(--en); font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 100; color: rgba(229, 211, 179, 0.1); line-height: 1; }
 
     .grid { 
       display: grid; grid-template-columns: repeat(12, 1fr); 
-      gap: clamp(10px, 2vw, 30px); row-gap: clamp(80px, 12vh, 180px);
-      width: 100%; padding-left: var(--px); padding-right: 0;
+      gap: clamp(16px, 2vw, 32px); row-gap: clamp(40px, 8vw, 100px);
+      width: 100%; max-width: 1600px; margin: 0 auto; padding: 0 var(--px);
+      transition: all 0.6s ease;
+    }
+
+    /* 魔法のエフェクト：ホバーしていない画像を暗く・ぼかす (Spotlight Effect) */
+    @media (hover: hover) {
+      .grid:has(.gi:hover) .gi:not(:hover) {
+        opacity: 0.25; filter: grayscale(80%) blur(5px); transform: scale(0.98);
+      }
     }
 
     .gi {
       position: relative; overflow: hidden; cursor: pointer;
-      background: #0a0a0a; border: none; padding: 0;
-      opacity: 0; filter: blur(8px);
-      transition: opacity 1.5s var(--ease-expo) var(--delay, 0ms), filter 1.5s var(--ease-expo) var(--delay, 0ms), transform 1.5s var(--ease-expo) var(--delay, 0ms);
-      transform: translateY(60px);
-      border-radius: 2px;
+      background: #050505; border-radius: 12px;
+      opacity: 0; transform: translateY(60px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--delay, 0ms);
     }
-    .gi.in-view { opacity: 1; filter: blur(0); transform: translateY(0); }
+    .gi.in-view { opacity: 1; transform: translateY(0); }
     
+    .gi:hover {
+      transform: scale(1.02); z-index: 20; box-shadow: 0 40px 80px rgba(0,0,0,0.8);
+    }
+    
+    /* アバンギャルドなアスペクト比固定レイアウト */
     @media (min-width: 901px) {
-      .gi:nth-child(1) { grid-column: 1 / 11; height: 85vh; }
-      .gi:nth-child(2) { grid-column: 6 / 13; height: 65vh; margin-top: -15vh; } 
-      .gi:nth-child(3) { grid-column: 1 / 7; height: 60vh; }
-      .gi:nth-child(4) { grid-column: 5 / 13; height: 95vh; margin-top: 10vh; }
-      .gi:nth-child(5) { grid-column: 1 / 8; height: 50vh; margin-top: -10vh; }
-      .gi:nth-child(6) { grid-column: 7 / 13; height: 75vh; }
-      .gi:nth-child(7) { grid-column: 2 / 11; height: 90vh; margin-top: 15vh; }
-      .gi:nth-child(8) { grid-column: 6 / 13; height: 55vh; margin-top: -20vh; }
-      .gi:nth-child(9) { grid-column: 1 / 7; height: 70vh; }
-      .gi:nth-child(10){ grid-column: 7 / 13; height: 85vh; margin-top: 10vh; }
-      .gi:nth-child(11){ grid-column: 1 / 8; height: 60vh; }
-      .gi:nth-child(12){ grid-column: 5 / 13; height: 80vh; margin-top: -15vh; }
+      .gi:nth-child(1) { grid-column: 1 / 8; aspect-ratio: 16/10; }
+      .gi:nth-child(2) { grid-column: 9 / 13; aspect-ratio: 3/4; margin-top: 120px; } 
+      .gi:nth-child(3) { grid-column: 2 / 6; aspect-ratio: 1/1; margin-top: -80px; }
+      .gi:nth-child(4) { grid-column: 7 / 13; aspect-ratio: 16/9; }
+      .gi:nth-child(5) { grid-column: 1 / 6; aspect-ratio: 4/5; margin-top: -40px; }
+      .gi:nth-child(6) { grid-column: 7 / 12; aspect-ratio: 21/9; margin-top: 80px; }
+      .gi:nth-child(7) { grid-column: 3 / 10; aspect-ratio: 16/9; margin-top: 60px; }
+      .gi:nth-child(8) { grid-column: 11 / 13; aspect-ratio: 1/1; margin-top: -120px; }
+      .gi:nth-child(9) { grid-column: 1 / 7; aspect-ratio: 16/9; margin-top: 40px; }
+      .gi:nth-child(10){ grid-column: 8 / 13; aspect-ratio: 4/5; margin-top: 100px; }
+      .gi:nth-child(11){ grid-column: 2 / 7; aspect-ratio: 1/1; margin-top: -60px; }
+      .gi:nth-child(12){ grid-column: 8 / 12; aspect-ratio: 16/9; }
     }
 
-    .gi a { position: absolute; inset: 0; z-index: 20; text-decoration: none; color: inherit; }
+    .gi a { position: absolute; inset: 0; z-index: 30; text-decoration: none; color: inherit; }
     
     .gi img {
       position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-      transform: scale(1.05);
-      filter: grayscale(40%) brightness(0.7) contrast(110%);
-      transition: transform 1.8s var(--ease-expo), filter 1.2s ease;
+      transform: scale(1.05); filter: grayscale(30%) brightness(0.7) contrast(110%);
+      transition: transform 1.5s var(--ease-expo), filter 0.8s ease;
     }
-    .gi:hover img { transform: scale(1.0); filter: grayscale(0%) brightness(0.95) contrast(100%); }
+    .gi:hover img { transform: scale(1.08); filter: grayscale(0%) brightness(1.05) contrast(100%); }
     
     .gi-overlay {
       position: absolute; inset: 0; z-index: 2; pointer-events: none;
-      background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 40%, transparent 100%);
-      opacity: 0.9; transition: opacity 0.6s ease;
+      background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);
+      opacity: 0.7; transition: opacity 0.6s ease;
     }
-    .gi:hover .gi-overlay { opacity: 0.6; }
+    .gi:hover .gi-overlay { opacity: 0.95; }
 
     .gi-label {
-      position: absolute; bottom: clamp(15px, 3vw, 30px); left: clamp(15px, 3vw, 40px); z-index: 5; pointer-events: none;
-      max-width: clamp(200px, 35vw, 400px); 
-      word-break: keep-all; overflow-wrap: break-word;
+      position: absolute; bottom: 24px; left: 32px; right: 32px; z-index: 5; pointer-events: none;
+      display: flex; flex-direction: column; gap: 4px;
     }
     
     .gi-title {
-      display: block; font-family: var(--jp); font-weight: 300; font-size: clamp(1.4rem, 2.5vw, 2.2rem);
-      letter-spacing: 0.15em; color: var(--fg); line-height: 1.3;
-      text-shadow: 0 4px 20px rgba(0,0,0,0.9), 0 1px 5px rgba(0,0,0,1);
-      transition: color 0.4s var(--ease-quad), transform 0.5s var(--ease-expo);
+      font-family: var(--jp); font-weight: 300; font-size: clamp(1.2rem, 2vw, 1.8rem);
+      letter-spacing: 0.1em; color: #ffffff; line-height: 1.3;
+      transform: translateY(15px); opacity: 0.85;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.9);
+      transition: all 0.5s var(--ease-out-back);
     }
     .gi-en {
-      display: block; font-family: var(--en); font-size: clamp(10px, 1.2vw, 13px);
-      letter-spacing: 0.4em; color: rgba(255,255,255,0.7); text-transform: uppercase; margin-top: 6px;
-      text-shadow: 0 4px 15px rgba(0,0,0,0.9);
-      transition: color 0.4s var(--ease-quad), transform 0.5s var(--ease-expo);
+      font-family: var(--en); font-size: clamp(10px, 1.2vw, 12px);
+      letter-spacing: 0.3em; color: var(--accent); text-transform: uppercase;
+      transform: translateY(15px); opacity: 0;
+      transition: all 0.5s var(--ease-out-back) 0.05s;
     }
     
-    .gi:hover .gi-title { color: var(--accent); transform: translateX(8px); }
-    .gi:hover .gi-en { color: #fff; transform: translateX(8px); }
+    .gi:hover .gi-title { color: var(--accent); transform: translateY(0); opacity: 1; }
+    .gi:hover .gi-en { color: #ffffff; transform: translateY(0); opacity: 1; }
+
 
     /* ════════════════════════════════════════
-       ★ CONTACT & FOOTER 
+       ★ CONTACT (グラスモーフィズムカード)
     ════════════════════════════════════════ */
     .contact-section {
-      position: relative; z-index: 10;
-      padding: 12rem var(--px); text-align: center;
-      border-top: 0.5px solid rgba(232,228,219,0.12);
-      background: transparent;
-    }
-    @media (min-width: 901px) { .contact-section, footer { padding-right: calc(var(--dock-width) + var(--px)) !important; } }
-
-    .contact-section .section-label {
-      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
-      letter-spacing: 0.28em; color: var(--muted-col); text-transform: uppercase;
-      margin-bottom: 3.5rem; display: flex; align-items: center; justify-content: center; gap: 1rem;
-    }
-    .contact-section .section-label::before { display: none; }
-    .contact-section .section-label::after {
-      content: ""; width: 48px; height: 0.5px;
-      background: rgba(232,228,219,0.2); transform: none; animation: none; flex-grow: 0;
+      position: relative; z-index: 10; padding: 10rem var(--px); background: transparent;
     }
     
-    .contact-section .section-heading {
-      font-family: var(--jp); font-size: clamp(1.75rem,4vw,3.25rem);
-      font-weight: 300; line-height: 1.2; color: var(--text);
-      margin-bottom: 2rem; letter-spacing: -0.01em;
+    .contact-card {
+      max-width: 800px; margin: 0 auto; padding: 80px 40px; text-align: center;
+      background: rgba(20, 20, 20, 0.4);
+      backdrop-filter: blur(24px) saturate(120%); -webkit-backdrop-filter: blur(24px) saturate(120%);
+      border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 32px;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+      opacity: 0; transform: translateY(50px); transition: all 1.2s var(--ease-expo);
+    }
+    .contact-card.in-view { opacity: 1; transform: translateY(0); }
+
+    .contact-card .section-label {
+      font-family: var(--en); font-size: 0.7rem; letter-spacing: 0.3em; color: var(--muted-col);
+      margin-bottom: 2rem; display: block;
+    }
+    .contact-card .section-heading {
+      font-family: var(--jp); font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 300;
+      color: var(--text); margin-bottom: 1.5rem; letter-spacing: 0.05em;
     }
     .contact-body-text {
       font-size: 15px; font-family: var(--jp); font-weight: 300;
@@ -441,21 +361,26 @@
     }
     
     .contact-btn {
-      display: inline-flex; align-items: center; gap: 0.7em;
-      font-family: var(--en); font-size: clamp(0.7rem, 1.5vw, 0.85rem);
-      letter-spacing: 0.25em; text-transform: uppercase;
-      border: 1px solid rgba(203,191,176,0.5); border-radius: 40px;
-      padding: 1.2rem 3.5rem; color: var(--accent);
-      background: rgba(203,191,176,0.04); text-decoration: none;
-      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-family: var(--en); font-size: 0.8rem; letter-spacing: 0.25em; text-transform: uppercase;
+      padding: 1.2rem 3.5rem; border-radius: 100px;
+      color: var(--bg); background: var(--accent);
+      text-decoration: none; position: relative; overflow: hidden;
+      box-shadow: 0 10px 30px rgba(229, 211, 179, 0.2);
       transition: all 0.5s var(--ease-out-back);
-      position: relative; overflow: visible;
     }
-    .contact-btn:hover {
-      color: var(--bg); background: var(--accent); border-color: var(--accent);
-      box-shadow: 0 12px 36px rgba(203,191,176,0.3); transform: translateY(-4px) scale(1.02);
+    .contact-btn::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transform: translateX(-100%); transition: transform 0.6s ease;
     }
+    .contact-btn:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(229, 211, 179, 0.4); }
+    .contact-btn:hover::before { transform: translateX(100%); }
 
+
+    /* ════════════════════════════════════════
+       ★ FOOTER (完全変更なし)
+    ════════════════════════════════════════ */
     footer {
       position: relative; z-index: 10;
       padding: 3rem var(--px); text-align: center;
@@ -473,12 +398,12 @@
       letter-spacing: 0.18em; color: var(--text-dim); text-transform: none;
     }
 
-    /* ─── MOUSE TOOLTIP ─── */
-    .mouse-tooltip { position: fixed; top: 0; left: 0; pointer-events: none; background: rgba(244, 241, 235, 0.95); color: var(--bg); padding: 8px 14px; font-size: 11px; font-family: var(--jp); letter-spacing: 0.1em; font-weight: 400; box-shadow: 0 10px 30px rgba(0,0,0,0.5); opacity: 0; transform: translate(20px, 20px); transition: opacity 0.3s var(--ease-quad); z-index: 99999; white-space: nowrap; border-radius: 2px; }
+
+    /* ─── マウスツールチップ & BACK TO TOP ─── */
+    .mouse-tooltip { position: fixed; top: 0; left: 0; pointer-events: none; background: rgba(244, 241, 235, 0.95); color: var(--bg); padding: 8px 14px; font-size: 11px; font-family: var(--jp); letter-spacing: 0.1em; font-weight: 400; box-shadow: 0 10px 30px rgba(0,0,0,0.5); opacity: 0; transform: translate(20px, 20px); transition: opacity 0.3s var(--ease-quad); z-index: 99999; white-space: nowrap; border-radius: 4px; }
     .mouse-tooltip.visible { opacity: 1; }
     @media (pointer: coarse) { .mouse-tooltip { display: none !important; } }
 
-    /* ─── BACK TO TOP BUTTON ─── */
     .back-to-top { position: fixed; bottom: 30px; right: var(--px); z-index: 160; width: 54px; height: 54px; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.6s var(--ease-expo); cursor: pointer; text-decoration: none; border: 1px solid var(--border); border-radius: 50%; }
     .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
     .b2t-ring { position: absolute; inset: -1px; width: 56px; height: 56px; transform: rotate(-90deg); pointer-events: none; }
@@ -491,84 +416,49 @@
     .back-to-top:hover .b2t-percent { transform: translateY(-20px); opacity: 0; }
     .back-to-top:hover .b2t-arrow { transform: translateY(0); opacity: 1; }
 
+
     /* ════════════════════════════════════════
-       ★ RESPONSIVE (タブレット・スマホ向けデザイン最適化)
+       ★ スマホ・タブレット最適化
     ════════════════════════════════════════ */
     @media (max-width: 900px) {
+      /* スマホ用：画面下部の横スクロール・ピル型ドック */
       .side-link-nav { 
-        top: auto; bottom: 24px; left: 50%; transform: translateX(-50%); 
-        width: calc(100% - 32px); max-width: 600px; height: 56px; 
-        flex-direction: row; align-items: center; justify-content: flex-start; 
-        padding: 0 8px; gap: 8px; 
-        background: rgba(15, 15, 15, 0.85); 
-        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
-        border: 1px solid rgba(255, 255, 255, 0.1); 
-        border-radius: 28px; 
-        overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        top: auto; bottom: 20px; left: 50%; transform: translateX(-50%); 
+        width: calc(100% - 32px); max-width: 600px; height: auto; 
+        flex-direction: row; padding: 12px; border-radius: 100px; 
+        overflow-x: auto; scroll-snap-type: x mandatory; gap: 8px;
+        background: rgba(15, 15, 15, 0.75);
       }
-      .side-link-nav::before, .side-link-nav::after { display: none !important; }
-      
       .side-link-item { 
-        flex: 0 0 auto; width: auto; min-width: auto; height: 40px; padding: 0 20px; margin: 0; 
-        background: rgba(255, 255, 255, 0.05); border: 1px solid transparent; border-radius: 20px; 
-        justify-content: center; align-items: center; scroll-snap-align: center; 
-        position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; 
-        opacity: 1 !important; transform: none !important;
-        transition: background 0.25s ease, border-color 0.25s ease;
+        flex: 0 0 auto; padding: 10px 20px; border-radius: 100px; 
+        background: rgba(255, 255, 255, 0.05); scroll-snap-align: center;
       }
-      .side-link-item::before, .side-link-item::after { display: none !important; }
-      .side-link-nav:hover .side-link-item:not(:hover) { opacity: 1 !important; filter: none !important; }
-      .side-link-item .nav-indicator { display: none; }
+      .side-link-item::before { display: none; }
+      .side-link-item:hover { padding-left: 20px; background: rgba(255,255,255,0.1); }
+      .side-link-item:active { transform: scale(0.92); }
+      .side-link-item .nav-title { font-size: 13px; font-weight: 400; color: #fff; }
       
-      .side-link-item .nav-title { 
-        font-size: 13px; font-weight: 400; color: rgba(244, 241, 235, 0.8); 
-        letter-spacing: 0.05em; text-shadow: none; transition: color 0.25s ease;
-      }
+      .back-to-top { bottom: 100px; } /* ドックと被らないよう上に退避 */
       
-      /* ★ スマホ：コンテンツラッパーを沈ませるタップフィードバック ★ */
-      .side-link-item:active, .side-link-item.is-tapped {
-        background: rgba(212, 197, 179, 0.15);
-        border-color: rgba(212, 197, 179, 0.3);
-        transition: background 0.05s, border-color 0.05s;
-      }
-      .side-link-item:active .side-link-content, .side-link-item.is-tapped .side-link-content {
-        transform: scale(0.94);
-      }
-      .side-link-item:active .nav-title, .side-link-item.is-tapped .nav-title {
-        color: #fff;
-      }
-
-      .back-to-top { bottom: 100px; right: 16px; width: 48px; height: 48px; }
-      .b2t-ring { width: 50px; height: 50px; }
-      .contact-section { padding-bottom: 120px; }
+      /* グリッドレイアウトを1列に */
+      .grid { grid-template-columns: 1fr; gap: 40px; padding: 0; } 
+      .gi { grid-column: 1 / -1 !important; aspect-ratio: 4/5 !important; margin: 0 !important; border-radius: 12px; }
+      .gi-label { bottom: 20px; left: 20px; }
+      .scroll-cue { display: none; }
+      
       footer { padding-bottom: 120px; }
     }
 
+    /* ヘッダー＆フッター用のスマホ指定（元コードそのまま） */
     @media (max-width: 768px) {
       nav#top-nav { padding: 1rem 1.25rem; }
       nav#top-nav.scrolled { padding: 0.8rem 1.25rem; }
       .nav-links { display: none; }
       .nav-cta { padding: 0.65rem 1.2rem; font-size: 0.65rem; }
       .nav-hamburger { display: none !important; }
-      .contact-section { padding: 8rem 1.5rem 120px; }
-      .contact-btn { padding: 1.2rem 2.4rem; font-size: 0.8rem; width: 100%; max-width: 340px; justify-content: center; }
       footer { padding: 3rem 1.5rem 120px; display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-    }
-
-    @media (max-width: 600px) {
-      .grid { grid-template-columns: 1fr; gap: 0; row-gap: 8vh; padding: 0; } 
-      .gi { grid-column: 1 / -1 !important; height: 55vh !important; margin: 0 !important; border-radius: 0; }
-      .gi-label { bottom: 20px; left: 20px; max-width: calc(100vw - 40px); }
-      .scroll-cue { display: none; }
-    }
-
-    @media (hover: none) {
-      .gi img { filter: grayscale(0%) brightness(0.85) contrast(100%); transform: scale(1.0); }
-      .gi-title { color: var(--accent); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      .contact-card { padding: 60px 20px; border-radius: 20px; }
+      .contact-btn { width: 100%; }
     }
   </style>
 </head>
@@ -587,6 +477,7 @@
   </div>
   <div id="lines-canvas" aria-hidden="true"></div>
 
+  <!-- HEADER (変更不可) -->
   <nav id="top-nav">
     <a href="index.html" class="nav-logo">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
@@ -601,77 +492,55 @@
     <a href="contact.html" class="nav-cta" id="nav-cta-btn">Contact</a>
   </nav>
 
+  <!-- FLOATING GLASS DOCK (新サイドナビ) -->
   <nav class="side-link-nav" aria-label="シリーズ別インデックス">
-    <!-- 各リンクにコンテンツラッパー (side-link-content) を追加 -->
     <a href="work-forest.html" class="side-link-item">
-      <span class="side-link-content">
-        <span class="nav-indicator"></span><span class="nav-title">森林</span>
-      </span>
+      <span class="nav-title">森林</span>
     </a>
     <a href="work-samizu.html" class="side-link-item">
-      <span class="side-link-content">
-        <span class="nav-indicator"></span><span class="nav-title">左美都の神話と伝承</span>
-      </span>
+      <span class="nav-title">左美都の神話と伝承</span>
     </a>
     <a href="works-variant.html" class="side-link-item">
-      <span class="side-link-content">
-        <span class="nav-indicator"></span><span class="nav-title">異体</span>
-      </span>
+      <span class="nav-title">異体</span>
     </a>
     <a href="works-cave.html" class="side-link-item">
-      <span class="side-link-content">
-        <span class="nav-indicator"></span><span class="nav-title">洞窟</span>
-      </span>
+      <span class="nav-title">洞窟</span>
     </a>
     <a href="works-drawing.html" class="side-link-item">
-      <span class="side-link-content">
-        <span class="nav-indicator"></span><span class="nav-title">素描</span>
-      </span>
+      <span class="nav-title">素描</span>
     </a>
     <a href="work-abstract.html" class="side-link-item">
-      <span class="side-link-content">
-        <span class="nav-indicator"></span><span class="nav-title">抽象</span>
-      </span>
+      <span class="nav-title">抽象</span>
     </a>
     <a href="work-scars.html" class="side-link-item">
-      <span class="side-link-content">
-        <span class="nav-indicator"></span><span class="nav-title">傷</span>
-      </span>
+      <span class="nav-title">傷</span>
     </a>
     <a href="work-refugees.html" class="side-link-item">
-      <span class="side-link-content">
-        <span class="nav-indicator"></span><span class="nav-title">難民</span>
-      </span>
+      <span class="nav-title">難民</span>
     </a>
     <a href="work-tiny_soldier.html" class="side-link-item">
-      <span class="side-link-content">
-        <span class="nav-indicator"></span><span class="nav-title">子ども兵士</span>
-      </span>
+      <span class="nav-title">子ども兵士</span>
     </a>
     <a href="work-black_era.html" class="side-link-item">
-      <span class="side-link-content">
-        <span class="nav-indicator"></span><span class="nav-title">黒の時代</span>
-      </span>
+      <span class="nav-title">黒の時代</span>
     </a>
     <a href="work-40273.html" class="side-link-item">
-      <span class="side-link-content">
-        <span class="nav-indicator"></span><span class="nav-title">40273</span>
-      </span>
+      <span class="nav-title">40273</span>
     </a>
     <a href="work-specimen_art.html" class="side-link-item">
-      <span class="side-link-content">
-        <span class="nav-indicator"></span><span class="nav-title">標本美術</span>
-      </span>
+      <span class="nav-title">標本美術</span>
     </a>
   </nav>
 
+  <!-- HERO SECTION -->
   <section class="hero" id="hero">
+    <div class="hero-glow"></div>
     <div class="hero-inner">
       <p class="hero-eyebrow"><span>Site-specific &nbsp;·&nbsp; Story-driven</span></p>
       
       <div class="hero-title-wrapper">
         <div class="hero-title-jp" id="heroTitleJp" aria-label="作品系(シーケンス)">作品系</div>
-        <div class="hero-title-en">WORKS(Sequences)</div>
+        <div class="hero-title-en">WORKS (Sequences)</div>
       </div>
       
       <p class="hero-sub"><span>枠組みを利用し、空間と共鳴する。</span></p>
@@ -683,6 +552,7 @@
     </div>
   </section>
 
+  <!-- GALLERY -->
   <div class="gallery-header-wrapper">
     <div class="section-header" id="secHeader">
       <span class="section-label">Selected Works &nbsp;— &nbsp;Series</span>
@@ -699,7 +569,7 @@
           <span class="gi-title">森林</span>
           <span class="gi-en">Fragmented Forest</span>
         </div>
-        <a href="work-forest.html" aria-label="森林" data-tooltip="「森林」系（シーケンス）の作品紹介ページにリンクします。"></a>
+        <a href="work-forest.html" aria-label="森林" data-tooltip="「森林」シリーズへ"></a>
       </article>
 
       <article class="gi" data-images="images/416A0035.jpg">
@@ -709,7 +579,7 @@
           <span class="gi-title">左美都の神話と伝承</span>
           <span class="gi-en">Myth and Tradition</span>
         </div>
-        <a href="work-samizu.html" aria-label="左美都の神話と伝承" data-tooltip="「左美都の神話と伝承」系（シーケンス）の作品紹介ページにリンクします。"></a>
+        <a href="work-samizu.html" aria-label="左美都の神話と伝承" data-tooltip="「左美都の神話と伝承」シリーズへ"></a>
       </article>
 
       <article class="gi" data-images="images/【F100縦】スズラン（アプロディーテーの尻臀）2.jpg">
@@ -719,7 +589,7 @@
           <span class="gi-title">異体</span>
           <span class="gi-en">Variant Forms</span>
         </div>
-        <a href="works-variant.html" aria-label="異体" data-tooltip="「異体」系（シーケンス）の作品紹介ページにリンクします。"></a>
+        <a href="works-variant.html" aria-label="異体" data-tooltip="「異体」シリーズへ"></a>
       </article>
 
       <article class="gi" data-images="images/【S100】so far.jpg">
@@ -729,7 +599,7 @@
           <span class="gi-title">洞窟</span>
           <span class="gi-en">The Cave</span>
         </div>
-        <a href="works-cave.html" aria-label="洞窟" data-tooltip="「洞窟」系（シーケンス）の作品紹介ページにリンクします。"></a>
+        <a href="works-cave.html" aria-label="洞窟" data-tooltip="「洞窟」シリーズへ"></a>
       </article>
 
       <article class="gi" data-images="images/【CG(Cell-Graphics) [apocalypse] - III】 - 修正後ー.jpg">
@@ -739,7 +609,7 @@
           <span class="gi-title">素描</span>
           <span class="gi-en">Drawings</span>
         </div>
-        <a href="works-drawing.html" aria-label="素描" data-tooltip="「素描」系（シーケンス）の作品紹介ページにリンクします。"></a>
+        <a href="works-drawing.html" aria-label="素描" data-tooltip="「素描」シリーズへ"></a>
       </article>
 
       <article class="gi" data-images="images/tHE n0iSe Of ThE PriMItⅣe sEA.JPG">
@@ -749,7 +619,7 @@
           <span class="gi-title">抽象</span>
           <span class="gi-en">Abstract</span>
         </div>
-        <a href="work-abstract.html" aria-label="抽象" data-tooltip="「抽象」系（シーケンス）の作品紹介ページにリンクします。"></a>
+        <a href="work-abstract.html" aria-label="抽象" data-tooltip="「抽象」シリーズへ"></a>
       </article>
 
       <article class="gi" data-images="images/【F100横】さけび（ガザ）.jpg">
@@ -759,7 +629,7 @@
           <span class="gi-title">傷</span>
           <span class="gi-en">Scars</span>
         </div>
-        <a href="work-scars.html" aria-label="傷" data-tooltip="「傷」系（シーケンス）の作品紹介ページにリンクします。"></a>
+        <a href="work-scars.html" aria-label="傷" data-tooltip="「傷」シリーズへ"></a>
       </article>
       
       <article class="gi" data-images="images/【F100号横】今、シリア.jpg">
@@ -769,7 +639,7 @@
           <span class="gi-title">難民(子ども)</span>
           <span class="gi-en">Refugees</span>
         </div>
-        <a href="work-refugees.html" aria-label="難民(子ども)" data-tooltip="「難民(子ども)」系（シーケンス）の作品紹介ページにリンクします。"></a>
+        <a href="work-refugees.html" aria-label="難民(子ども)" data-tooltip="「難民(子ども)」シリーズへ"></a>
       </article>
 
       <article class="gi" data-images="images/【F25縦】少年兵（アフリカ）.jpg">
@@ -779,7 +649,7 @@
           <span class="gi-title">子ども兵士</span>
           <span class="gi-en">Tiny Soldiers</span>
         </div>
-        <a href="work-tiny_soldier.html" aria-label="子ども兵士" data-tooltip="「子ども兵士」系（シーケンス）の作品紹介ページにリンクします。"></a>
+        <a href="work-tiny_soldier.html" aria-label="子ども兵士" data-tooltip="「子ども兵士」シリーズへ"></a>
       </article>
 
       <article class="gi" data-images="images/before_clouds_are_captured.jpg">
@@ -789,7 +659,7 @@
           <span class="gi-title">黒の時代</span>
           <span class="gi-en">The Black Period</span>
         </div>
-        <a href="work-black_era.html" aria-label="黒の時代" data-tooltip="「黒の時代」系（シーケンス）の作品紹介ページにリンクします。"></a>
+        <a href="work-black_era.html" aria-label="黒の時代" data-tooltip="「黒の時代」シリーズへ"></a>
       </article>
 
       <article class="gi" data-images="images/@_the_beach.jpg">
@@ -799,7 +669,7 @@
           <span class="gi-title">40273</span>
           <span class="gi-en">20100405</span>
         </div>
-        <a href="work-40273.html" aria-label="2010年～2011年" data-tooltip="「40273」系（シーケンス）の作品紹介ページにリンクします。"></a>
+        <a href="work-40273.html" aria-label="2010年～2011年" data-tooltip="「40273」シリーズへ"></a>
       </article>
 
       <article class="gi" data-images="images/子猫4（スコティッシュフォールド）.jpg">
@@ -809,22 +679,26 @@
           <span class="gi-title">標本美術</span>
           <span class="gi-en">Specimen Art</span>
         </div>
-        <a href="work-specimen_art.html" aria-label="標本美術" data-tooltip="「標本美術」系（シーケンス）の作品紹介ページにリンクします。"></a>
+        <a href="work-specimen_art.html" aria-label="標本美術" data-tooltip="「標本美術」シリーズへ"></a>
       </article>
     </div>
   </main>
 
+  <!-- CONTACT (グラスモーフィズムカード) -->
   <section class="contact-section" id="contact">
-    <p class="section-label">Contact</p>
-    <h2 class="section-heading">お問い合わせ</h2>
-    <p class="contact-body-text">
-      展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。
-    </p>
-    <a href="https://sh012da.github.io/sh01/contact.html" class="contact-btn">
-      問い合わせフォームへ&ensp;→
-    </a>
+    <div class="contact-card">
+      <span class="section-label">Contact</span>
+      <h2 class="section-heading">お問い合わせ</h2>
+      <p class="contact-body-text">
+        展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。
+      </p>
+      <a href="https://sh012da.github.io/sh01/contact.html" class="contact-btn">
+        問い合わせフォームへ
+      </a>
+    </div>
   </section>
 
+  <!-- FOOTER (変更不可) -->
   <footer>
     <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
     <p class="footer-copy">&copy; 2026 Tsuda Shoichi. All Rights Reserved.</p>
@@ -874,11 +748,8 @@
           const s = document.createElement('span');
           s.className = 'char';
           s.textContent = ch;
-          s.setAttribute('data-char', ch);
-          
           const delayBase = 0.4 + (i * 0.15);
           s.style.animationDelay = `${delayBase.toFixed(2)}s`;
-          s.style.setProperty('--cd', `${delayBase.toFixed(2)}s`);
           titleJpEl.appendChild(s);
         });
       }
@@ -887,7 +758,7 @@
       if (tooltip) {
         document.querySelectorAll('[data-tooltip]').forEach(link => {
           link.addEventListener('mouseenter', () => {
-            tooltip.textContent = link.getAttribute('data-tooltip') || 'リンクします';
+            tooltip.textContent = link.getAttribute('data-tooltip') || '';
             tooltip.classList.add('visible');
           });
           link.addEventListener('mousemove', (e) => {
@@ -928,8 +799,6 @@
 
       const topNav = document.getElementById('top-nav');
       const b2t = document.getElementById('backToTop');
-      const hLines = document.querySelectorAll('.matrix-axis.h');
-      const vLines = document.querySelectorAll('.matrix-axis.v');
       let ticking = false;
       
       window.addEventListener('scroll', () => {
@@ -939,9 +808,6 @@
             
             if (scrollY > 60) topNav.classList.add('scrolled');
             else topNav.classList.remove('scrolled');
-            
-            hLines.forEach((line, idx) => line.style.transform = `translateY(${(scrollY * (idx === 0 ? 0.02 : -0.02))}px)`);
-            vLines.forEach((line, idx) => line.style.transform = `translateX(${(scrollY * (idx === 0 ? 0.01 : -0.01))}px)`);
 
             if (b2t) {
               if (scrollY > window.innerHeight * 0.4) b2t.classList.add('is-visible');
@@ -974,22 +840,7 @@
       const grid = document.getElementById('grid');
       if (grid) {
         const items = Array.from(grid.children);
-        for (let i = items.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [items[i], items[j]] = [items[j], items[i]];
-        }
-        const frag = document.createDocumentFragment();
-        items.forEach(el => frag.appendChild(el));
-        grid.appendChild(frag);
-
         items.forEach((el, i) => {
-          const imgPool = el.getAttribute('data-images');
-          if (imgPool) {
-            const images = imgPool.split(',').map(s => s.trim());
-            const randomImg = images[Math.floor(Math.random() * images.length)];
-            const imgEl = el.querySelector('img');
-            if (imgEl) imgEl.src = randomImg;
-          }
           const delay = (i % 4) * 120 + Math.floor(Math.random() * 80);
           el.style.setProperty('--delay', `${delay}ms`);
         });
@@ -1002,42 +853,11 @@
             io.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.05 });
+      }, { threshold: 0.1 });
       
       const secHeader = document.getElementById('secHeader');
       if (secHeader) io.observe(secHeader);
-      document.querySelectorAll('.gi').forEach(el => io.observe(el));
-      
-      // 9. ブレない＆圧倒的なクリックフィードバック (Cyber Ripple)
-      document.querySelectorAll('.side-link-item').forEach(link => {
-        link.addEventListener('touchstart', function() {}, {passive: true});
-        
-        link.addEventListener('pointerdown', function(e) {
-          const existingRipple = this.querySelector('.cyber-ripple');
-          if(existingRipple) existingRipple.remove();
-
-          const ripple = document.createElement('span');
-          ripple.classList.add('cyber-ripple');
-          
-          const rect = this.getBoundingClientRect();
-          const x = e.clientX ? e.clientX - rect.left : rect.width / 2;
-          const y = e.clientY ? e.clientY - rect.top : rect.height / 2;
-          
-          ripple.style.left = `${x}px`;
-          ripple.style.top = `${y}px`;
-          
-          this.appendChild(ripple);
-          this.classList.add('is-tapped');
-          
-          setTimeout(() => { this.classList.remove('is-tapped'); }, 400); 
-        });
-        
-        ['pointerup', 'pointercancel', 'pointerleave'].forEach(evt => {
-          link.addEventListener(evt, function() {
-            setTimeout(() => { this.classList.remove('is-tapped'); }, 150);
-          });
-        });
-      });
+      document.querySelectorAll('.gi, .contact-card').forEach(el => io.observe(el));
     });
 
     window.menuOpenScrollY = 0;
