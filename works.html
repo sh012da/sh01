@@ -143,8 +143,11 @@
 
 
     /* ════════════════════════════════════════
-       ★ Floating Glass Dock (サイドナビ)
+       ★ PC用 Floating Glass Dock (サイドナビ)
+       ※ スマホ向けのUI要素はPCでは非表示
     ════════════════════════════════════════ */
+    .mobile-series-toggle, .mobile-nav-overlay, .mobile-nav-header { display: none; }
+
     .side-link-nav {
       position: fixed; right: 2vw; top: 50%; transform: translateY(-50%); z-index: 150;
       width: 240px; max-height: 80vh;
@@ -235,7 +238,7 @@
 
 
     /* ════════════════════════════════════════
-       ★ RANDOM DYNAMIC GALLERY (スポットライト)
+       ★ RANDOM DYNAMIC GALLERY
     ════════════════════════════════════════ */
     .gallery { 
       position: relative; z-index: 10; padding: 0 0 150px 0; width: 100%; 
@@ -249,13 +252,12 @@
 
     .grid { 
       display: grid; grid-template-columns: repeat(12, 1fr); 
-      grid-auto-flow: dense; /* 空きを詰めるMasonry風の振る舞い */
+      grid-auto-flow: dense;
       gap: clamp(16px, 2vw, 32px); row-gap: clamp(40px, 8vw, 100px);
       width: 100%; max-width: 1600px; margin: 0 auto; padding: 0 var(--px);
       transition: all 0.6s ease;
     }
 
-    /* 魔法のエフェクト：ホバーしていない画像を暗く・ぼかす */
     @media (hover: hover) {
       .grid:has(.gi:hover) .gi:not(:hover) {
         opacity: 0.25 !important; filter: grayscale(80%) blur(5px); transform: scale(0.98);
@@ -266,7 +268,6 @@
       position: relative; overflow: hidden; cursor: pointer;
       background: #050505; border-radius: 12px;
       opacity: 0; 
-      /* JSから割り当てられる変数を用いてサイズやズレをランダム化 */
       grid-column: span var(--c-span, 6);
       aspect-ratio: var(--c-ratio, 16/9);
       margin-top: var(--c-mt, 0px);
@@ -276,11 +277,7 @@
                   box-shadow 0.4s ease;
     }
     .gi.in-view { opacity: 1; transform: translateY(0); }
-    
-    .gi:hover {
-      transform: scale(1.02); z-index: 20; box-shadow: 0 40px 80px rgba(0,0,0,0.8);
-    }
-    
+    .gi:hover { transform: scale(1.02); z-index: 20; box-shadow: 0 40px 80px rgba(0,0,0,0.8); }
     .gi a { position: absolute; inset: 0; z-index: 30; text-decoration: none; color: inherit; }
     
     .gi img {
@@ -301,32 +298,25 @@
       position: absolute; bottom: 24px; left: 32px; right: 32px; z-index: 5; pointer-events: none;
       display: flex; flex-direction: column; gap: 4px;
     }
-    
     .gi-title {
       font-family: var(--jp); font-weight: 300; font-size: clamp(1.2rem, 2vw, 1.8rem);
       letter-spacing: 0.1em; color: #ffffff; line-height: 1.3;
-      transform: translateY(15px); opacity: 0.85;
-      text-shadow: 0 4px 20px rgba(0,0,0,0.9);
+      transform: translateY(15px); opacity: 0.85; text-shadow: 0 4px 20px rgba(0,0,0,0.9);
       transition: all 0.5s var(--ease-out-back);
     }
     .gi-en {
       font-family: var(--en); font-size: clamp(10px, 1.2vw, 12px);
       letter-spacing: 0.3em; color: var(--accent); text-transform: uppercase;
-      transform: translateY(15px); opacity: 0;
-      transition: all 0.5s var(--ease-out-back) 0.05s;
+      transform: translateY(15px); opacity: 0; transition: all 0.5s var(--ease-out-back) 0.05s;
     }
-    
     .gi:hover .gi-title { color: var(--accent); transform: translateY(0); opacity: 1; }
     .gi:hover .gi-en { color: #ffffff; transform: translateY(0); opacity: 1; }
 
 
     /* ════════════════════════════════════════
-       ★ CONTACT (グラスモーフィズムカード)
+       ★ CONTACT
     ════════════════════════════════════════ */
-    .contact-section {
-      position: relative; z-index: 10; padding: 10rem var(--px); background: transparent;
-    }
-    
+    .contact-section { position: relative; z-index: 10; padding: 10rem var(--px); background: transparent; }
     .contact-card {
       max-width: 800px; margin: 0 auto; padding: 80px 40px; text-align: center;
       background: rgba(20, 20, 20, 0.4);
@@ -336,32 +326,18 @@
       opacity: 0; transform: translateY(50px); transition: all 1.2s var(--ease-expo);
     }
     .contact-card.in-view { opacity: 1; transform: translateY(0); }
-
-    .contact-card .section-label {
-      font-family: var(--en); font-size: 0.7rem; letter-spacing: 0.3em; color: var(--muted-col);
-      margin-bottom: 2rem; display: block;
-    }
-    .contact-card .section-heading {
-      font-family: var(--jp); font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 300;
-      color: var(--text); margin-bottom: 1.5rem; letter-spacing: 0.05em;
-    }
-    .contact-body-text {
-      font-size: 15px; font-family: var(--jp); font-weight: 300;
-      color: var(--text-muted); margin: 0 auto 3.5rem; max-width: 440px; line-height: 2;
-    }
-    
+    .contact-card .section-label { font-family: var(--en); font-size: 0.7rem; letter-spacing: 0.3em; color: var(--muted-col); margin-bottom: 2rem; display: block; }
+    .contact-card .section-heading { font-family: var(--jp); font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 300; color: var(--text); margin-bottom: 1.5rem; letter-spacing: 0.05em; }
+    .contact-body-text { font-size: 15px; font-family: var(--jp); font-weight: 300; color: var(--text-muted); margin: 0 auto 3.5rem; max-width: 440px; line-height: 2; }
     .contact-btn {
       display: inline-flex; align-items: center; justify-content: center;
       font-family: var(--en); font-size: 0.8rem; letter-spacing: 0.25em; text-transform: uppercase;
-      padding: 1.2rem 3.5rem; border-radius: 100px;
-      color: var(--bg); background: var(--accent);
-      text-decoration: none; position: relative; overflow: hidden;
-      box-shadow: 0 10px 30px rgba(229, 211, 179, 0.2);
+      padding: 1.2rem 3.5rem; border-radius: 100px; color: var(--bg); background: var(--accent);
+      text-decoration: none; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(229, 211, 179, 0.2);
       transition: all 0.5s var(--ease-out-back);
     }
     .contact-btn::before {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
       transform: translateX(-100%); transition: transform 0.6s ease;
     }
     .contact-btn:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(229, 211, 179, 0.4); }
@@ -372,25 +348,15 @@
        ★ FOOTER
     ════════════════════════════════════════ */
     footer {
-      position: relative; z-index: 10;
-      padding: 3rem var(--px); text-align: center;
-      background: rgba(3,3,3,0.95);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
-      border-top: none;
+      position: relative; z-index: 10; padding: 3rem var(--px); text-align: center;
+      background: rgba(3,3,3,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; border-top: none;
     }
-    .footer-logo {
-      font-family: var(--jp); font-size: clamp(0.75rem, 1.8vw, 0.88rem);
-      font-weight: 200; color: rgba(232,228,219,0.28);
-      letter-spacing: 0.08em; margin-bottom: 0.5rem;
-    }
-    .footer-copy {
-      font-family: var(--en); font-size: clamp(0.52rem, 1.3vw, 0.62rem);
-      letter-spacing: 0.18em; color: var(--text-dim); text-transform: none;
-    }
+    .footer-logo { font-family: var(--jp); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(232,228,219,0.28); letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+    .footer-copy { font-family: var(--en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--text-dim); text-transform: none; }
 
 
     /* ─── BACK TO TOP ─── */
-    .back-to-top { position: fixed; bottom: 30px; right: var(--px); z-index: 160; width: 54px; height: 54px; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.6s var(--ease-expo); cursor: pointer; text-decoration: none; border: 1px solid var(--border); border-radius: 50%; }
+    .back-to-top { position: fixed; bottom: 30px; right: var(--px); z-index: 130; width: 54px; height: 54px; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.6s var(--ease-expo); cursor: pointer; text-decoration: none; border: 1px solid var(--border); border-radius: 50%; }
     .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
     .b2t-ring { position: absolute; inset: -1px; width: 56px; height: 56px; transform: rotate(-90deg); pointer-events: none; }
     .b2t-ring-bg { stroke: transparent; fill: none; }
@@ -404,34 +370,77 @@
 
 
     /* ════════════════════════════════════════
-       ★ スマホ・タブレット最適化
+       ★ スマホ・タブレット最適化 (ボトムシート実装)
     ════════════════════════════════════════ */
     @media (max-width: 900px) {
-      /* スマホ用：画面下部の横スクロール・ピル型ドック */
-      .side-link-nav { 
-        top: auto; bottom: 20px; left: 50%; transform: translateX(-50%); 
-        width: calc(100% - 32px); max-width: 600px; height: auto; 
-        flex-direction: row; padding: 12px; border-radius: 100px; 
-        overflow-x: auto; scroll-snap-type: x mandatory; gap: 8px;
-        background: rgba(15, 15, 15, 0.75);
+      /* スマホ用トリガーボタン (スッと隠れるフローティングピル) */
+      .mobile-series-toggle {
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+        z-index: 140; height: 48px; padding: 0 24px; border-radius: 100px;
+        background: rgba(15, 15, 15, 0.7);
+        backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: var(--fg); font-family: var(--en); font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+        cursor: pointer; transition: transform 0.4s var(--ease-expo), opacity 0.4s var(--ease-expo);
       }
-      .side-link-item { 
-        flex: 0 0 auto; padding: 10px 20px; border-radius: 100px; 
-        background: rgba(255, 255, 255, 0.05); scroll-snap-align: center;
+      .mobile-series-toggle:active { transform: translateX(-50%) scale(0.95); }
+      /* スクロールダウン時に非表示にして作品鑑賞の邪魔をしない */
+      .mobile-series-toggle.is-hidden { transform: translate(-50%, 150%); opacity: 0; pointer-events: none; }
+      .mobile-series-toggle svg { color: var(--accent); }
+
+      /* 背景暗転オーバーレイ */
+      .mobile-nav-overlay {
+        display: block; position: fixed; inset: 0; z-index: 145;
+        background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        opacity: 0; pointer-events: none; transition: opacity 0.5s var(--ease-expo);
       }
-      .side-link-item::before { display: none; }
-      .side-link-item:hover { padding-left: 20px; background: rgba(255,255,255,0.1); }
-      .side-link-item:active { transform: scale(0.92); }
-      .side-link-item .nav-title { font-size: 13px; font-weight: 400; color: #fff; }
+      .mobile-nav-overlay.is-active { opacity: 1; pointer-events: auto; }
+
+      /* 下から引き出されるフルスクリーン・ボトムシート */
+      .side-link-nav {
+        top: auto; bottom: 0; left: 0; right: 0; transform: translateY(100%);
+        width: 100%; max-width: 100%; height: auto; max-height: 85vh;
+        flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-content: flex-start;
+        padding: 24px 16px 60px; border-radius: 28px 28px 0 0;
+        background: rgba(12, 12, 12, 0.9); border: 1px solid rgba(255,255,255,0.08); border-bottom: none;
+        box-shadow: 0 -10px 50px rgba(0,0,0,0.8);
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        gap: 12px; overflow-y: auto; overscroll-behavior: contain;
+      }
+      .side-link-nav.is-open { transform: translateY(0); }
+
+      /* シート上部のドラッグハンドル */
+      .side-link-nav::after {
+        content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+        width: 40px; height: 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.15);
+      }
+      .side-link-nav::before { display: none; } /* PC用線の非表示 */
       
-      .back-to-top { bottom: 100px; } 
+      .mobile-nav-header {
+        display: flex; align-items: center; justify-content: space-between;
+        width: 100%; padding: 8px 8px 16px; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.05);
+      }
+      .mobile-nav-title { font-family: var(--en); font-size: 14px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; }
+      .mobile-nav-close { background: none; border: none; color: var(--muted); cursor: pointer; padding: 4px; display: flex; }
+
+      /* スマホでは2列のカードグリッドで一覧性を高める */
+      .side-link-item {
+        flex: 0 0 calc(50% - 6px); padding: 18px 10px; border-radius: 16px;
+        background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.02);
+        justify-content: center; text-align: center; margin: 0;
+      }
+      .side-link-item:hover, .side-link-item:active { background: rgba(255,255,255,0.08); padding-left: 10px; transform: scale(0.96); border-color: rgba(255,255,255,0.1); }
+      .side-link-item .nav-title { font-size: 13px; font-weight: 300; white-space: normal; line-height: 1.4; color: rgba(244, 241, 235, 0.85); }
       
-      /* スマホでは一律のレイアウトで強制上書き（美しさを担保） */
+      /* スマホではグリッドを一律レイアウトで上書き */
       .grid { grid-template-columns: 1fr; gap: 40px; padding: 0; } 
       .gi { grid-column: 1 / -1 !important; aspect-ratio: 4/5 !important; margin-top: 0 !important; border-radius: 12px; }
       .gi-label { bottom: 20px; left: 20px; }
       .scroll-cue { display: none; }
-      
+      .back-to-top { bottom: 90px; right: 16px; width: 44px; height: 44px; }
+      .b2t-ring { width: 46px; height: 46px; }
       footer { padding-bottom: 120px; }
     }
 
@@ -477,8 +486,30 @@
     <a href="contact.html" class="nav-cta" id="nav-cta-btn">Contact</a>
   </nav>
 
-  <!-- FLOATING GLASS DOCK (新サイドナビ) -->
-  <nav class="side-link-nav" aria-label="シリーズ別インデックス">
+  <!-- スマホ用 ボトムシート呼び出しボタン & オーバーレイ -->
+  <button class="mobile-series-toggle" id="mobileSeriesToggle" aria-label="シリーズ一覧を開く" onclick="toggleMobileSeries()">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="7" height="7"></rect>
+      <rect x="14" y="3" width="7" height="7"></rect>
+      <rect x="14" y="14" width="7" height="7"></rect>
+      <rect x="3" y="14" width="7" height="7"></rect>
+    </svg>
+    <span>Series Index</span>
+  </button>
+  <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="toggleMobileSeries()"></div>
+
+  <!-- FLOATING GLASS DOCK (PCはサイドナビ / スマホはボトムシート) -->
+  <nav class="side-link-nav" id="sideLinkNav" aria-label="シリーズ別インデックス">
+    <div class="mobile-nav-header">
+      <span class="mobile-nav-title">Series Index</span>
+      <button class="mobile-nav-close" aria-label="閉じる" onclick="toggleMobileSeries()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    
     <a href="work-forest.html" class="side-link-item">
       <span class="nav-title">森林</span>
     </a>
@@ -546,7 +577,7 @@
   </div>
 
   <main class="gallery" id="gallery">
-    <!-- JSによって順番、サイズ、マージンが完全ランダムに再構築されます -->
+    <!-- ランダムグリッド -->
     <div class="grid" id="grid">
       <article class="gi" data-images="images/【F100横】森20251217.jpg">
         <img src="images/【F100横】森20251217.jpg" alt="森林">
@@ -670,7 +701,7 @@
     </div>
   </main>
 
-  <!-- CONTACT (グラスモーフィズムカード) -->
+  <!-- CONTACT -->
   <section class="contact-section" id="contact">
     <div class="contact-card">
       <span class="section-label">Contact</span>
@@ -704,6 +735,23 @@
   </a>
 
   <script>
+    // ===== スマホ用ボトムシートの開閉処理 =====
+    function toggleMobileSeries() {
+      const sideNav = document.getElementById('sideLinkNav');
+      const navOverlay = document.getElementById('mobileNavOverlay');
+      const isOpen = sideNav.classList.contains('is-open');
+      
+      if (isOpen) {
+        sideNav.classList.remove('is-open');
+        navOverlay.classList.remove('is-active');
+        document.body.style.overflow = '';
+      } else {
+        sideNav.classList.add('is-open');
+        navOverlay.classList.add('is-active');
+        document.body.style.overflow = 'hidden'; // 背面のスクロールを防止してUX向上
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => document.getElementById('top-nav')?.classList.add('is-loaded'), 150);
 
@@ -727,7 +775,6 @@
       if (titleJpEl) {
         const text = titleJpEl.textContent.trim();
         titleJpEl.textContent = ''; 
-        
         [...text].forEach((ch, i) => {
           const s = document.createElement('span');
           s.className = 'char';
@@ -768,16 +815,20 @@
 
       const topNav = document.getElementById('top-nav');
       const b2t = document.getElementById('backToTop');
+      const mobileToggle = document.getElementById('mobileSeriesToggle');
       let ticking = false;
+      let lastScrollY = window.scrollY;
       
       window.addEventListener('scroll', () => {
         if (!ticking) {
           requestAnimationFrame(() => {
             const scrollY = window.scrollY;
             
+            // ヘッダー背景
             if (scrollY > 60) topNav.classList.add('scrolled');
             else topNav.classList.remove('scrolled');
 
+            // Back To Top 表示/進捗
             if (b2t) {
               if (scrollY > window.innerHeight * 0.4) b2t.classList.add('is-visible');
               else b2t.classList.remove('is-visible');
@@ -790,6 +841,17 @@
               }
             }
 
+            // モバイル用ボトムトリガーの表示制御 (スクロールダウンで隠す/アップで表示)
+            if (mobileToggle && window.innerWidth <= 900) {
+              if (scrollY > lastScrollY && scrollY > 200) {
+                mobileToggle.classList.add('is-hidden');
+              } else {
+                mobileToggle.classList.remove('is-hidden');
+              }
+            }
+            lastScrollY = scrollY;
+
+            // スマホヘッダーメニューをスクロールで閉じる
             if (document.getElementById('nav-links').classList.contains('open')) {
               if (Math.abs(scrollY - window.menuOpenScrollY || 0) > 40) closeMenu();
             }
@@ -806,19 +868,17 @@
         });
       }
 
-      /* ====================================================================
-         ★ DYNAMIC RANDOM GRID (並び順・サイズ・ズレの完全シャッフル)
-      ==================================================================== */
+      /* ===== ランダムグリッドの実装 ===== */
       const grid = document.getElementById('grid');
       if (grid) {
-        // 1. 作品要素の取得と配列自体のシャッフル（表示される順序をランダム化）
+        // 作品要素の順序をシャッフル
         const items = Array.from(grid.children);
         for (let i = items.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [items[i], items[j]] = [items[j], items[i]];
         }
         
-        // 2. 空間を美しく埋めるためのレイアウト・プリセット群を定義し、これもシャッフル
+        // レイアウト定義群のシャッフル
         const layoutPresets = [
           { span: 7, ratio: '16/10', mt: '0px' },
           { span: 5, ratio: '3/4',   mt: '80px' },
@@ -838,7 +898,7 @@
           [layoutPresets[i], layoutPresets[j]] = [layoutPresets[j], layoutPresets[i]];
         }
 
-        // 3. シャッフル済みの作品要素にランダムなレイアウト変数を割り当ててDOMに再挿入
+        // 変数割り当てと再挿入
         const frag = document.createDocumentFragment();
         items.forEach((el, i) => {
           const preset = layoutPresets[i];
