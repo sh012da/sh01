@@ -144,7 +144,7 @@
 
     /* ════════════════════════════════════════
        ★ PC用 Floating Glass Dock (サイドナビ)
-       ※ スマホ向けのUI要素はPCでは非表示
+       ※ホバー時に「左端へ伸びる光の筋」アニメーションを実装
     ════════════════════════════════════════ */
     .mobile-series-toggle, .mobile-nav-overlay, .mobile-nav-header { display: none; }
 
@@ -165,25 +165,46 @@
       position: relative; display: flex; align-items: center; justify-content: flex-start;
       width: 100%; padding: 12px 16px; border-radius: 12px;
       color: rgba(244, 241, 235, 0.5); text-decoration: none;
-      transition: all 0.4s var(--ease-expo); overflow: hidden;
+      background: transparent;
+      transition: background 0.4s ease, color 0.4s ease, transform 0.2s ease; overflow: hidden;
     }
+    
+    /* 左端のインジケーター（縦線） */
     .side-link-item::before {
       content: ''; position: absolute; left: 0; top: 25%; width: 3px; height: 50%;
       background: var(--accent); border-radius: 0 4px 4px 0;
       transform: scaleY(0); opacity: 0; transition: all 0.4s var(--ease-out-back);
+      z-index: 2;
     }
-    @media (hover: hover) {
-      .side-link-item:hover {
-        background: rgba(255, 255, 255, 0.08); color: #ffffff; padding-left: 24px;
-      }
-      .side-link-item:hover::before { transform: scaleY(1); opacity: 1; }
+
+    /* 右から左端へ向かってシュッと伸びる光の筋 */
+    .side-link-item::after {
+      content: ''; position: absolute; bottom: 0; right: 0; width: 100%; height: 1px;
+      background: linear-gradient(to left, transparent 0%, rgba(229, 211, 179, 0.2) 40%, rgba(229, 211, 179, 0.9) 100%);
+      transform: scaleX(0); transform-origin: right;
+      opacity: 0; transition: transform 0.6s var(--ease-expo), opacity 0.4s ease;
+      z-index: 2; pointer-events: none;
     }
-    .side-link-item:active {
-      transform: scale(0.96); background: rgba(0, 0, 0, 0.5);
-    }
+
     .side-link-item .nav-title {
       font-family: var(--jp); font-size: 13px; font-weight: 300; letter-spacing: 0.1em;
-      transition: color 0.3s ease; z-index: 2;
+      transition: transform 0.4s var(--ease-expo), color 0.3s ease; z-index: 3;
+    }
+
+    /* スムーズで上品なホバー連動エフェクト */
+    @media (hover: hover) {
+      .side-link-item:hover {
+        background: rgba(255, 255, 255, 0.04); color: #ffffff; 
+      }
+      .side-link-item:hover .nav-title {
+        transform: translateX(8px); /* テキストが少しだけ右へスライド */
+      }
+      .side-link-item:hover::before { transform: scaleY(1); opacity: 1; }
+      .side-link-item:hover::after { transform: scaleX(1); opacity: 1; }
+    }
+    
+    .side-link-item:active {
+      transform: scale(0.96); background: rgba(0, 0, 0, 0.5);
     }
 
 
@@ -373,7 +394,7 @@
        ★ スマホ・タブレット最適化 (ボトムシート実装)
     ════════════════════════════════════════ */
     @media (max-width: 900px) {
-      /* スマホ用トリガーボタン (スッと隠れるフローティングピル) */
+      /* スマホ用トリガーボタン */
       .mobile-series-toggle {
         display: flex; align-items: center; justify-content: center; gap: 8px;
         position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
@@ -386,7 +407,6 @@
         cursor: pointer; transition: transform 0.4s var(--ease-expo), opacity 0.4s var(--ease-expo);
       }
       .mobile-series-toggle:active { transform: translateX(-50%) scale(0.95); }
-      /* スクロールダウン時に非表示にして作品鑑賞の邪魔をしない */
       .mobile-series-toggle.is-hidden { transform: translate(-50%, 150%); opacity: 0; pointer-events: none; }
       .mobile-series-toggle svg { color: var(--accent); }
 
@@ -398,7 +418,7 @@
       }
       .mobile-nav-overlay.is-active { opacity: 1; pointer-events: auto; }
 
-      /* 下から引き出されるフルスクリーン・ボトムシート */
+      /* ボトムシート */
       .side-link-nav {
         top: auto; bottom: 0; left: 0; right: 0; transform: translateY(100%);
         width: 100%; max-width: 100%; height: auto; max-height: 85vh;
@@ -410,13 +430,11 @@
         gap: 12px; overflow-y: auto; overscroll-behavior: contain;
       }
       .side-link-nav.is-open { transform: translateY(0); }
-
-      /* シート上部のドラッグハンドル */
       .side-link-nav::after {
         content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
         width: 40px; height: 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.15);
       }
-      .side-link-nav::before { display: none; } /* PC用線の非表示 */
+      .side-link-nav::before { display: none; }
       
       .mobile-nav-header {
         display: flex; align-items: center; justify-content: space-between;
@@ -425,16 +443,18 @@
       .mobile-nav-title { font-family: var(--en); font-size: 14px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; }
       .mobile-nav-close { background: none; border: none; color: var(--muted); cursor: pointer; padding: 4px; display: flex; }
 
-      /* スマホでは2列のカードグリッドで一覧性を高める */
+      /* スマホでは2列のカードグリッド */
       .side-link-item {
         flex: 0 0 calc(50% - 6px); padding: 18px 10px; border-radius: 16px;
         background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.02);
         justify-content: center; text-align: center; margin: 0;
       }
-      .side-link-item:hover, .side-link-item:active { background: rgba(255,255,255,0.08); padding-left: 10px; transform: scale(0.96); border-color: rgba(255,255,255,0.1); }
-      .side-link-item .nav-title { font-size: 13px; font-weight: 300; white-space: normal; line-height: 1.4; color: rgba(244, 241, 235, 0.85); }
+      .side-link-item:hover, .side-link-item:active { background: rgba(255,255,255,0.08); transform: scale(0.96); border-color: rgba(255,255,255,0.1); }
+      .side-link-item .nav-title { font-size: 13px; font-weight: 300; white-space: normal; line-height: 1.4; color: rgba(244, 241, 235, 0.85); transform: none !important; }
       
-      /* スマホではグリッドを一律レイアウトで上書き */
+      /* スマホでは光の筋等を非表示 */
+      .side-link-item::after, .side-link-item::before { display: none; }
+      
       .grid { grid-template-columns: 1fr; gap: 40px; padding: 0; } 
       .gi { grid-column: 1 / -1 !important; aspect-ratio: 4/5 !important; margin-top: 0 !important; border-radius: 12px; }
       .gi-label { bottom: 20px; left: 20px; }
@@ -498,7 +518,7 @@
   </button>
   <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="toggleMobileSeries()"></div>
 
-  <!-- FLOATING GLASS DOCK (PCはサイドナビ / スマホはボトムシート) -->
+  <!-- FLOATING GLASS DOCK -->
   <nav class="side-link-nav" id="sideLinkNav" aria-label="シリーズ別インデックス">
     <div class="mobile-nav-header">
       <span class="mobile-nav-title">Series Index</span>
