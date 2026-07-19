@@ -38,7 +38,7 @@
       --ease-fluid: cubic-bezier(0.76, 0, 0.24, 1);
       --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
       --px: clamp(20px, 5vw, 80px);
-      --dock-width: clamp(200px, 18vw, 320px); /* ナビ幅を少しスリムに洗練 */
+      --dock-width: clamp(200px, 18vw, 320px);
     }
 
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -143,21 +143,18 @@
     .nav-hamburger span { display: block; width: 22px; height: 0.5px; background: var(--accent); margin: 6px 0; transition: all 0.25s; }
 
     /* ════════════════════════════════════════
-       ★ マトリクス・レーン (PC用洗練サイドナビゲーション)
+       ★ マトリクス・レーン (PC用 洗練サイドナビゲーション)
     ════════════════════════════════════════ */
     .side-link-nav {
       position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 150;
       display: flex; flex-direction: column; justify-content: center;
       width: var(--dock-width); max-height: 90vh;
       overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none;
-      /* 背景をより上品なグラスモーフィズムに */
       background: linear-gradient(to left, rgba(5,5,5,0.7) 0%, rgba(5,5,5,0.2) 80%, transparent 100%);
       backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      border: none;
-      padding: 30px 0;
+      border: none; padding: 30px 0;
     }
     .side-link-nav::-webkit-scrollbar { display: none; }
-    /* かすかな区切り線 */
     .side-link-nav::before {
       content: ''; position: absolute; left: 0; top: 10%; width: 1px; height: 80%;
       background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.03), transparent);
@@ -169,7 +166,7 @@
       padding: 10px 30px;
       color: rgba(244, 241, 235, 0.4); text-decoration: none; background: transparent;
       border: none;
-      /* transformやletter-spacingの変化を一切排除し、ブレを根絶 */
+      overflow: hidden; /* 波紋エフェクトがはみ出さないように */
       transition: background 0.3s ease, opacity 0.4s ease;
     }
 
@@ -180,30 +177,43 @@
       transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); z-index: 2;
     }
 
-    /* === Dynamic Focus Effect (PCホバー時) === */
+    /* === Dynamic Focus Effect (PCホバー・クリック時) === */
     @media (hover: hover) and (pointer: fine) {
-      /* 自分がホバーされていない時、位置は動かさずに透明度だけ少し下げる */
       .side-link-nav:hover .side-link-item:not(:hover) {
         opacity: 0.55; 
       }
 
-      /* ホバー時の美しいハイライト（レイアウト崩れなし） */
       .side-link-item:hover { 
-        background: rgba(255, 255, 255, 0.03); 
+        background: linear-gradient(90deg, rgba(255,255,255,0.01) 0%, rgba(212,197,179,0.05) 100%);
       }
       .side-link-item:hover::before { 
         transform: scaleY(1); 
-        box-shadow: -2px 0 10px rgba(212, 197, 179, 0.3); 
+        box-shadow: -2px 0 12px rgba(212, 197, 179, 0.4); 
       }
 
-      /* クリック時の押しごたえ（過剰な縮小と影を排除） */
+      /* ★ 改善：ガタつかずに「沈む・光る」究極のクリック感 ★ */
       .side-link-item:active {
-        background: rgba(255, 255, 255, 0.06);
-        transition: background 0.1s;
+        background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(212,197,179,0.12) 100%);
+        /* 内側に影を落として「物理的な押し込み（奥行き）」を表現 */
+        box-shadow: inset -5px 0 15px rgba(0,0,0,0.6);
+        transition: background 0.05s ease, box-shadow 0.05s ease;
+      }
+      /* 押し込んだ瞬間、インジケーターが発光して少し沈む */
+      .side-link-item:active .nav-indicator {
+        background: #fff;
+        box-shadow: 0 0 15px #fff, 0 0 5px var(--accent);
+        transform: scale(0.9);
+        transition: all 0.05s ease;
+      }
+      /* 押し込んだ瞬間、テキストが一瞬発光 */
+      .side-link-item:active .nav-title {
+        color: #fff;
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+        transition: all 0.05s ease;
       }
     }
 
-    /* インジケーター（シンプルなドット） */
+    /* インジケーター */
     .side-link-item .nav-indicator {
       display: block; width: 4px; height: 4px; background: rgba(244, 241, 235, 0.3); margin-right: 15px;
       flex-shrink: 0; position: relative; z-index: 3; transition: all 0.3s var(--ease-expo);
@@ -212,20 +222,37 @@
     .side-link-item:hover .nav-indicator { 
       background: var(--accent); 
       box-shadow: 0 0 8px var(--accent); 
-      transform: scale(1.5); /* 拡大のみで要素を動かさない */
+      transform: scale(1.5); 
     }
 
-    /* テキストの変容（ブレない） */
+    /* テキスト */
     .side-link-item .nav-title {
       position: relative; z-index: 3; font-family: var(--jp); font-size: clamp(12px, 1vw, 13px);
       font-weight: 300; letter-spacing: 0.1em; line-height: 1.4; color: rgba(244, 241, 235, 0.6);
       white-space: normal; word-break: auto-phrase;
-      /* letter-spacingのアニメーションを削除し、純粋な色の変化のみに */
       transition: color 0.3s ease, text-shadow 0.3s ease;
     }
     .side-link-item:hover .nav-title {
       color: #ffffff; font-weight: 400; 
       text-shadow: 0 0 10px rgba(212, 197, 179, 0.5);
+    }
+
+    /* ─── CYBER RIPPLE EFFECT (PC・スマホ両対応のクリック波紋) ─── */
+    .cyber-ripple {
+      position: absolute;
+      width: 2px; height: 2px;
+      /* 中心から広がるグラデーションと光るボーダー */
+      background: radial-gradient(circle, rgba(212, 197, 179, 0.4) 0%, transparent 70%);
+      border: 1px solid rgba(212, 197, 179, 0.6);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1; pointer-events: none;
+      animation: cyberRippleAnim 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      z-index: 0;
+    }
+    @keyframes cyberRippleAnim {
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 2px; }
+      100% { transform: translate(-50%, -50%) scale(120); opacity: 0; border-width: 0px; }
     }
 
     /* ════════════════════════════════════════
@@ -441,22 +468,6 @@
     .mouse-tooltip.visible { opacity: 1; }
     @media (pointer: coarse) { .mouse-tooltip { display: none !important; } }
 
-    /* ─── CYBER RIPPLE EFFECT (スマホ用タップフィードバック - 控えめに改善) ─── */
-    .cyber-ripple {
-      position: absolute;
-      width: 2px; height: 2px;
-      background: rgba(212, 197, 179, 0.4);
-      border-radius: 50%;
-      transform: translate(-50%, -50%) scale(1);
-      opacity: 1; pointer-events: none;
-      animation: cyberRippleAnim 0.6s ease-out forwards;
-      z-index: 0;
-    }
-    @keyframes cyberRippleAnim {
-      0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-      100% { transform: translate(-50%, -50%) scale(40); opacity: 0; }
-    }
-
     /* ─── BACK TO TOP BUTTON ─── */
     .back-to-top { position: fixed; bottom: 30px; right: var(--px); z-index: 160; width: 54px; height: 54px; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.6s var(--ease-expo); cursor: pointer; text-decoration: none; border: 1px solid var(--border); border-radius: 50%; }
     .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
@@ -483,7 +494,7 @@
         background: rgba(15, 15, 15, 0.85); 
         backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
         border: 1px solid rgba(255, 255, 255, 0.1); 
-        border-radius: 28px; /* スタイリッシュなカプセル型 */
+        border-radius: 28px; 
         overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; 
         box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       }
@@ -494,16 +505,14 @@
         background: rgba(255, 255, 255, 0.05); border: 1px solid transparent; border-radius: 20px; 
         justify-content: center; align-items: center; scroll-snap-align: center; 
         position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; 
-        /* PC用ホバー・フォーカス効果を強制無効化してブレを防ぐ */
+        /* PC用ホバー・フォーカス効果を強制無効化 */
         opacity: 1 !important; transform: none !important;
         transition: background 0.3s ease, border-color 0.3s ease;
       }
       .side-link-item::before, .side-link-item::after { display: none !important; }
       
-      /* PC用「他の要素を暗くする」効果を無効化 */
       .side-link-nav:hover .side-link-item:not(:hover) { opacity: 1 !important; filter: none !important; }
       
-      /* スマホ・タブレットではインジケーターを非表示にし、テキストのみでスッキリさせる */
       .side-link-item .nav-indicator { display: none; }
       
       .side-link-item .nav-title { 
@@ -511,11 +520,10 @@
         letter-spacing: 0.05em; text-shadow: none; transition: color 0.3s ease;
       }
       
-      /* ★ スマホ：タップ時のブレ・ガタつき解消 (.is-tapped) ★ */
+      /* ★ スマホ：タップ時のブレ・ガタつき解消 ★ */
       .side-link-item:active, .side-link-item.is-tapped {
         background: rgba(212, 197, 179, 0.15);
         border-color: rgba(212, 197, 179, 0.3);
-        /* 縮小率をごく僅かに抑え、レイアウト崩れ・ブレを完全に除去 */
         transform: scale(0.97) !important;
         transition: transform 0.1s ease, background 0.1s, border-color 0.1s;
       }
@@ -523,11 +531,9 @@
         color: #fff;
       }
 
-      /* Back to Top の位置調整（カプセルナビゲーションに被らないように上昇） */
       .back-to-top { bottom: 100px; right: 16px; width: 48px; height: 48px; }
       .b2t-ring { width: 50px; height: 50px; }
       
-      /* コンタクトセクション等の余白調整（ナビゲーション分） */
       .contact-section { padding-bottom: 120px; }
       footer { padding-bottom: 120px; }
     }
@@ -979,19 +985,21 @@
       if (secHeader) io.observe(secHeader);
       document.querySelectorAll('.gi').forEach(el => io.observe(el));
       
-      // 9. スマホ用サイドナビのタップフィードバック (控えめで上品な Cyber Ripple に改善)
+      // 9. 究極のクリック・タップフィードバック (Cyber Ripple)
       document.querySelectorAll('.side-link-item').forEach(link => {
         link.addEventListener('touchstart', function() {}, {passive: true});
         
+        // pointerdown に統合し、PC(マウス)とスマホ(タッチ)の両方で波紋を発生させる
         link.addEventListener('pointerdown', function(e) {
-          if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-
+          // 既存の波紋があれば削除
           const existingRipple = this.querySelector('.cyber-ripple');
           if(existingRipple) existingRipple.remove();
 
+          // 新しい波紋要素を生成
           const ripple = document.createElement('span');
           ripple.classList.add('cyber-ripple');
           
+          // クリックされた座標を取得して波紋の中心に設定
           const rect = this.getBoundingClientRect();
           const x = e.clientX ? e.clientX - rect.left : rect.width / 2;
           const y = e.clientY ? e.clientY - rect.top : rect.height / 2;
@@ -1000,8 +1008,11 @@
           ripple.style.top = `${y}px`;
           
           this.appendChild(ripple);
+          
+          // スマホ用の縮小クラス付与（PCでは無効化されているため安全）
           this.classList.add('is-tapped');
           
+          // 波紋アニメーションが終わる頃にクラスを外す
           setTimeout(() => { this.classList.remove('is-tapped'); }, 400); 
         });
         
