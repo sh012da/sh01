@@ -154,7 +154,7 @@
       background: linear-gradient(to left, rgba(5,5,5,1) 15%, rgba(5,5,5,0.7) 60%, transparent 100%);
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border: none;
-      padding: 20px 0; /* 上下に少し余白 */
+      padding: 20px 0;
     }
     .side-link-nav::-webkit-scrollbar { display: none; }
 
@@ -175,24 +175,26 @@
     @media (hover: hover) and (pointer: fine) {
       /* 自分がホバーされていない時（他の兄弟がホバーされている時）の退避と暗転 */
       .side-link-nav:hover .side-link-item:not(:hover) {
-        opacity: 0.25;
-        transform: translateX(6px) scale(0.98);
+        /* やりすぎないように視認性を確保 (0.25 -> 0.45 へ修正) */
+        opacity: 0.45;
+        /* 退避距離も少し控えめに (6px -> 4px) */
+        transform: translateX(4px) scale(0.98);
       }
 
       /* 自分がホバーされた時の『せり出し』と『発光パネル化』 */
       .side-link-item:hover { 
-        transform: translateX(-16px) scale(1.02); /* 左へ大きくせり出し、拡大（圧倒的な存在感） */
-        background: rgba(20, 20, 20, 0.9); /* 自身の背景を実体化 */
+        transform: translateX(-16px) scale(1.02);
+        background: rgba(20, 20, 20, 0.9);
         box-shadow: -15px 0 30px -5px rgba(212, 197, 179, 0.15), 
-                    inset 1px 0 0 rgba(212, 197, 179, 0.4); /* 左エッジの鋭いハイライト */
+                    inset 1px 0 0 rgba(212, 197, 179, 0.4);
         z-index: 10;
       }
 
       /* クリック時の『押しごたえ（物理的フィードバック）』 */
       .side-link-item:active {
-        transform: translateX(-6px) scale(0.97); /* 奥へ押し込まれる */
+        transform: translateX(-6px) scale(0.97);
         background: rgba(212, 197, 179, 0.12);
-        box-shadow: inset 8px 0 20px rgba(0, 0, 0, 0.9); /* 内部シャドウで物理的な凹みを表現 */
+        box-shadow: inset 8px 0 20px rgba(0, 0, 0, 0.9);
         transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), background 0.1s, box-shadow 0.1s;
       }
     }
@@ -540,7 +542,7 @@
         background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 4px; 
         justify-content: center; align-items: center; scroll-snap-align: start; 
         position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; 
-        /* ★ PC用のホバー効果を強制上書き（無効化） */
+        /* PC用のホバー効果を強制上書き（無効化） */
         transform: translateZ(0) scale(1) !important;
         opacity: 1 !important;
         transition: transform 0.4s var(--ease-out-back), background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
@@ -562,9 +564,10 @@
         transition: all 0.3s ease;
       }
       
-      /* タップされ、押し込まれた瞬間のボタンスタイル (.is-tapped) */
+      /* ★ スマホ：タップ時のブレ・ガタつき解消 (.is-tapped) ★ */
       .side-link-item.is-tapped {
-        transform: scale(0.92) !important;
+        /* 縮小率を和らげ、レイアウト崩れ・ブレを防ぐ */
+        transform: scale(0.96) !important;
         background: rgba(212, 197, 179, 0.12);
         border-color: rgba(212, 197, 179, 0.8);
         box-shadow: 0 0 20px rgba(212, 197, 179, 0.3), inset 0 0 15px rgba(212, 197, 179, 0.15);
@@ -573,12 +576,12 @@
       .side-link-item.is-tapped .nav-indicator {
         background: #fff;
         box-shadow: 0 0 10px #fff, 0 0 20px var(--accent);
-        transform: scale(1.8) rotate(45deg) !important;
+        transform: scale(1.6) rotate(45deg) !important;
         transition: all 0.1s;
       }
       .side-link-item.is-tapped .nav-title {
         color: #fff;
-        letter-spacing: 0.18em !important;
+        /* 文字が横に広がる（letter-spacing拡大）のを廃止し、ブレを完全に除去 */
         text-shadow: 0 0 12px rgba(212, 197, 179, 0.9);
         transition: all 0.1s;
       }
