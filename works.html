@@ -78,34 +78,28 @@
     @keyframes sweepH { 0% { left:-100%; opacity:0; } 10% { opacity:1; } 40% { opacity:1; height: 2px; } 100% { left:100%; opacity:0; } }
     @keyframes sweepV { 0% { top:-100%; opacity:0; } 10% { opacity:1; } 40% { opacity:1; width: 2px; } 100% { top:100%; opacity:0; } }
 
-    /* ─── 画面全体を貫くホバー光線 (レーザービーム) ─── */
+    /* ─── 画面全体を貫くホバー光線 (レーザービーム - PC専用) ─── */
     .global-light-line {
       position: fixed; left: 0; width: 100vw; 
-      height: 2px; /* 単なる線ではなく、太さを持たせる */
-      z-index: 140; /* ドック(150)の背後、コンテンツの手前。グラス越しに光る */
+      height: 2px;
+      z-index: 140; 
       pointer-events: none;
-      mix-blend-mode: screen; /* 発光合成。下の要素を一切隠さず照らし出す */
-      
-      /* 左から右へエネルギーが高まるグラデーション */
+      mix-blend-mode: screen; 
       background: linear-gradient(90deg, 
         rgba(229, 211, 179, 0) 0%, 
         rgba(229, 211, 179, 0.4) 40%, 
         rgba(255, 255, 255, 0.9) 95%,
         rgba(255, 255, 255, 1) 100%
       );
-      /* レーザーのような強い光彩(オーラ) */
       box-shadow: 0 0 10px rgba(229, 211, 179, 0.8), 0 0 30px rgba(229, 211, 179, 0.4);
-      
-      /* 左端から右端へシュッと伸びる */
       transform: scaleX(0); transform-origin: left; opacity: 0;
-      
-      /* 上下移動、幅の変化、光るアニメーションをすべて滑らかに */
       transition: transform 0.6s var(--ease-expo), opacity 0.4s ease, top 0.4s var(--ease-expo);
     }
     .global-light-line.is-active {
       transform: scaleX(1); opacity: 1;
     }
-    @media (max-width: 900px) {
+    /* 1199px以下のタブレット・スマホでは非表示 */
+    @media (max-width: 1199px) {
       .global-light-line { display: none !important; }
     }
 
@@ -175,6 +169,7 @@
 
     /* ════════════════════════════════════════
        ★ PC用 Floating Glass Dock (サイドナビ)
+       (※タブレット・スマホ時の上書きは後述のメディアクエリで対応)
     ════════════════════════════════════════ */
     .mobile-series-toggle, .mobile-nav-overlay, .mobile-nav-header { display: none; }
 
@@ -199,7 +194,6 @@
       transition: background 0.4s ease, color 0.4s ease, transform 0.2s ease; overflow: hidden;
     }
     
-    /* 左端のインジケーター（アクセント） */
     .side-link-item::before {
       content: ''; position: absolute; left: 0; top: 25%; width: 3px; height: 50%;
       background: var(--accent); border-radius: 0 4px 4px 0;
@@ -212,8 +206,7 @@
       transition: transform 0.4s var(--ease-expo), color 0.3s ease; z-index: 3;
     }
 
-    /* ホバー時のテキストスライド連動 */
-    @media (hover: hover) {
+    @media (hover: hover) and (min-width: 1200px) {
       .side-link-item:hover {
         background: rgba(255, 255, 255, 0.04); color: #ffffff; 
       }
@@ -411,9 +404,11 @@
 
 
     /* ════════════════════════════════════════
-       ★ スマホ・タブレット最適化 (ボトムシート実装)
+       ★ タブレット・スマホ最適化 (1199px以下)
+       ※iPad等でもボトムシートUIを使用し、かつタップ体験を極上に。
     ════════════════════════════════════════ */
-    @media (max-width: 900px) {
+    @media (max-width: 1199px) {
+      /* タブレット・スマホ用トリガーボタン */
       .mobile-series-toggle {
         display: flex; align-items: center; justify-content: center; gap: 8px;
         position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
@@ -429,6 +424,7 @@
       .mobile-series-toggle.is-hidden { transform: translate(-50%, 150%); opacity: 0; pointer-events: none; }
       .mobile-series-toggle svg { color: var(--accent); }
 
+      /* 背景暗転オーバーレイ */
       .mobile-nav-overlay {
         display: block; position: fixed; inset: 0; z-index: 145;
         background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
@@ -436,6 +432,7 @@
       }
       .mobile-nav-overlay.is-active { opacity: 1; pointer-events: auto; }
 
+      /* ボトムシート本体 */
       .side-link-nav {
         top: auto; bottom: 0; left: 0; right: 0; transform: translateY(100%);
         width: 100%; max-width: 100%; height: auto; max-height: 85vh;
@@ -460,23 +457,37 @@
       .mobile-nav-title { font-family: var(--en); font-size: 14px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; }
       .mobile-nav-close { background: none; border: none; color: var(--muted); cursor: pointer; padding: 4px; display: flex; }
 
+      /* ボトムシート内のカード型ボタン */
       .side-link-item {
         flex: 0 0 calc(50% - 6px); padding: 18px 10px; border-radius: 16px;
         background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.02);
         justify-content: center; text-align: center; margin: 0;
+        transition: background 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, border-color 0.2s ease;
       }
-      .side-link-item:hover, .side-link-item:active { background: rgba(255,255,255,0.08); transform: scale(0.96); border-color: rgba(255,255,255,0.1); }
-      .side-link-item .nav-title { font-size: 13px; font-weight: 300; white-space: normal; line-height: 1.4; color: rgba(244, 241, 235, 0.85); transform: none !important; }
       
-      .grid { grid-template-columns: 1fr; gap: 40px; padding: 0; } 
-      .gi { grid-column: 1 / -1 !important; aspect-ratio: 4/5 !important; margin-top: 0 !important; border-radius: 12px; }
-      .gi-label { bottom: 20px; left: 20px; }
-      .scroll-cue { display: none; }
-      .back-to-top { bottom: 90px; right: 16px; width: 44px; height: 44px; }
-      .b2t-ring { width: 46px; height: 46px; }
-      footer { padding-bottom: 120px; }
+      /* タッチ/クリック時の「明確な反転発光フィードバック」 (.is-tappedはJSで付与) */
+      .side-link-item:active, .side-link-item.is-tapped { 
+        background: var(--accent) !important; 
+        border-color: var(--accent) !important; 
+        transform: scale(0.92) !important; 
+        box-shadow: 0 0 24px rgba(229, 211, 179, 0.6) !important; 
+        transition: all 0.05s ease !important; /* 押した瞬間に即座に反応 */
+      }
+      
+      .side-link-item .nav-title { 
+        font-size: 13px; font-weight: 300; white-space: normal; line-height: 1.4; color: rgba(244, 241, 235, 0.85); 
+        transform: none !important; 
+        transition: color 0.2s ease, font-weight 0.2s ease;
+      }
+      .side-link-item:active .nav-title, .side-link-item.is-tapped .nav-title { 
+        color: var(--bg) !important; font-weight: 600 !important; 
+      }
     }
 
+    /* ════════════════════════════════════════
+       ★ スマホ専用 (768px以下)
+       ※ギャラリーの1列化や余白の最適化
+    ════════════════════════════════════════ */
     @media (max-width: 768px) {
       nav#top-nav { padding: 1rem 1.25rem; }
       nav#top-nav.scrolled { padding: 0.8rem 1.25rem; }
@@ -486,6 +497,16 @@
       footer { padding: 3rem 1.5rem 120px; display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
       .contact-card { padding: 60px 20px; border-radius: 20px; }
       .contact-btn { width: 100%; }
+      
+      /* ギャラリーを1列に上書き */
+      .grid { grid-template-columns: 1fr; gap: 40px; padding: 0; } 
+      .gi { grid-column: 1 / -1 !important; aspect-ratio: 4/5 !important; margin-top: 0 !important; border-radius: 12px; }
+      .gi-label { bottom: 20px; left: 20px; }
+      .scroll-cue { display: none; }
+      
+      .back-to-top { bottom: 90px; right: 16px; width: 44px; height: 44px; }
+      .b2t-ring { width: 46px; height: 46px; }
+      footer { padding-bottom: 120px; }
     }
   </style>
 </head>
@@ -519,7 +540,7 @@
     <a href="contact.html" class="nav-cta" id="nav-cta-btn">Contact</a>
   </nav>
 
-  <!-- スマホ用 ボトムシート呼び出しボタン & オーバーレイ -->
+  <!-- モバイル＆タブレット用 ボトムシート呼び出しボタン & オーバーレイ -->
   <button class="mobile-series-toggle" id="mobileSeriesToggle" aria-label="シリーズ一覧を開く" onclick="toggleMobileSeries()">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
       <rect x="3" y="3" width="7" height="7"></rect>
@@ -531,7 +552,7 @@
   </button>
   <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="toggleMobileSeries()"></div>
 
-  <!-- FLOATING GLASS DOCK (PCはサイドナビ / スマホはボトムシート) -->
+  <!-- FLOATING GLASS DOCK (PCはサイドナビ / タブレット・スマホはボトムシート) -->
   <nav class="side-link-nav" id="sideLinkNav" aria-label="シリーズ別インデックス">
     <div class="mobile-nav-header">
       <span class="mobile-nav-title">Series Index</span>
@@ -767,7 +788,7 @@
   </a>
 
   <script>
-    // ===== スマホ用ボトムシートの開閉処理 =====
+    // ===== モバイル＆タブレット用ボトムシートの開閉処理 =====
     function toggleMobileSeries() {
       const sideNav = document.getElementById('sideLinkNav');
       const navOverlay = document.getElementById('mobileNavOverlay');
@@ -871,7 +892,8 @@
               }
             }
 
-            if (mobileToggle && window.innerWidth <= 900) {
+            // モバイル・タブレット用 (1199px以下)
+            if (mobileToggle && window.innerWidth <= 1199) {
               if (scrollY > lastScrollY && scrollY > 200) {
                 mobileToggle.classList.add('is-hidden');
               } else {
@@ -896,22 +918,37 @@
         });
       }
 
-      /* ===== 画面全体を左から右へ貫くホバー光線 (レーザービーム) ===== */
+      /* ===== 画面全体を左から右へ貫くホバー光線 (レーザービーム: PC専用) ===== */
       const globalLight = document.createElement('div');
       globalLight.className = 'global-light-line';
       document.body.appendChild(globalLight);
 
       document.querySelectorAll('.side-link-item').forEach(item => {
+        // PCホバー時の追従
         item.addEventListener('mouseenter', () => {
-          if (window.innerWidth > 900) {
+          if (window.innerWidth > 1199) {
             const rect = item.getBoundingClientRect();
-            // アイテムの垂直中央を光が貫通する（数pxのズレを微調整）
             globalLight.style.top = `${rect.top + rect.height / 2 - 1}px`;
             globalLight.classList.add('is-active');
           }
         });
         item.addEventListener('mouseleave', () => {
           globalLight.classList.remove('is-active');
+        });
+
+        // モバイル・タブレット時の明確なタップフィードバック
+        item.addEventListener('pointerdown', function() {
+          if (window.innerWidth <= 1199) {
+            // 他のアイテムについているクラスをリセット
+            document.querySelectorAll('.side-link-item').forEach(el => el.classList.remove('is-tapped'));
+            // 触れた瞬間にクラスを付与し、ゴールドに反転発光させる
+            this.classList.add('is-tapped');
+            
+            // 遷移が遅れたり、ブラウザバックで戻ってきた時のために数百ms後にクラスを外す
+            setTimeout(() => {
+              this.classList.remove('is-tapped');
+            }, 600);
+          }
         });
       });
 
