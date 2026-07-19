@@ -143,7 +143,7 @@
     .nav-hamburger span { display: block; width: 22px; height: 0.5px; background: var(--accent); margin: 6px 0; transition: all 0.25s; }
 
     /* ════════════════════════════════════════
-       ★ マトリクス・レーン (PC用 洗練サイドナビゲーション)
+       ★ マトリクス・レーン (PC用 ブレのない完璧なサイドナビゲーション)
     ════════════════════════════════════════ */
     .side-link-nav {
       position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 150;
@@ -167,88 +167,98 @@
       color: rgba(244, 241, 235, 0.4); text-decoration: none; background: transparent;
       border: none;
       overflow: hidden; /* 波紋エフェクトがはみ出さないように */
-      transition: background 0.3s ease, opacity 0.4s ease;
+      /* トランジションは色と影だけ。サイズや位置は絶対に変えない */
+      transition: background 0.25s ease, box-shadow 0.25s ease;
+      user-select: none; -webkit-user-drag: none;
     }
 
-    /* 右端のアクティブライン */
+    /* 右端のアクティブライン (伸縮アニメーションをなくし、透明度でフワッと出すことでブレを防止) */
     .side-link-item::before {
-      content: ''; position: absolute; right: 0; top: 0; width: 2px; height: 100%;
-      background: var(--accent); transform: scaleY(0); transform-origin: center;
-      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); z-index: 2;
+      content: ''; position: absolute; right: 0; top: 0; width: 3px; height: 100%;
+      background: var(--accent); opacity: 0;
+      transition: opacity 0.25s ease, box-shadow 0.25s ease; z-index: 2;
+    }
+
+    /* ★ コンテンツラッパー (レイアウトを崩さずに中身だけを沈み込ませるための仕掛け) */
+    .side-link-content {
+      display: flex; align-items: center; width: 100%; position: relative; z-index: 3;
+      transform-origin: left center;
+      transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     /* === Dynamic Focus Effect (PCホバー・クリック時) === */
     @media (hover: hover) and (pointer: fine) {
-      .side-link-nav:hover .side-link-item:not(:hover) {
-        opacity: 0.55; 
-      }
+      /* 改善：他要素を暗くする処理（ブレ・チラつきの最大の原因）を完全削除 */
 
+      /* ホバー時：背景をほんの少し明るくし、右端の線を表示 */
       .side-link-item:hover { 
-        background: linear-gradient(90deg, rgba(255,255,255,0.01) 0%, rgba(212,197,179,0.05) 100%);
+        background: rgba(255, 255, 255, 0.04);
       }
       .side-link-item:hover::before { 
-        transform: scaleY(1); 
-        box-shadow: -2px 0 12px rgba(212, 197, 179, 0.4); 
+        opacity: 1; 
+        box-shadow: -2px 0 10px rgba(212, 197, 179, 0.4); 
       }
 
-      /* ★ 改善：ガタつかずに「沈む・光る」究極のクリック感 ★ */
-      .side-link-item:active {
-        background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(212,197,179,0.12) 100%);
-        /* 内側に影を落として「物理的な押し込み（奥行き）」を表現 */
-        box-shadow: inset -5px 0 15px rgba(0,0,0,0.6);
-        transition: background 0.05s ease, box-shadow 0.05s ease;
+      /* インジケーターと文字の色変化（サイズは変えない） */
+      .side-link-item:hover .nav-indicator { 
+        background: var(--accent); 
+        box-shadow: 0 0 8px var(--accent); 
       }
-      /* 押し込んだ瞬間、インジケーターが発光して少し沈む */
+      .side-link-item:hover .nav-title {
+        color: #ffffff; 
+        text-shadow: 0 0 10px rgba(212, 197, 179, 0.5);
+      }
+
+      /* ★ 改善：ガタつかずに「深く沈む」究極のクリック感 ★ */
+      .side-link-item:active {
+        /* 背景を暗くし、内側に深く落ちる影をつけることで物理的な「凹み」を表現 */
+        background: rgba(0, 0, 0, 0.5);
+        box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(0,0,0,0.5);
+        transition: background 0.05s, box-shadow 0.05s;
+      }
+      /* ボタン外枠は動かさず、中身だけを斜め下へ沈み込ませる（完璧な押しごたえ） */
+      .side-link-item:active .side-link-content {
+        transform: scale(0.96) translate(2px, 2px);
+      }
+      /* 押し込んだ瞬間に強烈に発光させる */
       .side-link-item:active .nav-indicator {
         background: #fff;
-        box-shadow: 0 0 15px #fff, 0 0 5px var(--accent);
-        transform: scale(0.9);
-        transition: all 0.05s ease;
+        box-shadow: 0 0 15px #fff, 0 0 20px var(--accent);
+        transition: all 0.05s;
       }
-      /* 押し込んだ瞬間、テキストが一瞬発光 */
       .side-link-item:active .nav-title {
         color: #fff;
-        text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
-        transition: all 0.05s ease;
+        text-shadow: 0 0 20px rgba(255, 255, 255, 1);
+        transition: all 0.05s;
       }
     }
 
     /* インジケーター */
     .side-link-item .nav-indicator {
       display: block; width: 4px; height: 4px; background: rgba(244, 241, 235, 0.3); margin-right: 15px;
-      flex-shrink: 0; position: relative; z-index: 3; transition: all 0.3s var(--ease-expo);
+      flex-shrink: 0; transition: all 0.25s ease;
       border-radius: 50%;
-    }
-    .side-link-item:hover .nav-indicator { 
-      background: var(--accent); 
-      box-shadow: 0 0 8px var(--accent); 
-      transform: scale(1.5); 
     }
 
     /* テキスト */
     .side-link-item .nav-title {
-      position: relative; z-index: 3; font-family: var(--jp); font-size: clamp(12px, 1vw, 13px);
+      font-family: var(--jp); font-size: clamp(12px, 1vw, 13px);
       font-weight: 300; letter-spacing: 0.1em; line-height: 1.4; color: rgba(244, 241, 235, 0.6);
       white-space: normal; word-break: auto-phrase;
-      transition: color 0.3s ease, text-shadow 0.3s ease;
-    }
-    .side-link-item:hover .nav-title {
-      color: #ffffff; font-weight: 400; 
-      text-shadow: 0 0 10px rgba(212, 197, 179, 0.5);
+      transition: color 0.25s ease, text-shadow 0.25s ease;
     }
 
     /* ─── CYBER RIPPLE EFFECT (PC・スマホ両対応のクリック波紋) ─── */
     .cyber-ripple {
       position: absolute;
       width: 2px; height: 2px;
-      /* 中心から広がるグラデーションと光るボーダー */
-      background: radial-gradient(circle, rgba(212, 197, 179, 0.4) 0%, transparent 70%);
-      border: 1px solid rgba(212, 197, 179, 0.6);
+      background: radial-gradient(circle, rgba(212, 197, 179, 0.5) 0%, transparent 70%);
+      border: 1px solid rgba(212, 197, 179, 0.8);
       border-radius: 50%;
       transform: translate(-50%, -50%) scale(1);
       opacity: 1; pointer-events: none;
-      animation: cyberRippleAnim 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      z-index: 0;
+      animation: cyberRippleAnim 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      z-index: 1;
     }
     @keyframes cyberRippleAnim {
       0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 2px; }
@@ -484,7 +494,6 @@
     /* ════════════════════════════════════════
        ★ RESPONSIVE (タブレット・スマホ向けデザイン最適化)
     ════════════════════════════════════════ */
-    /* 900px以下：レイアウト被りを防ぐため、下部固定のカプセル型ナビゲーションへ完全移行 */
     @media (max-width: 900px) {
       .side-link-nav { 
         top: auto; bottom: 24px; left: 50%; transform: translateX(-50%); 
@@ -505,27 +514,26 @@
         background: rgba(255, 255, 255, 0.05); border: 1px solid transparent; border-radius: 20px; 
         justify-content: center; align-items: center; scroll-snap-align: center; 
         position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; 
-        /* PC用ホバー・フォーカス効果を強制無効化 */
         opacity: 1 !important; transform: none !important;
-        transition: background 0.3s ease, border-color 0.3s ease;
+        transition: background 0.25s ease, border-color 0.25s ease;
       }
       .side-link-item::before, .side-link-item::after { display: none !important; }
-      
       .side-link-nav:hover .side-link-item:not(:hover) { opacity: 1 !important; filter: none !important; }
-      
       .side-link-item .nav-indicator { display: none; }
       
       .side-link-item .nav-title { 
         font-size: 13px; font-weight: 400; color: rgba(244, 241, 235, 0.8); 
-        letter-spacing: 0.05em; text-shadow: none; transition: color 0.3s ease;
+        letter-spacing: 0.05em; text-shadow: none; transition: color 0.25s ease;
       }
       
-      /* ★ スマホ：タップ時のブレ・ガタつき解消 ★ */
+      /* ★ スマホ：コンテンツラッパーを沈ませるタップフィードバック ★ */
       .side-link-item:active, .side-link-item.is-tapped {
         background: rgba(212, 197, 179, 0.15);
         border-color: rgba(212, 197, 179, 0.3);
-        transform: scale(0.97) !important;
-        transition: transform 0.1s ease, background 0.1s, border-color 0.1s;
+        transition: background 0.05s, border-color 0.05s;
+      }
+      .side-link-item:active .side-link-content, .side-link-item.is-tapped .side-link-content {
+        transform: scale(0.94);
       }
       .side-link-item:active .nav-title, .side-link-item.is-tapped .nav-title {
         color: #fff;
@@ -533,7 +541,6 @@
 
       .back-to-top { bottom: 100px; right: 16px; width: 48px; height: 48px; }
       .b2t-ring { width: 50px; height: 50px; }
-      
       .contact-section { padding-bottom: 120px; }
       footer { padding-bottom: 120px; }
     }
@@ -595,41 +602,66 @@
   </nav>
 
   <nav class="side-link-nav" aria-label="シリーズ別インデックス">
+    <!-- 各リンクにコンテンツラッパー (side-link-content) を追加 -->
     <a href="work-forest.html" class="side-link-item">
-      <span class="nav-indicator"></span><span class="nav-title">森林</span>
+      <span class="side-link-content">
+        <span class="nav-indicator"></span><span class="nav-title">森林</span>
+      </span>
     </a>
     <a href="work-samizu.html" class="side-link-item">
-      <span class="nav-indicator"></span><span class="nav-title">左美都の神話と伝承</span>
+      <span class="side-link-content">
+        <span class="nav-indicator"></span><span class="nav-title">左美都の神話と伝承</span>
+      </span>
     </a>
     <a href="works-variant.html" class="side-link-item">
-      <span class="nav-indicator"></span><span class="nav-title">異体</span>
+      <span class="side-link-content">
+        <span class="nav-indicator"></span><span class="nav-title">異体</span>
+      </span>
     </a>
     <a href="works-cave.html" class="side-link-item">
-      <span class="nav-indicator"></span><span class="nav-title">洞窟</span>
+      <span class="side-link-content">
+        <span class="nav-indicator"></span><span class="nav-title">洞窟</span>
+      </span>
     </a>
     <a href="works-drawing.html" class="side-link-item">
-      <span class="nav-indicator"></span><span class="nav-title">素描</span>
+      <span class="side-link-content">
+        <span class="nav-indicator"></span><span class="nav-title">素描</span>
+      </span>
     </a>
     <a href="work-abstract.html" class="side-link-item">
-      <span class="nav-indicator"></span><span class="nav-title">抽象</span>
+      <span class="side-link-content">
+        <span class="nav-indicator"></span><span class="nav-title">抽象</span>
+      </span>
     </a>
     <a href="work-scars.html" class="side-link-item">
-      <span class="nav-indicator"></span><span class="nav-title">傷</span>
+      <span class="side-link-content">
+        <span class="nav-indicator"></span><span class="nav-title">傷</span>
+      </span>
     </a>
     <a href="work-refugees.html" class="side-link-item">
-      <span class="nav-indicator"></span><span class="nav-title">難民</span>
+      <span class="side-link-content">
+        <span class="nav-indicator"></span><span class="nav-title">難民</span>
+      </span>
     </a>
     <a href="work-tiny_soldier.html" class="side-link-item">
-      <span class="nav-indicator"></span><span class="nav-title">子ども兵士</span>
+      <span class="side-link-content">
+        <span class="nav-indicator"></span><span class="nav-title">子ども兵士</span>
+      </span>
     </a>
     <a href="work-black_era.html" class="side-link-item">
-      <span class="nav-indicator"></span><span class="nav-title">黒の時代</span>
+      <span class="side-link-content">
+        <span class="nav-indicator"></span><span class="nav-title">黒の時代</span>
+      </span>
     </a>
     <a href="work-40273.html" class="side-link-item">
-      <span class="nav-indicator"></span><span class="nav-title">40273</span>
+      <span class="side-link-content">
+        <span class="nav-indicator"></span><span class="nav-title">40273</span>
+      </span>
     </a>
     <a href="work-specimen_art.html" class="side-link-item">
-      <span class="nav-indicator"></span><span class="nav-title">標本美術</span>
+      <span class="side-link-content">
+        <span class="nav-indicator"></span><span class="nav-title">標本美術</span>
+      </span>
     </a>
   </nav>
 
@@ -815,10 +847,8 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 0. ヘッダーのアニメーション
       setTimeout(() => document.getElementById('top-nav')?.classList.add('is-loaded'), 150);
 
-      // 1. 強力な動画再生ロジック
       const video = document.getElementById('bgLayer');
       if (video) {
         video.muted = true;
@@ -835,7 +865,6 @@
         }
       }
 
-      // 2. タイトルアニメーション（残滓）の生成
       const titleJpEl = document.getElementById('heroTitleJp');
       if (titleJpEl) {
         const text = titleJpEl.textContent.trim();
@@ -854,7 +883,6 @@
         });
       }
 
-      // 3. マウスツールチップ
       const tooltip = document.getElementById('mouse-tooltip');
       if (tooltip) {
         document.querySelectorAll('[data-tooltip]').forEach(link => {
@@ -870,7 +898,6 @@
         });
       }
 
-      // 4. 背景フラッシュライン
       const canvas = document.getElementById('lines-canvas');
       if (canvas) {
         const LINE_DEFS = [
@@ -890,7 +917,6 @@
         });
       }
 
-      // 5. Back to Top プログレスリング
       const b2tCircle = document.getElementById('b2tCircle');
       const b2tPercent = document.getElementById('b2tPercent');
       const b2tRadius = 27;
@@ -900,7 +926,6 @@
         b2tCircle.style.strokeDashoffset = b2tCircumference;
       }
 
-      // 6. スクロールイベント
       const topNav = document.getElementById('top-nav');
       const b2t = document.getElementById('backToTop');
       const hLines = document.querySelectorAll('.matrix-axis.h');
@@ -946,7 +971,6 @@
         });
       }
 
-      // 7. ギャラリー画像のランダム並び替え
       const grid = document.getElementById('grid');
       if (grid) {
         const items = Array.from(grid.children);
@@ -971,7 +995,6 @@
         });
       }
       
-      // 8. Intersection Observer (フェードイン用)
       const io = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
@@ -985,21 +1008,17 @@
       if (secHeader) io.observe(secHeader);
       document.querySelectorAll('.gi').forEach(el => io.observe(el));
       
-      // 9. 究極のクリック・タップフィードバック (Cyber Ripple)
+      // 9. ブレない＆圧倒的なクリックフィードバック (Cyber Ripple)
       document.querySelectorAll('.side-link-item').forEach(link => {
         link.addEventListener('touchstart', function() {}, {passive: true});
         
-        // pointerdown に統合し、PC(マウス)とスマホ(タッチ)の両方で波紋を発生させる
         link.addEventListener('pointerdown', function(e) {
-          // 既存の波紋があれば削除
           const existingRipple = this.querySelector('.cyber-ripple');
           if(existingRipple) existingRipple.remove();
 
-          // 新しい波紋要素を生成
           const ripple = document.createElement('span');
           ripple.classList.add('cyber-ripple');
           
-          // クリックされた座標を取得して波紋の中心に設定
           const rect = this.getBoundingClientRect();
           const x = e.clientX ? e.clientX - rect.left : rect.width / 2;
           const y = e.clientY ? e.clientY - rect.top : rect.height / 2;
@@ -1008,11 +1027,8 @@
           ripple.style.top = `${y}px`;
           
           this.appendChild(ripple);
-          
-          // スマホ用の縮小クラス付与（PCでは無効化されているため安全）
           this.classList.add('is-tapped');
           
-          // 波紋アニメーションが終わる頃にクラスを外す
           setTimeout(() => { this.classList.remove('is-tapped'); }, 400); 
         });
         
@@ -1024,7 +1040,6 @@
       });
     });
 
-    // グローバル関数
     window.menuOpenScrollY = 0;
     function toggleMenu() {
       const links = document.getElementById('nav-links');
