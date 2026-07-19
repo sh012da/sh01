@@ -426,6 +426,34 @@
     .mouse-tooltip.visible { opacity: 1; }
     @media (pointer: coarse) { .mouse-tooltip { display: none !important; } }
 
+    /* ─── CYBER RIPPLE EFFECT (スマホ用究極タップフィードバック) ─── */
+    .cyber-ripple {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: transparent;
+      border: 1.5px solid var(--accent);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+      pointer-events: none;
+      animation: cyberRippleAnim 0.7s var(--ease-expo) forwards;
+      z-index: 0;
+    }
+    .cyber-ripple::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 100%; height: 100%;
+      background: radial-gradient(circle, rgba(212, 197, 179, 0.8) 0%, transparent 70%);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+    @keyframes cyberRippleAnim {
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 4px; }
+      100% { transform: translate(-50%, -50%) scale(150); opacity: 0; border-width: 0px; }
+    }
+
     /* ─── BACK TO TOP BUTTON ─── */
     .back-to-top { position: fixed; bottom: 30px; right: var(--px); z-index: 160; width: 54px; height: 54px; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.6s var(--ease-expo); cursor: pointer; text-decoration: none; border: 1px solid var(--border); border-radius: 50%; }
     .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
@@ -466,14 +494,53 @@
       .grid { grid-template-columns: 1fr; gap: 0; row-gap: 8vh; padding: 0; } 
       .gi { grid-column: 1 / -1 !important; height: 55vh !important; margin: 0 !important; border-radius: 0; }
       
-      /* 既存のモバイル用ナビゲーションバー（下部） */
+      /* モバイル用ナビゲーションバー（下部）と究極タップフィードバックの統合 */
       .side-link-nav { top: auto; bottom: 0; left: 0; right: 0; width: 100%; height: 70px; transform: none; flex-direction: row; align-items: center; justify-content: flex-start; padding: 0 15px; gap: 8px; background: rgba(5, 5, 5, 0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255, 255, 255, 0.08); border-left: none; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; }
-      .side-link-item { flex: 0 0 auto; width: auto; min-width: 140px; height: 44px; padding: 0 16px; margin: 0; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 4px; justify-content: center; align-items: center; scroll-snap-align: start; }
+      
+      .side-link-item { 
+        flex: 0 0 auto; width: auto; min-width: 140px; height: 44px; padding: 0 16px; margin: 0; 
+        background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 4px; 
+        justify-content: center; align-items: center; scroll-snap-align: start; 
+        /* タップフィードバックのための基礎設定 */
+        position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; transform: translateZ(0);
+        transition: transform 0.4s var(--ease-out-back), background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+      }
       .side-link-item::before, .side-link-item::after { display: none !important; }
-      .side-link-item .nav-indicator { width: 4px; height: 4px; background: rgba(212, 197, 179, 0.6); margin-right: 10px; }
+      
+      .side-link-item .nav-indicator { 
+        width: 4px; height: 4px; background: rgba(212, 197, 179, 0.6); margin-right: 10px; 
+        transition: all 0.3s ease;
+      }
       .side-link-item .nav-indicator::after { display: none !important; }
-      .side-link-item .nav-title { font-size: 12px; opacity: 0.9; transform: none !important; letter-spacing: 0.1em !important; color: rgba(244, 241, 235, 0.9); text-shadow: none; white-space: nowrap; }
-      .side-link-item:active { background: rgba(212, 197, 179, 0.2); border-color: var(--accent); color: #ffffff; }
+      
+      .side-link-item .nav-title { 
+        font-size: 12px; opacity: 0.9; transform: none !important; letter-spacing: 0.1em !important; 
+        color: rgba(244, 241, 235, 0.9); text-shadow: none; white-space: nowrap; 
+        transition: all 0.3s ease;
+      }
+      
+      /* タップされ、押し込まれた瞬間のボタンスタイル (JSの .is-tapped と連携) */
+      .side-link-item.is-tapped {
+        transform: scale(0.92);
+        background: rgba(212, 197, 179, 0.12);
+        border-color: rgba(212, 197, 179, 0.8);
+        box-shadow: 0 0 20px rgba(212, 197, 179, 0.3), inset 0 0 15px rgba(212, 197, 179, 0.15);
+        transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), background 0.1s, border-color 0.1s, box-shadow 0.1s;
+      }
+      /* タップ時にインジケーターがひし形に発光 */
+      .side-link-item.is-tapped .nav-indicator {
+        background: #fff;
+        box-shadow: 0 0 10px #fff, 0 0 20px var(--accent);
+        transform: scale(1.8) rotate(45deg);
+        transition: all 0.1s;
+      }
+      /* タップ時に文字の字間がフッと広がる */
+      .side-link-item.is-tapped .nav-title {
+        color: #fff;
+        letter-spacing: 0.18em !important;
+        text-shadow: 0 0 12px rgba(212, 197, 179, 0.9);
+        transition: all 0.1s;
+      }
 
       .gi-label { bottom: 20px; left: 20px; max-width: calc(100vw - 40px); }
       
@@ -915,6 +982,47 @@
       const secHeader = document.getElementById('secHeader');
       if (secHeader) io.observe(secHeader);
       document.querySelectorAll('.gi').forEach(el => io.observe(el));
+      
+      // 9. スマホ用サイドナビの究極タップフィードバック (Cyber Ripple)
+      document.querySelectorAll('.side-link-item').forEach(link => {
+        // iOS Safariでのアクティブ状態を確実にするためのハック
+        link.addEventListener('touchstart', function() {}, {passive: true});
+        
+        link.addEventListener('pointerdown', function(e) {
+          // 既存の波紋をクリア
+          const existingRipple = this.querySelector('.cyber-ripple');
+          if(existingRipple) existingRipple.remove();
+
+          // 波紋要素の生成
+          const ripple = document.createElement('span');
+          ripple.classList.add('cyber-ripple');
+          
+          // タップ座標の計算
+          const rect = this.getBoundingClientRect();
+          const x = e.clientX ? e.clientX - rect.left : rect.width / 2;
+          const y = e.clientY ? e.clientY - rect.top : rect.height / 2;
+          
+          ripple.style.left = `${x}px`;
+          ripple.style.top = `${y}px`;
+          
+          this.appendChild(ripple);
+          
+          // クラス付与で「押し込み」CSSアニメーションをトリガー
+          this.classList.add('is-tapped');
+          
+          // アニメーション完了後、または遷移しない場合にクラスを外す
+          setTimeout(() => {
+            this.classList.remove('is-tapped');
+          }, 500); 
+        });
+        
+        // 指を離した時やキャンセルされた時にも押し込みを解除する
+        ['pointerup', 'pointercancel', 'pointerleave'].forEach(evt => {
+          link.addEventListener(evt, function() {
+            setTimeout(() => { this.classList.remove('is-tapped'); }, 150);
+          });
+        });
+      });
     });
 
     // グローバル関数 (ハンバーガーメニュー用)
