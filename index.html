@@ -1179,7 +1179,7 @@
         top: 0; left: 0;
         width: 100vw; height: 100dvh;
         background: radial-gradient(circle at center, rgba(15, 15, 12, 0.85) 0%, rgba(5, 5, 5, 0.98) 100%);
-        gap: 1.5rem;
+        gap: 1.8rem; /* ★1.5remから1.8remに広げ、押しやすく美しい間隔に */
         z-index: 998;
         padding: 2rem 1.5rem;
         backdrop-filter: blur(30px);
@@ -1230,52 +1230,56 @@
       .nav-links.open li:nth-child(5) { transition-delay: 0.30s; animation-delay: -4.8s; }
       .nav-links.open li:nth-child(6) { transition-delay: 0.35s; animation-delay: -6.0s; }
 
-      /* モノリス本体のデザイン（テキストリンクをSF的石柱に昇華） */
+      /* モノリス本体のデザイン（削ぎ落とされた高精細SF） */
       .nav-links a {
         font-family: var(--en);
-        font-size: 1.6rem !important;
+        font-size: 1.5rem !important; /* スタイリッシュなサイズ感 */
         font-weight: 300;
         letter-spacing: 0.35em;
         text-transform: uppercase;
-        padding: 1.6rem 2.5rem;
-        display: block;
+        padding: 1.5rem 2.5rem; /* たっぷりとした押しやすい領域 */
+        display: flex;
+        align-items: center;
+        justify-content: center; /* 邪魔な装飾を消し、文字を堂々と中央へ */
         width: 100%;
         color: rgba(255, 255, 255, 0.85);
         text-decoration: none;
-        text-align: left; /* 文字を左に寄せ、右に装飾を配置する余白を作る */
         
-        /* ガラスとスキャンラインの融合 */
+        /* ガラスと極細スキャンライン（1px）の融合 */
         background: 
-          linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 50%, rgba(0,0,0,0.4) 100%),
-          repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(203, 191, 176, 0.03) 2px, rgba(203, 191, 176, 0.03) 4px);
+          linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.01) 40%, rgba(0,0,0,0.5) 100%),
+          repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(203, 191, 176, 0.05) 1px, rgba(203, 191, 176, 0.05) 2px);
         
-        border-radius: 8px;
-        /* 多重シャドウで立体感と内側からの発光を表現 */
+        border-radius: 4px; /* シャープで洗練された形状 */
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom-color: rgba(0, 0, 0, 0.6);
+        border-right-color: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+
         box-shadow: 
-          0 15px 35px -5px rgba(0,0,0,0.8),
-          inset 0 1px 0 rgba(255,255,255,0.15),
-          inset 0 -1px 0 rgba(0,0,0,0.6),
-          inset 1px 0 0 rgba(255,255,255,0.05),
-          inset -1px 0 0 rgba(255,255,255,0.05);
+          0 15px 30px -5px rgba(0,0,0,0.7),
+          inset 0 1px 0 rgba(255,255,255,0.15);
           
         position: relative;
         overflow: hidden;
         transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         -webkit-tap-highlight-color: transparent;
-        text-shadow: 0 0 8px rgba(255,255,255,0.2);
+        text-shadow: 0 0 10px rgba(255,255,255,0.2);
       }
 
-      /* ホログラムの走査線（一定周期で光の帯が通り過ぎる） */
+      /* エッジの光沢（SF的ディテール） */
       .nav-links a::before {
         content: '';
         position: absolute;
         top: 0; left: -100%;
         width: 50%; height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(203, 191, 176, 0.2), transparent);
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
         transform: skewX(-20deg);
-        animation: scanlight 4s ease-in-out infinite;
-        z-index: 1;
+        animation: scanlight 5s ease-in-out infinite;
+        z-index: 0;
         pointer-events: none;
+        mix-blend-mode: overlay; /* よりリアルな光沢感 */
       }
       
       @keyframes scanlight {
@@ -1283,63 +1287,55 @@
         80%, 100% { left: 200%; }
       }
 
-      /* 右端のサイバー装飾（HTML変更なしでSF感を付与） */
-      .nav-links a::after {
-        content: '❖'; 
-        position: absolute;
-        right: 2rem;
-        top: 50%;
-        transform: translateY(-50%);
-        font-family: serif;
-        font-size: 1.2rem;
-        color: var(--accent);
-        opacity: 0.3;
-        text-shadow: 0 0 10px var(--accent);
-        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      .nav-links a span {
+        position: relative;
         z-index: 2;
       }
 
-      /* --- ホバー / アクティブ (圧倒的快感をもたらすインタラクション) --- */
+      /* --- ホバー / フォーカス (圧倒的快感をもたらすインタラクション) --- */
       .nav-links a:hover, .nav-links a:focus {
         background: 
-          linear-gradient(135deg, rgba(203, 191, 176, 0.15) 0%, rgba(255,255,255,0.02) 50%, rgba(0,0,0,0.5) 100%),
-          repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(203, 191, 176, 0.05) 2px, rgba(203, 191, 176, 0.05) 4px);
+          linear-gradient(135deg, rgba(203, 191, 176, 0.2) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0.8) 100%),
+          repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(203, 191, 176, 0.08) 1px, rgba(203, 191, 176, 0.08) 2px);
+        border-color: rgba(203, 191, 176, 0.4);
         box-shadow: 
-          0 20px 40px -10px rgba(0,0,0,0.9),
-          0 0 30px rgba(203, 191, 176, 0.2),
-          inset 0 1px 0 rgba(255,255,255,0.3),
-          inset 0 -1px 0 rgba(0,0,0,0.8);
+          0 25px 50px -10px rgba(0,0,0,1),
+          0 0 20px rgba(203, 191, 176, 0.3),
+          inset 0 1px 0 rgba(255,255,255,0.4),
+          inset 0 -1px 0 rgba(0,0,0,0.9);
         color: #fff;
-        letter-spacing: 0.45em;
-        /* 文字がブレて光る（色収差的なグリッチエフェクト） */
+        letter-spacing: 0.4em;
         text-shadow: 
-          0 0 15px rgba(255,255,255,0.8),
-          2px 0 5px rgba(203, 191, 176, 0.6), 
-          -2px 0 5px rgba(184, 168, 152, 0.6);
-      }
-      
-      .nav-links a:hover::after {
-        opacity: 1;
-        content: '✦'; /* ホバーで形が変わり回転して光る */
-        transform: translateY(-50%) rotate(90deg) scale(1.2);
+          0 0 15px rgba(255,255,255,0.9),
+          0 0 30px rgba(203, 191, 176, 0.8);
       }
 
-      /* タップした瞬間、強烈に奥に沈み込み内部が光る */
+      /* タップした瞬間、強烈に奥に沈み込み内部がフラッシュ */
       .nav-links a:active {
-        transform: scale(0.92) translateZ(-40px) rotateX(5deg);
+        transform: scale(0.94) translateZ(-40px);
         box-shadow: 
-          0 5px 15px rgba(0,0,0,0.9),
-          inset 0 0 40px rgba(203, 191, 176, 0.5);
+          0 4px 10px rgba(0,0,0,0.9),
+          inset 0 0 30px rgba(203, 191, 176, 0.3);
         color: var(--accent);
-        transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.1s;
+        border-color: rgba(203, 191, 176, 0.4);
+        transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.1s, border-color 0.1s;
       }
       
-      /* タップ時に走査線が強烈なフラッシュに変化する */
-      .nav-links a:active::before {
-        animation: none;
-        left: 0; width: 100%; transform: none;
-        background: rgba(255,255,255,0.4);
-        transition: background 0.1s;
+      /* タップ時のフラッシュオーバーレイ */
+      .nav-links a::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(255,255,255,0);
+        transition: background 0.4s ease;
+        z-index: 1;
+        pointer-events: none;
+        mix-blend-mode: overlay;
+      }
+      
+      .nav-links a:active::after {
+        background: rgba(255,255,255,0.5);
+        transition: background 0s;
       }
       
       /* スクロール時のガクつきを防止するためsvhを維持 */
@@ -1512,8 +1508,8 @@
     <li class="pc-only"><a href="#works" onclick="closeMenu()">Works</a></li>
     <li class="pc-only"><a href="#profile" onclick="closeMenu()">Profile</a></li>
     
-    <li class="sp-only"><a href="works.html">Works</a></li>
-    <li class="sp-only"><a href="index-profile.html">Profile</a></li>
+    <li class="sp-only"><a href="works.html"><span>Works</span></a></li>
+    <li class="sp-only"><a href="index-profile.html"><span>Profile</span></a></li>
 
     <li class="pc-only"><a href="#news" onclick="closeMenu()">News</a></li>
   </ul>
