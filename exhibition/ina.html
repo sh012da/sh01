@@ -55,6 +55,9 @@
     a:hover { opacity: 0.5; }
     ::selection { background: var(--accent); color: var(--bg); }
 
+    /* 単語の不自然な改行を防ぐユーティリティクラス */
+    .keep-word { display: inline-block; }
+
     /* --- GIMMICK: Scanline & Loader --- */
     .scanline {
       position: fixed; inset: 0; z-index: 9998; pointer-events: none;
@@ -83,7 +86,7 @@
     .loader-coords { font-family: var(--font-mono); font-size: 0.55rem; color: var(--dim); letter-spacing: 0.1em; margin-top: 10px; }
 
     /* ============================================================
-        HEADER (Left Name, Center Nav, Right Contact)
+        HEADER
     ================================================================ */
     nav#top-nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 5000;
@@ -399,6 +402,7 @@
       letter-spacing: 0.3em; color: var(--accent); margin-bottom: 16px; display: block; text-transform: uppercase;
     }
     h2.section-title { font-family: var(--font-ja); font-weight: 300; font-size: clamp(26px, 3.6vw, 42px); line-height: 1.4; margin: 0 0 28px; color: var(--fg); }
+    .lead-text { max-width: 860px; color: rgba(233,229,223,0.85); font-size: clamp(0.95rem, 1.8vw, 1.1rem); line-height: 2.2; font-weight: 400; }
     .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
     .reveal.is-visible { opacity: 1; transform: translateY(0); }
     .reveal-delay-1.is-visible { transition-delay: 0.15s; }
@@ -425,7 +429,7 @@
       .field-table .field:last-child:nth-child(odd) { grid-column: auto; }
     }
 
-    /* 新規：バランスを改善した2カラムレイアウト */
+    /* 2カラムレイアウト */
     .overview-layout {
       display: grid;
       grid-template-columns: 1fr;
@@ -435,13 +439,11 @@
 
     @media(min-width: 960px) {
       .overview-layout {
-        /* 左側に強いメッセージ、右側に本文の洗練された比率 */
         grid-template-columns: 4.8fr 7.2fr;
         gap: clamp(4rem, 6vw, 7rem);
         align-items: start;
       }
       .overview-quote-col {
-        /* スクロール時に左カラム（キーメッセージ）を追従させる演出 */
         position: sticky;
         top: 140px; 
       }
@@ -452,8 +454,8 @@
       font-weight: 300; 
       font-size: clamp(1.5rem, 2.3vw, 2.1rem); 
       line-height: 1.85; 
-      color: var(--accent); /* アクセントカラーで際立たせる */
-      text-indent: -1em; /* カギカッコのぶら下がりインデント */
+      color: var(--accent);
+      text-indent: -1em;
       padding-left: 1em; 
       margin: 0;
     }
@@ -471,7 +473,7 @@
       margin-top: 3.5rem; 
       font-family: var(--font-mono); 
       font-size: 0.75rem; 
-      color: rgba(233,229,223,0.5); /* 落ち着いたトーンに変更 */
+      color: rgba(233,229,223,0.5);
       letter-spacing: 0.05em; 
       border-top: 1px solid var(--border-md); 
       padding-top: 1.2rem; 
@@ -479,8 +481,6 @@
     }
 
     /* ---------- PLATE STRIP (paintings) ---------- */
-    .lead-text { max-width: 860px; color: rgba(233,229,223,0.85); font-size: clamp(0.95rem, 1.8vw, 1.1rem); line-height: 2.2; font-weight: 400;}
-
     .plate-strip-wrap { position: relative; }
     .plate-strip {
       display: flex; gap: clamp(16px, 3vw, 32px); overflow-x: auto; padding: 6px 0 26px;
@@ -775,15 +775,11 @@
         <div class="field"><dt>調査主体</dt><dd>津田 翔一</dd></div>
       </dl>
 
-      <!-- 💡 改修ポイント：美しくバランスの取れた2カラム・グリッドレイアウト -->
       <div class="overview-layout">
-        
-        <!-- 左カラム：スクロールに追従する印象的な引用テキスト -->
         <div class="overview-quote-col reveal">
           <p class="overview-quote">「壁には風景を、中央には、そこから出土したと見立てた器の破片を置く。展示室そのものを、ひとつの発掘区画に見立てること。」</p>
         </div>
         
-        <!-- 右カラム：詳細な解説文の配置 -->
         <div class="overview-text-col">
           <p class="overview-body reveal reveal-delay-1">公募という、不特定多数の視線に晒される場で、津田翔一が試みたのは、絵画の展示に考古学的な展示空間の文法を借用することだった。壁面には三水の風景を断片化して描いた油彩を掛け、会場中央のガラスケースには、そこから出土したと見立てた木製の匙や土製の耳飾りの欠片——実在しない集落の記憶を宿す「想定復元資料」——を並べた。絵画は壁面資料として、造形物は出土遺物として、それぞれの立場を演じる。鑑賞者は知らぬ間に、展示室を歩く来場者から、遺跡を歩く調査員へと役割を変えていく。</p>
 
@@ -791,7 +787,6 @@
 
           <div class="overview-note reveal reveal-delay-2">NOTE — 本記録における遺物番号・法量等の記載は、作家による創作上の設定（想定復元資料）であり、実在の考古資料ではありません。</div>
         </div>
-        
       </div>
     </section>
 
@@ -799,7 +794,8 @@
       <div class="gallery-head">
         <span class="eyebrow reveal decode-target">Plates — 図版</span>
         <h2 class="section-title reveal reveal-delay-1">壁面資料：三水、断片の風景</h2>
-        <p class="lead-text reveal reveal-delay-2">会場の壁を占めた油彩群を、図版として記録する。各図版は、会場内の位置（壁面記号）とともに掲載した。左右にスクロールしてご覧ください。</p>
+        <!-- 💡 改修ポイント：「掲載した。」を class="keep-word" で囲み、単語途中での不自然な改行を防止 -->
+        <p class="lead-text reveal reveal-delay-2">会場の壁を占めた油彩群を、図版として記録する。各図版は、会場内の位置（壁面記号）とともに<span class="keep-word">掲載した。</span>左右にスクロールしてご覧ください。</p>
       </div>
 
       <div class="plate-strip-wrap">
@@ -909,7 +905,7 @@
     <section class="site-plan-section" id="site-plan">
       <span class="eyebrow reveal decode-target">Site Plan — 配置図</span>
       <h2 class="section-title reveal reveal-delay-1">遺跡としての展示室</h2>
-      <p class="lead-text reveal reveal-delay-2">壁面に図版（絵画）、中央に遺物ケース（想定復元資料）——記録写真から再構成した会場の平面図。展示空間そのものが、ひとつの発掘区画として設計されていたことがわかる。</p>
+      <p class="lead-text reveal reveal-delay-2">壁面に図版（絵画）、中央に遺物ケース（想定復元資料）——記録写真から再構成した会場の平面図。展示空間そのものが、ひとつの発掘区画として<span class="keep-word">設計されていた</span>ことがわかる。</p>
 
       <div class="site-plan-wrap reveal reveal-delay-2" id="sitePlanWrap">
         <svg viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
