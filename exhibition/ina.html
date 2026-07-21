@@ -399,7 +399,6 @@
       letter-spacing: 0.3em; color: var(--accent); margin-bottom: 16px; display: block; text-transform: uppercase;
     }
     h2.section-title { font-family: var(--font-ja); font-weight: 300; font-size: clamp(26px, 3.6vw, 42px); line-height: 1.4; margin: 0 0 28px; color: var(--fg); }
-    .lead-text { max-width: 780px; color: rgba(233,229,223,0.85); font-size: clamp(0.95rem, 1.8vw, 1.1rem); line-height: 2.2; font-weight: 400;}
     .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
     .reveal.is-visible { opacity: 1; transform: translateY(0); }
     .reveal-delay-1.is-visible { transition-delay: 0.15s; }
@@ -426,27 +425,87 @@
       .field-table .field:last-child:nth-child(odd) { grid-column: auto; }
     }
 
-    .overview-quote { font-family: var(--font-ja); font-weight: 300; font-size: clamp(20px, 2.5vw, 28px); line-height: 1.95; max-width: 760px; color: rgba(233,229,223,0.95); position: relative; padding-left: 26px; margin-bottom: 12px; }
-    .overview-quote::before { content: "「"; position: absolute; left: -6px; top: -4px; font-family: var(--font-en); font-size: 1.6em; color: var(--accent); }
-    .overview-body { max-width: 760px; color: rgba(233,229,223,0.85); font-size: 1.05rem; font-weight: 400; line-height: 2.2; margin-top: 28px; text-align: justify; }
-    .overview-body + .overview-body { margin-top: 20px; }
-    .overview-note { margin-top: 34px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); letter-spacing: 0.03em; border-left: 2px solid var(--accent); padding-left: 18px; line-height: 1.9; max-width: 700px; }
+    /* 新規：バランスを改善した2カラムレイアウト */
+    .overview-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      margin-top: clamp(3.5rem, 8vh, 5.5rem);
+    }
+
+    @media(min-width: 960px) {
+      .overview-layout {
+        /* 左側に強いメッセージ、右側に本文の洗練された比率 */
+        grid-template-columns: 4.8fr 7.2fr;
+        gap: clamp(4rem, 6vw, 7rem);
+        align-items: start;
+      }
+      .overview-quote-col {
+        /* スクロール時に左カラム（キーメッセージ）を追従させる演出 */
+        position: sticky;
+        top: 140px; 
+      }
+    }
+
+    .overview-quote { 
+      font-family: var(--font-ja); 
+      font-weight: 300; 
+      font-size: clamp(1.5rem, 2.3vw, 2.1rem); 
+      line-height: 1.85; 
+      color: var(--accent); /* アクセントカラーで際立たせる */
+      text-indent: -1em; /* カギカッコのぶら下がりインデント */
+      padding-left: 1em; 
+      margin: 0;
+    }
+
+    .overview-body { 
+      color: rgba(233,229,223,0.85); 
+      font-size: 1.05rem; 
+      font-weight: 400; 
+      line-height: 2.2; 
+      text-align: justify; 
+    }
+    .overview-body + .overview-body { margin-top: 1.8rem; }
+
+    .overview-note { 
+      margin-top: 3.5rem; 
+      font-family: var(--font-mono); 
+      font-size: 0.75rem; 
+      color: rgba(233,229,223,0.5); /* 落ち着いたトーンに変更 */
+      letter-spacing: 0.05em; 
+      border-top: 1px solid var(--border-md); 
+      padding-top: 1.2rem; 
+      line-height: 1.9; 
+    }
 
     /* ---------- PLATE STRIP (paintings) ---------- */
+    .lead-text { max-width: 860px; color: rgba(233,229,223,0.85); font-size: clamp(0.95rem, 1.8vw, 1.1rem); line-height: 2.2; font-weight: 400;}
+
     .plate-strip-wrap { position: relative; }
     .plate-strip {
-      display: flex; gap: clamp(18px, 2.4vw, 30px); overflow-x: auto; padding: 6px 0 26px;
-      scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch;
+      display: flex; gap: clamp(16px, 3vw, 32px); overflow-x: auto; padding: 6px 0 26px;
+      -webkit-overflow-scrolling: touch;
       scrollbar-width: thin; scrollbar-color: var(--accent) transparent;
+      cursor: grab;
+      scroll-behavior: smooth;
     }
-    .plate-strip::-webkit-scrollbar { height: 3px; }
-    .plate-strip::-webkit-scrollbar-thumb { background: rgba(196,168,130,0.5); }
-    .plate-card { flex: 0 0 clamp(240px, 62vw, 380px); scroll-snap-align: start; background: var(--bg2); border: 0.5px solid var(--border); transition: border-color 0.4s ease; }
+    .plate-strip:active { 
+      cursor: grabbing; 
+    }
+    .plate-strip::-webkit-scrollbar { height: 4px; }
+    .plate-strip::-webkit-scrollbar-track { background: rgba(233,229,223,0.05); border-radius: 2px; }
+    .plate-strip::-webkit-scrollbar-thumb { background: rgba(196,168,130,0.6); border-radius: 2px; }
+    
+    .plate-card { 
+      flex: 0 0 clamp(280px, 75vw, 420px); 
+      background: var(--bg2); border: 0.5px solid var(--border); transition: border-color 0.4s ease; 
+      user-select: none; 
+    }
     .plate-card:hover { border-color: var(--border-md); }
     
     .plate-img-wrap { position: relative; overflow: hidden; aspect-ratio: 4/5; cursor: zoom-in; clip-path: inset(0 0 100% 0); transition: clip-path 1.1s var(--ease); }
     .plate-card.is-visible .plate-img-wrap { clip-path: inset(0 0 0% 0); }
-    .plate-img-wrap img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(22%) brightness(0.82); transition: transform 1.2s var(--ease), filter 0.6s; }
+    .plate-img-wrap img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(22%) brightness(0.82); transition: transform 1.2s var(--ease), filter 0.6s; pointer-events: none; }
     .plate-img-wrap::before, .plate-img-wrap::after { content: ""; position: absolute; width: 24px; height: 24px; border: 1.5px solid var(--accent); z-index: 2; pointer-events: none; opacity: 0; transition: all 0.5s var(--ease); }
     .plate-img-wrap::before { top: 30px; left: 30px; border-right: none; border-bottom: none; }
     .plate-img-wrap::after { bottom: 30px; right: 30px; border-left: none; border-top: none; }
@@ -455,7 +514,7 @@
     .plate-card:hover .plate-img-wrap::after { bottom: 15px; right: 15px; opacity: 0.8; }
 
     .scale-bar { display: flex; height: 5px; }
-    .scale-bar span { flex: 1; transition: background 0.4s; }
+    .scale-bar span { flex: 1; transition: background 0.4s; pointer-events: none; }
     .scale-bar span:nth-child(odd) { background: rgba(233,229,223,0.5); }
     .scale-bar span:nth-child(even) { background: transparent; }
     .plate-card:hover .scale-bar span:nth-child(odd) { background: var(--accent); }
@@ -465,7 +524,7 @@
     .plate-meta .pl-loc { font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted); letter-spacing: 0.05em; display: block; margin-bottom: 12px; }
     .plate-meta h4 { font-family: var(--font-ja); font-weight: 400; font-size: 1.05rem; margin: 0 0 10px; color: var(--fg); }
     .plate-meta p { font-size: 0.85rem; color: rgba(233,229,223,0.7); line-height: 1.9; }
-    .plate-strip-hint { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; color: var(--muted); text-align: right; margin-top: 8px; animation: pulse-text 2s infinite; }
+    .plate-strip-hint { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; color: var(--muted); text-align: right; margin-top: 8px; animation: pulse-text 2s infinite; pointer-events: none; }
     @keyframes pulse-text { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; color: var(--accent); } }
 
     /* ---------- SITE PLAN ---------- */
@@ -685,7 +744,6 @@
     <div class="hero-coord tl decode-target">36.0000°N  137.9500°E — 伊那 調査区</div>
     <div class="hero-watermark">EXCAVATION RECORD — SITE <a href="work-samizu.html" class="link-samizu">三水</a> — 2023</div>
 
-    <!-- 毎ロード時にランダム生成される壁面写真のコンテナ -->
     <div class="hero-photo-cluster" id="heroPhotoCluster"></div>
 
     <div class="specimen-tag hero-tag">
@@ -717,13 +775,24 @@
         <div class="field"><dt>調査主体</dt><dd>津田 翔一</dd></div>
       </dl>
 
-      <p class="overview-quote reveal">「壁には風景を、中央には、そこから出土したと見立てた器の破片を置く。展示室そのものを、ひとつの発掘区画に見立てること。」</p>
+      <!-- 💡 改修ポイント：美しくバランスの取れた2カラム・グリッドレイアウト -->
+      <div class="overview-layout">
+        
+        <!-- 左カラム：スクロールに追従する印象的な引用テキスト -->
+        <div class="overview-quote-col reveal">
+          <p class="overview-quote">「壁には風景を、中央には、そこから出土したと見立てた器の破片を置く。展示室そのものを、ひとつの発掘区画に見立てること。」</p>
+        </div>
+        
+        <!-- 右カラム：詳細な解説文の配置 -->
+        <div class="overview-text-col">
+          <p class="overview-body reveal reveal-delay-1">公募という、不特定多数の視線に晒される場で、津田翔一が試みたのは、絵画の展示に考古学的な展示空間の文法を借用することだった。壁面には三水の風景を断片化して描いた油彩を掛け、会場中央のガラスケースには、そこから出土したと見立てた木製の匙や土製の耳飾りの欠片——実在しない集落の記憶を宿す「想定復元資料」——を並べた。絵画は壁面資料として、造形物は出土遺物として、それぞれの立場を演じる。鑑賞者は知らぬ間に、展示室を歩く来場者から、遺跡を歩く調査員へと役割を変えていく。</p>
 
-      <p class="overview-body reveal reveal-delay-1">公募という、不特定多数の視線に晒される場で、津田翔一が試みたのは、絵画の展示に考古学的な展示空間の文法を借用することだった。壁面には三水の風景を断片化して描いた油彩を掛け、会場中央のガラスケースには、そこから出土したと見立てた木製の匙や土製の耳飾りの欠片——実在しない集落の記憶を宿す「想定復元資料」——を並べた。絵画は壁面資料として、造形物は出土遺物として、それぞれの立場を演じる。鑑賞者は知らぬ間に、展示室を歩く来場者から、遺跡を歩く調査員へと役割を変えていく。</p>
+          <p class="overview-body reveal reveal-delay-2">2026年の現在から振り返れば、この構成そのものが、後年「左美都の神話と伝承」として結実していく手法の、最初の試掘であったことがわかる。虚構の土地に、虚構の史料を与え、その史料を通じて土地の記憶を語り直す——という方法論は、まさにここから掘り始められている。本ページは、その最初の発掘区画の記録である。</p>
 
-      <p class="overview-body reveal reveal-delay-2">2026年の現在から振り返れば、この構成そのものが、後年「左美都の神話と伝承」として結実していく手法の、最初の試掘であったことがわかる。虚構の土地に、虚構の史料を与え、その史料を通じて土地の記憶を語り直す——という方法論は、まさにここから掘り始められている。本ページは、その最初の発掘区画の記録である。</p>
-
-      <div class="overview-note reveal reveal-delay-2">NOTE — 本記録における遺物番号・法量等の記載は、作家による創作上の設定（想定復元資料）であり、実在の考古資料ではありません。</div>
+          <div class="overview-note reveal reveal-delay-2">NOTE — 本記録における遺物番号・法量等の記載は、作家による創作上の設定（想定復元資料）であり、実在の考古資料ではありません。</div>
+        </div>
+        
+      </div>
     </section>
 
     <section id="plates">
@@ -1090,8 +1159,6 @@
       // PC: 5-8枚, スマホ: 4-6枚
       const count = isMobile ? Math.floor(Math.random() * 3) + 4 : Math.floor(Math.random() * 4) + 5; 
 
-      // 中央のテキストボックスを避けるための生成ゾーン (左、右、上、下)
-      // Yの最小値を15%付近まで下げることで上部のヘッダーとの被りを回避
       const zones = [
         { x: [2, 20], y: [15, 30] },    
         { x: [75, 92], y: [15, 30] },   
@@ -1108,22 +1175,17 @@
       for (let i = 0; i < count; i++) {
         const zone = shuffledZones[i % shuffledZones.length];
         
-        // 座標計算
         const posX = Math.random() * (zone.x[1] - zone.x[0]) + zone.x[0];
         const posY = Math.random() * (zone.y[1] - zone.y[0]) + zone.y[0];
         
-        // 角度 (-14度 〜 14度)
         const rot = Math.random() * 28 - 14;
         
-        // サイズ計算
         const baseMin = isMobile ? 110 : 150;
         const baseMax = isMobile ? 180 : 270;
         const width = Math.floor(Math.random() * (baseMax - baseMin + 1)) + baseMin;
         
-        // ディレイ (1.2s 〜 2.5s)
         const delay = (Math.random() * 1.3 + 1.2).toFixed(2);
         
-        // マスキングテープの角度と幅
         const tapeRot = Math.random() * 10 - 5;
         const tapeWidth = Math.floor(Math.random() * 20 + 30); 
 
@@ -1131,7 +1193,6 @@
         plate.className = 'hero-photo-plate js-modal-trigger';
         plate.setAttribute('data-ref', `REF.${String(i+1).padStart(2, '0')}`);
         
-        // CSS変数をインラインで注入
         plate.style.left = `${posX}%`;
         plate.style.top = `${posY}%`;
         plate.style.setProperty('--rot', `${rot}deg`);
@@ -1149,7 +1210,6 @@
 
     /* ---------- Loader & Decode Gimmick ---------- */
     document.addEventListener("DOMContentLoaded", () => {
-      // 1. 壁面写真を生成
       initHeroPhotos();
 
       const countEl = document.getElementById('loaderCount');
@@ -1195,7 +1255,6 @@
         }, 1400);
       }
 
-      // 生成後のモーダルバインディング
       bindModals();
     });
 
@@ -1251,7 +1310,6 @@
         });
       });
       
-      // Close Events
       const modalCloseBtn = document.getElementById('modalClose');
       const modalBg = document.getElementById('modalBg');
       if(modalCloseBtn && !modalCloseBtn.dataset.bound) {
@@ -1365,6 +1423,48 @@
           e.preventDefault();
           window.scrollTo({ top: 0, behavior: 'smooth' });
         });
+      }
+
+      const slider = document.getElementById('plateStrip');
+      if (slider) {
+        let isDown = false;
+        let isDragging = false;
+        let startX;
+        let scrollLeft;
+
+        slider.addEventListener('mousedown', (e) => {
+          isDown = true;
+          isDragging = false;
+          slider.style.cursor = 'grabbing';
+          slider.style.scrollBehavior = 'auto'; 
+          startX = e.pageX - slider.offsetLeft;
+          scrollLeft = slider.scrollLeft;
+        });
+        slider.addEventListener('mouseleave', () => {
+          isDown = false;
+          slider.style.cursor = 'grab';
+          slider.style.scrollBehavior = 'smooth';
+        });
+        slider.addEventListener('mouseup', () => {
+          isDown = false;
+          slider.style.cursor = 'grab';
+          slider.style.scrollBehavior = 'smooth';
+        });
+        slider.addEventListener('mousemove', (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - slider.offsetLeft;
+          const walk = (x - startX) * 1.5; 
+          if (Math.abs(walk) > 5) isDragging = true; 
+          slider.scrollLeft = scrollLeft - walk;
+        });
+
+        slider.addEventListener('click', (e) => {
+            if (isDragging) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }, true);
       }
 
       const revealEls = document.querySelectorAll('.reveal');
