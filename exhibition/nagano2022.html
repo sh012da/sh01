@@ -63,7 +63,7 @@
       word-break: normal; line-break: strict; overflow-wrap: break-word;
       overflow-x: hidden;
     }
-    body.no-scroll { overflow: hidden; touch-action: none; }
+    body.no-scroll { overflow: hidden; } /* スマホメニュー内でのスクロールを許可するため touch-action:none を削除 */
     img { max-width: 100%; height: auto; display: block; }
     a { color: var(--fg); text-decoration: none; }
     ::selection { background: var(--accent); color: var(--bg); }
@@ -81,6 +81,7 @@
       background: linear-gradient(90deg, var(--red), var(--blue));
       width: 0%; z-index: 10000; box-shadow: 0 0 10px rgba(203,191,176,0.4);
       transition: width 0.1s ease-out;
+      transform: translateZ(0);
     }
 
     /* HEADER */
@@ -90,6 +91,7 @@
       padding: clamp(20px,4vw,40px) var(--px); background: transparent;
       border-bottom: 1px solid transparent; transform: translateY(-100%);
       opacity: 0; transition: all 0.6s var(--ease-expo);
+      will-change: transform, opacity;
     }
     body.is-loaded nav#top-nav { transform: translateY(0); opacity: 1; transition-delay: 0.2s; }
     
@@ -162,19 +164,25 @@
     .hamburger-lines span { display: block; width: 20px; height: 1.5px; background: var(--accent); }
     .menu-text { font-family: var(--en); font-size: 0.7rem; letter-spacing: 0.15em; color: var(--accent); font-weight: 500; }
 
-    /* メニューオーバーレイ */
+    /* メニューオーバーレイ（はみ出し時のスクロールを完全サポート） */
     .mobile-menu-overlay {
       position: fixed; inset: 0; background: rgba(8,8,8,0.98);
       backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
       z-index: 5001; opacity: 0; visibility: hidden;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      display: flex; flex-direction: column; align-items: center; 
+      justify-content: flex-start; /* flex-start にすることで高さ不足時の上部見切れを防止 */
+      overflow-y: auto; /* はみ出した場合はスクロール可能に */
+      -webkit-overflow-scrolling: touch;
+      padding: 100px 0 60px; /* 上部に閉じるボタン用の余白、下部にも余白を確保 */
       transition: opacity 0.5s var(--ease-expo), visibility 0.5s;
+      will-change: opacity, visibility;
     }
     body.menu-open .mobile-menu-overlay { opacity: 1; visibility: visible; }
     
-    /* 閉じる（×）ボタン */
+    /* 閉じる（×）ボタン（スクロールしても右上に固定） */
     .menu-close-btn {
-      position: absolute; top: clamp(20px, 4vw, 40px); right: var(--px);
+      position: fixed; /* absolute から fixed に変更し、常に画面の右上に配置 */
+      top: clamp(20px, 4vw, 40px); right: var(--px);
       width: 48px; height: 48px; background: rgba(232, 228, 219, 0.05);
       border: 1px solid rgba(232, 228, 219, 0.2); border-radius: 50%;
       cursor: pointer; display: flex; align-items: center; justify-content: center;
@@ -187,14 +195,16 @@
     .menu-close-btn span:nth-child(1) { transform: rotate(45deg); }
     .menu-close-btn span:nth-child(2) { transform: rotate(-45deg); }
 
-    /* メニュー内リンク */
+    /* メニュー内リンク（Fluid Sizing ＆ Margin Autoの魔法） */
     .mobile-nav-links {
-      list-style: none; text-align: center; display: flex; flex-direction: column; gap: 1rem;
+      list-style: none; text-align: center; display: flex; flex-direction: column; 
+      gap: clamp(0.5rem, 2svh, 1rem); /* 画面の高さ（svh）に応じて隙間を動的に縮小 */
       width: 100%; max-width: 320px; padding: 0 20px;
+      margin: auto 0; /* 画面に余裕がある場合は中央寄せ、はみ出す場合は上詰めになる魔法のCSS */
     }
     .mobile-nav-links a {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 1.2rem;
+      padding: clamp(0.8rem, 2.5svh, 1.2rem); /* 画面の高さ（svh）に応じてボタン自体の高さも動的に縮小 */
       border: 1px solid rgba(232, 228, 219, 0.08);
       border-radius: 12px;
       background: rgba(255, 255, 255, 0.015);
@@ -243,21 +253,27 @@
     .mouse-tooltip {
       position: fixed; top: 0; left: 0; pointer-events: none; background: rgba(10, 10, 8, 0.95); color: rgba(232, 228, 219, 0.9);
       padding: 6px 12px; border-radius: 4px; font-size: 11px; font-family: var(--jp); letter-spacing: 0.05em; border: 0.5px solid rgba(203, 191, 176, 0.3);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.5); opacity: 0; transform: translate(15px, 15px); transition: opacity 0.2s ease; z-index: 99999;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5); opacity: 0; transform: translate3d(15px, 15px, 0); transition: opacity 0.2s ease; z-index: 99999;
       white-space: nowrap; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
     }
     .mouse-tooltip.visible { opacity: 1; }
     @media (pointer: coarse) { .mouse-tooltip { display: none !important; } }
 
-    /* CUSTOM CURSOR */
+    /* CUSTOM CURSOR (極限まで軽量化) */
     @media (hover:hover) and (pointer:fine) {
       body.cursor-ready, body.cursor-ready a, body.cursor-ready button, body.cursor-ready .perceive-frame { cursor: none; }
     }
-    .cursor-dot { position: fixed; top:0; left:0; width: 5px; height: 5px; border-radius: 50%; background: var(--accent);
-      pointer-events: none; z-index: 99999; transform: translate(-50%,-50%); display: none; }
-    .cursor-ring { position: fixed; top:0; left:0; width: 36px; height: 36px; border-radius: 50%; border: 0.5px solid var(--accent);
-      pointer-events: none; z-index: 99998; transform: translate(-50%,-50%); transition: width .3s var(--ease-expo), height .3s var(--ease-expo), border-color .3s ease, opacity .3s ease, background-color 0.3s ease;
-      display: none; opacity: 0.6; }
+    .cursor-dot { 
+      position: fixed; top:0; left:0; width: 5px; height: 5px; border-radius: 50%; background: var(--accent);
+      pointer-events: none; z-index: 99999; display: none; will-change: transform;
+      transform: translate3d(-100px, -100px, 0);
+    }
+    .cursor-ring { 
+      position: fixed; top:0; left:0; width: 36px; height: 36px; border-radius: 50%; border: 0.5px solid var(--accent);
+      pointer-events: none; z-index: 99998; opacity: 0.6; display: none; will-change: transform, width, height, border-color;
+      transform: translate3d(-100px, -100px, 0);
+      transition: width .3s var(--ease-expo), height .3s var(--ease-expo), border-color .3s ease, opacity .3s ease, background-color 0.3s ease;
+    }
     body.cursor-ready .cursor-dot, body.cursor-ready .cursor-ring { display: block; }
     .cursor-ring.lens { width: 140px; height: 140px; border-color: var(--red); opacity: 0.8; background: rgba(140,48,41,0.05); backdrop-filter: blur(2px); }
     .cursor-ring.hover { width: 56px; height: 56px; border-color: var(--accent); opacity: 0.9; background: rgba(203,191,176,0.1); }
@@ -271,10 +287,11 @@
       background-size: 320% 220%; background-repeat: no-repeat; filter: saturate(0.8) brightness(0.6);
       opacity: 0; outline: 1px solid rgba(232,228,219,0.03);
       animation: shardIn 2s var(--ease-expo) forwards;
+      will-change: transform, opacity;
     }
     @keyframes shardIn { 
-      from { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--dr)) scale(0.9); filter: blur(10px); }
-      to { opacity: 1; transform: translate(0,0) rotate(0) scale(1); filter: blur(0); } 
+      from { opacity: 0; transform: translate3d(var(--dx), var(--dy), 0) rotate(var(--dr)) scale(0.9); filter: blur(10px); }
+      to { opacity: 1; transform: translate3d(0,0,0) rotate(0) scale(1); filter: blur(0); } 
     }
     .shard:nth-child(1){ top:0; left:0; width:34%; height:50%; background-position: 0% 0%; --dx:-60px; --dy:-40px; --dr:-6deg; animation-delay:.2s;}
     .shard:nth-child(2){ top:0; left:34%; width:32%; height:50%; background-position: 50% 0%; --dx:0px; --dy:-70px; --dr:4deg; animation-delay:.3s;}
@@ -287,11 +304,12 @@
       background: linear-gradient(180deg, rgba(8,8,8,0.7) 0%, rgba(8,8,8,0.4) 40%, rgba(8,8,8,0.95) 100%); }
 
     .hero-seam { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; z-index: 3;
-      background: linear-gradient(to bottom, var(--red), var(--blue)); opacity: 0.4; transform: translateX(var(--seam-x, 0px)); }
+      background: linear-gradient(to bottom, var(--red), var(--blue)); opacity: 0.4;
+      will-change: transform; transform: translate3d(0,0,0); }
 
     .hero-content { position: relative; z-index: 4; text-align: center; padding: 0 var(--px); display: flex; flex-direction: column; align-items: center; width: 100%; }
     
-    @keyframes fadeUp  { from { opacity:0; transform:translateY(24px) scale(0.98); filter: blur(4px); } to { opacity:1; transform:translateY(0) scale(1); filter: blur(0); } }
+    @keyframes fadeUp  { from { opacity:0; transform:translate3d(0, 24px, 0) scale(0.98); filter: blur(4px); } to { opacity:1; transform:translate3d(0,0,0) scale(1); filter: blur(0); } }
     
     .hero-eyebrow { font-family: var(--en); font-size: clamp(0.55rem, 1.5vw, 0.72rem); letter-spacing: 0.35em;
       text-transform: uppercase; color: var(--muted-col); margin-bottom: 2rem; opacity: 0;
@@ -316,16 +334,16 @@
     }
 
     @keyframes titleFocus1 {
-      0% { opacity: 0; transform: translate(-40px, 20px) scale(1.1); filter: blur(16px); }
-      100% { opacity: 1; transform: translate(0, 0) scale(1); filter: blur(0); }
+      0% { opacity: 0; transform: translate3d(-40px, 20px, 0) scale(1.1); filter: blur(16px); }
+      100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0); }
     }
     @keyframes titleFocus2 {
-      0% { opacity: 0; transform: translate(40px, -20px) scale(1.1); filter: blur(16px); }
-      100% { opacity: 1; transform: translate(0, 0) scale(1); filter: blur(0); }
+      0% { opacity: 0; transform: translate3d(40px, -20px, 0) scale(1.1); filter: blur(16px); }
+      100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0); }
     }
     @keyframes titleFade {
-      0% { opacity: 0; filter: blur(8px); transform: translateY(10px); }
-      100% { opacity: 1; filter: blur(0); transform: translateY(0); }
+      0% { opacity: 0; filter: blur(8px); transform: translate3d(0, 10px, 0); }
+      100% { opacity: 1; filter: blur(0); transform: translate3d(0, 0, 0); }
     }
 
     .hero-sub { font-family: var(--en); font-style: italic; font-weight: 300; font-size: clamp(0.78rem, 1.7vw, 1.05rem);
@@ -365,8 +383,8 @@
 
     .sec-desc { max-width: 680px; color: var(--text-muted); font-size: clamp(0.9rem, 1.5vw, 1.05rem); font-weight: 300; line-height: 2.2; margin-bottom: clamp(40px,6vh,70px); letter-spacing: 0.06em; text-align: justify; }
 
-    .reveal { opacity: 0; transform: translateY(30px); filter: blur(6px); transition: opacity 1.2s var(--ease-expo), transform 1.2s var(--ease-expo), filter 1.2s var(--ease-expo); }
-    .reveal.is-visible { opacity: 1; transform: translateY(0); filter: blur(0); }
+    .reveal { opacity: 0; transform: translate3d(0, 30px, 0); filter: blur(6px); transition: opacity 1.2s var(--ease-expo), transform 1.2s var(--ease-expo), filter 1.2s var(--ease-expo); will-change: opacity, transform, filter; }
+    .reveal.is-visible { opacity: 1; transform: translate3d(0, 0, 0); filter: blur(0); }
 
     /* watermark kanji */
     .bg-kanji { position:absolute; font-family: var(--jp); font-weight: 200; color: rgba(232,228,219,0.02);
@@ -386,13 +404,14 @@
     .spec-list .v { font-size: clamp(0.8rem, 1.5vw, 0.88rem); font-weight: 300; color: var(--text-muted); line-height: 1.8; }
 
     /* PERCEIVE-FRAME (Lens effect) */
-    .perceive-frame { position: relative; overflow: hidden; background: #000; --mx: -9999px; --my: -9999px; border: 0.5px solid var(--border); border-radius: 4px; }
+    .perceive-frame { position: relative; overflow: hidden; background: #000; --mx: -9999px; --my: -9999px; border: 0.5px solid var(--border); border-radius: 4px; transform: translateZ(0); }
     .perceive-frame .layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
     .perceive-frame .layer-blur {
       filter: grayscale(0.8) blur(12px) brightness(0.4) contrast(1.1);
       -webkit-mask-image: radial-gradient(circle at var(--mx) var(--my), transparent 0px, transparent 80px, black 150px);
       mask-image: radial-gradient(circle at var(--mx) var(--my), transparent 0px, transparent 80px, black 150px);
       transition: -webkit-mask-image 0.1s ease-out, mask-image 0.1s ease-out;
+      will-change: mask-image, -webkit-mask-image;
     }
     .perceive-hint { font-family: var(--en); font-size: 0.6rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--text-dim);
       display: flex; align-items: center; gap: 12px; margin-top: 20px; }
@@ -401,8 +420,8 @@
 
     /* DUO SPLIT & ASYM BLOCKS */
     .duo-split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 4vw, 80px); margin: clamp(60px,12vh,140px) 0; }
-    .duo-split figure { position: relative; aspect-ratio: 4/5; overflow: hidden; background: var(--bg2); margin:0; cursor: pointer; border: 0.5px solid var(--border); border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-    .duo-split figure img { width:100%; height:100%; object-fit: cover; transition: transform 1.6s var(--ease-expo), filter 1.6s var(--ease-expo); filter: saturate(0.85) brightness(0.8); }
+    .duo-split figure { position: relative; aspect-ratio: 4/5; overflow: hidden; background: var(--bg2); margin:0; cursor: pointer; border: 0.5px solid var(--border); border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transform: translateZ(0); }
+    .duo-split figure img { width:100%; height:100%; object-fit: cover; transition: transform 1.6s var(--ease-expo), filter 1.6s var(--ease-expo); filter: saturate(0.85) brightness(0.8); will-change: transform, filter; }
     .duo-split figure:hover img { transform: scale(1.03); filter: saturate(1.1) brightness(1); }
     .duo-split figcaption { position: absolute; bottom: 0; left: 0; right: 0; padding: clamp(16px, 4vw, 24px) clamp(20px, 4vw, 30px);
       font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.25em; color: rgba(232,228,219,0.85); text-transform: uppercase;
@@ -410,9 +429,9 @@
     .duo-split figure:first-child figcaption { color: var(--red); }
     .duo-split figure:last-child figcaption { color: var(--blue); }
 
-    .blob-frame { overflow: hidden; aspect-ratio: 1/1; border-radius: 38% 62% 60% 40% / 46% 40% 60% 54%; transition: border-radius 1.2s var(--ease-expo), transform 0.6s var(--ease-expo); border: 0.5px solid var(--border); cursor: pointer; }
-    .blob-frame:hover { border-radius: 50%; transform: scale(1.02); }
-    .blob-frame img { width:100%; height:100%; object-fit:cover; filter: saturate(0.9) brightness(0.85); transition: filter 0.6s ease; }
+    .blob-frame { overflow: hidden; aspect-ratio: 1/1; border-radius: 38% 62% 60% 40% / 46% 40% 60% 54%; transition: border-radius 1.2s var(--ease-expo), transform 0.6s var(--ease-expo); border: 0.5px solid var(--border); cursor: pointer; transform: translateZ(0); }
+    .blob-frame:hover { border-radius: 50%; transform: scale(1.02) translateZ(0); }
+    .blob-frame img { width:100%; height:100%; object-fit:cover; filter: saturate(0.9) brightness(0.85); transition: filter 0.6s ease; will-change: filter; }
     .blob-frame:hover img { filter: saturate(1) brightness(1); }
 
     .asym-2 { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(30px,6vw,80px); align-items: center; margin: clamp(60px,12vh,140px) 0; position: relative; z-index: 1; }
@@ -425,8 +444,7 @@
     .cap-line span.ja { font-family: var(--jp); font-weight: 300; }
 
     /* ============================================================
-       FILMSTRIP (03 — Vertical Strokes) - スクロールトラップを完全撤廃
-       ※マウスドラッグで横にスライド＆美しいカスタムスクロールバー
+       FILMSTRIP (03 — Vertical Strokes) - 超軽量・バグ完全排除版
     ================================================================ */
     .film-section { 
       position: relative; 
@@ -447,15 +465,17 @@
     .film-track {
       display: flex; 
       gap: clamp(24px, 4vw, 60px); 
-      padding: 0 var(--px) 40px var(--px); /* スクロールバー用の余白 */
+      padding: 0 var(--px) 40px var(--px); 
       overflow-x: auto; 
       overflow-y: hidden;
-      scroll-snap-type: none; /* PCでのドラッグ時のカクつきを防止 */
+      scroll-snap-type: none;
       -webkit-overflow-scrolling: touch;
       align-items: center; 
-      cursor: grab; /* PCでのドラッグ可能を明示 */
-      user-select: none; /* ドラッグ中のテキスト選択を防止 */
+      cursor: grab;
+      user-select: none;
       -webkit-user-select: none;
+      transform: translateZ(0); 
+      will-change: scroll-position;
     }
     .film-track.is-grabbing { cursor: grabbing; }
     
@@ -463,32 +483,26 @@
       content: ''; flex: 0 0 calc(var(--px) - clamp(24px, 4vw, 60px)); display: block;
     }
     
-    /* PC向けの美しいカスタムスクロールバー */
-    .film-track::-webkit-scrollbar { height: 8px; }
-    .film-track::-webkit-scrollbar-track {
-      background: rgba(232, 228, 219, 0.05);
-      border-radius: 10px;
-      margin: 0 var(--px);
-    }
-    .film-track::-webkit-scrollbar-thumb {
-      background: rgba(203, 191, 176, 0.3);
-      border-radius: 10px;
-      border: 1px solid rgba(8, 8, 8, 0.6);
-    }
-    .film-track::-webkit-scrollbar-thumb:hover { background: rgba(203, 191, 176, 0.6); }
+    /* PC向けカスタムスクロールバー */
+    .film-track::-webkit-scrollbar { height: 6px; }
+    .film-track::-webkit-scrollbar-track { background: rgba(232, 228, 219, 0.03); margin: 0 var(--px); border-radius: 10px; }
+    .film-track::-webkit-scrollbar-thumb { background: rgba(203, 191, 176, 0.25); border-radius: 10px; }
+    .film-track::-webkit-scrollbar-thumb:hover { background: rgba(203, 191, 176, 0.5); }
     
-    /* スマホ向けの上書き */
+    /* スマホ向け */
     @media (max-width: 768px) {
       .film-track { scroll-snap-type: x mandatory; padding-bottom: 20px; }
       .film-card { scroll-snap-align: center; }
       .film-track::-webkit-scrollbar { display: none; }
     }
 
-    .film-card { flex-shrink: 0; cursor: pointer; }
+    .film-card { flex-shrink: 0; cursor: pointer; transform: translateZ(0); }
     .film-card img { 
       display:block; filter: saturate(0.85) brightness(0.8); border: 0.5px solid var(--border); 
       border-radius: 4px; transition: filter 0.5s ease; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      pointer-events: none; /* 画像自体のネイティブドラッグを防止し、JSドラッグを優先 */
+      pointer-events: none; /* ネイティブドラッグによるブラウザの干渉を完全防止 */
+      transform: translateZ(0);
+      will-change: filter;
     }
     .film-card:hover img { filter: saturate(1.05) brightness(1); }
     
@@ -511,35 +525,19 @@
 
     /* 横スクロールのヒントUI */
     .film-hint-wrapper {
-      position: absolute;
-      bottom: 25px;
-      right: var(--px);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: rgba(203, 191, 176, 0.1);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border: 0.5px solid rgba(203, 191, 176, 0.3);
-      padding: 10px 20px;
-      border-radius: 40px;
-      font-family: var(--en);
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
-      color: var(--fg);
-      text-transform: uppercase;
-      animation: swipePulse 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-      pointer-events: none;
-      transition: opacity 0.6s ease;
-      z-index: 10;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      position: absolute; bottom: 25px; right: var(--px); display: flex; align-items: center; gap: 12px;
+      background: rgba(203, 191, 176, 0.1); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border: 0.5px solid rgba(203, 191, 176, 0.3); padding: 10px 20px; border-radius: 40px;
+      font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.2em; color: var(--fg); text-transform: uppercase;
+      animation: swipePulse 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; pointer-events: none; transition: opacity 0.6s ease; z-index: 10;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3); transform: translateZ(0);
     }
     .film-hint-wrapper.is-hidden { opacity: 0; }
     .film-hint-wrapper::after { content: '→'; font-size: 1rem; font-family: sans-serif; }
-    @keyframes swipePulse { 0% { transform: translateX(0); } 50% { transform: translateX(12px); } 100% { transform: translateX(0); } }
+    @keyframes swipePulse { 0% { transform: translate3d(0,0,0); } 50% { transform: translate3d(12px,0,0); } 100% { transform: translate3d(0,0,0); } }
 
     /* ============================================================
-       05 THRESHOLD EPILOGUE (充実したエピローグ)
+       05 THRESHOLD EPILOGUE
     ================================================================ */
     .threshold-epilogue {
       margin-top: clamp(60px, 10vh, 100px);
@@ -547,9 +545,8 @@
       background: rgba(255, 255, 255, 0.015);
       border-left: 2px solid var(--accent);
       border-radius: 0 8px 8px 0;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      position: relative;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      position: relative; transform: translateZ(0);
     }
     .threshold-epilogue::after {
       content: ''; position: absolute; bottom: 0; left: -2px; width: 2px; height: 30%;
@@ -577,7 +574,7 @@
       background: rgba(255,255,255,0.015); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border: 0.5px solid rgba(232,228,219,0.08); padding: clamp(28px,5vw,56px) clamp(20px,4vw,44px);
       border-radius: 4px; transition: transform 0.6s var(--ease-out-back), background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
-      position: relative; overflow: hidden; display: block;
+      position: relative; overflow: hidden; display: block; transform: translateZ(0);
     }
     .venue-card::before {
       content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
@@ -617,15 +614,9 @@
 
     /* FOOTER */
     footer {
-      border-top: 0.5px solid var(--border);
-      padding: clamp(2rem, 5vh, 6rem) var(--px);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 1.2rem;
-      background: var(--bg);
-      text-align: center;
+      border-top: 0.5px solid var(--border); padding: clamp(2rem, 5vh, 6rem) var(--px);
+      display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 1.2rem;
+      background: var(--bg); text-align: center;
     }
     .footer-logo { font-family: var(--jp); font-size: 13px; letter-spacing: 0.15em; color: var(--text-dim); }
     .footer-copy { font-family: var(--en); font-size: 11px; letter-spacing: 0.2em; color: var(--text-dim); text-transform: uppercase; }
@@ -636,24 +627,14 @@
     .lightbox__img { max-width: 90vw; max-height: 85vh; object-fit: contain; border: 0.5px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.8); border-radius: 4px; }
 
     .back-to-top {
-      position: fixed;
-      bottom: clamp(20px, 4vw, 40px);
-      right: clamp(20px, 4vw, 40px);
-      z-index: 9000;
-      width: clamp(48px, 8vw, 70px);
-      height: clamp(48px, 8vw, 70px);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(20px);
+      position: fixed; bottom: clamp(20px, 4vw, 40px); right: clamp(20px, 4vw, 40px);
+      z-index: 9000; width: clamp(48px, 8vw, 70px); height: clamp(48px, 8vw, 70px);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      text-decoration: none; opacity: 0; visibility: hidden; transform: translate3d(0, 20px, 0);
       transition: opacity 0.6s var(--ease-expo), visibility 0.6s, transform 0.6s var(--ease-expo);
       cursor: pointer;
     }
-    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
+    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translate3d(0, 0, 0); }
     .b2t-inner {
       position: absolute; inset: 4px; background: rgba(12, 12, 12, 0.5); 
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
@@ -662,8 +643,7 @@
       box-shadow: 0 10px 24px rgba(0,0,0,0.4);
     }
     .b2t-text {
-      font-family: var(--en); font-size: clamp(0.55rem, 1.4vw, 0.75rem);
-      font-weight: 400; letter-spacing: 0.15em; color: var(--text);
+      font-family: var(--en); font-size: clamp(0.55rem, 1.4vw, 0.75rem); font-weight: 400; letter-spacing: 0.15em; color: var(--text);
       margin-right: -0.15em; margin-bottom: -1px; transition: color 0.4s var(--ease-expo), transform 0.4s var(--ease-expo);
     }
     .b2t-progress { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); pointer-events: none; }
@@ -881,7 +861,7 @@
       </div>
     </section>
 
-    <!-- ============== 03 垂直の筆触 / FILMSTRIP (バグを完全解消し、快適に操作可能) ============== -->
+    <!-- ============== 03 垂直の筆触 / FILMSTRIP ============== -->
     <section class="film-section tone-a" id="forest">
       <div class="container" style="max-width: 100%;">
         <div class="film-heading reveal is-visible">
@@ -932,7 +912,7 @@
       </div>
     </section>
 
-    <!-- ============== 05 扉の先 / THRESHOLD (充実したエピローグ) ============== -->
+    <!-- ============== 05 扉の先 / THRESHOLD ============== -->
     <section class="section tone-a section-tilt" id="threshold">
       <div class="container">
         <div class="reveal">
@@ -1017,29 +997,33 @@
         });
       });
       
+      let scrollRAF;
       function onScroll() {
-        const y = window.scrollY || document.documentElement.scrollTop;
-        const h = document.documentElement.scrollHeight - window.innerHeight;
-        const pct = h > 0 ? (y/h) : 0;
-        
-        if(y > 60) { nav.classList.add('nav-scrolled'); } else { nav.classList.remove('nav-scrolled'); }
-        if (progress) progress.style.width = (pct * 100) + '%';
-        
-        if (b2t) b2t.classList.toggle('is-visible', y > window.innerHeight * 0.5);
-        if (b2tCircle) {
-          const offset = 301.6 - (301.6 * pct);
-          b2tCircle.style.strokeDashoffset = offset;
-        }
-
-        const checkY = y + window.innerHeight * 0.4;
-        let current = null;
-        targets.forEach(sec => { if (sec && sec.offsetTop <= checkY) current = sec; });
-        
-        navLinks.forEach(link => {
-          link.classList.remove('active');
-          if (current && link.getAttribute('href') === `#${current.id}`) {
-            link.classList.add('active');
+        if(scrollRAF) cancelAnimationFrame(scrollRAF);
+        scrollRAF = requestAnimationFrame(() => {
+          const y = window.scrollY || document.documentElement.scrollTop;
+          const h = document.documentElement.scrollHeight - window.innerHeight;
+          const pct = h > 0 ? (y/h) : 0;
+          
+          if(y > 60) { nav.classList.add('nav-scrolled'); } else { nav.classList.remove('nav-scrolled'); }
+          if (progress) progress.style.transform = `scaleX(${pct})`; 
+          
+          if (b2t) b2t.classList.toggle('is-visible', y > window.innerHeight * 0.5);
+          if (b2tCircle) {
+            const offset = 301.6 - (301.6 * pct);
+            b2tCircle.style.strokeDashoffset = offset;
           }
+
+          const checkY = y + window.innerHeight * 0.4;
+          let current = null;
+          targets.forEach(sec => { if (sec && sec.offsetTop <= checkY) current = sec; });
+          
+          navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (current && link.getAttribute('href') === `#${current.id}`) {
+              link.classList.add('active');
+            }
+          });
         });
       }
       
@@ -1068,8 +1052,7 @@
           });
           link.addEventListener('mousemove', (e) => {
             if(!tooltip) return;
-            tooltip.style.left = (e.clientX + 15) + 'px';
-            tooltip.style.top = (e.clientY + 15) + 'px';
+            tooltip.style.transform = `translate3d(${e.clientX + 15}px, ${e.clientY + 15}px, 0)`;
           });
           link.addEventListener('mouseleave', () => {
             if(tooltip) tooltip.classList.remove('visible');
@@ -1094,18 +1077,18 @@
       } else { revealEls.forEach(el => el.classList.add('is-visible')); }
 
       /* ==========================================
-         Filmstrip: PCドラッグ対応（完璧版）
+         Filmstrip: 完全修正版ドラッグ処理（バグなし）
       ========================================== */
       const filmTrack = document.getElementById('filmTrack');
       const filmHint = document.getElementById('filmHint');
-      let isDraggingFilm = false; // ドラッグ中かどうかのフラグ
+      let isDraggingFilm = false;
       
       if (filmTrack) {
         let isDown = false;
         let startX;
         let scrollLeft;
+        let dragRAF;
         
-        // PCで画像をドラッグしたときにページ全体が動いたり、画像が引っ張られたりするのを防ぐ
         filmTrack.addEventListener('mousedown', (e) => {
           isDown = true;
           isDraggingFilm = false;
@@ -1114,29 +1097,27 @@
           scrollLeft = filmTrack.scrollLeft;
         });
         
-        filmTrack.addEventListener('mouseleave', () => {
+        window.addEventListener('mouseup', () => {
           isDown = false;
-          filmTrack.classList.remove('is-grabbing');
-        });
-        
-        filmTrack.addEventListener('mouseup', () => {
-          isDown = false;
-          filmTrack.classList.remove('is-grabbing');
+          if(filmTrack) filmTrack.classList.remove('is-grabbing');
         });
         
         filmTrack.addEventListener('mousemove', (e) => {
           if (!isDown) return;
-          // ここに e.preventDefault() を入れると稀にスクロールが阻害されるため、
-          // 代わりにCSS側でユーザーセレクトと画像ドラッグを禁止して対応しています。
+          e.preventDefault();
+          
           const x = e.pageX - filmTrack.offsetLeft;
-          const walk = (x - startX) * 1.5; // ドラッグ速度の調整
+          const walk = (x - startX) * 1.5; 
           if (Math.abs(walk) > 5) {
-            isDraggingFilm = true; // 5px以上動いたらドラッグと判定
+            isDraggingFilm = true;
           }
-          filmTrack.scrollLeft = scrollLeft - walk;
+          
+          if(dragRAF) cancelAnimationFrame(dragRAF);
+          dragRAF = requestAnimationFrame(() => {
+            filmTrack.scrollLeft = scrollLeft - walk;
+          });
         });
 
-        // ユーザーが少しでも横にスクロールしたらヒントをフェードアウト
         filmTrack.addEventListener('scroll', () => {
           if(filmHint && filmTrack.scrollLeft > 30) {
             filmHint.classList.add('is-hidden');
@@ -1149,7 +1130,6 @@
       const lbImg = document.getElementById('lbImg');
       document.querySelectorAll('.duo-split figure, .blob-frame, .film-card').forEach(trigger => {
         trigger.addEventListener('click', (e) => {
-          // ギャラリー領域で「ドラッグ中」だった場合は、クリック判定をキャンセルする
           if (trigger.classList.contains('film-card') && isDraggingFilm) {
             e.preventDefault();
             return;
@@ -1170,39 +1150,58 @@
       });
       document.addEventListener('keydown', e => { if (e.key === 'Escape' && lightbox.classList.contains('active')) lightbox.click(); });
 
-      /* Cursor */
+      /* ==========================================
+         全マウストラッキングのイベントループ一本化
+      ========================================== */
+      let mouseX = window.innerWidth / 2;
+      let mouseY = window.innerHeight / 2;
+      let isMoving = false;
+      const dot = document.getElementById('cursorDot');
+      const ring = document.getElementById('cursorRing');
+      const heroSeam = document.getElementById('heroSeam');
+
       if (fine) {
         document.body.classList.add('cursor-ready');
-        const dot = document.getElementById('cursorDot');
-        const ring = document.getElementById('cursorRing');
-        window.addEventListener('mousemove', e => {
-          dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px';
-          ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px';
-        });
+        
         document.querySelectorAll('a, button, .blob-frame, .duo-split figure, .film-card').forEach(el => {
-          el.addEventListener('mouseenter', () => ring.classList.add('hover'));
-          el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+          el.addEventListener('mouseenter', () => ring && ring.classList.add('hover'));
+          el.addEventListener('mouseleave', () => ring && ring.classList.remove('hover'));
         });
         document.querySelectorAll('.perceive-frame').forEach(el => {
-          el.addEventListener('mouseenter', () => ring.classList.add('lens'));
-          el.addEventListener('mouseleave', () => ring.classList.remove('lens'));
+          el.addEventListener('mouseenter', () => ring && ring.classList.add('lens'));
+          el.addEventListener('mouseleave', () => ring && ring.classList.remove('lens'));
         });
       }
 
-      /* Hero Seam */
-      const heroSeam = document.getElementById('heroSeam');
-      if (heroSeam && fine) {
-        window.addEventListener('mousemove', e => {
-          const offset = (e.clientX / window.innerWidth - 0.5) * 60;
-          heroSeam.style.setProperty('--seam-x', offset + 'px');
-        });
-      }
+      window.addEventListener('mousemove', e => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        
+        if (!isMoving) {
+          isMoving = true;
+          requestAnimationFrame(() => {
+            if (fine) {
+              if (dot) dot.style.transform = `translate3d(calc(${mouseX}px - 50%), calc(${mouseY}px - 50%), 0)`;
+              if (ring) ring.style.transform = `translate3d(calc(${mouseX}px - 50%), calc(${mouseY}px - 50%), 0)`;
+            }
+            if (heroSeam && fine) {
+              const offset = (mouseX / window.innerWidth - 0.5) * 60;
+              heroSeam.style.transform = `translate3d(${offset}px, 0, 0)`;
+            }
+            isMoving = false;
+          });
+        }
+      }, { passive: true });
 
-      /* Perceive-frame (Lens) - スマホスクロールロック解除 */
+      /* Perceive-frame (Lens) */
       document.querySelectorAll('.perceive-frame').forEach(frame => {
+        let lensRAF;
         const updateMask = (x, y) => {
-          frame.style.setProperty('--mx', x + 'px');
-          frame.style.setProperty('--my', y + 'px');
+          if(lensRAF) cancelAnimationFrame(lensRAF);
+          lensRAF = requestAnimationFrame(() => {
+            frame.style.setProperty('--mx', x + 'px');
+            frame.style.setProperty('--my', y + 'px');
+          });
         };
         if (fine) {
           frame.addEventListener('mousemove', e => {
@@ -1219,12 +1218,10 @@
         }, {passive:true});
         
         frame.addEventListener('touchmove', e => {
-          // 【重要】ここで e.preventDefault() を実行するとスマホの縦スクロールが止まってしまうため削除しました。
-          // これにより、画面をなぞってスクロールしながらでもレンズが追従するようになります。
           const r = frame.getBoundingClientRect();
           const touch = e.touches[0];
           updateMask(touch.clientX - r.left, touch.clientY - r.top);
-        }, {passive: true}); // passive: true に戻し、ブラウザのスクロールを許可
+        }, {passive: true}); 
       });
     })();
   </script>
