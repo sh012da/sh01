@@ -45,7 +45,7 @@
       --jp:          'Noto Serif JP', serif;
       --ease-expo:   cubic-bezier(0.16, 1, 0.3, 1);
       --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
-      --px:          clamp(20px, 5vw, 64px);
+      --px:          clamp(20px, 6vw, 80px); /* 全体の左右余白を調整 */
       
       /* Theme Colors */
       --red:         #8c3029;
@@ -134,7 +134,6 @@
     /* ============================================================
        MOBILE MENU & CLOSE BUTTON
     ================================================================ */
-    /* ハンバーガーボタン：よりスタイリッシュでタップしやすく改善 */
     .mobile-menu-btn {
       display: none; 
       background: rgba(203, 191, 176, 0.08); 
@@ -156,23 +155,12 @@
       transform: scale(0.96);
     }
     body.menu-open .mobile-menu-btn { 
-      opacity: 0; 
-      pointer-events: none; 
-      transform: translateY(-10px); 
+      opacity: 0; pointer-events: none; transform: translateY(-10px); 
     }
     
-    .hamburger-lines { 
-      display: flex; flex-direction: column; gap: 5px; 
-    }
-    .hamburger-lines span { 
-      display: block; width: 20px; height: 1.5px; 
-      background: var(--accent); 
-    }
-    .menu-text { 
-      font-family: var(--en); font-size: 0.7rem; 
-      letter-spacing: 0.15em; color: var(--accent); 
-      font-weight: 500;
-    }
+    .hamburger-lines { display: flex; flex-direction: column; gap: 5px; }
+    .hamburger-lines span { display: block; width: 20px; height: 1.5px; background: var(--accent); }
+    .menu-text { font-family: var(--en); font-size: 0.7rem; letter-spacing: 0.15em; color: var(--accent); font-weight: 500; }
 
     /* メニューオーバーレイ */
     .mobile-menu-overlay {
@@ -184,67 +172,72 @@
     }
     body.menu-open .mobile-menu-overlay { opacity: 1; visibility: visible; }
     
-    /* 専用の閉じる（×）ボタン：オーバーレイ内右上に配置 */
+    /* 閉じる（×）ボタン */
     .menu-close-btn {
-      position: absolute;
-      top: clamp(20px, 4vw, 40px);
-      right: var(--px);
-      width: 48px;
-      height: 48px;
-      background: rgba(232, 228, 219, 0.05);
-      border: 1px solid rgba(232, 228, 219, 0.2);
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 5003;
-      transition: all 0.4s var(--ease-expo);
-      opacity: 0;
-      transform: rotate(-90deg) scale(0.8);
+      position: absolute; top: clamp(20px, 4vw, 40px); right: var(--px);
+      width: 48px; height: 48px; background: rgba(232, 228, 219, 0.05);
+      border: 1px solid rgba(232, 228, 219, 0.2); border-radius: 50%;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      z-index: 5003; transition: all 0.4s var(--ease-expo);
+      opacity: 0; transform: rotate(-90deg) scale(0.8);
     }
-    body.menu-open .menu-close-btn {
-      opacity: 1;
-      transform: rotate(0deg) scale(1);
-      transition-delay: 0.2s;
-    }
-    .menu-close-btn:hover, .menu-close-btn:active {
-      background: rgba(232, 228, 219, 0.15);
-      transform: rotate(90deg) scale(1.05);
-    }
-    .menu-close-btn span {
-      position: absolute;
-      width: 20px;
-      height: 1.5px;
-      background: var(--fg);
-    }
+    body.menu-open .menu-close-btn { opacity: 1; transform: rotate(0deg) scale(1); transition-delay: 0.2s; }
+    .menu-close-btn:hover, .menu-close-btn:active { background: rgba(232, 228, 219, 0.15); transform: rotate(90deg) scale(1.05); }
+    .menu-close-btn span { position: absolute; width: 20px; height: 1.5px; background: var(--fg); }
     .menu-close-btn span:nth-child(1) { transform: rotate(45deg); }
     .menu-close-btn span:nth-child(2) { transform: rotate(-45deg); }
 
+    /* メニュー内リンク */
     .mobile-nav-links {
-      list-style: none; text-align: center; display: flex; flex-direction: column; gap: 2rem;
+      list-style: none; text-align: center; display: flex; flex-direction: column; gap: 1rem;
+      width: 100%; max-width: 320px; padding: 0 20px;
     }
     .mobile-nav-links a {
-      font-family: var(--en); font-size: 1.2rem; letter-spacing: 0.25em;
-      color: var(--text-muted); text-transform: uppercase; display: block;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 1.2rem;
+      border: 1px solid rgba(232, 228, 219, 0.08);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.015);
       transform: translateY(20px); opacity: 0; transition: all 0.4s var(--ease-expo);
+      position: relative; overflow: hidden;
     }
+    .mobile-nav-links a::before {
+      content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.04), transparent);
+      transform: skewX(-25deg); transition: left 0.6s ease; z-index: 0;
+    }
+    .mobile-nav-links a:hover, .mobile-nav-links a:active {
+      background: rgba(255, 255, 255, 0.04); border-color: rgba(203, 191, 176, 0.3);
+      transform: translateY(0) scale(1.02); box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .mobile-nav-links a:hover::before, .mobile-nav-links a:active::before { left: 150%; }
+    
+    .mobile-nav-links a > * { position: relative; z-index: 1; }
+    .mobile-nav-links .en { font-family: var(--en); font-size: 1.1rem; letter-spacing: 0.25em; color: var(--text); text-transform: uppercase; transition: color 0.3s ease; }
+    .mobile-nav-links .ja { display: block; font-family: var(--jp); font-size: 0.7rem; letter-spacing: 0.1em; color: var(--text-dim); margin-top: 6px; font-weight: 300; transition: color 0.3s ease; }
+
+    /* Contactボタンのみハイライト */
+    .mobile-nav-links li.contact-btn { margin-top: 0.5rem; }
+    .mobile-nav-links li.contact-btn a { background: rgba(203, 191, 176, 0.08); border-color: rgba(203, 191, 176, 0.3); }
+    .mobile-nav-links li.contact-btn a .ja { color: var(--accent); }
+    .mobile-nav-links li.contact-btn a:hover, .mobile-nav-links li.contact-btn a:active { background: var(--accent); }
+    .mobile-nav-links li.contact-btn a:hover .en, .mobile-nav-links li.contact-btn a:active .en,
+    .mobile-nav-links li.contact-btn a:hover .ja, .mobile-nav-links li.contact-btn a:active .ja { color: var(--bg); font-weight: 400;}
+
     body.menu-open .mobile-nav-links a { transform: translateY(0); opacity: 1; }
-    /* Delay stagger for mobile links */
     body.menu-open .mobile-nav-links li:nth-child(1) a { transition-delay: 0.1s; }
     body.menu-open .mobile-nav-links li:nth-child(2) a { transition-delay: 0.15s; }
     body.menu-open .mobile-nav-links li:nth-child(3) a { transition-delay: 0.2s; }
     body.menu-open .mobile-nav-links li:nth-child(4) a { transition-delay: 0.25s; }
     body.menu-open .mobile-nav-links li:nth-child(5) a { transition-delay: 0.3s; }
     body.menu-open .mobile-nav-links li:nth-child(6) a { transition-delay: 0.35s; }
-    
-    .mobile-nav-links span { display: block; font-family: var(--jp); font-size: 0.75rem; letter-spacing: 0.1em; color: var(--text-dim); margin-top: 6px; }
+    body.menu-open .mobile-nav-links li:nth-child(7) a { transition-delay: 0.4s; }
 
     @media (max-width: 1024px) {
       .nav-links { display: none !important; }
       .mobile-menu-btn { display: flex; }
       nav#top-nav { padding: 16px var(--px); }
-      .nav-cta { display: none; } /* スマホ・タブレットではメニュー内に移動 */
+      .nav-cta { display: none; }
     }
 
     /* TOOLTIP */
@@ -284,7 +277,6 @@
       from { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--dr)) scale(0.9); filter: blur(10px); }
       to { opacity: 1; transform: translate(0,0) rotate(0) scale(1); filter: blur(0); } 
     }
-    /* Shard positions */
     .shard:nth-child(1){ top:0; left:0; width:34%; height:50%; background-position: 0% 0%; --dx:-60px; --dy:-40px; --dr:-6deg; animation-delay:.2s;}
     .shard:nth-child(2){ top:0; left:34%; width:32%; height:50%; background-position: 50% 0%; --dx:0px; --dy:-70px; --dr:4deg; animation-delay:.3s;}
     .shard:nth-child(3){ top:0; left:66%; width:34%; height:50%; background-position: 100% 0%; --dx:70px; --dy:-30px; --dr:7deg; animation-delay:.25s;}
@@ -395,22 +387,22 @@
     .spec-list .v { font-size: clamp(0.8rem, 1.5vw, 0.88rem); font-weight: 300; color: var(--text-muted); line-height: 1.8; }
 
     /* PERCEIVE-FRAME (Lens effect) */
-    .perceive-frame { position: relative; overflow: hidden; background: #000; --mx: -9999px; --my: -9999px; border: 0.5px solid var(--border); }
+    .perceive-frame { position: relative; overflow: hidden; background: #000; --mx: -9999px; --my: -9999px; border: 0.5px solid var(--border); border-radius: 4px; }
     .perceive-frame .layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
     .perceive-frame .layer-blur {
       filter: grayscale(0.8) blur(12px) brightness(0.4) contrast(1.1);
       -webkit-mask-image: radial-gradient(circle at var(--mx) var(--my), transparent 0px, transparent 80px, black 150px);
       mask-image: radial-gradient(circle at var(--mx) var(--my), transparent 0px, transparent 80px, black 150px);
-      transition: -webkit-mask-image 0.1s ease-out, mask-image 0.1s ease-out; /* スマホのタッチ追従を滑らかに */
+      transition: -webkit-mask-image 0.1s ease-out, mask-image 0.1s ease-out;
     }
     .perceive-hint { font-family: var(--en); font-size: 0.6rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--text-dim);
       display: flex; align-items: center; gap: 12px; margin-top: 20px; }
     .perceive-hint span:first-child { width: 24px; height: 24px; border-radius: 50%; border: 0.5px solid var(--text-dim); flex-shrink:0; position: relative; }
     .perceive-hint span:first-child::after { content:''; position: absolute; top:50%; left:50%; transform:translate(-50%,-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--text-dim); }
 
-    /* DUO SPLIT & ASYM BLOCKS */
-    .duo-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); margin: clamp(40px,10vh,120px) 0; }
-    .duo-split figure { position: relative; aspect-ratio: 3/4; overflow: hidden; background: var(--bg2); margin:0; cursor: pointer; }
+    /* DUO SPLIT & ASYM BLOCKS (PCバランスの劇的改善) */
+    .duo-split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 4vw, 80px); margin: clamp(60px,12vh,140px) 0; }
+    .duo-split figure { position: relative; aspect-ratio: 4/5; overflow: hidden; background: var(--bg2); margin:0; cursor: pointer; border: 0.5px solid var(--border); border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
     .duo-split figure img { width:100%; height:100%; object-fit: cover; transition: transform 1.6s var(--ease-expo), filter 1.6s var(--ease-expo); filter: saturate(0.85) brightness(0.8); }
     .duo-split figure:hover img { transform: scale(1.03); filter: saturate(1.1) brightness(1); }
     .duo-split figcaption { position: absolute; bottom: 0; left: 0; right: 0; padding: clamp(16px, 4vw, 24px) clamp(20px, 4vw, 30px);
@@ -424,63 +416,103 @@
     .blob-frame img { width:100%; height:100%; object-fit:cover; filter: saturate(0.9) brightness(0.85); transition: filter 0.6s ease; }
     .blob-frame:hover img { filter: saturate(1) brightness(1); }
 
-    .asym-2 { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(30px,6vw,80px); align-items: center; margin: clamp(40px,10vh,120px) 0; position: relative; z-index: 1; }
+    .asym-2 { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(30px,6vw,80px); align-items: center; margin: clamp(60px,12vh,140px) 0; position: relative; z-index: 1; }
     .asym-2--rev { grid-template-columns: 0.9fr 1.1fr; }
     .block-ttl { font-family: var(--jp); font-weight: 300; font-size: clamp(1.2rem, 3vw, 1.8rem); margin-bottom: 1.2rem; letter-spacing: 0.05em; }
     .block-txt { font-size: clamp(0.9rem, 1.5vw, 0.92rem); font-weight: 300; line-height: 2.2; color: var(--text-muted); text-align: justify; letter-spacing: 0.06em; }
 
-    .cap-line { display:flex; justify-content: space-between; align-items:center; margin-top: clamp(40px,8vh,80px); padding-top: 20px; border-top: 0.5px solid var(--border); flex-wrap: wrap; gap: 10px;}
+    .cap-line { display:flex; justify-content: space-between; align-items:center; margin-top: clamp(60px,10vh,100px); padding-top: 20px; border-top: 0.5px solid var(--border); flex-wrap: wrap; gap: 10px;}
     .cap-line span { font-family: var(--en); font-size: 0.62rem; letter-spacing: 0.2em; color: var(--text-dim); text-transform: uppercase; }
     .cap-line span.ja { font-family: var(--jp); font-weight: 300; }
 
-    /* FILMSTRIP (PC: Parallax Scroll, SP: Native Horizontal Scroll) */
-    .film-section { position: relative; border-bottom: 0.5px solid var(--border); background: var(--bg); }
-    
-    /* PC Styles */
-    @media (min-width: 769px) {
-      .film-section { height: 340vh; }
-      .film-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; display:flex; align-items:center; }
-      .film-sticky::before { content:""; position:absolute; inset:0; z-index:2; pointer-events:none;
-        background: linear-gradient(to right, var(--bg) 0%, transparent 15%, transparent 85%, var(--bg) 100%); }
-      .film-track { display:flex; gap: clamp(24px,3.5vw,50px); padding: 0 10vw; align-items: flex-end; will-change: transform; }
-      
-      .film-heading { position: absolute; top: clamp(80px,12vh,120px); left: var(--px); z-index: 3; max-width: 500px; }
-      .film-hint { position: absolute; bottom: clamp(40px,8vh,80px); right: var(--px); z-index: 3;
-        font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.25em; color: var(--text-dim); text-transform: uppercase;
-        display:flex; align-items:center; gap:12px; }
-      .film-hint span { display:inline-block; width: 32px; height: 0.5px; background: var(--text-dim); }
+    /* ============================================================
+       FILMSTRIP (03 — Vertical Strokes) の一新
+       PC・スマホ共通のネイティブ横スクロール ＋ PCでのホイール操作対応
+    ================================================================ */
+    .film-section { 
+      position: relative; 
+      padding: clamp(5rem, 12vh, 10rem) 0; 
+      background: var(--bg); 
+      border-bottom: 0.5px solid var(--border); 
+      overflow: hidden; 
     }
     
-    /* Mobile Styles */
-    @media (max-width: 768px) {
-      .film-section { padding: clamp(5rem, 12vh, 10rem) 0; }
-      .film-sticky { position: relative; width: 100%; display: flex; flex-direction: column; }
-      .film-heading { padding: 0 var(--px); margin-bottom: 3rem; }
-      .film-track {
-        display: flex; gap: 24px; padding: 0 var(--px); overflow-x: auto;
-        scroll-snap-type: x mandatory; scroll-behavior: smooth;
-        -webkit-overflow-scrolling: touch; padding-bottom: 40px; align-items: center;
-      }
-      .film-track::-webkit-scrollbar { display: none; } /* スクロールバー非表示 */
-      .film-card { scroll-snap-align: center; }
-      .film-hint { display: none; } /* スマホでは直感的にスワイプできるため非表示 */
+    .film-heading { 
+      padding: 0 var(--px); 
+      margin-bottom: clamp(3rem, 6vw, 5rem); 
+      max-width: 1400px; 
+      margin-left: auto; 
+      margin-right: auto; 
     }
-
-    .film-card { flex-shrink: 0; cursor: pointer; }
-    .film-card img { display:block; filter: saturate(0.85) brightness(0.8); border: 0.5px solid var(--border); transition: filter 0.5s ease; width: 100%; }
+    
+    .film-track {
+      display: flex; 
+      gap: clamp(24px, 4vw, 60px); 
+      padding: 0 var(--px) 60px var(--px); /* 下部に余白を持たせる */
+      overflow-x: auto; 
+      scroll-snap-type: x mandatory; 
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      align-items: center; /* 中央寄せベース */
+    }
+    /* 最後のアイテムの右側に十分な余白を確保するための疑似要素 */
+    .film-track::after {
+      content: '';
+      flex: 0 0 calc(var(--px) - clamp(24px, 4vw, 60px)); 
+      display: block;
+    }
+    .film-track::-webkit-scrollbar { display: none; }
+    
+    .film-card { flex-shrink: 0; cursor: pointer; scroll-snap-align: center; }
+    .film-card img { display:block; filter: saturate(0.85) brightness(0.8); border: 0.5px solid var(--border); border-radius: 4px; transition: filter 0.5s ease; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
     .film-card:hover img { filter: saturate(1.05) brightness(1); }
     
-    .film-card:nth-child(1) { width: clamp(200px,24vw,340px); }
+    /* PC・スマホで最適なサイズになるようにclampを調整 */
+    .film-card:nth-child(1) { width: clamp(220px, 25vw, 360px); }
     .film-card:nth-child(1) img { aspect-ratio: 3/4.6; object-fit:cover; }
-    .film-card:nth-child(2) { width: clamp(260px,36vw,500px); margin-bottom: clamp(0px, 5vw, 80px); }
+    
+    .film-card:nth-child(2) { width: clamp(280px, 35vw, 540px); margin-bottom: clamp(20px, 6vw, 80px); }
     .film-card:nth-child(2) img { aspect-ratio: 5/3; object-fit:cover; }
-    .film-card:nth-child(3) { width: clamp(220px,28vw,400px); }
+    
+    .film-card:nth-child(3) { width: clamp(240px, 30vw, 420px); }
     .film-card:nth-child(3) img { aspect-ratio: 4/5; object-fit:cover; }
-    .film-card:nth-child(4) { width: clamp(200px,26vw,360px); margin-bottom: clamp(0px, 8vw, 120px); }
+    
+    .film-card:nth-child(4) { width: clamp(220px, 28vw, 380px); margin-bottom: clamp(40px, 8vw, 120px); }
     .film-card:nth-child(4) img { aspect-ratio: 1/1; object-fit:cover; border-radius: 50%; }
-    .film-card:nth-child(5) { width: clamp(260px,32vw,460px); }
+    
+    .film-card:nth-child(5) { width: clamp(280px, 32vw, 480px); }
     .film-card:nth-child(5) img { aspect-ratio: 4/3; object-fit:cover; }
+    
     .film-cap { margin-top: 18px; font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.22em; color: var(--text-dim); text-transform: uppercase; }
+
+    /* 横スクロールのヒントUI (PC/スマホ共通でスタイリッシュに) */
+    .film-hint-wrapper {
+      position: absolute;
+      bottom: 25px;
+      right: var(--px);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(203, 191, 176, 0.1);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 0.5px solid rgba(203, 191, 176, 0.3);
+      padding: 10px 20px;
+      border-radius: 40px;
+      font-family: var(--en);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--fg);
+      text-transform: uppercase;
+      animation: swipePulse 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      pointer-events: none;
+      transition: opacity 0.6s ease;
+      z-index: 10;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .film-hint-wrapper.is-hidden { opacity: 0; }
+    .film-hint-wrapper::after { content: '→'; font-size: 1rem; font-family: sans-serif; }
+    @keyframes swipePulse { 0% { transform: translateX(0); } 50% { transform: translateX(12px); } 100% { transform: translateX(0); } }
 
     /* PULL QUOTE */
     .quote-block { padding: clamp(6rem,12vh,12rem) var(--px); text-align:center; position:relative; border-bottom: 0.5px solid var(--border); }
@@ -489,7 +521,7 @@
     .quote-block p em { font-style: normal; color: var(--fg); background: linear-gradient(transparent 70%, rgba(203,191,176,0.2) 70%); padding: 0 4px; }
 
     /* VENUE CARDS */
-    .venue-row { display:grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: clamp(40px,8vh,90px); }
+    .venue-row { display:grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 4vw, 40px); margin-top: clamp(40px,8vh,90px); }
     .venue-card {
       background: rgba(255,255,255,0.015); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border: 0.5px solid rgba(232,228,219,0.08); padding: clamp(28px,5vw,56px) clamp(20px,4vw,44px);
@@ -550,7 +582,7 @@
     /* UTILITIES */
     .lightbox { display:none; position: fixed; inset:0; z-index: 9999; background: rgba(8,8,8,0.98); justify-content:center; align-items:center; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
     .lightbox.active { display:flex; }
-    .lightbox__img { max-width: 90vw; max-height: 85vh; object-fit: contain; border: 0.5px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
+    .lightbox__img { max-width: 90vw; max-height: 85vh; object-fit: contain; border: 0.5px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.8); border-radius: 4px; }
 
     .back-to-top {
       position: fixed;
@@ -599,14 +631,16 @@
       .lede-grid { grid-template-columns: 1fr; gap: 3rem; }
       .lede-grid .divider { display:none; }
       .asym-2, .asym-2--rev { grid-template-columns: 1fr; gap: 2.5rem; }
-      .duo-split { grid-template-columns: 1fr; gap: 2rem; background: transparent; }
+      .duo-split { grid-template-columns: 1fr; gap: 2.5rem; }
       .duo-split figure { aspect-ratio: 4/5; }
-      .venue-row { grid-template-columns: 1fr; gap: 1rem; }
+      .venue-row { grid-template-columns: 1fr; gap: 1.2rem; }
       .perceive-hint { margin-top: 12px; }
     }
     @media (max-width: 768px) {
-      .bg-kanji { font-size: 40vw !important; } /* スマホでの漢字サイズ調整 */
-      .blob-frame { border-radius: 40px; } /* スマホでは複雑なborder-radiusを少し和らげる */
+      .bg-kanji { font-size: 40vw !important; }
+      .blob-frame { border-radius: 40px; }
+      /* スマホでは2列レイアウトを1列に */
+      .duo-split { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -639,7 +673,7 @@
     </ul>
     <a href="https://sh012da.github.io/sh01/contact.html" class="nav-cta">Contact</a>
     
-    <!-- Mobile Hamburger Button (Improved Design) -->
+    <!-- Mobile Hamburger Button -->
     <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
       <div class="hamburger-lines">
         <span></span><span></span><span></span>
@@ -650,19 +684,18 @@
 
   <!-- Mobile Menu Overlay -->
   <div class="mobile-menu-overlay" id="mobileMenuOverlay">
-    <!-- Dedicated Close Button in Overlay -->
     <button class="menu-close-btn" id="menuCloseBtn" aria-label="Close Menu">
       <span></span><span></span>
     </button>
     
     <ul class="mobile-nav-links" id="mobileNavLinks">
-      <li><a href="#overview">Concept<span>概要</span></a></li>
-      <li><a href="#corridor">Prologue<span>序章・回廊</span></a></li>
-      <li><a href="#room-red">Red &amp; Blue<span>紅と藍</span></a></li>
-      <li><a href="#forest">Vertical<span>垂直の筆触</span></a></li>
-      <li><a href="#horizon">Horizon<span>地平</span></a></li>
-      <li><a href="#threshold">Threshold<span>境界・扉の先</span></a></li>
-      <li style="margin-top: 1rem;"><a href="https://sh012da.github.io/sh01/contact.html" style="color:var(--accent);">Contact<span>お問い合わせ</span></a></li>
+      <li><a href="#overview"><span class="en">Concept</span><span class="ja">概要</span></a></li>
+      <li><a href="#corridor"><span class="en">Prologue</span><span class="ja">序章・回廊</span></a></li>
+      <li><a href="#room-red"><span class="en">Red &amp; Blue</span><span class="ja">紅と藍</span></a></li>
+      <li><a href="#forest"><span class="en">Vertical</span><span class="ja">垂直の筆触</span></a></li>
+      <li><a href="#horizon"><span class="en">Horizon</span><span class="ja">地平</span></a></li>
+      <li><a href="#threshold"><span class="en">Threshold</span><span class="ja">境界・扉の先</span></a></li>
+      <li class="contact-btn"><a href="https://sh012da.github.io/sh01/contact.html"><span class="en">Contact</span><span class="ja">お問い合わせ</span></a></li>
     </ul>
   </div>
 
@@ -778,6 +811,7 @@
         </div>
         <p class="sec-desc reveal">展示の核となる小部屋。垂直に伸びる画面の中で、動脈のような紅と静脈のような藍がせめぎ合う。向かい合う壁の連作は互いを映す鏡のように呼応し、鑑賞者はその真ん中で二つの体温に挟まれる。</p>
 
+        <!-- Duo Split デザインの大幅な改善（余白と枠線の調整） -->
         <div class="duo-split reveal">
           <figure><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (2).JPG" alt="覚知ka 紅と藍の部屋 左壁の連作" loading="lazy"><figcaption>紅 — Pulse</figcaption></figure>
           <figure><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (3).JPG" alt="覚知ka 紅と藍の部屋 中央壁面" loading="lazy"><figcaption>藍 — Vein</figcaption></figure>
@@ -798,13 +832,14 @@
       </div>
     </section>
 
-    <!-- ============== 03 垂直の筆触 / FILMSTRIP ============== -->
+    <!-- ============== 03 垂直の筆触 / FILMSTRIP (完全リニューアル) ============== -->
     <section class="film-section tone-a" id="forest">
-      <div class="film-sticky">
+      <div class="container" style="max-width: 100%;">
         <div class="film-heading reveal is-visible">
           <p class="section-label" style="color:var(--blue); margin-bottom: 0;">03 — Vertical Strokes</p>
           <h2 class="section-heading" style="margin-top:12px; margin-bottom:0;">垂直の筆触、<br>森のように並ぶ</h2>
         </div>
+        
         <div class="film-track" id="filmTrack">
           <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (4).JPG" alt="覚知ka 垂直の筆触 黄と黒の連作" loading="lazy"><p class="film-cap">01 — 黄、滴る記憶</p></div>
           <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (4)2.JPG" alt="覚知ka 垂直の筆触 連作 近景" loading="lazy"><p class="film-cap">02 — 連作、五つの色相</p></div>
@@ -812,7 +847,11 @@
           <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (6).JPG" alt="覚知ka 地平線の絵画と垂直連作" loading="lazy"><p class="film-cap">04 — 反復、立ち止まる視線</p></div>
           <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (7).JPG" alt="覚知ka 垂直の筆触 別角度" loading="lazy"><p class="film-cap">05 — 灰、声にならない震え</p></div>
         </div>
-        <div class="film-hint"><span></span>Scroll / Swipe — 横へ歩く</div>
+        
+        <div class="film-hint-wrapper" id="filmHint">
+          <span class="pc-only">Scroll / Drag</span>
+          <span class="sp-only">Swipe to explore</span>
+        </div>
       </div>
     </section>
 
@@ -853,7 +892,8 @@
         </div>
         <p class="sec-desc reveal">会場の奥、開け放たれた扉の向こうには、また別の生活空間が続いている。展示はここで終わるのではなく、日常へとなだらかに溶け出していく。覚知は美術館の中だけで起きるものではない、というささやかな宣言。</p>
 
-        <div class="duo-split reveal" style="margin-top:0;">
+        <!-- Threshold: Duo Split デザインの大幅な改善 -->
+        <div class="duo-split reveal" style="margin-top: 2rem;">
           <figure style="aspect-ratio:5/6;"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (8).JPG" alt="覚知ka 開かれた扉と先の空間" loading="lazy"><figcaption>境界 — Half-open</figcaption></figure>
           <figure style="aspect-ratio:5/6;"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (9).JPG" alt="覚知ka 出口付近の展示風景" loading="lazy"><figcaption>接続 — Beyond</figcaption></figure>
         </div>
@@ -907,7 +947,6 @@
       const b2t = document.getElementById('backToTop');
       const b2tCircle = document.getElementById('b2t-progress-value');
 
-      // Mobile Menu Logic
       const mobileBtn = document.getElementById('mobileMenuBtn');
       const closeBtn = document.getElementById('menuCloseBtn');
       const mobileNavLinks = document.querySelectorAll('#mobileNavLinks a');
@@ -917,7 +956,7 @@
         document.body.classList.toggle('no-scroll');
       }
       mobileBtn.addEventListener('click', toggleMenu);
-      closeBtn.addEventListener('click', toggleMenu); // 専用の閉じるボタンでもトグル
+      closeBtn.addEventListener('click', toggleMenu);
       mobileNavLinks.forEach(link => {
         link.addEventListener('click', () => {
           if (document.body.classList.contains('menu-open')) toggleMenu();
@@ -929,20 +968,15 @@
         const h = document.documentElement.scrollHeight - window.innerHeight;
         const pct = h > 0 ? (y/h) : 0;
         
-        // Header background
         if(y > 60) { nav.classList.add('nav-scrolled'); } else { nav.classList.remove('nav-scrolled'); }
-        
-        // Progress bar
         if (progress) progress.style.width = (pct * 100) + '%';
         
-        // Back to top
         if (b2t) b2t.classList.toggle('is-visible', y > window.innerHeight * 0.5);
         if (b2tCircle) {
           const offset = 301.6 - (301.6 * pct);
           b2tCircle.style.strokeDashoffset = offset;
         }
 
-        // Active link highlighting
         const checkY = y + window.innerHeight * 0.4;
         let current = null;
         targets.forEach(sec => { if (sec && sec.offsetTop <= checkY) current = sec; });
@@ -958,7 +992,6 @@
       document.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
 
-      // Smooth scroll (handles both PC and Mobile links)
       document.querySelectorAll('a[href^="#"]').forEach(link => {
         link.addEventListener('click', e => {
           const href = link.getAttribute('href');
@@ -972,16 +1005,12 @@
         });
       });
 
-      // Tooltip Event Listeners (PC Only)
       if (window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
         navLinks.forEach(link => {
           link.addEventListener('mouseenter', () => {
             if(!tooltip) return;
             const label = link.getAttribute('data-tooltip');
-            if(label) {
-              tooltip.textContent = label;
-              tooltip.classList.add('visible');
-            }
+            if(label) { tooltip.textContent = label; tooltip.classList.add('visible'); }
           });
           link.addEventListener('mousemove', (e) => {
             if(!tooltip) return;
@@ -1001,7 +1030,7 @@
     (function(){
       const fine = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
 
-      /* Reveal on scroll */
+      /* Reveal */
       const revealEls = document.querySelectorAll('.reveal');
       if ('IntersectionObserver' in window) {
         const io = new IntersectionObserver(entries => {
@@ -1030,7 +1059,7 @@
       });
       document.addEventListener('keydown', e => { if (e.key === 'Escape' && lightbox.classList.contains('active')) lightbox.click(); });
 
-      /* Custom Cursor */
+      /* Cursor */
       if (fine) {
         document.body.classList.add('cursor-ready');
         const dot = document.getElementById('cursorDot');
@@ -1049,7 +1078,7 @@
         });
       }
 
-      /* Hero seam subtle parallax */
+      /* Hero Seam */
       const heroSeam = document.getElementById('heroSeam');
       if (heroSeam && fine) {
         window.addEventListener('mousemove', e => {
@@ -1058,14 +1087,12 @@
         });
       }
 
-      /* Perceive-frame lens tracking (Mouse & Touch Supported) */
+      /* Perceive-frame (Lens) */
       document.querySelectorAll('.perceive-frame').forEach(frame => {
         const updateMask = (x, y) => {
           frame.style.setProperty('--mx', x + 'px');
           frame.style.setProperty('--my', y + 'px');
         };
-
-        // PC Mouse
         if (fine) {
           frame.addEventListener('mousemove', e => {
             const r = frame.getBoundingClientRect();
@@ -1073,43 +1100,44 @@
           });
           frame.addEventListener('mouseleave', () => { updateMask(-9999, -9999); });
         }
-        
-        // Mobile Touch
         frame.addEventListener('touchstart', e => {
           const r = frame.getBoundingClientRect();
           const touch = e.touches[0];
           updateMask(touch.clientX - r.left, touch.clientY - r.top);
         }, {passive:true});
         frame.addEventListener('touchmove', e => {
+          e.preventDefault(); 
           const r = frame.getBoundingClientRect();
           const touch = e.touches[0];
           updateMask(touch.clientX - r.left, touch.clientY - r.top);
-        }, {passive:true});
+        }, {passive: false});
       });
 
-      /* Filmstrip: Responsive Handling */
-      const filmSection = document.querySelector('.film-section');
+      /* Filmstrip: ネイティブ横スクロール ＋ PCマウスホイール対応 */
       const filmTrack = document.getElementById('filmTrack');
-      if (filmSection && filmTrack) {
-        let ticking = false;
-        function updateFilm() {
-          // If mobile, reset transform and let native CSS scroll handle it.
-          if (window.innerWidth <= 768) {
-            filmTrack.style.transform = 'none';
-            return;
+      const filmHint = document.getElementById('filmHint');
+      
+      if (filmTrack) {
+        // PC向け：縦スクロール（ホイール）を横スクロールに変換
+        filmTrack.addEventListener('wheel', (e) => {
+          // Y軸方向のスクロールがある場合のみ処理
+          if (e.deltaY !== 0) {
+            const maxScrollLeft = filmTrack.scrollWidth - filmTrack.clientWidth;
+            // 左右の端に到達していない場合はスクロールを横に流す
+            if ((e.deltaY > 0 && filmTrack.scrollLeft < maxScrollLeft) || 
+                (e.deltaY < 0 && filmTrack.scrollLeft > 0)) {
+              e.preventDefault(); // 画面全体の縦スクロールを止める
+              filmTrack.scrollLeft += e.deltaY;
+            }
           }
-          // PC Parallax Scroll
-          const rect = filmSection.getBoundingClientRect();
-          const total = filmSection.offsetHeight - window.innerHeight;
-          let p = total > 0 ? (-rect.top) / total : 0;
-          p = Math.min(1, Math.max(0, p));
-          const maxT = Math.max(0, filmTrack.scrollWidth - window.innerWidth + 40);
-          filmTrack.style.transform = 'translateX(-' + (p * maxT) + 'px)';
-          ticking = false;
-        }
-        document.addEventListener('scroll', () => { if (!ticking) { requestAnimationFrame(updateFilm); ticking = true; } }, {passive:true});
-        window.addEventListener('resize', updateFilm);
-        updateFilm(); // Initial call
+        }, { passive: false });
+
+        // スクロールされたらヒントをフェードアウト
+        filmTrack.addEventListener('scroll', () => {
+          if(filmHint && filmTrack.scrollLeft > 30) {
+            filmHint.classList.add('is-hidden');
+          }
+        }, { passive: true });
       }
     })();
   </script>
