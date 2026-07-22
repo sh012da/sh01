@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#080808">
+  <title>＋覚知ka ｜ Tsuda Shoichi</title>
+  <meta name="description" content="油彩画展「＋覚知ka」展示記録 — 津田翔一。知覚が像を結ぶ、その手前の瞬間を油彩で掴む個展。">
+  <meta property="og:title" content="＋覚知ka ｜ Tsuda Shoichi">
+  <meta property="og:description" content="見るより先に、肌が知っている。個展「＋覚知ka」展示記録。">
+  <meta property="og:type" content="website">
+
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -8,23 +18,15 @@
     gtag('js', new Date());
     gtag('config', 'G-5RF8JPF5D8');
   </script>
-  <!-- 画像パスを絶対パスかつ正確なディレクトリ(exhi-nagano2022)へ修正 -->
-  <link rel="icon" type="image/jpeg" href="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (1).JPG">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>＋覚知ka ｜ Tsuda Shoichi</title>
-  <meta name="description" content="油彩画展「＋覚知ka」展示記録 — 津田翔一。知覚が像を結ぶ、その手前の瞬間を油彩で掴む個展。">
-  <meta property="og:title" content="＋覚知ka ｜ Tsuda Shoichi">
-  <meta property="og:description" content="見るより先に、肌が知っている。個展「＋覚知ka」展示記録。">
-  <meta property="og:type" content="website">
 
+  <link rel="icon" type="image/jpeg" href="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (1).JPG">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400;700&display=swap" rel="stylesheet">
 
   <style>
     /* ============================================================
-       TOKENS & BASE (メインサイト準拠)
+       TOKENS & BASE
     ================================================================ */
     :root {
       --bg:          #080808;
@@ -43,60 +45,65 @@
       --jp:          'Noto Serif JP', serif;
       --ease-expo:   cubic-bezier(0.16, 1, 0.3, 1);
       --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
-      --px:          clamp(16px, 5vw, 64px);
+      --px:          clamp(20px, 5vw, 64px);
       
-      /* 覚知 専用カラー (トーンを落としメインサイトに適合) */
+      /* Theme Colors */
       --red:         #8c3029;
       --blue:        #3a5a73;
     }
-    html, body { overflow-x: hidden; width: 100%; position: relative; }
+    
+    html, body { width: 100%; position: relative; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    
     body {
       background: var(--bg); color: var(--text); font-family: var(--jp);
       line-height: 1.9; letter-spacing: 0.05em; -webkit-font-smoothing: antialiased;
       padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right);
       word-break: normal; line-break: strict; overflow-wrap: break-word;
+      overflow-x: hidden;
     }
-    body.no-scroll { overflow: hidden; }
+    body.no-scroll { overflow: hidden; touch-action: none; }
     img { max-width: 100%; height: auto; display: block; }
     a { color: var(--fg); text-decoration: none; }
     ::selection { background: var(--accent); color: var(--bg); }
 
     .pc-only { display: inline; }
+    @media (max-width: 768px) { .pc-only { display: none !important; } }
+    .sp-only { display: none; }
+    @media (max-width: 768px) { .sp-only { display: block; } }
 
     /* ============================================================
-       SCROLL PROGRESS BAR
+       UTILITIES & SCROLL PROGRESS
     ================================================================ */
     .scroll-progress {
-      position: fixed; top: 0; left: 0; height: 2.5px;
+      position: fixed; top: 0; left: 0; height: 3px;
       background: linear-gradient(90deg, var(--red), var(--blue));
-      width: 0%; z-index: 10000; box-shadow: 0 0 10px rgba(203,191,176,0.6);
+      width: 0%; z-index: 10000; box-shadow: 0 0 10px rgba(203,191,176,0.4);
       transition: width 0.1s ease-out;
     }
 
-    /* ============================================================
-       HEADER (Left Name, Center Nav, Right Contact)
-    ================================================================ */
+    /* HEADER */
     nav#top-nav {
       position: fixed; width: 100%; top: 0; z-index: 5000;
       display: flex; align-items: center; justify-content: space-between;
-      padding: clamp(24px,4vw,40px) var(--px); background: transparent;
+      padding: clamp(20px,4vw,40px) var(--px); background: transparent;
       border-bottom: 1px solid transparent; transform: translateY(-100%);
-      opacity: 0; transition: background 0.6s var(--ease-expo), padding 0.6s var(--ease-expo), border-color 0.6s ease, backdrop-filter 0.6s ease, transform 1.2s var(--ease-expo) 0.2s, opacity 1.2s ease 0.2s;
+      opacity: 0; transition: all 0.6s var(--ease-expo);
     }
-    body.is-loaded nav#top-nav { transform: translateY(0); opacity: 1; }
+    body.is-loaded nav#top-nav { transform: translateY(0); opacity: 1; transition-delay: 0.2s; }
     
     nav#top-nav.nav-scrolled {
       padding: clamp(12px,2vw,24px) var(--px); background: rgba(8, 8, 8, 0.88);
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border-bottom: 0.5px solid rgba(232,228,219,0.08); transition-delay: 0s, 0s, 0s, 0s, 0s, 0s;
+      border-bottom: 0.5px solid rgba(232,228,219,0.08); transition-delay: 0s;
     }
+    
     .nav-logo {
-      font-family: var(--en); font-size: clamp(0.7rem,2.5vw,0.9rem);
+      font-family: var(--en); font-size: clamp(0.75rem,2.5vw,0.9rem);
       letter-spacing: 0.3em; font-weight: 300; color: var(--accent);
       text-transform: uppercase; transition: opacity 0.4s ease, transform 0.4s var(--ease-expo);
-      flex-shrink: 0;
+      flex-shrink: 0; z-index: 5002; position: relative;
     }
     .nav-logo:hover { opacity: 0.7; transform: scale(0.98); }
     
@@ -106,7 +113,7 @@
     .nav-links a {
       font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.72rem);
       letter-spacing: 0.25em; color: var(--muted-col); text-transform: uppercase;
-      transition: color 0.3s ease, transform 0.3s ease; display: inline-block; position: relative; padding-bottom: 6px;
+      transition: color 0.3s ease; display: inline-block; position: relative; padding-bottom: 6px;
     }
     .nav-links a::after {
       content: ''; position: absolute; bottom: 0; left: 0; transform: scaleX(0); transform-origin: center;
@@ -120,13 +127,60 @@
       letter-spacing: 0.25em; text-transform: uppercase;
       border: 0.5px solid rgba(184,168,152,0.4); padding: 0.55rem 1.4rem;
       color: var(--accent); transition: all 0.4s var(--ease-expo); border-radius: 2px;
-      flex-shrink: 0;
+      flex-shrink: 0; z-index: 5002; position: relative;
     }
     .nav-cta:hover { background: var(--accent); color: var(--bg); box-shadow: 0 4px 16px rgba(203,191,176,0.2); }
 
-    /* ============================================================
-       TOOLTIP (マウス追従ポップアップ)
-    ================================================================ */
+    /* MOBILE MENU (Hamburger) */
+    .mobile-menu-btn {
+      display: none; background: transparent; border: none; cursor: pointer;
+      width: 40px; height: 40px; position: relative; z-index: 5002;
+      align-items: center; justify-content: center; flex-direction: column; gap: 6px;
+    }
+    .mobile-menu-btn span {
+      display: block; width: 24px; height: 1px; background: var(--accent);
+      transition: all 0.4s var(--ease-expo); transform-origin: center;
+    }
+    body.menu-open .mobile-menu-btn span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    body.menu-open .mobile-menu-btn span:nth-child(2) { opacity: 0; }
+    body.menu-open .mobile-menu-btn span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu-overlay {
+      position: fixed; inset: 0; background: rgba(8,8,8,0.98);
+      backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+      z-index: 5001; opacity: 0; visibility: hidden;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transition: opacity 0.5s var(--ease-expo), visibility 0.5s;
+    }
+    body.menu-open .mobile-menu-overlay { opacity: 1; visibility: visible; }
+    
+    .mobile-nav-links {
+      list-style: none; text-align: center; display: flex; flex-direction: column; gap: 2rem;
+    }
+    .mobile-nav-links a {
+      font-family: var(--en); font-size: 1.2rem; letter-spacing: 0.25em;
+      color: var(--text-muted); text-transform: uppercase; display: block;
+      transform: translateY(20px); opacity: 0; transition: all 0.4s var(--ease-expo);
+    }
+    body.menu-open .mobile-nav-links a { transform: translateY(0); opacity: 1; }
+    /* Delay stagger for mobile links */
+    body.menu-open .mobile-nav-links li:nth-child(1) a { transition-delay: 0.1s; }
+    body.menu-open .mobile-nav-links li:nth-child(2) a { transition-delay: 0.15s; }
+    body.menu-open .mobile-nav-links li:nth-child(3) a { transition-delay: 0.2s; }
+    body.menu-open .mobile-nav-links li:nth-child(4) a { transition-delay: 0.25s; }
+    body.menu-open .mobile-nav-links li:nth-child(5) a { transition-delay: 0.3s; }
+    body.menu-open .mobile-nav-links li:nth-child(6) a { transition-delay: 0.35s; }
+    
+    .mobile-nav-links span { display: block; font-family: var(--jp); font-size: 0.75rem; letter-spacing: 0.1em; color: var(--text-dim); margin-top: 6px; }
+
+    @media (max-width: 1024px) {
+      .nav-links { display: none !important; }
+      .mobile-menu-btn { display: flex; }
+      nav#top-nav { padding: 16px var(--px); }
+      .nav-cta { display: none; } /* スマホではハンバーガーメニュー内に移動 */
+    }
+
+    /* TOOLTIP */
     .mouse-tooltip {
       position: fixed; top: 0; left: 0; pointer-events: none; background: rgba(10, 10, 8, 0.95); color: rgba(232, 228, 219, 0.9);
       padding: 6px 12px; border-radius: 4px; font-size: 11px; font-family: var(--jp); letter-spacing: 0.05em; border: 0.5px solid rgba(203, 191, 176, 0.3);
@@ -136,7 +190,7 @@
     .mouse-tooltip.visible { opacity: 1; }
     @media (pointer: coarse) { .mouse-tooltip { display: none !important; } }
 
-    /* ---- custom lens cursor (覚知 固有ギミック) ---- */
+    /* CUSTOM CURSOR */
     @media (hover:hover) and (pointer:fine) {
       body.cursor-ready, body.cursor-ready a, body.cursor-ready button, body.cursor-ready .perceive-frame { cursor: none; }
     }
@@ -149,10 +203,8 @@
     .cursor-ring.lens { width: 140px; height: 140px; border-color: var(--red); opacity: 0.8; background: rgba(140,48,41,0.05); backdrop-filter: blur(2px); }
     .cursor-ring.hover { width: 56px; height: 56px; border-color: var(--accent); opacity: 0.9; background: rgba(203,191,176,0.1); }
 
-    /* ============================================================
-       HERO — 破片が組み上がる知覚の瞬間
-    ================================================================ */
-    .hero { position: relative; height: 100svh; min-height: 620px; overflow: hidden; background: var(--bg);
+    /* HERO */
+    .hero { position: relative; height: 100svh; min-height: 500px; overflow: hidden; background: var(--bg);
       display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .shatter { position: absolute; inset: 0; z-index: 0; }
     .shard {
@@ -165,6 +217,7 @@
       from { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--dr)) scale(0.9); filter: blur(10px); }
       to { opacity: 1; transform: translate(0,0) rotate(0) scale(1); filter: blur(0); } 
     }
+    /* Shard positions */
     .shard:nth-child(1){ top:0; left:0; width:34%; height:50%; background-position: 0% 0%; --dx:-60px; --dy:-40px; --dr:-6deg; animation-delay:.2s;}
     .shard:nth-child(2){ top:0; left:34%; width:32%; height:50%; background-position: 50% 0%; --dx:0px; --dy:-70px; --dr:4deg; animation-delay:.3s;}
     .shard:nth-child(3){ top:0; left:66%; width:34%; height:50%; background-position: 100% 0%; --dx:70px; --dy:-30px; --dr:7deg; animation-delay:.25s;}
@@ -173,12 +226,12 @@
     .shard:nth-child(6){ top:50%; left:66%; width:34%; height:50%; background-position: 100% 100%; --dx:60px; --dy:50px; --dr:-7deg; animation-delay:.4s;}
     
     .hero::after { content:""; position:absolute; inset:0; z-index:1;
-      background: linear-gradient(180deg, rgba(8,8,8,0.7) 0%, rgba(8,8,8,0.4) 40%, rgba(8,8,8,0.9) 100%); }
+      background: linear-gradient(180deg, rgba(8,8,8,0.7) 0%, rgba(8,8,8,0.4) 40%, rgba(8,8,8,0.95) 100%); }
 
     .hero-seam { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; z-index: 3;
       background: linear-gradient(to bottom, var(--red), var(--blue)); opacity: 0.4; transform: translateX(var(--seam-x, 0px)); }
 
-    .hero-content { position: relative; z-index: 4; text-align: center; padding: 0 var(--px); display: flex; flex-direction: column; align-items: center; }
+    .hero-content { position: relative; z-index: 4; text-align: center; padding: 0 var(--px); display: flex; flex-direction: column; align-items: center; width: 100%; }
     
     @keyframes fadeUp  { from { opacity:0; transform:translateY(24px) scale(0.98); filter: blur(4px); } to { opacity:1; transform:translateY(0) scale(1); filter: blur(0); } }
     
@@ -187,23 +240,17 @@
       animation: fadeUp 1s var(--ease-expo) 1s forwards; }
 
     .hero-title { 
-      font-family: var(--jp); font-weight: 200; font-size: clamp(56px, 14vw, 160px); line-height: 1.05;
-      display: inline-flex; align-items: flex-end; 
+      font-family: var(--jp); font-weight: 200; font-size: clamp(64px, 14vw, 160px); line-height: 1.05;
+      display: inline-flex; align-items: flex-end; justify-content: center; width: 100%;
     }
-    .hero-title > span { 
-      display: inline-block; opacity: 0; will-change: transform, opacity, filter; 
-    }
+    .hero-title > span { display: inline-block; opacity: 0; will-change: transform, opacity, filter; }
     
     .hero-title .plus { 
       font-family: var(--en); font-weight: 200; font-size: 0.4em; align-self: flex-start; margin-top: 0.2em; 
       color: var(--accent); animation: titleFade 1.6s cubic-bezier(0.16, 1, 0.3, 1) 1.0s forwards; 
     }
-    .hero-title .c1 { 
-      color: var(--red); animation: titleFocus1 2s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards; 
-    }
-    .hero-title .c2 { 
-      color: var(--blue); animation: titleFocus2 2s cubic-bezier(0.16, 1, 0.3, 1) 1.4s forwards; 
-    }
+    .hero-title .c1 { color: var(--red); animation: titleFocus1 2s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards; }
+    .hero-title .c2 { color: var(--blue); animation: titleFocus2 2s cubic-bezier(0.16, 1, 0.3, 1) 1.4s forwards; }
     .hero-title .ka { 
       font-family: var(--en); font-weight: 300; font-size: 0.3em; align-self: flex-end; 
       color: var(--text-dim); margin-bottom: 0.2em; margin-left: 0.1em; letter-spacing: 0.1em; 
@@ -227,12 +274,13 @@
       letter-spacing: 0.08em; color: var(--text-muted); margin-top: 1.5rem; opacity: 0;
       animation: fadeUp 1.2s var(--ease-expo) 1.6s forwards; }
 
-    .hero-meta-row { margin-top: 3.5rem; display: flex; justify-content: center; gap: clamp(24px,4vw,56px);
+    .hero-meta-row { margin-top: clamp(2rem, 5vh, 3.5rem); display: flex; justify-content: center; gap: clamp(20px,4vw,56px);
       flex-wrap: wrap; opacity: 0; animation: fadeUp 1.2s var(--ease-expo) 1.9s forwards; }
+    .hero-meta-row > div { padding: 0 10px; }
     .hero-meta-row .m-label { font-family: var(--en); font-size: 0.58rem; letter-spacing: 0.3em; color: var(--accent); text-transform: uppercase; display:block; margin-bottom: 8px;}
-    .hero-meta-row .m-val { font-family: var(--jp); font-size: 0.8rem; font-weight: 300; color: var(--text-muted); letter-spacing: 0.06em; }
+    .hero-meta-row .m-val { font-family: var(--jp); font-size: clamp(0.75rem, 2vw, 0.8rem); font-weight: 300; color: var(--text-muted); letter-spacing: 0.06em; }
 
-    .scroll-cue { position: absolute; bottom: clamp(20px,5vh,40px); right: clamp(20px,5vw,50px); z-index: 5;
+    .scroll-cue { position: absolute; bottom: clamp(20px,4vh,40px); right: var(--px); z-index: 5;
       display:flex; flex-direction:column; align-items:center; gap: 10px; opacity: 0; animation: fadeUp 1s var(--ease-expo) 2.3s forwards; }
     .scroll-cue .line { width: 1px; height: 46px; background: rgba(232,228,219,0.1); position: relative; overflow: hidden; }
     .scroll-cue .line::after { content:""; position:absolute; top:-100%; left:0; width:100%; height:100%;
@@ -240,11 +288,9 @@
     @keyframes cueDrop { 0%{top:-100%;} 70%{top:100%;opacity:.5;} 71%{top:-100%;opacity:0;} 100%{top:-100%;opacity:0;} }
     .scroll-cue .deg { font-family: var(--en); font-size: 0.6rem; letter-spacing: 0.2em; color: var(--text-dim); writing-mode: vertical-rl; }
 
-    /* ============================================================
-       SECTIONS (メインサイト準拠)
-    ================================================================ */
-    .section { position: relative; padding: 10rem 2.5rem; border-bottom: 0.5px solid var(--border); overflow: hidden; }
-    .section-tilt { clip-path: polygon(0 0, 100% 46px, 100% 100%, 0 100%); margin-top: -46px; padding-top: calc(10rem + 46px); border-bottom: none; }
+    /* SECTIONS */
+    .section { position: relative; padding: clamp(5rem, 12vh, 10rem) var(--px); border-bottom: 0.5px solid var(--border); overflow: hidden; }
+    .section-tilt { clip-path: polygon(0 0, 100% clamp(20px,4vw,46px), 100% 100%, 0 100%); margin-top: calc(clamp(20px,4vw,46px) * -1); padding-top: calc(clamp(5rem, 12vh, 10rem) + clamp(20px,4vw,46px)); border-bottom: none; }
     .tone-b { background: var(--bg2); border-bottom: 0.5px solid var(--border); }
 
     .section-label {
@@ -253,165 +299,176 @@
       margin-bottom: 0.5rem; display: flex; align-items: center; gap: 1rem;
     }
     .section-label::after { content:""; width: 48px; height: 0.5px; background: rgba(232,228,219,0.2); }
-    .section-heading-en {
-      font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
-      color: rgba(232,228,219,0.4); text-transform: uppercase;
-      letter-spacing: 0.2em; margin-bottom: 1rem;
-    }
+    
     .section-heading {
-      font-family: var(--jp); font-size: clamp(1.6rem,3.5vw,2.8rem);
-      font-weight: 300; line-height: 1.3; color: var(--text); margin-bottom: 3.5rem; letter-spacing: 0.02em;
+      font-family: var(--jp); font-size: clamp(1.4rem,4vw,2.8rem);
+      font-weight: 300; line-height: 1.4; color: var(--text); margin-bottom: clamp(2rem, 5vw, 3.5rem); letter-spacing: 0.02em;
     }
 
-    .sec-desc { max-width: 680px; color: var(--text-muted); font-size: clamp(0.9rem, 1.5vw, 1.05rem); font-weight: 300; line-height: 2.2; margin-bottom: clamp(40px,6vh,70px); letter-spacing: 0.06em; }
+    .sec-desc { max-width: 680px; color: var(--text-muted); font-size: clamp(0.9rem, 1.5vw, 1.05rem); font-weight: 300; line-height: 2.2; margin-bottom: clamp(40px,6vh,70px); letter-spacing: 0.06em; text-align: justify; }
 
-    .reveal { opacity: 0; transform: translateY(40px); filter: blur(8px); transition: opacity 1.2s var(--ease-expo), transform 1.2s var(--ease-expo), filter 1.2s var(--ease-expo); }
+    .reveal { opacity: 0; transform: translateY(30px); filter: blur(6px); transition: opacity 1.2s var(--ease-expo), transform 1.2s var(--ease-expo), filter 1.2s var(--ease-expo); }
     .reveal.is-visible { opacity: 1; transform: translateY(0); filter: blur(0); }
 
-    /* watermark kanji (細字で密かに配置) */
+    /* watermark kanji */
     .bg-kanji { position:absolute; font-family: var(--jp); font-weight: 200; color: rgba(232,228,219,0.02);
-      user-select:none; pointer-events:none; z-index:0; white-space:nowrap; line-height: 1; }
+      user-select:none; pointer-events:none; z-index:0; white-space:nowrap; line-height: 1; overflow: hidden;}
 
-    /* --- overview / lede --- */
-    .container { width: 100%; max-width: 1400px; margin: 0 auto; }
-    .lede-grid { display: grid; grid-template-columns: 1fr 1px 1fr; gap: clamp(40px,6vw,90px); align-items: start; position: relative; z-index: 1; }
+    .container { width: 100%; max-width: 1400px; margin: 0 auto; position: relative; z-index: 1; }
+    
+    /* Lede Grid */
+    .lede-grid { display: grid; grid-template-columns: 1fr 1px 1fr; gap: clamp(30px,6vw,90px); align-items: start; position: relative; z-index: 1; }
     .lede-grid .divider { background: linear-gradient(to bottom, var(--red), var(--blue)); opacity: 0.3; height: 100%; }
-    .lede-text p { font-size: 0.95rem; font-weight: 300; line-height: 2.3; color: var(--text-muted); margin-bottom: 1.8em; text-align: justify; letter-spacing: 0.08em; }
-    .lede-text p.lead { font-size: 1.15rem; font-weight: 400; color: var(--text); }
+    .lede-text p { font-size: clamp(0.9rem, 1.5vw, 0.95rem); font-weight: 300; line-height: 2.3; color: var(--text-muted); margin-bottom: 1.8em; text-align: justify; letter-spacing: 0.08em; }
+    .lede-text p.lead { font-size: clamp(1.05rem, 2vw, 1.15rem); font-weight: 400; color: var(--text); }
+    
     .spec-list { display:flex; flex-direction:column; }
-    .spec-list .row { display:grid; grid-template-columns: 100px 1fr; gap: 16px; padding: 22px 0; border-bottom: 0.5px solid var(--border); }
+    .spec-list .row { display:grid; grid-template-columns: clamp(80px, 20vw, 100px) 1fr; gap: 16px; padding: 22px 0; border-bottom: 0.5px solid var(--border); }
     .spec-list .k { font-family: var(--en); font-size: 0.6rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent); padding-top: 3px; }
-    .spec-list .v { font-size: 0.88rem; font-weight: 300; color: var(--text-muted); line-height: 1.8; }
+    .spec-list .v { font-size: clamp(0.8rem, 1.5vw, 0.88rem); font-weight: 300; color: var(--text-muted); line-height: 1.8; }
 
-    /* ============================================================
-       PERCEIVE-FRAME — カーソルが知覚のレンズになる
-    ================================================================ */
+    /* PERCEIVE-FRAME (Lens effect) */
     .perceive-frame { position: relative; overflow: hidden; background: #000; --mx: -9999px; --my: -9999px; border: 0.5px solid var(--border); }
     .perceive-frame .layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
     .perceive-frame .layer-blur {
       filter: grayscale(0.8) blur(12px) brightness(0.4) contrast(1.1);
       -webkit-mask-image: radial-gradient(circle at var(--mx) var(--my), transparent 0px, transparent 80px, black 150px);
-              mask-image: radial-gradient(circle at var(--mx) var(--my), transparent 0px, transparent 80px, black 150px);
+      mask-image: radial-gradient(circle at var(--mx) var(--my), transparent 0px, transparent 80px, black 150px);
+      transition: -webkit-mask-image 0.1s ease-out, mask-image 0.1s ease-out; /* スマホのタッチ追従を滑らかに */
     }
     .perceive-hint { font-family: var(--en); font-size: 0.6rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--text-dim);
       display: flex; align-items: center; gap: 12px; margin-top: 20px; }
     .perceive-hint span:first-child { width: 24px; height: 24px; border-radius: 50%; border: 0.5px solid var(--text-dim); flex-shrink:0; position: relative; }
     .perceive-hint span:first-child::after { content:''; position: absolute; top:50%; left:50%; transform:translate(-50%,-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--text-dim); }
 
-    /* ============================================================
-       DUO SPLIT & ASYM BLOCKS
-    ================================================================ */
-    .duo-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); margin: clamp(60px,10vh,120px) 0; }
-    .duo-split figure { position: relative; aspect-ratio: 3/4; overflow: hidden; background: var(--bg2); margin:0; }
+    /* DUO SPLIT & ASYM BLOCKS */
+    .duo-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); margin: clamp(40px,10vh,120px) 0; }
+    .duo-split figure { position: relative; aspect-ratio: 3/4; overflow: hidden; background: var(--bg2); margin:0; cursor: pointer; }
     .duo-split figure img { width:100%; height:100%; object-fit: cover; transition: transform 1.6s var(--ease-expo), filter 1.6s var(--ease-expo); filter: saturate(0.85) brightness(0.8); }
     .duo-split figure:hover img { transform: scale(1.03); filter: saturate(1.1) brightness(1); }
-    .duo-split figcaption { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px 30px;
+    .duo-split figcaption { position: absolute; bottom: 0; left: 0; right: 0; padding: clamp(16px, 4vw, 24px) clamp(20px, 4vw, 30px);
       font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.25em; color: rgba(232,228,219,0.85); text-transform: uppercase;
-      background: linear-gradient(to top, rgba(8,8,8,0.9), transparent); }
+      background: linear-gradient(to top, rgba(8,8,8,0.95), transparent); pointer-events: none;}
     .duo-split figure:first-child figcaption { color: var(--red); }
     .duo-split figure:last-child figcaption { color: var(--blue); }
 
-    .blob-frame { overflow: hidden; aspect-ratio: 1/1; border-radius: 38% 62% 60% 40% / 46% 40% 60% 54%; transition: border-radius 1.2s var(--ease-expo), transform 0.6s var(--ease-expo); border: 0.5px solid var(--border); }
+    .blob-frame { overflow: hidden; aspect-ratio: 1/1; border-radius: 38% 62% 60% 40% / 46% 40% 60% 54%; transition: border-radius 1.2s var(--ease-expo), transform 0.6s var(--ease-expo); border: 0.5px solid var(--border); cursor: pointer; }
     .blob-frame:hover { border-radius: 50%; transform: scale(1.02); }
     .blob-frame img { width:100%; height:100%; object-fit:cover; filter: saturate(0.9) brightness(0.85); transition: filter 0.6s ease; }
     .blob-frame:hover img { filter: saturate(1) brightness(1); }
 
-    .asym-2 { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(40px,6vw,80px); align-items: center; margin: clamp(60px,10vh,120px) 0; position: relative; z-index: 1; }
+    .asym-2 { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(30px,6vw,80px); align-items: center; margin: clamp(40px,10vh,120px) 0; position: relative; z-index: 1; }
     .asym-2--rev { grid-template-columns: 0.9fr 1.1fr; }
-    .block-ttl { font-family: var(--jp); font-weight: 300; font-size: clamp(1.3rem, 2.4vw, 1.8rem); margin-bottom: 1.2rem; letter-spacing: 0.05em; }
-    .block-txt { font-size: 0.92rem; font-weight: 300; line-height: 2.2; color: var(--text-muted); text-align: justify; letter-spacing: 0.06em; }
+    .block-ttl { font-family: var(--jp); font-weight: 300; font-size: clamp(1.2rem, 3vw, 1.8rem); margin-bottom: 1.2rem; letter-spacing: 0.05em; }
+    .block-txt { font-size: clamp(0.9rem, 1.5vw, 0.92rem); font-weight: 300; line-height: 2.2; color: var(--text-muted); text-align: justify; letter-spacing: 0.06em; }
 
-    .cap-line { display:flex; justify-content: space-between; align-items:center; margin-top: clamp(50px,8vh,80px); padding-top: 20px; border-top: 0.5px solid var(--border); }
+    .cap-line { display:flex; justify-content: space-between; align-items:center; margin-top: clamp(40px,8vh,80px); padding-top: 20px; border-top: 0.5px solid var(--border); flex-wrap: wrap; gap: 10px;}
     .cap-line span { font-family: var(--en); font-size: 0.62rem; letter-spacing: 0.2em; color: var(--text-dim); text-transform: uppercase; }
     .cap-line span.ja { font-family: var(--jp); font-weight: 300; }
 
-    /* ============================================================
-       FILMSTRIP — 横へ歩く知覚
-    ================================================================ */
-    .film-section { height: 340vh; position: relative; border-bottom: 0.5px solid var(--border); }
-    .film-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; display:flex; align-items:center; }
-    .film-sticky::before { content:""; position:absolute; inset:0; z-index:2; pointer-events:none;
-      background: linear-gradient(to right, var(--bg) 0%, transparent 15%, transparent 85%, var(--bg) 100%); }
-    .film-track { display:flex; gap: clamp(24px,3.5vw,50px); padding: 0 10vw; align-items: flex-end; will-change: transform; }
-    .film-card { flex-shrink: 0; }
-    .film-card img { display:block; filter: saturate(0.85) brightness(0.8); border: 0.5px solid var(--border); transition: filter 0.5s ease; }
+    /* FILMSTRIP (PC: Parallax Scroll, SP: Native Horizontal Scroll) */
+    .film-section { position: relative; border-bottom: 0.5px solid var(--border); background: var(--bg); }
+    
+    /* PC Styles */
+    @media (min-width: 769px) {
+      .film-section { height: 340vh; }
+      .film-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; display:flex; align-items:center; }
+      .film-sticky::before { content:""; position:absolute; inset:0; z-index:2; pointer-events:none;
+        background: linear-gradient(to right, var(--bg) 0%, transparent 15%, transparent 85%, var(--bg) 100%); }
+      .film-track { display:flex; gap: clamp(24px,3.5vw,50px); padding: 0 10vw; align-items: flex-end; will-change: transform; }
+      
+      .film-heading { position: absolute; top: clamp(80px,12vh,120px); left: var(--px); z-index: 3; max-width: 500px; }
+      .film-hint { position: absolute; bottom: clamp(40px,8vh,80px); right: var(--px); z-index: 3;
+        font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.25em; color: var(--text-dim); text-transform: uppercase;
+        display:flex; align-items:center; gap:12px; }
+      .film-hint span { display:inline-block; width: 32px; height: 0.5px; background: var(--text-dim); }
+    }
+    
+    /* Mobile Styles */
+    @media (max-width: 768px) {
+      .film-section { padding: clamp(5rem, 12vh, 10rem) 0; }
+      .film-sticky { position: relative; width: 100%; display: flex; flex-direction: column; }
+      .film-heading { padding: 0 var(--px); margin-bottom: 3rem; }
+      .film-track {
+        display: flex; gap: 24px; padding: 0 var(--px); overflow-x: auto;
+        scroll-snap-type: x mandatory; scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch; padding-bottom: 40px; align-items: center;
+      }
+      .film-track::-webkit-scrollbar { display: none; } /* スクロールバー非表示 */
+      .film-card { scroll-snap-align: center; }
+      .film-hint { display: none; } /* スマホでは直感的にスワイプできるため非表示 */
+    }
+
+    .film-card { flex-shrink: 0; cursor: pointer; }
+    .film-card img { display:block; filter: saturate(0.85) brightness(0.8); border: 0.5px solid var(--border); transition: filter 0.5s ease; width: 100%; }
     .film-card:hover img { filter: saturate(1.05) brightness(1); }
+    
     .film-card:nth-child(1) { width: clamp(200px,24vw,340px); }
     .film-card:nth-child(1) img { aspect-ratio: 3/4.6; object-fit:cover; }
-    .film-card:nth-child(2) { width: clamp(280px,36vw,500px); margin-bottom: 80px; }
+    .film-card:nth-child(2) { width: clamp(260px,36vw,500px); margin-bottom: clamp(0px, 5vw, 80px); }
     .film-card:nth-child(2) img { aspect-ratio: 5/3; object-fit:cover; }
-    .film-card:nth-child(3) { width: clamp(240px,28vw,400px); }
+    .film-card:nth-child(3) { width: clamp(220px,28vw,400px); }
     .film-card:nth-child(3) img { aspect-ratio: 4/5; object-fit:cover; }
-    .film-card:nth-child(4) { width: clamp(220px,26vw,360px); margin-bottom: 120px; }
+    .film-card:nth-child(4) { width: clamp(200px,26vw,360px); margin-bottom: clamp(0px, 8vw, 120px); }
     .film-card:nth-child(4) img { aspect-ratio: 1/1; object-fit:cover; border-radius: 50%; }
-    .film-card:nth-child(5) { width: clamp(280px,32vw,460px); }
+    .film-card:nth-child(5) { width: clamp(260px,32vw,460px); }
     .film-card:nth-child(5) img { aspect-ratio: 4/3; object-fit:cover; }
     .film-cap { margin-top: 18px; font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.22em; color: var(--text-dim); text-transform: uppercase; }
-    .film-heading { position: absolute; top: clamp(80px,12vh,120px); left: var(--px); z-index: 3; max-width: 500px; }
-    .film-hint { position: absolute; bottom: clamp(40px,8vh,80px); right: var(--px); z-index: 3;
-      font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.25em; color: var(--text-dim); text-transform: uppercase;
-      display:flex; align-items:center; gap:12px; }
-    .film-hint span { display:inline-block; width: 32px; height: 0.5px; background: var(--text-dim); }
 
-    /* ============================================================
-       PULL QUOTE
-    ================================================================ */
-    .quote-block { padding: clamp(8rem,16vh,12rem) 2.5rem; text-align:center; position:relative; border-bottom: 0.5px solid var(--border); }
-    .quote-block .mark { font-family: var(--en); font-size: 4.5rem; color: var(--accent); opacity: 0.3; line-height: 0.5; margin-bottom: 36px; font-weight: 300; }
-    .quote-block p { font-family: var(--jp); font-weight: 300; font-size: clamp(1.2rem, 2.5vw, 1.8rem); line-height: 2.4; max-width: 800px; margin: 0 auto; color: rgba(232,228,219,0.95); letter-spacing: 0.08em; text-shadow: 0 2px 14px rgba(0,0,0,0.6); }
+    /* PULL QUOTE */
+    .quote-block { padding: clamp(6rem,12vh,12rem) var(--px); text-align:center; position:relative; border-bottom: 0.5px solid var(--border); }
+    .quote-block .mark { font-family: var(--en); font-size: clamp(3.5rem, 6vw, 4.5rem); color: var(--accent); opacity: 0.3; line-height: 0.5; margin-bottom: 36px; font-weight: 300; }
+    .quote-block p { font-family: var(--jp); font-weight: 300; font-size: clamp(1rem, 2.5vw, 1.8rem); line-height: 2.4; max-width: 800px; margin: 0 auto; color: rgba(232,228,219,0.95); letter-spacing: 0.08em; text-shadow: 0 2px 14px rgba(0,0,0,0.6); }
     .quote-block p em { font-style: normal; color: var(--fg); background: linear-gradient(transparent 70%, rgba(203,191,176,0.2) 70%); padding: 0 4px; }
 
-    /* ============================================================
-       VENUE CARDS
-    ================================================================ */
-    .venue-row { display:grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: clamp(60px,8vh,90px); }
+    /* VENUE CARDS */
+    .venue-row { display:grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: clamp(40px,8vh,90px); }
     .venue-card {
       background: rgba(255,255,255,0.015); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border: 0.5px solid rgba(232,228,219,0.08); padding: clamp(36px,5vw,56px) clamp(26px,4vw,44px);
+      border: 0.5px solid rgba(232,228,219,0.08); padding: clamp(28px,5vw,56px) clamp(20px,4vw,44px);
       border-radius: 4px; transition: transform 0.6s var(--ease-out-back), background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
-      position: relative; overflow: hidden;
+      position: relative; overflow: hidden; display: block;
     }
     .venue-card::before {
       content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
       background: linear-gradient(to right, transparent, rgba(255,255,255,0.04), transparent);
       transform: skewX(-25deg); transition: left 0.75s cubic-bezier(0.19, 1, 0.22, 1); z-index: 0;
     }
-    .venue-card:hover::before { left: 150%; }
-    .venue-card:hover {
-      transform: translateY(-8px) scale(1.01); background: rgba(255,255,255,0.03);
-      border-color: rgba(203,191,176,0.3); box-shadow: 0 16px 32px rgba(0,0,0,0.4), 0 0 16px rgba(203,191,176,0.08);
+    @media (hover: hover) {
+      .venue-card:hover::before { left: 150%; }
+      .venue-card:hover {
+        transform: translateY(-8px) scale(1.01); background: rgba(255,255,255,0.03);
+        border-color: rgba(203,191,176,0.3); box-shadow: 0 16px 32px rgba(0,0,0,0.4), 0 0 16px rgba(203,191,176,0.08);
+      }
     }
     .venue-card > * { position: relative; z-index: 1; }
     .venue-card .tag { font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.26em; text-transform:uppercase; display:block; margin-bottom: 16px; }
     .venue-card:first-child .tag { color: var(--red); }
     .venue-card:last-child .tag { color: var(--blue); }
-    .venue-card h3 { font-family: var(--jp); font-weight: 300; font-size: clamp(1.2rem, 2vw, 1.4rem); margin-bottom: 12px; letter-spacing: 0.05em; color: var(--text); }
-    .venue-card p { font-size: 0.9rem; font-weight: 300; color: var(--text-muted); line-height: 2; letter-spacing: 0.06em; }
+    .venue-card h3 { font-family: var(--jp); font-weight: 300; font-size: clamp(1.1rem, 2vw, 1.4rem); margin-bottom: 12px; letter-spacing: 0.05em; color: var(--text); }
+    .venue-card p { font-size: clamp(0.85rem, 1.5vw, 0.9rem); font-weight: 300; color: var(--text-muted); line-height: 2; letter-spacing: 0.06em; }
 
-    /* ============================================================
-       CLOSING
-    ================================================================ */
-    .closing { padding: clamp(8rem,16vh,14rem) 2.5rem clamp(6rem,10vh,8rem); text-align:center; position:relative; overflow:hidden; }
-    .closing .big-kanji { font-family: var(--jp); font-weight: 200; font-size: clamp(100px,18vw,300px); line-height:1;
+    /* CLOSING */
+    .closing { padding: clamp(6rem,16vh,14rem) var(--px) clamp(5rem,10vh,8rem); text-align:center; position:relative; overflow:hidden; }
+    .closing .big-kanji { font-family: var(--jp); font-weight: 200; font-size: clamp(80px,18vw,300px); line-height:1;
       background: linear-gradient(135deg, var(--red), var(--blue)); -webkit-background-clip:text; background-clip:text; color:transparent;
       opacity: 0.7; margin-bottom: clamp(30px,5vh,50px); letter-spacing: 0.1em; padding-left: 0.1em; }
-    .closing h2 { font-family: var(--jp); font-weight: 300; font-size: clamp(1.6rem,3vw,2.2rem); margin-bottom: 1.8rem; letter-spacing: 0.05em; }
-    .closing p { color: var(--text-muted); max-width: 480px; margin: 0 auto 3.5rem; font-size: 0.95rem; font-weight: 300; line-height: 2.2; letter-spacing: 0.06em; }
+    .closing h2 { font-family: var(--jp); font-weight: 300; font-size: clamp(1.4rem,3vw,2.2rem); margin-bottom: 1.8rem; letter-spacing: 0.05em; }
+    .closing p { color: var(--text-muted); max-width: 480px; margin: 0 auto 3.5rem; font-size: clamp(0.9rem, 1.5vw, 0.95rem); font-weight: 300; line-height: 2.2; letter-spacing: 0.06em; }
     
     .closing-btn {
-      display: inline-flex; align-items: center; gap: 0.8em; font-family: var(--en); font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.8em; font-family: var(--en); font-size: clamp(0.75rem, 1.5vw, 0.9rem);
       letter-spacing: 0.25em; text-transform: uppercase; border: 1px solid rgba(203,191,176,0.5); border-radius: 40px;
-      padding: 1.4rem 4rem; color: var(--accent); background: rgba(203,191,176,0.03); text-decoration: none;
+      padding: 1.2rem 2.5rem; color: var(--accent); background: rgba(203,191,176,0.03); text-decoration: none;
       backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: all 0.5s var(--ease-out-back);
+      width: 100%; max-width: 320px;
     }
     .closing-btn:hover { color: var(--bg); background: var(--accent); border-color: var(--accent); box-shadow: 0 12px 36px rgba(203,191,176,0.3); transform: translateY(-4px) scale(1.02); }
 
-    /* ============================================================
-       FOOTER
-    ================================================================ */
+    /* FOOTER */
     footer {
       border-top: 0.5px solid var(--border);
-      padding: clamp(3rem, 5vh, 6rem) var(--px);
+      padding: clamp(2rem, 5vh, 6rem) var(--px);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -423,10 +480,8 @@
     .footer-logo { font-family: var(--jp); font-size: 13px; letter-spacing: 0.15em; color: var(--text-dim); }
     .footer-copy { font-family: var(--en); font-size: 11px; letter-spacing: 0.2em; color: var(--text-dim); text-transform: uppercase; }
 
-    /* ============================================================
-       UTILITIES & BACK TO TOP (Redesigned)
-    ================================================================ */
-    .lightbox { display:none; position: fixed; inset:0; z-index: 9998; background: rgba(8,8,8,0.98); justify-content:center; align-items:center; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    /* UTILITIES */
+    .lightbox { display:none; position: fixed; inset:0; z-index: 9999; background: rgba(8,8,8,0.98); justify-content:center; align-items:center; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
     .lightbox.active { display:flex; }
     .lightbox__img { max-width: 90vw; max-height: 85vh; object-fit: contain; border: 0.5px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
 
@@ -435,8 +490,8 @@
       bottom: clamp(20px, 4vw, 40px);
       right: clamp(20px, 4vw, 40px);
       z-index: 9000;
-      width: clamp(52px, 8vw, 70px);
-      height: clamp(52px, 8vw, 70px);
+      width: clamp(48px, 8vw, 70px);
+      height: clamp(48px, 8vw, 70px);
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -448,90 +503,43 @@
       transition: opacity 0.6s var(--ease-expo), visibility 0.6s, transform 0.6s var(--ease-expo);
       cursor: pointer;
     }
-    .back-to-top.is-visible {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
+    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
     .b2t-inner {
-      position: absolute;
-      inset: 4px;
-      background: rgba(12, 12, 12, 0.5); 
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: absolute; inset: 4px; background: rgba(12, 12, 12, 0.5); 
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
       transition: background 0.4s var(--ease-expo), transform 0.4s var(--ease-expo);
       box-shadow: 0 10px 24px rgba(0,0,0,0.4);
     }
     .b2t-text {
-      font-family: var(--en);
-      font-size: clamp(0.6rem, 1.4vw, 0.75rem);
-      font-weight: 400;
-      letter-spacing: 0.15em;
-      color: var(--text);
-      margin-right: -0.15em;
-      margin-bottom: -1px;
-      transition: color 0.4s var(--ease-expo), transform 0.4s var(--ease-expo);
+      font-family: var(--en); font-size: clamp(0.55rem, 1.4vw, 0.75rem);
+      font-weight: 400; letter-spacing: 0.15em; color: var(--text);
+      margin-right: -0.15em; margin-bottom: -1px; transition: color 0.4s var(--ease-expo), transform 0.4s var(--ease-expo);
     }
-    .b2t-progress {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      transform: rotate(-90deg);
-      pointer-events: none;
-    }
-    .b2t-progress circle {
-      fill: none;
-      stroke-width: 1.5;
-    }
-    .b2t-progress-bg {
-      stroke: rgba(232,228,219,0.1);
-    }
-    .b2t-progress-value {
-      stroke: var(--accent);
-      stroke-dasharray: 301.6;
-      stroke-dashoffset: 301.6;
-      transition: stroke-dashoffset 0.15s linear, stroke 0.4s var(--ease-expo);
-    }
-    .back-to-top:hover .b2t-inner {
-      background: var(--accent);
-      transform: scale(0.92);
-    }
-    .back-to-top:hover .b2t-text {
-      color: var(--bg);
-      transform: translateY(-2px);
-    }
-    .back-to-top:hover .b2t-progress-value {
-      stroke: var(--fg);
+    .b2t-progress { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); pointer-events: none; }
+    .b2t-progress circle { fill: none; stroke-width: 1.5; }
+    .b2t-progress-bg { stroke: rgba(232,228,219,0.1); }
+    .b2t-progress-value { stroke: var(--accent); stroke-dasharray: 301.6; stroke-dashoffset: 301.6; transition: stroke-dashoffset 0.15s linear, stroke 0.4s var(--ease-expo); }
+    
+    @media (hover:hover) {
+      .back-to-top:hover .b2t-inner { background: var(--accent); transform: scale(0.92); }
+      .back-to-top:hover .b2t-text { color: var(--bg); transform: translateY(-2px); }
+      .back-to-top:hover .b2t-progress-value { stroke: var(--fg); }
     }
 
-    /* ============================================================
-       RESPONSIVE
-    ================================================================ */
+    /* RESPONSIVE OVERRIDES */
     @media (max-width: 1024px) {
       .lede-grid { grid-template-columns: 1fr; gap: 3rem; }
       .lede-grid .divider { display:none; }
-      .asym-2, .asym-2--rev { grid-template-columns: 1fr; gap: 3rem; }
-      .duo-split { grid-template-columns: 1fr; }
-      .venue-row { grid-template-columns: 1fr; }
+      .asym-2, .asym-2--rev { grid-template-columns: 1fr; gap: 2.5rem; }
+      .duo-split { grid-template-columns: 1fr; gap: 2rem; background: transparent; }
+      .duo-split figure { aspect-ratio: 4/5; }
+      .venue-row { grid-template-columns: 1fr; gap: 1rem; }
+      .perceive-hint { margin-top: 12px; }
     }
     @media (max-width: 768px) {
-      .pc-only { display: none !important; }
-      nav#top-nav { padding: 1rem 1.25rem; justify-content: space-between; }
-      nav#top-nav.nav-scrolled { padding: 0.8rem 1.25rem; }
-      .nav-links { display: none !important; }
-      
-      .film-section { height: 250vh; }
-      body.cursor-ready { cursor: auto; }
-      .cursor-dot, .cursor-ring { display:none !important; }
-      .closing .big-kanji { font-size: clamp(80px,24vw,160px); }
-      .section { padding: 6rem 1.5rem; }
-      .section-tilt { padding-top: calc(6rem + 46px); }
-      footer { padding: 3rem 1.5rem; flex-direction: column; align-items: center; gap: 1rem; }
+      .bg-kanji { font-size: 40vw !important; } /* スマホでの漢字サイズ調整 */
+      .blob-frame { border-radius: 40px; } /* スマホでは複雑なborder-radiusを少し和らげる */
     }
   </style>
 </head>
@@ -551,7 +559,7 @@
   <div class="cursor-dot" id="cursorDot"></div>
   <div class="cursor-ring" id="cursorRing"></div>
 
-  <!-- Redesigned Header: Left Name, Center Nav (Page links + Tooltip), Right Contact -->
+  <!-- HEADER & NAVIGATION -->
   <nav id="top-nav">
     <a href="https://sh012da.github.io/sh01/" class="nav-logo">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
@@ -562,8 +570,26 @@
       <li><a href="#horizon" data-tooltip="地平">Horizon</a></li>
       <li><a href="#threshold" data-tooltip="境界・扉の先">Threshold</a></li>
     </ul>
-    <a href="https://sh012da.github.io/sh01/contact.html" class="nav-cta" id="nav-cta-btn">Contact</a>
+    <a href="https://sh012da.github.io/sh01/contact.html" class="nav-cta">Contact</a>
+    
+    <!-- Mobile Hamburger Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+    <ul class="mobile-nav-links" id="mobileNavLinks">
+      <li><a href="#overview">Concept<span>概要</span></a></li>
+      <li><a href="#corridor">Prologue<span>序章・回廊</span></a></li>
+      <li><a href="#room-red">Red &amp; Blue<span>紅と藍</span></a></li>
+      <li><a href="#forest">Vertical<span>垂直の筆触</span></a></li>
+      <li><a href="#horizon">Horizon<span>地平</span></a></li>
+      <li><a href="#threshold">Threshold<span>境界・扉の先</span></a></li>
+      <li style="margin-top: 1rem;"><a href="https://sh012da.github.io/sh01/contact.html" style="color:var(--accent);">Contact<span>お問い合わせ</span></a></li>
+    </ul>
+  </div>
 
   <div class="mouse-tooltip" id="mouse-tooltip"></div>
 
@@ -584,7 +610,7 @@
       <div class="hero-meta-row">
         <div><span class="m-label">Artist</span><span class="m-val">津田翔一</span></div>
         <div><span class="m-label">Year</span><span class="m-val">2022</span></div>
-        <div><span class="m-label">Medium</span><span class="m-val">油彩 / Oil on canvas</span></div>
+        <div class="pc-only"><span class="m-label">Medium</span><span class="m-val">油彩 / Oil on canvas</span></div>
       </div>
     </div>
     <div class="scroll-cue" aria-hidden="true"><div class="line"></div><span class="deg">SCROLL</span></div>
@@ -593,7 +619,7 @@
   <main>
     <!-- ============== LEDE / OVERVIEW ============== -->
     <section class="section tone-a" id="overview">
-      <span class="bg-kanji" style="top:-4%; right:-2%; font-size:26vw; transform:rotate(8deg);" aria-hidden="true">覚</span>
+      <span class="bg-kanji" style="top:-4%; right:-2%; transform:rotate(8deg);" aria-hidden="true">覚</span>
       <div class="container">
         <div class="reveal">
           <p class="section-label">00 — Concept</p>
@@ -633,22 +659,22 @@
 
     <!-- ============== 01 回廊 / CORRIDOR ============== -->
     <section class="section tone-b section-tilt" id="corridor">
-      <span class="bg-kanji" style="bottom:-8%; left:-3%; font-size:22vw; transform:rotate(-6deg);" aria-hidden="true">知</span>
+      <span class="bg-kanji" style="bottom:-8%; left:-3%; transform:rotate(-6deg);" aria-hidden="true">知</span>
       <div class="container">
         <div class="reveal">
           <p class="section-label" style="color:var(--blue);">01 — Prologue Corridor</p>
           <h2 class="section-heading">歩くことから、すでに展示は始まっている</h2>
         </div>
-        <p class="sec-desc reveal">入口を抜けると、奥へとまっすぐに伸びる回廊。両脇には色彩の異なる油彩が連なり、訪れる者は無意識のうちに歩幅を緩める。下の画像にカーソルを重ねると、ぼやけた知覚の表面に焦点が結ばれていく——〈覚知〉の最初の体験。</p>
+        <p class="sec-desc reveal">入口を抜けると、奥へとまっすぐに伸びる回廊。両脇には色彩の異なる油彩が連なり、訪れる者は無意識のうちに歩幅を緩める。下の画像に触れる（カーソルを重ねる）と、ぼやけた知覚の表面に焦点が結ばれていく——〈覚知〉の最初の体験。</p>
 
         <div class="perceive-frame reveal" style="aspect-ratio: 21/9;">
-          <img class="layer layer-clear" src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (1).JPG" alt="覚知ka 展示風景 回廊全景">
-          <img class="layer layer-blur" src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (1).JPG" alt="">
+          <img class="layer layer-clear" src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (1).JPG" alt="覚知ka 展示風景 回廊全景" loading="lazy">
+          <img class="layer layer-blur" src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (1).JPG" alt="" loading="lazy">
         </div>
-        <p class="perceive-hint reveal"><span></span>カーソルを画像に重ねて、知覚を結んでください</p>
+        <p class="perceive-hint reveal"><span></span>Touch &amp; Trace — なぞって知覚を結ぶ</p>
 
-        <div class="asym-2 reveal" style="margin-top: clamp(70px,10vh,110px);">
-          <div class="blob-frame"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (9).JPG" alt="覚知ka 回廊端の小品群"></div>
+        <div class="asym-2 reveal">
+          <div class="blob-frame"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (9).JPG" alt="覚知ka 回廊端の小品群" loading="lazy"></div>
           <div>
             <h3 class="block-ttl">色の濃度が、距離をつくる</h3>
             <p class="block-txt">回廊の手前には朱や深紅の強い画面、奥にゆくほど淡い色面が配置される。色彩の「濃度」そのものが空間の遠近を生み出し、鑑賞者は無意識のうちに色に導かれて歩を進めていく。</p>
@@ -660,8 +686,8 @@
     </section>
 
     <div class="quote-block tone-a section">
-      <span class="bg-kanji" style="top:10%; left:6%; font-size:18vw;" aria-hidden="true">覚</span>
-      <span class="bg-kanji" style="bottom:6%; right:6%; font-size:18vw;" aria-hidden="true">知</span>
+      <span class="bg-kanji" style="top:10%; left:6%; transform:rotate(-4deg);" aria-hidden="true">覚</span>
+      <span class="bg-kanji" style="bottom:6%; right:6%; transform:rotate(4deg);" aria-hidden="true">知</span>
       <div class="container">
         <p class="mark reveal" aria-hidden="true">“</p>
         <p class="reveal">見るより先に、肌が知っている。色が意味になる前のその一瞬を、絵の具という物質のまま掴みたい。<em>覚知とは、世界に触れ直すことだ。</em></p>
@@ -678,8 +704,8 @@
         <p class="sec-desc reveal">展示の核となる小部屋。垂直に伸びる画面の中で、動脈のような紅と静脈のような藍がせめぎ合う。向かい合う壁の連作は互いを映す鏡のように呼応し、鑑賞者はその真ん中で二つの体温に挟まれる。</p>
 
         <div class="duo-split reveal">
-          <figure><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (2).JPG" alt="覚知ka 紅と藍の部屋 左壁の連作"><figcaption>紅 — Pulse</figcaption></figure>
-          <figure><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (3).JPG" alt="覚知ka 紅と藍の部屋 中央壁面"><figcaption>藍 — Vein</figcaption></figure>
+          <figure><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (2).JPG" alt="覚知ka 紅と藍の部屋 左壁の連作" loading="lazy"><figcaption>紅 — Pulse</figcaption></figure>
+          <figure><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (3).JPG" alt="覚知ka 紅と藍の部屋 中央壁面" loading="lazy"><figcaption>藍 — Vein</figcaption></figure>
         </div>
 
         <div class="asym-2 asym-2--rev reveal">
@@ -688,8 +714,8 @@
             <p class="block-txt">骨格でも臓器でもない、けれど確かに「身体的」な何か。形は常に流動し、紅と藍の境界線は溶け合ったまま固定されることがない。津田の筆致は輪郭を引くのではなく、色と色の摩擦そのものを描き出す。</p>
           </div>
           <div class="perceive-frame" style="aspect-ratio: 4/5;">
-            <img class="layer layer-clear" src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (9).JPG" alt="覚知ka 紅と藍 大画面詳細">
-            <img class="layer layer-blur" src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (9).JPG" alt="">
+            <img class="layer layer-clear" src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (9).JPG" alt="覚知ka 紅と藍 大画面詳細" loading="lazy">
+            <img class="layer layer-blur" src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (9).JPG" alt="" loading="lazy">
           </div>
         </div>
 
@@ -705,19 +731,19 @@
           <h2 class="section-heading" style="margin-top:12px; margin-bottom:0;">垂直の筆触、<br>森のように並ぶ</h2>
         </div>
         <div class="film-track" id="filmTrack">
-          <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (4).JPG" alt="覚知ka 垂直の筆触 黄と黒の連作"><p class="film-cap">01 — 黄、滴る記憶</p></div>
-          <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (4)2.JPG" alt="覚知ka 垂直の筆触 連作 近景"><p class="film-cap">02 — 連作、五つの色相</p></div>
-          <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (5).JPG" alt="覚知ka 角部屋 虹色の大画面"><p class="film-cap">03 — 虹、空間を満たす</p></div>
-          <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (6).JPG" alt="覚知ka 地平線の絵画と垂直連作"><p class="film-cap">04 — 反復、立ち止まる視線</p></div>
-          <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (7).JPG" alt="覚知ka 垂直の筆触 別角度"><p class="film-cap">05 — 灰、声にならない震え</p></div>
+          <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (4).JPG" alt="覚知ka 垂直の筆触 黄と黒の連作" loading="lazy"><p class="film-cap">01 — 黄、滴る記憶</p></div>
+          <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (4)2.JPG" alt="覚知ka 垂直の筆触 連作 近景" loading="lazy"><p class="film-cap">02 — 連作、五つの色相</p></div>
+          <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (5).JPG" alt="覚知ka 角部屋 虹色の大画面" loading="lazy"><p class="film-cap">03 — 虹、空間を満たす</p></div>
+          <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (6).JPG" alt="覚知ka 地平線の絵画と垂直連作" loading="lazy"><p class="film-cap">04 — 反復、立ち止まる視線</p></div>
+          <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (7).JPG" alt="覚知ka 垂直の筆触 別角度" loading="lazy"><p class="film-cap">05 — 灰、声にならない震え</p></div>
         </div>
-        <div class="film-hint"><span></span>Scroll — 横へ歩く</div>
+        <div class="film-hint"><span></span>Scroll / Swipe — 横へ歩く</div>
       </div>
     </section>
 
     <!-- ============== 04 地平 / HORIZON ============== -->
     <section class="section tone-b section-tilt" id="horizon">
-      <span class="bg-kanji" style="top:-6%; right:0; font-size:20vw; transform:rotate(4deg);" aria-hidden="true">地</span>
+      <span class="bg-kanji" style="top:-6%; right:0; transform:rotate(4deg);" aria-hidden="true">地</span>
       <div class="container">
         <div class="reveal">
           <p class="section-label" style="color:var(--accent);">04 — Room Horizon</p>
@@ -726,12 +752,13 @@
         <p class="sec-desc reveal">部屋の最奥、正面に大きく掛けられた水平の画面。これまでの〈左美都〉シリーズが描いてきた土地の記憶と地続きの、けれど輪郭をすべて手放した風景。垂直の筆触を抜けてきた身体は、ここで初めて静止する。</p>
 
         <div class="perceive-frame reveal" style="aspect-ratio: 16/8;">
-          <img class="layer layer-clear" src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (6).JPG" alt="覚知ka 地平の部屋 全景">
-          <img class="layer layer-blur" src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (6).JPG" alt="">
+          <img class="layer layer-clear" src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (6).JPG" alt="覚知ka 地平の部屋 全景" loading="lazy">
+          <img class="layer layer-blur" src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (6).JPG" alt="" loading="lazy">
         </div>
+        <p class="perceive-hint reveal sp-only"><span></span>Touch &amp; Trace — なぞる</p>
 
-        <div class="asym-2 reveal" style="margin-top: clamp(70px,10vh,110px);">
-          <div class="blob-frame"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (7).JPG" alt="覚知ka 地平の絵画 別角度"></div>
+        <div class="asym-2 reveal">
+          <div class="blob-frame"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (7).JPG" alt="覚知ka 地平の絵画 別角度" loading="lazy"></div>
           <div>
             <h3 class="block-ttl">静止点としての水平線</h3>
             <p class="block-txt">紅と藍の対峙、垂直の筆触の反復——それらを通過した先に、ようやく水平に横たわる一枚がある。色は溶け合い、もはや「対立」ではなく「呼吸」になる。これは答えではなく、覚知のプロセスがひとまず凪ぐ場所だ。</p>
@@ -752,8 +779,8 @@
         <p class="sec-desc reveal">会場の奥、開け放たれた扉の向こうには、また別の生活空間が続いている。展示はここで終わるのではなく、日常へとなだらかに溶け出していく。覚知は美術館の中だけで起きるものではない、というささやかな宣言。</p>
 
         <div class="duo-split reveal" style="margin-top:0;">
-          <figure style="aspect-ratio:5/6;"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (8).JPG" alt="覚知ka 開かれた扉と先の空間"><figcaption>境界 — Half-open</figcaption></figure>
-          <figure style="aspect-ratio:5/6;"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (9).JPG" alt="覚知ka 出口付近の展示風景"><figcaption>接続 — Beyond</figcaption></figure>
+          <figure style="aspect-ratio:5/6;"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (8).JPG" alt="覚知ka 開かれた扉と先の空間" loading="lazy"><figcaption>境界 — Half-open</figcaption></figure>
+          <figure style="aspect-ratio:5/6;"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (9).JPG" alt="覚知ka 出口付近の展示風景" loading="lazy"><figcaption>接続 — Beyond</figcaption></figure>
         </div>
 
         <div class="cap-line reveal"><span class="ja">展示風景 ／ 扉の先 — 日常への接続</span><span>Fig. 08 — 09</span></div>
@@ -775,7 +802,7 @@
     <p class="footer-copy">© 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
-  <!-- Redesigned Back to Top Button -->
+  <!-- Utilities -->
   <a href="#top" class="back-to-top" id="backToTop" aria-label="ページ先頭に戻る">
     <svg class="b2t-progress" viewBox="0 0 100 100">
       <circle class="b2t-progress-bg" cx="50" cy="50" r="48"></circle>
@@ -792,7 +819,7 @@
 
   <script>
     /* ============================================================
-       NAV SCROLL, ACTIVE STATE & TOOLTIP
+       NAV SCROLL, ACTIVE STATE, MOBILE MENU & TOOLTIP
     ================================================================ */
     (function() {
       const nav = document.getElementById('top-nav');
@@ -804,19 +831,34 @@
       
       const b2t = document.getElementById('backToTop');
       const b2tCircle = document.getElementById('b2t-progress-value');
+
+      // Mobile Menu Logic
+      const mobileBtn = document.getElementById('mobileMenuBtn');
+      const mobileNavLinks = document.querySelectorAll('#mobileNavLinks a');
+      
+      function toggleMenu() {
+        document.body.classList.toggle('menu-open');
+        document.body.classList.toggle('no-scroll');
+      }
+      mobileBtn.addEventListener('click', toggleMenu);
+      mobileNavLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          if (document.body.classList.contains('menu-open')) toggleMenu();
+        });
+      });
       
       function onScroll() {
         const y = window.scrollY || document.documentElement.scrollTop;
         const h = document.documentElement.scrollHeight - window.innerHeight;
         const pct = h > 0 ? (y/h) : 0;
         
-        // Header background toggle
+        // Header background
         if(y > 60) { nav.classList.add('nav-scrolled'); } else { nav.classList.remove('nav-scrolled'); }
         
-        // Top progress bar
+        // Progress bar
         if (progress) progress.style.width = (pct * 100) + '%';
         
-        // Back to top visibility & ring progress
+        // Back to top
         if (b2t) b2t.classList.toggle('is-visible', y > window.innerHeight * 0.5);
         if (b2tCircle) {
           const offset = 301.6 - (301.6 * pct);
@@ -839,52 +881,50 @@
       document.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
 
-      // Smooth scroll for nav links & Tooltip logic
-      navLinks.forEach(link => {
+      // Smooth scroll (handles both PC and Mobile links)
+      document.querySelectorAll('a[href^="#"]').forEach(link => {
         link.addEventListener('click', e => {
           const href = link.getAttribute('href');
-          if (href.startsWith('#')) {
-            e.preventDefault();
-            const t = document.getElementById(href.substring(1));
-            if (t) window.scrollTo({ top: t.offsetTop - 60, behavior: 'smooth' });
+          if (href === '#') return;
+          e.preventDefault();
+          const t = document.getElementById(href.substring(1));
+          if (t) {
+            const offsetTop = t.offsetTop - (window.innerWidth <= 768 ? 60 : 80);
+            window.scrollTo({ top: offsetTop, behavior: 'smooth' });
           }
-        });
-
-        // Tooltip Event Listeners
-        link.addEventListener('mouseenter', () => {
-          if(!tooltip) return;
-          const label = link.getAttribute('data-tooltip');
-          if(label) {
-            tooltip.textContent = label;
-            tooltip.classList.add('visible');
-          }
-        });
-        link.addEventListener('mousemove', (e) => {
-          if(!tooltip) return;
-          tooltip.style.left = (e.clientX + 15) + 'px';
-          tooltip.style.top = (e.clientY + 15) + 'px';
-        });
-        link.addEventListener('mouseleave', () => {
-          if(tooltip) tooltip.classList.remove('visible');
         });
       });
 
-      // Smooth scroll for Back to Top (確実に一番上まで戻す)
-      if (b2t) {
-        b2t.addEventListener('click', e => {
-          e.preventDefault();
-          window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      // Tooltip Event Listeners (PC Only)
+      if (window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
+        navLinks.forEach(link => {
+          link.addEventListener('mouseenter', () => {
+            if(!tooltip) return;
+            const label = link.getAttribute('data-tooltip');
+            if(label) {
+              tooltip.textContent = label;
+              tooltip.classList.add('visible');
+            }
+          });
+          link.addEventListener('mousemove', (e) => {
+            if(!tooltip) return;
+            tooltip.style.left = (e.clientX + 15) + 'px';
+            tooltip.style.top = (e.clientY + 15) + 'px';
+          });
+          link.addEventListener('mouseleave', () => {
+            if(tooltip) tooltip.classList.remove('visible');
+          });
         });
       }
     })();
 
     /* ============================================================
-       覚知 専用スクリプト (視差エフェクト, カスタムカーソル, スクロール横歩き)
+       SPECIAL EFFECTS (Reveal, Lightbox, Cursor, Lens, Filmstrip)
     ================================================================ */
     (function(){
       const fine = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
 
-      /* reveal on scroll */
+      /* Reveal on scroll */
       const revealEls = document.querySelectorAll('.reveal');
       if ('IntersectionObserver' in window) {
         const io = new IntersectionObserver(entries => {
@@ -893,10 +933,10 @@
         revealEls.forEach(el => io.observe(el));
       } else { revealEls.forEach(el => el.classList.add('is-visible')); }
 
-      /* lightbox */
+      /* Lightbox */
       const lightbox = document.getElementById('lightbox');
       const lbImg = document.getElementById('lbImg');
-      document.querySelectorAll('.duo-split figure, .blob-frame, .film-card img').forEach(trigger => {
+      document.querySelectorAll('.duo-split figure, .blob-frame, .film-card').forEach(trigger => {
         trigger.addEventListener('click', () => {
           const img = trigger.tagName === 'IMG' ? trigger : trigger.querySelector('img');
           if (img && img.src) {
@@ -913,7 +953,7 @@
       });
       document.addEventListener('keydown', e => { if (e.key === 'Escape' && lightbox.classList.contains('active')) lightbox.click(); });
 
-      /* custom cursor */
+      /* Custom Cursor */
       if (fine) {
         document.body.classList.add('cursor-ready');
         const dot = document.getElementById('cursorDot');
@@ -922,7 +962,7 @@
           dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px';
           ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px';
         });
-        document.querySelectorAll('a, button, .blob-frame, .duo-split figure').forEach(el => {
+        document.querySelectorAll('a, button, .blob-frame, .duo-split figure, .film-card').forEach(el => {
           el.addEventListener('mouseenter', () => ring.classList.add('hover'));
           el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
         });
@@ -932,7 +972,7 @@
         });
       }
 
-      /* hero seam follows mouse x subtly */
+      /* Hero seam subtle parallax */
       const heroSeam = document.getElementById('heroSeam');
       if (heroSeam && fine) {
         window.addEventListener('mousemove', e => {
@@ -941,27 +981,48 @@
         });
       }
 
-      /* perceive-frame lens tracking */
+      /* Perceive-frame lens tracking (Mouse & Touch Supported) */
       document.querySelectorAll('.perceive-frame').forEach(frame => {
-        const blur = frame.querySelector('.layer-blur');
-        if (!fine) { if (blur) blur.style.display = 'none'; return; }
-        frame.addEventListener('mousemove', e => {
+        const updateMask = (x, y) => {
+          frame.style.setProperty('--mx', x + 'px');
+          frame.style.setProperty('--my', y + 'px');
+        };
+
+        // PC Mouse
+        if (fine) {
+          frame.addEventListener('mousemove', e => {
+            const r = frame.getBoundingClientRect();
+            updateMask(e.clientX - r.left, e.clientY - r.top);
+          });
+          frame.addEventListener('mouseleave', () => { updateMask(-9999, -9999); });
+        }
+        
+        // Mobile Touch
+        frame.addEventListener('touchstart', e => {
           const r = frame.getBoundingClientRect();
-          frame.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-          frame.style.setProperty('--my', (e.clientY - r.top) + 'px');
-        });
-        frame.addEventListener('mouseleave', () => {
-          frame.style.setProperty('--mx', '-9999px');
-          frame.style.setProperty('--my', '-9999px');
-        });
+          const touch = e.touches[0];
+          updateMask(touch.clientX - r.left, touch.clientY - r.top);
+        }, {passive:true});
+        frame.addEventListener('touchmove', e => {
+          const r = frame.getBoundingClientRect();
+          const touch = e.touches[0];
+          updateMask(touch.clientX - r.left, touch.clientY - r.top);
+        }, {passive:true});
+        // On touch end, we leave the lens visible at the last touched spot to give feedback.
       });
 
-      /* filmstrip: vertical scroll -> horizontal walk */
+      /* Filmstrip: Responsive Handling */
       const filmSection = document.querySelector('.film-section');
       const filmTrack = document.getElementById('filmTrack');
       if (filmSection && filmTrack) {
         let ticking = false;
         function updateFilm() {
+          // If mobile, reset transform and let native CSS scroll handle it.
+          if (window.innerWidth <= 768) {
+            filmTrack.style.transform = 'none';
+            return;
+          }
+          // PC Parallax Scroll
           const rect = filmSection.getBoundingClientRect();
           const total = filmSection.offsetHeight - window.innerHeight;
           let p = total > 0 ? (-rect.top) / total : 0;
@@ -972,7 +1033,7 @@
         }
         document.addEventListener('scroll', () => { if (!ticking) { requestAnimationFrame(updateFilm); ticking = true; } }, {passive:true});
         window.addEventListener('resize', updateFilm);
-        updateFilm();
+        updateFilm(); // Initial call
       }
     })();
   </script>
