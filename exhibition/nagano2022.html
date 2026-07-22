@@ -45,7 +45,7 @@
       --jp:          'Noto Serif JP', serif;
       --ease-expo:   cubic-bezier(0.16, 1, 0.3, 1);
       --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
-      --px:          clamp(20px, 6vw, 80px); /* 全体の左右余白を調整 */
+      --px:          clamp(20px, 6vw, 80px);
       
       /* Theme Colors */
       --red:         #8c3029;
@@ -216,7 +216,6 @@
     .mobile-nav-links .en { font-family: var(--en); font-size: 1.1rem; letter-spacing: 0.25em; color: var(--text); text-transform: uppercase; transition: color 0.3s ease; }
     .mobile-nav-links .ja { display: block; font-family: var(--jp); font-size: 0.7rem; letter-spacing: 0.1em; color: var(--text-dim); margin-top: 6px; font-weight: 300; transition: color 0.3s ease; }
 
-    /* Contactボタンのみハイライト */
     .mobile-nav-links li.contact-btn { margin-top: 0.5rem; }
     .mobile-nav-links li.contact-btn a { background: rgba(203, 191, 176, 0.08); border-color: rgba(203, 191, 176, 0.3); }
     .mobile-nav-links li.contact-btn a .ja { color: var(--accent); }
@@ -400,7 +399,7 @@
     .perceive-hint span:first-child { width: 24px; height: 24px; border-radius: 50%; border: 0.5px solid var(--text-dim); flex-shrink:0; position: relative; }
     .perceive-hint span:first-child::after { content:''; position: absolute; top:50%; left:50%; transform:translate(-50%,-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--text-dim); }
 
-    /* DUO SPLIT & ASYM BLOCKS (PCバランスの劇的改善) */
+    /* DUO SPLIT & ASYM BLOCKS */
     .duo-split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 4vw, 80px); margin: clamp(60px,12vh,140px) 0; }
     .duo-split figure { position: relative; aspect-ratio: 4/5; overflow: hidden; background: var(--bg2); margin:0; cursor: pointer; border: 0.5px solid var(--border); border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
     .duo-split figure img { width:100%; height:100%; object-fit: cover; transition: transform 1.6s var(--ease-expo), filter 1.6s var(--ease-expo); filter: saturate(0.85) brightness(0.8); }
@@ -426,8 +425,8 @@
     .cap-line span.ja { font-family: var(--jp); font-weight: 300; }
 
     /* ============================================================
-       FILMSTRIP (03 — Vertical Strokes) の一新
-       PC・スマホ共通のネイティブ横スクロール ＋ PCでのホイール操作対応
+       FILMSTRIP (03 — Vertical Strokes) - スクロールトラップを完全撤廃
+       ※マウスドラッグで横にスライド＆美しいカスタムスクロールバー
     ================================================================ */
     .film-section { 
       position: relative; 
@@ -448,26 +447,51 @@
     .film-track {
       display: flex; 
       gap: clamp(24px, 4vw, 60px); 
-      padding: 0 var(--px) 60px var(--px); /* 下部に余白を持たせる */
+      padding: 0 var(--px) 40px var(--px); /* スクロールバー用の余白 */
       overflow-x: auto; 
-      scroll-snap-type: x mandatory; 
-      scroll-behavior: smooth;
+      overflow-y: hidden;
+      scroll-snap-type: none; /* PCでのドラッグ時のカクつきを防止 */
       -webkit-overflow-scrolling: touch;
-      align-items: center; /* 中央寄せベース */
+      align-items: center; 
+      cursor: grab; /* PCでのドラッグ可能を明示 */
+      user-select: none; /* ドラッグ中のテキスト選択を防止 */
+      -webkit-user-select: none;
     }
-    /* 最後のアイテムの右側に十分な余白を確保するための疑似要素 */
-    .film-track::after {
-      content: '';
-      flex: 0 0 calc(var(--px) - clamp(24px, 4vw, 60px)); 
-      display: block;
-    }
-    .film-track::-webkit-scrollbar { display: none; }
+    .film-track.is-grabbing { cursor: grabbing; }
     
-    .film-card { flex-shrink: 0; cursor: pointer; scroll-snap-align: center; }
-    .film-card img { display:block; filter: saturate(0.85) brightness(0.8); border: 0.5px solid var(--border); border-radius: 4px; transition: filter 0.5s ease; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    .film-track::after {
+      content: ''; flex: 0 0 calc(var(--px) - clamp(24px, 4vw, 60px)); display: block;
+    }
+    
+    /* PC向けの美しいカスタムスクロールバー */
+    .film-track::-webkit-scrollbar { height: 8px; }
+    .film-track::-webkit-scrollbar-track {
+      background: rgba(232, 228, 219, 0.05);
+      border-radius: 10px;
+      margin: 0 var(--px);
+    }
+    .film-track::-webkit-scrollbar-thumb {
+      background: rgba(203, 191, 176, 0.3);
+      border-radius: 10px;
+      border: 1px solid rgba(8, 8, 8, 0.6);
+    }
+    .film-track::-webkit-scrollbar-thumb:hover { background: rgba(203, 191, 176, 0.6); }
+    
+    /* スマホ向けの上書き */
+    @media (max-width: 768px) {
+      .film-track { scroll-snap-type: x mandatory; padding-bottom: 20px; }
+      .film-card { scroll-snap-align: center; }
+      .film-track::-webkit-scrollbar { display: none; }
+    }
+
+    .film-card { flex-shrink: 0; cursor: pointer; }
+    .film-card img { 
+      display:block; filter: saturate(0.85) brightness(0.8); border: 0.5px solid var(--border); 
+      border-radius: 4px; transition: filter 0.5s ease; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      pointer-events: none; /* 画像自体のネイティブドラッグを防止し、JSドラッグを優先 */
+    }
     .film-card:hover img { filter: saturate(1.05) brightness(1); }
     
-    /* PC・スマホで最適なサイズになるようにclampを調整 */
     .film-card:nth-child(1) { width: clamp(220px, 25vw, 360px); }
     .film-card:nth-child(1) img { aspect-ratio: 3/4.6; object-fit:cover; }
     
@@ -485,7 +509,7 @@
     
     .film-cap { margin-top: 18px; font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.22em; color: var(--text-dim); text-transform: uppercase; }
 
-    /* 横スクロールのヒントUI (PC/スマホ共通でスタイリッシュに) */
+    /* 横スクロールのヒントUI */
     .film-hint-wrapper {
       position: absolute;
       bottom: 25px;
@@ -513,6 +537,33 @@
     .film-hint-wrapper.is-hidden { opacity: 0; }
     .film-hint-wrapper::after { content: '→'; font-size: 1rem; font-family: sans-serif; }
     @keyframes swipePulse { 0% { transform: translateX(0); } 50% { transform: translateX(12px); } 100% { transform: translateX(0); } }
+
+    /* ============================================================
+       05 THRESHOLD EPILOGUE (充実したエピローグ)
+    ================================================================ */
+    .threshold-epilogue {
+      margin-top: clamp(60px, 10vh, 100px);
+      padding: clamp(40px, 8vh, 60px) clamp(30px, 5vw, 60px);
+      background: rgba(255, 255, 255, 0.015);
+      border-left: 2px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      position: relative;
+    }
+    .threshold-epilogue::after {
+      content: ''; position: absolute; bottom: 0; left: -2px; width: 2px; height: 30%;
+      background: var(--blue); opacity: 0.6;
+    }
+    .threshold-epilogue h3 {
+      font-family: var(--jp); font-weight: 300; font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      margin-bottom: 1.4rem; letter-spacing: 0.05em; color: var(--text); line-height: 1.5;
+    }
+    .threshold-epilogue p {
+      font-size: clamp(0.9rem, 1.5vw, 0.95rem); font-weight: 300; line-height: 2.3;
+      color: var(--text-muted); margin-bottom: 1.5rem; letter-spacing: 0.06em; text-align: justify;
+    }
+    .threshold-epilogue p:last-child { margin-bottom: 0; }
 
     /* PULL QUOTE */
     .quote-block { padding: clamp(6rem,12vh,12rem) var(--px); text-align:center; position:relative; border-bottom: 0.5px solid var(--border); }
@@ -639,7 +690,6 @@
     @media (max-width: 768px) {
       .bg-kanji { font-size: 40vw !important; }
       .blob-frame { border-radius: 40px; }
-      /* スマホでは2列レイアウトを1列に */
       .duo-split { grid-template-columns: 1fr; }
     }
   </style>
@@ -811,7 +861,6 @@
         </div>
         <p class="sec-desc reveal">展示の核となる小部屋。垂直に伸びる画面の中で、動脈のような紅と静脈のような藍がせめぎ合う。向かい合う壁の連作は互いを映す鏡のように呼応し、鑑賞者はその真ん中で二つの体温に挟まれる。</p>
 
-        <!-- Duo Split デザインの大幅な改善（余白と枠線の調整） -->
         <div class="duo-split reveal">
           <figure><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (2).JPG" alt="覚知ka 紅と藍の部屋 左壁の連作" loading="lazy"><figcaption>紅 — Pulse</figcaption></figure>
           <figure><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (3).JPG" alt="覚知ka 紅と藍の部屋 中央壁面" loading="lazy"><figcaption>藍 — Vein</figcaption></figure>
@@ -832,7 +881,7 @@
       </div>
     </section>
 
-    <!-- ============== 03 垂直の筆触 / FILMSTRIP (完全リニューアル) ============== -->
+    <!-- ============== 03 垂直の筆触 / FILMSTRIP (バグを完全解消し、快適に操作可能) ============== -->
     <section class="film-section tone-a" id="forest">
       <div class="container" style="max-width: 100%;">
         <div class="film-heading reveal is-visible">
@@ -849,7 +898,7 @@
         </div>
         
         <div class="film-hint-wrapper" id="filmHint">
-          <span class="pc-only">Scroll / Drag</span>
+          <span class="pc-only">Drag or Scroll</span>
           <span class="sp-only">Swipe to explore</span>
         </div>
       </div>
@@ -883,19 +932,24 @@
       </div>
     </section>
 
-    <!-- ============== 05 扉の先 / THRESHOLD ============== -->
+    <!-- ============== 05 扉の先 / THRESHOLD (充実したエピローグ) ============== -->
     <section class="section tone-a section-tilt" id="threshold">
       <div class="container">
         <div class="reveal">
           <p class="section-label" style="color:var(--blue);">05 — Threshold</p>
           <h2 class="section-heading">扉の先に、まだ知らない部屋がある</h2>
         </div>
-        <p class="sec-desc reveal">会場の奥、開け放たれた扉の向こうには、また別の生活空間が続いている。展示はここで終わるのではなく、日常へとなだらかに溶け出していく。覚知は美術館の中だけで起きるものではない、というささやかな宣言。</p>
+        <p class="sec-desc reveal">会場の奥、開け放たれた扉の向こうには、また別の生活空間が続いている。展示はここで終わるのではなく、日常へとなだらかに溶け出していく。</p>
 
-        <!-- Threshold: Duo Split デザインの大幅な改善 -->
         <div class="duo-split reveal" style="margin-top: 2rem;">
           <figure style="aspect-ratio:5/6;"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (8).JPG" alt="覚知ka 開かれた扉と先の空間" loading="lazy"><figcaption>境界 — Half-open</figcaption></figure>
           <figure style="aspect-ratio:5/6;"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (9).JPG" alt="覚知ka 出口付近の展示風景" loading="lazy"><figcaption>接続 — Beyond</figcaption></figure>
+        </div>
+
+        <div class="threshold-epilogue reveal">
+          <h3>覚知は、美術館の中だけで起きるものではない</h3>
+          <p>キャンバスの上の絵の具が、単なる物質から「光」や「温度」へと変わる瞬間。それは特別な場所でのみ起こる現象ではなく、私たちの日常のすぐそばに潜んでいる。</p>
+          <p>本展を後にし、いつもの街を歩くとき。空の色や、すれ違う人の足音、あるいは自分自身の呼吸の中に、ほんの少しでも「意味になる前の輪郭」を感じ取ってもらえたなら、展示はそこでもう一度、静かに幕を開ける。</p>
         </div>
 
         <div class="cap-line reveal"><span class="ja">展示風景 ／ 扉の先 — 日常への接続</span><span>Fig. 08 — 09</span></div>
@@ -1039,11 +1093,67 @@
         revealEls.forEach(el => io.observe(el));
       } else { revealEls.forEach(el => el.classList.add('is-visible')); }
 
+      /* ==========================================
+         Filmstrip: PCドラッグ対応（完璧版）
+      ========================================== */
+      const filmTrack = document.getElementById('filmTrack');
+      const filmHint = document.getElementById('filmHint');
+      let isDraggingFilm = false; // ドラッグ中かどうかのフラグ
+      
+      if (filmTrack) {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+        
+        // PCで画像をドラッグしたときにページ全体が動いたり、画像が引っ張られたりするのを防ぐ
+        filmTrack.addEventListener('mousedown', (e) => {
+          isDown = true;
+          isDraggingFilm = false;
+          filmTrack.classList.add('is-grabbing');
+          startX = e.pageX - filmTrack.offsetLeft;
+          scrollLeft = filmTrack.scrollLeft;
+        });
+        
+        filmTrack.addEventListener('mouseleave', () => {
+          isDown = false;
+          filmTrack.classList.remove('is-grabbing');
+        });
+        
+        filmTrack.addEventListener('mouseup', () => {
+          isDown = false;
+          filmTrack.classList.remove('is-grabbing');
+        });
+        
+        filmTrack.addEventListener('mousemove', (e) => {
+          if (!isDown) return;
+          // ここに e.preventDefault() を入れると稀にスクロールが阻害されるため、
+          // 代わりにCSS側でユーザーセレクトと画像ドラッグを禁止して対応しています。
+          const x = e.pageX - filmTrack.offsetLeft;
+          const walk = (x - startX) * 1.5; // ドラッグ速度の調整
+          if (Math.abs(walk) > 5) {
+            isDraggingFilm = true; // 5px以上動いたらドラッグと判定
+          }
+          filmTrack.scrollLeft = scrollLeft - walk;
+        });
+
+        // ユーザーが少しでも横にスクロールしたらヒントをフェードアウト
+        filmTrack.addEventListener('scroll', () => {
+          if(filmHint && filmTrack.scrollLeft > 30) {
+            filmHint.classList.add('is-hidden');
+          }
+        }, { passive: true });
+      }
+
       /* Lightbox */
       const lightbox = document.getElementById('lightbox');
       const lbImg = document.getElementById('lbImg');
       document.querySelectorAll('.duo-split figure, .blob-frame, .film-card').forEach(trigger => {
-        trigger.addEventListener('click', () => {
+        trigger.addEventListener('click', (e) => {
+          // ギャラリー領域で「ドラッグ中」だった場合は、クリック判定をキャンセルする
+          if (trigger.classList.contains('film-card') && isDraggingFilm) {
+            e.preventDefault();
+            return;
+          }
           const img = trigger.tagName === 'IMG' ? trigger : trigger.querySelector('img');
           if (img && img.src) {
             lbImg.src = img.src;
@@ -1052,6 +1162,7 @@
           }
         });
       });
+      
       lightbox.addEventListener('click', () => {
         lightbox.classList.remove('active');
         document.body.classList.remove('no-scroll');
@@ -1087,7 +1198,7 @@
         });
       }
 
-      /* Perceive-frame (Lens) */
+      /* Perceive-frame (Lens) - スマホスクロールロック解除 */
       document.querySelectorAll('.perceive-frame').forEach(frame => {
         const updateMask = (x, y) => {
           frame.style.setProperty('--mx', x + 'px');
@@ -1100,45 +1211,21 @@
           });
           frame.addEventListener('mouseleave', () => { updateMask(-9999, -9999); });
         }
+        
         frame.addEventListener('touchstart', e => {
           const r = frame.getBoundingClientRect();
           const touch = e.touches[0];
           updateMask(touch.clientX - r.left, touch.clientY - r.top);
         }, {passive:true});
+        
         frame.addEventListener('touchmove', e => {
-          e.preventDefault(); 
+          // 【重要】ここで e.preventDefault() を実行するとスマホの縦スクロールが止まってしまうため削除しました。
+          // これにより、画面をなぞってスクロールしながらでもレンズが追従するようになります。
           const r = frame.getBoundingClientRect();
           const touch = e.touches[0];
           updateMask(touch.clientX - r.left, touch.clientY - r.top);
-        }, {passive: false});
+        }, {passive: true}); // passive: true に戻し、ブラウザのスクロールを許可
       });
-
-      /* Filmstrip: ネイティブ横スクロール ＋ PCマウスホイール対応 */
-      const filmTrack = document.getElementById('filmTrack');
-      const filmHint = document.getElementById('filmHint');
-      
-      if (filmTrack) {
-        // PC向け：縦スクロール（ホイール）を横スクロールに変換
-        filmTrack.addEventListener('wheel', (e) => {
-          // Y軸方向のスクロールがある場合のみ処理
-          if (e.deltaY !== 0) {
-            const maxScrollLeft = filmTrack.scrollWidth - filmTrack.clientWidth;
-            // 左右の端に到達していない場合はスクロールを横に流す
-            if ((e.deltaY > 0 && filmTrack.scrollLeft < maxScrollLeft) || 
-                (e.deltaY < 0 && filmTrack.scrollLeft > 0)) {
-              e.preventDefault(); // 画面全体の縦スクロールを止める
-              filmTrack.scrollLeft += e.deltaY;
-            }
-          }
-        }, { passive: false });
-
-        // スクロールされたらヒントをフェードアウト
-        filmTrack.addEventListener('scroll', () => {
-          if(filmHint && filmTrack.scrollLeft > 30) {
-            filmHint.classList.add('is-hidden');
-          }
-        }, { passive: true });
-      }
     })();
   </script>
 </body>
