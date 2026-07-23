@@ -284,7 +284,7 @@
       opacity: 0; 
       visibility: hidden; 
       transition-delay: 0s;
-      pointer-events: none;
+      pointer-events: none; /* 隠れたらタップ不可に */
     }
     .menu-scroll-hint::after {
       content: '↓';
@@ -499,7 +499,7 @@
     .cap-line span.ja { font-family: var(--jp); font-weight: 300; }
 
     /* ============================================================
-       FILMSTRIP (03 — Vertical Strokes)
+       FILMSTRIP (03 — Vertical Strokes) - スクロール物理計算の最適化
     ================================================================ */
     .film-section { 
       position: relative; 
@@ -520,7 +520,8 @@
     .film-track {
       display: flex; 
       gap: clamp(24px, 4vw, 60px); 
-      padding: 0 var(--px) 40px var(--px); 
+      /* 右余白バグを回避するため padding ではなく margin で制御します */
+      padding: 0 0 40px 0; 
       overflow-x: auto; 
       overflow-y: hidden;
       scroll-snap-type: none;
@@ -534,10 +535,6 @@
     }
     .film-track.is-grabbing { cursor: grabbing; }
     
-    .film-track::after {
-      content: ''; flex: 0 0 calc(var(--px) - clamp(24px, 4vw, 60px)); display: block;
-    }
-    
     /* PC向けカスタムスクロールバー */
     .film-track::-webkit-scrollbar { height: 6px; }
     .film-track::-webkit-scrollbar-track { background: rgba(232, 228, 219, 0.03); margin: 0 var(--px); border-radius: 10px; }
@@ -547,11 +544,14 @@
     /* スマホ向け */
     @media (max-width: 768px) {
       .film-track { scroll-snap-type: x mandatory; padding-bottom: 20px; }
-      .film-card { scroll-snap-align: center; }
       .film-track::-webkit-scrollbar { display: none; }
     }
 
-    .film-card { flex-shrink: 0; cursor: pointer; transform: translateZ(0); }
+    /* 各カードの設定。両端のカードに画面端からのmarginを持たせることで端まで完璧にスクロール可能に */
+    .film-card { flex-shrink: 0; cursor: pointer; transform: translateZ(0); scroll-snap-align: center; }
+    .film-card:first-child { margin-left: var(--px); }
+    .film-card:last-child { margin-right: var(--px); }
+
     .film-card img { 
       display:block; filter: saturate(0.85) brightness(0.8); border: 0.5px solid var(--border); 
       border-radius: 4px; transition: filter 0.5s ease; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
@@ -578,7 +578,7 @@
     
     .film-cap { margin-top: 18px; font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.22em; color: var(--text-dim); text-transform: uppercase; }
 
-    /* 横スクロールのヒントUI（クリック可能に変更） */
+    /* 横スクロールのヒントUI（タップして完全に右端までスクロール） */
     .film-hint-wrapper {
       position: absolute; bottom: 25px; right: var(--px); display: flex; align-items: center; gap: 12px;
       background: rgba(203, 191, 176, 0.15); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -587,16 +587,13 @@
       animation: swipePulse 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; 
       transition: opacity 0.6s ease, background 0.3s ease; z-index: 10;
       box-shadow: 0 4px 16px rgba(0,0,0,0.3); transform: translateZ(0);
-      /* タップ可能に変更 */
-      pointer-events: auto;
-      cursor: pointer;
+      pointer-events: auto; cursor: pointer;
     }
     .film-hint-wrapper:hover, .film-hint-wrapper:active {
       background: rgba(203, 191, 176, 0.25);
     }
     .film-hint-wrapper.is-hidden { 
-      opacity: 0; 
-      pointer-events: none; /* 消えたらタップ不可に */
+      opacity: 0; pointer-events: none; 
     }
     .film-hint-wrapper::after { content: '→'; font-size: 1rem; font-family: sans-serif; }
     @keyframes swipePulse { 0% { transform: translate3d(0,0,0); } 50% { transform: translate3d(12px,0,0); } 100% { transform: translate3d(0,0,0); } }
@@ -800,7 +797,7 @@
       <li class="contact-btn"><a href="https://sh012da.github.io/sh01/contact.html"><span class="en">Contact</span><span class="ja">お問い合わせ</span></a></li>
     </ul>
 
-    <!-- メニュー内のスクロールヒント -->
+    <!-- メニュー内のスクロールヒント（タップ可能・完全スクロール対応） -->
     <div class="menu-scroll-hint" id="menuScrollHint" aria-label="Scroll down">
       <span class="en">Scroll</span>
     </div>
@@ -943,7 +940,7 @@
       </div>
     </section>
 
-    <!-- ============== 03 垂直の筆触 / FILMSTRIP ============== -->
+    <!-- ============== 03 垂直の筆触 / FILMSTRIP (物理的にも最後までスクロール可能) ============== -->
     <section class="film-section tone-a" id="forest">
       <div class="container" style="max-width: 100%;">
         <div class="film-heading reveal is-visible">
@@ -959,7 +956,7 @@
           <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (7).JPG" alt="覚知ka 垂直の筆触 別角度" loading="lazy"><p class="film-cap">05 — 灰、声にならない震え</p></div>
         </div>
         
-        <!-- クリックで横スクロールするヒントボタン -->
+        <!-- クリックで一番端っこ（一番右）まで横スクロールするヒントボタン -->
         <div class="film-hint-wrapper" id="filmHint" aria-label="Scroll right">
           <span class="pc-only">Drag or Click</span>
           <span class="sp-only">Tap to explore</span>
@@ -1071,6 +1068,7 @@
       const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
       const menuScrollHint = document.getElementById('menuScrollHint');
 
+      // メニュー内をスクロールしたらヒントを非表示に
       if (mobileMenuOverlay && menuScrollHint) {
         mobileMenuOverlay.addEventListener('scroll', () => {
           if (mobileMenuOverlay.scrollTop > 20) {
@@ -1078,8 +1076,9 @@
           }
         }, { passive: true });
 
+        // ヒントボタンをタップした際に、メニューの一番下までスムーズにスクロールさせる
         menuScrollHint.addEventListener('click', () => {
-          mobileMenuOverlay.scrollBy({ top: window.innerHeight * 0.4, behavior: 'smooth' });
+          mobileMenuOverlay.scrollTo({ top: mobileMenuOverlay.scrollHeight, behavior: 'smooth' });
         });
       }
 
@@ -1087,6 +1086,7 @@
         const isOpen = document.body.classList.toggle('menu-open');
         document.body.classList.toggle('no-scroll');
         
+        // メニューを開くたびにスクロール位置とヒントをリセット
         if (isOpen && mobileMenuOverlay) {
           mobileMenuOverlay.scrollTop = 0;
           if (menuScrollHint) menuScrollHint.classList.remove('is-hidden');
@@ -1193,10 +1193,10 @@
         let scrollLeft;
         let dragRAF;
         
-        // ヒントボタンをタップした際の横スクロール機能を追加
+        // ヒントボタンをタップした際に、ギャラリーの一番端っこ（右端）までスムーズにスクロールさせる
         if (filmHint) {
           filmHint.addEventListener('click', () => {
-            filmTrack.scrollBy({ left: window.innerWidth * 0.4, behavior: 'smooth' });
+            filmTrack.scrollTo({ left: filmTrack.scrollWidth, behavior: 'smooth' });
             filmHint.classList.add('is-hidden');
           });
         }
