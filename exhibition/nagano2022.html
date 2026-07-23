@@ -242,7 +242,7 @@
     body.menu-open .mobile-nav-links li:nth-child(6) a { transition-delay: 0.35s; }
     body.menu-open .mobile-nav-links li:nth-child(7) a { transition-delay: 0.4s; }
 
-    /* メニュー内スクロールヒントUI (タップ可能に変更) */
+    /* メニュー内スクロールヒントUI */
     .menu-scroll-hint {
       position: fixed;
       bottom: clamp(20px, 4vh, 40px);
@@ -261,7 +261,6 @@
       letter-spacing: 0.2em;
       color: var(--fg);
       text-transform: uppercase;
-      /* ここを変更：タップを許可し、カーソルをポインターに */
       pointer-events: auto;
       cursor: pointer;
       opacity: 0;
@@ -285,7 +284,7 @@
       opacity: 0; 
       visibility: hidden; 
       transition-delay: 0s;
-      pointer-events: none; /* 隠れたらタップ不可に */
+      pointer-events: none;
     }
     .menu-scroll-hint::after {
       content: '↓';
@@ -579,16 +578,26 @@
     
     .film-cap { margin-top: 18px; font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.22em; color: var(--text-dim); text-transform: uppercase; }
 
-    /* 横スクロールのヒントUI */
+    /* 横スクロールのヒントUI（クリック可能に変更） */
     .film-hint-wrapper {
       position: absolute; bottom: 25px; right: var(--px); display: flex; align-items: center; gap: 12px;
-      background: rgba(203, 191, 176, 0.1); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      border: 0.5px solid rgba(203, 191, 176, 0.3); padding: 10px 20px; border-radius: 40px;
+      background: rgba(203, 191, 176, 0.15); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border: 0.5px solid rgba(203, 191, 176, 0.4); padding: 10px 20px; border-radius: 40px;
       font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.2em; color: var(--fg); text-transform: uppercase;
-      animation: swipePulse 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; pointer-events: none; transition: opacity 0.6s ease; z-index: 10;
+      animation: swipePulse 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; 
+      transition: opacity 0.6s ease, background 0.3s ease; z-index: 10;
       box-shadow: 0 4px 16px rgba(0,0,0,0.3); transform: translateZ(0);
+      /* タップ可能に変更 */
+      pointer-events: auto;
+      cursor: pointer;
     }
-    .film-hint-wrapper.is-hidden { opacity: 0; }
+    .film-hint-wrapper:hover, .film-hint-wrapper:active {
+      background: rgba(203, 191, 176, 0.25);
+    }
+    .film-hint-wrapper.is-hidden { 
+      opacity: 0; 
+      pointer-events: none; /* 消えたらタップ不可に */
+    }
     .film-hint-wrapper::after { content: '→'; font-size: 1rem; font-family: sans-serif; }
     @keyframes swipePulse { 0% { transform: translate3d(0,0,0); } 50% { transform: translate3d(12px,0,0); } 100% { transform: translate3d(0,0,0); } }
 
@@ -712,6 +721,14 @@
       .back-to-top:hover .b2t-text { color: var(--bg); transform: translateY(-2px); }
       .back-to-top:hover .b2t-progress-value { stroke: var(--fg); }
     }
+    
+    /* メニュー展開時はトップボタンを完全に非表示にする */
+    body.menu-open .back-to-top {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      transform: translate3d(0, 20px, 0) !important;
+      pointer-events: none !important;
+    }
 
     /* RESPONSIVE OVERRIDES */
     @media (max-width: 1024px) {
@@ -721,7 +738,6 @@
       .duo-split { grid-template-columns: 1fr; gap: 2.5rem; }
       .duo-split figure { aspect-ratio: 4/5; }
       .venue-row { grid-template-columns: 1fr; gap: 1.2rem; }
-      .perceive-hint { margin-top: 12px; }
     }
     @media (max-width: 768px) {
       .bg-kanji { font-size: 40vw !important; }
@@ -784,7 +800,7 @@
       <li class="contact-btn"><a href="https://sh012da.github.io/sh01/contact.html"><span class="en">Contact</span><span class="ja">お問い合わせ</span></a></li>
     </ul>
 
-    <!-- メニュー内のスクロールヒント（タップ可能） -->
+    <!-- メニュー内のスクロールヒント -->
     <div class="menu-scroll-hint" id="menuScrollHint" aria-label="Scroll down">
       <span class="en">Scroll</span>
     </div>
@@ -836,14 +852,12 @@
             <div class="row"><span class="k">Artist</span><span class="v">津田翔一 / Shoichi Tsuda</span></div>
             <div class="row"><span class="k">Title</span><span class="v">油彩画展 ～＋覚知ka～</span></div>
             <div class="row"><span class="k">Venue</span><span class="v">長野県立美術館</span></div>
-            <!-- 会期をスタイリッシュに表現 -->
             <div class="row">
               <span class="k">Period</span>
               <span class="v" style="font-family: var(--en); font-size: 1.15em; letter-spacing: 0.08em;">
                 <span style="font-size: 0.75em; opacity: 0.6; margin-right: 2px;">2022.</span>07<span style="color: var(--accent); margin: 0 6px;">&mdash;</span>08
               </span>
             </div>
-            <!-- メディウムを油彩のみに -->
             <div class="row"><span class="k">Medium</span><span class="v">油彩</span></div>
           </div>
         </div>
@@ -945,9 +959,10 @@
           <div class="film-card"><img src="https://sh012da.github.io/sh01/images/exhi-nagano2022/覚知 (7).JPG" alt="覚知ka 垂直の筆触 別角度" loading="lazy"><p class="film-cap">05 — 灰、声にならない震え</p></div>
         </div>
         
-        <div class="film-hint-wrapper" id="filmHint">
-          <span class="pc-only">Drag to explore</span>
-          <span class="sp-only">Swipe to explore</span>
+        <!-- クリックで横スクロールするヒントボタン -->
+        <div class="film-hint-wrapper" id="filmHint" aria-label="Scroll right">
+          <span class="pc-only">Drag or Click</span>
+          <span class="sp-only">Tap to explore</span>
         </div>
       </div>
     </section>
@@ -1056,7 +1071,6 @@
       const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
       const menuScrollHint = document.getElementById('menuScrollHint');
 
-      // メニュー内をスクロールしたらヒントを非表示に
       if (mobileMenuOverlay && menuScrollHint) {
         mobileMenuOverlay.addEventListener('scroll', () => {
           if (mobileMenuOverlay.scrollTop > 20) {
@@ -1064,7 +1078,6 @@
           }
         }, { passive: true });
 
-        // ヒントボタンをタップした際に、メニュー自体を下へスムーズにスクロールさせる
         menuScrollHint.addEventListener('click', () => {
           mobileMenuOverlay.scrollBy({ top: window.innerHeight * 0.4, behavior: 'smooth' });
         });
@@ -1074,7 +1087,6 @@
         const isOpen = document.body.classList.toggle('menu-open');
         document.body.classList.toggle('no-scroll');
         
-        // メニューを開くたびにスクロール位置とヒントをリセット
         if (isOpen && mobileMenuOverlay) {
           mobileMenuOverlay.scrollTop = 0;
           if (menuScrollHint) menuScrollHint.classList.remove('is-hidden');
@@ -1181,6 +1193,14 @@
         let scrollLeft;
         let dragRAF;
         
+        // ヒントボタンをタップした際の横スクロール機能を追加
+        if (filmHint) {
+          filmHint.addEventListener('click', () => {
+            filmTrack.scrollBy({ left: window.innerWidth * 0.4, behavior: 'smooth' });
+            filmHint.classList.add('is-hidden');
+          });
+        }
+
         filmTrack.addEventListener('mousedown', (e) => {
           isDown = true;
           isDraggingFilm = false;
@@ -1255,7 +1275,7 @@
       if (fine) {
         document.body.classList.add('cursor-ready');
         
-        document.querySelectorAll('a, button, .blob-frame, .duo-split figure, .film-card').forEach(el => {
+        document.querySelectorAll('a, button, .blob-frame, .duo-split figure, .film-card, .film-hint-wrapper, .menu-scroll-hint').forEach(el => {
           el.addEventListener('mouseenter', () => ring && ring.classList.add('hover'));
           el.addEventListener('mouseleave', () => ring && ring.classList.remove('hover'));
         });
