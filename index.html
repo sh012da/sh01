@@ -278,13 +278,13 @@
     }
 
     /* ════════════════════════════════════════
-        HERO (svhを使用しスクロールぶれを防止)
+        HERO 
     ════════════════════════════════════════ */
     .hero {
       position: relative;
       padding: 12rem 2.5rem 7rem;
       border-bottom: 0.5px solid var(--border); 
-      min-height: 100svh; /* vhからsvhに変更 */
+      min-height: 100svh; 
       display: flex; flex-direction: column;
       justify-content: center; overflow: hidden;
     }
@@ -294,11 +294,11 @@
       object-fit: cover; object-position: center 30%; 
       opacity: 0; transform: scale(1);
       transition: opacity 2.5s ease-in-out, transform 2.5s ease-in-out; 
-      will-change: opacity; /* スマホ負担減のためtransformを外す */
+      will-change: opacity;
     }
     .hero-slide.active { 
       opacity: 1; 
-      transform: scale(1.05); /* 拡大率を抑えめにしてパフォーマンス向上 */
+      transform: scale(1.05);
       transition: opacity 2.5s ease-in-out, transform 10s linear; 
     }
     .hero-overlay { position: absolute; inset: 0; z-index: 1;
@@ -349,14 +349,18 @@
 
     .hero-body {
       font-size: clamp(13px, 1.2vw + 10px, 15px); line-height: 2;
-      color: var(--text-muted); opacity: 0; animation: fadeUp 0.9s var(--ease-expo) 2.4s forwards;
+      color: var(--text-muted); opacity: 0; 
+      /* よりゆったりと表示させるためにディレイとデュレーションを延長 */
+      animation: fadeUp 1.8s var(--ease-expo) 3.6s forwards;
       letter-spacing: 0.04em; min-height: 3em;
     }
     .hero-scroll {
       margin-top: 5rem; display: flex; align-items: center; gap: 0.875rem;
       font-family: var(--en); font-size: clamp(0.5rem,1.5vw,0.65rem);
       letter-spacing: 0.22em; color: rgba(232,228,219,0.4); text-transform: uppercase;
-      opacity: 0; animation: fadeIn 1.2s ease 2.8s forwards;
+      opacity: 0; 
+      /* 本文の表示完了に合わせてスクロールの出現を遅らせる */
+      animation: fadeIn 1.5s ease 4.8s forwards;
     }
     .hero-scroll-line { width: 36px; height: 0.5px; background: rgba(232,228,219,0.25); position: relative; overflow: hidden;}
     .hero-scroll-line::after {
@@ -385,7 +389,8 @@
       text-decoration: none;
       text-align: left;
       opacity: 0;
-      animation: fadeUp 0.9s var(--ease-expo) 3.0s forwards;
+      /* お知らせも最後にゆったりとフェードインさせる */
+      animation: fadeUp 1.2s var(--ease-expo) 5.2s forwards;
       transition: transform 0.6s var(--ease-out-back), background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
       max-width: calc(100% - 3rem);
     }
@@ -444,7 +449,6 @@
       background-color: var(--bg);
       background-image: linear-gradient(rgba(8,8,8,0.6),rgba(8,8,8,0.75)),url('images/【津田翔一】展示の様子１.jpg');
       background-size: cover; background-position: center; 
-      /* PC環境のみfixedを残し、カクつきを防ぐ */
       background-attachment: fixed;
       overflow: hidden; display: flex; flex-direction: column;
       align-items: center; text-align: center;
@@ -467,13 +471,12 @@
     .statement-bg-word.word2 { top: 60%; font-size: 22vw; animation-delay: -7s; }
     #statement > * { position: relative; z-index: 1; }
 
-    /* Statement見出しをスタイリッシュに背景に馴染ませる */
     .s-eyebrow {
       display: inline-flex; align-items: center; justify-content: center; gap: 2rem;
       margin-bottom: 8rem;
       font-family: var(--en); font-size: clamp(0.7rem, 2vw, 0.85rem);
       letter-spacing: 0.8em; 
-      color: rgba(232, 228, 219, 0.12); /* ギリギリ可読性があるうっすらとした色 */
+      color: rgba(232, 228, 219, 0.12);
       text-transform: uppercase;
       text-shadow: 0 4px 24px rgba(0,0,0,0.8);
       user-select: none;
@@ -490,7 +493,7 @@
       position: relative;
       width: 100%; max-width: 1200px;
       margin: 0 auto 10rem; 
-      min-height: 120svh; /* vhからsvhに変更 */
+      min-height: 120svh; 
       display: block; text-align: center;
     }
     .opening-question, .opening-ito {
@@ -500,14 +503,14 @@
       position: sticky;
     }
     .opening-question {
-      top: 28svh; /* vhからsvhに変更 */
+      top: 28svh;
       z-index: 10;
       opacity: 0.15;
       transform: scale(0.98);
       pointer-events: none;
       transition: opacity 0.8s ease, filter 0.8s ease;
     }
-    .opening-ito { top: 54svh; /* vhからsvhに変更 */ z-index: 5; }
+    .opening-ito { top: 54svh; z-index: 5; }
 
     .concept-question {
       font-family: var(--jp);
@@ -565,16 +568,23 @@
     .concept-para:hover em { text-shadow: 0 0 24px rgba(203,191,176,0.5); }
 
     /* ════════════════════════════════════════
-        概念カード
+        概念カード (RE-DESIGNED / 均等グリッド・左詰め)
     ════════════════════════════════════════ */
     .concept-cards-wrap { width: 100%; max-width: 1400px; margin: 0 auto; }
-    .concept-tags { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; text-align: left; }
+    
+    /* 基本は等幅で左から右へ並べる（5枚ならPCで1行に収まるように5列） */
+    .concept-tags { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.5rem; text-align: left; }
+    
     .concept-tag {
-      background: rgba(255,255,255,0.015); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border: 0.5px solid rgba(232,228,219,0.08); padding: 3rem 2rem; border-radius: 4px;
-      transition: transform 0.6s var(--ease-out-back), background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
-      display: flex; flex-direction: column; height: 100%; position: relative; overflow: hidden;
+      background: rgba(20, 20, 18, 0.4); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(232,228,219,0.05); border-top: 1px solid rgba(232,228,219,0.15); border-left: 1px solid rgba(232,228,219,0.1);
+      /* 5列でも文字が詰まらないようパディングを最適化 */
+      padding: 2.5rem 1.8rem; border-radius: 8px;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+      display: flex; flex-direction: column; position: relative; overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
+
     .concept-tag::before {
       content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
       background: linear-gradient(to right, transparent, rgba(255,255,255,0.05), transparent);
@@ -583,25 +593,27 @@
     .concept-tag:hover::before { left: 150%; }
     .concept-tag:hover {
       transform: translateY(-12px) scale(1.02);
-      background: rgba(255,255,255,0.04);
-      border-color: rgba(203,191,176,0.3); box-shadow: 0 24px 48px rgba(0,0,0,0.5), 0 0 20px rgba(203,191,176,0.15);
+      background: rgba(30, 30, 28, 0.6);
+      border-color: rgba(203,191,176,0.3); box-shadow: 0 24px 48px rgba(0,0,0,0.7), 0 0 20px rgba(203,191,176,0.15);
     }
-    .concept-tag > * { position: relative; z-index: 1; }
-    .concept-tag-num {
-      position: relative;
-      font-family: var(--en);
-      font-size: 2.2rem; font-weight: 300; color: rgba(232,228,219,0.15);
-      line-height: 1; margin-bottom: 1.2rem; display: block; letter-spacing: -0.02em; transition: color 0.4s ease, transform 0.4s ease;
+
+    .concept-tag-bg-text {
+      /* 文字がカードの幅に対して大きすぎないようサイズ調整 */
+      position: absolute; top: -10px; right: -10px; font-family: var(--jp); font-size: 3.5rem;
+      font-weight: 200; color: rgba(232,228,219,0.03); line-height: 1; white-space: nowrap;
+      pointer-events: none; z-index: 0; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); user-select: none;
     }
-    .concept-tag:hover .concept-tag-num { color: rgba(203,191,176,0.7); transform: translateX(4px); }
-    .concept-tag-term { font-family: var(--jp); font-size: 1.2rem;
-      font-weight: 300; color: var(--text); margin-bottom: 0.5rem; letter-spacing: 0.05em; }
-    .concept-tag-en-label {
-      font-family: var(--en);
-      font-size: 11px; letter-spacing: 0.2em; color: rgba(232,228,219,0.55); text-transform: uppercase; margin-bottom: 1.5rem;
-    }
-    .concept-tag-desc { font-size: 13.5px; line-height: 1.9;
-      color: rgba(232,228,219,0.78); letter-spacing: 0.04em; }
+    .concept-tag:hover .concept-tag-bg-text { color: rgba(203,191,176,0.08); transform: scale(1.05) translate(-10px, 10px); }
+
+    .concept-tag-content { display: flex; flex-direction: column; height: 100%; z-index: 1; position: relative; }
+
+    .concept-tag-title { font-family: var(--jp); font-size: 1.25rem; font-weight: 300; color: var(--text); margin-bottom: 0.2rem; letter-spacing: 0.05em; transition: color 0.4s ease; }
+    .concept-tag:hover .concept-tag-title { color: var(--accent); }
+
+    .concept-tag-en-label { font-family: var(--en); font-size: 11px; letter-spacing: 0.2em; color: rgba(203,191,176,0.6); text-transform: uppercase; margin-bottom: 1.5rem; display: inline-block; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(203,191,176,0.2); }
+
+    .concept-tag-desc { font-size: 13.5px; line-height: 2; color: rgba(232,228,219,0.8); letter-spacing: 0.06em; margin-top: auto; }
+
 
     /* ════════════════════════════════════════
         REVEAL (アニメーション)
@@ -616,7 +628,6 @@
       opacity: 1; transform: translateY(0) scale(1); filter: blur(0); 
     }
 
-    /* ステートメント段落用 にじみ出るアニメーション */
     @keyframes inkRevealBlock {
       from { opacity: 0; transform: translateY(60px) scale(0.92); filter: blur(16px); }
       to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
@@ -643,7 +654,6 @@
     .works-video-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(13,13,11,0.4) 0%, rgba(13,13,11,0.95) 100%); }
     .works-content { position: relative; z-index: 1; max-width: 1600px; margin: 0 auto; }
 
-    /* WORKS HEADER RE-DESIGNED */
     .works-header { 
       display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 12rem; gap: 2rem; 
     }
@@ -1017,7 +1027,8 @@
       .tl-info { padding-top: 0; }
       .tl-desc { max-width: 100%; }
       
-      .concept-tags { grid-template-columns: repeat(2, 1fr); }
+      .concept-tags { grid-template-columns: repeat(3, 1fr); }
+
       .profile-goals-layout { grid-template-columns: 240px 1fr; }
       .goals-column { grid-column: 1/-1; flex-direction: row; gap: 2rem; }
       .goal-card { flex: 1; border-bottom: none; border-left: 0.5px solid var(--border); padding: 0 0 0 2rem; }
@@ -1036,7 +1047,7 @@
       nav { padding: 1rem 1.25rem; }
       nav.nav-scrolled { padding: 0.8rem 1.25rem; }
       
-      /* Morphing Hamburger Button Style: "Aura & Thread" (最適化版) */
+      /* Morphing Hamburger Button Style: "Aura & Thread" */
       .nav-hamburger {
         display: flex !important;
         align-items: center;
@@ -1057,32 +1068,29 @@
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
       }
 
-      /* 邪魔にならないようinsetを調整し、透明度を下げたオーラ */
       .nav-hamburger::before,
       .nav-hamburger::after {
         content: '';
         position: absolute;
-        inset: -2px; /* ★はみ出しを抑える */
+        inset: -2px;
         border-radius: 50%;
         border: 1px solid transparent;
         transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         pointer-events: none;
       }
 
-      /* 外側のオーラ（ゆっくり回転する光のリング：邪魔にならない程度に弱く） */
       .nav-hamburger::before {
-        border-top-color: rgba(203, 191, 176, 0.3); /* ★透明度低下 */
-        border-right-color: rgba(203, 191, 176, 0.05); /* ★透明度低下 */
+        border-top-color: rgba(203, 191, 176, 0.3);
+        border-right-color: rgba(203, 191, 176, 0.05);
         border-bottom-color: transparent;
         border-left-color: transparent;
-        animation: spinRing 6s linear infinite; /* ★回転をゆっくりに */
+        animation: spinRing 6s linear infinite;
       }
       
-      /* 内側のパルス（呼吸するようなエフェクト：柔らかく） */
       .nav-hamburger::after {
         inset: 0px;
         box-shadow: 0 0 0 rgba(203, 191, 176, 0);
-        animation: pulseRing 4s ease-in-out infinite alternate; /* ★ゆっくりに */
+        animation: pulseRing 4s ease-in-out infinite alternate;
       }
 
       @keyframes spinRing {
@@ -1099,7 +1107,6 @@
         transform: scale(0.9);
       }
 
-      /* ハンバーガーの線（いと）コンテナ */
       .hamburger-lines {
         position: relative;
         width: 24px;
@@ -1110,7 +1117,6 @@
         align-items: center;
       }
 
-      /* 個別の線 */
       .nav-hamburger .hamburger-lines span {
         display: block;
         height: 1.5px;
@@ -1119,10 +1125,9 @@
         border-radius: 2px;
         transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         transform-origin: center;
-        box-shadow: 0 0 4px rgba(203, 191, 176, 0.3); /* ★光を少し抑える */
+        box-shadow: 0 0 4px rgba(203, 191, 176, 0.3);
       }
 
-      /* 線の長さと動きの非対称性（アート感・前代未聞感） */
       .nav-hamburger .hamburger-lines span:nth-child(1) { width: 24px; }
       .nav-hamburger .hamburger-lines span:nth-child(2) {
         width: 14px;
@@ -1135,16 +1140,15 @@
         100% { transform: translateX(3px); width: 18px; opacity: 1; }
       }
 
-      /* メニュー展開時（.open）のスタイル */
       .nav-hamburger.open {
-        background: rgba(203, 191, 176, 0.1); /* ★少し控えめに */
+        background: rgba(203, 191, 176, 0.1);
         border-color: rgba(203, 191, 176, 0.4);
         box-shadow: 0 0 20px rgba(203, 191, 176, 0.2);
         transform: rotate(90deg);
       }
 
       .nav-hamburger.open::before {
-        border-top-color: rgba(232, 228, 219, 0.4); /* ★控えめに */
+        border-top-color: rgba(232, 228, 219, 0.4);
         border-right-color: rgba(232, 228, 219, 0.4);
         border-bottom-color: rgba(232, 228, 219, 0.4);
         border-left-color: rgba(232, 228, 219, 0.4);
@@ -1169,7 +1173,6 @@
         box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
       }
       
-      /* Perfected Overlay: 立体的で浮遊感のある前代未聞のモノリス空間 */
       .nav-links {
         display: flex !important;
         flex-direction: column !important;
@@ -1179,14 +1182,14 @@
         top: 0; left: 0;
         width: 100vw; height: 100dvh;
         background: radial-gradient(circle at center, rgba(15, 15, 12, 0.85) 0%, rgba(5, 5, 5, 0.98) 100%);
-        gap: 1.8rem; /* ★1.5remから1.8remに広げ、押しやすく美しい間隔に */
+        gap: 1.8rem;
         z-index: 998;
         padding: 2rem 1.5rem;
         backdrop-filter: blur(30px);
         -webkit-backdrop-filter: blur(30px);
         overflow: hidden;
         opacity: 0; visibility: hidden;
-        transform: scale(1.1) translateZ(-100px); /* 空間全体が奥から迫る */
+        transform: scale(1.1) translateZ(-100px);
         transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
         list-style: none;
         perspective: 1200px;
@@ -1198,17 +1201,15 @@
         transform: scale(1) translateZ(0);
       }
 
-      /* モノリスを包むliの3Dトランスフォーム（空間を切り裂いて現れる） */
       .nav-links li {
         width: 100%;
         max-width: 380px;
         opacity: 0;
-        transform: translateY(60px) rotateX(45deg) rotateY(15deg) translateZ(-200px); /* 最初は捻れて奥にある */
+        transform: translateY(60px) rotateX(45deg) rotateY(15deg) translateZ(-200px);
         transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         transform-style: preserve-3d;
       }
 
-      /* 展開後、フワフワと重力を無視して浮遊する */
       .nav-links.open li {
         opacity: 1;
         transform: translateY(0) rotateX(0deg) rotateY(0deg) translateZ(0);
@@ -1222,7 +1223,6 @@
         100% { transform: translateY(0) rotateX(0) rotateY(0); }
       }
 
-      /* 下から順番に出現させるディレイ（アニメーションはズラして自然な揺らぎを） */
       .nav-links.open li:nth-child(1) { transition-delay: 0.10s; animation-delay: 0.0s; }
       .nav-links.open li:nth-child(2) { transition-delay: 0.15s; animation-delay: -1.2s; }
       .nav-links.open li:nth-child(3) { transition-delay: 0.20s; animation-delay: -2.4s; }
@@ -1230,27 +1230,25 @@
       .nav-links.open li:nth-child(5) { transition-delay: 0.30s; animation-delay: -4.8s; }
       .nav-links.open li:nth-child(6) { transition-delay: 0.35s; animation-delay: -6.0s; }
 
-      /* モノリス本体のデザイン（削ぎ落とされた高精細SF） */
       .nav-links a {
         font-family: var(--en);
-        font-size: 1.5rem !important; /* スタイリッシュなサイズ感 */
+        font-size: 1.5rem !important;
         font-weight: 300;
         letter-spacing: 0.35em;
         text-transform: uppercase;
-        padding: 1.5rem 2.5rem; /* たっぷりとした押しやすい領域 */
+        padding: 1.5rem 2.5rem;
         display: flex;
         align-items: center;
-        justify-content: center; /* 邪魔な装飾を消し、文字を堂々と中央へ */
+        justify-content: center;
         width: 100%;
         color: rgba(255, 255, 255, 0.85);
         text-decoration: none;
         
-        /* ガラスと極細スキャンライン（1px）の融合 */
         background: 
           linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.01) 40%, rgba(0,0,0,0.5) 100%),
           repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(203, 191, 176, 0.05) 1px, rgba(203, 191, 176, 0.05) 2px);
         
-        border-radius: 4px; /* シャープで洗練された形状 */
+        border-radius: 4px;
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-bottom-color: rgba(0, 0, 0, 0.6);
         border-right-color: rgba(0, 0, 0, 0.6);
@@ -1268,7 +1266,6 @@
         text-shadow: 0 0 10px rgba(255,255,255,0.2);
       }
 
-      /* エッジの光沢（SF的ディテール） */
       .nav-links a::before {
         content: '';
         position: absolute;
@@ -1279,7 +1276,7 @@
         animation: scanlight 5s ease-in-out infinite;
         z-index: 0;
         pointer-events: none;
-        mix-blend-mode: overlay; /* よりリアルな光沢感 */
+        mix-blend-mode: overlay;
       }
       
       @keyframes scanlight {
@@ -1292,7 +1289,6 @@
         z-index: 2;
       }
 
-      /* --- ホバー / フォーカス (圧倒的快感をもたらすインタラクション) --- */
       .nav-links a:hover, .nav-links a:focus {
         background: 
           linear-gradient(135deg, rgba(203, 191, 176, 0.2) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0.8) 100%),
@@ -1310,7 +1306,6 @@
           0 0 30px rgba(203, 191, 176, 0.8);
       }
 
-      /* タップした瞬間、強烈に奥に沈み込み内部がフラッシュ */
       .nav-links a:active {
         transform: scale(0.94) translateZ(-40px);
         box-shadow: 
@@ -1321,7 +1316,6 @@
         transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.1s, border-color 0.1s;
       }
       
-      /* タップ時のフラッシュオーバーレイ */
       .nav-links a::after {
         content: '';
         position: absolute;
@@ -1338,10 +1332,8 @@
         transition: background 0s;
       }
       
-      /* スクロール時のガクつきを防止するためsvhを維持 */
       .hero { padding: 8rem 1.5rem 4rem; min-height: 100svh; }
       
-      /* アニメーションの軽量化：blurなどの重いフィルターを解除してGPU負荷を下げる */
       .reveal { filter: none !important; transition: opacity 1.2s ease, transform 1.2s ease; }
       .ink-reveal-block { filter: none !important; }
       .concept-question { filter: none !important; text-shadow: none; }
@@ -1363,7 +1355,6 @@
        ════════════════════════════════════════ */
       #statement { 
         padding: 8rem 1.5rem; 
-        /* iOS Safariのfixedバグ回避のためscrollを明示 */
         background-attachment: scroll; 
         background-size: cover; 
         background-position: center top; 
@@ -1371,7 +1362,6 @@
       }
       .statement-bg-word { font-size: 35vw; }
       
-      /* vhをsvhに置換してブレ防止 */
       .opening-stage { margin-bottom: 5rem; min-height: 120svh; }
       .opening-question { top: 22svh; padding: 0 1rem; width: 100%; box-sizing: border-box; opacity: 0.3 !important; transform: scale(0.98); }
       .opening-ito { top: 45svh; padding: 0 1rem; width: 100%; box-sizing: border-box; }
@@ -1383,6 +1373,8 @@
 
       .concept-cards-wrap { margin-bottom: 2rem; }
       .concept-tags { grid-template-columns: 1fr; gap: 1.5rem; }
+      .concept-tag-bg-text { font-size: 4rem; }
+
       #works { padding: 6rem 1.5rem 8rem; }
       
       .works-header { margin-bottom: 4rem; flex-direction: row; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1.2rem; }
@@ -1436,7 +1428,6 @@
       .page-nav { display: none; }
     }
 
-    /* スマホ向けに独立させたスムーズなアニメーション処理群 */
     @keyframes drawRevealMobile {
       0% { opacity: 0; clip-path: inset(0 100% 0 0); transform: translateX(-20px); }
       100% { opacity: 1; clip-path: inset(0 0 0 0); transform: translateX(0); }
@@ -1465,9 +1456,6 @@
 <body class="is-loading" id="top">
 
 <script>
-  /* ════════════════════════════════════════════════════════
-      ローダーシステム（体感速度を最高にするための最適化）
-  ════════════════════════════════════════════════════════ */
   (function() {
     function start() { 
       if (!document.body.classList.contains('is-loaded')) {
@@ -1504,13 +1492,10 @@
   <a href="#" class="nav-logo">Tsuda Shoichi</a>
   <ul class="nav-links" id="nav-links">
     <li class="pc-only"><a href="#statement" onclick="closeMenu()">Statement</a></li>
-    
     <li class="pc-only"><a href="#works" onclick="closeMenu()">Works</a></li>
     <li class="pc-only"><a href="#profile" onclick="closeMenu()">Profile</a></li>
-    
     <li class="sp-only"><a href="works.html"><span>Works</span></a></li>
     <li class="sp-only"><a href="index-profile.html"><span>Profile</span></a></li>
-
     <li class="pc-only"><a href="#news" onclick="closeMenu()">News</a></li>
   </ul>
   
@@ -1588,28 +1573,44 @@
   <div class="concept-cards-wrap">
     <div class="concept-tags">
       <div class="concept-tag reveal" style="transition-delay:.15s">
-        <span class="concept-tag-num">01</span>
-        <p class="concept-tag-term">〈いと〉</p>
-        <p class="concept-tag-en-label">Ito</p>
-        <p class="concept-tag-desc">"左美都"という土地の記憶・地質・感覚。物語のそれ以上細分化できない、最小の要素。</p>
+        <span class="concept-tag-bg-text" aria-hidden="true">〈いと〉</span>
+        <div class="concept-tag-content">
+          <h3 class="concept-tag-title">〈いと〉</h3>
+          <p class="concept-tag-en-label">Ito</p>
+          <p class="concept-tag-desc">"左美都"という土地の記憶・地質・感覚。物語のそれ以上細分化できない、最小の要素。</p>
+        </div>
       </div>
       <div class="concept-tag reveal" style="transition-delay:.25s">
-        <span class="concept-tag-num">02</span>
-        <p class="concept-tag-term">洞窟</p>
-        <p class="concept-tag-en-label">Cave — Unit World</p>
-        <p class="concept-tag-desc">断片ともつれから成る世界の個別のひとつ。単一では無く、並存する宇宙として捉える造語的概念。</p>
+        <span class="concept-tag-bg-text" aria-hidden="true">洞窟</span>
+        <div class="concept-tag-content">
+          <h3 class="concept-tag-title">洞窟</h3>
+          <p class="concept-tag-en-label">Cave — Unit World</p>
+          <p class="concept-tag-desc">断片ともつれから成る世界の個別のひとつ。単一では無く、並存する宇宙として捉える造語的概念。</p>
+        </div>
       </div>
       <div class="concept-tag reveal" style="transition-delay:.35s">
-        <span class="concept-tag-num">03</span>
-        <p class="concept-tag-term">脱領土化・再領土化</p>
-        <p class="concept-tag-en-label">Deterritorialization / Reterritorialization</p>
-        <p class="concept-tag-desc">油彩の描画過程で形や意味を解体し（脱領土化）、そこで見いだされた〈いと〉を絵画・映像・立体・空間へと多層的に再解釈し、再編成していく（再領土化）一連の運動です。</p>
-            </div>
+        <span class="concept-tag-bg-text" aria-hidden="true">再領土化</span>
+        <div class="concept-tag-content">
+          <h3 class="concept-tag-title">脱領土化・再領土化</h3>
+          <p class="concept-tag-en-label">Deterritorialization / Reterritorialization</p>
+          <p class="concept-tag-desc">油彩の描画過程で形や意味を解体し（脱領土化）、そこで見いだされた〈いと〉を絵画・映像・立体・空間へと多層的に再解釈し、再編成していく（再領土化）一連の運動です。</p>
+        </div>
+      </div>
       <div class="concept-tag reveal" style="transition-delay:.45s">
-        <span class="concept-tag-num">04</span>
-        <p class="concept-tag-term">系（シーケンス）</p>
-        <p class="concept-tag-en-label">Sequence</p>
-        <p class="concept-tag-desc">同時並行ではなく、ある時期から次の時期へと内なる必然性を伴って推移していく制作スタイルの連なり。一つひとつの系（シーケンス）が連なり、作家としての大きな物語を構成します。</p>
+        <span class="concept-tag-bg-text" aria-hidden="true">系</span>
+        <div class="concept-tag-content">
+          <h3 class="concept-tag-title">系（シーケンス）</h3>
+          <p class="concept-tag-en-label">Sequence</p>
+          <p class="concept-tag-desc">同時並行ではなく、ある時期から次の時期へと内なる必然性を伴って推移していく制作スタイルの連なり。一つひとつの系が連なり、作家としての大きな物語を構成します。</p>
+        </div>
+      </div>
+      <div class="concept-tag reveal" style="transition-delay:.55s">
+        <span class="concept-tag-bg-text" aria-hidden="true">帳</span>
+        <div class="concept-tag-content">
+          <h3 class="concept-tag-title">帳（ヴォーレ）</h3>
+          <p class="concept-tag-en-label">Vol'e</p>
+          <p class="concept-tag-desc">私たちが世界を自由に見ようとする時、視界を隔てる薄い布のようなもの。この「帳」を取り除こうとする過程や行動そのものに、自由の本質と意思が現れるという概念。</p>
+        </div>
       </div>
     </div>
   </div>
@@ -2148,10 +2149,8 @@ var menuOpenScrollY = 0;
     }
   }, { passive: true });
 
-  // 背景タップでメニューを閉じる処理
   if(links) {
     links.addEventListener('click', function(e) {
-      // e.targetがlinks自身（リンク等の子要素ではない）場合のみ発火
       if (e.target === this) {
         closeMenu();
       }
@@ -2171,7 +2170,6 @@ function toggleMenu() {
     btn.style.display = isOpen ? 'none' : '';
   }
   
-  // スマホメニュー展開中の背面スクロールをロック
   if (isOpen) {
     document.body.classList.add('no-scroll');
     menuOpenScrollY = window.scrollY;
