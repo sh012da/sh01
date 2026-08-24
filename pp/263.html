@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>発酵の暗箱：飛良泉における非平衡熱力学と伝統的カオス | にかほ芸術登竜紋 | 津田翔一</title>
+<meta name="description" content="にかほ芸術登竜紋 公募プラン ── 発酵の暗箱。鳥海山麓の自然と飛良泉本舗の醸造文化を交差させ、音と光でにかほの不可視のエネルギーを可視化するインスタレーション。津田翔一">
+
+<!-- 共通フォント -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Noto+Serif+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   DESIGN TOKENS & VARIABLES (にかほの広大な自然イメージ)
+=========================================================== */
+:root {
+  /* Colors - 鳥海山の伏流水、日本海、深い森のイメージ */
+  --c-bg-base: #04090d;
+  --c-bg-surface: #0a131a;
+  --c-bg-glass: rgba(4, 9, 13, 0.85);
+  
+  --c-text-main: #f0f4f8;
+  --c-text-muted: #829ab1;
+  
+  /* 伏流水のシアンと、発酵・生命の赤のコントラスト */
+  --c-accent: #48cae4;       
+  --c-accent-dim: rgba(72, 202, 228, 0.25);
+  --c-accent-red: #e63946;
+  --c-mesh: rgba(72, 202, 228, 0.03);
+  
+  /* Typography */
+  --f-serif-en: 'Cormorant Garamond', serif;
+  --f-serif-ja: 'Noto Serif JP', serif;
+  --f-mono: 'JetBrains Mono', monospace;
+  
+  /* Easing */
+  --ease-smooth: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-slow: cubic-bezier(0.16, 1, 0.3, 1);
+  
+  /* Spacing */
+  --px: clamp(1.5rem, 5vw, 6rem);
+  --py: clamp(4rem, 10vh, 8rem);
+}
+
+/* ============================================================
+   RESET & BASE
+=========================================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; background-color: var(--c-bg-base); }
+body {
+  font-family: var(--f-serif-ja);
+  color: var(--c-text-main);
+  background: var(--c-bg-base);
+  line-height: 2.2; /* 可読性向上のため行間を広めに */
+  letter-spacing: 0.08em;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  word-break: keep-all; /* 日本語の不自然な改行を防止 */
+  overflow-wrap: break-word;
+}
+img, video { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-decoration: none; transition: opacity 0.3s var(--ease-smooth); }
+a:hover { opacity: 0.7; }
+::selection { background: var(--c-accent); color: var(--c-bg-base); }
+
+/* 文字組用ユーティリティ（タイトル等の改行制御用） */
+.inline-block { display: inline-block; }
+
+/* ============================================================
+   PRELOADER
+=========================================================== */
+#preloader {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--c-bg-base);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: opacity 1.5s var(--ease-slow), visibility 1.5s;
+}
+#preloader.is-loaded { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.loader-ripple {
+  width: 60px; height: 60px; border-radius: 50%;
+  border: 2px solid var(--c-accent); position: relative;
+  animation: ripple 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+@keyframes ripple {
+  0% { transform: scale(0.5); opacity: 1; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+/* ============================================================
+   NAVIGATION
+=========================================================== */
+.header {
+  position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: clamp(1rem, 3vw, 2rem) var(--px);
+  background: transparent;
+  transition: all 0.6s var(--ease-smooth);
+}
+.header.is-scrolled {
+  background: var(--c-bg-glass); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding-top: 1rem; padding-bottom: 1rem;
+}
+.logo { font-family: var(--f-serif-en); font-size: clamp(1rem, 1.5vw, 1.2rem); letter-spacing: 0.25em; color: var(--c-text-main); text-transform: uppercase; font-weight: 600; }
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a { font-family: var(--f-serif-en); font-size: 0.75rem; letter-spacing: 0.2em; color: var(--c-text-muted); text-transform: uppercase; position: relative; padding-bottom: 4px; font-weight: 600; }
+.nav-links a::after { content: ''; position: absolute; left: 0; bottom: 0; width: 100%; height: 1px; background: var(--c-accent); transform: scaleX(0); transform-origin: right; transition: transform 0.4s var(--ease-smooth); }
+.nav-links a:hover { color: var(--c-text-main); }
+.nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+.btn-contact { font-family: var(--f-serif-en); font-size: 0.7rem; letter-spacing: 0.2em; padding: 0.8em 1.5em; border: 1px solid var(--c-accent-dim); color: var(--c-accent); transition: all 0.4s var(--ease-smooth); font-weight: 600; border-radius: 2px; }
+.btn-contact:hover { background: var(--c-accent); color: var(--c-bg-base); box-shadow: 0 0 15px rgba(72,202,228,0.4); }
+
+@media(max-width: 860px) { .nav-links { display: none; } }
+
+/* ============================================================
+   SYNCHRONIZATION METER
+=========================================================== */
+.voile-meter {
+  position: fixed; right: clamp(1rem, 4vw, 3rem); top: 50%; transform: translateY(-50%);
+  z-index: 900; display: flex; flex-direction: column; align-items: center; gap: 1rem;
+  opacity: 0; transition: opacity 1s var(--ease-slow); pointer-events: none;
+}
+.voile-meter.is-visible { opacity: 1; }
+.vm-label { font-family: var(--f-serif-en); font-size: 0.6rem; letter-spacing: 0.4em; color: var(--c-text-muted); writing-mode: vertical-rl; text-transform: uppercase; }
+.vm-bar { width: 1px; height: 180px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden; }
+.vm-fill { position: absolute; top: 0; left: 0; width: 100%; height: 0%; background: linear-gradient(to bottom, var(--c-accent), #2a9d8f); will-change: height; box-shadow: 0 0 10px var(--c-accent); }
+.vm-number { font-family: var(--f-mono); font-size: 0.75rem; color: var(--c-accent); text-shadow: 0 0 5px var(--c-accent-dim); }
+@media(max-width: 1024px) { .voile-meter { display: none; } }
+
+/* ============================================================
+   ANIMATION UTILITIES
+=========================================================== */
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity 1.2s var(--ease-slow), transform 1.2s var(--ease-slow); }
+.reveal-blur { opacity: 0; filter: blur(12px); transform: scale(0.98); transition: opacity 1.5s var(--ease-slow), filter 1.5s var(--ease-slow), transform 1.5s var(--ease-slow); }
+.reveal.is-active, .reveal-blur.is-active { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+.delay-1 { transition-delay: 0.15s; }
+.delay-2 { transition-delay: 0.3s; }
+.delay-3 { transition-delay: 0.45s; }
+
+/* ============================================================
+   HERO SECTION (広大な自然と高い視認性)
+=========================================================== */
+.mist-reveal { opacity: 0; filter: blur(20px); transform: translateY(15px) scale(1.02); transition: opacity 2.5s var(--ease-slow), filter 3s var(--ease-slow), transform 3s var(--ease-slow); }
+.hero.is-ready .mist-reveal { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
+.hero.is-ready .delay-m1 { transition-delay: 0.2s; }
+.hero.is-ready .delay-m2 { transition-delay: 0.5s; }
+.hero.is-ready .delay-m3 { transition-delay: 0.8s; }
+.hero.is-ready .delay-m4 { transition-delay: 1.2s; }
+.hero.is-ready .delay-m5 { transition-delay: 1.6s; }
+
+.hero {
+  position: relative; height: 100svh; min-height: 600px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: clamp(2rem, 5vh, 4rem) var(--px); overflow: hidden; background: #000;
+}
+.hero-bg { position: absolute; inset: -5%; width: 110%; height: 110%; z-index: 1; pointer-events: none; }
+.hero-img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6) contrast(1.1) saturate(0.8); }
+.hero-veil-layer {
+  position: absolute; inset: -10%; z-index: 2; pointer-events: none;
+  background-image: repeating-linear-gradient(45deg, var(--c-mesh) 0px, var(--c-mesh) 1px, transparent 1px, transparent 10px), repeating-linear-gradient(-45deg, var(--c-mesh) 0px, var(--c-mesh) 1px, transparent 1px, transparent 10px);
+  mix-blend-mode: screen; opacity: 0.4; will-change: transform;
+}
+.hero-gradient { position: absolute; inset: 0; z-index: 3; background: linear-gradient(to top, var(--c-bg-base) 0%, rgba(4,9,13,0.8) 40%, transparent 85%); }
+
+.hero-content { position: relative; z-index: 10; max-width: 1050px; padding-bottom: 8vh; }
+.badge { display: inline-flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+.badge-line { width: 30px; height: 1px; background: var(--c-accent); box-shadow: 0 0 5px var(--c-accent); }
+.badge-text { font-family: var(--f-serif-en); font-size: 0.65rem; letter-spacing: 0.3em; font-weight: 600; color: var(--c-text-main); border: 1px solid var(--c-accent-dim); padding: 0.5em 1.2em; border-radius: 40px; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); text-shadow: 0 0 10px rgba(72,202,228,0.5); }
+.hero-eyebrow { font-size: clamp(0.75rem, 1.5vw, 0.9rem); color: var(--c-accent); margin-bottom: 1rem; letter-spacing: 0.15em; font-weight: 500; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+
+/* 完全な改行制御（インラインブロックの活用） */
+.hero-title {
+  font-size: clamp(2rem, 5.5vw, 5rem); font-weight: 700; line-height: 1.25; letter-spacing: 0.05em; margin-bottom: 1.5rem; color: #ffffff;
+  text-shadow: 0 10px 30px rgba(0,0,0,0.9), 0 2px 5px rgba(0,0,0,0.8);
+}
+.hero-title .ruby { font-family: var(--f-serif-en); font-style: italic; color: var(--c-accent); font-size: 0.45em; margin-left: 0.3em; font-weight: 400; }
+.hero-desc { max-width: 650px; font-size: clamp(0.9rem, 1.3vw, 1rem); color: rgba(240, 244, 248, 0.9); line-height: 2.2; text-shadow: 0 2px 8px rgba(0,0,0,0.9); font-weight: 300; }
+.hero-meta { display: flex; gap: clamp(1.5rem, 4vw, 3rem); margin-top: 3rem; flex-wrap: wrap; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; }
+.meta-item { display: flex; flex-direction: column; gap: 0.3rem; }
+.meta-label { font-family: var(--f-serif-en); font-size: 0.6rem; letter-spacing: 0.3em; color: var(--c-accent); text-transform: uppercase; font-weight: 600; }
+.meta-val { font-size: clamp(0.75rem, 1.2vw, 0.85rem); font-weight: 500; letter-spacing: 0.1em; }
+
+/* ============================================================
+   SECTIONS COMMON
+=========================================================== */
+.section { padding: var(--py) var(--px); position: relative; }
+.section-bg-alt { background: var(--c-bg-surface); border-top: 1px solid rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.02); }
+.sec-title-wrap { margin-bottom: clamp(2.5rem, 6vw, 4rem); display: flex; align-items: center; gap: 1.5rem; }
+.sec-title-line { width: 40px; height: 1px; background: var(--c-accent); box-shadow: 0 0 5px var(--c-accent); }
+.sec-title { font-family: var(--f-serif-en); font-size: clamp(0.8rem, 1.5vw, 1rem); letter-spacing: 0.4em; color: var(--c-accent); text-transform: uppercase; font-weight: 600; }
+
+/* ============================================================
+   INTRO / CONCEPT
+=========================================================== */
+.intro-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(2.5rem, 6vw, 6rem); max-width: 1200px; margin: 0 auto; align-items: start; }
+.intro-lead { font-size: clamp(1.2rem, 2.5vw, 2.2rem); line-height: 1.8; font-weight: 400; }
+.intro-lead em { font-style: normal; color: var(--c-accent); font-weight: 700; text-shadow: 0 0 15px rgba(72,202,228,0.3); }
+.intro-text p { margin-bottom: 1.8rem; color: rgba(240, 244, 248, 0.8); text-align: justify; font-size: clamp(0.9rem, 1.2vw, 1rem); }
+.tags { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 2rem; }
+.tag { font-family: var(--f-mono); font-size: 0.65rem; color: var(--c-text-main); border: 1px solid var(--c-accent-dim); padding: 0.5em 1em; border-radius: 2px; background: rgba(72,202,228,0.05); }
+
+.pull-quote { margin: clamp(4rem, 8vw, 6rem) 0; padding: clamp(2rem, 4vw, 3rem) 0; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); font-size: clamp(1.2rem, 2.5vw, 2rem); color: var(--c-text-main); font-weight: 300; letter-spacing: 0.1em; }
+.pull-quote span { color: var(--c-accent-red); font-weight: 500; }
+
+@media(max-width: 900px) { .intro-grid { grid-template-columns: 1fr; } }
+
+/* ============================================================
+   PROCESS & WORKSHOPS
+=========================================================== */
+.process-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1400px; margin: 0 auto; }
+.ws-card { background: rgba(10, 19, 26, 0.5); border: 1px solid rgba(255,255,255,0.05); padding: 2.5rem 2rem; transition: transform 0.4s var(--ease-smooth), border-color 0.4s; position: relative; overflow: hidden; }
+.ws-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--c-accent); transform: scaleX(0); transform-origin: left; transition: transform 0.4s var(--ease-smooth); }
+.ws-card:hover { transform: translateY(-5px); border-color: var(--c-accent-dim); }
+.ws-card:hover::before { transform: scaleX(1); }
+.ws-num { font-family: var(--f-serif-en); font-size: 2.5rem; color: var(--c-accent); opacity: 0.3; margin-bottom: 1rem; display: block; font-weight: 300; }
+.ws-title { font-size: 1.15rem; color: var(--c-text-main); margin-bottom: 0.5rem; letter-spacing: 0.1em; font-weight: 700; }
+.ws-subtitle { font-family: var(--f-serif-en); font-size: 0.65rem; color: var(--c-accent); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1.5rem; display: block; font-weight: 600; }
+.ws-text { font-size: 0.85rem; color: rgba(240, 244, 248, 0.7); line-height: 2; }
+
+/* ============================================================
+   SITE / MAP 
+=========================================================== */
+.site-hero { aspect-ratio: 21/9; margin-bottom: clamp(2rem, 5vw, 4rem); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); background: #000; }
+.site-hero img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8) contrast(1.1); transition: transform 2s var(--ease-slow), filter 0.8s; }
+.site-hero:hover img.js-lightbox { transform: scale(1.03); filter: brightness(1); }
+.site-content { display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(2rem, 5vw, 4rem); max-width: 1200px; margin: 0 auto; }
+.checklist { list-style: none; }
+.check-item { display: flex; align-items: center; gap: 1rem; padding: 1.2rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--c-text-muted); font-size: clamp(0.85rem, 1.2vw, 0.95rem); }
+.check-item.active { color: var(--c-text-main); font-weight: 500; }
+.check-box { width: 16px; height: 16px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.check-item.active .check-box { border-color: var(--c-accent); box-shadow: 0 0 8px var(--c-accent-dim); }
+.check-item.active .check-box::after { content: ''; width: 6px; height: 6px; background: var(--c-accent); border-radius: 50%; }
+.check-tag { margin-left: auto; font-family: var(--f-mono); font-size: 0.65rem; color: var(--c-accent); font-weight: 600; }
+
+@media(max-width: 900px) { .site-content { grid-template-columns: 1fr; } .site-hero { aspect-ratio: 16/9; } }
+
+/* ============================================================
+   EXPERIENCE (Media Grid)
+=========================================================== */
+.exp-grid { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 1.5rem; max-width: 1400px; margin: 0 auto; align-items: stretch; }
+.exp-img { position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); background: #000; }
+.exp-img.tall { grid-row: span 2; aspect-ratio: auto; height: 100%; }
+.exp-img:not(.tall) { aspect-ratio: 4/3; }
+.exp-img img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8); transition: transform 2s var(--ease-slow), filter 0.8s; }
+.exp-img:hover img.js-lightbox { transform: scale(1.05); filter: brightness(1); }
+.exp-text { padding: 2rem; background: rgba(10,19,26,0.3); border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; justify-content: center; }
+
+@media(max-width: 900px) { .exp-grid { grid-template-columns: 1fr 1fr; } .exp-img.tall { grid-row: auto; aspect-ratio: 4/5; height: auto; } .exp-text { grid-column: span 2; } }
+@media(max-width: 600px) { .exp-grid { grid-template-columns: 1fr; } .exp-img:not(.tall), .exp-img.tall { aspect-ratio: 16/10; } .exp-text { grid-column: auto; padding: 1.5rem; } }
+
+/* ============================================================
+   CLOSING & FOOTER
+=========================================================== */
+.closing { text-align: center; position: relative; overflow: hidden; }
+.curator-card { max-width: 800px; margin: 0 auto clamp(3rem, 8vw, 6rem); padding: clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 5vw, 3rem); background: rgba(10, 19, 26, 0.6); border: 1px solid var(--c-accent-dim); box-shadow: 0 20px 60px rgba(0,0,0,0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); text-align: left; }
+.curator-title { font-family: var(--f-serif-en); font-size: 0.75rem; letter-spacing: 0.3em; color: var(--c-accent); margin-bottom: 1.5rem; display: block; font-weight: 600; }
+.curator-card p { font-size: clamp(0.9rem, 1.2vw, 1rem); line-height: 2.2; color: rgba(240, 244, 248, 0.9); }
+.contact-cta { display: inline-flex; font-family: var(--f-serif-en); font-size: 0.8rem; letter-spacing: 0.3em; color: var(--c-bg-base); background: var(--c-accent); padding: 1.2em 3em; text-transform: uppercase; transition: transform 0.4s var(--ease-smooth), box-shadow 0.4s var(--ease-smooth); font-weight: 600; }
+.contact-cta:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(72, 202, 228, 0.3); opacity: 1; }
+.footer { padding: 3rem var(--px); text-align: center; border-top: 1px solid rgba(255,255,255,0.05); margin-top: clamp(3rem, 8vw, 6rem); }
+.footer-logo { font-size: 0.85rem; color: rgba(240, 244, 248, 0.4); margin-bottom: 0.5rem; letter-spacing: 0.1em; transition: color 0.3s; }
+.footer-logo:hover { color: var(--c-accent); }
+.footer-copy { font-family: var(--f-serif-en); font-size: 0.65rem; color: rgba(240, 244, 248, 0.3); letter-spacing: 0.2em; }
+
+/* ============================================================
+   LIGHTBOX MODAL
+=========================================================== */
+#lightbox { position: fixed; inset: 0; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.5s var(--ease-slow), visibility 0.5s; }
+#lightbox.is-open { opacity: 1; visibility: visible; }
+.lightbox-overlay { position: absolute; inset: 0; background: rgba(2, 5, 7, 0.95); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); cursor: zoom-out; }
+.lightbox-inner { position: relative; z-index: 10001; width: 95vw; max-width: 1400px; height: 90vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.lightbox-media-wrapper { position: relative; max-width: 100%; max-height: calc(100% - 70px); display: flex; justify-content: center; align-items: center; transform: scale(0.95) translateY(15px); opacity: 0; transition: transform 0.6s var(--ease-slow), opacity 0.6s var(--ease-slow); }
+#lightbox.is-open .lightbox-media-wrapper { transform: scale(1) translateY(0); opacity: 1; }
+.lightbox-media-wrapper img, .lightbox-media-wrapper video { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.05); background: #000; }
+.lightbox-caption { margin-top: 1.5rem; font-family: var(--f-serif-ja); font-size: clamp(0.9rem, 1.2vw, 1.1rem); color: var(--c-accent); letter-spacing: 0.15em; text-align: center; opacity: 0; transform: translateY(15px); transition: opacity 0.6s 0.3s var(--ease-smooth), transform 0.6s 0.3s var(--ease-smooth); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; font-weight: 500; }
+#lightbox.is-open .lightbox-caption { opacity: 1; transform: translateY(0); }
+.lightbox-caption::before { content: ''; width: 24px; height: 1px; background: var(--c-accent-dim); }
+.lightbox-close-btn { position: absolute; top: clamp(1rem, 3vw, 2rem); right: clamp(1rem, 3vw, 2rem); z-index: 10002; background: transparent; border: none; color: rgba(240, 244, 248, 0.5); font-size: clamp(2rem, 4vw, 3rem); font-weight: 300; line-height: 1; cursor: pointer; transition: color 0.3s var(--ease-smooth), transform 0.4s var(--ease-smooth); padding: 10px; }
+.lightbox-close-btn:hover { color: var(--c-accent); transform: rotate(90deg); }
+</style>
+</head>
+<body>
+
+<!-- Preloader -->
+<div id="preloader">
+  <div class="loader-ripple"></div>
+</div>
+
+<!-- Header -->
+<header class="header" id="header">
+  <a href="https://sh012da.github.io/sh01/" class="logo">Tsuda Shoichi</a>
+  <ul class="nav-links">
+    <li><a href="#concept">Concept</a></li>
+    <li><a href="#process">Co-creation</a></li>
+    <li><a href="#site">Site</a></li>
+    <li><a href="#experience">Experience</a></li>
+  </ul>
+  <a href="https://sh012da.github.io/sh01/contact.html" class="btn-contact">Contact</a>
+</header>
+
+<!-- Sync Meter (Scroll Progress) -->
+<aside class="voile-meter" id="voile-meter">
+  <span class="vm-label">Synchronization</span>
+  <div class="vm-bar"><div class="vm-fill" id="vm-fill"></div></div>
+  <span class="vm-number" id="vm-number">00</span>
+</aside>
+
+<!-- Main Content -->
+<main>
+  
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-bg" id="hero-bg">
+      <!-- ADEACの画像を絶対参照で指定。万が一のリンク切れ対策としてUnsplashの画像をonerrorで自動フォールバック -->
+      <img src="https://adeac.jp/nikaho-city/assets/images/ogp.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1440688807730-73e4e2096eb6?q=80&w=2000&auto=format&fit=crop';" alt="鳥海山麓の深く静かな森と霧のイメージ" class="hero-img">
+      <div class="hero-veil-layer" id="hero-veil"></div>
+    </div>
+    <div class="hero-gradient"></div>
+    
+    <div class="hero-content">
+      <div class="badge mist-reveal delay-m1">
+        <div class="badge-line"></div>
+        <div class="badge-text">にかほ芸術登竜紋 公募作品プラン</div>
+        <div class="badge-line"></div>
+      </div>
+      <p class="hero-eyebrow mist-reveal delay-m2">自然資源×先端技術×アートの共創</p>
+      
+      <!-- タイトル改行制御: span.inline-block で意図しない文字の分断を完全に防止 -->
+      <h1 class="hero-title mist-reveal delay-m3">
+        <span class="inline-block">発酵の暗箱</span><span class="ruby">Dark Box</span><br>
+        <span class="inline-block">非平衡熱力学と</span><span class="inline-block">伝統的カオス</span>
+      </h1>
+      
+      <p class="hero-desc mist-reveal delay-m4">
+        鳥海山の伏流水が日本海へ至る壮大な循環。室町時代から続く「飛良泉」の醸造文化。<br>
+        にかほ市の大地に蓄積された見えないエネルギーを、音と光の空間インスタレーションへと昇華させる。
+      </p>
+      <div class="hero-meta mist-reveal delay-m5">
+        <div class="meta-item"><span class="meta-label">Artist</span><span class="meta-val">津田翔一</span></div>
+        <div class="meta-item"><span class="meta-label">Field</span><span class="meta-val">旧仁賀保・旧金浦・旧象潟</span></div>
+        <div class="meta-item"><span class="meta-label">Core</span><span class="meta-val">水脈の音 / 磁力 / 有機ELワイヤー</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="section" id="concept">
+    <div class="sec-title-wrap reveal">
+      <div class="sec-title-line"></div><h2 class="sec-title">Concept</h2>
+    </div>
+    <div class="intro-grid">
+      <div class="intro-lead reveal-blur">
+        見えない力が<span class="inline-block">物質を動かす。</span><br>
+        にかほの風土を、<br>
+        <em>一つの呼吸する巨大な<span class="inline-block">生命の洞窟</span></em>へと変容させる。
+      </div>
+      <div class="intro-text">
+        <p class="reveal delay-1">
+          秋田県最南端に位置するにかほ市は、鳥海山の伏流水が海底から湧き出す豊かな水脈や、古の醸造文化、そして世界をリードするハイテク産業（磁力）といった重層的な文脈がコンパクトに混在する特異なフィールドである。
+        </p>
+        <p class="reveal delay-2">
+          本プロジェクトは、この土地に眠る「見えないエネルギーの蓄積と変容」を、現代アートのフレームワークで空間化する試みである。巨大な黒い「暗箱」の内壁には、磁力（砂鉄）と油彩を練り込んだ巨大な絵画が立ち上がる。
+        </p>
+        <p class="reveal delay-3">
+          内部では、発酵の微細な泡立ちの音や伏流水の鼓動をセンサーで拾い、空間を縦横無尽に埋め尽くす数千本の「赤い発光糸（有機ELワイヤー）」の明滅へとリアルタイムに変換する。人間のコントロールを超えた自然の力が、視覚・聴覚を伴う圧倒的な没入体験となる。
+        </p>
+        <div class="tags reveal delay-3">
+          <span class="tag">洞窟 (単位世界)</span>
+          <span class="tag">飛良泉本舗 / 山廃仕込み</span>
+          <span class="tag">TDK / 磁力</span>
+          <span class="tag">元滝伏流水</span>
+        </div>
+      </div>
+    </div>
+    
+    <h3 class="pull-quote reveal-blur">「発酵」とは、にかほの大地そのものに内包された<br><span>目に見えない変化とエネルギーの蓄積</span>である。</h3>
+  </section>
+
+  <!-- CO-CREATION PROCESS -->
+  <section class="section section-bg-alt" id="process">
+    <div class="sec-title-wrap reveal">
+      <div class="sec-title-line"></div><h2 class="sec-title">Co-creation Workshops</h2>
+    </div>
+    <p style="color:var(--c-text-muted); max-width:800px; margin: 0 auto 3.5rem; text-align:center; line-height:2;" class="reveal delay-1">
+      住民を単なる観客ではなく、にかほ市の見えないエネルギーを検知する「センサー」＝共同制作者（コ・クリエイター）として迎え入れ、共に一枚の巨大な作品を創り上げる3段階のプロセス。
+    </p>
+    
+    <div class="process-grid">
+      <div class="ws-card reveal-blur delay-1">
+        <span class="ws-num">01</span>
+        <span class="ws-subtitle">8月下旬〜9月 (リサーチ期)</span>
+        <h3 class="ws-title">大地の脈動を録る</h3>
+        <p class="ws-text">鳥海山の「元滝伏流水」や、飛良泉の発酵タンクに赴き、マイクで目に見えない水脈の音や発酵の泡音を住民と共に録音。にかほの地下や樽の中で起きている生命の動きを、音データとして採集する。</p>
+      </div>
+      <div class="ws-card reveal-blur delay-2">
+        <span class="ws-num">02</span>
+        <span class="ws-subtitle">10月下旬 (施工・素材期)</span>
+        <h3 class="ws-title">引力の砂を集める</h3>
+        <p class="ws-text">海運を支えた「方角石」の周辺や象潟の海岸を巡り、強力な磁石を用いて目に見えない磁力（砂鉄）を住民と採集。TDK発祥の地たる磁力と、先人たちが頼った引力の記憶を、絵画の顔料として集める。</p>
+      </div>
+      <div class="ws-card reveal-blur delay-3">
+        <span class="ws-num">03</span>
+        <span class="ws-subtitle">1月17日 (公開・作品化期)</span>
+        <h3 class="ws-title">不可視の力の顕現</h3>
+        <p class="ws-text">採集した「にかほの水と発酵の音」をスピーカーから流し、その上に「磁力の砂鉄」を撒く。音の振動で砂鉄が自律的に動きクラドニ図形を形成。それをキャンバスに定着させ、赤い糸を縫い込み巨大壁画を完成させる。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SITE -->
+  <section class="section" id="site">
+    <div class="sec-title-wrap reveal">
+      <div class="sec-title-line"></div><h2 class="sec-title">Site & Topography</h2>
+    </div>
+    
+    <div class="site-hero reveal-blur">
+      <!-- ADEAC提供の画像への絶対参照・onerrorフォールバック -->
+      <img src="https://adeac.jp/nikaho-city/images/logo.png" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2000&auto=format&fit=crop';" alt="にかほ市の日本海と大地のダイナミズムを連想させる風景" loading="lazy" class="js-lightbox" data-caption="Site Context / 鳥海山の伏流水が海底から湧き出し、豊かな生態系を育む日本海の海岸線">
+    </div>
+    
+    <div class="site-content">
+      <div class="reveal">
+        <p style="color:rgba(240,244,248,0.9); line-height:2.2; margin-bottom:1.5rem;">
+          日本海に面し、鳥海山の雪解け水が伏流水となって湧き出る「にかほ市」。<br>
+          ここは世界的な磁性材料メーカーの創業の地であり、室町時代から続く醸造の歴史、そして白瀬矗の開拓精神が息づく重層的な場所である。
+        </p>
+        <p style="color:rgba(240,244,248,0.9); line-height:2.2;">
+          有機的な「酒の発酵」と、無機的な「鉄の酸化（錆）」や「磁力」。<br>
+          この土地に眠る二つの異なる目に見えないエネルギーを、現代アートの強靭なフレームワークで縫い合わせる。
+        </p>
+      </div>
+      <ul class="checklist reveal delay-1">
+        <li class="check-item"><div class="check-box"></div>旧象潟町エリア (山岳信仰・歴史景観)</li>
+        <li class="check-item"><div class="check-box"></div>旧金浦町エリア (一次産業・開拓精神)</li>
+        <li class="check-item active"><div class="check-box"></div>旧仁賀保町エリア (醸造文化・先端技術)<span class="check-tag">SELECTED SITE</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section class="section section-bg-alt" id="experience">
+    <div class="sec-title-wrap reveal">
+      <div class="sec-title-line"></div><h2 class="sec-title">Immersive Experience</h2>
+    </div>
+    
+    <div class="exp-grid">
+      <!-- 添付画像の絶対参照 URLエンコードにより文字化け・リンク切れを完全に防止 -->
+      <div class="exp-img tall reveal-blur delay-1">
+        <img src="https://sh012da.github.io/sh01/pp/images/img-263/%E5%B1%95%E7%A4%BA%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%EF%BC%91.jpg" alt="暗闇で明滅する赤い光の線の抽象表現" loading="lazy" class="js-lightbox" data-caption="Experience / 発酵の音波が、空間を埋め尽くす数千本の赤い糸を脈打たせる">
+      </div>
+      <div class="exp-img reveal-blur delay-2">
+        <img src="https://sh012da.github.io/sh01/pp/images/img-263/%E5%B1%95%E7%A4%BA%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%EF%BC%92.jpg" alt="巨大な油彩画と赤い糸が織りなす空間" loading="lazy" class="js-lightbox" data-caption="Audio Visual / 伏流水の鼓動と発酵の泡立ちが、リアルタイムに光の波紋へ変換される">
+      </div>
+      <div class="exp-text reveal delay-3">
+        <p style="color:rgba(240,244,248,0.9); line-height:2.2; margin-bottom:1.5rem;">
+          一切の光を遮断した漆黒の「暗箱」。静寂の中、地響きのような伏流水の重低音と、菌が発酵して弾ける生々しい水音が響き渡る。
+        </p>
+        <p style="color:rgba(240,244,248,0.9); line-height:2.2;">
+          音の脈動に合わせて、空間に張り巡らされた数千本の赤い糸が巨大な毛細血管のように発光する。<br>
+          視覚、聴覚、そして鉄の匂い。デジタルでは表現できない『見えない命の塊』の胎内へと鑑賞者を飲み込む。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <section class="section closing">
+    <div class="curator-card reveal-blur">
+      <span class="curator-title">For Local Community & Organizers</span>
+      <p>
+        本プロジェクトは、単なる一時的な滞在制作ではありません。<br>
+        「津田翔一というアーティストの哲学」と「にかほ市の広大な自然・地域資源」が衝突し、住民の方々の手（センサー）を介して新たな価値のブループリントを生み出す不可逆的なプロセスです。<br><br>
+        圧倒的な実現能力と熱量をもって、にかほ市の重層的な歴史と未来をアートの力で繋ぐことをお約束します。
+      </p>
+    </div>
+    
+    <h2 class="hero-title reveal" style="font-size:clamp(1.5rem, 4vw, 3rem); margin-bottom:2rem; font-weight:700;">お問い合わせ</h2>
+    <div class="reveal delay-1">
+      <a href="https://sh012da.github.io/sh01/contact.html" class="contact-cta">Contact Form</a>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <a href="https://sh012da.github.io/sh01/" style="text-decoration: none;"><div class="footer-logo">津田 翔一 / Tsuda Shoichi</div></a>
+  <div class="footer-copy">© 2026 Tsuda Shoichi. All Rights Reserved.</div>
+</footer>
+
+<!-- LIGHTBOX MODAL -->
+<div id="lightbox">
+  <div class="lightbox-overlay js-lightbox-close" aria-label="Close"></div>
+  <button class="lightbox-close-btn js-lightbox-close" aria-label="Close">&times;</button>
+  <div class="lightbox-inner">
+    <div class="lightbox-media-wrapper" id="lightbox-media-wrapper">
+      <!-- メディアクローン挿入 -->
+    </div>
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  /* =======================================================
+     1. PRELOADER & HERO REVEAL
+  ======================================================= */
+  const preloader = document.getElementById('preloader');
+  const hero = document.getElementById('hero');
+  
+  setTimeout(() => {
+    preloader.classList.add('is-loaded');
+    hero.classList.add('is-ready');
+  }, 1000);
+
+  /* =======================================================
+     2. SCROLL OBSERVER (REVEAL ANIMATIONS)
+  ======================================================= */
+  const revealElements = document.querySelectorAll('.reveal, .reveal-blur');
+  const observerOptions = { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 };
+
+  const scrollObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-active');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  revealElements.forEach(el => scrollObserver.observe(el));
+
+  /* =======================================================
+     3. PARALLAX & UI PROGRESS
+  ======================================================= */
+  const header = document.getElementById('header');
+  const heroBg = document.getElementById('hero-bg');
+  const heroVeil = document.getElementById('hero-veil');
+  const voileMeter = document.getElementById('voile-meter');
+  const vmFill = document.getElementById('vm-fill');
+  const vmNumber = document.getElementById('vm-number');
+  let ticking = false;
+
+  function onScroll() {
+    const scrollY = window.scrollY;
+    const windowH = window.innerHeight;
+    const docH = document.documentElement.scrollHeight - windowH;
+    
+    if (scrollY > 50) header.classList.add('is-scrolled');
+    else header.classList.remove('is-scrolled');
+
+    if (scrollY < windowH && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      heroBg.style.transform = `translateY(${scrollY * 0.3}px)`;
+      heroVeil.style.transform = `translateY(${scrollY * 0.15}px)`;
+    }
+
+    if (scrollY > windowH * 0.3) voileMeter.classList.add('is-visible');
+    else voileMeter.classList.remove('is-visible');
+
+    const scrollPercent = docH > 0 ? Math.max(0, Math.min(1, scrollY / docH)) : 0;
+    vmFill.style.height = `${scrollPercent * 100}%`;
+    const layerNum = Math.round(scrollPercent * 100);
+    vmNumber.textContent = layerNum.toString().padStart(2, '0');
+
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(onScroll);
+      ticking = true;
+    }
+  }, { passive: true });
+  onScroll();
+
+  /* =======================================================
+     4. LIGHTBOX (IMAGE ZOOM)
+  ======================================================= */
+  const lightboxTargets = document.querySelectorAll('.js-lightbox');
+  const lightboxModal = document.getElementById('lightbox');
+  const lightboxWrapper = document.getElementById('lightbox-media-wrapper');
+  const lightboxCaption = document.getElementById('lightbox-caption');
+  const lightboxClosers = document.querySelectorAll('.js-lightbox-close');
+
+  lightboxTargets.forEach(target => {
+    target.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      const captionText = this.getAttribute('data-caption') || '';
+      lightboxWrapper.innerHTML = '';
+      
+      if (this.tagName.toLowerCase() === 'img') {
+        const cloneMedia = document.createElement('img');
+        cloneMedia.src = this.src;
+        cloneMedia.alt = this.alt;
+        lightboxWrapper.appendChild(cloneMedia);
+        lightboxCaption.innerHTML = captionText;
+        
+        lightboxModal.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+      }
+    });
+  });
+
+  function closeLightbox() {
+    lightboxModal.classList.remove('is-open');
+    document.body.style.overflow = '';
+    setTimeout(() => {
+      lightboxWrapper.innerHTML = '';
+      lightboxCaption.innerHTML = '';
+    }, 500);
+  }
+
+  lightboxClosers.forEach(closer => {
+    closer.addEventListener('click', closeLightbox);
+  });
+  
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightboxModal.classList.contains('is-open')) {
+      closeLightbox();
+    }
+  });
+
+});
+</script>
+</body>
+</html>
