@@ -317,26 +317,79 @@
     .act-intro-text { font-size: clamp(0.84rem, 1.7vw, 0.95rem); font-weight: 300; line-height: 2.3; color: rgba(233,229,223,0.6); letter-spacing: 0.06em; opacity: 0; transform: translateY(20px) translateZ(0); will-change: opacity, transform; transition: opacity 1s var(--ease-out-expo) 0.15s, transform 1s var(--ease-out-expo) 0.15s; }
     .act-intro-text.in-view { opacity: 1; transform: translateY(0) translateZ(0); }
 
-    .act-grid { display: grid; gap: clamp(0.8rem, 1.6vw, 1.4rem); }
-    .act-grid.grid-a { grid-template-columns: 58% 1fr 1fr; grid-template-rows: auto auto; }
-    .act-grid.grid-b { grid-template-columns: 1fr 1fr; }
-
-    .act-cell { position: relative; overflow: hidden; background: var(--bg2); border: 0.5px solid var(--border); cursor: zoom-in; opacity: 0; transform: translateY(28px) translateZ(0); will-change: opacity, transform; transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo), border-color 0.4s ease; }
+    /* ============================================================
+       ACT I: BENTO GRID (完璧な高さ揃えの実現)
+    ============================================================ */
+    .act-grid.grid-a { 
+      display: grid; 
+      grid-template-columns: 14fr 5fr 5fr; /* 左側の比率を大きく確保 */
+      gap: clamp(8px, 1vw, 16px); /* ギャラリーライクな細い余白 */
+    }
+    .act-cell { 
+      position: relative; 
+      overflow: hidden; 
+      background: var(--bg2); 
+      border: 0.5px solid var(--border); 
+      cursor: zoom-in; 
+      opacity: 0; 
+      transform: translateY(28px) translateZ(0); 
+      will-change: opacity, transform; 
+      transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo), border-color 0.4s ease; 
+    }
     .act-cell.in-view { opacity: 1; transform: translateY(0) translateZ(0); }
     .act-cell:nth-child(2) { transition-delay: 0.08s; }
     .act-cell:nth-child(3) { transition-delay: 0.16s; }
     .act-cell:nth-child(4) { transition-delay: 0.22s; }
     .act-cell:nth-child(5) { transition-delay: 0.28s; }
-    .act-cell img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(8%) brightness(0.9); transition: transform 1.2s var(--ease-out-expo), filter 0.6s ease; }
+
+    /* 圧倒的に美しいシネマティックホバーエフェクト */
+    .act-cell img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+      filter: grayscale(18%) brightness(0.85); 
+      transition: transform 1.6s var(--ease-out-expo), filter 0.8s ease; 
+    }
     .act-cell:hover { border-color: rgba(196,168,130,0.4); }
-    .act-cell:hover img { transform: scale(1.04); filter: grayscale(0%) brightness(1.02); }
-    .act-cell.tall-left { grid-row: span 2; aspect-ratio: unset; min-height: 100%; }
+    .act-cell:hover img { 
+      transform: scale(1.05); 
+      filter: grayscale(0%) brightness(1.05); 
+    }
+    
+    /* 左の大きいセルは、右のセルの高さ合計に合わせて自動的に高さを揃える */
+    .act-cell.tall-left { 
+      grid-column: 1 / 2;
+      grid-row: span 2; 
+      height: 100%; 
+    }
+    /* 右の小さいセルはアスペクト比で高さを決定する */
+    .act-grid.grid-a > .act-cell:not(.tall-left) {
+      aspect-ratio: 4 / 3;
+      height: 100%;
+      width: 100%;
+    }
+
+    .act-cell-cap { 
+      position: absolute; bottom: 0; left: 0; right: 0; z-index: 2; 
+      padding: 1.2rem 1.5rem; 
+      background: linear-gradient(to top, rgba(6,6,5,0.9), transparent); 
+      font-family: var(--font-en); font-size: 0.6rem; letter-spacing: 0.2em; 
+      color: var(--fg); text-transform: uppercase; pointer-events: none; 
+      opacity: 0.7; transition: opacity 0.4s ease;
+    }
+    .act-cell:hover .act-cell-cap { opacity: 1; }
+
+    /* ============================================================
+       ACT II
+    ============================================================ */
+    .act-grid.grid-b { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: clamp(8px, 1vw, 16px);
+    }
     .act-cell.span2 { grid-column: span 2; }
-    .act-cell.wide { grid-column: 1 / -1; }
-    .act-cell.ar-land { aspect-ratio: 4 / 3; }
-    .act-cell.ar-port { aspect-ratio: 3 / 4; }
-    .act-cell.ar-wide { aspect-ratio: 16 / 7; }
-    .act-cell-cap { position: absolute; bottom: 0; left: 0; right: 0; z-index: 2; padding: 0.8rem 1rem; background: linear-gradient(to top, rgba(6,6,5,0.82), transparent); font-family: var(--font-en); font-size: 0.6rem; letter-spacing: 0.14em; color: var(--dim); text-transform: uppercase; pointer-events: none; }
+    .act-grid.grid-b > .act-cell.span2 { aspect-ratio: 16 / 7; }
+    .act-grid.grid-b > .act-cell:not(.span2) { aspect-ratio: 4 / 3; }
 
     .pull-quote-block { padding: clamp(5rem, 12vh, 9rem) var(--px); text-align: center; position: relative; }
     .pull-quote-block::before { content: ''; display: block; width: 1px; height: 60px; background: linear-gradient(to bottom, transparent, rgba(196,168,130,0.4)); margin: 0 auto 3rem; }
@@ -351,14 +404,14 @@
     .grid-half-full {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: clamp(0.5rem, 1.5vw, 2rem);
+      gap: clamp(8px, 1.5vw, 24px);
       width: 100vw;
       max-width: 1920px; /* 超大型モニタへの制限 */
       margin: 0 auto;
       position: relative;
       left: 50%;
       transform: translateX(-50%);
-      padding: 0 clamp(0.5rem, 2vw, 2rem); /* 画面端への僅かな余白 */
+      padding: 0 clamp(8px, 2vw, 32px); /* 画面端への僅かな余白 */
     }
     .grid-cell {
       position: relative;
@@ -373,9 +426,10 @@
     }
     .grid-cell.in-view { opacity: 1; transform: translateY(0) translateZ(0); }
     .grid-cell:nth-child(2) { transition-delay: 0.15s; }
-    .grid-cell img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(10%) brightness(0.88); transition: transform 1.2s var(--ease-out-expo), filter 0.6s ease; }
-    .grid-cell:hover img { transform: scale(1.04); filter: grayscale(0%) brightness(1.0); border-color: rgba(196,168,130,0.4); }
-    .grid-cell-cap { position: absolute; bottom: 0; left: 0; right: 0; padding: 0.8rem 1rem; background: linear-gradient(to top, rgba(6,6,5,0.8), transparent); font-family: var(--font-en); font-size: 0.6rem; letter-spacing: 0.14em; color: var(--dim); text-transform: uppercase; pointer-events: none; }
+    .grid-cell img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(18%) brightness(0.85); transition: transform 1.6s var(--ease-out-expo), filter 0.8s ease; }
+    .grid-cell:hover img { transform: scale(1.04); filter: grayscale(0%) brightness(1.05); border-color: rgba(196,168,130,0.4); }
+    .grid-cell-cap { position: absolute; bottom: 0; left: 0; right: 0; padding: 1.2rem 1.5rem; background: linear-gradient(to top, rgba(6,6,5,0.9), transparent); font-family: var(--font-en); font-size: 0.6rem; letter-spacing: 0.2em; color: var(--fg); text-transform: uppercase; pointer-events: none; opacity: 0.7; transition: opacity 0.4s ease; }
+    .grid-cell:hover .grid-cell-cap { opacity: 1; }
 
     /* ============================================================
        CAREER (Timeline)
@@ -465,8 +519,10 @@
       .numbers-item:nth-child(even) { border-right: none; }
       .numbers-item:nth-child(3), .numbers-item:nth-child(4) { border-bottom: none; }
       .act-intro { grid-template-columns: 1fr; gap: 2rem; }
+      
       .act-grid.grid-a { grid-template-columns: 1fr 1fr; }
-      .act-cell.tall-left { grid-row: span 1; aspect-ratio: 4/3; }
+      .act-cell.tall-left { grid-column: 1 / -1; grid-row: span 1; aspect-ratio: 16 / 9; }
+      .act-grid.grid-a > .act-cell:not(.tall-left) { aspect-ratio: 4 / 3; }
     }
     @media (max-width: 768px) {
       nav#top-nav { padding: 1rem 1.25rem; justify-content: space-between; align-items: center; }
@@ -474,11 +530,16 @@
       .career-row { grid-template-columns: 60px 1fr; gap: 1rem; padding: 1.2rem 0.5rem; margin: 0 -0.5rem; }
       a.career-row.has-link { padding-right: 2.5rem; }
       a.career-row.has-link::after { right: 0.5rem; }
-      .act-grid.grid-a, .act-grid.grid-b { grid-template-columns: 1fr; }
-      .act-cell.span2, .act-cell.wide { grid-column: span 1; }
-      .act-cell.tall-left { aspect-ratio: 4/3; grid-row: span 1; }
+      
+      .act-grid.grid-a { grid-template-columns: 1fr; }
+      .act-grid.grid-a > .act-cell:not(.tall-left) { aspect-ratio: 16 / 9; }
+      .act-grid.grid-b { grid-template-columns: 1fr; }
+      .act-cell.span2 { grid-column: span 1; }
+      .act-grid.grid-b > .act-cell { aspect-ratio: 4 / 3 !important; }
+      
       .grid-half-full { grid-template-columns: 1fr; padding: 0 var(--px); }
       .grid-cell { aspect-ratio: 4 / 3; }
+      
       footer { padding: 3rem 1.5rem; display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; text-align: left; }
     }
     @media (max-width: 480px) {
@@ -496,7 +557,6 @@
 <body id="top">
 
   <nav id="top-nav">
-    <!-- Header Tooltips: Only Logo and Contact CTA have tooltips -->
     <a href="index.html" class="nav-logo-unified tooltip-target" data-tooltip="トップページへもどる">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
       <li><a href="#profile" class="js-scroll-to">Profile</a></li>
@@ -541,7 +601,7 @@
     <section class="profile-section" id="profile">
       <div class="section-label">Profile</div>
       <div class="profile-split">
-        <!-- 画像拡大ツールチップを削除 -->
+        <!-- 拡大ツールチップは削除 -->
         <figure class="profile-portrait js-modal-open"
           data-img-src="images/IMG_7683.JPG"
           data-cap-jp="津田 翔一" data-cap-en="Tsuda Shoichi, at work">
@@ -644,6 +704,7 @@
             </p>
           </div>
 
+          <!-- 完璧に高さが揃うスタイリッシュなBento Grid -->
           <div class="act-grid grid-a">
             <div class="act-cell tall-left js-modal-open"
               data-img-src="images/IMG_3157.JPG"
@@ -651,25 +712,25 @@
               <img src="images/IMG_3157.JPG" alt="制作風景" loading="lazy">
               <figcaption class="act-cell-cap">Facing the canvas</figcaption>
             </div>
-            <div class="act-cell ar-land js-modal-open"
+            <div class="act-cell js-modal-open"
               data-img-src="images/IMG_3153.JPG"
               data-cap-jp="制作風景" data-cap-en="Brush detail, close-up">
               <img src="images/IMG_3153.JPG" alt="制作風景" loading="lazy">
               <figcaption class="act-cell-cap">Brush detail</figcaption>
             </div>
-            <div class="act-cell ar-land js-modal-open"
+            <div class="act-cell js-modal-open"
               data-img-src="images/IMG_7606.JPG"
               data-cap-jp="制作風景" data-cap-en="Broad red strokes">
               <img src="images/IMG_7606.JPG" alt="制作風景" loading="lazy">
               <figcaption class="act-cell-cap">Broad red strokes</figcaption>
             </div>
-            <div class="act-cell ar-land js-modal-open"
+            <div class="act-cell js-modal-open"
               data-img-src="images/IMG_7645.JPG"
               data-cap-jp="制作風景" data-cap-en="Creating depth, two panels">
               <img src="images/IMG_7645.JPG" alt="制作風景" loading="lazy">
               <figcaption class="act-cell-cap">Creating depth</figcaption>
             </div>
-            <div class="act-cell ar-land js-modal-open"
+            <div class="act-cell js-modal-open"
               data-img-src="images/IMG_3151.JPG"
               data-cap-jp="制作風景" data-cap-en="A pause mid-stroke">
               <img src="images/IMG_3151.JPG" alt="制作風景" loading="lazy">
@@ -713,19 +774,19 @@
           </div>
 
           <div class="act-grid grid-b">
-            <div class="act-cell span2 ar-wide js-modal-open"
+            <div class="act-cell span2 js-modal-open"
               data-img-src="images/IMG_7823.JPG"
               data-cap-jp="ステージ" data-cap-en="Harmony of art and music">
               <img src="images/IMG_7823.JPG" alt="ステージ 音楽と絵画" loading="lazy">
               <figcaption class="act-cell-cap">Harmony of art and music</figcaption>
             </div>
-            <div class="act-cell ar-port js-modal-open"
+            <div class="act-cell js-modal-open"
               data-img-src="images/IMG_7834.JPG"
               data-cap-jp="ライブペイント" data-cap-en="Painting on stage, by night">
               <img src="images/IMG_7834.JPG" alt="ライブペイント" loading="lazy">
               <figcaption class="act-cell-cap">Painting on stage</figcaption>
             </div>
-            <div class="act-cell ar-port js-modal-open"
+            <div class="act-cell js-modal-open"
               data-img-src="images/IMG_7819.JPG"
               data-cap-jp="アーティストトーク" data-cap-en="Artist's voice, on stage">
               <img src="images/IMG_7819.JPG" alt="アーティストトーク" loading="lazy">
@@ -1090,7 +1151,7 @@
       }
     }, { passive: true });
 
-    /* トップメニューのページ内スクロールリンク制御 */
+    /* ── ページ内スクロール制御（Contactなどは通常リンクとして機能） ── */
     headerLinks.forEach(link => {
       link.addEventListener('click', (e) => {
         const href = link.getAttribute('href');
