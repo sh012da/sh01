@@ -20,7 +20,7 @@
 
   <style>
     /* ============================================================
-       DESIGN TOKENS
+       DESIGN TOKENS & RESET
     ============================================================ */
     :root {
       --bg:        #060605;
@@ -31,15 +31,13 @@
       --dim:       rgba(233,229,223,0.22);
       --whisper:   rgba(233,229,223,0.10);
       --accent:    #c4a882;
-      --accent2:   #7c9aa0;
       --border:    rgba(233,229,223,0.08);
       --border-md: rgba(233,229,223,0.20);
       --font-en:   'Cormorant Garamond', serif;
       --font-ja:   'Noto Serif JP', serif;
       
-      /* アニメーション用イージング関数 */
       --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-      --ease-elastic:  cubic-bezier(0.175, 0.885, 0.32, 1.15); /* 跳ね返るような質量感 */
+      --ease-elastic:  cubic-bezier(0.175, 0.885, 0.32, 1.15);
       --ease-cinematic: cubic-bezier(0.7, 0, 0.2, 1);
       
       --px:        clamp(1.25rem, 6vw, 5rem);
@@ -62,12 +60,13 @@
     }
     body.is-locked { overflow: hidden; }
     img { max-width: 100%; height: auto; display: block; }
-    a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease; }
+    a { color: var(--fg); text-decoration: none; transition: opacity 0.3s ease, outline 0.2s ease; }
     a:hover { opacity: 0.45; }
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
     p { word-break: auto-phrase; }
 
     /* ============================================================
-       NAVIGATION (Staggered Slide-out)
+       NAVIGATION
     ============================================================ */
     nav#top-nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 300;
@@ -87,7 +86,6 @@
       border-color: var(--border);
     }
 
-    /* Navbar items extreme fade & slide */
     .nav-logo-unified, .nav-links li, .nav-cta {
       opacity: 0;
       transform: translateY(-20px) scale(0.98);
@@ -129,39 +127,33 @@
     nav#top-nav.is-loaded .nav-cta { transition: opacity 1s var(--ease-out-expo) 2.1s, transform 1s var(--ease-out-expo) 2.1s, background 0.25s ease, color 0.25s ease; }
 
     /* ============================================================
-       HERO (The "Event Horizon" Animation)
+       HERO
     ============================================================ */
     .hero {
       position: relative; height: 100svh; min-height: 580px;
       display: flex; flex-direction: column; justify-content: flex-end;
       padding: 0 var(--px) clamp(3.5rem, 9vh, 7rem); overflow: hidden;
-      background: #000; /* 漆黒からのスタート */
+      background: #000;
     }
-    
-    /* 映像が中心から円形に開きながら、空間全体が後退する */
     .hero-video-wrap {
       position: absolute; inset: 0; z-index: 1; overflow: hidden;
-      clip-path: circle(0% at 50% 50%); /* 初期は完全に見えない */
+      clip-path: circle(0% at 50% 50%);
       transform: scale(1.15) translateZ(0);
       will-change: clip-path, transform;
       transition: clip-path 2.8s var(--ease-cinematic) 0.1s,
                   transform 3.8s var(--ease-out-expo) 0.1s;
     }
     .hero-video-wrap.revealed {
-      clip-path: circle(150% at 50% 50%); /* 画面全体へ拡張 */
+      clip-path: circle(150% at 50% 50%);
       transform: scale(1) translateZ(0);
     }
-    
     .hero-video-wrap video { width: 100%; height: 100%; object-fit: cover; }
     .hero-video-overlay {
       position: absolute; inset: 0; z-index: 2;
       background: linear-gradient(to top, rgba(6,6,5,0.85) 0%, rgba(6,6,5,0.2) 40%, transparent 100%);
       pointer-events: none;
     }
-    
     .hero-inner { position: relative; z-index: 3; text-shadow: 0 4px 24px rgba(0,0,0,0.9); }
-    
-    /* Eyebrow: 横から閃光のように伸びる */
     .hero-eyebrow {
       font-family: var(--font-en); font-size: clamp(0.56rem, 1.3vw, 0.63rem);
       letter-spacing: 0.5em; color: var(--fg); text-transform: uppercase;
@@ -175,45 +167,35 @@
       box-shadow: 0 1px 6px rgba(196,168,130,0.6);
     }
     .hero-eyebrow.revealed { clip-path: inset(0 0% 0 0); }
-
-    /* 日本語タイトル: 重力と結像（Gravitational Focus） */
     .hero-title {
       font-family: var(--font-ja); font-size: clamp(2.6rem, 9.5vw, 7.2rem); font-weight: 200;
       line-height: 1.05; letter-spacing: -0.01em; color: #fff; margin-bottom: clamp(0.8rem, 2vh, 1.8rem);
       display: flex; flex-wrap: wrap; gap: 0.05em; overflow: visible;
-      perspective: 1200px; /* 3D空間の奥行き */
+      perspective: 1200px;
     }
     .hero-title .char {
       display: inline-block; 
       opacity: 0; 
       filter: blur(24px);
-      /* 奥に倒れ、深く引っ込んだ状態からスタート */
       transform: translate3d(0, 40px, -600px) rotateX(70deg) rotateY(-10deg);
       transform-origin: center bottom;
       will-change: transform, opacity, filter;
       transition: opacity 1s ease,
                   filter 1.8s ease-out,
-                  transform 2s var(--ease-elastic); /* ゴムのような質量のあるバネ */
+                  transform 2s var(--ease-elastic);
     }
     .hero-title.revealed .char { 
-      opacity: 1; 
-      filter: blur(0); 
-      transform: translate3d(0, 0, 0) rotateX(0) rotateY(0); 
+      opacity: 1; filter: blur(0); transform: translate3d(0, 0, 0) rotateX(0) rotateY(0); 
     }
-    /* 時間差（スタッガード）で叩きつけるように出現 */
     .hero-title .char:nth-child(1) { transition-delay: 0.9s; }
     .hero-title .char:nth-child(2) { transition-delay: 1.05s; }
     .hero-title .char:nth-child(3) { transition-delay: 1.15s; }
     .hero-title .char:nth-child(4) { transition-delay: 1.3s; }
 
-    /* 英語タイトル: 次元スリット（Dimensional Slit） */
     .hero-title-en {
       font-family: var(--font-en); font-size: clamp(0.95rem, 3vw, 2rem);
       font-weight: 300; font-style: italic; color: var(--accent);
-      opacity: 0;
-      letter-spacing: 2.5em; /* 異常な広さからスタート */
-      filter: blur(12px);
-      /* 中央の水平スリットから上下に開くクリップマスク */
+      opacity: 0; letter-spacing: 2.5em; filter: blur(12px);
       clip-path: polygon(0 50%, 100% 50%, 100% 50%, 0 50%);
       transform: scale(1.1) translateY(10px);
       will-change: clip-path, letter-spacing, opacity, filter, transform;
@@ -225,14 +207,11 @@
       white-space: nowrap;
     }
     .hero-title-en.revealed { 
-      opacity: 1;
-      letter-spacing: 0.25em; /* 適正間隔へ収束 */
-      filter: blur(0);
-      clip-path: polygon(0 -50%, 100% -50%, 100% 150%, 0 150%); /* 完全に開く */
+      opacity: 1; letter-spacing: 0.25em; filter: blur(0);
+      clip-path: polygon(0 -50%, 100% -50%, 100% 150%, 0 150%);
       transform: scale(1) translateY(0);
     }
 
-    /* Meta text */
     .hero-meta {
       display: flex; align-items: center; gap: 1.8rem;
       margin-top: clamp(2rem, 5vh, 4.5rem); opacity: 0; transform: translateY(14px);
@@ -250,7 +229,6 @@
       letter-spacing: 0.24em; color: #fff; text-transform: uppercase;
     }
     
-    /* Scroll Indicator */
     .hero-scroll {
       position: absolute; bottom: clamp(2rem, 5vh, 4rem); right: var(--px);
       z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 12px;
@@ -271,7 +249,9 @@
       100% { top: -100%; opacity: 0; }
     }
 
-    /* 以下、全体レイアウト用のCSSは最適化済みのものを維持 */
+    /* ============================================================
+       PROFILE
+    ============================================================ */
     .concept-section { position: relative; z-index: 3; padding: clamp(6rem, 13vh, 10rem) var(--px) clamp(3rem, 7vh, 5rem); max-width: 900px; margin: 0 auto; text-align: center; }
     .concept-text { font-size: clamp(0.9rem, 2vw, 1.05rem); font-weight: 300; line-height: 2.3; color: rgba(233,229,223,0.85); letter-spacing: 0.08em; }
 
@@ -284,6 +264,7 @@
     .profile-portrait:hover { border-color: rgba(196,168,130,0.35); box-shadow: 0 16px 40px rgba(0,0,0,0.5); }
     .profile-portrait:hover img { transform: scale(1.04); filter: grayscale(0%) brightness(1.0); }
     .profile-portrait-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 1rem 1.2rem; background: linear-gradient(to top, rgba(6,6,5,0.85), transparent); font-family: var(--font-en); font-size: 0.62rem; letter-spacing: 0.16em; color: var(--dim); text-transform: uppercase; }
+    
     .profile-facts { opacity: 0; transform: translateY(24px) translateZ(0); will-change: opacity, transform; transition: opacity 1s var(--ease-out-expo) 0.15s, transform 1s var(--ease-out-expo) 0.15s; }
     .profile-facts.in-view { opacity: 1; transform: translateY(0) translateZ(0); }
     .profile-name-jp { font-family: var(--font-ja); font-weight: 300; font-size: clamp(1.5rem, 3vw, 2.1rem); color: var(--fg); margin-bottom: 0.4rem; letter-spacing: 0.06em; }
@@ -307,6 +288,9 @@
     .numbers-label { font-family: var(--font-en); font-size: clamp(0.58rem, 1.2vw, 0.66rem); letter-spacing: 0.28em; color: var(--muted); text-transform: uppercase; }
     .numbers-label-ja { font-family: var(--font-ja); font-size: clamp(0.72rem, 1.4vw, 0.82rem); color: rgba(233,229,223,0.5); font-weight: 300; margin-top: 0.25rem; }
 
+    /* ============================================================
+       MAKING (Studio & Performance)
+    ============================================================ */
     .making-section { padding: 0; overflow: hidden; }
     .making-header { padding: clamp(6rem, 13vh, 10rem) var(--px) clamp(4rem, 9vh, 7rem); max-width: 900px; margin: 0 auto; text-align: center; }
     .making-header-eyebrow { font-family: var(--font-en); font-size: clamp(0.54rem, 1.2vw, 0.62rem); letter-spacing: 0.44em; color: var(--muted); text-transform: uppercase; margin-bottom: 2rem; }
@@ -325,6 +309,7 @@
     .act-opener.in-view .act-title-ja { opacity: 1; transform: translateY(0) translateZ(0); }
     .act-title-en { font-family: var(--font-en); font-style: italic; font-size: clamp(0.8rem, 2vw, 1.1rem); letter-spacing: 0.3em; color: var(--accent); margin-top: 0.5rem; opacity: 0; transform: translateY(16px) translateZ(0); will-change: opacity, transform; transition: opacity 1s var(--ease-out-expo) 0.28s, transform 1s var(--ease-out-expo) 0.28s; }
     .act-opener.in-view .act-title-en { opacity: 1; transform: translateY(0) translateZ(0); }
+    
     .act-body { padding: clamp(5rem, 10vh, 8rem) var(--px); max-width: 1300px; margin: 0 auto; }
     .act-intro { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(3rem, 6vw, 6rem); align-items: end; margin-bottom: clamp(5rem, 10vh, 8rem); }
     .act-intro-quote { font-family: var(--font-ja); font-size: clamp(1.3rem, 2.6vw, 2rem); font-weight: 200; color: var(--fg); line-height: 1.7; letter-spacing: 0.05em; border-left: 2px solid var(--accent); padding-left: 2rem; opacity: 0; transform: translateX(-24px) translateZ(0); will-change: opacity, transform; transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo); word-break: keep-all; }
@@ -335,7 +320,6 @@
     .act-grid { display: grid; gap: clamp(0.8rem, 1.6vw, 1.4rem); }
     .act-grid.grid-a { grid-template-columns: 58% 1fr 1fr; grid-template-rows: auto auto; }
     .act-grid.grid-b { grid-template-columns: 1fr 1fr; }
-    .act-grid.grid-c { grid-template-columns: 1fr 1fr 1fr; }
 
     .act-cell { position: relative; overflow: hidden; background: var(--bg2); border: 0.5px solid var(--border); cursor: zoom-in; opacity: 0; transform: translateY(28px) translateZ(0); will-change: opacity, transform; transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo), border-color 0.4s ease; }
     .act-cell.in-view { opacity: 1; transform: translateY(0) translateZ(0); }
@@ -351,7 +335,6 @@
     .act-cell.wide { grid-column: 1 / -1; }
     .act-cell.ar-land { aspect-ratio: 4 / 3; }
     .act-cell.ar-port { aspect-ratio: 3 / 4; }
-    .act-cell.ar-sq   { aspect-ratio: 1 / 1; }
     .act-cell.ar-wide { aspect-ratio: 16 / 7; }
     .act-cell-cap { position: absolute; bottom: 0; left: 0; right: 0; z-index: 2; padding: 0.8rem 1rem; background: linear-gradient(to top, rgba(6,6,5,0.82), transparent); font-family: var(--font-en); font-size: 0.6rem; letter-spacing: 0.14em; color: var(--dim); text-transform: uppercase; pointer-events: none; }
 
@@ -362,21 +345,42 @@
     .pull-quote-attr { margin-top: 2rem; font-family: var(--font-en); font-style: italic; font-size: clamp(0.7rem, 1.4vw, 0.8rem); color: var(--accent); letter-spacing: 0.2em; }
     .pull-quote-block::after { content: ''; display: block; width: 1px; height: 60px; background: linear-gradient(to top, transparent, rgba(196,168,130,0.4)); margin: 3rem auto 0; }
 
-    .filmstrip { width: 100vw; left: 50%; transform: translateX(-50%); position: relative; overflow-x: auto; overflow-y: hidden; display: flex; gap: clamp(0.6rem, 1.2vw, 1rem); padding: 0 var(--px); scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch; }
-    .filmstrip::-webkit-scrollbar { display: none; }
-    .filmstrip::after { content: ""; flex: 0 0 1px; margin-left: calc(-1 * clamp(0.6rem, 1.2vw, 1rem)); padding-right: var(--px); }
-    .filmstrip-cell { flex-shrink: 0; position: relative; overflow: hidden; border: 0.5px solid var(--border); cursor: zoom-in; opacity: 0; transform: translateY(24px) translateZ(0); will-change: opacity, transform; transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo); }
-    .filmstrip-cell.in-view { opacity: 1; transform: translateY(0) translateZ(0); }
-    .filmstrip-cell:nth-child(2) { transition-delay: 0.1s; }
-    .filmstrip-cell:nth-child(3) { transition-delay: 0.2s; }
-    .filmstrip-cell img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(10%) brightness(0.88); transition: transform 1.2s var(--ease-out-expo), filter 0.6s ease; }
-    .filmstrip-cell:hover img { transform: scale(1.04); filter: grayscale(0%) brightness(1.0); }
-    .filmstrip-cell-cap { position: absolute; bottom: 0; left: 0; right: 0; padding: 0.8rem 1rem; background: linear-gradient(to top, rgba(6,6,5,0.8), transparent); font-family: var(--font-en); font-size: 0.6rem; letter-spacing: 0.14em; color: var(--dim); text-transform: uppercase; pointer-events: none; }
-    .filmstrip-cell.fs-wide { width: clamp(400px, 45vw, 700px); aspect-ratio: 3 / 2; }
-    .filmstrip-cell.fs-port { width: clamp(260px, 28vw, 440px); aspect-ratio: 2 / 3; }
-    .filmstrip-cell.fs-sq   { width: clamp(280px, 30vw, 480px); aspect-ratio: 1 / 1; }
+    /* ============================================================
+       ACT III: FULL BLEED GRID (画面ギリギリに広がる画像レイアウト)
+    ============================================================ */
+    .grid-half-full {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(0.5rem, 1.5vw, 2rem);
+      width: 100vw;
+      max-width: 1920px; /* 超大型モニタへの制限 */
+      margin: 0 auto;
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0 clamp(0.5rem, 2vw, 2rem); /* 画面端への僅かな余白 */
+    }
+    .grid-cell {
+      position: relative;
+      overflow: hidden;
+      border: 0.5px solid var(--border);
+      cursor: zoom-in;
+      opacity: 0;
+      transform: translateY(24px) translateZ(0);
+      will-change: opacity, transform;
+      transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo);
+      aspect-ratio: 16 / 9;
+    }
+    .grid-cell.in-view { opacity: 1; transform: translateY(0) translateZ(0); }
+    .grid-cell:nth-child(2) { transition-delay: 0.15s; }
+    .grid-cell img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(10%) brightness(0.88); transition: transform 1.2s var(--ease-out-expo), filter 0.6s ease; }
+    .grid-cell:hover img { transform: scale(1.04); filter: grayscale(0%) brightness(1.0); border-color: rgba(196,168,130,0.4); }
+    .grid-cell-cap { position: absolute; bottom: 0; left: 0; right: 0; padding: 0.8rem 1rem; background: linear-gradient(to top, rgba(6,6,5,0.8), transparent); font-family: var(--font-en); font-size: 0.6rem; letter-spacing: 0.14em; color: var(--dim); text-transform: uppercase; pointer-events: none; }
 
-    .career-section { padding: clamp(5rem, 12vh, 9rem) var(--px) clamp(6rem, 13vh, 10rem); background: var(--bg2); border-top: 0.5px solid var(--border); }
+    /* ============================================================
+       CAREER (Timeline)
+    ============================================================ */
+    .career-section { padding: clamp(5rem, 12vh, 9rem) var(--px) clamp(6rem, 13vh, 10rem); background: var(--bg2); border-top: 0.5px solid var(--border); margin-top: clamp(5rem, 10vh, 8rem); }
     .career-container { max-width: 1100px; margin: 0 auto; }
     .career-group { margin-bottom: clamp(4rem, 9vh, 6rem); }
     .career-group:last-child { margin-bottom: 0; }
@@ -384,20 +388,31 @@
     .career-group-title { font-family: var(--font-ja); font-weight: 300; font-size: clamp(1.2rem, 2.4vw, 1.6rem); color: var(--fg); letter-spacing: 0.06em; }
     .career-group-title-en { font-family: var(--font-en); font-style: italic; font-size: clamp(0.7rem, 1.4vw, 0.85rem); color: var(--muted); letter-spacing: 0.18em; }
     .career-list { display: flex; flex-direction: column; }
+    
     .career-row { display: grid; grid-template-columns: clamp(70px, 10vw, 110px) 1fr; gap: clamp(1rem, 3vw, 2.5rem); align-items: baseline; padding: clamp(1.1rem, 2.4vh, 1.6rem) 1rem; margin: 0 -1rem; border-bottom: 0.5px solid var(--border); opacity: 0; transform: translateY(16px) translateZ(0); will-change: opacity, transform; transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo), background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease; position: relative; text-decoration: none; color: inherit; border-radius: 4px; }
     .career-row.in-view { opacity: 1; transform: translateY(0) translateZ(0); }
     .career-row:last-child { border-bottom: none; }
     .career-year { font-family: var(--font-en); font-weight: 300; font-size: clamp(1.1rem, 2.2vw, 1.6rem); color: var(--accent); letter-spacing: 0.02em; transition: color 0.4s ease, text-shadow 0.4s ease; }
     .career-detail-title { font-size: clamp(0.86rem, 1.6vw, 0.96rem); color: var(--fg); line-height: 1.9; font-weight: 300; transition: color 0.4s ease, text-shadow 0.4s ease; }
     .career-detail-venue { display: block; margin-top: 0.25rem; font-family: var(--font-en); font-size: clamp(0.66rem, 1.2vw, 0.74rem); color: var(--muted); letter-spacing: 0.06em; font-style: italic; transition: color 0.4s ease; }
+    
     a.career-row.has-link { cursor: pointer; z-index: 1; }
     a.career-row.has-link:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(196, 168, 130, 0.4); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6); }
     a.career-row.has-link::after { content: '→'; position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); font-family: var(--font-en); font-size: 1.4rem; color: var(--accent); opacity: 0; transition: all 0.4s var(--ease-out-expo); }
+    
+    /* External link icon */
+    a.career-row.has-link[target="_blank"]::after { content: '↗'; font-size: 1.2rem; }
+    
     a.career-row.has-link:hover::after { opacity: 1; transform: translate(6px, -50%); color: #fff; }
+    a.career-row.has-link[target="_blank"]:hover::after { transform: translate(4px, calc(-50% - 4px)); }
+    
     a.career-row.has-link:hover .career-detail-title { color: #fff; text-shadow: 0 0 12px rgba(255, 255, 255, 0.25); }
     a.career-row.has-link:hover .career-year { color: #fff; text-shadow: 0 0 12px rgba(196, 168, 130, 0.4); }
     a.career-row.has-link:hover .career-detail-venue { color: rgba(233, 229, 223, 0.85); }
 
+    /* ============================================================
+       CONTACT & FOOTER
+    ============================================================ */
     .contact-section { padding: clamp(7rem, 15vh, 11rem) var(--px); text-align: center; border-top: 0.5px solid var(--border); background: radial-gradient(circle at center, rgba(196,168,130,0.06) 0%, var(--bg) 70%); }
     .contact-heading { font-family: var(--font-ja); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 200; line-height: 1.2; color: var(--fg); margin-bottom: 1.8rem; letter-spacing: 0.05em; }
     .contact-body-text { font-family: var(--font-ja); font-size: clamp(0.85rem, 1.8vw, 0.95rem); color: rgba(233,229,223,0.55); margin: 0 auto 3rem; max-width: 450px; line-height: 2.2; }
@@ -408,6 +423,9 @@
     .footer-logo { font-family: var(--font-ja); font-size: clamp(0.75rem, 1.8vw, 0.88rem); font-weight: 200; color: rgba(233,229,223,0.28); letter-spacing: 0.08em; margin-bottom: 0.5rem; }
     .footer-copy { font-family: var(--font-en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--dim); }
 
+    /* ============================================================
+       MODALS & UTILS
+    ============================================================ */
     .image-modal { position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.55s var(--ease-out-expo), visibility 0.55s; }
     .image-modal.is-active { opacity: 1; visibility: visible; }
     .modal-bg { position: absolute; inset: 0; background: rgba(6,6,5,0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); cursor: zoom-out; }
@@ -432,8 +450,9 @@
     .back-to-top:hover .b2t-text { color: var(--bg); transform: translateY(-2px); }
     .back-to-top:hover .b2t-progress-value { stroke: var(--fg); }
 
-    .mouse-tooltip { position: fixed; top: 0; left: 0; pointer-events: none; background: rgba(10, 10, 9, 0.95); color: rgba(233, 229, 223, 0.9); padding: 6px 12px; border-radius: 4px; font-size: 11px; font-family: var(--font-ja); letter-spacing: 0.05em; border: 0.5px solid rgba(196, 168, 130, 0.3); box-shadow: 0 4px 16px rgba(0,0,0,0.5); opacity: 0; transform: translate(15px, 15px) translateZ(0); transition: opacity 0.2s ease; z-index: 99999; white-space: nowrap; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
-    .mouse-tooltip.visible { opacity: 1; }
+    /* Custom Mouse Tooltip */
+    .mouse-tooltip { position: fixed; top: 0; left: 0; pointer-events: none; background: rgba(10, 10, 9, 0.95); color: rgba(233, 229, 223, 0.9); padding: 8px 14px; border-radius: 4px; font-size: 12px; font-family: var(--font-ja); letter-spacing: 0.05em; border: 0.5px solid rgba(196, 168, 130, 0.3); box-shadow: 0 6px 20px rgba(0,0,0,0.6); opacity: 0; transform: translate(15px, 15px) scale(0.96); transition: opacity 0.25s ease, transform 0.25s var(--ease-out-expo); z-index: 99999; white-space: nowrap; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: flex; align-items: center; gap: 6px; }
+    .mouse-tooltip.visible { opacity: 1; transform: translate(15px, 15px) scale(1); }
     @media (pointer: coarse) { .mouse-tooltip { display: none !important; } }
 
     /* RESPONSIVE */
@@ -448,7 +467,6 @@
       .act-intro { grid-template-columns: 1fr; gap: 2rem; }
       .act-grid.grid-a { grid-template-columns: 1fr 1fr; }
       .act-cell.tall-left { grid-row: span 1; aspect-ratio: 4/3; }
-      .act-grid.grid-c { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 768px) {
       nav#top-nav { padding: 1rem 1.25rem; justify-content: space-between; align-items: center; }
@@ -456,17 +474,16 @@
       .career-row { grid-template-columns: 60px 1fr; gap: 1rem; padding: 1.2rem 0.5rem; margin: 0 -0.5rem; }
       a.career-row.has-link { padding-right: 2.5rem; }
       a.career-row.has-link::after { right: 0.5rem; }
-      .act-grid.grid-a, .act-grid.grid-b, .act-grid.grid-c { grid-template-columns: 1fr; }
+      .act-grid.grid-a, .act-grid.grid-b { grid-template-columns: 1fr; }
       .act-cell.span2, .act-cell.wide { grid-column: span 1; }
       .act-cell.tall-left { aspect-ratio: 4/3; grid-row: span 1; }
-      .filmstrip { flex-direction: column; width: 100%; left: 0; transform: none; padding: 0 var(--px); overflow-x: visible; }
-      .filmstrip::after { display: none; }
-      .filmstrip-cell.fs-wide, .filmstrip-cell.fs-port, .filmstrip-cell.fs-sq { width: 100%; aspect-ratio: 3 / 2; }
+      .grid-half-full { grid-template-columns: 1fr; padding: 0 var(--px); }
+      .grid-cell { aspect-ratio: 4 / 3; }
       footer { padding: 3rem 1.5rem; display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; text-align: left; }
     }
     @media (max-width: 480px) {
       .hero-title { gap: 0.02em; }
-      .hero-title-en { letter-spacing: 0.8em; } /* スマホ用の初期幅を調整 */
+      .hero-title-en { letter-spacing: 0.8em; } 
       .hero-title-en.revealed { letter-spacing: 0.15em; }
       .hero-scroll { display: none; }
       .modal-content img { max-height: 60svh; }
@@ -479,13 +496,14 @@
 <body id="top">
 
   <nav id="top-nav">
-    <a href="index.html" class="nav-logo-unified">Tsuda Shoichi</a>
+    <!-- Header Tooltips: Only Logo and Contact CTA have tooltips -->
+    <a href="index.html" class="nav-logo-unified tooltip-target" data-tooltip="トップページへもどる">Tsuda Shoichi</a>
     <ul class="nav-links" id="nav-links">
       <li><a href="#profile" class="js-scroll-to">Profile</a></li>
       <li><a href="#making" class="js-scroll-to">Making</a></li>
       <li><a href="#career" class="js-scroll-to">Career</a></li>
     </ul>
-    <a href="contact.html" class="nav-cta" id="nav-cta-btn">Contact</a>
+    <a href="https://sh012da.github.io/sh01/contact.html" class="nav-cta tooltip-target" data-tooltip="お問い合わせページへ進む">Contact</a>
   </nav>
 
   <main>
@@ -523,6 +541,7 @@
     <section class="profile-section" id="profile">
       <div class="section-label">Profile</div>
       <div class="profile-split">
+        <!-- 画像拡大ツールチップを削除 -->
         <figure class="profile-portrait js-modal-open"
           data-img-src="images/IMG_7683.JPG"
           data-cap-jp="津田 翔一" data-cap-en="Tsuda Shoichi, at work">
@@ -658,7 +677,9 @@
             </div>
           </div>
         </div>
-      </div><div class="pull-quote-block">
+      </div>
+      
+      <div class="pull-quote-block">
         <p class="pull-quote-text">
           「絵を描くことは、土地の記憶を身体で翻訳する行為だ。<br>
           筆が動くたびに、左美都の地層が一枚ずつ剥がれてくる」
@@ -712,7 +733,9 @@
             </div>
           </div>
         </div>
-      </div><div class="pull-quote-block">
+      </div>
+      
+      <div class="pull-quote-block">
         <p class="pull-quote-text">
           制作とは〈単独者の行為〉から始まり、<br>
           いつか〈場との共鳴〉へと開かれていく。
@@ -722,10 +745,10 @@
 
       <div class="act">
         <div class="act-opener js-modal-open"
-          data-img-src="images/image_50374657.JPG"
-          data-cap-jp="ギャラリートーク"
-          data-cap-en="Gallery talk, solo exhibition">
-          <img src="images/image_50374657.JPG" alt="ギャラリートーク" loading="lazy">
+          data-img-src="images/image_6bb38d.png"
+          data-cap-jp="ギャラリートーク / パネルディスカッション"
+          data-cap-en="Gallery talk & Panel discussion">
+          <img src="images/image_6bb38d.png" alt="ギャラリートークとパネルディスカッション" loading="lazy">
           <div class="act-opener-overlay">
             <span class="act-num">III</span>
             <h3 class="act-title-ja">対 話</h3>
@@ -744,23 +767,26 @@
               ギャラリーでのトーク、パネルディスカッション、そして観客との笑顔の交流。津田翔一の制作は、内なる洞窟から外の世界へと絶えず往来する。作品について語る言葉も、制作の一部だ。他者と対話することで、左美都の記憶はより普遍的な問いへと変容してゆく。
             </p>
           </div>
-
-          <div class="filmstrip">
-            <figure class="filmstrip-cell fs-wide js-modal-open"
-              data-img-src="images/image_50374657.JPG"
-              data-cap-jp="ギャラリートーク" data-cap-en="Gallery talk, solo exhibition">
-              <img src="images/image_50374657.JPG" alt="ギャラリートーク" loading="lazy">
-              <figcaption class="filmstrip-cell-cap">Gallery talk</figcaption>
-            </figure>
-            <figure class="filmstrip-cell fs-wide js-modal-open"
-              data-img-src="images/image_6487327%20(1).JPG"
-              data-cap-jp="パネルディスカッション" data-cap-en="Panel discussion">
-              <img src="images/image_6487327%20(1).JPG" alt="パネルディスカッション" loading="lazy">
-              <figcaption class="filmstrip-cell-cap">Panel discussion</figcaption>
-            </figure>
-          </div>
         </div>
-      </div></section>
+        
+        <!-- 画面幅ギリギリ（フルブリード）で配置 -->
+        <div class="grid-half-full">
+          <figure class="grid-cell js-modal-open"
+            data-img-src="images/image_50374657.JPG"
+            data-cap-jp="ギャラリートーク" data-cap-en="Gallery talk, solo exhibition">
+            <img src="images/image_50374657.JPG" alt="ギャラリートーク" loading="lazy">
+            <figcaption class="grid-cell-cap">Gallery talk</figcaption>
+          </figure>
+          <figure class="grid-cell js-modal-open"
+            data-img-src="images/image_6487327%20(1).JPG"
+            data-cap-jp="パネルディスカッション" data-cap-en="Panel discussion">
+            <img src="images/image_6487327%20(1).JPG" alt="パネルディスカッション" loading="lazy">
+            <figcaption class="grid-cell-cap">Panel discussion</figcaption>
+          </figure>
+        </div>
+
+      </div>
+    </section>
 
     <section class="career-section" id="career">
       <div class="career-container">
@@ -772,14 +798,14 @@
             <span class="career-group-title-en">Solo Exhibitions</span>
           </div>
           <div class="career-list">
-            <a href="exhibition/bunka.html" class="career-row has-link">
+            <a href="exhibition/bunka.html" class="career-row has-link tooltip-target" data-tooltip="展示の詳細を見る">
               <span class="career-year">2024</span>
               <div>
                 <span class="career-detail-title">文化庁メディア芸術クリエイター育成支援事業採択企画展示</span>
                 <span class="career-detail-venue">北野カルチュラルセンター（長野県長野市） / 2nen Gallery（東京都中央区）</span>
               </div>
             </a>
-            <a href="exhibition/nagano2022.html" class="career-row has-link">
+            <a href="exhibition/nagano2022.html" class="career-row has-link tooltip-target" data-tooltip="展示の詳細を見る">
               <span class="career-year">2022</span>
               <div>
                 <span class="career-detail-title">油彩画展 ～＋覚知ka～</span>
@@ -802,14 +828,14 @@
             <span class="career-group-title-en">Group Exhibitions & Projects</span>
           </div>
           <div class="career-list">
-            <a href="exhibition/nN.html" class="career-row has-link">
+            <a href="exhibition/nN.html" class="career-row has-link tooltip-target" data-tooltip="展示の詳細を見る">
               <span class="career-year">2026</span>
               <div>
                 <span class="career-detail-title">next × N-ART 展</span>
                 <span class="career-detail-venue">ホクト文化ホール 1F ギャラリー（長野県長野市）</span>
               </div>
             </a>
-            <a href="work-samizu.html" class="career-row has-link">
+            <a href="work-samizu.html" class="career-row has-link tooltip-target" data-tooltip="展示の詳細を見る">
               <span class="career-year">2025</span>
               <div>
                 <span class="career-detail-title">ふうけいのまにまに</span>
@@ -830,7 +856,7 @@
                 <span class="career-detail-venue">壱岐島（長崎県壱岐市）</span>
               </div>
             </div>
-            <a href="exhibition/ina.html" class="career-row has-link">
+            <a href="exhibition/ina.html" class="career-row has-link tooltip-target" data-tooltip="展示の詳細を見る">
               <span class="career-year">2023</span>
               <div>
                 <span class="career-detail-title">若手作家公募個展 トライアル・ギャラリー</span>
@@ -853,6 +879,13 @@
             <span class="career-group-title-en">Awards & Selections</span>
           </div>
           <div class="career-list">
+            <a href="https://fwap.info/award/2026/04/" target="_blank" rel="noopener noreferrer" class="career-row has-link tooltip-target" data-tooltip="外部サイトで受賞詳細を見る">
+              <span class="career-year">2026</span>
+              <div>
+                <span class="career-detail-title">Fukuoka Wall Art Award 2026 優秀賞</span>
+                <span class="career-detail-venue">（福岡県）</span>
+              </div>
+            </a>
             <div class="career-row">
               <span class="career-year">2021</span>
               <div>
@@ -908,7 +941,7 @@
     <p class="contact-body-text">
       展覧会・作品購入・取材・コラボレーション等、<br>お気軽にご連絡ください。
     </p>
-    <a href="contact.html" class="contact-btn">問い合わせフォームへ</a>
+    <a href="https://sh012da.github.io/sh01/contact.html" class="contact-btn tooltip-target" data-tooltip="お問い合わせページへ進む">問い合わせフォームへ</a>
   </section>
 
   <footer>
@@ -943,64 +976,59 @@
     </div>
   </div>
 
-  <div class="mouse-tooltip" id="mouse-tooltip"></div>
+  <div class="mouse-tooltip" id="mouse-tooltip" aria-hidden="true"></div>
 
   <script>
-    /* ── Tooltip Interaction ── */
+    /* ── Advanced Tooltip Interaction (Viewport Edge Detection) ── */
     (function() {
       const tooltip = document.getElementById('mouse-tooltip');
       if (!tooltip) return;
 
-      const linkRows = document.querySelectorAll('a.career-row.has-link');
+      const tooltipTargets = document.querySelectorAll('.tooltip-target');
       
-      linkRows.forEach(link => {
-        link.addEventListener('mouseenter', () => {
-          const titleEl = link.querySelector('.career-detail-title');
-          const titleText = titleEl ? titleEl.textContent.trim() : '詳細';
-          tooltip.textContent = `「${titleText}」のページへリンクします。`;
-          tooltip.classList.add('visible');
+      tooltipTargets.forEach(target => {
+        target.addEventListener('mouseenter', () => {
+          const text = target.getAttribute('data-tooltip');
+          if (text) {
+            tooltip.textContent = text;
+            tooltip.classList.add('visible');
+          }
         });
         
-        link.addEventListener('mousemove', (e) => {
-          tooltip.style.left = (e.clientX + 15) + 'px';
-          tooltip.style.top = (e.clientY + 15) + 'px';
+        target.addEventListener('mousemove', (e) => {
+          const offset = 15;
+          let left = e.clientX + offset;
+          let top = e.clientY + offset;
+          
+          const tooltipRect = tooltip.getBoundingClientRect();
+          const winWidth = window.innerWidth;
+          const winHeight = window.innerHeight;
+          
+          if (left + tooltipRect.width > winWidth) {
+            left = e.clientX - tooltipRect.width - offset;
+          }
+          if (top + tooltipRect.height > winHeight) {
+            top = e.clientY - tooltipRect.height - offset;
+          }
+          
+          tooltip.style.left = left + 'px';
+          tooltip.style.top = top + 'px';
         });
         
-        link.addEventListener('mouseleave', () => {
+        target.addEventListener('mouseleave', () => {
           tooltip.classList.remove('visible');
         });
       });
     })();
 
-    /* ── Contact smooth scroll ── */
-    document.getElementById('nav-cta-btn')?.addEventListener('click', (e) => {
-      const target = document.getElementById('contact');
-      if (!target) return;
-      e.preventDefault();
-      const offset = document.getElementById('top-nav')?.offsetHeight || 0;
-      window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset + 1, behavior: 'smooth' });
-    });
-
-    /* ── Hero animation (PC完全対応 & "Event Horizon" 演出) ── */
-    // window.onload ではなく DOMContentLoaded を使用し、重い動画の読み込みを待たずに即時実行する
+    /* ── Hero animation (Event Horizon) ── */
     document.addEventListener('DOMContentLoaded', () => {
       requestAnimationFrame(() => {
-        // 1. 背景が瞳孔のように開く
         setTimeout(() => document.getElementById('heroVideo')?.classList.add('revealed'), 100);
-        
-        // 2. 小見出しが閃光のように走る
         setTimeout(() => document.getElementById('heroEyebrow')?.classList.add('revealed'), 800);
-        
-        // 3. 日本語タイトルが3D空間の奥から叩きつけられる
         setTimeout(() => document.getElementById('heroTitle')?.classList.add('revealed'), 900);
-        
-        // 4. 英語タイトルが次元のスリットから実体化する
         setTimeout(() => document.getElementById('heroEn')?.classList.add('revealed'), 1500);
-        
-        // 5. ナビゲーションメニューのスタッガード出現
         setTimeout(() => document.getElementById('top-nav')?.classList.add('is-loaded'), 1800);
-        
-        // 6. 肩書きとスクロールUIの出現
         setTimeout(() => document.getElementById('heroMeta')?.classList.add('revealed'), 2200);
         setTimeout(() => document.getElementById('heroScroll')?.classList.add('revealed'), 2800);
       });
@@ -1017,7 +1045,7 @@
 
     document.querySelectorAll(
       '.profile-portrait, .profile-facts, .career-row, ' +
-      '.numbers-item, .act-cell, .filmstrip-cell, ' +
+      '.numbers-item, .act-cell, .grid-cell, ' +
       '.act-opener, .act-intro-quote, .act-intro-text, .pull-quote-text'
     ).forEach(el => io.observe(el));
 
@@ -1062,14 +1090,18 @@
       }
     }, { passive: true });
 
+    /* トップメニューのページ内スクロールリンク制御 */
     headerLinks.forEach(link => {
       link.addEventListener('click', (e) => {
-        const targetId = link.getAttribute('href').substring(1);
-        const target = document.getElementById(targetId);
-        if (target) {
-          e.preventDefault();
-          const offset = topNav?.offsetHeight || 0;
-          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+        const href = link.getAttribute('href');
+        if (href.startsWith('#')) {
+          const targetId = href.substring(1);
+          const target = document.getElementById(targetId);
+          if (target) {
+            e.preventDefault();
+            const offset = topNav?.offsetHeight || 0;
+            window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+          }
         }
       });
     });
