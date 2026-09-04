@@ -6,10 +6,9 @@
 <title>発酵と磁性：土地の記憶の可視化 | Tsuda Shoichi</title>
 <meta name="description" content="失われゆく地域文化の「発酵と磁性」を基点とした土地の記憶の可視化と、地域間を横断する物語の構造化。にかほ市でのリサーチに基づく制作プラン。">
 
-<!-- 共通フォント -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@200;300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@200;300;400;500&display=swap" rel="stylesheet">
 
 <style>
 /* ============================================================
@@ -147,6 +146,92 @@ a:hover { opacity: 0.6; }
 .status-text { font-size: 0.75rem; color: var(--c-accent); font-weight: 500; letter-spacing: 0.15em; text-align: center; }
 
 /* ============================================================
+   PENDING OVERLAY STRIP (薄い横一線の未定表示・点滅演出)
+=========================================================== */
+.media-status-strip {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  transform: translateY(-50%);
+  z-index: 5;
+  pointer-events: none; /* 下の画像クリックやライトボックスを邪魔しない */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.45rem 1.5rem;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border-top: 1px solid rgba(43, 92, 70, 0.28);
+  border-bottom: 1px solid rgba(43, 92, 70, 0.28);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+  animation: stripBreathe 3.2s ease-in-out infinite;
+}
+
+.strip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c-accent);
+  box-shadow: 0 0 8px var(--c-accent-glow);
+  display: inline-block;
+  animation: dotPulse 1.6s ease-in-out infinite alternate;
+}
+
+.strip-text {
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  color: var(--c-accent);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.strip-sub {
+  font-family: var(--f-serif-ja);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  color: var(--c-text-muted);
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+/* 呼吸するように優雅に明滅するアニメーション */
+@keyframes stripBreathe {
+  0% {
+    opacity: 0.55;
+    background: rgba(255, 255, 255, 0.65);
+    border-color: rgba(43, 92, 70, 0.18);
+  }
+  50% {
+    opacity: 0.96;
+    background: rgba(255, 255, 255, 0.88);
+    border-color: rgba(43, 92, 70, 0.45);
+    box-shadow: 0 4px 22px rgba(43, 92, 70, 0.12);
+  }
+  100% {
+    opacity: 0.55;
+    background: rgba(255, 255, 255, 0.65);
+    border-color: rgba(43, 92, 70, 0.18);
+  }
+}
+
+@keyframes dotPulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.3);
+    opacity: 1;
+    box-shadow: 0 0 10px var(--c-accent);
+  }
+}
+
+/* ============================================================
    REVEAL ANIMATIONS
 =========================================================== */
 .reveal { opacity: 0; transform: translateY(40px); transition: opacity 1.5s var(--ease-expo), transform 1.5s var(--ease-expo); }
@@ -208,7 +293,7 @@ a:hover { opacity: 0.6; }
 .intro-lead em { font-style: normal; color: var(--c-accent); }
 .concept-text { color: var(--c-text-muted); font-size: clamp(0.95rem, 1.1vw, 1.05rem); margin-bottom: 2rem; line-height: 2.4; }
 
-.concept-media-block { position: relative; width: 100%; border: 1px solid var(--c-border); padding: 12px; background: var(--c-bg-surface); box-shadow: 0 15px 40px rgba(0,0,0,0.03);}
+.concept-media-block { position: relative; width: 100%; border: 1px solid var(--c-border); padding: 12px; background: var(--c-bg-surface); box-shadow: 0 15px 40px rgba(0,0,0,0.03); cursor: pointer; }
 .concept-media-block img { width: 100%; aspect-ratio: 16/10; object-fit: cover; transition: filter 1s var(--ease-slow), transform 1s var(--ease-slow); filter: brightness(0.95); }
 .concept-media-block:hover img { filter: brightness(1.05); transform: scale(1.02);}
 .media-caption { position: absolute; bottom: -2.5rem; left: 0; font-family: var(--f-mono); font-size: 0.7rem; color: var(--c-text-muted); letter-spacing: 0.2em; text-transform: uppercase; }
@@ -218,8 +303,8 @@ a:hover { opacity: 0.6; }
    FIELD NOTES (ASYMMETRIC GRID WITH MUTED VIDEO)
 =========================================================== */
 .fn-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(1.5rem, 2vw, 3rem); max-width: 1600px; margin: 0 auto; align-items: center; }
-.fn-item { position: relative; overflow: hidden; background: var(--c-bg-surface); border: 1px solid var(--c-border); padding: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.03);}
-.fn-item-inner { overflow: hidden; width: 100%; height: 100%; }
+.fn-item { position: relative; overflow: hidden; background: var(--c-bg-surface); border: 1px solid var(--c-border); padding: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.03); cursor: pointer; }
+.fn-item-inner { position: relative; overflow: hidden; width: 100%; height: 100%; }
 .fn-item video, .fn-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 2s var(--ease-slow), filter 1s; }
 .fn-item:hover video, .fn-item:hover img { transform: scale(1.05); filter: brightness(1.05); }
 
@@ -231,7 +316,7 @@ a:hover { opacity: 0.6; }
 
 .fn-meta { position: absolute; top: -1.5rem; right: -1rem; z-index: 2; pointer-events: none; opacity: 0.9;}
 .fn-num { font-family: var(--f-serif-en); font-size: 4.5rem; color: var(--c-bg-base); -webkit-text-stroke: 1px var(--c-accent); line-height: 1; font-weight: 300;}
-.fn-title { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.2em; color: var(--c-accent); margin-top: 1rem; position: absolute; left: 1.5rem; bottom: 1.5rem; background: rgba(255,255,255,0.95); padding: 0.6em 1.2em; border: 1px solid var(--c-border);}
+.fn-title { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.2em; color: var(--c-accent); margin-top: 1rem; position: absolute; left: 1.5rem; bottom: 1.5rem; background: rgba(255,255,255,0.95); padding: 0.6em 1.2em; border: 1px solid var(--c-border); z-index: 6;}
 
 @media(max-width: 900px) {
   .fn-grid { display: flex; flex-direction: column; gap: 4rem; }
@@ -242,8 +327,8 @@ a:hover { opacity: 0.6; }
    OUTPUT PHASE (MATRIX GRID & CLEAN LIST)
 =========================================================== */
 .matrix-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 1600px; margin: 0 auto 5rem; }
-.matrix-item { position: relative; aspect-ratio: 1/1; overflow: hidden; background: var(--c-bg-surface); border: 1px solid var(--c-border); padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.02);}
-.matrix-item-inner { width: 100%; height: 100%; overflow: hidden; }
+.matrix-item { position: relative; aspect-ratio: 1/1; overflow: hidden; background: var(--c-bg-surface); border: 1px solid var(--c-border); padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); cursor: pointer; }
+.matrix-item-inner { position: relative; width: 100%; height: 100%; overflow: hidden; }
 .matrix-item img { width: 100%; height: 100%; object-fit: cover; transition: all 1.5s var(--ease-expo); filter: brightness(0.95); }
 .matrix-item:hover img { filter: brightness(1.05); transform: scale(1.08); }
 
@@ -302,12 +387,10 @@ a:hover { opacity: 0.6; }
 </head>
 <body>
 
-<!-- Preloader -->
 <div id="preloader">
   <div class="loader-pulse"></div>
 </div>
 
-<!-- Header -->
 <header class="header" id="header">
   <a href="https://sh012da.github.io/sh01/" class="logo">Tsuda Shoichi</a>
   <ul class="nav-links">
@@ -319,14 +402,12 @@ a:hover { opacity: 0.6; }
   <a href="https://sh012da.github.io/sh01/contact.html" class="btn-contact">Contact</a>
 </header>
 
-<!-- Sync Meter -->
 <aside class="voile-meter" id="voile-meter">
   <span class="vm-label">Synchronization</span>
   <div class="vm-bar"><div class="vm-fill" id="vm-fill"></div></div>
   <span class="vm-number" id="vm-number">00</span>
 </aside>
 
-<!-- Floating Status Banner -->
 <div class="status-banner" id="status-banner">
   <div class="status-content-inner">
     <span class="status-icon" style="color:var(--c-accent);">🌿</span>
@@ -334,10 +415,8 @@ a:hover { opacity: 0.6; }
   </div>
 </div>
 
-<!-- Main Content -->
 <main>
   
-  <!-- HERO (Bright & Airy Video Header) -->
   <section class="hero" id="hero">
     <div class="hero-bg" id="hero-bg">
       <video class="hero-video" autoplay loop muted playsinline poster="https://sh012da.github.io/sh01/pp/images/img-263/IMG_4733.JPG">
@@ -362,14 +441,12 @@ a:hover { opacity: 0.6; }
     </div>
   </section>
 
-  <!-- CONCEPT (Sticky Split Layout, Light Theme) -->
   <section class="section" id="concept">
     <div class="sec-title-wrap reveal">
       <div class="sec-title-line"></div><h2 class="sec-title">Concept</h2>
     </div>
     
     <div class="concept-wrapper">
-      <!-- Left: Sticky Text -->
       <div class="concept-left reveal-blur">
         <div class="intro-lead">
           土地の記憶を、<br>
@@ -384,33 +461,46 @@ a:hover { opacity: 0.6; }
         </p>
       </div>
       
-      <!-- Right: Scrolling Media -->
       <div class="concept-right">
-        <!-- 以前の動画を削除し、適切な画像に置換 -->
         <div class="concept-media-block reveal delay-1">
           <img src="https://sh012da.github.io/sh01/pp/images/img-263/IMG_4733.JPG" alt="The Force of Fermentation" class="js-lightbox" data-caption="発酵の力 / 菌糸と生命の微細なうごめき">
+          <div class="media-status-strip">
+            <span class="strip-dot"></span>
+            <span class="strip-text">PENDING</span>
+            <span class="strip-sub">未定</span>
+          </div>
           <div class="media-caption">Phase 01: The Force of Fermentation</div>
         </div>
+        
         <div class="concept-media-block reveal delay-1">
           <img src="https://sh012da.github.io/sh01/pp/images/img-263/IMG_4786.JPG" alt="発酵時間の力" class="js-lightbox" data-caption="発酵時間の力 / 醸造の文化と蓄積">
+          <div class="media-status-strip">
+            <span class="strip-dot"></span>
+            <span class="strip-text">PENDING</span>
+            <span class="strip-sub">未定</span>
+          </div>
           <div class="media-caption">Phase 02: Accumulation</div>
         </div>
+        
         <div class="concept-media-block reveal delay-1">
           <img src="https://sh012da.github.io/sh01/pp/images/img-263/IMG_4805.JPG" alt="磁性空間の力" class="js-lightbox" data-caption="磁性空間の力 / 引力と地質">
+          <div class="media-status-strip">
+            <span class="strip-dot"></span>
+            <span class="strip-text">PENDING</span>
+            <span class="strip-sub">未定</span>
+          </div>
           <div class="media-caption">Phase 03: Magnetic Attraction</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- FIELD NOTES (Asymmetric Multimedia Grid) -->
   <section class="section section-bg-alt" id="field-notes">
     <div class="sec-title-wrap reveal">
       <div class="sec-title-line"></div><h2 class="sec-title">Field Notes</h2>
     </div>
     
     <div class="fn-grid">
-      <!-- 湧水 -->
       <div class="fn-item fn-1 reveal-blur delay-1">
         <div class="fn-item-inner">
           <img src="https://sh012da.github.io/sh01/pp/images/img-263/IMG_4012.JPG" alt="湧水の落ちる崖にて" class="js-lightbox" data-caption="FIELD NOTE - 03 / 湧水の落ちる崖にて。水は目に見える形をした磁性である。">
@@ -419,7 +509,6 @@ a:hover { opacity: 0.6; }
         <div class="fn-title">SPRING WATER</div>
       </div>
       
-      <!-- 対話 (Video playing inline, completely muted) -->
       <div class="fn-item fn-2 reveal-blur delay-2">
         <div class="fn-item-inner">
           <video autoplay loop muted playsinline poster="https://sh012da.github.io/sh01/pp/images/img-263/%E5%AF%BE%E8%A9%B1%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8.jpg" class="js-lightbox" data-caption="FIELD NOTE - 02 / 対話の記録。語り手と、聴く者のあいだに。">
@@ -430,7 +519,6 @@ a:hover { opacity: 0.6; }
         <div class="fn-title">DIALOGUE</div>
       </div>
       
-      <!-- 倒木 -->
       <div class="fn-item fn-3 reveal-blur delay-1">
         <div class="fn-item-inner">
           <img src="https://sh012da.github.io/sh01/pp/images/img-263/IMG_3872.JPG" alt="倒木と苔むした地層" class="js-lightbox" data-caption="FIELD NOTE - 01 / 倒木と苔むした地層――語られなかった時間が積もる場所。">
@@ -439,7 +527,6 @@ a:hover { opacity: 0.6; }
         <div class="fn-title">DECAY & TIME</div>
       </div>
 
-      <!-- 風景 -->
       <div class="fn-item fn-4 reveal-blur delay-3">
         <div class="fn-item-inner">
           <img src="https://sh012da.github.io/sh01/pp/images/img-263/DSC05756.JPG" alt="にかほ市内の風景" class="js-lightbox" data-caption="にかほ市内の風景 / 引力と地質が交差するフィールド">
@@ -450,32 +537,52 @@ a:hover { opacity: 0.6; }
     </div>
   </section>
 
-  <!-- OUTPUT PHASE (Matrix Grid of Still Concepts & Clean List) -->
   <section class="section" id="output">
     <div class="sec-title-wrap reveal">
       <div class="sec-title-line"></div><h2 class="sec-title">Output Phase</h2>
     </div>
     
-    <!-- Matrix Grid (No old exhibition videos, only high-quality concepts) -->
     <div class="matrix-container">
       <div class="matrix-item reveal-blur delay-1">
         <div class="matrix-item-inner">
           <img src="https://sh012da.github.io/sh01/pp/images/img-263/%E5%B1%95%E7%A4%BA%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%EF%BC%91.jpg" alt="展示コンセプト 1" class="js-lightbox" data-caption="EXHIBITION CONCEPT / 空間全体を覆う〈単位世界〉のインスタレーション">
+          
+          <div class="media-status-strip">
+            <span class="strip-dot"></span>
+            <span class="strip-text">PENDING</span>
+            <span class="strip-sub">未定</span>
+          </div>
+
         </div>
       </div>
+      
       <div class="matrix-item reveal-blur delay-2">
         <div class="matrix-item-inner">
           <img src="https://sh012da.github.io/sh01/pp/images/img-263/%E5%B1%95%E7%A4%BA%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%EF%BC%92.jpg" alt="展示コンセプト 2" class="js-lightbox" data-caption="EXHIBITION CONCEPT / 絵画と映像が重なり合う没入型空間">
+          
+          <div class="media-status-strip">
+            <span class="strip-dot"></span>
+            <span class="strip-text">PENDING</span>
+            <span class="strip-sub">未定</span>
+          </div>
+
         </div>
       </div>
+      
       <div class="matrix-item reveal-blur delay-3">
         <div class="matrix-item-inner">
           <img src="https://sh012da.github.io/sh01/pp/images/img-263/%E5%B1%95%E7%A4%BA%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%EF%BC%93.jpg" alt="展示コンセプト 3" class="js-lightbox" data-caption="EXHIBITION CONCEPT / 語られた物語が結集する場">
+          
+          <div class="media-status-strip">
+            <span class="strip-dot"></span>
+            <span class="strip-text">PENDING</span>
+            <span class="strip-sub">未定</span>
+          </div>
+
         </div>
       </div>
     </div>
 
-    <!-- Output Specifications -->
     <div class="spec-table-wrap">
       <div class="spec-row reveal">
         <div class="spec-label">EXHIBITION<span>展示</span></div>
@@ -492,7 +599,6 @@ a:hover { opacity: 0.6; }
     </div>
   </section>
 
-  <!-- SCHEDULE -->
   <section class="section section-bg-alt" id="schedule">
     <div class="sec-title-wrap reveal">
       <div class="sec-title-line"></div><h2 class="sec-title">Schedule</h2>
@@ -510,7 +616,6 @@ a:hover { opacity: 0.6; }
     </ul>
   </section>
 
-  <!-- CLOSING -->
   <section class="section closing">
     <div class="closing-quote reveal-blur">
       土地は、語られることで発酵し、<br>人を引き寄せる磁性を帯びる。<br><br>
@@ -528,19 +633,16 @@ a:hover { opacity: 0.6; }
   <div class="footer-copy">© 2026 Tsuda Shoichi. All Rights Reserved.</div>
 </footer>
 
-<!-- LIGHTBOX MODAL -->
 <div id="lightbox">
   <div class="lightbox-overlay js-lightbox-close" aria-label="Close"></div>
   <button class="lightbox-close-btn js-lightbox-close" aria-label="Close">&times;</button>
   <div class="lightbox-inner">
     <div class="lightbox-media-wrapper" id="lightbox-media-wrapper">
-      <!-- Clone target -->
-    </div>
+      </div>
     <div class="lightbox-caption" id="lightbox-caption"></div>
   </div>
 </div>
 
-<!-- Scripts -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   /* =======================================================
