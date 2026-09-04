@@ -58,11 +58,24 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   padding-bottom: 80px;
+  
+  /* 自然な折り返しのための最新CSSプロパティ */
+  word-break: auto-phrase;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
 }
 img, video { max-width: 100%; height: auto; display: block; }
 a { color: inherit; text-decoration: none; transition: opacity 0.3s var(--ease-smooth); }
 a:hover { opacity: 0.6; }
 ::selection { background: var(--c-accent); color: var(--c-bg-surface); }
+
+/* ============================================================
+   UTILITY
+=========================================================== */
+.br-pc { display: block; }
+@media (max-width: 768px) {
+  .br-pc { display: none; }
+}
 
 /* ============================================================
    PRELOADER
@@ -201,34 +214,14 @@ a:hover { opacity: 0.6; }
 
 /* 呼吸するように優雅に明滅するアニメーション */
 @keyframes stripBreathe {
-  0% {
-    opacity: 0.55;
-    background: rgba(255, 255, 255, 0.65);
-    border-color: rgba(43, 92, 70, 0.18);
-  }
-  50% {
-    opacity: 0.96;
-    background: rgba(255, 255, 255, 0.88);
-    border-color: rgba(43, 92, 70, 0.45);
-    box-shadow: 0 4px 22px rgba(43, 92, 70, 0.12);
-  }
-  100% {
-    opacity: 0.55;
-    background: rgba(255, 255, 255, 0.65);
-    border-color: rgba(43, 92, 70, 0.18);
-  }
+  0% { opacity: 0.55; background: rgba(255, 255, 255, 0.65); border-color: rgba(43, 92, 70, 0.18); }
+  50% { opacity: 0.96; background: rgba(255, 255, 255, 0.88); border-color: rgba(43, 92, 70, 0.45); box-shadow: 0 4px 22px rgba(43, 92, 70, 0.12); }
+  100% { opacity: 0.55; background: rgba(255, 255, 255, 0.65); border-color: rgba(43, 92, 70, 0.18); }
 }
 
 @keyframes dotPulse {
-  0% {
-    transform: scale(0.85);
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(1.3);
-    opacity: 1;
-    box-shadow: 0 0 10px var(--c-accent);
-  }
+  0% { transform: scale(0.85); opacity: 0.5; }
+  100% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 10px var(--c-accent); }
 }
 
 /* ============================================================
@@ -269,6 +262,7 @@ a:hover { opacity: 0.6; }
   font-family: var(--f-serif-ja); font-size: clamp(3.5rem, 8vw, 7rem); font-weight: 400;
   line-height: 1.1; letter-spacing: 0.15em; margin-bottom: 1rem; color: var(--c-text-main);
   text-shadow: 0 10px 30px rgba(255,255,255,0.8);
+  text-wrap: balance;
 }
 .hero-subtitle { font-family: var(--f-serif-en); font-size: clamp(1rem, 2vw, 1.4rem); color: var(--c-text-muted); letter-spacing: 0.3em; font-weight: 400; margin-bottom: 3rem; text-transform: uppercase; }
 .hero-desc { max-width: 700px; font-size: clamp(0.9rem, 1.2vw, 1rem); color: var(--c-text-main); line-height: 2.4; text-align: center; }
@@ -289,7 +283,7 @@ a:hover { opacity: 0.6; }
 .concept-left { flex: 1 1 400px; position: sticky; top: 25vh; align-self: flex-start; }
 .concept-right { flex: 1.5 1 500px; display: flex; flex-direction: column; gap: clamp(4rem, 10vw, 8rem); }
 
-.intro-lead { font-size: clamp(1.6rem, 3vw, 2.6rem); line-height: 1.8; font-weight: 300; margin-bottom: 2.5rem; letter-spacing: 0.1em; color: var(--c-text-main); }
+.intro-lead { font-size: clamp(1.6rem, 3vw, 2.6rem); line-height: 1.8; font-weight: 300; margin-bottom: 2.5rem; letter-spacing: 0.1em; color: var(--c-text-main); text-wrap: balance; }
 .intro-lead em { font-style: normal; color: var(--c-accent); }
 .concept-text { color: var(--c-text-muted); font-size: clamp(0.95rem, 1.1vw, 1.05rem); margin-bottom: 2rem; line-height: 2.4; }
 
@@ -356,7 +350,8 @@ a:hover { opacity: 0.6; }
 .sch-text { color: var(--c-text-muted); font-size: 1rem; line-height: 2.2;}
 
 .closing { text-align: center; padding-top: clamp(8rem, 15vw, 12rem); }
-.closing-quote { font-size: clamp(1.4rem, 3vw, 2.4rem); line-height: 2; font-weight: 300; margin-bottom: 5rem; color: var(--c-text-main); letter-spacing: 0.15em;}
+.closing-quote { font-size: clamp(1.4rem, 3vw, 2.4rem); line-height: 2; font-weight: 300; margin-bottom: 5rem; color: var(--c-text-main); letter-spacing: 0.15em; text-wrap: balance;}
+.closing-quote p { margin-bottom: 1.5rem; }
 .btn-primary {
   display: inline-flex; align-items: center; justify-content: center;
   font-family: var(--f-serif-en); font-size: 0.85rem; letter-spacing: 0.4em; text-transform: uppercase;
@@ -435,7 +430,7 @@ a:hover { opacity: 0.6; }
       </div>
       
       <p class="hero-desc mist-reveal delay-m3">
-        失われゆく地域文化の「発酵と磁性」を基点とした土地の記憶の可視化と、地域間を横断する物語の構造化。<br>
+        失われゆく地域文化の「発酵と磁性」を基点とした土地の記憶の可視化と、地域間を横断する物語の構造化。<br class="br-pc">
         ふたつの不可視の力を軸に、忘れられかけた記憶を〈いと〉として紡ぎ直す、制作プラン書。
       </p>
     </div>
@@ -464,31 +459,16 @@ a:hover { opacity: 0.6; }
       <div class="concept-right">
         <div class="concept-media-block reveal delay-1">
           <img src="https://sh012da.github.io/sh01/pp/images/img-263/IMG_4733.JPG" alt="The Force of Fermentation" class="js-lightbox" data-caption="発酵の力 / 菌糸と生命の微細なうごめき">
-          <div class="media-status-strip">
-            <span class="strip-dot"></span>
-            <span class="strip-text">PENDING</span>
-            <span class="strip-sub">未定</span>
-          </div>
           <div class="media-caption">Phase 01: The Force of Fermentation</div>
         </div>
         
         <div class="concept-media-block reveal delay-1">
           <img src="https://sh012da.github.io/sh01/pp/images/img-263/IMG_4786.JPG" alt="発酵時間の力" class="js-lightbox" data-caption="発酵時間の力 / 醸造の文化と蓄積">
-          <div class="media-status-strip">
-            <span class="strip-dot"></span>
-            <span class="strip-text">PENDING</span>
-            <span class="strip-sub">未定</span>
-          </div>
           <div class="media-caption">Phase 02: Accumulation</div>
         </div>
         
         <div class="concept-media-block reveal delay-1">
           <img src="https://sh012da.github.io/sh01/pp/images/img-263/IMG_4805.JPG" alt="磁性空間の力" class="js-lightbox" data-caption="磁性空間の力 / 引力と地質">
-          <div class="media-status-strip">
-            <span class="strip-dot"></span>
-            <span class="strip-text">PENDING</span>
-            <span class="strip-sub">未定</span>
-          </div>
           <div class="media-caption">Phase 03: Magnetic Attraction</div>
         </div>
       </div>
@@ -546,39 +526,33 @@ a:hover { opacity: 0.6; }
       <div class="matrix-item reveal-blur delay-1">
         <div class="matrix-item-inner">
           <img src="https://sh012da.github.io/sh01/pp/images/img-263/%E5%B1%95%E7%A4%BA%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%EF%BC%91.jpg" alt="展示コンセプト 1" class="js-lightbox" data-caption="EXHIBITION CONCEPT / 空間全体を覆う〈単位世界〉のインスタレーション">
-          
           <div class="media-status-strip">
             <span class="strip-dot"></span>
             <span class="strip-text">PENDING</span>
             <span class="strip-sub">未定</span>
           </div>
-
         </div>
       </div>
       
       <div class="matrix-item reveal-blur delay-2">
         <div class="matrix-item-inner">
           <img src="https://sh012da.github.io/sh01/pp/images/img-263/%E5%B1%95%E7%A4%BA%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%EF%BC%92.jpg" alt="展示コンセプト 2" class="js-lightbox" data-caption="EXHIBITION CONCEPT / 絵画と映像が重なり合う没入型空間">
-          
           <div class="media-status-strip">
             <span class="strip-dot"></span>
             <span class="strip-text">PENDING</span>
             <span class="strip-sub">未定</span>
           </div>
-
         </div>
       </div>
       
       <div class="matrix-item reveal-blur delay-3">
         <div class="matrix-item-inner">
           <img src="https://sh012da.github.io/sh01/pp/images/img-263/%E5%B1%95%E7%A4%BA%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%EF%BC%93.jpg" alt="展示コンセプト 3" class="js-lightbox" data-caption="EXHIBITION CONCEPT / 語られた物語が結集する場">
-          
           <div class="media-status-strip">
             <span class="strip-dot"></span>
             <span class="strip-text">PENDING</span>
             <span class="strip-sub">未定</span>
           </div>
-
         </div>
       </div>
     </div>
@@ -618,8 +592,8 @@ a:hover { opacity: 0.6; }
 
   <section class="section closing">
     <div class="closing-quote reveal-blur">
-      土地は、語られることで発酵し、<br>人を引き寄せる磁性を帯びる。<br><br>
-      にかほで紡がれた〈いと〉は、長野へ、<br>そしてまだ見ぬ土地へと巡りながら、<br>幾重にも重なり合う〈洞窟〉を、<br>これからも編み続けていく。
+      <p>土地は、語られることで発酵し、<br class="br-pc">人を引き寄せる磁性を帯びる。</p>
+      <p>にかほで紡がれた〈いと〉は、長野へ、<br class="br-pc">そしてまだ見ぬ土地へと巡りながら、<br class="br-pc">幾重にも重なり合う〈洞窟〉を、<br class="br-pc">これからも編み続けていく。</p>
     </div>
     
     <div class="reveal delay-2">
