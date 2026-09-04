@@ -254,7 +254,17 @@
     .concept-main { flex: 1 1 auto; max-width: 1060px; }
     .concept-sidebar-label { font-family: var(--font-en); font-size: clamp(0.58rem,1.4vw,0.72rem); letter-spacing: 0.4em; color: var(--muted-col); text-transform: uppercase; line-height: 1; }
     .concept-credit { font-family: var(--font-en); font-size: 0.65rem; letter-spacing: 0.25em; color: rgba(237,233,228,0.26); text-transform: uppercase; margin-bottom: 2.2rem; }
-    .concept-lead { font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.2rem,3vw,1.8rem); letter-spacing: 0.05em; line-height: 1.9; color: rgba(237,233,228,0.92); margin-bottom: 3rem; }
+    
+    /* リード文の文字詰め(palt)を有効化し、一行に収まりやすくする */
+    .concept-lead { 
+      font-family: var(--font-ja); font-weight: 200; font-size: clamp(1.2rem,3vw,1.8rem); 
+      letter-spacing: 0.05em; line-height: 1.9; color: rgba(237,233,228,0.92); margin-bottom: 3rem; 
+      font-feature-settings: "palt";
+    }
+    
+    /* スマホ等での不自然な改行を防ぐための文節ラップ */
+    .inline-wrap { display: inline-block; }
+
     .concept-text { font-size: clamp(0.92rem,1.8vw,1.06rem); font-weight: 300; line-height: 2.3; color: var(--text-muted); letter-spacing: 0.04em; margin-bottom: 2rem; }
     .concept-text:last-child { margin-bottom: 0; }
     .concept-text em { font-style: normal; color: var(--accent); border-bottom: 0.5px solid var(--border-md); padding-bottom: 3px; }
@@ -347,11 +357,9 @@
       justify-content: flex-end;
     }
 
-    /* 縦長メイン画像(a_girl)の縦幅を横長画像(風力)の横幅と完全に揃える（1/1.414 に縮小） */
     .tl-entry.is-portrait-entry .tl-figure {
       width: calc(var(--tl-fig-w, 54%) * 0.7071);
     }
-    /* 高さがclampで制限されるのを防ぐ */
     .tl-entry.is-portrait-entry .tl-figure img {
       max-height: none !important;
     }
@@ -391,7 +399,6 @@
       padding-top: clamp(2rem, 4vh, 3rem); 
     }
     
-    /* 風力発電所用（横長グリッド: 4列設定で2段表示） */
     .tl-sub-gallery.is-landscape-grid { 
       display: grid; 
       gap: var(--sub-gap); 
@@ -417,17 +424,14 @@
     .tl-sub-gallery.is-landscape-grid .tl-sub-item:hover { border-color: rgba(203,191,176,0.4); box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
     .tl-sub-gallery.is-landscape-grid .tl-sub-item:hover img { transform: scale(1.05); filter: grayscale(0%) brightness(1.0); }
 
-    /* a_girl用（縦長グリッド：横並び一列で、縦幅を横長4列グリッドの横幅に合わせる） */
     .tl-sub-gallery.is-portrait-grid { 
       display: flex; 
       flex-direction: row; 
       flex-wrap: wrap;
       align-items: flex-start; 
       justify-content: flex-start; 
-      gap: clamp(1.5rem, 4vw, 3.5rem); /* 間隔をゆったりと開けてバランス良く配置 */
+      gap: clamp(1.5rem, 4vw, 3.5rem); 
     }
-    /* 横長グリッド(4列)の1アイテムの幅は calc((100% - 3 * var(--sub-gap)) / 4)。
-       縦長アイテムの縦の長さをこれと全く同じにするため、横幅を / 1.414 (×0.7071) で計算。 */
     .tl-sub-gallery.is-portrait-grid .tl-sub-item { 
       width: calc(((100% - 3 * var(--sub-gap)) / 4) * 0.7071);
       flex: 0 0 calc(((100% - 3 * var(--sub-gap)) / 4) * 0.7071);
@@ -615,7 +619,6 @@
       .tl-content-wrap, .tl-entry:nth-child(even) .tl-content-wrap { flex-direction: column; align-items: flex-start; gap: 2rem; }
       .tl-figure, .tl-body { width: 100% !important; justify-content: flex-start !important; }
       
-      /* a_girl のメイン画像（縦長）もタブレット幅では100%幅にフィットさせる */
       .tl-entry.is-portrait-entry .tl-figure { width: 100% !important; }
 
       .tl-figure img { max-height: 60vh !important; }
@@ -626,7 +629,6 @@
       nav#top-nav { padding: 1rem 1.25rem; }
       .nav-links { display: none !important; }
       
-      /* スマホ時のヘッダーは「名前」と「Contact」のみ。ハンバーガーメニューは出しません */
       .nav-logo-unified { display: block; }
       .nav-cta { display: inline-flex !important; }
 
@@ -635,15 +637,12 @@
       .concept-sidebar { flex-direction: row; align-items: baseline; gap: 1.5rem; flex: auto; }
       .concept-keywords { grid-template-columns: 1fr; margin-top: 3rem; }
       
-      /* ギャラリー一覧をスマホ向けに完全非表示化 */
       .gallery-section { display: none !important; }
 
-      /* スマホでは連作のサブギャラリーを非表示にし、メイン画像のみ表示 */
       .tl-sub-gallery { display: none !important; }
 
       :root { --reveal-size: 180px; }
       
-      /* フッター・ボタンのレスポンシブ追加 */
       .contact-btn { padding: 1.2rem 2rem; width: 100%; max-width: 320px; }
       footer { padding: 3rem 1.5rem; display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; text-align: left; }
     }
@@ -689,9 +688,14 @@
           </div>
           <div class="concept-main reveal" style="transition-delay:0.12s">
             <p class="concept-credit">Series Commentary — Tsuda Shoichi</p>
-            <p class="concept-lead">見慣れたはずの光景は、輪郭線を抽出されることで、全く新しい「余白」を生み出す。</p>
-            <p class="concept-text">本シリーズ「40273」は、日常の中に存在する人物や風景、そして彼らが落とす影を、限定された色彩と<em>ゆらぐ輪郭線</em>によって再構築する試みである。過剰な情報に溢れた現実の風景から、色彩の大部分を剥ぎ取ることで、そこに残された「線」と「空白」が、かえって強い実在感を放ち始める。</p>
-            <p class="concept-text">画面の大半を占める白い空白は、単なる未完成の領域ではない。それは鑑賞者の記憶や無意識が投影されるスクリーンであり、ノイズから解放された<em>純粋な視覚体験</em>への入り口として機能する。</p>
+
+            <!-- 修正部分：インラインラップを利用して孤立改行を完全に防ぎます -->
+            <p class="concept-lead">
+              <span class="inline-wrap">視界から物体の輪郭が消失し、</span><span class="inline-wrap">圧倒的な白が膨張して</span><span class="inline-wrap">空間を呑み込んでいく——。</span>
+            </p>
+
+            <p class="concept-text">本シリーズ「40273」は、遺伝的に高血圧症の私が、不適切な降圧剤の服用による急激な血圧低下に伴って体験した「白昼夢（≒ホワイトアウト）」の光景を、日常の風景へと同期させた試みである。重力を喪失し自らの身体が気化していくような強烈な身体感覚は、ありふれた人物や風景、彼らの落とす影が別の次元へと相転移していくプロセスと重なり合う。</p>
+            <p class="concept-text">過剰な情報に溢れた現実から色彩の大部分を剥ぎ取り、<em>限定された色彩</em>と<em>ゆらぐ輪郭線</em>のみが残され、風景が物質性を失うことによって、かえって生々しい。画面の大半を占める白は、私が目撃した世界のフェードアウトの追体験であり、鑑賞者の記憶や無意識が投影され、ノイズから解放された<em>純粋な視覚体験</em>へと移行する瞬間のスクリーンとして機能する。</p>
           </div>
         </div>
 
@@ -1218,7 +1222,7 @@
       }
     }, { passive: true });
 
-    /* ── Grid Jump Scroll (完全に修復) ── */
+    /* ── Grid Jump Scroll ── */
     document.querySelectorAll('.js-scroll-to').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
         const href = this.getAttribute('href');
