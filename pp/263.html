@@ -54,8 +54,7 @@ body {
   letter-spacing: 0.12em;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  padding-bottom: 80px; /* バナーの高さ分確保 */
-  
+  padding-bottom: 80px;
   word-break: auto-phrase;
   overflow-wrap: break-word;
   text-wrap: pretty;
@@ -139,7 +138,7 @@ a:hover { opacity: 0.6; }
 @media(max-width: 1024px) { .voile-meter { display: none; } }
 
 /* ============================================================
-   STATUS BANNER (ALWAYS VISIBLE)
+   STATUS BANNER
 =========================================================== */
 .status-banner {
   position: fixed; bottom: 0; left: 0; width: 100%; z-index: 99995;
@@ -173,7 +172,7 @@ a:hover { opacity: 0.6; }
 .hero.is-ready .delay-m3 { transition-delay: 0.6s; }
 
 /* ============================================================
-   HERO SECTION (NIKAHO NATURE)
+   HERO SECTION
 =========================================================== */
 .hero {
   position: relative; height: 100svh; min-height: 700px;
@@ -206,7 +205,7 @@ a:hover { opacity: 0.6; }
 .sec-title { font-family: var(--f-serif-en); font-size: clamp(1rem, 2vw, 1.5rem); letter-spacing: 0.5em; color: var(--c-accent); text-transform: uppercase; font-weight: 400; }
 
 /* ============================================================
-   CONCEPT (STICKY SPLIT)
+   CONCEPT
 =========================================================== */
 .concept-wrapper { display: flex; flex-wrap: wrap; gap: clamp(3rem, 8vw, 6rem); max-width: 1400px; margin: 0 auto; }
 .concept-left { flex: 1 1 400px; position: sticky; top: 25vh; align-self: flex-start; }
@@ -223,38 +222,62 @@ a:hover { opacity: 0.6; }
 .media-caption::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--c-accent); vertical-align: middle; margin-right: 10px; }
 
 /* ============================================================
-   FIELD NOTES (ASYMMETRIC GRID)
+   FIELD NOTES (ASYMMETRIC GRID - UPDATED)
 =========================================================== */
 .fn-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(1rem, 2vw, 2rem); max-width: 1600px; margin: 0 auto; align-items: start; }
-/* 外側の要素から overflow: hidden; を外し、メタ情報（数字）がはみ出るように修正 */
 .fn-item { position: relative; background: var(--c-bg-surface); border: 1px solid var(--c-border); padding: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.03); cursor: pointer; }
-/* 内部の画像/動画のズーム用には overflow: hidden; を維持 */
 .fn-item-inner { position: relative; overflow: hidden; width: 100%; height: 100%; }
 .fn-item video, .fn-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 2s var(--ease-slow), filter 1s; }
 .fn-item:hover video, .fn-item:hover img { transform: scale(1.05); filter: brightness(1.05); }
 
-/* Layout: 02を最大にするため、スパン（占有幅）を大きく調整 */
-.fn-1 { grid-column: 1 / 6; aspect-ratio: 4/3; margin-top: 5rem; } 
-.fn-2 { grid-column: 6 / 13; aspect-ratio: 3/4; transform: scale(1.02); z-index: 5; box-shadow: 0 25px 60px rgba(0,0,0,0.08); } 
-/* ▼ z-indexを10に設定して手前に表示 */
-.fn-3 { grid-column: 2 / 7; aspect-ratio: 16/10; margin-top: -5rem; z-index: 10; box-shadow: 0 20px 50px rgba(0,0,0,0.08); } 
-.fn-4 { grid-column: 8 / 12; aspect-ratio: 1/1; margin-top: 2rem; } 
+/* Layout Grid Configuration */
+.fn-1 { 
+  grid-column: 1 / 6; 
+  aspect-ratio: 4/3; 
+  margin-top: 5rem; 
+} 
+.fn-2 { 
+  grid-column: 6 / 13; 
+  aspect-ratio: 3/4; 
+  transform: scale(1.02); 
+  z-index: 5; 
+  box-shadow: 0 25px 60px rgba(0,0,0,0.08); 
+} 
+
+/* 03と04のレイヤー演出 */
+/* 03は02とは一切重ならないよう下段へ配置 */
+.fn-3 { 
+  grid-column: 1 / 8; 
+  aspect-ratio: 16/10; 
+  margin-top: 6rem; 
+  z-index: 5; 
+} 
+/* 04を03の右下に食い込ませて重ねる。数字・タイトルは絶対に隠蔽されない位置 */
+.fn-4 { 
+  grid-column: 7 / 12; 
+  aspect-ratio: 1/1; 
+  margin-top: -10rem; 
+  margin-left: 2rem;
+  z-index: 10; 
+  box-shadow: -15px 25px 50px rgba(0,0,0,0.12); /* 浮遊感を作る影 */
+} 
 
 .fn-meta { position: absolute; top: -1.8rem; right: -1.5rem; z-index: 10; pointer-events: none; }
 .fn-num { font-family: var(--f-serif-en); font-size: clamp(4.5rem, 6vw, 6rem); color: var(--c-bg-surface); -webkit-text-stroke: 1px var(--c-accent); line-height: 1; font-weight: 300; text-shadow: 0 10px 20px rgba(0,0,0,0.05); }
 .fn-title { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.2em; color: var(--c-accent); margin-top: 1rem; position: absolute; left: 1.5rem; bottom: 1.5rem; background: rgba(255,255,255,0.95); padding: 0.6em 1.2em; border: 1px solid var(--c-border); z-index: 6;}
 
+/* Mobile Fallback */
 @media(max-width: 900px) {
   .fn-grid { display: flex; flex-direction: column; gap: 4rem; }
-  .fn-item { transform: none !important; margin-top: 0; }
+  .fn-item { transform: none !important; margin-top: 0 !important; margin-left: 0 !important; box-shadow: 0 15px 40px rgba(0,0,0,0.03) !important; }
   .fn-1, .fn-2, .fn-3, .fn-4 { aspect-ratio: auto; }
   .fn-item-inner { aspect-ratio: 16/10; }
   .fn-2 .fn-item-inner { aspect-ratio: 3/4; }
-  .fn-meta { right: 0rem; } /* モバイル時は少し内側に寄せる */
+  .fn-meta { right: 0rem; } 
 }
 
 /* ============================================================
-   OUTPUT PHASE (MATRIX GRID & CLEAN LIST)
+   OUTPUT PHASE
 =========================================================== */
 .matrix-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 1600px; margin: 0 auto 5rem; }
 .matrix-item { position: relative; aspect-ratio: 1/1; overflow: hidden; background: var(--c-bg-surface); border: 1px solid var(--c-border); padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); cursor: pointer; }
@@ -282,7 +305,6 @@ a:hover { opacity: 0.6; }
 =========================================================== */
 .schedule-list { max-width: 800px; margin: 0 auto; list-style: none; }
 .schedule-item { display: flex; align-items: flex-start; gap: 3rem; padding: 2.5rem 0; border-bottom: 1px solid var(--c-border); }
-/* white-space: nowrap と flex-shrink: 0 を追加し、日付の改行を防ぐ */
 .sch-date { font-family: var(--f-mono); font-size: 1.3rem; color: var(--c-accent); min-width: 160px; font-weight: 400; white-space: nowrap; flex-shrink: 0;}
 .sch-text { color: var(--c-text-muted); font-size: 1rem; line-height: 2.2;}
 
@@ -302,7 +324,7 @@ a:hover { opacity: 0.6; }
 .footer-copy { font-family: var(--f-mono); font-size: 0.65rem; color: var(--c-text-muted); letter-spacing: 0.2em; }
 
 /* ============================================================
-   LIGHTBOX MODAL (LIGHT THEME)
+   LIGHTBOX MODAL
 =========================================================== */
 #lightbox { position: fixed; inset: 0; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.5s var(--ease-slow), visibility 0.5s; }
 #lightbox.is-open { opacity: 1; visibility: visible; }
@@ -340,7 +362,6 @@ a:hover { opacity: 0.6; }
   <span class="vm-number" id="vm-number">00</span>
 </aside>
 
-<!-- 常時表示に変更したステータスバナー -->
 <div class="status-banner" id="status-banner">
   <div class="status-content-inner">
     <span class="status-icon" style="color:var(--c-accent);">🌿</span>
@@ -427,7 +448,6 @@ a:hover { opacity: 0.6; }
         <div class="fn-title">NATURE MIMICRY</div>
       </div>
       
-      <!-- 02を最大サイズで表示 -->
       <div class="fn-item fn-2 reveal-blur delay-2">
         <div class="fn-item-inner">
           <video autoplay loop muted playsinline poster="https://sh012da.github.io/sh01/pp/images/img-263/%E5%AF%BE%E8%A9%B1%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8.jpg" class="js-lightbox" data-caption="FIELD NOTE - 02 / 3つの軸（年代・立場・記憶の性質）によるヒアリング。採集＝発酵を立ち上げる行為。">
@@ -618,7 +638,7 @@ document.addEventListener("DOMContentLoaded", () => {
   onScroll();
 
   /* =======================================================
-     3. LIGHTBOX (MUTED VIDEO SUPPORT)
+     3. LIGHTBOX 
   ====================================================== */
   const lightboxTargets = document.querySelectorAll('.js-lightbox');
   const lightboxModal = document.getElementById('lightbox');
