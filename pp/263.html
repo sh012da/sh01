@@ -54,7 +54,7 @@ body {
   letter-spacing: 0.12em;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  padding-bottom: 80px;
+  padding-bottom: 80px; /* バナーの高さ分確保 */
   
   word-break: auto-phrase;
   overflow-wrap: break-word;
@@ -139,15 +139,14 @@ a:hover { opacity: 0.6; }
 @media(max-width: 1024px) { .voile-meter { display: none; } }
 
 /* ============================================================
-   STATUS BANNER
+   STATUS BANNER (ALWAYS VISIBLE)
 =========================================================== */
 .status-banner {
   position: fixed; bottom: 0; left: 0; width: 100%; z-index: 99995;
   background: repeating-linear-gradient(-45deg, var(--c-accent), var(--c-accent) 15px, var(--c-accent-light) 15px, var(--c-accent-light) 30px);
   padding: 8px; box-shadow: 0 -10px 40px var(--c-accent-dim);
-  transform: translateY(110%); transition: transform 1.2s var(--ease-expo); pointer-events: auto;
+  pointer-events: auto;
 }
-.status-banner.is-visible { transform: translateY(0); }
 .status-content-inner {
   background: var(--c-bg-surface); border: 1px solid var(--c-accent);
   padding: 0.8rem 2rem; display: flex; justify-content: center; align-items: center; gap: 1rem; max-width: 800px; margin: 0 auto;
@@ -339,6 +338,14 @@ a:hover { opacity: 0.6; }
   <div class="vm-bar"><div class="vm-fill" id="vm-fill"></div></div>
   <span class="vm-number" id="vm-number">00</span>
 </aside>
+
+<!-- 常時表示に変更したステータスバナー -->
+<div class="status-banner" id="status-banner">
+  <div class="status-content-inner">
+    <span class="status-icon" style="color:var(--c-accent);">🌿</span>
+    <div class="status-text">※これは企画段階のプロトタイプであり、今後変動する可能性があります</div>
+  </div>
+</div>
 
 <main>
   
@@ -548,14 +555,10 @@ document.addEventListener("DOMContentLoaded", () => {
   ======================================================= */
   const preloader = document.getElementById('preloader');
   const hero = document.getElementById('hero');
-  const banner = document.getElementById('status-banner');
   
   setTimeout(() => {
     preloader.classList.add('is-loaded');
     hero.classList.add('is-ready');
-    setTimeout(() => {
-      if(banner) banner.classList.add('is-visible');
-    }, 2500);
   }, 1200);
 
   /* =======================================================
