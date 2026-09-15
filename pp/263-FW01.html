@@ -168,8 +168,6 @@
 
     /* ════════════════════════════════════════
         HERO
-        ※ scrollインジケータは position:absolute をやめ通常フローの
-          最下部に配置。本文と重ならないよう独立した余白を確保する。
     ════════════════════════════════════════ */
     .hero {
       position: relative; padding: clamp(120px,16vh,180px) 2.5rem 4rem; border-bottom: 0.5px solid var(--border);
@@ -178,13 +176,13 @@
     .hero-slideshow { position: absolute; inset: 0; z-index: 0; }
     .hero-slide {
       position: absolute; inset: 0; width: 100%; height: 100%;
-      background-image: url('https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA%20(16).JPG');
-      background-size: cover; background-position: center 30%;
+      background-image: url('IMG_4020.jpg');
+      background-size: cover; background-position: center;
       opacity: 0; transform: scale(1); transition: opacity 2.5s ease-in-out, transform 2.5s ease-in-out;
     }
     .hero-slide.active { opacity: 1; transform: scale(1.05); transition: opacity 2.5s ease-in-out, transform 10s linear; }
 
-    .hero-overlay { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to bottom, rgba(247,246,242,0.3) 0%, rgba(247,246,242,1) 95%); }
+    .hero-overlay { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to bottom, rgba(247,246,242,0.4) 0%, rgba(247,246,242,1) 95%); }
 
     .hero-content {
       position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center;
@@ -220,7 +218,6 @@
       letter-spacing: 0.12em; max-width: 800px; text-align: center; font-weight: 300;
     }
 
-    /* Scrollインジケータ：通常フローに戻し、十分な margin-top で本文と分離 */
     .hero-scroll {
       position: relative; margin-top: 5rem;
       display: flex; align-items: center; gap: 0.875rem; z-index: 2;
@@ -263,26 +260,26 @@
     .loc-content span { font-family: var(--en); font-size: 0.68rem; letter-spacing: 0.28em; color: var(--accent); text-transform: uppercase; font-weight: 500;}
 
     /* ════════════════════════════════════════
-        PARALLAX BANNER
+        PARALLAX BANNER (ENHANCED)
     ════════════════════════════════════════ */
     .parallax-banner {
       position: relative; width: 100vw; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;
-      height: 55vh; background-size: cover; background-position: center; background-attachment: fixed;
+      height: 70vh; background-size: cover; background-position: center; background-attachment: fixed;
       margin-top: 7rem; margin-bottom: 7rem;
       display: flex; align-items: center; justify-content: center; overflow: hidden;
     }
     .parallax-banner::before {
-      content: ''; position: absolute; inset: 0; background: rgba(247,246,242,0.4); transition: background 0.5s ease;
+      content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.25); transition: background 0.5s ease;
     }
-    .parallax-banner:hover::before { background: rgba(247,246,242,0.2); }
+    .parallax-banner:hover::before { background: rgba(0,0,0,0.15); }
     .parallax-banner h3 {
       font-family: var(--en); font-size: clamp(3rem, 10vw, 8.5rem); font-weight: 300; line-height: 1;
-      color: var(--fg); letter-spacing: 0.3em; text-transform: uppercase;
-      text-shadow: 0 4px 30px rgba(255,255,255,0.8); z-index: 2; position: relative; margin-right: -0.3em;
+      color: #fff; letter-spacing: 0.3em; text-transform: uppercase;
+      text-shadow: 0 10px 40px rgba(0,0,0,0.6); z-index: 2; position: relative; margin-right: -0.3em;
     }
     .parallax-banner span.pb-jp {
       display: block; font-family: var(--jp); font-size: clamp(0.75rem, 1.6vw, 0.95rem); letter-spacing: 0.4em;
-      color: var(--accent); margin-top: 1.2rem; text-shadow: 0 2px 16px rgba(255,255,255,0.9); z-index: 2; position: relative;
+      color: #F7F6F2; margin-top: 1.2rem; text-shadow: 0 4px 20px rgba(0,0,0,0.8); z-index: 2; position: relative;
     }
 
     /* ════════════════════════════════════════
@@ -298,20 +295,63 @@
     .section-heading { font-family: var(--jp); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 300; line-height: 1.3; color: var(--fg); margin-bottom: 3rem; letter-spacing: 0.05em; }
     .section-lede { font-size: clamp(14px,1.6vw,16px); color: var(--text-muted); max-width: 720px; line-height: 2.2; margin-top: -1.5rem; margin-bottom: 4rem; font-weight: 300; letter-spacing: 0.06em;}
 
+    /* ════════════════════════════════════════
+        DYNAMIC LAYOUTS: OVERLAP & FULL-BLEED
+    ════════════════════════════════════════ */
+    .overlap-grid {
+      display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; margin: 8rem 0; gap: 0;
+    }
+    .overlap-grid.reverse { grid-template-columns: 1fr 1.2fr; }
+    
+    .overlap-img-box {
+      position: relative; z-index: 1; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+    }
+    .overlap-img-box img {
+      width: 100%; height: auto; display: block;
+      transition: transform 2.5s cubic-bezier(0.16, 1, 0.3, 1), filter 1s ease; filter: brightness(0.95);
+    }
+    .overlap-grid:hover .overlap-img-box img { transform: scale(1.05); filter: brightness(1.05); }
+    
+    .overlap-text-box {
+      position: relative; z-index: 2; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
+      padding: 4rem; margin-left: -5rem; box-shadow: 0 15px 40px rgba(0,0,0,0.08); border: 1px solid var(--border);
+    }
+    .overlap-grid.reverse .overlap-text-box { margin-left: 0; margin-right: -5rem; grid-column: 1; grid-row: 1; }
+    .overlap-grid.reverse .overlap-img-box { grid-column: 2; grid-row: 1; }
+
+    .full-bleed-section {
+      position: relative; width: 100vw; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;
+      margin-top: 8rem; margin-bottom: 8rem; overflow: hidden;
+    }
+    .full-bleed-img-wrap { position: relative; width: 100%; height: 85vh; overflow: hidden; }
+    .full-bleed-img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 3s cubic-bezier(0.16, 1, 0.3, 1), filter 1s ease; filter: brightness(0.95);
+    }
+    .full-bleed-section:hover .full-bleed-img { transform: scale(1.05); filter: brightness(1.05); }
+    
+    .overlap-text {
+      position: absolute; bottom: -4rem; right: max(2.5rem, 10vw);
+      background: rgba(247, 246, 242, 0.95); backdrop-filter: blur(20px);
+      padding: 3.5rem 3rem; max-width: 600px; box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+      z-index: 10; border-top: 4px solid var(--accent);
+    }
+
+    /* STANDARD ED-LAYOUT */
     .ed-layout { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(4rem, 8vw, 8rem); align-items: center; margin-bottom: 8rem; }
     .ed-layout.reverse { direction: rtl; }
     .ed-layout.reverse > * { direction: ltr; }
     .ed-layout:last-child { margin-bottom: 0; }
     .ed-text { padding: 1rem 0; }
 
-    .ed-img-wrap { position: relative; width: 100%; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.1); background: #fff;}
-    .ed-img-wrap img { width: 100%; height: auto; display: block; transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1), filter 1.6s ease; filter: brightness(0.95); object-fit: cover;}
-    .ed-img-wrap:hover img { transform: scale(1.05); filter: brightness(1.05); }
+    .ed-img-wrap { position: relative; width: 100%; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.15); background: #fff;}
+    .ed-img-wrap img { width: 100%; height: auto; display: block; transition: transform 2s cubic-bezier(0.16, 1, 0.3, 1), filter 1s ease; filter: brightness(0.95); object-fit: cover;}
+    .ed-img-wrap:hover img { transform: scale(1.06); filter: brightness(1.05); }
     .ed-img-caption { font-family: var(--en); font-size: 0.62rem; letter-spacing: 0.15em; color: var(--text-dim); margin-top: 0.8rem; text-align: center; text-transform: uppercase; }
 
     .ed-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 4rem; }
-    .ed-grid-item { position: relative; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08); background: #fff; aspect-ratio: 4/3;}
-    .ed-grid-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), filter 1.2s ease; filter: brightness(0.95); }
+    .ed-grid-item { position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15); background: #fff; aspect-ratio: 4/3;}
+    .ed-grid-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1), filter 1s ease; filter: brightness(0.95); }
     .ed-grid-item:hover img { transform: scale(1.08); filter: brightness(1.05); }
 
     .concept-block-en {
@@ -322,7 +362,7 @@
     .concept-para:last-child { margin-bottom: 0; }
     .concept-para em { font-style: normal; color: var(--fg); font-weight: 500; border-bottom: 1px solid var(--accent); padding-bottom: 2px;}
 
-    /* 数値・事実のチップ列 */
+    /* CHIPS, CARDS, LISTS */
     .stat-row { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-bottom: 2.2rem; }
     .stat-chip {
       display: flex; flex-direction: column; gap: 0.25rem; padding: 0.9rem 1.3rem; border: 1px solid var(--border);
@@ -331,7 +371,6 @@
     .stat-chip .num { font-family: var(--en); font-size: clamp(1.1rem,2vw,1.5rem); color: var(--accent); font-weight: 500; letter-spacing: 0.02em; }
     .stat-chip .lbl { font-family: var(--jp); font-size: 0.68rem; color: var(--text-muted); letter-spacing: 0.05em; }
 
-    /* 単漢字バッジ付きの情報カードリスト（七不思議・キーワード等で使用） */
     .info-card-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.4rem; margin-top: 1rem; }
     .info-card {
       display: flex; gap: 1.2rem; padding: 1.6rem; border: 1px solid var(--border); border-radius: 8px;
@@ -346,7 +385,6 @@
     .info-card h4 { font-family: var(--jp); font-size: 1.02rem; font-weight: 500; color: var(--fg); margin-bottom: 0.5rem; letter-spacing: 0.04em; }
     .info-card p { font-size: 0.86rem; font-weight: 300; color: var(--text-muted); line-height: 1.9; letter-spacing: 0.03em; }
 
-    /* 人物カード（Overview / People） */
     .people-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.6rem; margin-top: 1rem; }
     .people-card { padding: 1.8rem; border: 1px solid var(--border); border-radius: 8px; background: rgba(255,255,255,0.45); }
     .people-card .p-name-row { display: flex; align-items: baseline; gap: 0.7rem; margin-bottom: 0.4rem; flex-wrap: wrap; }
@@ -360,12 +398,10 @@
       border: 1px solid var(--border-mid); padding: 0.5rem 1.1rem; border-radius: 30px; background: rgba(255,255,255,0.4);
     }
 
-    /* 引用ブロック（総括の声） */
     .quote-block { border-left: 2px solid var(--accent); padding: 0.3rem 0 0.3rem 2rem; margin-bottom: 2.4rem; }
     .quote-block p { font-size: clamp(14px,1.7vw,16px); font-weight: 300; line-height: 2.2; color: var(--text); letter-spacing: 0.05em; font-style: italic; }
     .quote-block cite { display: block; margin-top: 0.8rem; font-family: var(--en); font-size: 0.65rem; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; font-style: normal; }
 
-    /* スケジュール（2日目） */
     .schedule-list { display: flex; flex-direction: column; margin-top: 1rem; }
     .schedule-item { display: grid; grid-template-columns: 130px 1fr; gap: 1.6rem; padding: 1.4rem 0; border-bottom: 1px solid var(--border); }
     .schedule-item:last-child { border-bottom: none; }
@@ -379,11 +415,12 @@
     .colophon-box p:last-child { margin-bottom: 0; }
 
     /* ════════════════════════════════════════
-        REVEAL ANIMATIONS
+        REVEAL ANIMATIONS (DYNAMIC)
     ════════════════════════════════════════ */
-    .reveal { opacity: 0; transform: translateY(40px) scale(0.98); filter: blur(8px); transition: opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1), transform 1.4s cubic-bezier(0.16, 1, 0.3, 1), filter 1.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal { opacity: 0; transform: translateY(50px) scale(0.96); filter: blur(12px); transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1), transform 1.6s cubic-bezier(0.16, 1, 0.3, 1), filter 1.6s cubic-bezier(0.16, 1, 0.3, 1); }
     .reveal.visible { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-    .ink-reveal-block { opacity: 0; transform: translateY(30px); filter: blur(8px); transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1), transform 1.6s cubic-bezier(0.16, 1, 0.3, 1), filter 1.6s cubic-bezier(0.16, 1, 0.3, 1); }
+    
+    .ink-reveal-block { opacity: 0; transform: translateY(40px); filter: blur(8px); transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1), transform 1.6s cubic-bezier(0.16, 1, 0.3, 1), filter 1.6s cubic-bezier(0.16, 1, 0.3, 1); }
     .ink-reveal-block.visible { opacity: 1; transform: translateY(0); filter: blur(0); }
 
     /* FOOTER */
@@ -391,11 +428,16 @@
     .footer-logo { font-family: var(--jp); font-size: clamp(0.85rem, 1.8vw, 0.95rem); font-weight: 400; color: var(--text-muted); letter-spacing: 0.15em; margin-bottom: 1rem; }
     .footer-copy { font-family: var(--en); font-size: clamp(0.55rem, 1.2vw, 0.65rem); letter-spacing: 0.25em; color: var(--text-dim); text-transform: uppercase; }
 
-    /* RESPONSIVE & MOBILE SP-ONLY NAV STRUCTURE */
+    /* RESPONSIVE */
     @media (max-width: 992px) {
       .ed-layout { grid-template-columns: 1fr; gap: 4rem; margin-bottom: 6rem;}
       .ed-layout.reverse { direction: ltr; }
       .ed-img-wrap { max-width: 800px; margin: 0 auto;}
+      
+      .overlap-grid, .overlap-grid.reverse { grid-template-columns: 1fr; gap: 2rem; }
+      .overlap-text-box, .overlap-grid.reverse .overlap-text-box { margin: -4rem 1.5rem 0 1.5rem; padding: 2.5rem; }
+      .full-bleed-img-wrap { height: 60vh; }
+      .overlap-text { position: relative; bottom: 0; right: 0; margin: -3rem 1.5rem 0; padding: 2.5rem; }
     }
     @media (max-width: 768px) {
       .section { padding: 5rem 1.5rem; }
@@ -403,7 +445,7 @@
       .hero-title-en { font-size: clamp(3.5rem, 18vw, 6rem); letter-spacing: 0.15em; margin-right: -0.15em; margin-bottom: 1rem; }
       .hero-title-ja { margin-bottom: 2.5rem; }
       .hero-scroll { margin-top: 3rem; }
-      .parallax-banner { background-attachment: scroll; height: 32vh; margin: 4rem 0; }
+      .parallax-banner { background-attachment: scroll; height: 35vh; margin: 4rem 0; }
       .parallax-banner h3 { font-size: clamp(2.2rem, 12vw, 4rem); letter-spacing: 0.18em; margin-right: -0.18em; }
       .loc-grid { grid-template-columns: 1fr; }
       .schedule-item { grid-template-columns: 1fr; gap: 0.4rem; }
@@ -632,7 +674,8 @@
 ═══════════════════════════════════════════════ -->
 <section class="hero">
   <div class="hero-slideshow" aria-hidden="true">
-    <div class="hero-slide active"></div>
+    <!-- 最もダイナミックな滝の全体像を使用し、迫力を演出 -->
+    <div class="hero-slide active" style="background-image: url('IMG_4020.jpg');"></div>
   </div>
   <div class="hero-overlay"></div>
 
@@ -662,28 +705,28 @@
   <h2 class="section-heading reveal">踏査地点</h2>
   <div class="loc-grid">
     <a href="#ch02-kujukushima" class="loc-card reveal" style="transition-delay: 0.1s;">
-      <div class="loc-bg" style="background-image: url('https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA%20(3).JPG');"></div>
+      <div class="loc-bg" style="background-image: url('IMG_3890.jpg');"></div>
       <div class="loc-content">
         <h3>九十九島</h3>
         <span>Kujukushima</span>
       </div>
     </a>
     <a href="#ch03-kanmanji" class="loc-card reveal" style="transition-delay: 0.18s;">
-      <div class="loc-bg" style="background-image: url('https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA%20(7).JPG');"></div>
+      <div class="loc-bg" style="background-image: url('IMG_3902.jpg');"></div>
       <div class="loc-content">
         <h3>蚶満寺</h3>
         <span>Kanmanji</span>
       </div>
     </a>
     <a href="#ch05-kotaki" class="loc-card reveal" style="transition-delay: 0.26s;">
-      <div class="loc-bg" style="background-image: url('https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA%20(8).JPG');"></div>
+      <div class="loc-bg" style="background-image: url('IMG_3973.jpg');"></div>
       <div class="loc-content">
         <h3>金峰神社と小滝</h3>
         <span>Kotaki</span>
       </div>
     </a>
     <a href="#ch08-mototaki" class="loc-card reveal" style="transition-delay: 0.34s;">
-      <div class="loc-bg" style="background-image: url('https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA%20(10).JPG');"></div>
+      <div class="loc-bg" style="background-image: url('IMG_4014.jpg');"></div>
       <div class="loc-content">
         <h3>元滝伏流水</h3>
         <span>Mototaki</span>
@@ -879,9 +922,10 @@
 </section>
 
 <!-- ══════════════════════════════════════════════
-     CHAPTER 02: KUJUKUSHIMA (NEW)
+     CHAPTER 02: KUJUKUSHIMA (DYNAMIC)
 ═══════════════════════════════════════════════ -->
-<div class="parallax-banner" style="background-image: url('https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA%20(9).JPG');">
+<!-- パララックスに遠景（かつての海を思わせる田園）を使用 -->
+<div class="parallax-banner" style="background-image: url('IMG_3890.jpg');">
   <h3 class="reveal">Kujukushima<span class="pb-jp">九十九島</span></h3>
 </div>
 <section id="ch02-kujukushima" class="section">
@@ -890,25 +934,25 @@
   <h2 class="section-heading reveal">九十九島</h2>
   <p class="section-lede reveal">かつて海だった記憶を宿す、田んぼに浮かぶ小さな島々。溶岩がつくった独特な岩の地形と、そこに息づくキツネノカミソリをはじめとする希少な植生——散策で出会った「陸の海」の記録。</p>
 
-  <div class="ed-layout">
-    <div class="ed-text ink-reveal-block">
+  <!-- 奇岩の迫力をオーバーラップレイアウトで強調 -->
+  <div class="overlap-grid reveal">
+    <div class="overlap-img-box">
+      <img src="IMG_3895.jpg" alt="九十九島 独特な岩の地形">
+    </div>
+    <div class="overlap-text-box ink-reveal-block">
       <span class="concept-block-en">島々の成り立ち</span>
       <p class="concept-para">
         「九十九島」は、紀元前466年の鳥海山の山体崩壊で海へ流れ込んだ岩塊を原型とする島々の総称。1804年の象潟地震で海底が一晩で約2メートル隆起し、海が陸へと変貌した後も、開墾を逃れた小島たちは水田の中に「小山」として点在し続けている。緑の稲穂の中に浮かぶその姿は、<em>かつてそこが海であったことを今に伝える生きた地形</em>である。
       </p>
       <p class="concept-para">
-        島々を形づくる岩は、鳥海山の噴火でもたらされた溶岩由来のもの。散策では「溶岩が冷えて固まった」と表現されるような、巨大で特徴的な岩が点在する迫力ある地形を随所で観察することができ、自然の力強さと特異な景観が広がっている。
+        島々を形づくる岩は、鳥海山の噴火でもたらされた溶岩由来のもの。「溶岩が冷えて固まった」と表現されるような、巨大で特徴的な岩が点在する迫力ある地形を随所で観察することができ、自然の力強さと特異な景観が広がっている。
       </p>
-    </div>
-    <div class="ed-img-wrap reveal">
-      <img src="https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA%20(9).JPG" alt="九十九島 独特な岩の地形">
-      <p class="ed-img-caption">溶岩が冷え固まってできた独特な岩の地形</p>
     </div>
   </div>
 
   <div class="ed-layout reverse">
     <div class="ed-text ink-reveal-block">
-      <span class="concept-block-en">島に息づくキツネノカミソリ</span>
+      <span class="concept-block-en">島に息づく希少植物と足跡</span>
       <p class="concept-para">
         島々の周辺を散策する中で発見されたのが、ヒガンバナ科の植物「キツネノカミソリ」。花が咲く時期には葉が全くないという特徴的な姿が、その名の由来となっている。乾いた岩肌と湿った水辺が隣り合う九十九島特有の環境が、こうした希少な植生を育んでいる。
       </p>
@@ -931,9 +975,10 @@
 </section>
 
 <!-- ══════════════════════════════════════════════
-     CHAPTER 03: KANMANJI
+     CHAPTER 03: KANMANJI (DYNAMIC)
 ═══════════════════════════════════════════════ -->
-<div class="parallax-banner" style="background-image: url('https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA%20(7).JPG');">
+<!-- パララックスに精巧な木彫りの虎を使用し、歴史的ディテールの迫力を提示 -->
+<div class="parallax-banner" style="background-image: url('IMG_3902.jpg');">
   <h3 class="reveal">Kanmanji<span class="pb-jp">蚶満寺</span></h3>
 </div>
 <section id="ch03-kanmanji" class="section">
@@ -946,7 +991,7 @@
     <div class="ed-text ink-reveal-block">
       <span class="concept-block-en">Architecture — 建築と彫刻の工夫</span>
       <p class="concept-para">
-        山門には、中国に伝わる24の親孝行の物語「二十四孝」の精巧な彫刻が施されている。そして境内で最も象徴的なのが、通常正面を向く仁王像でありながら、海からの強烈な北風による風化を防ぐため互いに<em>向かい合う</em>という珍しい配置がとられている点だ。
+        山門には、中国に伝わる24の親孝行の物語「二十四孝」をはじめとする極めて精巧な木彫が施されている。そして境内で最も象徴的なのが、通常正面を向く仁王像でありながら、海からの強烈な北風による風化を防ぐため互いに<em>向かい合う</em>という珍しい配置がとられている点だ。
       </p>
       <p class="concept-para">
         江戸時代、本荘藩の干拓から象潟の美しい景観を守るため、第70世・覚林（かくりん）和尚は京都の宮家の後ろ盾を得て命がけで抵抗した。結果として藩の怒りを買い、牢の中で獄死したが、象潟を守った最大の恩人として今も称えられている。覚林和尚の抵抗は、後の松尾芭蕉が涙した絶景を、次の世代へとつなぐ決定的な出来事となった。
@@ -972,7 +1017,7 @@
       </div>
       <div class="info-card">
         <div class="info-badge">咲</div>
-        <div><h4>咲かずのツツジ</h4><p>北条時頼が植えたと伝わり、普段は花を咲かせず、寺に異変の兆しがある時にだけ咲くと言われている。</p></div>
+        <div><h4>咲かずのツツジ</h4><p>北条時頼が植えたと伝わり、寺に異変の兆しがある時にだけ咲くと言われている。</p></div>
       </div>
       <div class="info-card">
         <div class="info-badge">夜</div>
@@ -996,10 +1041,10 @@
         <strong>西施像</strong>：松尾芭蕉が『おくのほそ道』で、象潟の美しさを中国の絶世の美女・西施に例えたことに由来して建てられた。
       </p>
       <p class="concept-para">
-        <strong>神功皇后と北条時頼</strong>：古くから多くの権力者や文化人が訪れた地であり、神功皇后の伝説や、鎌倉幕府5代執権・北条時頼（最明寺入道）にまつわる史跡も境内に残されている。
+        <strong>神功皇后と北条時頼</strong>：古くから多くの権力者や文化人が訪れた地であり、神功皇后の伝説や、鎌倉幕府5代執権・北条時頼にまつわる史跡も境内に残されている。
       </p>
       <p class="concept-para">
-        <strong>象潟と松島を結ぶ悲恋</strong>：象潟の娘「たに（後の高連尼）」と、松島から訪れた「小太郎」の悲恋物語。小太郎の死後、たには尼となり松島と象潟を行き来して彼を弔った。この物語が縁で、現在のにかほ市（象潟）と松島町は<em>「夫婦町（姉妹都市）」</em>となり、彼女を記念した銘菓「高連せんべい」も誕生した。
+        <strong>象潟と松島を結ぶ悲恋</strong>：象潟の娘「たに」と、松島から訪れた「小太郎」の悲恋物語。この物語が縁で、現在のにかほ市と松島町は<em>「夫婦町（姉妹都市）」</em>となっている。
       </p>
     </div>
     <div class="ed-img-wrap reveal">
@@ -1021,26 +1066,26 @@
     <div class="info-card-list">
       <div class="info-card">
         <div class="info-badge">01</div>
-        <div><h4>独特な岩の地形</h4><p>「溶岩が冷えて固まった」と表現されるような、巨大で特徴的な岩が点在する迫力ある地形を観察。自然の力強さと特異な景観が広がっている（九十九島にて詳述）。</p></div>
+        <div><h4>独特な岩の地形</h4><p>「溶岩が冷えて固まった」巨大で特徴的な奇岩が点在。自然の力強さと特異な景観が広がっている。</p></div>
       </div>
       <div class="info-card">
         <div class="info-badge">02</div>
-        <div><h4>キツネノカミソリ</h4><p>散策中にヒガンバナ科の植物「キツネノカミソリ」を発見。花が咲く時期には葉が全くないという特徴的な姿が、その名の由来となっていることを学んだ（九十九島にて詳述）。</p></div>
+        <div><h4>キツネノカミソリ</h4><p>花が咲く時期には葉が全くないという特徴的な姿が名の由来となるヒガンバナ科の希少な植物。</p></div>
       </div>
       <div class="info-card">
         <div class="info-badge">03</div>
-        <div><h4>吉永小百合の足跡</h4><p>見晴らしの良い高台には、女優・吉永小百合さんがかつてこの景色を眺めた立ち位置を示す「足跡」のモニュメントが残されており、その実際の小ささに驚かされる。</p></div>
+        <div><h4>吉永小百合の足跡</h4><p>見晴らしの良い高台に残る、女優・吉永小百合さんがかつてこの景色を眺めた立ち位置を示すモニュメント。</p></div>
       </div>
       <div class="info-card">
         <div class="info-badge">04</div>
-        <div><h4>象潟地震の教訓碑</h4><p>過去の「象潟地震」による甚大な被害を後世に伝える石碑を確認。「今後いつ何が起きるか分からないため、心して生きなさい」——現代にも通じる防災のメッセージが刻まれている。</p></div>
+        <div><h4>象潟地震の教訓碑</h4><p>「今後いつ何が起きるか分からないため、心して生きなさい」という、現代にも通じる防災のメッセージが刻まれた石碑。</p></div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ══════════════════════════════════════════════
-     CHAPTER 05: KINPO SHRINE & KOTAKI
+     CHAPTER 05: KINPO SHRINE & KOTAKI (DYNAMIC)
 ═══════════════════════════════════════════════ -->
 <div class="parallax-banner" style="background-image: url('https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA%20(8).JPG');">
   <h3 class="reveal">Kotaki<span class="pb-jp">金峰神社と小滝集落</span></h3>
@@ -1060,10 +1105,10 @@
         <div class="stat-chip"><span class="num">毎年5月最終土曜</span><span class="lbl">舞の奉納日</span></div>
       </div>
       <p class="concept-para">
-        約1300年前、修験道の開祖である役の行者（えんのぎょうじゃ）が、この地の滝に神聖な力を感じ、神様を勧請して開創したと伝わる。以降、修験者たちの修行の場として栄えた。境内には神社でありながら仏教要素である「鐘」が残されており、かつての神仏習合（神仏混交）の歴史を色濃く残している。
+        約1300年前、修験道の開祖である役の行者（えんのぎょうじゃ）が、この地の滝に神聖な力を感じ開創したと伝わる。境内には神社でありながら仏教要素である「鐘」が残されており、かつての神仏習合の歴史を色濃く残している。
       </p>
       <p class="concept-para">
-        秋田県内で唯一、修験の要素を持つ舞として伝承される「小滝のチョウクライロ舞」は、小滝番楽とともに国指定重要無形民俗文化財に指定されている。鳥海山麓の街道を荒らす妖怪「手長足長」を、慈覚大師（円仁）が神仏の力を借りて退治した際、神へのお礼として奉納されたのが始まりとされる。全7演目（稚児の舞など）があり、<em>観客に見せるためではなく</em>、鳥海山大権現に捧げる神事として厳格に行われる。
+        秋田県内で唯一、修験の要素を持つ舞として伝承される「小滝のチョウクライロ舞」は、小滝番楽とともに国指定重要無形民俗文化財に指定されている。全7演目があり、<em>観客に見せるためではなく</em>、鳥海山大権現に捧げる神事として厳格に行われる。
       </p>
     </div>
     <div class="ed-img-wrap reveal">
@@ -1071,21 +1116,17 @@
     </div>
   </div>
 
-  <div class="ed-layout">
-    <div class="ed-text ink-reveal-block">
-      <span class="concept-block-en">Treasures &amp; Nature</span>
-      <p class="concept-para">
-        宝物殿には、万治2年（1659年）作とされる大変古い「陵王（りょうおう）の面」など舞楽面が現存し、現在は保護のため新しい面が舞に使用されている。また約1200年前、慈覚大師が自ら彫ったと伝わる、三十三観音の第一番となる観音像も安置されている。
-      </p>
-      <p class="concept-para">
-        境内展望台からは、落差26m・幅11mの壮大な滝「奈曽の白瀑（なそのしらたき）」を見下ろすことができる。かつて修験者が水行を行った神聖な場所で、約1300年前、慈覚大師が妖怪「手長足長」を鎮めた伝説も残る。
-      </p>
-      <p class="concept-para">
-        境内の石垣には、人工物のように規則正しい自然石「柱状節理」が見られる。神の使いとされるカエルの石像や、農耕馬の安全を祈り草を奉納した「馬の信仰」など、人々と自然・動物の深い結びつきが残っている。
-      </p>
+  <!-- フルブリード（全幅）で奈曽の白瀑のスケール感を演出 -->
+  <div class="full-bleed-section reveal">
+    <div class="full-bleed-img-wrap">
+      <img src="IMG_3973.jpg" alt="奈曽の白瀑" class="full-bleed-img">
     </div>
-    <div class="ed-img-wrap reveal">
-      <img src="https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA%20(9).JPG" alt="奈曽の白瀑">
+    <div class="overlap-text ink-reveal-block">
+      <span class="concept-block-en">Treasures & Nature</span>
+      <h3 style="font-family: var(--jp); font-size: clamp(1.6rem, 3vw, 2.2rem); margin-bottom: 1rem; font-weight:400; color:var(--fg);">奈曽の白瀑</h3>
+      <p class="concept-para" style="font-size: 0.95rem; line-height: 2; margin-bottom:0;">
+        落差26m・幅11mの壮大な滝。かつて修験者が水行を行った神聖な場所であり、約1300年前、慈覚大師が妖怪「手長足長」を鎮めたという伝説も残る。宝物殿には非常に古い「陵王の面」が現存し、境内には「柱状節理」の石垣やカエルの石像など、人と自然の深い結びつきが今も色濃く残っている。
+      </p>
     </div>
   </div>
 </section>
@@ -1106,11 +1147,11 @@
       <p class="concept-para">
         <strong>和光院（わこういん）</strong>：最初にこの地に定住したとされる、集落のルーツとも言える修験の家。<br>
         <strong>観正院（かんしょういん）</strong>：修験の家であるが、現在は親族が誰も残っていない状態である。<br>
-        <strong>慶龍院（けいりゅういん）跡地</strong>：現在は四角い石のみが残る。かつては萱葺き屋根であったが廃屋となった。元々は「流頭地蔵」を祀っていたが、現在は龍泉寺へと移されている。
+        <strong>慶龍院（けいりゅういん）跡地</strong>：現在は四角い石のみが残る。かつては萱葺き屋根であったが廃屋となった。
       </p>
     </div>
     <div class="ed-img-wrap reveal">
-      <img src="https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA%20(1).JPG" alt="上郷地域">
+      <img src="IMG_3940.jpg" alt="修験集落の面影を残す建造物">
     </div>
   </div>
 
@@ -1118,17 +1159,14 @@
     <div class="ed-text ink-reveal-block">
       <span class="concept-block-en">電学森の信仰と、消えゆく地名「上郷」</span>
       <p class="concept-para">
-        修験者たちが、鳥海山系の稲倉岳（いなくらだけ）のそばで神様を祀ったのが信仰の始まり。鉄塔が2本建っている奥の山が「電学森」と呼ばれている。その後、祀っていた神様を現在の場所（神社）へと移し、現在に至っている。
-      </p>
-      <p class="concept-para">
-        「上郷村」や「上郷農協」など、かつての地域名が徐々に使われなくなり、住民の間には寂しさが漂っている。一方、閉校した旧上郷小学校の校舎は現在もインターナショナルスクール等の新たな教育施設として再活用されている。学校前の小屋には、少し怖い顔のサンタクロースの人形が置かれ、毎年冬になるとライトアップされ、地域の目を引いていた。
+        修験者たちが鳥海山系の稲倉岳のそばで神様を祀ったのが信仰の始まり。鉄塔が2本建っている奥の山が「電学森」と呼ばれている。「上郷村」や「上郷農協」など、かつての地域名が徐々に使われなくなり、住民の間には寂しさが漂っている。
       </p>
       <p class="concept-para">
         秋田市に次いで県内2番目に整備された歴史ある配水池は、ポンプで水圧を上げて次のタンクへ送水し、高低差を利用して各所へ配水する仕組みが取られている。
       </p>
     </div>
     <div class="ed-img-wrap reveal">
-      <img src="https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA%20(15).JPG" alt="配水池と森">
+      <img src="IMG_3923.jpg" alt="歴史ある配水池のタンク">
     </div>
   </div>
 </section>
@@ -1146,10 +1184,10 @@
     <div class="ed-text ink-reveal-block">
       <span class="concept-block-en">Recovery &amp; Ritual — 地形変化と先人の知恵</span>
       <p class="concept-para">
-        地域には金峰神社、両豊神社、熊野神社などがあり、神様同士が行き来するという伝承が残る。金峰神社にはカエルが宿るとされ、「無事カエル」といったお守りとしても親しまれている。かつては、ご神体を背負って険しい山道を登る過酷な神事が行われていたが、道の崩落により現在は別の場所に移されている。神社を維持するための修繕や管理も、地域住民の尽力や有志によって支えられている。
+        地域には金峰神社、両豊神社、熊野神社などがあり、神様同士が行き来するという伝承が残る。かつてはご神体を背負って険しい山道を登る過酷な神事が行われていた。
       </p>
       <p class="concept-para">
-        象潟地震による大規模な地殻変動は、地域に大きな影響を与えた。断層のズレにより「小滝」と呼ばれる滝が消失したほか、水路が断たれるなどの被害が発生した。しかし先人たちは、水準器の代わりに<em>「ウマグツ（馬沓）」</em>に水を張り水平を測るという独自の測量技術を用い、夜間に火を灯して高さを確認しながら新たな水路を開拓した。
+        象潟地震による大規模な地殻変動で水路が断たれるなどの被害が発生したが、先人たちは水準器の代わりに<em>「ウマグツ（馬沓）」</em>に水を張り水平を測るという独自の測量技術を用い、夜間に火を灯して高さを確認しながら新たな水路を開拓した。
       </p>
     </div>
     <div class="ed-img-wrap reveal">
@@ -1161,13 +1199,10 @@
     <div class="ed-text ink-reveal-block">
       <span class="concept-block-en">Living Tradition — 番楽の継承と危機</span>
       <p class="concept-para">
-        地区で受け継がれる「番楽」（演目：長暗など）は、笛や太鼓、舞から構成される伝統芸能。特筆すべきは、子どもたちが大人を真似た「ごっこ遊び」（幕に見立てたカーテンを使用など）を通じて自発的に舞を覚え、自然と継承されてきた点である。笛や太鼓の技術は長年の修練を要し、一朝一夕には身につかない。
+        地区で受け継がれる「番楽」は、笛や太鼓、舞から構成される伝統芸能。子どもたちが大人を真似た「ごっこ遊び」を通じて自発的に舞を覚え、自然と継承されてきた。
       </p>
       <p class="concept-para">
-        急速な人口減少とコロナ禍により、祭りの維持や芸能の継承はかつてない危機に直面している。担い手不足により太鼓や笛の奏者が減少し、活動の休止を余儀なくされる場面もあった。
-      </p>
-      <p class="concept-para">
-        地域はこの危機に対し、<em>長年男性のみとされてきた参加条件を見直し、女性の参加を受け入れる</em>という大きな決断を下した。時代に合わせて形を変えながらも、本質的な伝統を未来へ繋ごうとする力強い意志が確認できる。
+        急速な人口減少とコロナ禍により活動の休止を余儀なくされる場面もあったが、地域はこの危機に対し、<em>長年男性のみとされてきた参加条件を見直し、女性の参加を受け入れる</em>という大きな決断を下した。本質的な伝統を未来へ繋ごうとする力強い意志が確認できる。
       </p>
     </div>
     <div class="ed-img-wrap reveal">
@@ -1177,9 +1212,10 @@
 </section>
 
 <!-- ══════════════════════════════════════════════
-     CHAPTER 08: MOTOTAKI
+     CHAPTER 08: MOTOTAKI (DYNAMIC)
 ═══════════════════════════════════════════════ -->
-<div class="parallax-banner" style="background-image: url('https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA%20(10).JPG');">
+<!-- パララックスに岩の下から湧き出す源流の画像を配置 -->
+<div class="parallax-banner" style="background-image: url('IMG_4014.jpg');">
   <h3 class="reveal">Mototaki<span class="pb-jp">元滝伏流水</span></h3>
 </div>
 <section id="ch08-mototaki" class="section">
@@ -1188,26 +1224,20 @@
   <h2 class="section-heading reveal">元滝伏流水</h2>
   <p class="section-lede reveal">鳥海山に降った雨や雪が、10〜20年の歳月をかけて湧き出す年間約10度の清冽な水。冷涼な環境が育む、希少な動植物のゆりかご。</p>
 
-  <div class="ed-layout">
-    <div class="ed-text ink-reveal-block">
+  <!-- 伏流水の全体像をオーバーラップグリッドでダイナミックに配置 -->
+  <div class="overlap-grid reveal">
+    <div class="overlap-img-box">
+      <img src="IMG_4020.jpg" alt="元滝伏流水の全体像">
+    </div>
+    <div class="overlap-text-box ink-reveal-block">
       <span class="concept-block-en">Mechanism — 湧き水のメカニズム</span>
       <div class="stat-row">
         <div class="stat-chip"><span class="num">10〜20年</span><span class="lbl">湧出までの歳月</span></div>
         <div class="stat-chip"><span class="num">約10度</span><span class="lbl">年間水温</span></div>
       </div>
-      <p class="concept-para">
-        元滝伏流水（もとたきふくりゅうすい）は、鳥海山に降った雨や雪が地下に潜り、約10〜20年の歳月を経て地表に湧き出たものだ。年間を通じて水温が約10度と極めて冷涼なのが特徴（鳥海山の雪解け水が直接流れる川は「奈曽川」と呼ばれる）。
+      <p class="concept-para" style="font-size: 0.95rem; margin-bottom: 0;">
+        元滝伏流水は、鳥海山に降った雨や雪が地下に潜り、約10〜20年の歳月を経て地表に湧き出たものだ。水を通しやすい溶岩層を抜けた水が、下の土石流堆積物にせき止められ、岩の隙間から幾筋もの滝となってあふれ出す。年間を通じて水温が約10度と極めて冷涼なため、農業用水として利用する際は「ため池」などで日光に当てて温める工夫が凝らされている。
       </p>
-      <p class="concept-para">
-        鳥海山の地層は、透水性の悪い「土石流堆積物」と、ひび割れが多く水を通しやすい「溶岩」から成る。雨水は溶岩層を通り抜け、下の土石流堆積物でせき止められ、その境界（溶岩の縁）から湧き出す。このため、山麓や海中など至る所から水が湧出している。湧き水が約20年前のものであることは、原爆実験等で放出されたストロンチウム等の放射性物質の半減期を利用して測定されている。
-      </p>
-      <p class="concept-para">
-        年間約10度という極めて冷たい水は、そのまま田んぼに引き入れると稲が育たない。そこで集落では、「栗山池」などのため池に一旦水を貯め太陽光で温めてから流す、あるいは川を階段状の地形にして流れを緩やかにし水温を上昇させる、といった工夫を凝らしている。
-      </p>
-    </div>
-    <div class="ed-img-wrap reveal">
-      <img src="https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA%20(11).JPG" alt="元滝伏流水の近景">
-      <p class="ed-img-caption">大岩の下から湧き出す伏流水</p>
     </div>
   </div>
 
@@ -1233,25 +1263,14 @@
       </div>
       <div class="info-card">
         <div class="info-badge">蘭</div>
-        <div><h4>ツチアケビ</h4><p>ラン科の絶滅危惧種。光合成を行わずナラタケ菌に寄生し、秋に赤い実をつける。</p></div>
-      </div>
-      <div class="info-card">
-        <div class="info-badge">草</div>
-        <div><h4>ハンゴンソウ</h4><p>「魂が返る」とされ、江戸時代にコレラ対策で煎じて飲まれた伝承。外来種オオハンゴンソウは駆除対象。</p></div>
-      </div>
-      <div class="info-card">
-        <div class="info-badge">蛇</div>
-        <div><h4>マムシグサ</h4><p>葉の模様がマムシに似る。秋に赤い実をつけるが有毒。</p></div>
-      </div>
-      <div class="info-card">
-        <div class="info-badge">宿</div>
-        <div><h4>ヤドリギ</h4><p>鳥が実を食べ、フンと共に木に付着し寄生する。</p></div>
+        <div><h4>ツチアケビ</h4><p>ラン科の絶滅危惧種。光合成を行わずナラタケ菌に寄生し赤い実をつける。</p></div>
       </div>
     </div>
-    <p class="concept-para" style="margin-top:1.6rem;">その他：ダイモンジソウ（大の字の花）、ヤマブドウ（酸味）、ハッカクレン（葉裏に花）、バイカモ（水中で開花）。</p>
-    <div class="ed-grid">
-      <div class="ed-grid-item"><img src="https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA%20(4).JPG" alt="キツネノカミソリ"></div>
-      <div class="ed-grid-item"><img src="https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA%20(17).JPG" alt="コアカミゴケなどの地衣類"></div>
+    
+    <!-- 澄んだ水と生命力あふれる森の倒木を横並びで配置 -->
+    <div class="ed-grid" style="margin-top: 3rem;">
+      <div class="ed-grid-item"><img src="IMG_3992.jpg" alt="清冽な水源と苔"></div>
+      <div class="ed-grid-item"><img src="IMG_3995.jpg" alt="倒木と森の生命力"></div>
     </div>
   </div>
 </section>
@@ -1274,13 +1293,12 @@
       <div class="stat-row">
         <div class="stat-chip"><span class="num">80年</span><span class="lbl">平均噴火周期</span></div>
         <div class="stat-chip"><span class="num">1801年</span><span class="lbl">新山溶岩</span></div>
-        <div class="stat-chip"><span class="num">昭和8年</span><span class="lbl">秋田県初の砂防堰堤</span></div>
       </div>
       <p class="concept-para">
-        鳥海山は平均して約80年周期で噴火を繰り返す活火山である。直近では1974年（昭和49年）に水蒸気爆発を起こした。2800年前の「猿穴溶岩」や約220年前の「新山溶岩」など、多様な溶岩流が特異な凸凹地形を形成している。激しい土石流が谷を刻む過酷な環境でもあり、地域の安全を守るため、昭和8年には秋田県初となる砂防堰堤が築造された。
+        鳥海山は平均して約80年周期で噴火を繰り返す活火山である。2800年前の「猿穴溶岩」や約220年前の「新山溶岩」など、多様な溶岩流が特異な凸凹地形を形成している。激しい土石流が谷を刻む過酷な環境でもあり、地域の安全を守るため、昭和8年には秋田県初となる砂防堰堤が築造された。
       </p>
       <p class="concept-para">
-        過去の噴火で火山灰を出さず、溶岩のみが流れた事例が存在する。これにより冷却時に生じた「節理（岩の割れ目）」が多数形成された。この岩の隙間が巨大な<em>天然のスポンジ</em>の役割を果たし、雨水や雪解け水を地下に浸透させる。豊富な伏流水は山麓で勢いよく湧き出し、一年を通して温度が安定した生命の水として、人々の生活や農業を支え続けている（伏流水・溶岩の節理・獅子ヶ鼻湿原）。
+        過去の噴火で火山灰を出さず、溶岩のみが流れた事例が存在する。これにより冷却時に生じた「節理（岩の割れ目）」が多数形成された。この岩の隙間が巨大な<em>天然のスポンジ</em>の役割を果たし、雨水や雪解け水を地下に浸透させる。
       </p>
     </div>
     <div class="ed-img-wrap reveal">
@@ -1292,10 +1310,10 @@
     <div class="ed-text ink-reveal-block">
       <span class="concept-block-en">Golden Eagle &amp; Coexistence</span>
       <p class="concept-para">
-        かつて秋田・山形両県に生息していたイヌワシだが、現在は全国で約500羽にまで減少し、秋田側では姿を消した。最大の減少理由は「狩り場の喪失」。昔は人間の薪炭林伐採により適度に開けた空間が維持されていたが、森林が放置され木が育ちすぎた結果、上空から獲物を狙うことが困難になった。人間と自然の関わり方の変化が、生態系に直結している。
+        かつて秋田・山形両県に生息していたイヌワシだが、現在は全国で約500羽にまで減少し、秋田側では姿を消した。最大の減少理由は「狩り場の喪失」。森林が放置され木が育ちすぎた結果、上空から獲物を狙うことが困難になった。人間と自然の関わり方の変化が、生態系に直結している。
       </p>
       <p class="concept-para">
-        鳥海山は「いつか必ず噴火する」山である。前回の噴火から約50年が経過しており、ハザードマップ等による継続的な監視体制が敷かれている。私たちは活火山の脅威に備えつつも、湧水や豊かな生態系がもたらす大地の恵みに感謝し、<em>自然と共生していくこと</em>が求められている。
+        鳥海山は「いつか必ず噴火する」山である。私たちは活火山の脅威に備えつつも、湧水や豊かな生態系がもたらす大地の恵みに感謝し、<em>自然と共生していくこと</em>が求められている。
       </p>
     </div>
     <div style="display:flex; flex-direction:column; gap:2rem;">
@@ -1324,16 +1342,8 @@
       <p>私自身も日本海側の出身ですが、にかほ市についてこれまで詳しく知る機会がなかったため、本日は非常に勉強になりました。皆さんのアイデアが今後どのような形になるか、とても楽しみにしています。</p>
       <cite>進行役</cite>
     </div>
-    <div class="quote-block">
-      <p>残り3日間、皆様も体調に気をつけてお過ごしください。また、素晴らしい企画と準備に尽力いただいた野村さん、本当にありがとうございました。</p>
-      <cite>進行役</cite>
-    </div>
-    <p class="concept-para">その他参加者（野村さん・吉野さん・林様・講師陣）：直接の発言記録はないが、野村さんは企画・準備担当として感謝され、吉野さん・林様・講師のお二方も同席し、今後のプログラムに共に取り組むことが確認されている。</p>
     <p class="concept-para">
-      <strong>秋田の車座会議に関するご案内</strong>：秋田県内10箇所で開催予定の地域課題解決に向けた対話集会について案内。各自が持つ資源（手札）を持ち寄り、具体的な事業創出を目指す取り組み。参加者に対し「皆様は強力な武器を持っている」として、9月5日（土）のキックオフイベントや、10月22日の本会議への参加（県WEBサイトの専用フォームより申込）を呼びかけた。
-    </p>
-    <p class="concept-para">
-      <strong>全体への労いと事務連絡</strong>：1日目のプログラム終了にあたり参加者への感謝を述べ、天候（雨雲）に応じて明日の予定を柔軟に変更する可能性がある旨を共有。林様（素泊まり）や講師お2人（ホテル）の宿泊先への案内手順、吉野さんへの労いの言葉があった。
+      <strong>秋田の車座会議に関するご案内</strong>：秋田県内10箇所で開催予定の地域課題解決に向けた対話集会について案内。各自が持つ資源（手札）を持ち寄り、具体的な事業創出を目指す取り組み。
     </p>
   </div>
 
@@ -1498,7 +1508,7 @@ function closeMenu() {
 })();
 
 /* ════════════════════════════════════════════════════════
-   REVEAL (スクロール連動フェードイン)
+   REVEAL (スクロール連動フェードイン) - ダイナミック化
 ════════════════════════════════════════════════════════ */
 var revealObs = new IntersectionObserver(function (entries) {
   entries.forEach(function (e) {
