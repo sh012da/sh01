@@ -22,7 +22,7 @@
   --c-text-main: #2b2e2d;
   --c-text-muted: #6c706e;
   
-  --c-accent: #2b5c46;       
+  --c-accent: #2b5c46;        
   --c-accent-dim: rgba(43, 92, 70, 0.15);
   --c-accent-glow: rgba(43, 92, 70, 0.25);
   --c-accent-light: #468266;
@@ -222,7 +222,7 @@ a:hover { opacity: 0.6; }
 .media-caption::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--c-accent); vertical-align: middle; margin-right: 10px; }
 
 /* ============================================================
-   FIELD NOTES (ASYMMETRIC GRID - UPDATED)
+   FIELD NOTES (ASYMMETRIC GRID)
 =========================================================== */
 .fn-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(1rem, 2vw, 2rem); max-width: 1600px; margin: 0 auto; align-items: start; }
 .fn-item { position: relative; background: var(--c-bg-surface); border: 1px solid var(--c-border); padding: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.03); cursor: pointer; }
@@ -243,30 +243,25 @@ a:hover { opacity: 0.6; }
   z-index: 5; 
   box-shadow: 0 25px 60px rgba(0,0,0,0.08); 
 } 
-
-/* 03と04のレイヤー演出 */
-/* 03は02とは一切重ならないよう下段へ配置 */
 .fn-3 { 
   grid-column: 1 / 8; 
   aspect-ratio: 16/10; 
   margin-top: 6rem; 
   z-index: 5; 
 } 
-/* 04を03の右下に食い込ませて重ねる。数字・タイトルは絶対に隠蔽されない位置 */
 .fn-4 { 
   grid-column: 7 / 12; 
   aspect-ratio: 1/1; 
   margin-top: -10rem; 
   margin-left: 2rem;
   z-index: 10; 
-  box-shadow: -15px 25px 50px rgba(0,0,0,0.12); /* 浮遊感を作る影 */
+  box-shadow: -15px 25px 50px rgba(0,0,0,0.12); 
 } 
 
 .fn-meta { position: absolute; top: -1.8rem; right: -1.5rem; z-index: 10; pointer-events: none; }
 .fn-num { font-family: var(--f-serif-en); font-size: clamp(4.5rem, 6vw, 6rem); color: var(--c-bg-surface); -webkit-text-stroke: 1px var(--c-accent); line-height: 1; font-weight: 300; text-shadow: 0 10px 20px rgba(0,0,0,0.05); }
 .fn-title { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.2em; color: var(--c-accent); margin-top: 1rem; position: absolute; left: 1.5rem; bottom: 1.5rem; background: rgba(255,255,255,0.95); padding: 0.6em 1.2em; border: 1px solid var(--c-border); z-index: 6;}
 
-/* Mobile Fallback */
 @media(max-width: 900px) {
   .fn-grid { display: flex; flex-direction: column; gap: 4rem; }
   .fn-item { transform: none !important; margin-top: 0 !important; margin-left: 0 !important; box-shadow: 0 15px 40px rgba(0,0,0,0.03) !important; }
@@ -274,6 +269,109 @@ a:hover { opacity: 0.6; }
   .fn-item-inner { aspect-ratio: 16/10; }
   .fn-2 .fn-item-inner { aspect-ratio: 3/4; }
   .fn-meta { right: 0rem; } 
+}
+
+/* ============================================================
+   FIELDWORK REPORTS LINKS (NEW)
+=========================================================== */
+.fw-links-wrap {
+  margin: clamp(4rem, 8vw, 8rem) auto 0;
+  max-width: 1400px;
+  border-top: 1px solid var(--c-border);
+  padding-top: clamp(3rem, 6vw, 4rem);
+}
+.fw-links-title {
+  font-family: var(--f-serif-en);
+  font-size: 0.9rem;
+  letter-spacing: 0.4em;
+  color: var(--c-accent);
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+.fw-links-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1rem, 2vw, 2rem);
+}
+.fw-link-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--c-bg-surface);
+  border: 1px solid var(--c-border);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.8s var(--ease-expo), box-shadow 0.8s var(--ease-expo), opacity 0.3s;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+}
+.fw-link-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.06);
+  opacity: 1;
+}
+.fw-link-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/10;
+  overflow: hidden;
+  background: var(--c-bg-base);
+}
+.fw-link-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.5s var(--ease-slow), filter 1s var(--ease-slow);
+  filter: brightness(0.95) grayscale(10%);
+}
+.fw-link-card:hover .fw-link-img-wrap img {
+  transform: scale(1.05);
+  filter: brightness(1.05) grayscale(0%);
+}
+.fw-link-content {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.fw-link-day {
+  font-family: var(--f-serif-en);
+  font-size: 0.75rem;
+  color: var(--c-accent);
+  letter-spacing: 0.2em;
+  margin-bottom: 0.5rem;
+}
+.fw-link-title {
+  font-family: var(--f-serif-ja);
+  font-size: 0.95rem;
+  color: var(--c-text-main);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  line-height: 1.6;
+}
+.fw-link-card.disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+.fw-link-card.disabled .fw-link-img-wrap img {
+  filter: grayscale(80%) brightness(0.9);
+}
+.fw-soon {
+  display: block;
+  font-family: var(--f-serif-en);
+  font-size: 0.65rem;
+  color: var(--c-text-muted);
+  letter-spacing: 0.2em;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+}
+@media (max-width: 900px) {
+  .fw-links-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 }
 
 /* ============================================================
@@ -474,6 +572,50 @@ a:hover { opacity: 0.6; }
         <div class="fn-title">URBAN TRACES</div>
       </div>
     </div>
+
+    <!-- ==========================================
+         FIELDWORK REPORTS LINKS (NEW)
+    =========================================== -->
+    <div class="fw-links-wrap reveal-blur delay-1">
+      <div class="fw-links-title">Fieldwork Reports</div>
+      <div class="fw-links-grid">
+        
+        <!-- 1日目: KISAKATA(0).JPG を指定 -->
+        <a href="pp/263-FW01.html" class="fw-link-card">
+          <div class="fw-link-img-wrap">
+            <img src="https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA(0).JPG" alt="フィールドワーク１日目、象潟">
+          </div>
+          <div class="fw-link-content">
+            <div class="fw-link-day">DAY 01</div>
+            <div class="fw-link-title">フィールドワーク１日目、象潟</div>
+          </div>
+        </a>
+
+        <!-- 2日目: リンクなし。リポジトリに実在する KISAKATA(2).JPG を仮設定してリンク切れ防止 -->
+        <a href="javascript:void(0);" class="fw-link-card disabled">
+          <div class="fw-link-img-wrap">
+            <img src="https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA(2).JPG" alt="フィールドワーク２日目、金浦">
+          </div>
+          <div class="fw-link-content">
+            <div class="fw-link-day">DAY 02</div>
+            <div class="fw-link-title">フィールドワーク２日目、金浦<span class="fw-soon">Coming Soon</span></div>
+          </div>
+        </a>
+
+        <!-- 3日目: リンクなし。リポジトリに実在する KISAKATA(3).JPG を仮設定してリンク切れ防止 -->
+        <a href="javascript:void(0);" class="fw-link-card disabled">
+          <div class="fw-link-img-wrap">
+            <img src="https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA(3).JPG" alt="フィールドワーク３日目、仁賀保">
+          </div>
+          <div class="fw-link-content">
+            <div class="fw-link-day">DAY 03</div>
+            <div class="fw-link-title">フィールドワーク３日目、仁賀保<span class="fw-soon">Coming Soon</span></div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+
   </section>
 
   <section class="section" id="output">
