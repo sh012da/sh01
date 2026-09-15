@@ -3,32 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>発酵の暗箱：飛良泉に息づく生命とうごめくエネルギー | Tsuda Shoichi</title>
-<meta name="description" content="にかほ芸術登竜紋 公募プラン。鳥海山麓の大自然と飛良泉本舗の醸造文化を交差させ、音と光でにかほの不可視のエネルギーを可視化する空間インスタレーション。">
+<title>にかほの神話と伝承 ―発酵と磁性－</title>
+<meta name="description" content="失われゆく地域文化の「発酵と磁性」を基点とした土地の記憶の可視化と、地域間を横断する物語の構造化。にかほ市でのリサーチに基づく制作プラン。">
 
-<!-- 共通フォント（洗練されたセリフ体構成） -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400;500;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@200;300;400;500&display=swap" rel="stylesheet">
 
 <style>
 /* ============================================================
-   DESIGN TOKENS & VARIABLES (にかほ "DARK BOX" 仕様)
+   DESIGN TOKENS & VARIABLES (NIKAHO NATURE THEME)
 =========================================================== */
 :root {
-  --c-bg-base: #010101;
-  --c-bg-surface: #0a0505;
-  --c-bg-glass: rgba(10, 5, 5, 0.75);
+  --c-bg-base: #f8f9fa;
+  --c-bg-surface: #ffffff;
+  --c-bg-glass: rgba(248, 249, 250, 0.85);
   
-  --c-text-main: #f4f4f4;
-  --c-text-muted: #888585;
+  --c-text-main: #2b2e2d;
+  --c-text-muted: #6c706e;
   
-  /* 脈打つ赤（有機EL・生命・錆） */
-  --c-accent: #e02f1d;       
-  --c-accent-dim: rgba(224, 47, 29, 0.25);
-  --c-accent-glow: rgba(224, 47, 29, 0.6);
-  --c-dark-blood: #5a0b04;
-  --c-gold: #d4ae83;
+  --c-accent: #2b5c46;       
+  --c-accent-dim: rgba(43, 92, 70, 0.15);
+  --c-accent-glow: rgba(43, 92, 70, 0.25);
+  --c-accent-light: #468266;
+  
+  --c-border: rgba(43, 92, 70, 0.15);
   
   --f-serif-en: 'Cormorant Garamond', serif;
   --f-serif-ja: 'Noto Serif JP', serif;
@@ -36,10 +35,10 @@
   
   --ease-smooth: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-slow: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
   
-  --px: clamp(1.2rem, 5vw, 6rem);
-  --py: clamp(5rem, 12vh, 10rem);
+  --px: clamp(1.5rem, 6vw, 8rem);
+  --py: clamp(6rem, 15vh, 12rem);
 }
 
 /* ============================================================
@@ -51,43 +50,45 @@ body {
   font-family: var(--f-serif-ja);
   color: var(--c-text-main);
   background: var(--c-bg-base);
-  line-height: 2;
-  letter-spacing: 0.1em;
+  line-height: 2.2;
+  letter-spacing: 0.12em;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  padding-bottom: 80px; /* バナー用の余白確保 */
+  padding-bottom: 80px;
+  
+  word-break: auto-phrase;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
 }
 img, video { max-width: 100%; height: auto; display: block; }
 a { color: inherit; text-decoration: none; transition: opacity 0.3s var(--ease-smooth); }
 a:hover { opacity: 0.6; }
-::selection { background: var(--c-accent); color: var(--c-bg-base); }
-.inline-block { display: inline-block; }
+::selection { background: var(--c-accent); color: var(--c-bg-surface); }
 
 /* ============================================================
-   PRELOADER (磁力波アニメーション)
+   UTILITY
+=========================================================== */
+.br-pc { display: block; }
+@media (max-width: 768px) {
+  .br-pc { display: none; }
+}
+
+/* ============================================================
+   PRELOADER
 =========================================================== */
 #preloader {
-  position: fixed; inset: 0; z-index: 99999;
+  position: fixed; inset: 0; z-index: 100000;
   background: var(--c-bg-base);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   transition: opacity 1.5s var(--ease-slow), visibility 1.5s;
 }
 #preloader.is-loaded { opacity: 0; visibility: hidden; pointer-events: none; }
-
 .loader-pulse {
-  width: 2px; height: 60px;
-  background: var(--c-accent);
-  position: relative;
+  width: 1px; height: 80px; background: var(--c-accent); position: relative;
   box-shadow: 0 0 20px var(--c-accent-glow);
   animation: pulseHeight 1.5s var(--ease-smooth) infinite alternate;
 }
-.loader-pulse::before, .loader-pulse::after {
-  content: ''; position: absolute; top: 50%; transform: translateY(-50%);
-  width: 1px; height: 40px; background: var(--c-accent-dim);
-}
-.loader-pulse::before { left: -15px; animation: pulseHeight 1.5s 0.2s var(--ease-smooth) infinite alternate; }
-.loader-pulse::after { right: -15px; animation: pulseHeight 1.5s 0.4s var(--ease-smooth) infinite alternate; }
-@keyframes pulseHeight { 0% { height: 10px; } 100% { height: 80px; } }
+@keyframes pulseHeight { 0% { height: 10px; opacity: 0.2; } 100% { height: 120px; opacity: 1; } }
 
 /* ============================================================
    NAVIGATION
@@ -95,138 +96,70 @@ a:hover { opacity: 0.6; }
 .header {
   position: fixed; top: 0; left: 0; width: 100%; z-index: 10000;
   display: flex; justify-content: space-between; align-items: center;
-  padding: clamp(1rem, 3vw, 2rem) var(--px);
-  background: transparent;
-  transition: all 0.6s var(--ease-smooth);
+  padding: clamp(1.5rem, 4vw, 2.5rem) var(--px);
+  background: transparent; transition: all 0.8s var(--ease-expo);
 }
 .header.is-scrolled {
   background: var(--c-bg-glass);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  padding-top: 1rem; padding-bottom: 1rem;
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--c-border);
+  padding-top: 1.2rem; padding-bottom: 1.2rem;
 }
-.logo {
-  font-family: var(--f-serif-en); font-size: clamp(0.9rem, 1.5vw, 1.1rem);
-  letter-spacing: 0.25em; color: var(--c-text-main); text-transform: uppercase;
-}
-.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.logo { font-family: var(--f-serif-en); font-size: 1.1rem; letter-spacing: 0.3em; text-transform: uppercase; font-weight: 500; color: var(--c-text-main);}
+.nav-links { display: flex; gap: 3rem; list-style: none; }
 .nav-links a {
   font-family: var(--f-serif-en); font-size: 0.75rem; letter-spacing: 0.2em;
-  color: var(--c-text-muted); text-transform: uppercase;
-  position: relative; padding-bottom: 4px;
+  color: var(--c-text-muted); text-transform: uppercase; position: relative; font-weight: 500;
 }
 .nav-links a::after {
-  content: ''; position: absolute; left: 0; bottom: 0; width: 100%; height: 1px;
+  content: ''; position: absolute; left: 0; bottom: -5px; width: 100%; height: 1px;
   background: var(--c-accent); transform: scaleX(0); transform-origin: right;
-  transition: transform 0.4s var(--ease-smooth);
+  transition: transform 0.5s var(--ease-expo);
 }
-.nav-links a:hover { color: var(--c-text-main); text-shadow: 0 0 10px var(--c-accent-glow); }
+.nav-links a:hover { color: var(--c-accent); }
 .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
-.btn-contact {
-  font-family: var(--f-serif-en); font-size: 0.7rem; letter-spacing: 0.2em;
-  padding: 0.8em 1.5em; border: 1px solid var(--c-accent-dim);
-  color: var(--c-accent); transition: all 0.4s var(--ease-smooth);
-}
-.btn-contact:hover { background: var(--c-accent); color: var(--c-bg-base); box-shadow: 0 0 20px var(--c-accent-glow); border-color: var(--c-accent); }
-
-@media(max-width: 860px) { .nav-links { display: none; } }
+@media(max-width: 900px) { .nav-links { display: none; } }
 
 /* ============================================================
-   STATUS BANNER (ご指定のプロトタイプ追従表示)
-=========================================================== */
-.status-banner {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  z-index: 99995;
-  background: repeating-linear-gradient(
-    -45deg,
-    var(--c-accent),
-    var(--c-accent) 15px,
-    #a31f0d 15px,
-    #a31f0d 30px
-  );
-  padding: 10px;
-  box-shadow: 0 -5px 30px rgba(224, 47, 29, 0.5);
-  transform: translateY(110%);
-  transition: transform 1.2s var(--ease-smooth);
-  pointer-events: auto;
-}
-.status-banner.is-visible {
-  transform: translateY(0);
-}
-.status-content-inner {
-  background: var(--c-bg-base);
-  border: 2px solid var(--c-accent);
-  padding: clamp(0.6rem, 2vw, 1rem) clamp(1rem, 3vw, 2rem);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: clamp(0.5rem, 2vw, 1.5rem);
-  max-width: 900px;
-  margin: 0 auto;
-}
-.status-icon {
-  font-size: clamp(1rem, 3vw, 1.4rem);
-  animation: blink-soft 1s infinite alternate;
-}
-.status-text {
-  font-family: var(--f-serif-ja);
-  font-size: clamp(0.7rem, 2vw, 0.9rem);
-  color: var(--c-accent);
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  line-height: 1.5;
-  text-align: center;
-}
-@keyframes blink-soft { 0% { opacity: 0.3; } 100% { opacity: 1; } }
-
-@media(max-width: 600px) {
-  .status-content-inner { flex-direction: column; gap: 4px; padding: 10px; }
-  .status-text { font-size: 0.65rem; line-height: 1.4; }
-  .js-br-mobile { display: block; content: ""; margin-top: 2px; }
-}
-
-/* ============================================================
-   SYNC METER (右側スクロールUI)
+   SYNC METER (Right UI)
 =========================================================== */
 .voile-meter {
-  position: fixed; right: clamp(1rem, 4vw, 3rem); top: 50%; transform: translateY(-50%);
-  z-index: 900; display: flex; flex-direction: column; align-items: center; gap: 1rem;
-  opacity: 0; transition: opacity 1s var(--ease-slow); pointer-events: none;
+  position: fixed; right: clamp(1rem, 3vw, 2.5rem); top: 50%; transform: translateY(-50%);
+  z-index: 9000; display: flex; flex-direction: column; align-items: center; gap: 1.5rem;
+  opacity: 0; transition: opacity 1.5s var(--ease-slow); pointer-events: none;
 }
 .voile-meter.is-visible { opacity: 1; }
-.vm-label {
-  font-family: var(--f-serif-en); font-size: 0.6rem; letter-spacing: 0.4em;
-  color: var(--c-text-muted); writing-mode: vertical-rl;
-}
-.vm-bar {
-  width: 1px; height: 180px; background: rgba(255,255,255,0.1);
-  position: relative; overflow: hidden;
-}
+.vm-label { font-family: var(--f-serif-en); font-size: 0.55rem; letter-spacing: 0.5em; color: var(--c-text-muted); writing-mode: vertical-rl; text-transform: uppercase; }
+.vm-bar { width: 1px; height: 250px; background: var(--c-border); position: relative; overflow: hidden; }
 .vm-fill {
   position: absolute; top: 0; left: 0; width: 100%; height: 0%;
-  background: linear-gradient(to bottom, var(--c-accent), var(--c-dark-blood));
-  will-change: height; box-shadow: 0 0 10px var(--c-accent);
+  background: var(--c-accent); will-change: height;
 }
-.vm-number { font-family: var(--f-mono); font-size: 0.75rem; color: var(--c-accent); text-shadow: 0 0 5px var(--c-accent-glow); }
+.vm-number { font-family: var(--f-mono); font-size: 0.8rem; color: var(--c-accent); }
 @media(max-width: 1024px) { .voile-meter { display: none; } }
 
 /* ============================================================
-   ANIMATION UTILITIES (Intersection Observer用)
+   STATUS BANNER
 =========================================================== */
-.reveal {
-  opacity: 0; transform: translateY(40px);
-  transition: opacity 1.2s var(--ease-slow), transform 1.2s var(--ease-slow);
+.status-banner {
+  position: fixed; bottom: 0; left: 0; width: 100%; z-index: 99995;
+  background: repeating-linear-gradient(-45deg, var(--c-accent), var(--c-accent) 15px, var(--c-accent-light) 15px, var(--c-accent-light) 30px);
+  padding: 8px; box-shadow: 0 -10px 40px var(--c-accent-dim);
+  transform: translateY(110%); transition: transform 1.2s var(--ease-expo); pointer-events: auto;
 }
-.reveal-blur {
-  opacity: 0; filter: blur(15px); transform: scale(0.95);
-  transition: opacity 1.5s var(--ease-slow), filter 1.5s var(--ease-slow), transform 1.5s var(--ease-slow);
+.status-banner.is-visible { transform: translateY(0); }
+.status-content-inner {
+  background: var(--c-bg-surface); border: 1px solid var(--c-accent);
+  padding: 0.8rem 2rem; display: flex; justify-content: center; align-items: center; gap: 1rem; max-width: 800px; margin: 0 auto;
 }
-.reveal.is-active, .reveal-blur.is-active {
-  opacity: 1; transform: translateY(0) scale(1); filter: blur(0);
-}
+.status-text { font-size: 0.75rem; color: var(--c-accent); font-weight: 500; letter-spacing: 0.15em; text-align: center; }
+
+/* ============================================================
+   REVEAL ANIMATIONS
+=========================================================== */
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity 1.5s var(--ease-expo), transform 1.5s var(--ease-expo); }
+.reveal-blur { opacity: 0; filter: blur(15px); transform: scale(1.02); transition: opacity 2s var(--ease-slow), filter 2s var(--ease-slow), transform 2s var(--ease-slow); }
+.reveal.is-active, .reveal-blur.is-active { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
 .delay-1 { transition-delay: 0.15s; }
 .delay-2 { transition-delay: 0.3s; }
 .delay-3 { transition-delay: 0.45s; }
@@ -234,576 +167,384 @@ a:hover { opacity: 0.6; }
 /* ============================================================
    HERO MIST REVEAL
 =========================================================== */
-.mist-reveal {
-  opacity: 0; filter: blur(20px); transform: translateY(20px) scale(1.02);
-  transition: opacity 2.5s var(--ease-slow), filter 3s var(--ease-slow), transform 3s var(--ease-slow);
-}
-.hero-title.mist-reveal {
-  filter: blur(30px); transform: translateY(30px) scale(1.05);
-  transition: opacity 3.5s var(--ease-slow), filter 4s var(--ease-slow), transform 4s var(--ease-slow);
-}
-.hero.is-ready .mist-reveal { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
+.mist-reveal { opacity: 0; filter: blur(15px); transform: translateY(20px); transition: opacity 2.5s var(--ease-slow), filter 3s var(--ease-slow), transform 3s var(--ease-slow); }
+.hero.is-ready .mist-reveal { opacity: 1; filter: blur(0); transform: translateY(0); }
 .hero.is-ready .delay-m1 { transition-delay: 0.2s; }
 .hero.is-ready .delay-m2 { transition-delay: 0.4s; }
 .hero.is-ready .delay-m3 { transition-delay: 0.6s; }
-.hero.is-ready .delay-m4 { transition-delay: 0.8s; }
-.hero.is-ready .delay-m5 { transition-delay: 1.0s; }
 
 /* ============================================================
-   HERO SECTION (背景動画 ＆ タイトルコンパクト化)
+   HERO SECTION (NIKAHO NATURE)
 =========================================================== */
 .hero {
-  position: relative; height: 100svh; min-height: 650px;
-  display: flex; flex-direction: column; justify-content: flex-end;
-  padding: clamp(100px, 15vh, 180px) var(--px) clamp(3rem, 8vh, 5rem);
-  overflow: hidden; background: #000;
+  position: relative; height: 100svh; min-height: 700px;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  overflow: hidden; text-align: center; background-color: var(--c-bg-base);
 }
-.hero-bg {
-  position: absolute; inset: -5%; width: 110%; height: 110%;
-  z-index: 1; pointer-events: none;
-}
-/* 背景動画のスタイル */
-.hero-video {
-  width: 100%; height: 100%; object-fit: cover;
-  filter: brightness(0.4) contrast(1.2) grayscale(20%);
-}
-.hero-veil-layer {
-  position: absolute; inset: 0; z-index: 2; pointer-events: none;
-  background: repeating-linear-gradient(90deg, rgba(224,47,29,0.03) 0px, rgba(224,47,29,0.03) 1px, transparent 1px, transparent 20px);
-  mix-blend-mode: color-dodge;
-  will-change: transform;
-}
-.hero-gradient {
-  position: absolute; inset: 0; z-index: 3;
-  background: linear-gradient(to top, var(--c-bg-base) 0%, rgba(1,1,1,0.7) 50%, transparent 100%);
-}
-.hero-glow {
-  position: absolute; bottom: -20%; right: -10%; width: 60vw; height: 60vw;
-  background: radial-gradient(circle, var(--c-accent-dim) 0%, transparent 70%);
-  z-index: 2; filter: blur(80px); mix-blend-mode: screen; pointer-events: none;
-}
+.hero-bg { position: absolute; inset: -5%; width: 110%; height: 110%; z-index: 1; pointer-events: none; }
+.hero-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; filter: grayscale(10%) contrast(1.1); }
+.hero-gradient { position: absolute; inset: 0; z-index: 2; background: radial-gradient(circle at center, rgba(248, 249, 250, 0.4) 0%, var(--c-bg-base) 90%); }
+.hero-glow { position: absolute; bottom: 0; left: 0; width: 100%; height: 35vh; background: linear-gradient(to top, var(--c-bg-base) 10%, transparent); z-index: 3; }
 
-.hero-content {
-  position: relative; z-index: 10; max-width: 1000px;
-}
-.badge { display: inline-flex; align-items: center; gap: 1rem; margin-bottom: 1.2rem; }
-.badge-line { width: 30px; height: 1px; background: var(--c-accent); box-shadow: 0 0 10px var(--c-accent); }
-.badge-text {
-  font-family: var(--f-serif-en); font-size: 0.6rem; letter-spacing: 0.3em;
-  color: var(--c-text-main); border: 1px solid var(--c-accent-dim);
-  padding: 0.5em 1.2em; border-radius: 40px;
-  background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
-}
-.hero-eyebrow { font-size: clamp(0.7rem, 1.2vw, 0.85rem); color: var(--c-text-muted); margin-bottom: 2rem; letter-spacing: 0.15em; }
-
-/* タイトルのコンパクト・スタイリッシュ化 */
-.hero-title-wrap {
-  display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 2rem;
-}
+.hero-content { position: relative; z-index: 10; max-width: 1000px; padding: 0 var(--px); display: flex; flex-direction: column; align-items: center; }
+.hero-eyebrow { font-family: var(--f-serif-en); font-size: clamp(0.75rem, 1.2vw, 0.9rem); color: var(--c-accent); margin-bottom: 2.5rem; letter-spacing: 0.4em; text-transform: uppercase; font-weight: 500;}
 .hero-title {
-  font-family: var(--f-serif-ja);
-  font-size: clamp(2.5rem, 6vw, 5.5rem); font-weight: 500;
-  line-height: 1.1; letter-spacing: 0.1em;
-  text-shadow: 0 10px 30px rgba(0,0,0,0.9);
+  font-family: var(--f-serif-ja); font-size: clamp(3rem, 7vw, 6.5rem); font-weight: 400;
+  line-height: 1.2; letter-spacing: 0.15em; margin-bottom: 1rem; color: var(--c-text-main);
+  text-shadow: 0 10px 30px rgba(255,255,255,0.8);
+  text-wrap: balance;
 }
-.hero-title .ruby {
-  font-family: var(--f-serif-en); font-style: normal; color: var(--c-accent);
-  font-size: 0.35em; margin-left: 0.5em; text-shadow: 0 0 15px var(--c-accent-glow);
-  font-weight: 300; letter-spacing: 0.3em; vertical-align: middle;
-}
-.hero-subtitle {
-  font-size: clamp(0.9rem, 2vw, 1.2rem); color: rgba(244, 244, 244, 0.85);
-  letter-spacing: 0.2em; font-weight: 300; text-shadow: 0 5px 15px rgba(0,0,0,0.9);
+.hero-subtitle { font-family: var(--f-serif-en); font-size: clamp(1rem, 2vw, 1.4rem); color: var(--c-text-muted); letter-spacing: 0.3em; font-weight: 400; margin-bottom: 3rem; text-transform: uppercase; }
+.hero-desc { max-width: 700px; font-size: clamp(0.9rem, 1.2vw, 1rem); color: var(--c-text-main); line-height: 2.4; text-align: center; }
+
+/* ============================================================
+   SECTION COMMON
+=========================================================== */
+.section { padding: var(--py) var(--px); position: relative; z-index: 10; }
+.section-bg-alt { background-color: var(--c-bg-surface); }
+.sec-title-wrap { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: clamp(4rem, 8vw, 6rem); text-align: center; }
+.sec-title-line { width: 1px; height: 60px; background: linear-gradient(to bottom, transparent, var(--c-accent)); }
+.sec-title { font-family: var(--f-serif-en); font-size: clamp(1rem, 2vw, 1.5rem); letter-spacing: 0.5em; color: var(--c-accent); text-transform: uppercase; font-weight: 400; }
+
+/* ============================================================
+   CONCEPT (STICKY SPLIT)
+=========================================================== */
+.concept-wrapper { display: flex; flex-wrap: wrap; gap: clamp(3rem, 8vw, 6rem); max-width: 1400px; margin: 0 auto; }
+.concept-left { flex: 1 1 400px; position: sticky; top: 25vh; align-self: flex-start; }
+.concept-right { flex: 1.5 1 500px; display: flex; flex-direction: column; gap: clamp(4rem, 10vw, 8rem); }
+
+.intro-lead { font-size: clamp(1.6rem, 3vw, 2.6rem); line-height: 1.8; font-weight: 300; margin-bottom: 2.5rem; letter-spacing: 0.1em; color: var(--c-text-main); text-wrap: balance; }
+.intro-lead em { font-style: normal; color: var(--c-accent); }
+.concept-text { color: var(--c-text-muted); font-size: clamp(0.95rem, 1.1vw, 1.05rem); margin-bottom: 2rem; line-height: 2.4; }
+
+.concept-media-block { position: relative; width: 100%; border: 1px solid var(--c-border); padding: 12px; background: var(--c-bg-surface); box-shadow: 0 15px 40px rgba(0,0,0,0.03); cursor: pointer; }
+.concept-media-block img { width: 100%; aspect-ratio: 16/10; object-fit: cover; transition: filter 1s var(--ease-slow), transform 1s var(--ease-slow); filter: brightness(0.95); }
+.concept-media-block:hover img { filter: brightness(1.05); transform: scale(1.02);}
+.media-caption { position: absolute; bottom: -2.5rem; left: 0; font-family: var(--f-mono); font-size: 0.7rem; color: var(--c-text-muted); letter-spacing: 0.2em; text-transform: uppercase; }
+.media-caption::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--c-accent); vertical-align: middle; margin-right: 10px; }
+
+/* ============================================================
+   FIELD NOTES (ASYMMETRIC GRID)
+=========================================================== */
+.fn-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(1rem, 2vw, 2rem); max-width: 1600px; margin: 0 auto; align-items: start; }
+/* 外側の要素から overflow: hidden; を外し、メタ情報（数字）がはみ出るように修正 */
+.fn-item { position: relative; background: var(--c-bg-surface); border: 1px solid var(--c-border); padding: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.03); cursor: pointer; }
+/* 内部の画像/動画のズーム用には overflow: hidden; を維持 */
+.fn-item-inner { position: relative; overflow: hidden; width: 100%; height: 100%; }
+.fn-item video, .fn-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 2s var(--ease-slow), filter 1s; }
+.fn-item:hover video, .fn-item:hover img { transform: scale(1.05); filter: brightness(1.05); }
+
+/* Layout: 02を最大にするため、スパン（占有幅）を大きく調整 */
+.fn-1 { grid-column: 1 / 6; aspect-ratio: 4/3; margin-top: 5rem; } 
+.fn-2 { grid-column: 6 / 13; aspect-ratio: 3/4; transform: scale(1.02); z-index: 5; box-shadow: 0 25px 60px rgba(0,0,0,0.08); } 
+.fn-3 { grid-column: 2 / 7; aspect-ratio: 16/10; margin-top: -5rem; } 
+.fn-4 { grid-column: 8 / 12; aspect-ratio: 1/1; margin-top: 2rem; } 
+
+.fn-meta { position: absolute; top: -1.8rem; right: -1.5rem; z-index: 10; pointer-events: none; }
+.fn-num { font-family: var(--f-serif-en); font-size: clamp(4.5rem, 6vw, 6rem); color: var(--c-bg-surface); -webkit-text-stroke: 1px var(--c-accent); line-height: 1; font-weight: 300; text-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+.fn-title { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.2em; color: var(--c-accent); margin-top: 1rem; position: absolute; left: 1.5rem; bottom: 1.5rem; background: rgba(255,255,255,0.95); padding: 0.6em 1.2em; border: 1px solid var(--c-border); z-index: 6;}
+
+@media(max-width: 900px) {
+  .fn-grid { display: flex; flex-direction: column; gap: 4rem; }
+  .fn-item { transform: none !important; margin-top: 0; }
+  .fn-1, .fn-2, .fn-3, .fn-4 { aspect-ratio: auto; }
+  .fn-item-inner { aspect-ratio: 16/10; }
+  .fn-2 .fn-item-inner { aspect-ratio: 3/4; }
+  .fn-meta { right: 0rem; } /* モバイル時は少し内側に寄せる */
 }
 
-.hero-desc {
-  max-width: 650px; font-size: clamp(0.85rem, 1.5vw, 0.95rem);
-  color: rgba(244, 244, 244, 0.75); line-height: 2.2; text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+/* ============================================================
+   OUTPUT PHASE (MATRIX GRID & CLEAN LIST)
+=========================================================== */
+.matrix-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 1600px; margin: 0 auto 5rem; }
+.matrix-item { position: relative; aspect-ratio: 1/1; overflow: hidden; background: var(--c-bg-surface); border: 1px solid var(--c-border); padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); cursor: pointer; }
+.matrix-item-inner { position: relative; width: 100%; height: 100%; overflow: hidden; }
+.matrix-item img { width: 100%; height: 100%; object-fit: cover; transition: all 1.5s var(--ease-expo); filter: brightness(0.95); }
+.matrix-item:hover img { filter: brightness(1.05); transform: scale(1.08); }
+
+@media(max-width: 900px) {
+  .matrix-container { grid-template-columns: 1fr; }
+  .matrix-item { aspect-ratio: 16/10; }
 }
-.hero-meta { display: flex; gap: 2rem; margin-top: 2.5rem; flex-wrap: wrap; }
-.meta-item { display: flex; flex-direction: column; gap: 0.2rem; }
-.meta-label { font-family: var(--f-serif-en); font-size: 0.55rem; letter-spacing: 0.3em; color: var(--c-accent); text-transform: uppercase; }
-.meta-val { font-size: clamp(0.75rem, 1.2vw, 0.85rem); }
+
+.spec-table-wrap { max-width: 1000px; margin: 0 auto; border-top: 1px solid var(--c-border); padding-top: 2rem;}
+.spec-row { display: grid; grid-template-columns: 250px 1fr; gap: 3rem; padding: 3rem 0; border-bottom: 1px solid var(--c-border); }
+.spec-label { font-family: var(--f-serif-en); font-size: 1.1rem; color: var(--c-text-main); text-transform: uppercase; letter-spacing: 0.2em; font-weight: 500;}
+.spec-label span { display: block; font-family: var(--f-serif-ja); font-size: 0.75rem; color: var(--c-accent); margin-top: 0.5rem; letter-spacing: 0.1em;}
+.spec-val { color: var(--c-text-muted); font-size: clamp(0.95rem, 1vw, 1.05rem); line-height: 2.4; }
 
 @media(max-width: 768px) {
-  .hero-meta { gap: 1.5rem; margin-top: 1.5rem; }
-  .badge-line { width: 20px; }
-  .hero-title-wrap { gap: 0.5rem; }
-  .hero-title .ruby { display: block; margin-left: 0; margin-top: 0.3rem; }
+  .spec-row { grid-template-columns: 1fr; padding: 2rem 0; gap: 1rem; }
 }
 
 /* ============================================================
-   SECTIONS COMMON
+   SCHEDULE & CLOSING
 =========================================================== */
-.section { padding: var(--py) var(--px); position: relative; }
-.section-bg-alt { background: var(--c-bg-surface); border-top: 1px solid rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.02); }
+.schedule-list { max-width: 800px; margin: 0 auto; list-style: none; }
+.schedule-item { display: flex; align-items: flex-start; gap: 3rem; padding: 2.5rem 0; border-bottom: 1px solid var(--c-border); }
+/* white-space: nowrap と flex-shrink: 0 を追加し、日付の改行を防ぐ */
+.sch-date { font-family: var(--f-mono); font-size: 1.3rem; color: var(--c-accent); min-width: 160px; font-weight: 400; white-space: nowrap; flex-shrink: 0;}
+.sch-text { color: var(--c-text-muted); font-size: 1rem; line-height: 2.2;}
 
-.sec-title-wrap { margin-bottom: clamp(3rem, 6vw, 5rem); display: flex; align-items: center; gap: 1.5rem; }
-.sec-title-line { width: 40px; height: 1px; background: var(--c-accent); box-shadow: 0 0 10px var(--c-accent); }
-.sec-title { font-family: var(--f-serif-en); font-size: clamp(0.75rem, 1.2vw, 0.9rem); letter-spacing: 0.4em; color: var(--c-accent); text-transform: uppercase; }
+.closing { text-align: center; padding-top: clamp(8rem, 15vw, 12rem); }
+.closing-quote { font-size: clamp(1.4rem, 3vw, 2.4rem); line-height: 2; font-weight: 300; margin-bottom: 5rem; color: var(--c-text-main); letter-spacing: 0.15em; text-wrap: balance;}
+.closing-quote p { margin-bottom: 1.5rem; }
+.btn-primary {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--f-serif-en); font-size: 0.85rem; letter-spacing: 0.4em; text-transform: uppercase;
+  color: var(--c-bg-surface); background: var(--c-text-main); padding: 1.5em 4em; transition: all 0.5s var(--ease-expo);
+  border: 1px solid transparent;
+}
+.btn-primary:hover { background: var(--c-accent); color: var(--c-bg-surface); box-shadow: 0 15px 30px var(--c-accent-dim); transform: translateY(-5px); }
+
+.footer { text-align: center; padding: 5rem var(--px); border-top: 1px solid var(--c-border); margin-top: 6rem; background: var(--c-bg-surface);}
+.footer-logo { font-family: var(--f-serif-en); font-size: 1rem; letter-spacing: 0.3em; color: var(--c-text-main); margin-bottom: 1.5rem; text-transform: uppercase; font-weight: 500;}
+.footer-copy { font-family: var(--f-mono); font-size: 0.65rem; color: var(--c-text-muted); letter-spacing: 0.2em; }
 
 /* ============================================================
-   INTRO / CONCEPT
+   LIGHTBOX MODAL (LIGHT THEME)
 =========================================================== */
-.intro-grid {
-  display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(2.5rem, 6vw, 6rem);
-  max-width: 1200px; margin: 0 auto; align-items: start;
-}
-.intro-lead { font-size: clamp(1.3rem, 2.8vw, 2.4rem); line-height: 1.8; font-weight: 400; }
-.intro-lead em { font-style: normal; color: var(--c-accent); font-weight: 700; text-shadow: 0 0 10px rgba(224,47,29,0.3); }
-.intro-text p { margin-bottom: 1.8rem; color: rgba(244, 244, 244, 0.8); text-align: justify; font-size: clamp(0.9rem, 1.2vw, 1rem); }
-.tags { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.5rem; }
-.tag { font-family: var(--f-mono); font-size: 0.65rem; color: var(--c-text-muted); border: 1px solid rgba(255,255,255,0.1); padding: 0.5em 1em; }
-
-.pull-quote {
-  margin: clamp(4rem, 8vw, 6rem) 0; padding: clamp(2rem, 4vw, 3rem) 0; text-align: center;
-  border-top: 1px solid rgba(224, 47, 29, 0.2); border-bottom: 1px solid rgba(224, 47, 29, 0.2);
-  font-size: clamp(1.2rem, 2.5vw, 2rem); color: var(--c-accent); font-weight: 300; letter-spacing: 0.1em;
-  background: linear-gradient(90deg, transparent, rgba(224,47,29,0.05), transparent);
-}
-
-@media(max-width: 900px) { .intro-grid { grid-template-columns: 1fr; } }
-
-/* ============================================================
-   PROCESS & SKETCHES
-=========================================================== */
-.process-grid {
-  display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; max-width: 1400px; margin: 0 auto;
-}
-.img-wrap {
-  position: relative; overflow: hidden; background: #050202; border: 1px solid rgba(255,255,255,0.03);
-}
-.img-wrap img {
-  width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7) contrast(1.2) grayscale(30%);
-  transition: transform 1.5s var(--ease-slow), filter 0.8s;
-}
-.js-lightbox { cursor: zoom-in; }
-.img-wrap:hover .js-lightbox { transform: scale(1.03); filter: brightness(1) contrast(1.1) grayscale(0%); }
-.img-wrap::after {
-  content: ''; position: absolute; inset: 0; background: var(--c-accent); mix-blend-mode: overlay; opacity: 0; transition: opacity 0.5s; pointer-events: none;
-}
-.img-wrap:hover::after { opacity: 0.4; }
-
-.img-cap {
-  position: absolute; bottom: 0; left: 0; width: 100%; padding: 1.5rem 1.2rem;
-  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-  font-family: var(--f-mono); font-size: clamp(0.6rem, 1vw, 0.7rem); color: var(--c-accent); letter-spacing: 0.05em;
-  pointer-events: none; z-index: 2;
-}
-.img-big { grid-row: span 2; aspect-ratio: 3/4; }
-.img-small { aspect-ratio: 16/10; }
-
-@media(max-width: 768px) { 
-  .process-grid { grid-template-columns: 1fr; } 
-  .img-big { grid-row: auto; aspect-ratio: 4/3; } 
-}
-
-/* ============================================================
-   MATERIAL SPEC (SYNC BARS)
-=========================================================== */
-.spec-top {
-  display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; max-width: 1200px; margin: 0 auto 4rem;
-}
-.spec-num-wrap { font-family: var(--f-mono); font-size: clamp(3.5rem, 8vw, 6rem); line-height: 1; color: var(--c-accent); font-weight: 300; text-shadow: 0 0 20px var(--c-accent-glow); }
-.spec-num-wrap span { font-size: 0.3em; color: var(--c-text-muted); font-family: var(--f-mono); margin-left: 0.5rem; text-shadow: none; }
-.stat-bar { height: 2px; width: 100%; background: rgba(255,255,255,0.05); margin-top: 1.2rem; position: relative; }
-.stat-fill { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--c-accent); box-shadow: 0 0 15px var(--c-accent); transition: width 2.5s var(--ease-bounce); }
-.spec-table { max-width: 1200px; margin: 0 auto; border-top: 1px solid rgba(255,255,255,0.1); }
-.spec-row { display: grid; grid-template-columns: 200px 1fr; gap: 1.5rem; padding: 1.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-.spec-label { font-family: var(--f-mono); font-size: 0.7rem; color: var(--c-accent); text-transform: uppercase; }
-.spec-val { color: rgba(244, 244, 244, 0.8); font-size: clamp(0.85rem, 1.2vw, 0.95rem); line-height: 1.8; }
-
-@media(max-width: 768px) { 
-  .spec-top, .spec-row { grid-template-columns: 1fr; gap: 1rem; } 
-  .spec-row { padding: 1.2rem 0; }
-}
-
-/* ============================================================
-   SITE / MAP
-=========================================================== */
-.site-hero { aspect-ratio: 21/9; margin-bottom: clamp(2rem, 5vw, 4rem); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
-.site-hero img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6) contrast(1.2); transition: transform 2s var(--ease-slow), filter 0.8s; }
-.site-hero:hover img.js-lightbox { transform: scale(1.03); filter: brightness(0.9) contrast(1); }
-.site-content { display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(2rem, 5vw, 4rem); max-width: 1200px; margin: 0 auto; }
-.checklist { list-style: none; }
-.check-item {
-  display: flex; align-items: center; gap: 1rem; padding: 1rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--c-text-muted); font-size: clamp(0.8rem, 1.2vw, 0.9rem);
-  letter-spacing: 0.15em;
-}
-.check-item.active { color: var(--c-text-main); }
-.check-box { width: 14px; height: 14px; border: 1px solid rgba(255,255,255,0.2); transform: rotate(45deg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.3s; }
-.check-item.active .check-box { border-color: var(--c-accent); box-shadow: 0 0 10px var(--c-accent-glow); }
-.check-item.active .check-box::after { content: ''; width: 6px; height: 6px; background: var(--c-accent); }
-.check-tag { margin-left: auto; font-family: var(--f-mono); font-size: 0.6rem; color: var(--c-accent); }
-
-@media(max-width: 900px) { 
-  .site-content { grid-template-columns: 1fr; } 
-  .site-hero { aspect-ratio: 16/9; } 
-}
-
-/* ============================================================
-   EXPERIENCE (Media Grid)
-=========================================================== */
-.exp-grid {
-  display: flex; flex-direction: column; gap: clamp(3rem, 6vw, 5rem);
-  max-width: 1000px; margin: 0 auto; align-items: center;
-}
-.exp-text-top { text-align: center; max-width: 800px; }
-.exp-img-large {
-  width: 100%; position: relative; overflow: hidden;
-  border: 1px solid rgba(224,47,29,0.2); background: #000;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-}
-.exp-img-large img {
-  width: 100%; height: auto; display: block;
-  filter: brightness(0.7) contrast(1.3);
-  transition: transform 2s var(--ease-slow), filter 0.8s;
-}
-.exp-img-large:hover img.js-lightbox { transform: scale(1.02); filter: brightness(1) contrast(1.1); }
-.exp-text-block { display: flex; flex-direction: column; gap: 1rem; width: 100%; }
-
-@media(min-width: 900px) {
-  .exp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; width: 100%; }
-  .exp-row:nth-child(even) .exp-img-large { order: 2; }
-  .exp-row:nth-child(even) .exp-text-block { order: 1; }
-}
-
-/* ============================================================
-   CLOSING & FOOTER
-=========================================================== */
-.closing { text-align: center; position: relative; overflow: hidden; padding-top: clamp(4rem, 10vw, 8rem); }
-.curator-card {
-  max-width: 800px; margin: 0 auto clamp(3rem, 8vw, 6rem); padding: clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 5vw, 3rem);
-  background: rgba(10, 5, 5, 0.7);
-  border: 1px solid var(--c-accent-dim);
-  box-shadow: 0 40px 100px rgba(0,0,0,0.9), inset 0 0 30px rgba(224,47,29,0.05);
-  backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-  text-align: left;
-}
-.curator-title { font-family: var(--f-serif-en); font-size: 0.75rem; letter-spacing: 0.3em; color: var(--c-accent); margin-bottom: 1.5rem; display: block; text-shadow: 0 0 10px var(--c-accent-glow);}
-.curator-card p { font-size: clamp(0.85rem, 1.2vw, 0.95rem); line-height: 2.2; color: rgba(244, 244, 244, 0.85); margin-bottom: 1.5rem; }
-.curator-card p:last-child { margin-bottom: 0; }
-
-.contact-cta {
-  display: inline-flex; font-family: var(--f-serif-en); font-size: 0.8rem; letter-spacing: 0.3em;
-  color: var(--c-bg-base); background: var(--c-text-main); padding: 1.2em 3em; text-transform: uppercase;
-  transition: all 0.4s var(--ease-smooth); font-weight: 600;
-}
-.contact-cta:hover { transform: translateY(-3px); box-shadow: 0 20px 40px var(--c-accent-dim); background: var(--c-accent); color: var(--c-bg-base); }
-
-.footer { padding: 3rem var(--px) 6rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); margin-top: clamp(3rem, 8vw, 6rem); }
-.footer-logo { font-size: 0.8rem; color: rgba(244, 244, 244, 0.4); margin-bottom: 0.5rem; letter-spacing: 0.15em; transition: color 0.3s; }
-.footer-logo:hover { color: var(--c-accent); text-shadow: 0 0 10px var(--c-accent-glow); }
-.footer-copy { font-family: var(--f-serif-en); font-size: 0.6rem; color: rgba(244, 244, 244, 0.3); letter-spacing: 0.2em; }
-
-/* ============================================================
-   LIGHTBOX MODAL
-=========================================================== */
-#lightbox {
-  position: fixed; inset: 0; z-index: 100000;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  opacity: 0; visibility: hidden; transition: opacity 0.5s var(--ease-slow), visibility 0.5s;
-}
+#lightbox { position: fixed; inset: 0; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.5s var(--ease-slow), visibility 0.5s; }
 #lightbox.is-open { opacity: 1; visibility: visible; }
-.lightbox-overlay {
-  position: absolute; inset: 0; background: rgba(1, 1, 1, 0.95);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); cursor: zoom-out;
-}
-.lightbox-inner {
-  position: relative; z-index: 100001; width: 95vw; max-width: 1600px; height: 90vh;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-}
-.lightbox-media-wrapper {
-  position: relative; max-width: 100%; max-height: calc(100% - 80px);
-  display: flex; justify-content: center; align-items: center;
-  transform: scale(0.95) translateY(20px); opacity: 0;
-  transition: transform 0.8s var(--ease-slow), opacity 0.8s var(--ease-slow);
-}
-#lightbox.is-open .lightbox-media-wrapper { transform: scale(1) translateY(0); opacity: 1; }
-.lightbox-media-wrapper img, .lightbox-media-wrapper video {
-  max-width: 100%; max-height: 100%; object-fit: contain;
-  box-shadow: 0 40px 80px rgba(0,0,0,0.9); border: 1px solid rgba(224,47,29,0.1); background: #000;
-}
-.lightbox-caption {
-  margin-top: 1.5rem; font-family: var(--f-serif-ja); font-size: clamp(0.9rem, 1.2vw, 1.1rem);
-  color: var(--c-accent); letter-spacing: 0.15em; text-align: center;
-  opacity: 0; transform: translateY(15px); transition: opacity 0.6s 0.4s var(--ease-smooth), transform 0.6s 0.4s var(--ease-smooth);
-  display: flex; flex-direction: column; align-items: center; gap: 0.8rem; text-shadow: 0 0 10px var(--c-accent-glow);
-}
-#lightbox.is-open .lightbox-caption { opacity: 1; transform: translateY(0); }
-.lightbox-caption::before { content: ''; width: 1px; height: 15px; background: var(--c-accent-dim); }
-.lightbox-close-btn {
-  position: absolute; top: clamp(1rem, 3vw, 3rem); right: clamp(1rem, 3vw, 3rem); z-index: 100002;
-  background: transparent; border: none; color: rgba(244, 244, 244, 0.4);
-  font-size: clamp(2.5rem, 4vw, 3.5rem); font-weight: 300; line-height: 1; cursor: pointer;
-  transition: color 0.4s var(--ease-smooth), transform 0.5s var(--ease-smooth); padding: 10px;
-}
-.lightbox-close-btn:hover { color: var(--c-accent); transform: rotate(90deg); text-shadow: 0 0 15px var(--c-accent-glow); }
+.lightbox-overlay { position: absolute; inset: 0; background: rgba(248, 249, 250, 0.96); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); cursor: zoom-out; }
+.lightbox-inner { position: relative; z-index: 100001; width: 90vw; max-width: 1600px; height: 85vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.lightbox-media-wrapper { position: relative; max-width: 100%; max-height: calc(100% - 60px); display: flex; justify-content: center; align-items: center; transform: scale(0.95); opacity: 0; transition: transform 0.8s var(--ease-expo), opacity 0.8s var(--ease-expo); }
+#lightbox.is-open .lightbox-media-wrapper { transform: scale(1); opacity: 1; }
+.lightbox-media-wrapper img, .lightbox-media-wrapper video { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 20px 60px rgba(0,0,0,0.08); border: 1px solid var(--c-border);}
+.lightbox-caption { margin-top: 2rem; font-family: var(--f-serif-ja); font-size: 1rem; color: var(--c-text-main); letter-spacing: 0.2em; opacity: 0; transition: opacity 0.5s 0.3s; }
+#lightbox.is-open .lightbox-caption { opacity: 1; }
+.lightbox-close-btn { position: absolute; top: 2.5rem; right: 2.5rem; z-index: 100002; background: transparent; border: none; color: var(--c-text-main); font-size: 3rem; font-weight: 200; cursor: pointer; transition: color 0.3s, transform 0.5s var(--ease-expo); padding: 10px; line-height: 1; }
+.lightbox-close-btn:hover { color: var(--c-accent); transform: rotate(90deg); }
 </style>
 </head>
 <body>
 
-<!-- Preloader -->
 <div id="preloader">
   <div class="loader-pulse"></div>
 </div>
 
-<!-- Header -->
 <header class="header" id="header">
   <a href="https://sh012da.github.io/sh01/" class="logo">Tsuda Shoichi</a>
   <ul class="nav-links">
     <li><a href="#concept">Concept</a></li>
-    <li><a href="#process">Co-creation</a></li>
-    <li><a href="#spec">Material</a></li>
-    <li><a href="#site">Site</a></li>
+    <li><a href="#field-notes">Field Notes</a></li>
+    <li><a href="#output">Output</a></li>
+    <li><a href="#schedule">Schedule</a></li>
   </ul>
   <a href="https://sh012da.github.io/sh01/contact.html" class="btn-contact">Contact</a>
 </header>
 
-<!-- Sync Meter (右側スクロールUI) -->
 <aside class="voile-meter" id="voile-meter">
   <span class="vm-label">Synchronization</span>
   <div class="vm-bar"><div class="vm-fill" id="vm-fill"></div></div>
   <span class="vm-number" id="vm-number">00</span>
 </aside>
 
-<!-- Floating Status Banner (ご指定のHTML仕様・下部追従) -->
-<div class="status-banner" id="status-banner">
-  <div class="status-content-inner">
-    <span class="status-icon">⚠️</span>
-    <div class="status-text">
-      ※これは企画段階のプロトタイプであり、<br class="js-br-mobile">今後変動する可能性があります
-    </div>
-  </div>
-</div>
-
-<!-- Main Content -->
 <main>
   
-  <!-- HERO -->
   <section class="hero" id="hero">
     <div class="hero-bg" id="hero-bg">
-      <!-- ファーストビュー背景動画 -->
-      <video class="hero-video" autoplay loop muted playsinline poster="https://adeac.jp/nikaho-city/assets/images/ogp.jpg">
-        <source src="https://sh012da.github.io/sh01/pp/images/img-263/NikahoM1.mp4" type="video/mp4">
+      <video class="hero-video" autoplay loop muted playsinline poster="https://sh012da.github.io/sh01/pp/images/img-263/IMG_4733.JPG">
+        <source src="https://sh012da.github.io/sh01/pp/images/img-263/%E3%83%98%E3%83%83%E3%83%80%E3%83%BC%E7%94%A8.mp4" type="video/mp4">
       </video>
-      <div class="hero-veil-layer" id="hero-veil"></div>
+      <div class="hero-gradient"></div>
       <div class="hero-glow"></div>
     </div>
-    <div class="hero-gradient"></div>
     
     <div class="hero-content">
-      <div class="badge mist-reveal delay-m1">
-        <div class="badge-line"></div>
-        <div class="badge-text">PROJECT PROPOSALS</div>
-        <div class="badge-line"></div>
-      </div>
-      <p class="hero-eyebrow mist-reveal delay-m2">にかほ芸術登竜紋 ── 公募作品プラン</p>
+      <p class="hero-eyebrow mist-reveal delay-m1">A CARTOGRAPHY OF MEMORY</p>
       
-      <!-- タイトルのコンパクト・スタイリッシュ化 -->
-      <div class="hero-title-wrap mist-reveal delay-m3">
-        <h1 class="hero-title">発酵の暗箱<span class="ruby">DARK BOX</span></h1>
-        <p class="hero-subtitle">飛良泉に息づく生命と、うごめくエネルギー</p>
+      <div class="hero-title-wrap mist-reveal delay-m2">
+        <h1 class="hero-title">にかほの神話と伝承</h1>
+        <p class="hero-subtitle">― 発酵と磁性 ―</p>
       </div>
       
-      <p class="hero-desc mist-reveal delay-m4">
-        鳥海山の伏流水が日本海へ至る壮大な循環。室町時代から続く醸造文化。<br>
-        にかほ市の大地に蓄積された見えないエネルギーを、音と光の空間インスタレーションへと昇華させる。
+      <p class="hero-desc mist-reveal delay-m3">
+        失われゆく地域文化の「発酵と磁性」を基点とした土地の記憶の可視化と、地域間を横断する物語の構造化。<br class="br-pc">
+        ふたつの不可視の力を軸に、忘れられかけた記憶を〈いと〉として紡ぎ直し、風景へと擬態させる制作プラン書。
       </p>
-      
-      <div class="hero-meta mist-reveal delay-m5">
-        <div class="meta-item"><span class="meta-label">Artist</span><span class="meta-val">津田翔一</span></div>
-        <div class="meta-item"><span class="meta-label">Site</span><span class="meta-val">旧仁賀保・旧金浦・旧象潟</span></div>
-        <div class="meta-item"><span class="meta-label">Core</span><span class="meta-val">水脈の音 / 磁力 / 有機EL</span></div>
-      </div>
     </div>
   </section>
 
-  <!-- INTRO -->
   <section class="section" id="concept">
     <div class="sec-title-wrap reveal">
       <div class="sec-title-line"></div><h2 class="sec-title">Concept</h2>
     </div>
-    <div class="intro-grid">
-      <div class="intro-lead reveal-blur">
-        見えない力が<br>物質を動かす。<br>にかほの風土を、<br>
-        <em>一つの呼吸する巨大な<br>生命の洞窟</em>へと変容させる。
-      </div>
-      <div class="intro-text">
-        <p class="reveal delay-1">
-          秋田県最南端に位置するにかほ市は、鳥海山の伏流水が海底から湧き出す豊かな水脈や、古の醸造文化、そして世界をリードするハイテク産業（磁力）といった重層的な文脈がコンパクトに混在する特異なフィールドである。
-        </p>
-        <p class="reveal delay-2">
-          本プロジェクトは、この土地に眠る「見えないエネルギーの蓄積と変容」を、現代アートのフレームワークで空間化する試みである。巨大な黒い「暗箱」の内壁には、磁力（砂鉄）と油彩を練り込んだ巨大な絵画が立ち上がる。
-        </p>
-        <p class="reveal delay-3">
-          内部では、発酵の微細な泡立ちの音や伏流水の鼓動をセンサーで拾い、空間を縦横無尽に埋め尽くす数千本の「赤い発光糸（有機ELワイヤー）」の明滅へとリアルタイムに変換する。人間のコントロールを超えた自然の力が、視覚・聴覚を伴う圧倒的な没入体験となる。
-        </p>
-        <div class="tags reveal delay-3">
-          <span class="tag">洞窟 (単位世界)</span>
-          <span class="tag">飛良泉本舗 / 山廃仕込み</span>
-          <span class="tag">TDK / 磁力</span>
-          <span class="tag">元滝伏流水</span>
+    
+    <div class="concept-wrapper">
+      <div class="concept-left reveal-blur">
+        <div class="intro-lead">
+          土地の記憶を、<br>
+          <em>ふたつの力</em>で読み解き、<br>
+          3つの形へ翻訳する
         </div>
-      </div>
-    </div>
-    
-    <h3 class="pull-quote reveal-blur">「発酵」とは、にかほの大地そのものに内包された<br>目に見えない変化とエネルギーの蓄積である。</h3>
-  </section>
-
-  <!-- PROCESS -->
-  <section class="section section-bg-alt" id="process">
-    <div class="sec-title-wrap reveal">
-      <div class="sec-title-line"></div><h2 class="sec-title">Co-creation & Process</h2>
-    </div>
-    <div class="process-grid">
-      <div class="img-wrap img-big reveal-blur delay-1">
-        <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop" alt="赤い糸と光のインスタレーション" loading="lazy" class="js-lightbox" data-caption="03 - Emergence / 伏流水と発酵の音波が赤い糸を脈打たせる">
-        <div class="img-cap">03 - Emergence (不可視の力の顕現)</div>
-      </div>
-      <div class="img-wrap img-small reveal-blur delay-2">
-        <img src="https://images.unsplash.com/photo-1600007283728-22ac6d498ff4?q=80&w=1000&auto=format&fit=crop" alt="水脈や発酵の採集" loading="lazy" class="js-lightbox" data-caption="01 - Sound Collect / 元滝伏流水や飛良泉での音波データの採集">
-        <div class="img-cap">01 - Sound Collect (大地の脈動を録る)</div>
-      </div>
-      <div class="img-wrap img-small reveal-blur delay-3">
-        <img src="https://images.unsplash.com/photo-1518558997970-4ddd2cd6bf3f?q=80&w=1000&auto=format&fit=crop" alt="砂鉄と磁力の実験" loading="lazy" class="js-lightbox" data-caption="02 - Magnetic Sand / 方角石周辺での磁力（砂鉄）の採集と定着">
-        <div class="img-cap">02 - Magnetic Sand (引力の砂を集める)</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- MATERIAL SPEC -->
-  <section class="section" id="spec">
-    <div class="sec-title-wrap reveal">
-      <div class="sec-title-line"></div><h2 class="sec-title">Material Specification</h2>
-    </div>
-    
-    <div class="spec-top">
-      <div class="reveal">
-        <div class="meta-label" style="margin-bottom:1rem;">Synchronization Level</div>
-        <div class="spec-num-wrap">100<span style="font-size:0.5em;">%</span></div>
-        <div class="stat-bar"><div class="stat-fill" id="anim-bar"></div></div>
-      </div>
-      <div class="reveal delay-1">
-        <p style="color:rgba(244,244,244,0.8); line-height:2;">
-          有機ELワイヤー、砂鉄、伏流水と発酵の音波データ。巨大な黒い「暗箱」の内壁には、磁力（砂鉄）と油彩を練り込んだ巨大な絵画が立ち上がり、数千本の赤い発光糸が明滅する。デジタルでは表現し得ない物理的な生命の塊。
+        <p class="concept-text">
+          土地に潜む、目には見えないふたつの力――発酵と磁性。それらが複雑に交差する場所を〈洞窟〉と呼び、空間へと立ち上げていく。
         </p>
-      </div>
-    </div>
-
-    <div class="spec-table">
-      <div class="spec-row reveal"><div class="spec-label">コアマテリアル</div><div class="spec-val">有機ELワイヤー（数千本）、ネオジム磁石、砂鉄、油彩、キャンバス</div></div>
-      <div class="spec-row reveal"><div class="spec-label">センサー入力</div><div class="spec-val">元滝伏流水の環境音データ、飛良泉タンク内の発酵音（コンタクトマイク）</div></div>
-      <div class="spec-row reveal"><div class="spec-label">空間構成</div><div class="spec-val">外部光を完全に遮断した「暗箱」構造（ブラックボックス）。</div></div>
-      <div class="spec-row reveal"><div class="spec-label">システム</div><div class="spec-val">音波の低周波成分を解析し、リアルタイムにELワイヤーの電圧へ変換するオーディオ・ビジュアル・システム。</div></div>
-    </div>
-  </section>
-
-  <!-- SITE -->
-  <section class="section section-bg-alt" id="site">
-    <div class="sec-title-wrap reveal">
-      <div class="sec-title-line"></div><h2 class="sec-title">Site & Area</h2>
-    </div>
-    
-    <div class="site-hero reveal-blur">
-      <img src="https://adeac.jp/nikaho-city/images/logo.png" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2000&auto=format&fit=crop';" alt="にかほ市の日本海" loading="lazy" class="js-lightbox" data-caption="Site - にかほ市 / 伏流水が湧き出し、ハイテクと歴史が交差する地">
-    </div>
-    
-    <div class="site-content">
-      <div class="reveal">
-        <p style="color:rgba(244,244,244,0.8); line-height:2.2; margin-bottom:1.5rem;">
-          日本海に面し、鳥海山の雪解け水が伏流水となって湧き出る「にかほ市」。ここは世界的な磁性材料メーカーの創業の地であり、室町時代から続く醸造の歴史が息づく重層的な場所である。
-        </p>
-        <p style="color:rgba(244,244,244,0.8); line-height:2.2;">
-          有機的な「酒の発酵」と、無機的な「鉄の酸化（錆）」や「磁力」。この土地に眠る二つの異なる目に見えないエネルギーを、現代アートの強靭なフレームワークで縫い合わせる。
-        </p>
-      </div>
-      <ul class="checklist reveal delay-1">
-        <li class="check-item"><div class="check-box"></div>旧象潟町エリア (山岳信仰・歴史景観)</li>
-        <li class="check-item"><div class="check-box"></div>旧金浦町エリア (一次産業・開拓精神)</li>
-        <li class="check-item active"><div class="check-box"></div>旧仁賀保町エリア (醸造文化・先端技術)<span class="check-tag">SELECTED</span></li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- EXPERIENCE -->
-  <section class="section" id="experience">
-    <div class="sec-title-wrap reveal">
-      <div class="sec-title-line"></div><h2 class="sec-title">Body Experience</h2>
-    </div>
-    
-    <div class="exp-grid">
-      <div class="exp-text-top reveal-blur">
-        <p style="color:rgba(244,244,244,0.8); line-height:2.2; font-size: clamp(1rem, 2vw, 1.2rem);">
-          一切の光を遮断した漆黒の「暗箱」。<br>
-          静寂の中、地響きのような伏流水の重低音と、菌が発酵して弾ける生々しい水音が響き渡る。
+        <p class="concept-text">
+          採集された物語の単位を〈いと〉として抽出し、「書籍」「屋外設置彫刻（ミミクリ）」「映像インスタレーション」という3つの回路へと翻訳する。無数の〈いと〉が幾重にも重なり合うことで立ち上がる場を、〈洞窟〉として空間に現前させる。
         </p>
       </div>
       
-      <div class="exp-row">
-        <div class="exp-img-large reveal-blur delay-1">
-          <img src="https://sh012da.github.io/sh01/pp/images/img-263/%E5%B1%95%E7%A4%BA%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%EF%BC%91.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop';" alt="暗闇のインスタレーション" loading="lazy" class="js-lightbox" data-caption="Simulation / 漆黒の空間で明滅を繰り返す、毛細血管のような赤い光">
+      <div class="concept-right">
+        <div class="concept-media-block reveal delay-1">
+          <img src="https://sh012da.github.io/sh01/pp/images/img-263/IMG_4733.JPG" alt="The Force of Fermentation" class="js-lightbox" data-caption="発酵の力 / 菌糸と生命の微細なうごめき">
+          <div class="media-caption">Phase 01: The Force of Fermentation</div>
         </div>
-        <div class="exp-text-block reveal delay-2">
-          <h3 style="color: var(--c-accent); font-size: 1.2rem; margin-bottom: 0.5rem; letter-spacing: 0.1em;">空間を浸食する脈動</h3>
-          <p style="color:rgba(244,244,244,0.8); line-height:2;">音の脈動に合わせて、空間に張り巡らされた数千本の赤い糸が巨大な毛細血管のように発光する。視覚と聴覚が同調し、空間全体がひとつの生命体として呼吸を始める。</p>
+        
+        <div class="concept-media-block reveal delay-1">
+          <img src="https://sh012da.github.io/sh01/pp/images/img-263/IMG_4786.JPG" alt="発酵時間の力" class="js-lightbox" data-caption="発酵時間の力 / 醸造の文化と蓄積">
+          <div class="media-caption">Phase 02: Accumulation</div>
         </div>
-      </div>
-      
-      <div class="exp-row">
-        <div class="exp-img-large reveal-blur delay-1">
-          <img src="https://sh012da.github.io/sh01/pp/images/img-263/%E5%B1%95%E7%A4%BA%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%EF%BC%92.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1600007283728-22ac6d498ff4?q=80&w=1000&auto=format&fit=crop';" alt="油彩画と赤い糸" loading="lazy" class="js-lightbox" data-caption="Experience / 視覚、聴覚、そして鉄の匂いが鑑賞者を包み込む">
-        </div>
-        <div class="exp-text-block reveal delay-2">
-          <h3 style="color: var(--c-accent); font-size: 1.2rem; margin-bottom: 0.5rem; letter-spacing: 0.1em;">不可視の胎内へ</h3>
-          <p style="color:rgba(244,244,244,0.8); line-height:2;">壁面には砂鉄と油彩で描かれた絵画がそびえ立つ。鉄の匂いと赤い光。デジタルでは決して表現し得ない『見えない命の塊』の胎内へと、鑑賞者は飲み込まれていく。</p>
+        
+        <div class="concept-media-block reveal delay-1">
+          <img src="https://sh012da.github.io/sh01/pp/images/img-263/%E3%83%9F%E3%83%9F%E3%82%AF%E3%83%AA%E3%81%AE%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8.jpg" alt="風景に擬態した彫刻の発見" class="js-lightbox" data-caption="Phase 03: Discovery / 風景そのものが「作品かもしれない」という眼差しに反転する瞬間">
+          <div class="media-caption">Phase 03: Discovery</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CLOSING -->
+  <section class="section section-bg-alt" id="field-notes">
+    <div class="sec-title-wrap reveal">
+      <div class="sec-title-line"></div><h2 class="sec-title">Field Notes</h2>
+    </div>
+    
+    <div class="fn-grid">
+      <div class="fn-item fn-1 reveal-blur delay-1">
+        <div class="fn-item-inner">
+          <img src="https://sh012da.github.io/sh01/pp/images/img-263/%E3%83%9F%E3%83%9F%E3%82%AF%E3%83%AA%E3%81%AE%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%20(3).jpg" alt="自然石への擬態" class="js-lightbox" data-caption="FIELD NOTE - 03 / 河原の石に紛れる擬態彫刻。自然物と人工物の境界を溶かす。">
+        </div>
+        <div class="fn-meta"><div class="fn-num">01</div></div>
+        <div class="fn-title">NATURE MIMICRY</div>
+      </div>
+      
+      <!-- 02を最大サイズで表示 -->
+      <div class="fn-item fn-2 reveal-blur delay-2">
+        <div class="fn-item-inner">
+          <video autoplay loop muted playsinline poster="https://sh012da.github.io/sh01/pp/images/img-263/%E5%AF%BE%E8%A9%B1%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8.jpg" class="js-lightbox" data-caption="FIELD NOTE - 02 / 3つの軸（年代・立場・記憶の性質）によるヒアリング。採集＝発酵を立ち上げる行為。">
+            <source src="https://sh012da.github.io/sh01/pp/images/img-263/%E5%AF%BE%E8%A9%B1%E3%81%AE%E6%A7%98%E5%AD%90.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="fn-meta"><div class="fn-num">02</div></div>
+        <div class="fn-title">HEARING & ARCHIVE</div>
+      </div>
+      
+      <div class="fn-item fn-3 reveal-blur delay-1">
+        <div class="fn-item-inner">
+          <img src="https://sh012da.github.io/sh01/pp/images/img-263/%E3%83%9F%E3%83%9F%E3%82%AF%E3%83%AA%E3%81%AE%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%20(6).jpg" alt="海岸の流木への擬態" class="js-lightbox" data-caption="FIELD NOTE - 01 / 海岸の漂着物への擬態。土地の記憶が広大な風景に紛れ込む。">
+        </div>
+        <div class="fn-meta"><div class="fn-num">03</div></div>
+        <div class="fn-title">COASTAL DRIFTWOOD</div>
+      </div>
+
+      <div class="fn-item fn-4 reveal-blur delay-3">
+        <div class="fn-item-inner">
+          <img src="https://sh012da.github.io/sh01/pp/images/img-263/%E3%83%9F%E3%83%9F%E3%82%AF%E3%83%AA%E3%81%AE%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%20(4).JPG" alt="人工物への擬態" class="js-lightbox" data-caption="FIELD NOTE - 04 / 人工物への擬態。護岸のがれきに紛れる生活道具の残骸。">
+        </div>
+        <div class="fn-meta"><div class="fn-num">04</div></div>
+        <div class="fn-title">URBAN TRACES</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="output">
+    <div class="sec-title-wrap reveal">
+      <div class="sec-title-line"></div><h2 class="sec-title">Output Phase</h2>
+    </div>
+    
+    <div class="matrix-container">
+      <div class="matrix-item reveal-blur delay-1">
+        <div class="matrix-item-inner">
+          <img src="https://sh012da.github.io/sh01/pp/images/img-263/%E5%B1%95%E7%A4%BA%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%EF%BC%94.jpg" alt="展示コンセプト 暗室" class="js-lightbox" data-caption="OUTPUT 01 / IMMERSIVE INSTALLATION: 記憶と発酵の時間を没入的に体験させる暗室展示構成">
+        </div>
+      </div>
+      
+      <div class="matrix-item reveal-blur delay-2">
+        <div class="matrix-item-inner">
+          <img src="https://sh012da.github.io/sh01/pp/images/img-263/%E3%83%9F%E3%83%9F%E3%82%AF%E3%83%AA%E3%81%AE%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%20(5).jpg" alt="山頂のミミクリ（擬態彫刻）" class="js-lightbox" data-caption="OUTPUT 02 / MIMICRY: 土地の風景そのものに擬態し、広大な自然のなかに記憶を定着させる恒久設置彫刻">
+        </div>
+      </div>
+      
+      <div class="matrix-item reveal-blur delay-3">
+        <div class="matrix-item-inner">
+          <img src="https://sh012da.github.io/sh01/pp/images/img-263/%E5%B1%95%E7%A4%BA%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%EF%BC%95.jpg" alt="展示コンセプト 採光空間" class="js-lightbox" data-caption="OUTPUT 03 / ADAPTABLE FRAMEWORK: 木造や自然光を活かした地域施設の空間特性に調和する展示構造">
+        </div>
+      </div>
+    </div>
+
+    <div class="spec-table-wrap">
+      <div class="spec-row reveal">
+        <div class="spec-label">PUBLICATION<span>書籍出版</span></div>
+        <div class="spec-val">ヒアリングで得た〈いと〉を体系化し、後世に残る文化的資産として書籍（新書判）へ翻訳する。外部助成も視野に入れつつ、地域出版としての展開を通じて、中長期的な価値を創出する。</div>
+      </div>
+      <div class="spec-row reveal">
+        <div class="spec-label">MIMICRY<span>屋外設置彫刻</span></div>
+        <div class="spec-val">土地の石や流木、護岸の残骸などに精巧に擬態した彫刻「ミミクリ」を、伝承の舞台となる風景のなかにそっと置く。風景そのものが挿絵となる、恒久的な記憶の定着を試みる。</div>
+      </div>
+      <div class="spec-row reveal" style="border-bottom:none;">
+        <div class="spec-label">EXHIBITION<span>映像展示</span></div>
+        <div class="spec-val">12月の制作発表展示会では、写真ではなく、語り手の声、水音、そして発酵の時間を主軸とした映像インスタレーションを展開する。屋内展示と屋外彫刻を接続し、全身で記憶を追体験する没入型空間を提供する。</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-bg-alt" id="schedule">
+    <div class="sec-title-wrap reveal">
+      <div class="sec-title-line"></div><h2 class="sec-title">Schedule</h2>
+    </div>
+    
+    <ul class="schedule-list">
+      <li class="schedule-item reveal-blur">
+        <div class="sch-date">2026.09 - 10</div>
+        <div class="sch-text"><strong>Phase 1: ヒアリング拡大期</strong><br>個別訪問を通じ、幼少期の物語や地域の伝承を継続的に収集。絵画・書籍・広報誌への素材として並行整理・蓄積する。</div>
+      </li>
+      <li class="schedule-item reveal-blur delay-1">
+        <div class="sch-date">2026.10.25</div>
+        <div class="sch-text"><strong>Phase 2: 中間発表</strong><br>第2回ワークショップ（わくばにかほ）にて、制作途中の作品やミミクリの試作原型を住民へ公開し、11月の制作方針を確定させる。</div>
+      </li>
+      <li class="schedule-item reveal-blur delay-2">
+        <div class="sch-date">2026.11</div>
+        <div class="sch-text"><strong>Phase 3: 本格制作期</strong><br>書籍の校正・印刷入稿、油彩画・インスタレーションの仕上げ、ミミクリの設置許可取得と試験設置を逆算スケジュールで並行して進行する。</div>
+      </li>
+      <li class="schedule-item reveal-blur delay-3" style="border-bottom:none;">
+        <div class="sch-date">2026.12.14 -</div>
+        <div class="sch-text"><strong>Phase 4: 制作発表展示会</strong><br>にかほっとにて制作発表展示会（12/14-19）およびトークイベント（12/20）を開催。その後は長野への巡回や、1月以降の継続的なヒアリング調査へ繋げる。</div>
+      </li>
+    </ul>
+  </section>
+
   <section class="section closing">
-    <div class="curator-card reveal-blur">
-      <span class="curator-title">For Local Community & Organizers</span>
-      <p>
-        本プロジェクトは、単なる一時的な滞在制作ではありません。「津田翔一というアーティストの哲学」と「にかほ市の広大な自然・地域資源」が衝突し、住民の方々の手（センサー）を介して新たな価値のブループリントを生み出す不可逆的なプロセスです。
-      </p>
-      <p>
-        圧倒的な実現能力と熱量をもって、にかほ市の重層的な歴史と未来をアートの力で繋ぐことをお約束します。
-      </p>
+    <div class="closing-quote reveal-blur">
+      <p>土地は、語られることで発酵し、<br class="br-pc">人を引き寄せる磁性を帯びる。</p>
+      <p>にかほで紡がれた〈いと〉は、長野へ、<br class="br-pc">そしてまだ見ぬ土地へと巡りながら、<br class="br-pc">幾重にも重なり合う〈洞窟〉を、<br class="br-pc">これからも編み続けていく。</p>
     </div>
     
-    <h2 class="hero-title reveal" style="font-size:clamp(1.5rem, 4vw, 3rem); margin-bottom:2rem; text-shadow: none;">お問い合わせ</h2>
-    <div class="reveal delay-1">
-      <a href="https://sh012da.github.io/sh01/contact.html" class="contact-cta">Contact Form</a>
+    <div class="reveal delay-2">
+      <a href="https://sh012da.github.io/sh01/contact.html" class="btn-primary">Contact Form</a>
     </div>
   </section>
 </main>
 
 <footer class="footer">
-  <a href="https://sh012da.github.io/sh01/" style="text-decoration: none;"><div class="footer-logo">津田 翔一 / Tsuda Shoichi</div></a>
+  <a href="https://sh012da.github.io/sh01/" style="text-decoration: none;"><div class="footer-logo">Tsuda Shoichi</div></a>
   <div class="footer-copy">© 2026 Tsuda Shoichi. All Rights Reserved.</div>
 </footer>
 
-<!-- LIGHTBOX MODAL -->
 <div id="lightbox">
   <div class="lightbox-overlay js-lightbox-close" aria-label="Close"></div>
   <button class="lightbox-close-btn js-lightbox-close" aria-label="Close">&times;</button>
   <div class="lightbox-inner">
     <div class="lightbox-media-wrapper" id="lightbox-media-wrapper">
-      <!-- Clone target -->
-    </div>
+      </div>
     <div class="lightbox-caption" id="lightbox-caption"></div>
   </div>
 </div>
 
-<!-- Scripts -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   /* =======================================================
-     1. PRELOADER & HERO MIST REVEAL
+     1. PRELOADER
   ======================================================= */
   const preloader = document.getElementById('preloader');
   const hero = document.getElementById('hero');
@@ -812,65 +553,52 @@ document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     preloader.classList.add('is-loaded');
     hero.classList.add('is-ready');
-    
-    // プロトタイプ追従バナーをロード完了後に表示（元HTML仕様）
     setTimeout(() => {
       if(banner) banner.classList.add('is-visible');
     }, 2500);
-  }, 1000);
+  }, 1200);
 
   /* =======================================================
-     2. SCROLL OBSERVER (REVEAL ANIMATIONS)
+     2. SCROLL REVEAL & UI PROGRESS
   ======================================================= */
   const revealElements = document.querySelectorAll('.reveal, .reveal-blur');
-  const observerOptions = { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 };
-
   const scrollObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('is-active');
         observer.unobserve(entry.target);
-        
-        if (entry.target.querySelector('#anim-bar')) {
-          setTimeout(() => {
-            document.getElementById('anim-bar').style.width = '100%';
-          }, 300); 
-        }
       }
     });
-  }, observerOptions);
-
+  }, { root: null, rootMargin: '0px 0px -10% 0px', threshold: 0 });
   revealElements.forEach(el => scrollObserver.observe(el));
 
-  /* =======================================================
-     3. PARALLAX & UI PROGRESS
-  ======================================================= */
   const header = document.getElementById('header');
-  const heroBg = document.getElementById('hero-bg');
-  const heroVeil = document.getElementById('hero-veil');
   const voileMeter = document.getElementById('voile-meter');
   const vmFill = document.getElementById('vm-fill');
   const vmNumber = document.getElementById('vm-number');
+  const heroBg = document.getElementById('hero-bg');
+  
   let ticking = false;
-
   function onScroll() {
     const scrollY = window.scrollY;
     const windowH = window.innerHeight;
     const docH = document.documentElement.scrollHeight - windowH;
     
-    if (scrollY > 50) header.classList.add('is-scrolled');
-    else header.classList.remove('is-scrolled');
-
-    if (scrollY < windowH && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      if(heroBg) heroBg.style.transform = `translateY(${scrollY * 0.3}px)`;
-      if(heroVeil) heroVeil.style.transform = `translateY(${scrollY * 0.15}px)`;
-    }
-
-    if (scrollY > windowH * 0.3) {
-      if(voileMeter) voileMeter.classList.add('is-visible');
+    // Header
+    if (scrollY > 50) {
+      header.classList.add('is-scrolled');
     } else {
-      if(voileMeter) voileMeter.classList.remove('is-visible');
+      header.classList.remove('is-scrolled');
     }
+
+    // Hero Parallax
+    if (scrollY < windowH && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if(heroBg) heroBg.style.transform = `translateY(${scrollY * 0.4}px)`;
+    }
+
+    // Meter UI
+    if (scrollY > windowH * 0.5) voileMeter.classList.add('is-visible');
+    else voileMeter.classList.remove('is-visible');
 
     const scrollPercent = docH > 0 ? Math.max(0, Math.min(1, scrollY / docH)) : 0;
     if(vmFill) vmFill.style.height = `${scrollPercent * 100}%`;
@@ -881,15 +609,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   window.addEventListener('scroll', () => {
-    if (!ticking) {
-      window.requestAnimationFrame(onScroll);
-      ticking = true;
-    }
+    if (!ticking) { window.requestAnimationFrame(onScroll); ticking = true; }
   }, { passive: true });
   onScroll();
 
   /* =======================================================
-     4. LIGHTBOX
+     3. LIGHTBOX (MUTED VIDEO SUPPORT)
   ======================================================= */
   const lightboxTargets = document.querySelectorAll('.js-lightbox');
   const lightboxModal = document.getElementById('lightbox');
@@ -900,7 +625,6 @@ document.addEventListener("DOMContentLoaded", () => {
   lightboxTargets.forEach(target => {
     target.addEventListener('click', function(e) {
       e.preventDefault();
-      
       const captionText = this.getAttribute('data-caption') || '';
       lightboxWrapper.innerHTML = ''; 
       let cloneMedia = null;
@@ -916,12 +640,12 @@ document.addEventListener("DOMContentLoaded", () => {
         cloneMedia.controls = true;
         cloneMedia.autoplay = true;
         cloneMedia.playsInline = true;
+        cloneMedia.muted = true;
       }
 
       if (cloneMedia) {
         lightboxWrapper.appendChild(cloneMedia);
         lightboxCaption.innerHTML = captionText;
-        
         lightboxModal.classList.add('is-open');
         document.body.style.overflow = 'hidden';
       }
@@ -931,21 +655,15 @@ document.addEventListener("DOMContentLoaded", () => {
   function closeLightbox() {
     lightboxModal.classList.remove('is-open');
     document.body.style.overflow = '';
-    
     setTimeout(() => {
       lightboxWrapper.innerHTML = '';
       lightboxCaption.innerHTML = '';
     }, 500);
   }
 
-  lightboxClosers.forEach(closer => {
-    closer.addEventListener('click', closeLightbox);
-  });
-  
+  lightboxClosers.forEach(closer => closer.addEventListener('click', closeLightbox));
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && lightboxModal.classList.contains('is-open')) {
-      closeLightbox();
-    }
+    if (e.key === 'Escape' && lightboxModal.classList.contains('is-open')) closeLightbox();
   });
 });
 </script>
