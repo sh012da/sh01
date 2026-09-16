@@ -260,7 +260,7 @@
     .loc-content span { font-family: var(--en); font-size: 0.68rem; letter-spacing: 0.28em; color: var(--accent); text-transform: uppercase; font-weight: 500;}
 
     /* ════════════════════════════════════════
-        PARALLAX BANNER
+        PARALLAX BANNER (ENHANCED)
     ════════════════════════════════════════ */
     .parallax-banner {
       position: relative; width: 100vw; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;
@@ -327,15 +327,24 @@
     }
 
     /* ════════════════════════════════════════
-        NEW: INSET GALLERY (アシンメトリー画像配置)
+        NEW: INTERACTIVE HOVER ACCORDION
     ════════════════════════════════════════ */
-    .inset-gallery { position: relative; width: 100%; padding-bottom: 3rem; margin-top: 2rem; }
-    .inset-main { width: 85%; margin-left: auto; position: relative; z-index: 1; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
-    .inset-main img { width: 100%; height: auto; display: block; transition: transform 2s ease, filter 1s ease; filter: brightness(0.95); }
-    .inset-main:hover img { transform: scale(1.05); filter: brightness(1.05); }
-    .inset-sub { position: absolute; bottom: 0; left: 0; width: 55%; z-index: 2; border: 10px solid var(--bg); border-radius: 12px; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
-    .inset-sub img { width: 100%; height: auto; display: block; transition: transform 2s ease, filter 1s ease; filter: brightness(0.95); }
-    .inset-sub:hover img { transform: scale(1.05); filter: brightness(1.05); }
+    .hover-accordion {
+      display: flex; gap: 0.5rem; width: 100%; height: 450px; overflow: hidden; border-radius: 8px; box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    }
+    .accordion-item {
+      position: relative; flex: 1; overflow: hidden; transition: flex 0.8s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer;
+    }
+    .accordion-item:hover { flex: 3; }
+    .accordion-item img {
+      position: absolute; width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease; filter: brightness(0.7); transform: scale(1.1);
+    }
+    .accordion-item:hover img { filter: brightness(1.05); transform: scale(1); }
+    .accordion-caption {
+      position: absolute; bottom: 0; left: 0; width: 100%; padding: 1.5rem; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+      color: #fff; font-family: var(--jp); font-size: 0.9rem; font-weight: 300; letter-spacing: 0.1em; opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .accordion-item:hover .accordion-caption { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }
 
     /* STANDARD ED-LAYOUT */
     .ed-layout { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(4rem, 8vw, 8rem); align-items: center; margin-bottom: 8rem; }
@@ -439,8 +448,9 @@
       .full-bleed-img-wrap { height: 60vh; }
       .overlap-text { position: relative; bottom: 0; right: 0; margin: -3rem 1.5rem 0; padding: 2.5rem; }
       
-      .inset-gallery { padding-bottom: 2rem; }
-      .inset-sub { width: 70%; border-width: 6px; }
+      .hover-accordion { flex-direction: column; height: 600px; }
+      .accordion-item { flex: 1; }
+      .accordion-item:hover { flex: 2; }
     }
     @media (max-width: 768px) {
       .section { padding: 5rem 1.5rem; }
@@ -566,7 +576,8 @@
      MAIN HEADER NAVIGATION
 ═══════════════════════════════════════════════ -->
 <nav id="top-nav">
-  <a href="#" class="nav-logo">Tsuda Shoichi</a>
+  <!-- 絶対参照に変更 -->
+  <a href="https://sh012da.github.io/sh01/" class="nav-logo">Tsuda Shoichi</a>
 
   <ul class="nav-links" id="nav-links">
     <!-- PCメニュー -->
@@ -651,7 +662,8 @@
       </a>
     </li>
     <li class="sp-only">
-      <a href="contact.html" class="nav-menu-item" onclick="closeMenu()">
+      <!-- 絶対参照に変更 -->
+      <a href="https://sh012da.github.io/sh01/contact.html" class="nav-menu-item" onclick="closeMenu()">
         <span class="nav-menu-num">07</span>
         <span class="nav-menu-text">
           <span class="nav-menu-ja">お問い合わせ</span>
@@ -663,7 +675,8 @@
     <li class="sp-only nav-menu-footer"><span class="nav-menu-footer-text">Tsuda Shoichi</span></li>
   </ul>
 
-  <a href="contact.html" class="nav-cta pc-only" id="nav-cta-btn">Contact</a>
+  <!-- 絶対参照に変更 -->
+  <a href="https://sh012da.github.io/sh01/contact.html" class="nav-cta pc-only" id="nav-cta-btn">Contact</a>
 
   <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
     <div class="hamburger-lines">
@@ -1113,7 +1126,7 @@
     </div>
   </div>
 
-  <!-- 2. Ritual Dance & Treasures (インセット・ギャラリーによるアシンメトリー配置) -->
+  <!-- 2. Ritual Dance & Treasures (NEW: インタラクティブ・ホバー・アコーディオン) -->
   <div class="ed-layout" style="margin-top: 4rem;">
     <div class="ed-text ink-reveal-block">
       <span class="concept-block-en">Ritual Dance & Treasures</span>
@@ -1124,13 +1137,16 @@
         宝物殿には、万治2年（1659年）作とされる大変古い「陵王（りょうおう）の面」など舞楽面が現存。約1200年前に慈覚大師が自ら彫ったと伝わる三十三観音の第一番となる観音像も安置され、厳かな信仰の記憶を今に伝えている。
       </p>
     </div>
-    <!-- 重なり合う画像配置（冗長化を防ぐ新しいレイアウト） -->
-    <div class="inset-gallery">
-       <div class="inset-main reveal">
+    
+    <!-- 縦スリットからホバーで広がるダイナミックなアコーディオンギャラリー -->
+    <div class="hover-accordion reveal">
+       <div class="accordion-item">
          <img src="https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA(28).jpg" alt="小滝のチョウクライロ舞">
+         <div class="accordion-caption">小滝のチョウクライロ舞（国指定重要無形民俗文化財）</div>
        </div>
-       <div class="inset-sub reveal">
+       <div class="accordion-item">
          <img src="https://sh012da.github.io/sh01/pp/images/img-263/KISAKATA(27).JPG" alt="宝物殿の面">
+         <div class="accordion-caption">宝物殿に現存する古い舞楽面</div>
        </div>
     </div>
   </div>
@@ -1524,7 +1540,7 @@ function closeMenu() {
 })();
 
 /* ════════════════════════════════════════════════════════
-   REVEAL (スクロール連動フェードイン) - ダイナミック化
+   REVEAL (スクロール連動フェードイン)
 ════════════════════════════════════════════════════════ */
 var revealObs = new IntersectionObserver(function (entries) {
   entries.forEach(function (e) {
