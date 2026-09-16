@@ -40,8 +40,8 @@
   --ease-slow: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
   
-  --px: clamp(1.5rem, 6vw, 8rem);
-  --py: clamp(6rem, 15vh, 12rem);
+  --px: clamp(1.2rem, 5vw, 8rem);
+  --py: clamp(5rem, 12vh, 12rem);
 }
 
 /* ============================================================
@@ -57,7 +57,7 @@ body {
   letter-spacing: 0.12em;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  padding-bottom: 80px;
+  padding-bottom: 80px; /* ステータスバナー用余白 */
   word-break: auto-phrase;
   overflow-wrap: break-word;
   text-wrap: pretty;
@@ -98,16 +98,16 @@ a:hover { opacity: 0.6; }
 .header {
   position: fixed; top: 0; left: 0; width: 100%; z-index: 10000;
   display: flex; justify-content: space-between; align-items: center;
-  padding: clamp(1.5rem, 4vw, 2.5rem) var(--px);
+  padding: clamp(1rem, 4vw, 2.5rem) var(--px);
   background: transparent; transition: all 0.8s var(--ease-expo);
 }
 .header.is-scrolled {
   background: var(--c-bg-glass);
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--c-border);
-  padding-top: 1.2rem; padding-bottom: 1.2rem;
+  padding-top: 1rem; padding-bottom: 1rem;
 }
-.logo { font-family: var(--f-serif-en); font-size: 1.1rem; letter-spacing: 0.3em; text-transform: uppercase; font-weight: 500; color: var(--c-text-main);}
+.logo { font-family: var(--f-serif-en); font-size: clamp(0.9rem, 2vw, 1.1rem); letter-spacing: 0.3em; text-transform: uppercase; font-weight: 500; color: var(--c-text-main);}
 .nav-links { display: flex; gap: 3rem; list-style: none; }
 .nav-links a {
   font-family: var(--f-serif-en); font-size: 0.75rem; letter-spacing: 0.2em;
@@ -120,7 +120,27 @@ a:hover { opacity: 0.6; }
 }
 .nav-links a:hover { color: var(--c-accent); }
 .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+
+.btn-contact {
+  font-family: var(--f-serif-en);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--c-bg-surface);
+  background: var(--c-text-main);
+  padding: 0.8em 1.5em;
+  text-transform: uppercase;
+  transition: background 0.3s, transform 0.3s var(--ease-expo);
+}
+.btn-contact:hover {
+  background: var(--c-accent);
+  color: var(--c-bg-surface);
+  transform: translateY(-2px);
+}
+
 @media(max-width: 900px) { .nav-links { display: none; } }
+@media(max-width: 768px) {
+  .btn-contact { padding: 0.6em 1em; font-size: 0.65rem; }
+}
 
 /* ============================================================
    SYNC METER (Right UI)
@@ -133,12 +153,62 @@ a:hover { opacity: 0.6; }
 .voile-meter.is-visible { opacity: 1; }
 .vm-label { font-family: var(--f-serif-en); font-size: 0.55rem; letter-spacing: 0.5em; color: var(--c-text-muted); writing-mode: vertical-rl; text-transform: uppercase; }
 .vm-bar { width: 1px; height: 250px; background: var(--c-border); position: relative; overflow: hidden; }
-.vm-fill {
-  position: absolute; top: 0; left: 0; width: 100%; height: 0%;
-  background: var(--c-accent); will-change: height;
-}
+.vm-fill { position: absolute; top: 0; left: 0; width: 100%; height: 0%; background: var(--c-accent); will-change: height; }
 .vm-number { font-family: var(--f-mono); font-size: 0.8rem; color: var(--c-accent); }
 @media(max-width: 1024px) { .voile-meter { display: none; } }
+
+/* ============================================================
+   BACK TO TOP BUTTON (NEW)
+=========================================================== */
+.back-to-top {
+  position: fixed;
+  right: clamp(1rem, 3vw, 2.5rem);
+  /* ステータスバナー(約35px)の上に配置。モバイルでは余裕を持たせる */
+  bottom: clamp(60px, 8vh, 90px);
+  z-index: 99990;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  background: transparent;
+  border: none;
+  color: var(--c-text-muted);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.8s var(--ease-slow), visibility 0.8s, transform 0.8s var(--ease-expo), color 0.3s;
+  transform: translateY(20px);
+  padding: 10px 0; /* タップ領域確保 */
+}
+.back-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.back-to-top:hover {
+  color: var(--c-accent);
+  transform: translateY(-5px);
+}
+.btt-text {
+  font-family: var(--f-serif-en);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  writing-mode: vertical-rl;
+  text-transform: uppercase;
+}
+.btt-line {
+  width: 1px;
+  height: 40px;
+  background: currentColor;
+  transition: height 0.3s var(--ease-smooth);
+}
+.back-to-top:hover .btt-line {
+  height: 60px;
+}
+@media(max-width: 768px) {
+  .btt-line { height: 30px; }
+  .back-to-top:hover .btt-line { height: 40px; }
+}
 
 /* ============================================================
    STATUS BANNER
@@ -153,7 +223,11 @@ a:hover { opacity: 0.6; }
   background: var(--c-bg-surface); border: 1px solid var(--c-accent);
   padding: 0.8rem 2rem; display: flex; justify-content: center; align-items: center; gap: 1rem; max-width: 800px; margin: 0 auto;
 }
-.status-text { font-size: 0.75rem; color: var(--c-accent); font-weight: 500; letter-spacing: 0.15em; text-align: center; }
+.status-text { font-size: clamp(0.55rem, 2vw, 0.75rem); color: var(--c-accent); font-weight: 500; letter-spacing: 0.15em; text-align: center; }
+
+@media(max-width: 768px) {
+  .status-content-inner { padding: 0.6rem 1rem; gap: 0.5rem; }
+}
 
 /* ============================================================
    REVEAL ANIMATIONS
@@ -175,25 +249,23 @@ a:hover { opacity: 0.6; }
 .hero.is-ready .delay-m3 { transition-delay: 0.6s; }
 .hero.is-ready .delay-m4 { transition-delay: 0.8s; }
 
-/* 山体崩壊アニメーション: 初期ロード時の広がり */
 .hero-title-wrap {
   position: relative;
-  /* 広がりすぎるブラーをカットしつつ、スクロール時の破片の飛散を許容するためoverflowはvisible */
   padding: 2rem 0;
 }
 
 .hero-title {
   display: block;
   font-family: var(--f-serif-ja); 
-  font-size: clamp(2.5rem, 6vw, 6.5rem); 
+  /* モバイルでも一列に収まるよう最小値を1.5remに最適化 */
+  font-size: clamp(1.5rem, 5vw, 6.5rem); 
   font-weight: 400;
   line-height: 1.2; 
   margin-bottom: 1rem; 
   color: var(--c-text-main);
   text-shadow: 0 10px 30px rgba(255,255,255,0.8);
-  white-space: nowrap; /* 一列を強制 */
+  white-space: nowrap; 
   
-  /* 初期状態：中央に圧縮された混沌 */
   letter-spacing: -0.5em; 
   transform: scale(1.3) translateY(10px);
   filter: blur(40px);
@@ -213,18 +285,13 @@ a:hover { opacity: 0.6; }
   letter-spacing: 0.15em; 
 }
 
-/* スクロールによる破片飛散のための設定 */
 .char {
   display: inline-block;
   will-change: transform, opacity, filter;
   transform-origin: center center;
-  pointer-events: none; /* コンテンツの可読性・クリックを妨げない */
+  pointer-events: none; 
 }
-
-/* にかほ市のイメージカラー */
-.color-nikaho {
-  color: var(--c-nikaho);
-}
+.color-nikaho { color: var(--c-nikaho); }
 
 /* ============================================================
    ABSTRACT DESCRIPTION (読めなくてよい微細なテキスト装飾)
@@ -259,7 +326,8 @@ a:hover { opacity: 0.6; }
 .desc-fragment.right { border-left: 1px solid var(--c-accent-dim); padding-left: 1.5rem; }
 
 @media(max-width: 768px) {
-  .hero-desc-abstract { bottom: 4vh; padding: 0 1rem; }
+  /* スマホではステータスバナーと被らないよう上へ逃がす */
+  .hero-desc-abstract { bottom: 12vh; padding: 0 1rem; }
   .desc-fragment { font-size: 0.45rem; letter-spacing: 0.2em; opacity: 0.3; gap: 0.8rem;}
   .desc-fragment.left { padding-right: 0.8rem; }
   .desc-fragment.right { padding-left: 0.8rem; }
@@ -271,34 +339,28 @@ a:hover { opacity: 0.6; }
 .hero {
   position: relative; height: 100svh; min-height: 700px;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
-  /* overflow: hidden を解除し、破片がセクション外（下部）へ追従・飛散できるようにする */
   text-align: center; background-color: var(--c-bg-base);
 }
-
-/* 背景動画だけがはみ出さないよう隔離するコンテナ */
-.hero-bg-container {
-  position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none;
-}
+.hero-bg-container { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
 .hero-bg { position: absolute; inset: -5%; width: 110%; height: 110%; }
 .hero-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; filter: grayscale(10%) contrast(1.1); }
 .hero-gradient { position: absolute; inset: 0; z-index: 2; background: radial-gradient(circle at center, rgba(248, 249, 250, 0.4) 0%, var(--c-bg-base) 90%); }
 .hero-glow { position: absolute; bottom: 0; left: 0; width: 100%; height: 35vh; background: linear-gradient(to top, var(--c-bg-base) 10%, transparent); z-index: 3; }
 
-/* 破片が他のセクションより前面に出るようz-indexを極大化 */
 .hero-content { 
   position: relative; z-index: 50000; max-width: 1000px; padding: 0 var(--px); 
   display: flex; flex-direction: column; align-items: center; 
-  pointer-events: none; /* コンテンツ操作の邪魔にならないよう無効化 */
+  pointer-events: none;
 }
-.hero-eyebrow { font-family: var(--f-serif-en); font-size: clamp(0.75rem, 1.2vw, 0.9rem); color: var(--c-accent); margin-bottom: 2.5rem; letter-spacing: 0.4em; text-transform: uppercase; font-weight: 500;}
-.hero-subtitle { font-family: var(--f-serif-en); font-size: clamp(1rem, 2vw, 1.4rem); color: var(--c-text-muted); letter-spacing: 0.3em; font-weight: 400; margin-bottom: 3rem; text-transform: uppercase; }
+.hero-eyebrow { font-family: var(--f-serif-en); font-size: clamp(0.65rem, 1.2vw, 0.9rem); color: var(--c-accent); margin-bottom: 2.5rem; letter-spacing: 0.4em; text-transform: uppercase; font-weight: 500;}
+.hero-subtitle { font-family: var(--f-serif-en); font-size: clamp(0.8rem, 2vw, 1.4rem); color: var(--c-text-muted); letter-spacing: 0.3em; font-weight: 400; margin-bottom: 3rem; text-transform: uppercase; }
 
 /* ============================================================
    SECTION COMMON
 =========================================================== */
 .section { padding: var(--py) var(--px); position: relative; z-index: 10; }
 .section-bg-alt { background-color: var(--c-bg-surface); }
-.sec-title-wrap { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: clamp(4rem, 8vw, 6rem); text-align: center; }
+.sec-title-wrap { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: clamp(3rem, 8vw, 6rem); text-align: center; }
 .sec-title-line { width: 1px; height: 60px; background: linear-gradient(to bottom, transparent, var(--c-accent)); }
 .sec-title { font-family: var(--f-serif-en); font-size: clamp(1rem, 2vw, 1.5rem); letter-spacing: 0.5em; color: var(--c-accent); text-transform: uppercase; font-weight: 400; }
 
@@ -309,15 +371,22 @@ a:hover { opacity: 0.6; }
 .concept-left { flex: 1 1 400px; position: sticky; top: 25vh; align-self: flex-start; }
 .concept-right { flex: 1.5 1 500px; display: flex; flex-direction: column; gap: clamp(4rem, 10vw, 8rem); }
 
-.intro-lead { font-size: clamp(1.6rem, 3vw, 2.6rem); line-height: 1.8; font-weight: 300; margin-bottom: 2.5rem; letter-spacing: 0.1em; color: var(--c-text-main); text-wrap: balance; }
+.intro-lead { font-size: clamp(1.4rem, 3vw, 2.6rem); line-height: 1.8; font-weight: 300; margin-bottom: 2.5rem; letter-spacing: 0.1em; color: var(--c-text-main); text-wrap: balance; }
 .intro-lead em { font-style: normal; color: var(--c-accent); }
-.concept-text { color: var(--c-text-muted); font-size: clamp(0.95rem, 1.1vw, 1.05rem); margin-bottom: 2rem; line-height: 2.4; }
+.concept-text { color: var(--c-text-muted); font-size: clamp(0.9rem, 1.1vw, 1.05rem); margin-bottom: 2rem; line-height: 2.4; }
 
 .concept-media-block { position: relative; width: 100%; border: 1px solid var(--c-border); padding: 12px; background: var(--c-bg-surface); box-shadow: 0 15px 40px rgba(0,0,0,0.03); cursor: pointer; }
 .concept-media-block img { width: 100%; aspect-ratio: 16/10; object-fit: cover; transition: filter 1s var(--ease-slow), transform 1s var(--ease-slow); filter: brightness(0.95); }
 .concept-media-block:hover img { filter: brightness(1.05); transform: scale(1.02);}
 .media-caption { position: absolute; bottom: -2.5rem; left: 0; font-family: var(--f-mono); font-size: 0.7rem; color: var(--c-text-muted); letter-spacing: 0.2em; text-transform: uppercase; }
 .media-caption::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--c-accent); vertical-align: middle; margin-right: 10px; }
+
+@media(max-width: 900px) {
+  /* スマホではスクロール追従を解除し、自然な縦積みへ */
+  .concept-left { position: static; margin-bottom: 1rem; }
+  .concept-right { gap: 4rem; }
+  .media-caption { font-size: 0.6rem; bottom: -2rem; }
+}
 
 /* ============================================================
    FIELD NOTES (ASYMMETRIC GRID)
@@ -335,16 +404,17 @@ a:hover { opacity: 0.6; }
 .fn-4 { grid-column: 7 / 12; aspect-ratio: 1/1; margin-top: -10rem; margin-left: 2rem; z-index: 10; box-shadow: -15px 25px 50px rgba(0,0,0,0.12); } 
 
 .fn-meta { position: absolute; top: -1.8rem; right: -1.5rem; z-index: 10; pointer-events: none; }
-.fn-num { font-family: var(--f-serif-en); font-size: clamp(4.5rem, 6vw, 6rem); color: var(--c-bg-surface); -webkit-text-stroke: 1px var(--c-accent); line-height: 1; font-weight: 300; text-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+.fn-num { font-family: var(--f-serif-en); font-size: clamp(3.5rem, 6vw, 6rem); color: var(--c-bg-surface); -webkit-text-stroke: 1px var(--c-accent); line-height: 1; font-weight: 300; text-shadow: 0 10px 20px rgba(0,0,0,0.05); }
 .fn-title { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.2em; color: var(--c-accent); margin-top: 1rem; position: absolute; left: 1.5rem; bottom: 1.5rem; background: rgba(255,255,255,0.95); padding: 0.6em 1.2em; border: 1px solid var(--c-border); z-index: 6;}
 
 @media(max-width: 900px) {
-  .fn-grid { display: flex; flex-direction: column; gap: 4rem; }
-  .fn-item { transform: none !important; margin-top: 0 !important; margin-left: 0 !important; box-shadow: 0 15px 40px rgba(0,0,0,0.03) !important; }
+  .fn-grid { display: flex; flex-direction: column; gap: 3.5rem; }
+  .fn-item { transform: none !important; margin-top: 0 !important; margin-left: 0 !important; box-shadow: 0 15px 40px rgba(0,0,0,0.03) !important; padding: 8px;}
   .fn-1, .fn-2, .fn-3, .fn-4 { aspect-ratio: auto; }
   .fn-item-inner { aspect-ratio: 16/10; }
   .fn-2 .fn-item-inner { aspect-ratio: 3/4; }
-  .fn-meta { right: 0rem; } 
+  .fn-meta { right: -0.5rem; top: -1.2rem; } 
+  .fn-title { left: 1rem; bottom: 1rem; padding: 0.4em 1em; font-size: 0.65rem; }
 }
 
 /* ============================================================
@@ -375,15 +445,21 @@ a:hover { opacity: 0.6; }
 .matrix-item img { width: 100%; height: 100%; object-fit: cover; transition: all 1.5s var(--ease-expo); filter: brightness(0.95); }
 .matrix-item:hover img { filter: brightness(1.05); transform: scale(1.08); }
 
-@media(max-width: 900px) { .matrix-container { grid-template-columns: 1fr; } .matrix-item { aspect-ratio: 16/10; } }
+@media(max-width: 900px) { 
+  .matrix-container { grid-template-columns: 1fr; gap: 1rem; margin-bottom: 3rem;} 
+  .matrix-item { aspect-ratio: 16/10; padding: 8px;} 
+}
 
 .spec-table-wrap { max-width: 1000px; margin: 0 auto; border-top: 1px solid var(--c-border); padding-top: 2rem;}
 .spec-row { display: grid; grid-template-columns: 250px 1fr; gap: 3rem; padding: 3rem 0; border-bottom: 1px solid var(--c-border); }
 .spec-label { font-family: var(--f-serif-en); font-size: 1.1rem; color: var(--c-text-main); text-transform: uppercase; letter-spacing: 0.2em; font-weight: 500;}
 .spec-label span { display: block; font-family: var(--f-serif-ja); font-size: 0.75rem; color: var(--c-accent); margin-top: 0.5rem; letter-spacing: 0.1em;}
-.spec-val { color: var(--c-text-muted); font-size: clamp(0.95rem, 1vw, 1.05rem); line-height: 2.4; }
+.spec-val { color: var(--c-text-muted); font-size: clamp(0.9rem, 1vw, 1.05rem); line-height: 2.4; }
 
-@media(max-width: 768px) { .spec-row { grid-template-columns: 1fr; padding: 2rem 0; gap: 1rem; } }
+@media(max-width: 768px) { 
+  /* スマホではスペック表も縦積みにし、見やすく余白を調整 */
+  .spec-row { grid-template-columns: 1fr; padding: 2rem 0; gap: 1rem; } 
+}
 
 /* ============================================================
    SCHEDULE & CLOSING
@@ -391,10 +467,16 @@ a:hover { opacity: 0.6; }
 .schedule-list { max-width: 800px; margin: 0 auto; list-style: none; }
 .schedule-item { display: flex; align-items: flex-start; gap: 3rem; padding: 2.5rem 0; border-bottom: 1px solid var(--c-border); }
 .sch-date { font-family: var(--f-mono); font-size: 1.3rem; color: var(--c-accent); min-width: 160px; font-weight: 400; white-space: nowrap; flex-shrink: 0;}
-.sch-text { color: var(--c-text-muted); font-size: 1rem; line-height: 2.2;}
+.sch-text { color: var(--c-text-muted); font-size: clamp(0.9rem, 1vw, 1rem); line-height: 2.2;}
 
-.closing { text-align: center; padding-top: clamp(8rem, 15vw, 12rem); }
-.closing-quote { font-size: clamp(1.4rem, 3vw, 2.4rem); line-height: 2; font-weight: 300; margin-bottom: 5rem; color: var(--c-text-main); letter-spacing: 0.15em; text-wrap: balance;}
+@media(max-width: 768px) {
+  /* スケジュールもスマホでは縦積みに */
+  .schedule-item { flex-direction: column; gap: 0.5rem; padding: 1.8rem 0; }
+  .sch-date { min-width: auto; font-size: 1.1rem;}
+}
+
+.closing { text-align: center; padding-top: clamp(6rem, 15vw, 12rem); }
+.closing-quote { font-size: clamp(1.1rem, 3.5vw, 2.4rem); line-height: 2; font-weight: 300; margin-bottom: 5rem; color: var(--c-text-main); letter-spacing: 0.15em; text-wrap: balance;}
 .closing-quote p { margin-bottom: 1.5rem; }
 .btn-primary {
   display: inline-flex; align-items: center; justify-content: center;
@@ -403,6 +485,10 @@ a:hover { opacity: 0.6; }
   border: 1px solid transparent;
 }
 .btn-primary:hover { background: var(--c-accent); color: var(--c-bg-surface); box-shadow: 0 15px 30px var(--c-accent-dim); transform: translateY(-5px); }
+
+@media(max-width: 768px) {
+  .btn-primary { padding: 1.2em 3em; font-size: 0.75rem; }
+}
 
 .footer { text-align: center; padding: 5rem var(--px); border-top: 1px solid var(--c-border); margin-top: 6rem; background: var(--c-bg-surface);}
 .footer-logo { font-family: var(--f-serif-en); font-size: 1rem; letter-spacing: 0.3em; color: var(--c-text-main); margin-bottom: 1.5rem; text-transform: uppercase; font-weight: 500;}
@@ -418,10 +504,14 @@ a:hover { opacity: 0.6; }
 .lightbox-media-wrapper { position: relative; max-width: 100%; max-height: calc(100% - 60px); display: flex; justify-content: center; align-items: center; transform: scale(0.95); opacity: 0; transition: transform 0.8s var(--ease-expo), opacity 0.8s var(--ease-expo); }
 #lightbox.is-open .lightbox-media-wrapper { transform: scale(1); opacity: 1; }
 .lightbox-media-wrapper img, .lightbox-media-wrapper video { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 20px 60px rgba(0,0,0,0.08); border: 1px solid var(--c-border);}
-.lightbox-caption { margin-top: 2rem; font-family: var(--f-serif-ja); font-size: 1rem; color: var(--c-text-main); letter-spacing: 0.2em; opacity: 0; transition: opacity 0.5s 0.3s; }
+.lightbox-caption { margin-top: 2rem; font-family: var(--f-serif-ja); font-size: clamp(0.7rem, 2vw, 1rem); color: var(--c-text-main); letter-spacing: 0.2em; opacity: 0; transition: opacity 0.5s 0.3s; text-align: center; }
 #lightbox.is-open .lightbox-caption { opacity: 1; }
 .lightbox-close-btn { position: absolute; top: 2.5rem; right: 2.5rem; z-index: 100002; background: transparent; border: none; color: var(--c-text-main); font-size: 3rem; font-weight: 200; cursor: pointer; transition: color 0.3s, transform 0.5s var(--ease-expo); padding: 10px; line-height: 1; }
 .lightbox-close-btn:hover { color: var(--c-accent); transform: rotate(90deg); }
+
+@media(max-width: 768px) {
+  .lightbox-close-btn { top: 1rem; right: 1rem; font-size: 2.5rem; }
+}
 </style>
 </head>
 <body>
@@ -471,8 +561,6 @@ a:hover { opacity: 0.6; }
       <p class="hero-eyebrow mist-reveal delay-m1">A CARTOGRAPHY OF MEMORY</p>
       
       <div class="hero-title-wrap">
-        <!-- 山体崩壊のエネルギーで弾け広がり、スクロールで画面全体に飛散・追従するタイトル -->
-        <!-- レイアウト崩れ防止のためspan間の空白を詰めています -->
         <h1 class="hero-title" id="shatter-title"><span class="char color-nikaho">に</span><span class="char color-nikaho">か</span><span class="char color-nikaho">ほ</span><span class="char">の</span><span class="char">神</span><span class="char">話</span><span class="char">と</span><span class="char">伝</span><span class="char">承</span></h1>
         <p class="hero-subtitle mist-reveal delay-m3">― 発酵と磁性 ―</p>
       </div>
@@ -689,6 +777,12 @@ a:hover { opacity: 0.6; }
   <div class="footer-copy">© 2026 Tsuda Shoichi. All Rights Reserved.</div>
 </footer>
 
+<!-- BACK TO TOP BUTTON -->
+<button id="js-back-to-top" class="back-to-top" aria-label="ページトップへ戻る">
+  <span class="btt-text">TOP</span>
+  <span class="btt-line"></span>
+</button>
+
 <div id="lightbox">
   <div class="lightbox-overlay js-lightbox-close" aria-label="Close"></div>
   <button class="lightbox-close-btn js-lightbox-close" aria-label="Close">&times;</button>
@@ -716,17 +810,12 @@ document.addEventListener("DOMContentLoaded", () => {
   ====================================================== */
   const chars = document.querySelectorAll('.char');
   const charData = Array.from(chars).map(() => ({
-    // 画面全体へまんべんなく飛散させるための目標座標 (-90vw ~ 90vw, -90vh ~ 90vh)
     tx: (Math.random() - 0.5) * 180, 
     ty: (Math.random() - 0.5) * 180, 
-    // ランダムな回転量
     r: (Math.random() - 0.5) * 720,
-    // スケール（巨大な破片も混ぜる）
     s: Math.random() * 3 + 1, 
-    // アニメーション感（バネのような遅延追従）を生むための個体差
-    dur: Math.random() * 1.5 + 0.8, // 0.8s ~ 2.3s
-    // 可読性確保と奥行き表現のための被写界深度（ブラー）
-    blur: Math.random() * 15 + 5 // 5px ~ 20px
+    dur: Math.random() * 1.5 + 0.8, 
+    blur: Math.random() * 15 + 5 
   }));
 
   /* =======================================================
@@ -748,6 +837,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const vmFill = document.getElementById('vm-fill');
   const vmNumber = document.getElementById('vm-number');
   const heroBg = document.getElementById('hero-bg');
+  const backToTopBtn = document.getElementById('js-back-to-top');
   
   let lastScrollY;
   let ticking = false;
@@ -757,7 +847,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const windowH = window.innerHeight;
     const docH = document.documentElement.scrollHeight - windowH;
     
-    // UI Updates
+    // Header UI
     if (scrollY > 50) header.classList.add('is-scrolled');
     else header.classList.remove('is-scrolled');
 
@@ -765,8 +855,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if(heroBg) heroBg.style.transform = `translateY(${scrollY * 0.4}px)`;
     }
 
+    // Sync Meter UI
     if (scrollY > windowH * 0.5) voileMeter.classList.add('is-visible');
     else voileMeter.classList.remove('is-visible');
+
+    // Back to Top Button UI (ファーストビューを抜けたら表示)
+    if (scrollY > windowH * 0.5) backToTopBtn.classList.add('is-visible');
+    else backToTopBtn.classList.remove('is-visible');
 
     const scrollPercent = docH > 0 ? Math.max(0, Math.min(1, scrollY / docH)) : 0;
     if(vmFill) vmFill.style.height = `${scrollPercent * 100}%`;
@@ -776,38 +871,28 @@ document.addEventListener("DOMContentLoaded", () => {
     /* =======================================
        山体崩壊と追従のエフェクト処理
     ======================================== */
-    // スクロールによる拡散率 (0 ~ 1)
     const spread = Math.min(scrollY / 400, 1); 
-    // コンテンツの可読性を妨げないため、拡散するにつれて極限まで透明度を下げる
     const opacity = Math.max(0.04, 1 - (spread * 0.96)); 
-    
-    // 一気にトップへ戻ったかどうかの判定（ロード直後、または100px以上のジャンプ）
     const isJumpToTop = (scrollY === 0 && (lastScrollY === undefined || lastScrollY > 100));
 
     chars.forEach((char, i) => {
       const d = charData[i];
-      
       if (scrollY === 0) {
-        // トップビュー: アニメーション遷移の有無を切り替えて定位置へ
         char.style.transition = isJumpToTop ? 'none' : `transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s ease, filter 0.8s ease`;
         char.style.transform = `translate3d(0, 0, 0) rotate(0deg) scale(1)`;
         char.style.opacity = 1;
         char.style.filter = 'blur(0)';
       } else {
-        // スクロール中: それぞれ異なるスピード（dur）でフワフワと追従
         char.style.transition = `transform ${d.dur}s cubic-bezier(0.1, 0.9, 0.2, 1), opacity ${d.dur}s ease, filter ${d.dur}s ease`;
-        
         const winW = window.innerWidth;
-        // X座標: 画面全体へのまんべんない飛散
         const dx = (d.tx / 100) * winW * spread;
-        // Y座標: scrollY を足すことでページ下部まで常に追従し続ける
         const dy = scrollY + ((d.ty / 100) * windowH * spread);
         const rot = d.r * spread;
         const scale = 1 + ((d.s - 1) * spread);
 
         char.style.transform = `translate3d(${dx}px, ${dy}px, 0) rotate(${rot}deg) scale(${scale})`;
         char.style.opacity = opacity;
-        char.style.filter = `blur(${d.blur * spread}px)`; // 背景として馴染むよう奥行きを付与
+        char.style.filter = `blur(${d.blur * spread}px)`; 
       }
     });
 
@@ -819,8 +904,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!ticking) { window.requestAnimationFrame(onScroll); ticking = true; }
   }, { passive: true });
   
-  // 初期ロード時の実行
   onScroll();
+
+  /* Back to Top 機能 */
+  backToTopBtn.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
 
   /* =======================================================
      4. LIGHTBOX 
