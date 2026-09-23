@@ -1,6 +1,42 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <script>
+    /* ── DAY 03 イントロの開始制御 ──
+       ・ページが画面に表示されていること（背景タブで開かれても、見た瞬間に最初から再生）
+       ・タイトルのフォントと最初の写真が読み込まれていること（途中で書体や写真が差し替わらない）
+       がそろった瞬間に、ヒーローのアニメーションを一斉にスタートさせる。
+       読み込みが遅くても 2.5 秒で開始し、万一スクリプトが止まっても 6 秒後には完成形を表示する。 */
+    (function () {
+      var d = document.documentElement, started = false, dom = false, assets = false;
+      d.classList.add('intro-wait');
+      function go() {
+        if (started || !dom || document.hidden) return;
+        started = true;
+        d.classList.remove('intro-wait');
+        d.classList.add('intro-go');
+        document.dispatchEvent(new CustomEvent('introstart'));
+        setTimeout(function () { d.classList.add('intro-done'); }, 6000);
+      }
+      function ready() { assets = true; go(); }
+      document.addEventListener('DOMContentLoaded', function () {
+        dom = true;
+        if (assets) { go(); return; }
+        setTimeout(ready, 2500);
+        var waits = [];
+        if (document.fonts && document.fonts.load) {
+          waits.push(document.fonts.load('300 100px "Cormorant Garamond"', 'NIKAHO').catch(function () {}));
+        }
+        waits.push(new Promise(function (res) {
+          var im = new Image(); im.onload = im.onerror = res; im.src = 'images/img-263/NIKAHO(10).jpg';
+        }));
+        Promise.all(waits).then(ready);
+      });
+      setTimeout(ready, 2500);
+      document.addEventListener('visibilitychange', function () { if (assets) go(); });
+    })();
+  </script>
+  <link rel="preload" as="image" href="images/img-263/NIKAHO(10).jpg">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -318,12 +354,13 @@
       flex: 1; display: block; background: var(--c);
       background-image: repeating-linear-gradient(172deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 11px), repeating-linear-gradient(8deg, rgba(0,0,0,0.08) 0 1px, transparent 1px 15px);
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(0,0,0,0.25);
-      transform: translateY(-110vh);
+      /* ヒーローの高さに関係なく、開始時は必ず上端の外、終了時は下端の外（--k：上から何番目の層か） */
+      transform: translateY(calc((var(--k) + 1.1) * -100%));
       animation: strataSettle 0.75s cubic-bezier(0.55, 0, 0.3, 1.18) forwards, strataFall 0.9s cubic-bezier(0.7, 0, 0.84, 0) forwards;
       animation-delay: calc(0.15s + var(--d) * 0.13s), calc(1.35s + var(--u) * 0.1s);
     }
     @keyframes strataSettle { to { transform: translateY(0); } }
-    @keyframes strataFall   { from { transform: translateY(0); } to { transform: translateY(115vh); } }
+    @keyframes strataFall   { from { transform: translateY(0); } to { transform: translateY(calc((5.1 - var(--k)) * 100%)); } }
 
     .hero-core {
       position: absolute; left: 50%; top: 0; width: 2px; height: 100%; z-index: 4; pointer-events: none;
@@ -346,19 +383,45 @@
     .hero-depth .hd-bar::after { content: ''; position: absolute; left: -3px; bottom: var(--p, 0%); width: 8px; height: 2px; background: #F3D5B8; }
     @keyframes depthDim { to { opacity: 0.55; } }
 
-    /* タイトル：一文字ずつ地中から出土し、地層の色を経て白へ */
-    .hero-title-en { filter: drop-shadow(0 10px 30px rgba(0,0,0,0.45)); text-shadow: none; cursor: default; }
+    /* タイトル：一文字ずつ地中から出土し、地層の色を経て白へ
+       .ht-m（地面＝マスク）> .ht-r（せり上がる）> .ht-l（地層色で塗られる文字） */
+    .hero-title-en { text-shadow: none; cursor: default; }
     .ht-m { display: inline-block; overflow: hidden; vertical-align: bottom; padding: 0.04em 0 0.02em; }
-    .ht-l {
-      display: inline-block; color: transparent;
-      background: linear-gradient(to bottom, #FFFFFF 0 20%, #C9A46E 20% 40%, #A4552E 40% 60%, #7A6142 60% 80%, #3E4A44 80% 100%);
-      background-size: 100% 500%; background-position: 0 100%;
-      -webkit-background-clip: text; background-clip: text;
-      transform: translateY(105%);
-      animation: letterRise 1.1s var(--ease-expo) forwards, strataFill 1.7s steps(4, end) forwards;
-      animation-delay: calc(1.75s + var(--i) * 0.09s), calc(1.95s + var(--i) * 0.09s);
+    .ht-r {
+      display: inline-block; transform: translateY(105%);
+      animation: letterRise 1.1s var(--ease-expo) forwards;
+      animation-delay: calc(1.75s + var(--i) * 0.09s);
     }
-    .ht-l.dig { animation: strataDig 0.9s steps(4, end) forwards; transform: none; }
+    .ht-l {
+      --strata-fill: linear-gradient(to bottom, #FFFFFF 0 20%, #C9A46E 20% 40%, #A4552E 40% 60%, #7A6142 60% 80%, #3E4A44 80% 100%);
+      display: inline-block; color: transparent;
+      background: var(--strata-fill); background-size: 100% 500%; background-position: 0 100%;
+      -webkit-background-clip: text; background-clip: text;
+      animation: strataFill 1.7s steps(4, end) forwards;
+      animation-delay: calc(1.95s + var(--i) * 0.09s);
+    }
+    .ht-l.solid { color: #fff; background: none; text-shadow: 0 8px 36px rgba(0,0,0,0.45); animation: none; }
+
+    /* ── イントロ開始制御 ──
+       .intro-wait の間は、ヒーロー内の全アニメーションを 0 秒地点で停止。
+       .intro-go で一斉に再生。.intro-done は万一のときに完成形を保証する安全装置。 */
+    .intro-wait .hero *, .intro-wait .hero *::before, .intro-wait .hero *::after { animation-play-state: paused !important; }
+    .intro-done .hero-strata, .intro-done .hero-core { display: none; }
+    .intro-done .ht-r { transform: none; }
+    .intro-done .ht-l { color: #fff; background: none; text-shadow: 0 8px 36px rgba(0,0,0,0.45); }
+    .intro-done .reveal-hero { opacity: 1; }
+    .intro-done .hero-surface::before { transform: none; }
+    .intro-done .hero-surface span { opacity: 1; }
+    /* カーソルを乗せた文字だけ、もう一度地層をくぐる（安全装置より後に置いて優先） */
+    .ht-l.dig {
+      color: transparent; text-shadow: none;
+      background: var(--strata-fill); background-size: 100% 500%; background-position: 0 100%;
+      -webkit-background-clip: text; background-clip: text;
+      animation: strataDig 0.9s steps(4, end) forwards;
+    }
+    @supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+      .ht-l, .ht-l.dig { color: #fff; background: none; }
+    }
     @keyframes letterRise { to { transform: translateY(0); } }
     @keyframes strataFill { from { background-position: 0 100%; } to { background-position: 0 0; } }
     @keyframes strataDig  { from { background-position: 0 100%; } to { background-position: 0 0; } }
@@ -896,17 +959,6 @@
       .nav-menu-footer-text { font-family: var(--en); font-size: 0.58rem; letter-spacing: 0.32em; color: var(--text-dim); text-transform: uppercase; }
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-      .reveal-hero { opacity: 1; }
-      .hero-strata, .hero-core { display: none; }
-      .ht-l { transform: none; background-position: 0 0; }
-      .hero-surface::before { transform: none; }
-      .hero-surface span { opacity: 1; }
-      .hero-slide.active { transition-duration: 3.4s !important; }
-      .hero-slide.kb { animation: none !important; }
-      .hero-slideshow { animation: none !important; }
-    }
   </style>
 </head>
 <body class="is-loading" id="top">
@@ -1065,11 +1117,11 @@
 
   <!-- イントロ：堆積する地層と、掘り進むコア -->
   <div class="hero-strata" aria-hidden="true">
-    <i style="--c: var(--l5); --d: 4; --u: 4;"></i>
-    <i style="--c: var(--l4); --d: 3; --u: 3;"></i>
-    <i style="--c: var(--l3); --d: 2; --u: 2;"></i>
-    <i style="--c: var(--l2); --d: 1; --u: 1;"></i>
-    <i style="--c: var(--l1); --d: 0; --u: 0;"></i>
+    <i style="--c: var(--l5); --d: 4; --u: 4; --k: 0;"></i>
+    <i style="--c: var(--l4); --d: 3; --u: 3; --k: 1;"></i>
+    <i style="--c: var(--l3); --d: 2; --u: 2; --k: 2;"></i>
+    <i style="--c: var(--l2); --d: 1; --u: 1; --k: 3;"></i>
+    <i style="--c: var(--l1); --d: 0; --u: 0; --k: 4;"></i>
   </div>
   <div class="hero-core" aria-hidden="true"></div>
   <div class="hero-depth" aria-hidden="true">
@@ -1080,7 +1132,7 @@
 
   <div class="hero-content">
     <p class="hero-sub reveal-hero" style="animation-delay: 1.45s;">A Core Sample of Nikaho</p>
-    <h1 class="hero-title-en" aria-label="NIKAHO"><span class="ht-m" aria-hidden="true"><span class="ht-l" style="--i:0">N</span></span><span class="ht-m" aria-hidden="true"><span class="ht-l" style="--i:1">I</span></span><span class="ht-m" aria-hidden="true"><span class="ht-l" style="--i:2">K</span></span><span class="ht-m" aria-hidden="true"><span class="ht-l" style="--i:3">A</span></span><span class="ht-m" aria-hidden="true"><span class="ht-l" style="--i:4">H</span></span><span class="ht-m" aria-hidden="true"><span class="ht-l" style="--i:5">O</span></span></h1>
+    <h1 class="hero-title-en" aria-label="NIKAHO"><span class="ht-m" style="--i:0" aria-hidden="true"><span class="ht-r"><span class="ht-l">N</span></span></span><span class="ht-m" style="--i:1" aria-hidden="true"><span class="ht-r"><span class="ht-l">I</span></span></span><span class="ht-m" style="--i:2" aria-hidden="true"><span class="ht-r"><span class="ht-l">K</span></span></span><span class="ht-m" style="--i:3" aria-hidden="true"><span class="ht-r"><span class="ht-l">A</span></span></span><span class="ht-m" style="--i:4" aria-hidden="true"><span class="ht-r"><span class="ht-l">H</span></span></span><span class="ht-m" style="--i:5" aria-hidden="true"><span class="ht-r"><span class="ht-l">O</span></span></span></h1>
     <div class="hero-surface" aria-hidden="true"><span>0M — SURFACE</span></div>
     <h2 class="hero-title-ja reveal-hero" style="animation-delay: 2.9s;">仁賀保層序 <span>DAY 03</span></h2>
     <p class="hero-tagline reveal-hero" style="animation-delay: 3.1s;">地層に眠る、産業と人の記憶</p>
@@ -1119,10 +1171,10 @@
     <div class="ink-reveal-block">
       <p class="preface-lead"><span class="no-break">にかほ市という</span><span class="no-break">ひとつの土地には、</span><br><b>幾重もの時間</b>が<span class="no-break">積み重なっている。</span></p>
       <figure class="fig" style="margin-top: 3rem;">
-        <div class="fig-img land" data-lb="images/img-263/NIKAHO(11).jpg" data-caption="FIG.00 — 院内油田跡から望む仁賀保高原。地表の緑の下に、一千万年の層が眠る。">
-          <img src="images/img-263/NIKAHO(11).jpg" alt="院内油田跡の草地と、その奥に広がる杉林と山並み" loading="lazy">
+        <div class="fig-img land" data-lb="images/img-263/NIKAHO(11).jpg" data-caption="FIG.00 — 山根館跡（仁賀保氏の城跡）。草地に並ぶ石の下に、武家の時代の層が眠る。">
+          <img src="images/img-263/NIKAHO(11).jpg" alt="石が点々と並ぶ山根館跡（仁賀保氏の城跡）の草地と、その奥の杉林" loading="lazy">
         </div>
-        <figcaption><b>FIG.00</b>院内油田跡から望む仁賀保高原。地表の緑の下に、一千万年の層が眠る。</figcaption>
+        <figcaption><b>FIG.00</b>山根館跡（仁賀保氏の城跡）。草地に並ぶ石の下に、武家の時代の層が眠る。</figcaption>
       </figure>
     </div>
     <div class="ink-reveal-block">
@@ -1748,10 +1800,10 @@
       </div>
       <div class="duo">
         <figure class="fig">
-          <div class="fig-img land" data-lb="images/img-263/NIKAHO(11).jpg" data-caption="FIG.08 — 山根館跡地">
-            <img src="images/img-263/NIKAHO(11).jpg" alt="礎石が点在する山根館跡地の草地" loading="lazy">
+          <div class="fig-img land" data-lb="images/img-263/NIKAHO(11).jpg" data-caption="FIG.08 — 山根館跡地（仁賀保氏の城跡）">
+            <img src="images/img-263/NIKAHO(11).jpg" alt="石が点々と並ぶ山根館跡地（仁賀保氏の城跡）の草地" loading="lazy">
           </div>
-          <figcaption><b>FIG.08</b>山根館跡地</figcaption>
+          <figcaption><b>FIG.08</b>山根館跡地（仁賀保氏の城跡）</figcaption>
         </figure>
         <figure class="fig">
           <div class="fig-img land" data-lb="images/img-263/NIKAHO(10).jpg" data-caption="FIG.09 — 残された櫓">
@@ -1781,10 +1833,10 @@
         <div>
           <p class="pull-quote" style="margin-top: 0;">にかほ市の10歳児が「にかほらしさ」を描けること。それがこの土地の次の地層になる。</p>
           <figure class="fig">
-            <div class="fig-img land" data-lb="images/img-263/NIKAHO(12).jpg" data-caption="FIG.10 — 地元にもあまり知られていない、油田跡地の風景。">
-              <img src="images/img-263/NIKAHO(12).jpg" alt="木立の下に大きな岩が積み重なる油田跡地の一角" loading="lazy">
+            <div class="fig-img land" data-lb="images/img-263/NIKAHO(12).jpg" data-caption="FIG.10 — 山根館跡の一角。木立の下に、大きな岩が積み重なる。">
+              <img src="images/img-263/NIKAHO(12).jpg" alt="木立の下に大きな岩が積み重なる山根館跡の一角" loading="lazy">
             </div>
-            <figcaption><b>FIG.10</b>地元にもあまり知られていない、油田跡地の風景。</figcaption>
+            <figcaption><b>FIG.10</b>山根館跡の一角。木立の下に、大きな岩が積み重なる。</figcaption>
           </figure>
         </div>
       </div>
@@ -1841,8 +1893,8 @@
     <span class="concept-block-en">Contact Sheet — 仁賀保の16枚</span>
     <div class="contact-sheet">
       <img src="images/img-263/NIKAHO(10).jpg" alt="油井の櫓" data-lb="images/img-263/NIKAHO(10).jpg" data-caption="残された櫓" loading="lazy">
-      <img src="images/img-263/NIKAHO(11).jpg" alt="山根館跡地" data-lb="images/img-263/NIKAHO(11).jpg" data-caption="山根館跡地" loading="lazy">
-      <img src="images/img-263/NIKAHO(12).jpg" alt="木立の下の岩" data-lb="images/img-263/NIKAHO(12).jpg" data-caption="油田跡地の一角、木立の下の岩" loading="lazy">
+      <img src="images/img-263/NIKAHO(11).jpg" alt="山根館跡地" data-lb="images/img-263/NIKAHO(11).jpg" data-caption="山根館跡地（仁賀保氏の城跡）" loading="lazy">
+      <img src="images/img-263/NIKAHO(12).jpg" alt="山根館跡の岩" data-lb="images/img-263/NIKAHO(12).jpg" data-caption="山根館跡の一角、木立の下の岩" loading="lazy">
       <img src="images/img-263/NIKAHO(3).jpg" alt="高台の古い建物" data-lb="images/img-263/NIKAHO(3).jpg" data-caption="高台の木立にたたずむ古い建物" loading="lazy">
       <img src="images/img-263/NIKAHO(4).jpg" alt="飛良泉の看板" data-lb="images/img-263/NIKAHO(4).jpg" data-caption="五百四十年の看板" loading="lazy">
       <img src="images/img-263/NIKAHO(5).jpg" alt="蔵の玄関の行灯" data-lb="images/img-263/NIKAHO(5).jpg" data-caption="蔵の玄関の行灯" loading="lazy">
@@ -2091,9 +2143,12 @@ function closeMenu() {
     cur.classList.remove('kb'); void cur.offsetWidth;
     cur.classList.add('active', 'kb');
   }
-  var timer = setInterval(next, 7000);
+  var timer = null, running = false;
+  // 写真の切り替えはイントロ開始と同時にスタート
+  onIntroStart(function () { running = true; timer = setInterval(next, 7000); });
   // タブが非表示の間は止め、戻ったときに一気に切り替わらないようにする
   document.addEventListener('visibilitychange', function () {
+    if (!running) return;
     clearInterval(timer);
     if (!document.hidden) timer = setInterval(next, 7000);
   });
@@ -2102,37 +2157,47 @@ function closeMenu() {
 /* ════════════════════════════════════════════════════════
    HERO INTRO：深度計（−1,000M → 0M）と、文字の再掘削
 ════════════════════════════════════════════════════════ */
+// イントロ開始の合図を待って実行（すでに始まっていれば即実行）
+function onIntroStart(fn) {
+  if (document.documentElement.classList.contains('intro-go')) fn();
+  else document.addEventListener('introstart', fn, { once: true });
+}
+
 (function () {
   var out = document.getElementById('hero-depth');
   var bar = document.getElementById('hero-depth-bar');
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function show(d) {
     var n = Math.round(Math.abs(d) / 10) * 10;
     out.textContent = (n === 0 ? '' : '−') + n.toLocaleString('en-US') + 'M';
     if (bar) bar.style.setProperty('--p', (100 - n / 10) + '%');
   }
   if (out) {
-    if (reduce) { show(0); }
-    else {
-      show(-1000);
+    show(-1000);
+    onIntroStart(function () {
+      // 経過時間から深度を計算（描画フレームが間引かれる環境でも、正しい値で進む）
       setTimeout(function () {
-        var dur = 1500, t0 = null;
-        requestAnimationFrame(function step(ts) {
-          if (!t0) t0 = ts;
-          var p = Math.min(1, (ts - t0) / dur);
+        var dur = 1500, t0 = Date.now();
+        var id = setInterval(function () {
+          var p = Math.min(1, (Date.now() - t0) / dur);
           var e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
           show(-1000 + 1000 * e);
-          if (p < 1) requestAnimationFrame(step);
-        });
+          if (p >= 1) clearInterval(id);
+        }, 30);
       }, 1350);
-    }
+      // 万一カウントが止まっても、最後は必ず 0M を表示
+      setTimeout(function () { show(0); }, 3200);
+    });
   }
-  // 出土し終えた文字にカーソルを乗せると、その文字だけもう一度地層をくぐる
+  // 塗り終えた文字は白文字に切り替え。カーソルを乗せると、その文字だけもう一度地層をくぐる
   document.querySelectorAll('.ht-l').forEach(function (l) {
-    l.addEventListener('animationend', function (e) { if (e.animationName === 'strataFill') l.dataset.ready = '1'; });
+    l.addEventListener('animationend', function (e) {
+      if (e.animationName === 'strataFill' || e.animationName === 'strataDig') {
+        l.classList.remove('dig'); l.classList.add('solid');
+      }
+    });
     l.addEventListener('mouseenter', function () {
-      if (!l.dataset.ready) return;
-      l.classList.remove('dig'); void l.offsetWidth; l.classList.add('dig');
+      if (!l.classList.contains('solid')) return;
+      l.classList.remove('solid'); void l.offsetWidth; l.classList.add('dig');
     });
   });
 })();
