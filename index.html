@@ -128,7 +128,54 @@
     }
     .nav-links a:hover, .nav-links a.active { color: var(--accent); }
     .nav-links a.active::after { transform: translateX(-50%) scaleX(1); }
-    
+
+    /* PP（Project Proposals）── 他の項目より一段だけ目立たせる */
+    .nav-links a.nav-pp {
+      color: var(--text);
+      padding: 0.42rem 0.95rem 0.42rem 1.6rem;
+      margin: -0.42rem 0;
+      border: 0.5px solid rgba(156,212,255,0.5);
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(156,212,255,0.14), rgba(156,212,255,0.03));
+      box-shadow: 0 0 18px rgba(156,212,255,0.12);
+      transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, transform 0.4s var(--ease-out-back);
+    }
+    .nav-links a.nav-pp::before {
+      content: ''; position: absolute; left: 0.72rem; top: 50%;
+      width: 5px; height: 5px; margin-top: -2.5px; border-radius: 50%;
+      background: #9cd4ff; box-shadow: 0 0 8px #9cd4ff;
+    }
+    .nav-links a.nav-pp::after {
+      left: 0.72rem; top: 50%; bottom: auto; width: 5px; height: 5px; margin-top: -2.5px;
+      border-radius: 50%; background: transparent; border: 1px solid #9cd4ff;
+      transform: none; animation: ppPulse 2.4s ease-out infinite;
+    }
+    @keyframes ppPulse { 0% { transform: scale(1); opacity: 0.9; } 100% { transform: scale(3.4); opacity: 0; } }
+    .nav-links a.nav-pp:hover, .nav-links a.nav-pp:focus-visible {
+      color: #fff; border-color: rgba(156,212,255,0.85);
+      background: rgba(156,212,255,0.18); box-shadow: 0 0 26px rgba(156,212,255,0.28);
+      transform: translateY(-1px);
+    }
+    .nav-pp-tip {
+      position: absolute; top: calc(100% + 12px); left: 50%;
+      transform: translate(-50%, -4px);
+      font-family: var(--jp); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: none;
+      color: rgba(232,228,219,0.85); white-space: nowrap;
+      padding: 0.35rem 0.75rem; border: 0.5px solid rgba(156,212,255,0.35); border-radius: 2px;
+      background: rgba(8,16,30,0.9); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      opacity: 0; visibility: hidden; pointer-events: none;
+      transition: opacity 0.35s ease, transform 0.45s var(--ease-expo), visibility 0.35s;
+    }
+    .nav-links a.nav-pp:hover .nav-pp-tip, .nav-links a.nav-pp:focus-visible .nav-pp-tip {
+      opacity: 1; visibility: visible; transform: translate(-50%, 0);
+    }
+    @media (max-width: 1024px) and (min-width: 769px) {
+      .nav-links { gap: 1.2rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .nav-links a.nav-pp::after { animation: none; opacity: 0; }
+    }
+
     .nav-cta {
       font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem);
       letter-spacing: 0.25em; text-transform: uppercase;
@@ -1232,6 +1279,7 @@
       .nav-links.open li.sp-only:not(.nav-menu-heading):not(.nav-menu-footer) { opacity: 1; transform: translateY(0); filter: blur(0); }
       .nav-links.open li:nth-child(5) { transition-delay: 0.16s; }
       .nav-links.open li:nth-child(6) { transition-delay: 0.26s; }
+      .nav-links.open li:nth-child(7) { transition-delay: 0.36s; }
 
       .nav-menu-item {
         position: relative;
@@ -1313,7 +1361,17 @@
         opacity: 0; transform: translateY(16px); filter: blur(6px);
         transition: opacity 0.8s var(--ease-expo), transform 0.8s var(--ease-expo), filter 0.8s var(--ease-expo);
       }
-      .nav-links.open .nav-menu-footer { opacity: 1; transform: translateY(0); filter: blur(0); transition-delay: 0.38s; }
+      .nav-links.open .nav-menu-footer { opacity: 1; transform: translateY(0); filter: blur(0); transition-delay: 0.48s; }
+
+      /* ── PP（企画提案）── */
+      .nav-menu-badge {
+        display: inline-block; margin-left: 0.7rem; padding: 0.15rem 0.6rem;
+        font-family: var(--en); font-size: 0.62rem; letter-spacing: 0.22em; line-height: 1.4;
+        color: #9cd4ff; border: 0.5px solid rgba(156,212,255,0.6); border-radius: 999px;
+        vertical-align: middle; transform: translateY(-0.15em);
+      }
+      .nav-menu-item--pp .nav-menu-num { color: rgba(156,212,255,0.65); }
+      .nav-menu-item--pp::before { background: linear-gradient(90deg, transparent, rgba(156,212,255,0.12), transparent); }
       .nav-menu-footer-text {
         font-family: var(--en); font-size: 0.58rem; letter-spacing: 0.32em;
         color: rgba(232,228,219,0.28); text-transform: uppercase;
@@ -1508,8 +1566,22 @@
         </span>
       </a>
     </li>
+    <li class="sp-only">
+      <a href="pp/proposals.html" class="nav-menu-item nav-menu-item--pp">
+        <span class="nav-menu-num">03</span>
+        <span class="nav-menu-text">
+          <span class="nav-menu-ja">企画提案<span class="nav-menu-badge">PP</span></span>
+          <span class="nav-menu-en">Project Proposals</span>
+        </span>
+        <span class="nav-menu-arrow">
+          <span class="nav-menu-arrow-shaft"></span>
+          <span class="nav-menu-arrow-head"></span>
+        </span>
+      </a>
+    </li>
     <li class="sp-only nav-menu-footer"><span class="nav-menu-footer-text">Tsuda Shoichi</span></li>
     <li class="pc-only"><a href="#news" onclick="closeMenu()">News</a></li>
+    <li class="pc-only"><a href="pp/proposals.html" class="nav-pp" aria-label="PP（Project Proposals／企画提案）">PP<span class="nav-pp-tip" aria-hidden="true">Project Proposals ─ 企画提案</span></a></li>
   </ul>
   
   <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
