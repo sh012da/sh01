@@ -9,6 +9,39 @@
     gtag('config', 'G-5RF8JPF5D8');
     document.documentElement.classList.add('js');
   </script>
+  <script>
+    /* ── トップビューのイントロ開始制御（DAY 01–03 と同じ） ──
+       ・ページが画面に表示されていること（背景タブで開かれても、見た瞬間に最初から再生）
+       ・タイトルと数字の書体が読み込まれていること（途中で書体が差し替わらない）
+       がそろった瞬間に、ヒーローのアニメーションを一斉にスタートさせる。
+       読み込みが遅くても 1.5 秒で開始し、万一スクリプトが止まっても 6 秒後には完成形を表示する。 */
+    (function () {
+      var d = document.documentElement, started = false, dom = false, assets = false;
+      d.classList.add('intro-wait');
+      function go() {
+        if (started || !dom || !assets || document.hidden) return;
+        started = true;
+        d.classList.remove('intro-wait');
+        d.classList.add('intro-go');
+        document.dispatchEvent(new CustomEvent('introstart'));
+        setTimeout(function () { d.classList.add('intro-done'); }, 6000);
+      }
+      function ready() { assets = true; go(); }
+      document.addEventListener('DOMContentLoaded', function () {
+        dom = true;
+        if (assets) { go(); return; }
+        var waits = [];
+        if (document.fonts && document.fonts.load) {
+          waits.push(document.fonts.load('300 100px "Cormorant Garamond"', 'Project').catch(function () {}));
+          waits.push(document.fonts.load('italic 300 100px "Cormorant Garamond"', 'Proposals').catch(function () {}));
+          waits.push(document.fonts.load('400 12px "IBM Plex Mono"', '0123456789').catch(function () {}));
+        }
+        Promise.all(waits).then(ready);
+      });
+      setTimeout(ready, 1500);
+      document.addEventListener('visibilitychange', go);
+    })();
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>TSUDA SHOICHI | 企画提案 Project Proposals</title>
@@ -41,6 +74,7 @@
       --en:   'Cormorant Garamond', serif;
       --jp:   'Noto Serif JP', serif;
       --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+      --mono-jp: 'IBM Plex Mono', 'Noto Serif JP', serif;
       --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
       --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
       --px: clamp(16px, 5vw, 64px);
@@ -168,7 +202,9 @@
     .menu-overlay a[aria-current="page"] span { color: var(--cyan); }
 
     /* ════════════════════════════════════════
-        HERO
+        HERO — 製図中
+        青焼き機のランプが通ると図面が焼き付き、長野の糸巻きから〈いと〉が繰り出される。
+        この図面はやや几帳面すぎて、タイトルの幅まで実測してしまう。
     ════════════════════════════════════════ */
     .hero {
       position: relative; z-index: 1;
@@ -177,23 +213,101 @@
       min-height: 100svh; max-width: 1480px; margin: 0 auto;
       padding: calc(92px + 3vh) var(--px) 7vh;
     }
+
+    /* 露光：ランプの光が上から下へ通過し、未露光の暗がりを連れ去る */
+    .hero-expose {
+      position: absolute; z-index: 3; top: 0; left: 50%; width: 100vw; height: 100%; margin-left: -50vw;
+      pointer-events: none; background: rgba(5,14,30,0.6);
+      animation: expose 0.95s cubic-bezier(0.45, 0, 0.3, 1) forwards;
+    }
+    .hero-expose::before {
+      content: ''; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: #fff;
+      box-shadow: 0 0 6px 1px var(--cyan), 0 0 44px 10px rgba(156,212,255,0.26);
+    }
+    .hero-expose::after {
+      content: ''; position: absolute; left: 0; right: 0; bottom: 100%; height: 180px;
+      background: linear-gradient(to bottom, transparent, rgba(156,212,255,0.09));
+    }
+    @keyframes expose { 0% { transform: translateY(0); opacity: 1; } 88% { opacity: 1; } 100% { transform: translateY(100%); opacity: 0; } }
+
     .hero-eyebrow {
       display: flex; align-items: center; gap: 0.8rem;
       font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cyan);
     }
     .hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--cyan); }
+    /* イントロの間だけ、画面の下中央に出る */
+    .hero-skip {
+      position: fixed; z-index: 4; left: 50%; bottom: clamp(14px, 3vh, 28px); transform: translateX(-50%);
+      background: none; border: 0; padding: 0.7rem 1.2rem; cursor: pointer;
+      font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.4em; margin-right: -0.4em; text-transform: uppercase; color: var(--ink-3);
+      opacity: 0; animation: skipLife 3s linear forwards;
+    }
+    .hero-skip:hover, .hero-skip:focus-visible { color: var(--ink); }
+    @keyframes skipLife { 0%, 8% { opacity: 0; } 15%, 85% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }
+
+    /* タイトル：一字ずつ、少し勢いあまって据え付けられる */
     .hero-title {
       font-family: var(--en); font-weight: 300; color: var(--ink);
       font-size: clamp(3.3rem, 9.2vw, 8.4rem); line-height: 0.9; letter-spacing: -0.01em;
-      margin: 1.4rem 0 1.8rem;
+      margin: 2.5rem 0 2.9rem;
+      -webkit-tap-highlight-color: transparent;
     }
-    .ht-line { display: block; overflow: hidden; padding-bottom: 0.06em; }
-    .ht-line > span { display: inline-block; }
-    .ht-line em { font-style: italic; color: transparent; -webkit-text-stroke: 1px var(--ink); transition: color 1s var(--ease-expo); }
-    .hero-title:hover em { color: var(--ink); }
-    .js .ht-line > span { transform: translateY(108%); animation: htUp 0.9s var(--ease-expo) 0.05s forwards; }
-    .js .ht-line:nth-child(2) > span { animation-delay: 0.16s; }
-    @keyframes htUp { to { transform: translateY(0); } }
+    .ht-row { position: relative; display: block; width: max-content; max-width: 100%; }
+    .ht-line { display: block; padding-bottom: 0.06em; clip-path: inset(-0.6em -0.4em 0 -0.4em); }
+    .r2 .ht-line { padding-right: 0.12em; }
+    .ht-ch { display: inline-block; }
+    .r2 em { font-style: italic; }
+    /* 中空の Proposals：ふれると左から順に仮充填される */
+    .r2 .ht-ch {
+      color: transparent; -webkit-text-stroke: 1px var(--ink);
+      transition: color 0.7s var(--ease-expo) calc(var(--k) * 45ms);
+    }
+    .hero-title:hover .r2 .ht-ch, .hero-title.is-filled .r2 .ht-ch { color: var(--ink); }
+    .r1 { --d0: 0.2s; } .r2 { --d0: 0.36s; }
+    .js .ht-ch { opacity: 0; animation: chIn 0.8s var(--ease-back) forwards; animation-delay: calc(var(--d0) + var(--k) * 38ms); }
+    @keyframes chIn {
+      0%   { opacity: 0; transform: translateY(0.9em) rotate(9deg); }
+      25%  { opacity: 1; }
+      100% { opacity: 1; transform: none; }
+    }
+
+    /* 寸法線：タイトルが自分の幅を実測する（ウィンドウ幅を変えると測り直す） */
+    .ht-dim {
+      position: absolute; left: 0; right: 0; bottom: 100%; margin-bottom: 0.95rem;
+      display: none; align-items: center; gap: 0.6rem;
+      font: 400 0.6rem/1 var(--mono); letter-spacing: 0.12em; color: var(--cyan); white-space: nowrap;
+    }
+    .js .ht-dim { display: flex; }
+    .ht-dim i { position: relative; flex: 1; height: 1px; background: currentColor; }
+    .ht-dim i:first-child { transform-origin: 100% 50%; }
+    .ht-dim i:last-child { transform-origin: 0 50%; }
+    .ht-dim i::before, .ht-dim i::after { content: ''; position: absolute; width: 1px; background: currentColor; }
+    .ht-dim i::before { top: -4px; height: 9px; transform: rotate(45deg); }
+    .ht-dim i::after { top: -4px; height: calc(0.95rem + 9px); opacity: 0.45; }
+    .ht-dim i:first-child::before, .ht-dim i:first-child::after { left: 0; }
+    .ht-dim i:last-child::before, .ht-dim i:last-child::after { right: 0; }
+    .ht-dim b { font-weight: 400; font-variant-numeric: tabular-nums; }
+    .js .ht-dim i { transform: scaleX(0); animation: grow 0.7s var(--ease-expo) 0.95s forwards; }
+    .js .ht-dim b { opacity: 0; animation: fadeIn 0.3s ease 0.95s forwards; }
+    @keyframes grow { to { transform: none; } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* 引出線と注記：中空なのは、まだ実現していないから */
+    .ht-lead {
+      position: absolute; right: 0.34em; top: calc(100% - 0.26em);
+      width: 1px; height: calc(0.26em + 0.55rem); background: var(--ink-3); transform-origin: 50% 0;
+    }
+    .ht-lead::before { content: ''; position: absolute; left: -2px; top: -2px; width: 5px; height: 5px; border-radius: 50%; background: var(--ink-3); }
+    .ht-note {
+      position: absolute; right: 0; top: 100%; margin-top: 0.75rem;
+      font: 400 0.62rem/1 var(--mono-jp); letter-spacing: 0.1em; color: var(--ink-3); white-space: nowrap;
+    }
+    .ht-note .n-b { display: none; color: var(--cyan); }
+    .hero-title:hover .n-a, .hero-title.is-filled .n-a { display: none; }
+    .hero-title:hover .n-b, .hero-title.is-filled .n-b { display: inline; }
+    .js .ht-lead { transform: scaleY(0); animation: grow 0.5s var(--ease-expo) 1.3s forwards; }
+    .js .ht-note { opacity: 0; animation: fadeIn 0.5s ease 1.45s forwards; }
+
     .hero-jp {
       font-family: var(--jp); font-weight: 300; font-size: clamp(1.05rem, 2vw, 1.4rem);
       letter-spacing: 0.12em; line-height: 1.8; color: var(--ink);
@@ -210,9 +324,34 @@
     }
     .hero-stats dt { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); order: 2; }
     .hero-stats div { display: flex; flex-direction: column-reverse; gap: 0.3rem; }
-    .hero-stats dd { font-family: var(--en); font-weight: 300; font-size: clamp(2rem, 4vw, 3rem); line-height: 1; font-variant-numeric: lining-nums; color: var(--ink); }
+    .hero-stats dd { position: relative; font-family: var(--en); font-weight: 300; font-size: clamp(2rem, 4vw, 3rem); line-height: 1; font-variant-numeric: lining-nums tabular-nums; color: var(--ink); }
     .hero-stats dd small { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; margin-left: 0.35em; color: var(--ink-3); }
     .hero-stats dd .approx { font-size: 0.55em; color: var(--cyan); margin-right: 0.15em; }
+
+    /* 提案数：勢いあまって 03 まで数え、朱で 02 に訂正する（＋1 は敷地募集中） */
+    .st-strike {
+      position: absolute; left: -0.1em; right: -0.1em; top: 52%; height: 2px; background: var(--shu);
+      transform: rotate(-12deg) scaleX(0); transform-origin: 0 50%; pointer-events: none;
+      transition: transform 0.28s var(--ease-expo), opacity 0.3s ease;
+    }
+    .st-prop.is-struck .st-strike { transform: rotate(-12deg) scaleX(1); }
+    .st-prop.is-fixed .st-strike { opacity: 0; }
+    .st-note, .st-cand { position: absolute; left: 0; top: 100%; margin-top: 0.55rem; line-height: 1.2; white-space: nowrap; }
+    .st-note {
+      font-family: var(--jp); font-size: 0.66rem; font-weight: 500; letter-spacing: 0.08em;
+      color: var(--shu); text-decoration: none; transform: rotate(-5deg); transform-origin: 0 0;
+    }
+    .st-note:hover, .st-note:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+    .js .st-note { opacity: 0; transform: rotate(-5deg) scale(1.5); pointer-events: none; }
+    .js .st-prop.is-fixed .st-note { animation: noteIn 0.5s cubic-bezier(0.2, 1.3, 0.4, 1) forwards; pointer-events: auto; }
+    @keyframes noteIn { to { opacity: 1; transform: rotate(-5deg); } }
+    /* 仮置きした NEXT? のぶんの〈いと〉 */
+    .st-cand { font-family: var(--mono-jp); font-size: 0.62rem; letter-spacing: 0.06em; color: var(--cyan); opacity: 0; transition: opacity 0.3s ease; }
+    .st-cand.is-on { opacity: 1; }
+    /* 実施中：数え終わると朱の点が灯る */
+    .st-now dd .live-dot { margin-left: 0.45em; vertical-align: 0.4em; }
+    .js .st-now dd .live-dot { opacity: 0; transform: scale(0); transition: opacity 0.3s ease, transform 0.5s var(--ease-back); }
+    .js .st-now.is-live dd .live-dot { opacity: 1; transform: none; }
     .hero-cta {
       display: inline-flex; align-items: center; gap: 1rem; margin-top: 2.6rem;
       padding: 1rem 1.6rem 1rem 1.8rem; border: 1px solid var(--cyan); border-radius: 999px;
@@ -221,18 +360,19 @@
       transition: background 0.4s var(--ease-expo), color 0.4s var(--ease-expo), transform 0.4s var(--ease-back), box-shadow 0.4s ease;
     }
     .hero-cta .arrow { display: inline-block; font-family: var(--mono); animation: nudge 1.8s ease-in-out infinite; }
-    .hero-cta:hover { background: var(--cyan); color: var(--bp-0); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(156,212,255,0.25); }
+    .hero-text .hero-cta:hover { background: var(--cyan); color: var(--bp-0); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(156,212,255,0.25); }
     @keyframes nudge { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
 
     .js .hero-fade { opacity: 0; transform: translateY(14px); animation: fadeUp 0.9s var(--ease-expo) forwards; }
-    .js .hero-fade.d1 { animation-delay: 0.3s; } .js .hero-fade.d2 { animation-delay: 0.42s; }
-    .js .hero-fade.d3 { animation-delay: 0.54s; } .js .hero-fade.d4 { animation-delay: 0.66s; }
+    .js .hero-fade.d0 { animation-delay: 0.1s; } .js .hero-fade.dc { animation-delay: 0.3s; }
+    .js .hero-fade.d1 { animation-delay: 0.5s; } .js .hero-fade.d2 { animation-delay: 0.6s; }
+    .js .hero-fade.d3 { animation-delay: 0.7s; } .js .hero-fade.d4 { animation-delay: 0.85s; }
     @keyframes fadeUp { to { opacity: 1; transform: none; } }
 
     /* ─── SITE PLAN（経緯度図） ─── */
     .chart {
       position: relative; justify-self: center;
-      width: min(100%, calc(58svh * 490 / 576 + 30px));
+      width: min(100%, calc(54svh * 490 / 576 + 30px));
       padding: 14px; border: 1px solid var(--line-2);
       background: rgba(12,31,61,0.55);
       -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
@@ -248,8 +388,9 @@
       font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);
     }
     .chart-head b { font-weight: 400; color: var(--ink); }
-    .chart-readout { color: var(--cyan); font-variant-numeric: tabular-nums; white-space: nowrap; }
-    .chart-svg { display: block; width: 100%; height: auto; overflow: visible; }
+    .chart-readout { font-family: var(--mono-jp); color: var(--cyan); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .chart-svg { display: block; width: 100%; height: auto; overflow: visible; -webkit-tap-highlight-color: transparent; }
+    @media (hover: hover) and (pointer: fine) { .chart-svg { cursor: crosshair; } }
 
     .grat line { stroke: var(--line); stroke-width: 0.7; }
     .grat text { font-family: var(--mono); font-size: 7px; fill: var(--ink-3); letter-spacing: 0.04em; }
@@ -260,27 +401,35 @@
     .furniture .n-arrow { fill: var(--ink-3); stroke: none; }
 
     .thread { fill: none; stroke: var(--cyan); stroke-width: 1.1; stroke-linecap: round; transition: stroke-width 0.3s ease, filter 0.3s ease; }
+    /* 〈いと〉の伸びは JS が総延長の数字と同期して描く。届いた地点から順に姿を現す */
     .js .thread { stroke-dasharray: 1; stroke-dashoffset: 1; }
-    .js .chart.is-drawn .thread { animation: drawLine 1.6s var(--ease-expo) forwards; }
-    .js .chart.is-drawn .thread.t2 { animation-delay: 0.25s; }
-    .js .chart.is-drawn .thread.t3 { animation-delay: 0.45s; }
-    @keyframes drawLine { to { stroke-dashoffset: 0; } }
     .thread.is-hot { stroke-width: 2.2; filter: drop-shadow(0 0 4px var(--cyan)); }
     .dist { font-family: var(--mono); font-size: 7.5px; fill: var(--cyan); letter-spacing: 0.06em; }
-    .js .dist, .js .site, .js .detail, .js .origin { opacity: 0; transition: opacity 0.8s ease; }
-    .js .chart.is-drawn .dist, .js .chart.is-drawn .site, .js .chart.is-drawn .detail, .js .chart.is-drawn .origin { opacity: 1; }
-    .js .chart.is-drawn .origin { transition-delay: 0s; }
-    .js .chart.is-drawn .site, .js .chart.is-drawn .dist { transition-delay: 1s; }
-    .js .chart.is-drawn .detail { transition-delay: 1.3s; }
+    .js .dist, .js .site, .js .detail { opacity: 0; transition: opacity 0.6s ease; }
+    .js .chart .is-on { opacity: 1; }
+    .js .chart .detail.is-on { transition-delay: 0.2s; }
     .spark { fill: #fff; filter: drop-shadow(0 0 3px var(--cyan)); }
+    .halo { paint-order: stroke; stroke: var(--bp-1); stroke-width: 3px; stroke-linejoin: round; }
 
-    .origin rect { fill: var(--bp-0); stroke: var(--ink); stroke-width: 1.2; }
+    /* 起点：長野の糸巻き。〈いと〉を繰り出すぶんだけ回り、少しずつ痩せる */
     .origin text { font-family: var(--jp); font-size: 12px; fill: var(--ink); letter-spacing: 0.1em; }
     .origin text.sub { font-family: var(--mono); font-size: 6.5px; fill: var(--ink-3); letter-spacing: 0.18em; }
+    .spool .flange { fill: var(--bp-0); stroke: var(--ink); stroke-width: 1.1; }
+    .spool .wound { fill: var(--cyan); }
+    .spool .tick { stroke: var(--bp-0); stroke-width: 1; stroke-linecap: round; }
+    .spool .notch { stroke: var(--ink); stroke-width: 1; stroke-linecap: round; }
+    .spool .hole { fill: var(--bp-0); stroke: var(--ink); stroke-width: 0.7; }
 
     .site { cursor: pointer; outline: none; }
     .site .hit { fill: transparent; }
-    .site .core { fill: var(--ink); transition: fill 0.3s ease; }
+    .site .core { fill: var(--ink); transition: fill 0.3s ease; transform-box: fill-box; transform-origin: center; }
+    .site.is-on .core { animation: corePop 0.7s var(--ease-back); }
+    /* 実施中の地点は朱 */
+    .site.is-now .core { fill: var(--shu); }
+    .site.is-now .ring { stroke: var(--shu); }
+    .site.is-now:hover .core, .site.is-now:focus-visible .core { fill: #ff8a70; }
+    .now-tag { font-family: var(--jp); font-size: 7.5px; fill: var(--shu); letter-spacing: 0.12em; }
+    @keyframes corePop { 0% { transform: scale(0); } 55% { transform: scale(2.1); } 100% { transform: scale(1); } }
     .site .ring { fill: none; stroke: var(--cyan); stroke-width: 0.8; transform-box: fill-box; transform-origin: center; animation: ping 2.8s ease-out infinite; }
     .site .num { font-family: var(--mono); font-size: 10px; fill: var(--cyan); letter-spacing: 0.06em; }
     .site .name { font-family: var(--jp); font-size: 12px; fill: var(--ink); letter-spacing: 0.08em; }
@@ -308,6 +457,46 @@
     .xhair { opacity: 0; transition: opacity 0.2s ease; pointer-events: none; }
     .chart.is-probing .xhair { opacity: 1; }
 
+    /* NEXT?：地図の余白を押すと仮置きされる敷地候補。置き直すと、前の〈いと〉は糸巻きへ巻き戻る */
+    .cand { pointer-events: none; }
+    .cand-thread { fill: none; stroke: var(--cyan); stroke-width: 1; stroke-dasharray: 3 3; stroke-linecap: round; }
+    .cand-pin { opacity: 0; transition: opacity 0.25s ease; }
+    .cand.is-pinned .cand-pin { opacity: 1; }
+    .cand-ring { fill: none; stroke: var(--cyan); stroke-width: 0.8; stroke-dasharray: 2.2 2.2; transform-box: fill-box; transform-origin: center; animation: spin 8s linear infinite; }
+    .cand-core { fill: var(--bp-0); stroke: var(--cyan); stroke-width: 1.2; transform-box: fill-box; transform-origin: center; }
+    .cand.is-pinned .cand-core { animation: corePop 0.6s var(--ease-back); }
+    .cand-num { font-family: var(--mono); font-size: 10px; fill: var(--cyan); letter-spacing: 0.06em; }
+    .cand-sub { font-family: var(--jp); font-size: 7.5px; fill: var(--ink); letter-spacing: 0.06em; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* コーヒーの染み（Ø≈84 km、縮尺どおり）。押すと消しゴムで消え、改訂履歴に残る */
+    .coffee {
+      outline: none; -webkit-tap-highlight-color: transparent;
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cg transform='rotate(-35 14 14)'%3E%3Crect x='4' y='9' width='20' height='10' rx='1.5' fill='%23e9f1fb' stroke='%2307142a'/%3E%3Crect x='4' y='9' width='7' height='10' rx='1.5' fill='%23ff5b3d' stroke='%2307142a'/%3E%3C/g%3E%3C/svg%3E") 6 21, pointer;
+    }
+    .coffee .stain { transform-box: fill-box; transform-origin: center; }
+    .coffee.is-new .stain { animation: settle 1.2s var(--ease-expo) both; }
+    .coffee.is-new .stain-label { animation: fadeIn 0.6s ease 0.8s both; }
+    @keyframes settle { from { opacity: 0; transform: scale(1.1); } to { opacity: 1; transform: none; } }
+    .stain-label text { font-family: var(--mono); font-size: 6.5px; letter-spacing: 0.12em; fill: var(--ink-3); transition: fill 0.3s ease; }
+    .stain-label text.jp { font-family: var(--jp); font-size: 7px; letter-spacing: 0.1em; }
+    .coffee:hover .stain-label text, .coffee:focus-visible .stain-label text { fill: var(--ink); }
+    .coffee.is-wiping { pointer-events: none; }
+    .coffee.is-wiping .stain { animation: rub 0.8s ease-in forwards; }
+    .coffee.is-wiping .stain-label { animation: fadeOut 0.3s ease forwards; }
+    @keyframes rub {
+      0%   { opacity: 1; transform: none; }
+      15%  { transform: translate(-3px, 1px) rotate(-2deg); }
+      30%  { transform: translate(3px, -1px) rotate(2deg); opacity: 0.8; }
+      45%  { transform: translate(-3px, 1px) rotate(-1deg); }
+      60%  { transform: translate(2px, 0); opacity: 0.4; }
+      80%  { transform: translate(-1px, 0); opacity: 0.15; }
+      100% { opacity: 0; transform: scale(0.97); }
+    }
+    @keyframes fadeOut { to { opacity: 0; } }
+    .crumb { fill: rgba(233,241,251,0.75); animation: crumb 0.8s var(--ease-expo) forwards; }
+    @keyframes crumb { to { transform: translate(var(--dx), var(--dy)); opacity: 0; } }
+
     .title-block {
       display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.35fr) minmax(0, 0.7fr) minmax(0, 1fr);
       margin-top: 10px; border: 1px solid var(--line-2);
@@ -317,6 +506,33 @@
     .title-block div:last-child { border-right: none; }
     .title-block span { display: block; font-size: 0.52rem; letter-spacing: 0.16em; color: var(--ink-3); }
     .title-block b { display: block; font-weight: 400; font-size: 0.66rem; letter-spacing: 0.1em; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* 改訂履歴と、地図の使い方 */
+    .chart-foot { display: grid; gap: 0.15rem; margin-top: 8px; padding: 0 2px; font: 400 0.6rem/1.7 var(--mono-jp); letter-spacing: 0.08em; color: var(--ink-3); }
+    .chart-foot b { font-weight: 400; color: var(--cyan); margin-right: 0.7em; }
+    .chart-rev.is-new, .chart-rev.is-new b { animation: revFlash 1.8s ease; }
+    @keyframes revFlash { 0%, 35% { color: var(--shu); } }
+    .chart-tip a { margin-left: 0.5em; color: var(--cyan); text-underline-offset: 3px; white-space: nowrap; }
+    .chart-tip a:hover, .chart-tip a:focus-visible { color: var(--ink); }
+
+    /* ── イントロ開始制御（DAY 01–03 と同じ） ──
+       .intro-wait の間はヒーロー内のアニメーションを 0 秒地点で停止し、.intro-go で一斉に再生。
+       .intro-done は完成形（イントロの終わり／スキップ後／万一スクリプトが止まったときの安全装置）。 */
+    .intro-wait .hero *, .intro-wait .hero *::before, .intro-wait .hero *::after { animation-play-state: paused !important; }
+    .intro-done .hero-expose { display: none; }
+    .intro-done .hero-skip { animation: none; opacity: 0; visibility: hidden; }
+    .intro-done .hero-fade, .intro-done .ht-ch { animation: none; opacity: 1; transform: none; }
+    .intro-done .ht-line { clip-path: none; }
+    .intro-done .ht-dim i, .intro-done .ht-lead { animation: none; transform: none; }
+    .intro-done .ht-dim b, .intro-done .ht-note { animation: none; opacity: 1; }
+    .intro-done .st-note { animation: none; opacity: 1; transform: rotate(-5deg); pointer-events: auto; }
+    .intro-done .st-strike { opacity: 0; }
+    .intro-done .st-now dd .live-dot { opacity: 1; transform: none; }
+    .intro-done .thread { stroke-dashoffset: 0 !important; }
+    .intro-done .chart .site, .intro-done .chart .dist, .intro-done .chart .detail { opacity: 1; }
+    /* ふれた文字は、ぴょこっと跳ねる（安全装置より後に置いて優先） */
+    .ht-ch.hop { animation: hop 0.6s var(--ease-expo); }
+    @keyframes hop { 30% { transform: translateY(-0.1em) rotate(-5deg); } 65% { transform: translateY(0.015em); } }
 
     /* ════════════════════════════════════════
         SECTION HEAD
@@ -334,9 +550,131 @@
     .js .reveal.in-view { opacity: 1; transform: none; }
 
     /* ════════════════════════════════════════
-        SHEETS（図面シート／スタック）
+        NOW（実施中）
+        図面を出て、現地で動いている計画。青焼きの提案と見分けられるように、
+        朱の速報帯・フルカラーの図版・工程バーの「いまここ」で示す。
     ════════════════════════════════════════ */
-    .sheets-section { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 12vh var(--px) 6vh; }
+    .now-section { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 12vh var(--px) 0; }
+    .sec-head--now { border-bottom-color: rgba(255,91,61,0.35); }
+    .sec-head--now .sec-kicker { display: flex; align-items: center; gap: 0.75rem; color: var(--shu); }
+    .live-dot { position: relative; display: inline-block; flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--shu); }
+    .live-dot::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: inherit; animation: livePing 1.8s ease-out infinite; }
+    @keyframes livePing { from { transform: scale(1); opacity: 0.7; } to { transform: scale(3.2); opacity: 0; } }
+
+    .now-card {
+      position: relative; scroll-margin-top: 88px;
+      border: 1px solid rgba(255,91,61,0.5);
+      background:
+        radial-gradient(ellipse 55% 60% at 100% 0%, rgba(255,91,61,0.09), transparent 70%),
+        linear-gradient(180deg, #0f2447 0%, #0a1a35 100%);
+      box-shadow: 0 30px 70px rgba(2,8,20,0.5);
+      transition: border-color 0.5s ease;
+    }
+    .now-card:hover, .now-card:focus-within { border-color: var(--shu); }
+
+    /* 速報帯：流れつづける */
+    .now-ticker {
+      display: flex; align-items: center; height: 34px; overflow: hidden;
+      background: var(--shu); color: var(--bp-0);
+      font: 500 0.64rem/1 var(--mono-jp); letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap;
+    }
+    .nt-track { display: flex; flex-shrink: 0; animation: ticker 36s linear infinite; }
+    .nt-track span { display: inline-flex; align-items: center; gap: 0.8rem; padding-right: 3.2rem; }
+    .nt-track span::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    @keyframes ticker { to { transform: translateX(-50%); } }
+
+    .now-body { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); }
+    /* 図版：もう青くない（フルカラーで、ゆっくり切り替わる） */
+    .now-plate { position: relative; margin: 24px 0 24px 24px; min-height: 440px; }
+    .now-media { position: absolute; inset: 0; overflow: hidden; background: #10131c; }
+    .now-media img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+      opacity: 0; transform: scale(1.08); transition: opacity 1.4s ease, transform 7s linear;
+    }
+    .now-media img.is-active { opacity: 1; transform: scale(1); }
+    .now-plate .crop { border-color: rgba(255,91,61,0.65); }
+    .now-badge {
+      position: absolute; top: 0.8rem; left: 0.8rem; z-index: 2;
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      padding: 0.35rem 0.75rem 0.35rem 0.65rem; border: 0.5px solid rgba(255,91,61,0.7); border-radius: 999px;
+      background: rgba(7,20,42,0.6); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+      font: 500 0.6rem/1 var(--mono-jp); letter-spacing: 0.14em; color: var(--ink);
+    }
+    .now-cap {
+      position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+      padding: 1.8rem 0.9rem 0.7rem; background: linear-gradient(transparent, rgba(4,12,26,0.8));
+      font: 400 0.6rem/1.5 var(--mono-jp); letter-spacing: 0.12em; color: var(--ink-2);
+    }
+
+    .now-info { display: flex; flex-direction: column; gap: 0.95rem; padding: clamp(1.4rem, 2.6vw, 2.3rem) clamp(1.5rem, 3.2vw, 2.8rem); min-width: 0; }
+    .now-card .si-num { color: var(--ink); -webkit-text-stroke-color: var(--ink); }
+    .now-card .si-event { color: var(--shu); }
+    .now-card .si-hook { border-left-color: var(--shu); }
+    .now-card .sheet-open { border-color: var(--shu); background: rgba(255,91,61,0.08); }
+    .now-card:hover .sheet-open, .now-card .sheet-open:focus-visible { background: var(--shu); color: var(--bp-0); box-shadow: 0 10px 30px rgba(255,91,61,0.25); }
+    .now-card:hover .so-arrow { transform: translateX(6px); }
+    .now-card:has(.sheet-open:focus-visible) { outline: 1px solid var(--shu); outline-offset: 4px; }
+
+    /* 工程：4 つの段階と「いまここ」 */
+    .prog { border-top: 1px solid var(--line-2); padding-top: 0.85rem; }
+    .prog-head {
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0.3rem 1rem;
+      font: 400 0.6rem/1.6 var(--mono-jp); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3);
+    }
+    .prog-head b { font-weight: 400; font-size: 0.74rem; letter-spacing: 0.08em; text-transform: none; color: var(--ink); }
+    .prog-head b em { font: 300 1.9em/1 var(--en); font-style: normal; color: var(--shu); margin: 0 0.12em; vertical-align: -0.08em; }
+    .prog-steps { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; margin-top: 2.1rem; }
+    .prog-steps li { min-width: 0; }
+    .ps-bar { position: relative; display: block; height: 3px; background: rgba(233,241,251,0.14); }
+    .ps-bar > i { position: absolute; inset: 0; background: var(--shu); transform-origin: 0 50%; transform: scaleX(var(--f, 0)); }
+    .js .ps-bar > i { transform: scaleX(0); transition: transform 0.9s var(--ease-expo) calc(0.3s + var(--n) * 0.15s); }
+    .js .now-card.is-in .ps-bar > i { transform: scaleX(var(--f, 0)); }
+    .ps-here {
+      position: absolute; top: 50%; left: calc(var(--f, 0) * 100%); display: none;
+      width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; border-radius: 50%;
+      background: var(--shu); box-shadow: 0 0 0 4px rgba(255,91,61,0.22);
+    }
+    .is-now .ps-here { display: block; }
+    .ps-here::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: var(--shu); animation: livePing 1.8s ease-out infinite; }
+    .ps-here em {
+      position: absolute; bottom: calc(100% + 9px); left: 50%; transform: translateX(-50%);
+      font: 500 0.56rem/1 var(--mono); font-style: normal; letter-spacing: 0.12em; color: var(--shu); white-space: nowrap;
+    }
+    .js .ps-here { left: 0; opacity: 0; transition: left 0.9s var(--ease-expo) 0.3s, opacity 0.3s ease 0.3s; }
+    .js .now-card.is-in .ps-here { left: calc(var(--f, 0) * 100%); opacity: 1; }
+    .ps-date { display: block; margin-top: 0.6rem; font: 400 0.58rem/1.3 var(--mono); letter-spacing: 0.08em; color: var(--ink-3); }
+    .ps-name { display: block; margin-top: 0.15rem; font-size: 0.76rem; line-height: 1.45; letter-spacing: 0.06em; color: var(--ink-3); }
+    .prog-steps .is-done .ps-date, .prog-steps .is-done .ps-name { color: var(--ink-2); }
+    .prog-steps .is-now .ps-date { color: var(--shu); }
+    .prog-steps .is-now .ps-name { color: var(--ink); }
+
+    /* 切り取り線：実施中と、まだ図面の中にある提案とを切り分ける */
+    .cutline { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 14vh var(--px) 0; }
+    .cut { position: relative; display: flex; align-items: center; gap: 1.2rem; }
+    .cut > i { flex: 1; border-top: 1px dashed var(--line-3); }
+    .cut-label { flex-shrink: 0; font: 400 0.68rem/1.4 var(--mono-jp); letter-spacing: 0.18em; color: var(--ink-2); }
+    .cut-label em { font-style: normal; font-family: var(--mono); font-size: 0.9em; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cyan); margin-left: 0.9em; }
+    .cut-scissors {
+      position: absolute; top: 50%; left: 100%; width: 26px; height: 16px; margin: -8px 0 0 -13px;
+      fill: none; stroke: var(--ink-2); stroke-width: 1.3; stroke-linecap: round; overflow: visible;
+    }
+    .cut-scissors g { transform-box: view-box; transform-origin: 14.5px 8px; }
+    .js .cut > i { transform: scaleX(0); transform-origin: 0 50%; transition: transform 0.8s linear; }
+    .js .cut > i:last-of-type { transition-delay: 0.8s; }
+    .js .cut-label { opacity: 0; transition: opacity 0.4s ease 0.7s; }
+    .js .cut-scissors { left: 0; }
+    .cutline.in-view .cut > i { transform: none; }
+    .cutline.in-view .cut-label { opacity: 1; }
+    .cutline.in-view .cut-scissors { left: 100%; transition: left 1.6s linear; }
+    .cutline.in-view .cut-scissors g:first-child { animation: snipA 0.2s ease-in-out 8 alternate; }
+    .cutline.in-view .cut-scissors g:last-child { animation: snipB 0.2s ease-in-out 8 alternate; }
+    @keyframes snipA { from { transform: rotate(-14deg); } to { transform: rotate(0deg); } }
+    @keyframes snipB { from { transform: rotate(14deg); } to { transform: rotate(0deg); } }
+
+    /* ════════════════════════════════════════
+        SHEETS（提案：図面シート／スタック）
+    ════════════════════════════════════════ */
+    .sheets-section { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 8vh var(--px) 6vh; }
     .sheets { position: relative; }
     .sheet-anchor { display: block; height: 0; scroll-margin-top: calc(var(--stack-top) + var(--i) * var(--strip-h)); }
     .sheet {
@@ -371,35 +709,34 @@
     .ss-title { font-family: var(--jp); font-size: 0.8rem; letter-spacing: 0.12em; text-transform: none; color: var(--ink); flex-shrink: 1; overflow: hidden; text-overflow: ellipsis; }
     .ss-sep { width: 1px; height: 14px; background: var(--line-2); }
     .ss-count { margin-left: auto; }
+    .ss-status {
+      padding: 0.25rem 0.6rem; border: 0.5px solid var(--cyan); border-radius: 999px;
+      font-family: var(--mono-jp); font-size: 0.6rem; letter-spacing: 0.12em; line-height: 1; color: var(--cyan);
+    }
 
     .sheet-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.06fr); min-height: min(60vh, 560px); }
 
     /* 図版（青焼き → 現像） */
     .plate { position: relative; margin: 24px 0 24px 24px; min-height: 280px; }
     .plate-media { position: absolute; inset: 0; overflow: hidden; isolation: isolate; background: #0d2c5e; }
-    .plate-media img, .fw-thumb img {
+    .plate-media img {
       position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
       filter: grayscale(1) contrast(1.18) brightness(1.04);
       transform: scale(1.05);
       transition: filter 1.2s var(--ease-expo), transform 1.8s var(--ease-expo);
     }
-    .plate-media::before, .plate-media::after, .fw-thumb::before, .fw-thumb::after {
+    .plate-media::before, .plate-media::after {
       content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
       transition: opacity 1.2s var(--ease-expo);
     }
-    .plate-media::before, .fw-thumb::before { background: #b7d6f4; mix-blend-mode: multiply; }
-    .plate-media::after, .fw-thumb::after { background: #0d2c5e; mix-blend-mode: lighten; }
+    .plate-media::before { background: #b7d6f4; mix-blend-mode: multiply; }
+    .plate-media::after { background: #0d2c5e; mix-blend-mode: lighten; }
     .sheet.is-developed .plate-media img { filter: none; transform: scale(1); }
     .sheet.is-developed .plate-media::before, .sheet.is-developed .plate-media::after { opacity: 0; }
-    .fw.is-developed .fw-thumb img { filter: none; transform: scale(1); }
-    .fw.is-developed .fw-thumb::before, .fw.is-developed .fw-thumb::after { opacity: 0; }
     @media (hover: hover) and (pointer: fine) {
       .sheet:hover .plate-media img, .sheet:focus-within .plate-media img { filter: none; transform: scale(1); }
       .sheet:hover .plate-media::before, .sheet:hover .plate-media::after,
       .sheet:focus-within .plate-media::before, .sheet:focus-within .plate-media::after { opacity: 0; }
-      .fw:hover .fw-thumb img, .fw:focus-visible .fw-thumb img { filter: none; transform: scale(1); }
-      .fw:hover .fw-thumb::before, .fw:hover .fw-thumb::after,
-      .fw:focus-visible .fw-thumb::before, .fw:focus-visible .fw-thumb::after { opacity: 0; }
     }
     /* 262：合成図版の下段（夜景）だけを切り出す */
     .plate--asama .plate-media img { inset: auto 0 0 0; height: 185%; object-position: 62% 100%; transform-origin: 50% 100%; }
@@ -458,7 +795,7 @@
     }
     .stamp small { display: block; font-family: var(--mono); font-weight: 500; font-size: 0.5rem; letter-spacing: 0.14em; }
     .js .stamp { opacity: 0; transform: rotate(-22deg) scale(2); }
-    .js .sheet.is-in .stamp { animation: stampIn 0.55s cubic-bezier(0.2, 1.3, 0.4, 1) 0.35s forwards; }
+    .js .sheet.is-in .stamp, .js .now-card.is-in .stamp { animation: stampIn 0.55s cubic-bezier(0.2, 1.3, 0.4, 1) 0.35s forwards; }
     @keyframes stampIn {
       0%   { opacity: 0; transform: rotate(-22deg) scale(2); }
       55%  { opacity: 1; transform: rotate(-6deg) scale(0.92); }
@@ -491,7 +828,7 @@
     .sheet-open:focus-visible { outline: none; }
     .sheet:has(.sheet-open:focus-visible) .sheet-inner { outline: 1px solid var(--cyan); outline-offset: 4px; }
 
-    /* 263：踏査記録 */
+    /* 踏査記録（実施中の 263） */
     .fw-row { position: relative; z-index: 4; }
     .fw-label { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.6rem; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); }
     .fw-label::after { content: ''; flex: 1; height: 1px; background: var(--line-2); }
@@ -501,43 +838,85 @@
       border: 1px solid var(--line-2); background: rgba(7,20,42,0.55);
       transition: border-color 0.4s ease, transform 0.4s var(--ease-back);
     }
-    .fw:hover, .fw:focus-visible { border-color: var(--cyan); transform: translateY(-3px); }
-    .fw-thumb { position: relative; display: block; aspect-ratio: 2 / 1; overflow: hidden; isolation: isolate; background: #0d2c5e; }
+    .fw:hover, .fw:focus-visible { border-color: var(--shu); transform: translateY(-3px); }
+    .fw-thumb { position: relative; display: block; aspect-ratio: 2 / 1; overflow: hidden; background: #10131c; }
+    .fw-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ease-expo); }
+    .fw:hover .fw-thumb img, .fw:focus-visible .fw-thumb img { transform: scale(1.06); }
     .fw-meta { display: flex; flex-direction: column; gap: 0.1rem; padding: 0.45rem 0.6rem 0.55rem; }
-    .fw-day { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.16em; color: var(--cyan); }
+    .fw-day { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.16em; color: var(--shu); }
     .fw-name { font-size: 0.8rem; letter-spacing: 0.1em; line-height: 1.5; }
     .fw-name em { font-family: var(--mono); font-style: normal; font-size: 0.5rem; letter-spacing: 0.16em; color: var(--ink-3); margin-left: 0.35em; }
 
     /* ════════════════════════════════════════
-        NEXT SHEET（264 — 敷地未定）
+        NEXT（白紙の一枚）
+        番号はまだ振らない。表題欄の「敷地」と「依頼主」は空欄のまま、ありうる土地を書いては消す。
+        〈いと〉が相談ボタンへ結ばれている。
     ════════════════════════════════════════ */
-    .next { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 10vh var(--px) 14vh; }
+    .next { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 12vh var(--px) 14vh; }
     .next-sheet {
-      position: relative; display: block; text-decoration: none; color: var(--ink);
+      position: relative; display: block; overflow: hidden; text-decoration: none; color: var(--ink);
       border: 1px dashed var(--line-3);
-      background: repeating-linear-gradient(-45deg, transparent 0 14px, rgba(156,212,255,0.028) 14px 15px);
+      background: repeating-linear-gradient(-45deg, transparent 0 14px, rgba(156,212,255,0.028) 14px 15px) rgba(12,31,61,0.35);
       transition: border-color 0.5s ease, background-color 0.5s ease;
     }
-    .next-sheet:hover { border-color: var(--cyan); background-color: rgba(156,212,255,0.035); }
-    .next-strip { display: flex; gap: 1.1rem; align-items: center; height: var(--strip-h); padding: 0 1.2rem; border-bottom: 1px dashed var(--line-2); font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; overflow: hidden; }
-    .next-strip .ss-no { color: var(--cyan); }
-    .next-body { display: grid; grid-template-columns: auto 1fr; gap: clamp(1.5rem, 5vw, 5rem); align-items: center; padding: clamp(2rem, 6vw, 4.5rem) clamp(1.5rem, 5vw, 4.5rem); }
-    .next-num {
-      font-family: var(--en); font-weight: 300; font-size: clamp(4.5rem, 13vw, 11rem); line-height: 0.8; font-variant-numeric: lining-nums;
-      color: transparent; -webkit-text-stroke: 1px var(--line-3); letter-spacing: 0.02em;
+    .next-sheet:hover, .next-sheet:focus-visible { border-color: var(--cyan); background-color: rgba(156,212,255,0.045); outline: none; }
+    .next-strip {
+      display: flex; gap: 1.1rem; align-items: center; height: var(--strip-h); padding: 0 1.2rem;
+      border-bottom: 1px dashed var(--line-2);
+      font-family: var(--mono-jp); font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);
+      white-space: nowrap; overflow: hidden;
     }
-    .next-num .caret { display: inline-block; width: 0.03em; height: 0.7em; margin-left: 0.1em; background: var(--cyan); vertical-align: baseline; animation: blink 1.1s steps(1) infinite; }
+    .next-strip .ns-open { margin-left: auto; display: inline-flex; align-items: center; gap: 0.55rem; color: var(--cyan); }
+    .next-strip .ns-open::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: blink 1.4s steps(1) infinite; }
     @keyframes blink { 50% { opacity: 0; } }
-    .next-kicker { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan); margin-bottom: 1rem; }
-    .next h2 { font-family: var(--jp); font-weight: 300; font-size: clamp(1.5rem, 3.2vw, 2.5rem); line-height: 1.6; letter-spacing: 0.1em; }
-    .next-text { margin-top: 1.2rem; max-width: 36em; font-size: 0.88rem; line-height: 2.1; color: var(--ink-2); }
-    .next-cta {
-      display: inline-flex; align-items: center; gap: 0.9rem; margin-top: 2rem;
-      padding: 0.95rem 1.5rem; border-radius: 999px; border: 1px solid var(--ink);
-      font-size: 0.88rem; letter-spacing: 0.14em;
-      transition: background 0.4s var(--ease-expo), color 0.4s var(--ease-expo);
+
+    .next-body {
+      display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); align-items: center;
+      padding: clamp(2.2rem, 6vw, 4.5rem) clamp(1.5rem, 5vw, 4.5rem) clamp(1.8rem, 4vw, 3rem);
     }
-    .next-sheet:hover .next-cta { background: var(--ink); color: var(--bp-0); }
+    .next-kicker { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan); margin-bottom: 1.1rem; }
+    .next h2 { font-family: var(--jp); font-weight: 300; font-size: clamp(1.8rem, 4.2vw, 3.3rem); line-height: 1.45; letter-spacing: 0.08em; }
+    .next-text { margin-top: 1.3rem; max-width: 34em; font-size: 0.88rem; line-height: 2.1; color: var(--ink-2); }
+    /* 相談の流れ（番号は振らず、矢印でつなぐ） */
+    .next-flow { list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0; margin-top: 1.5rem; font: 400 0.74rem/1.5 var(--mono-jp); letter-spacing: 0.1em; color: var(--ink); }
+    .next-flow li { display: inline-flex; align-items: center; }
+    .next-flow li + li::before { content: '→'; margin: 0 0.9rem; font-family: var(--mono); color: var(--cyan); }
+
+    /* 白紙の表題欄 */
+    .next-tb { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid var(--line-2); background: rgba(7,20,42,0.55); }
+    .next-tb div { min-width: 0; padding: 0.85rem 1.05rem 0.95rem; border-bottom: 1px solid var(--line-2); }
+    .next-tb .tb-wide { grid-column: 1 / -1; }
+    .next-tb .tb-l { border-right: 1px solid var(--line-2); }
+    .next-tb div:nth-last-child(-n+2) { border-bottom: none; }
+    .next-tb dt { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); }
+    .next-tb dd { margin-top: 0.4rem; font-family: var(--jp); font-weight: 300; font-size: clamp(1rem, 1.6vw, 1.25rem); line-height: 1.5; letter-spacing: 0.08em; white-space: nowrap; overflow: hidden; }
+    .next-tb .tb-wide dd { min-height: 1.5em; color: var(--cyan); }
+    .next-tb .tb-l dd, .next-tb .tb-r dd { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.1em; }
+    .tw-caret { display: inline-block; width: 1px; height: 1.05em; margin-left: 3px; vertical-align: -0.15em; background: var(--cyan); animation: blink 1s steps(1) infinite; }
+
+    /* 相談ボタンと、そこへ結ばれる〈いと〉 */
+    .next-cta-row { display: flex; align-items: center; padding: 0 clamp(1.5rem, 5vw, 4.5rem) clamp(2rem, 5vw, 3.6rem); }
+    .nc-thread { position: relative; flex: 1; height: 1px; margin-right: 10px; background: linear-gradient(to right, transparent, var(--line-3) 25%, var(--cyan)); }
+    .nc-thread::after { content: ''; position: absolute; right: -4px; top: -3px; width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+    .nc-thread i { position: absolute; top: -2px; left: 0; width: 5px; height: 5px; border-radius: 50%; background: #fff; box-shadow: 0 0 8px var(--cyan); opacity: 0; }
+    .next-sheet.in-view .nc-thread i { animation: threadRun 2.6s ease-in 0.6s infinite; }
+    .next-sheet:hover .nc-thread i { animation-duration: 1.1s; }
+    @keyframes threadRun { 0% { left: 0; opacity: 0; } 15%, 88% { opacity: 1; } 100% { left: 100%; opacity: 0; } }
+    .next-cta {
+      flex-shrink: 0; display: inline-flex; align-items: center; gap: 1.1rem;
+      padding: 0.6rem 0.6rem 0.6rem 2rem; border: 1px solid var(--cyan); border-radius: 999px;
+      background: rgba(156,212,255,0.08); color: var(--ink);
+      font-family: var(--jp); font-size: clamp(0.95rem, 1.5vw, 1.08rem); letter-spacing: 0.14em;
+      transition: background 0.45s var(--ease-expo), color 0.45s var(--ease-expo), box-shadow 0.45s ease, transform 0.45s var(--ease-back);
+    }
+    .nc-en { font: 400 0.6rem/1 var(--mono); letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.6; }
+    .nc-arrow {
+      display: inline-flex; align-items: center; justify-content: center; width: 2.9rem; height: 2.9rem; border-radius: 50%;
+      background: var(--cyan); color: var(--bp-0); font-family: var(--mono); font-size: 1rem;
+      transition: transform 0.45s var(--ease-back), background 0.45s ease, color 0.45s ease;
+    }
+    .next-sheet:hover .next-cta, .next-sheet:focus-visible .next-cta { background: var(--cyan); color: var(--bp-0); box-shadow: 0 14px 40px rgba(156,212,255,0.28); transform: translateY(-2px); }
+    .next-sheet:hover .nc-arrow, .next-sheet:focus-visible .nc-arrow { background: var(--bp-0); color: var(--cyan); transform: translateX(4px); }
 
     /* ════════════════════════════════════════
         FOOTER / BACK TO TOP
@@ -572,8 +951,8 @@
       .nav-links { gap: 1.3rem; }
     }
     @media (max-width: 1023px) {
-      .sheet-body { grid-template-columns: minmax(0, 1fr); min-height: 0; }
-      .plate { margin: 22px 22px 0; min-height: 0; aspect-ratio: 16 / 10; }
+      .sheet-body, .now-body { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+      .plate, .now-plate { margin: 22px 22px 0; min-height: 0; aspect-ratio: 16 / 10; }
       .sec-head { grid-template-columns: 1fr; }
       .sec-head p { justify-self: start; }
     }
@@ -582,6 +961,7 @@
       .nav-menu-btn { display: inline-flex; }
       .hero { grid-template-columns: minmax(0, 1fr); min-height: 0; padding-top: calc(88px + 4vh); gap: 3.5rem; }
       .chart { width: min(100%, 520px); }
+      .next-body { grid-template-columns: minmax(0, 1fr); }
     }
     @media (max-width: 600px) {
       .hero-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 1rem; }
@@ -593,8 +973,12 @@
       .chart-head .ch-title { display: none; }
       .sheet-strip { gap: 0.8rem; padding: 0 0.9rem; font-size: 0.6rem; }
       .ss-site, .ss-sep.s2 { display: none; }
-      .plate { margin: 16px 16px 0; aspect-ratio: 4 / 3; }
-      .sheet-info { padding: 1.4rem 1.2rem 1.6rem; }
+      .plate, .now-plate { margin: 16px 16px 0; aspect-ratio: 4 / 3; }
+      .sheet-info, .now-info { padding: 1.4rem 1.2rem 1.6rem; }
+      .prog-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.3rem 5px; }
+      .cut { gap: 0.8rem; }
+      .cut-label { font-size: 0.62rem; letter-spacing: 0.1em; }
+      .cut-label em { display: none; }
       .si-spec div { grid-template-columns: 4.4rem minmax(0, 1fr); gap: 0.7rem; }
       .sheet-open { align-self: stretch; justify-content: space-between; }
       .fw-list { grid-template-columns: minmax(0, 1fr); }
@@ -606,18 +990,29 @@
       .fw-pt text { font-size: 12.5px; }
       .fw-pt text .d { font-size: 8.5px; }
       .dist { font-size: 9px; }
-      .next-body { grid-template-columns: 1fr; }
-      .next-cta { width: 100%; justify-content: center; }
+      .cand-num { font-size: 12px; }
+      .cand-sub { font-size: 9px; }
+      .stain-label text { font-size: 8px; }
+      .stain-label text.jp { font-size: 8.5px; }
+      .now-tag { font-size: 9px; }
+      .next-strip .ns-site, .next-strip .ss-sep { display: none; }
+      .next-flow li + li::before { margin: 0 0.6rem; }
+      .next-cta-row { padding-top: 0.4rem; }
+      .nc-thread { display: none; }
+      .next-cta { width: 100%; justify-content: space-between; padding-left: 1.4rem; }
+      .nc-en { display: none; }
       footer { flex-direction: column; align-items: flex-start; padding: 2.5rem var(--px) 110px; }
       .back-to-top { right: 16px; bottom: 22px; width: 46px; height: 46px; }
       .back-to-top svg.ring { width: 46px; height: 46px; }
     }
 
+    /* トップビューは DAY 01–03 と同じく常に再生。動きを抑えるのは実施中・図面シート以降だけ */
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-      *, *::before, *::after { animation-duration: 0.001ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; transition-delay: 0s !important; }
-      .spark { display: none; }
-      .site .ring { display: none; }
+      .now-section *, .now-section *::before, .now-section *::after,
+      .cutline *, .cutline *::before, .cutline *::after,
+      .sheets-section *, .sheets-section *::before, .sheets-section *::after,
+      .next *, .next *::before, .next *::after { animation-duration: 0.001ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; transition-delay: 0s !important; }
     }
   </style>
 </head>
@@ -652,26 +1047,35 @@
 
   <!-- HERO -->
   <header class="hero" id="top">
+    <div class="hero-expose" aria-hidden="true"></div>
+    <button class="hero-skip" id="heroSkip" type="button" aria-label="イントロをスキップ">Skip</button>
     <div class="hero-text">
-      <p class="hero-eyebrow">PP — Project Proposals / 2026</p>
-      <h1 class="hero-title" aria-label="Project Proposals">
-        <span class="ht-line" aria-hidden="true"><span>Project</span></span>
-        <span class="ht-line" aria-hidden="true"><span><em>Proposals</em></span></span>
+      <p class="hero-eyebrow hero-fade d0">PP — Project Proposals / 2026</p>
+      <h1 class="hero-title" id="heroTitle" aria-label="Project Proposals">
+        <span class="ht-row r1" aria-hidden="true">
+          <span class="ht-dim"><i></i><b id="htDimVal">≒ 0 mm</b><i></i></span>
+          <span class="ht-line"><span class="ht-ch" style="--k:0">P</span><span class="ht-ch" style="--k:1">r</span><span class="ht-ch" style="--k:2">o</span><span class="ht-ch" style="--k:3">j</span><span class="ht-ch" style="--k:4">e</span><span class="ht-ch" style="--k:5">c</span><span class="ht-ch" style="--k:6">t</span></span>
+        </span>
+        <span class="ht-row r2" aria-hidden="true">
+          <span class="ht-line"><em><span class="ht-ch" style="--k:0">P</span><span class="ht-ch" style="--k:1">r</span><span class="ht-ch" style="--k:2">o</span><span class="ht-ch" style="--k:3">p</span><span class="ht-ch" style="--k:4">o</span><span class="ht-ch" style="--k:5">s</span><span class="ht-ch" style="--k:6">a</span><span class="ht-ch" style="--k:7">l</span><span class="ht-ch" style="--k:8">s</span></em></span>
+          <span class="ht-lead"></span>
+          <span class="ht-note"><span class="n-a">中空 ─ 実現後に充填</span><span class="n-b">仮充填中 ─ ふれている間だけ</span></span>
+        </span>
       </h1>
       <p class="hero-jp hero-fade d1">企画提案 ── まだ、この世界にない<b class="nw">作品の設計図。</b></p>
       <p class="hero-lead hero-fade d2">
         土地を歩き、話を聞き、採集した〈いと〉から立ち上げる、<span class="nw">サイト・スペシフィック</span>な制作計画。
-        六甲、浅間、にかほ――実現を待つ作品たちの図面を、ここに綴じています。
+        いま、にかほの計画が現地で進行中。六甲と浅間の図面は、実現のときを待っています。
       </p>
       <dl class="hero-stats hero-fade d3">
-        <div><dt>Proposals</dt><dd>03</dd></div>
-        <div><dt>Field Reports</dt><dd>03</dd></div>
-        <div><dt>〈いと〉の総延長</dt><dd><span class="approx">≈</span>706<small>km</small></dd></div>
+        <div class="st-now"><dt>Now 実施中</dt><dd><span id="cntNow">01</span><i class="live-dot" aria-hidden="true"></i></dd></div>
+        <div class="st-prop"><dt>Proposals 提案</dt><dd><span id="cntProp">02</span><span class="st-strike" aria-hidden="true"></span><a class="st-note" href="#next">＋1 敷地募集中</a></dd></div>
+        <div><dt>〈いと〉の総延長</dt><dd><span class="approx">≈</span><span id="cntKm">706</span><small>km</small><span class="st-cand" id="cntCand"></span></dd></div>
       </dl>
-      <a class="hero-cta hero-fade d4" href="#sheets">図面をひらく <span class="arrow" aria-hidden="true">↓</span></a>
+      <a class="hero-cta hero-fade d4" href="#now">図面をひらく <span class="arrow" aria-hidden="true">↓</span></a>
     </div>
 
-    <figure class="chart hero-fade d2" id="chart">
+    <figure class="chart hero-fade dc" id="chart">
       <div class="chart-head">
         <span class="ch-title"><b>Site Plan</b> — 長野から伸びる〈いと〉</span>
         <span class="chart-readout" id="readout" aria-hidden="true">36.649°N 138.195°E</span>
@@ -680,6 +1084,26 @@
       <svg class="chart-svg" id="chartSvg" viewBox="0 0 490 576" role="group" aria-labelledby="chartTitle chartDesc">
         <title id="chartTitle">サイトプラン：長野から各提案地へ伸びる〈いと〉</title>
         <desc id="chartDesc">長野を起点に、六甲山（兵庫）、浅間山・北軽井沢（群馬）、にかほ（秋田）の三地点を結んだ経緯度図。各地点を選ぶと該当する図面シートへ移動します。</desc>
+
+        <defs>
+          <!-- 染みの縁のにじみ -->
+          <filter id="stainRough" x="-15%" y="-15%" width="130%" height="130%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.07" numOctaves="2" seed="7" result="n"/>
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="4.5" xChannelSelector="R" yChannelSelector="G"/>
+          </filter>
+          <radialGradient id="stain-coffee">
+            <stop offset="0" stop-color="#d9a066" stop-opacity="0.05"/>
+            <stop offset="0.78" stop-color="#d9a066" stop-opacity="0.09"/>
+            <stop offset="0.95" stop-color="#d9a066" stop-opacity="0.26"/>
+            <stop offset="1" stop-color="#d9a066" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="stain-tea">
+            <stop offset="0" stop-color="#a9c77a" stop-opacity="0.05"/>
+            <stop offset="0.78" stop-color="#a9c77a" stop-opacity="0.09"/>
+            <stop offset="0.95" stop-color="#a9c77a" stop-opacity="0.26"/>
+            <stop offset="1" stop-color="#a9c77a" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
 
         <!-- 経緯線 -->
         <g class="grat" aria-hidden="true">
@@ -715,19 +1139,43 @@
         <path id="th-261" class="thread t1" data-site="261" pathLength="1" d="M272.8 319.6 Q167 464 61.1 488.7"/>
         <path id="th-262" class="thread t2" data-site="262" pathLength="1" d="M272.8 319.6 Q284 346 300.4 338.4"/>
         <path id="th-263" class="thread t3" data-site="263" pathLength="1" d="M272.8 319.6 Q380 230 397.5 85.5"/>
-        <text class="dist" x="160" y="455" text-anchor="middle" aria-hidden="true">≈ 338 km</text>
-        <text class="dist" x="282" y="364" text-anchor="middle" aria-hidden="true">≈ 41 km</text>
-        <text class="dist" x="368" y="222" aria-hidden="true">≈ 327 km</text>
+        <text class="dist" data-site="261" x="160" y="455" text-anchor="middle" aria-hidden="true">≈ 338 km</text>
+        <text class="dist" data-site="262" x="282" y="364" text-anchor="middle" aria-hidden="true">≈ 41 km</text>
+        <text class="dist" data-site="263" x="368" y="222" aria-hidden="true">≈ 327 km</text>
 
+        <!-- 光の粒は、〈いと〉が届いてから流れはじめる -->
         <g class="sparks" aria-hidden="true">
-          <circle class="spark" r="1.8" opacity="0"><set attributeName="opacity" to="1" begin="1.8s"/><animateMotion dur="4.2s" begin="1.8s" repeatCount="indefinite"><mpath href="#th-261"/></animateMotion></circle>
-          <circle class="spark" r="1.8" opacity="0"><set attributeName="opacity" to="1" begin="2.1s"/><animateMotion dur="2.4s" begin="2.1s" repeatCount="indefinite"><mpath href="#th-262"/></animateMotion></circle>
-          <circle class="spark" r="1.8" opacity="0"><set attributeName="opacity" to="1" begin="2.3s"/><animateMotion dur="4s" begin="2.3s" repeatCount="indefinite"><mpath href="#th-263"/></animateMotion></circle>
+          <circle class="spark" data-site="261" r="1.8" opacity="0"><set attributeName="opacity" to="1" begin="indefinite"/><animateMotion dur="4.2s" begin="indefinite" repeatCount="indefinite"><mpath href="#th-261"/></animateMotion></circle>
+          <circle class="spark" data-site="262" r="1.8" opacity="0"><set attributeName="opacity" to="1" begin="indefinite"/><animateMotion dur="2.4s" begin="indefinite" repeatCount="indefinite"><mpath href="#th-262"/></animateMotion></circle>
+          <circle class="spark" data-site="263" r="1.8" opacity="0"><set attributeName="opacity" to="1" begin="indefinite"/><animateMotion dur="4s" begin="indefinite" repeatCount="indefinite"><mpath href="#th-263"/></animateMotion></circle>
         </g>
 
-        <!-- 起点：長野 -->
+        <!-- コーヒーの染み（JS が置く） -->
+        <g id="coffeeLayer"></g>
+
+        <!-- NEXT?：地図の余白を押すと仮置きされる敷地候補 -->
+        <g class="cand" id="cand" aria-hidden="true">
+          <path class="cand-thread" id="candThread"/>
+          <g class="cand-pin" id="candPin">
+            <circle class="cand-ring" r="7"/>
+            <circle class="cand-core" r="2.8"/>
+            <text class="cand-num halo" id="candNum" x="11" y="-1.5">NEXT?</text>
+            <text class="cand-sub halo" id="candSub" x="11" y="9.5"></text>
+          </g>
+        </g>
+
+        <!-- 起点：長野の糸巻き（上から見たところ） -->
         <g class="origin" aria-hidden="true">
-          <rect x="268.8" y="315.6" width="8" height="8" transform="rotate(45 272.8 319.6)"/>
+          <g class="spool">
+            <circle class="flange" cx="272.8" cy="319.6" r="8.2"/>
+            <circle class="wound" id="spoolWound" cx="272.8" cy="319.6" r="6.2"/>
+            <g id="spoolRot">
+              <line class="tick" x1="272.8" y1="317" x2="272.8" y2="315.6"/>
+              <line class="notch" x1="272.8" y1="312.4" x2="272.8" y2="311.4"/>
+              <line class="notch" x1="272.8" y1="326.8" x2="272.8" y2="327.8"/>
+            </g>
+            <circle class="hole" cx="272.8" cy="319.6" r="2"/>
+          </g>
           <text x="259" y="316" text-anchor="end">長野</text>
           <text class="sub" x="259" y="327" text-anchor="end">ORIGIN</text>
         </g>
@@ -751,18 +1199,19 @@
         </a>
 
         <!-- 263 にかほ -->
-        <circle class="detail-ring detail" cx="397.5" cy="85.5" r="14" aria-hidden="true"/>
-        <line class="leader detail" x1="383.5" y1="85.5" x2="330" y2="85.5" aria-hidden="true"/>
-        <a class="site" href="#p263" data-site="263" aria-label="263 にかほの神話と伝承（秋田県にかほ市）の図面へ">
+        <circle class="detail-ring detail" data-site="263" cx="397.5" cy="85.5" r="14" aria-hidden="true"/>
+        <line class="leader detail" data-site="263" x1="383.5" y1="85.5" x2="330" y2="85.5" aria-hidden="true"/>
+        <a class="site is-now" href="#p263" data-site="263" aria-label="263 にかほの神話と伝承（秋田県にかほ市・実施中）へ">
           <circle class="hit" cx="397.5" cy="85.5" r="14"/>
           <circle class="ring" cx="397.5" cy="85.5" r="3"/>
           <circle class="core" cx="397.5" cy="85.5" r="3.2"/>
+          <text class="now-tag" x="415" y="70">● 実施中</text>
           <text x="415" y="83"><tspan class="num">263</tspan><tspan class="name" dx="5">にかほ</tspan></text>
           <text class="sub" x="415" y="94">NIKAHO · AKITA</text>
         </a>
 
         <!-- DETAIL A：にかほ踏査 3日間 -->
-        <g class="detail" transform="translate(150 28)">
+        <g class="detail" data-site="263" transform="translate(150 28)">
           <rect class="detail-box" width="180" height="170"/>
           <text class="detail-title" x="8" y="14">DETAIL A — FIELDWORK</text>
           <path class="route" d="M93.9 91 L96.3 68.5 L111.6 51.7"/>
@@ -792,20 +1241,100 @@
         </g>
       </svg>
 
-      <figcaption class="title-block">
-        <div><span>Project</span><b>PP</b></div>
-        <div><span>Drawn by</span><b>Tsuda Shoichi</b></div>
-        <div><span>Scale</span><b>1 : 1</b></div>
-        <div><span>Sheets</span><b>261 — 263</b></div>
+      <figcaption>
+        <div class="title-block">
+          <div><span>Project</span><b>PP</b></div>
+          <div><span>Drawn by</span><b>Tsuda Shoichi</b></div>
+          <div><span>Scale</span><b>1 : 1</b></div>
+          <div><span>Sheets</span><b>261 — 263</b></div>
+        </div>
+        <div class="chart-foot">
+          <p class="chart-rev" id="chartRev"><b>REV.0</b>初版</p>
+          <p class="chart-tip" id="chartTip" aria-live="polite"><b>TIP</b>地図の余白を押すと、次の敷地を仮置きできます。</p>
+        </div>
       </figcaption>
     </figure>
   </header>
 
-  <!-- SHEETS -->
-  <section class="sheets-section" id="sheets">
+  <!-- NOW：実施中（図面を出て、現地で動いている計画） -->
+  <section class="now-section" id="now" aria-labelledby="nowTitle">
+    <div class="sec-head sec-head--now reveal">
+      <p class="sec-kicker"><i class="live-dot" aria-hidden="true"></i>Now in Progress — 実施中</p>
+      <h2 id="nowTitle">いま、動いている計画<span>In Progress</span></h2>
+      <p>図面を出て、現地で制作が進んでいる計画です。図版は、もう青くありません。</p>
+    </div>
+
+    <article class="now-card" id="p263" data-site="263">
+      <div class="now-ticker" aria-hidden="true">
+        <div class="nt-track" id="ntTrack"><span>Now in Progress — 実施中</span><span>にかほの神話と伝承 ─ 発酵と磁性</span><span class="nt-count">制作発表展示会（にかほっと）まで あと 81 日</span><span>Now in Progress — 実施中</span><span>にかほの神話と伝承 ─ 発酵と磁性</span><span class="nt-count">制作発表展示会（にかほっと）まで あと 81 日</span></div>
+      </div>
+      <div class="now-body">
+        <div class="now-plate">
+          <div class="now-media" id="nowMedia">
+            <img class="is-active" src="images/img-263/IMG_4733.JPG" data-cap="FIG. 263 — 発酵の力：菌糸と生命の微細なうごめき" alt="灰緑色の地衣類のあいだに、赤い子器が点々と灯る接写" loading="lazy" decoding="async">
+            <img src="images/img-263/%E5%AF%BE%E8%A9%B1%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8.jpg" data-cap="FIG. 263 — ヒアリング：語りを採集する" alt="語り手に話を聞くヒアリングの様子" loading="lazy" decoding="async">
+            <img src="images/img-263/%E3%83%9F%E3%83%9F%E3%82%AF%E3%83%AA%E3%81%AE%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%20(3).jpg" data-cap="FIG. 263 — ミミクリ：河原の石に紛れる擬態彫刻" alt="河原の石に紛れる、石に擬態した彫刻" loading="lazy" decoding="async">
+          </div>
+          <span class="now-badge"><i class="live-dot" aria-hidden="true"></i>現地で進行中</span>
+          <span class="now-cap" id="nowCap">FIG. 263 — 発酵の力：菌糸と生命の微細なうごめき</span>
+          <span class="crop tl"></span><span class="crop tr"></span><span class="crop bl"></span><span class="crop br"></span>
+        </div>
+        <div class="now-info">
+          <div class="si-top">
+            <span class="si-num" aria-hidden="true">263</span>
+            <span class="stamp">実施中<small>IN PROGRESS</small></span>
+          </div>
+          <p class="si-event">A Cartography of Memory — 秋田県にかほ市</p>
+          <h3 class="si-title">にかほの神話と伝承<br><span class="si-sub">― 発酵と磁性 ―</span></h3>
+          <p class="si-hook">土地は、語られることで発酵し、人を引き寄せる磁性を帯びる。</p>
+          <dl class="si-spec">
+            <div><dt>Output</dt><dd>書籍／屋外設置彫刻「ミミクリ」／映像インスタレーション</dd></div>
+          </dl>
+          <div class="prog" id="nowProg">
+            <p class="prog-head"><span>Progress — 工程</span><b id="progNext">NEXT　中間発表（わくばにかほ）まで あと<em>31</em>日</b></p>
+            <ol class="prog-steps">
+              <li class="is-now" data-from="2026-09-01" data-to="2026-10-25" style="--f:0.426;--n:0"><span class="ps-bar"><i></i><span class="ps-here"><em>TODAY 09.24</em></span></span><span class="ps-date">09 — 10</span><span class="ps-name">ヒアリング</span></li>
+              <li data-from="2026-10-25" data-to="2026-11-01" style="--f:0;--n:1"><span class="ps-bar"><i></i><span class="ps-here"><em>TODAY 09.24</em></span></span><span class="ps-date">10.25</span><span class="ps-name">中間発表</span></li>
+              <li data-from="2026-11-01" data-to="2026-12-14" style="--f:0;--n:2"><span class="ps-bar"><i></i><span class="ps-here"><em>TODAY 09.24</em></span></span><span class="ps-date">11</span><span class="ps-name">本格制作</span></li>
+              <li data-from="2026-12-14" data-to="2026-12-21" style="--f:0;--n:3"><span class="ps-bar"><i></i><span class="ps-here"><em>TODAY 09.24</em></span></span><span class="ps-date">12.14 — 20</span><span class="ps-name">制作発表展示会</span></li>
+            </ol>
+          </div>
+          <div class="fw-row">
+            <p class="fw-label">Fieldwork Reports — 踏査記録</p>
+            <div class="fw-list">
+              <a class="fw" href="263-FW01.html">
+                <span class="fw-thumb"><img src="images/img-263/KISAKATA(0).JPG" alt="" loading="lazy" decoding="async"></span>
+                <span class="fw-meta"><span class="fw-day">DAY 01</span><span class="fw-name">象潟<em>Kisakata</em></span></span>
+              </a>
+              <a class="fw" href="263-FW02.html">
+                <span class="fw-thumb"><img src="images/img-263/KONOURA(0).JPG" alt="" loading="lazy" decoding="async"></span>
+                <span class="fw-meta"><span class="fw-day">DAY 02</span><span class="fw-name">金浦<em>Konoura</em></span></span>
+              </a>
+              <a class="fw" href="263-FW03.html">
+                <span class="fw-thumb"><img src="images/img-263/NIKAHO(0).JPG" alt="" loading="lazy" decoding="async"></span>
+                <span class="fw-meta"><span class="fw-day">DAY 03</span><span class="fw-name">仁賀保<em>Nikaho</em></span></span>
+              </a>
+            </div>
+          </div>
+          <a class="sheet-open" href="263.html">提案書をひらく <span class="so-en">Open</span><span class="so-arrow" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- 切り取り線：ここから先は、まだ図面の中 -->
+  <div class="cutline reveal" role="separator" aria-label="ここから先は、まだ実現していない提案です">
+    <div class="cut" aria-hidden="true">
+      <i></i><span class="cut-label">ここから先は、まだ図面の中<em>Unbuilt</em></span><i></i>
+      <svg class="cut-scissors" viewBox="0 0 26 16"><g><circle cx="4" cy="4" r="3"/><path d="M6.6 5.3 L25 11.6"/></g><g><circle cx="4" cy="12" r="3"/><path d="M6.6 10.7 L25 4.4"/></g></svg>
+    </div>
+  </div>
+
+  <!-- PROPOSALS：提案（実現を待つ図面） -->
+  <section class="sheets-section" id="sheets" aria-labelledby="sheetsTitle">
     <div class="sec-head reveal">
-      <p class="sec-kicker">Sheets 261 — 263</p>
-      <h2>図面一覧<span>The Proposals</span></h2>
+      <p class="sec-kicker">Proposals — Sheets 261, 262</p>
+      <h2 id="sheetsTitle">実現を待つ図面<span>Proposals, still on paper</span></h2>
       <p>青く焼かれた図版は、まだ実現していない風景です。見つめていると現像され、シートを開くと提案書の本編へ進みます。</p>
     </div>
 
@@ -816,10 +1345,10 @@
       <article class="sheet" data-site="261" style="--i:0">
         <div class="sheet-inner">
           <div class="sheet-strip">
-            <span class="ss-no">Sheet 261</span><span class="ss-sep"></span>
+            <span class="ss-no">Sheet 261</span><span class="ss-status">提案中</span><span class="ss-sep"></span>
             <span class="ss-title">六甲の帳 ── 記憶の濾過と再領土化</span><span class="ss-sep s2"></span>
             <span class="ss-site">Rokko · Hyogo</span>
-            <span class="ss-count">01 / 03</span>
+            <span class="ss-count">01 / 02</span>
           </div>
           <div class="sheet-body">
             <div class="plate">
@@ -848,16 +1377,15 @@
           </div>
         </div>
       </article>
-
       <!-- ─── 262 ─── -->
       <span class="sheet-anchor" id="p262" style="--i:1"></span>
       <article class="sheet" data-site="262" style="--i:1">
         <div class="sheet-inner">
           <div class="sheet-strip">
-            <span class="ss-no">Sheet 262</span><span class="ss-sep"></span>
+            <span class="ss-no">Sheet 262</span><span class="ss-status">提案中</span><span class="ss-sep"></span>
             <span class="ss-title">ASAMA SPECTRUM</span><span class="ss-sep s2"></span>
             <span class="ss-site">Kita-Karuizawa · Gunma</span>
-            <span class="ss-count">02 / 03</span>
+            <span class="ss-count">02 / 02</span>
           </div>
           <div class="sheet-body">
             <div class="plate plate--asama">
@@ -886,80 +1414,33 @@
           </div>
         </div>
       </article>
-
-      <!-- ─── 263 ─── -->
-      <span class="sheet-anchor" id="p263" style="--i:2"></span>
-      <article class="sheet" data-site="263" style="--i:2">
-        <div class="sheet-inner">
-          <div class="sheet-strip">
-            <span class="ss-no">Sheet 263</span><span class="ss-sep"></span>
-            <span class="ss-title">にかほの神話と伝承 ── 発酵と磁性</span><span class="ss-sep s2"></span>
-            <span class="ss-site">Nikaho · Akita</span>
-            <span class="ss-count">03 / 03</span>
-          </div>
-          <div class="sheet-body">
-            <div class="plate">
-              <div class="plate-media">
-                <img src="images/img-263/IMG_4733.JPG" alt="灰緑色の地衣類のあいだに、赤い子器が点々と灯る接写" loading="lazy" decoding="async">
-              </div>
-              <span class="plate-hint" aria-hidden="true"><i></i><span class="h-wait"><span class="h-hover">Hover to develop</span><span class="h-touch">Developing…</span></span><span class="h-done">Developed</span></span>
-              <span class="plate-cap">FIG. 263 — 発酵の力：菌糸と生命の微細なうごめき</span>
-              <span class="crop tl"></span><span class="crop tr"></span><span class="crop bl"></span><span class="crop br"></span>
-            </div>
-            <div class="sheet-info">
-              <div class="si-top">
-                <span class="si-num" aria-hidden="true">263</span>
-                <span class="stamp">地域<br>リサーチ<small>FIELDWORK</small></span>
-              </div>
-              <p class="si-event">A Cartography of Memory — 秋田県にかほ市</p>
-              <h3 class="si-title">にかほの神話と伝承<br><span class="si-sub">― 発酵と磁性 ―</span></h3>
-              <p class="si-hook">土地は、語られることで発酵し、人を引き寄せる磁性を帯びる。</p>
-              <dl class="si-spec">
-                <div><dt>Output</dt><dd>書籍／屋外設置彫刻「ミミクリ」／映像インスタレーション</dd></div>
-                <div><dt>Schedule</dt><dd>2026.09 ヒアリング → 12.14– 制作発表展示会（にかほっと）</dd></div>
-              </dl>
-              <div class="fw-row">
-                <p class="fw-label">Fieldwork Reports — 踏査記録</p>
-                <div class="fw-list">
-                  <a class="fw" href="263-FW01.html">
-                    <span class="fw-thumb"><img src="images/img-263/KISAKATA(0).JPG" alt="" loading="lazy" decoding="async"></span>
-                    <span class="fw-meta"><span class="fw-day">DAY 01</span><span class="fw-name">象潟<em>Kisakata</em></span></span>
-                  </a>
-                  <a class="fw" href="263-FW02.html">
-                    <span class="fw-thumb"><img src="images/img-263/KONOURA(0).JPG" alt="" loading="lazy" decoding="async"></span>
-                    <span class="fw-meta"><span class="fw-day">DAY 02</span><span class="fw-name">金浦<em>Konoura</em></span></span>
-                  </a>
-                  <a class="fw" href="263-FW03.html">
-                    <span class="fw-thumb"><img src="images/img-263/NIKAHO(0).JPG" alt="" loading="lazy" decoding="async"></span>
-                    <span class="fw-meta"><span class="fw-day">DAY 03</span><span class="fw-name">仁賀保<em>Nikaho</em></span></span>
-                  </a>
-                </div>
-              </div>
-              <a class="sheet-open" href="263.html">提案書をひらく <span class="so-en">Open</span><span class="so-arrow" aria-hidden="true">→</span></a>
-            </div>
-          </div>
-        </div>
-      </article>
-
     </div>
   </section>
 
-  <!-- NEXT SHEET -->
-  <section class="next" aria-labelledby="nextTitle">
-    <a class="next-sheet reveal" href="../contact.html">
+  <!-- NEXT：白紙の一枚（番号はまだ振らない） -->
+  <section class="next" id="next" aria-labelledby="nextTitle">
+    <a class="next-sheet reveal" href="../contact.html" aria-labelledby="nextTitle ncLabel">
       <div class="next-strip">
-        <span class="ss-no">Sheet 264</span><span class="ss-sep"></span>
-        <span>Site : TBD</span><span class="ss-sep"></span>
-        <span>敷地未定</span>
+        <span>Blank Sheet — 白紙の一枚</span><span class="ss-sep"></span><span class="ns-site">Site : 未定</span>
+        <span class="ns-open">ご相談受付中</span>
       </div>
       <div class="next-body">
-        <span class="next-num" aria-hidden="true">264<span class="caret"></span></span>
         <div>
           <p class="next-kicker">Next Proposal — 次の一枚</p>
           <h2 id="nextTitle">次の設計図は、<br>あなたの土地から。</h2>
-          <p class="next-text">地域、施設、芸術祭のご担当者さまへ。土地を歩き、語りを採集し、その場所でしか成立しない作品を立ち上げる企画のご相談を承っています。</p>
-          <span class="next-cta">企画について相談する <span aria-hidden="true">→</span></span>
+          <p class="next-text">自治体、企業、施設、芸術祭のご担当者さまへ。都市でも山あいでも、土地を歩き、語りを採集し、その場所でしか成立しない作品を立ち上げる企画のご相談を承っています。</p>
+          <ol class="next-flow"><li>ご相談</li><li>現地を歩く</li><li>企画書（図面）をお届け</li></ol>
         </div>
+        <dl class="next-tb" aria-hidden="true">
+          <div class="tb-wide"><dt>Site — 敷地</dt><dd><span id="twSite">都市でも、山あいでも。</span><i class="tw-caret"></i></dd></div>
+          <div class="tb-wide"><dt>Client — ご依頼</dt><dd><span id="twClient">自治体・企業・施設・芸術祭</span></dd></div>
+          <div class="tb-l"><dt>Drawn by</dt><dd>Tsuda Shoichi</dd></div>
+          <div class="tb-r"><dt>Scale</dt><dd>1 : 1</dd></div>
+        </dl>
+      </div>
+      <div class="next-cta-row">
+        <span class="nc-thread" aria-hidden="true"><i></i></span>
+        <span class="next-cta"><span class="nc-jp" id="ncLabel">企画について相談する</span><span class="nc-en">Contact</span><span class="nc-arrow" aria-hidden="true">→</span></span>
       </div>
     </a>
   </section>
@@ -1000,13 +1481,311 @@
     overlay.addEventListener('click', function (e) { if (e.target === overlay || e.target.closest('a')) setMenu(false); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && overlay.classList.contains('open')) setMenu(false); });
 
-    /* ─── SITE PLAN ─── */
+    /* ─── HERO：製図中 ───
+       ・露光ランプが通ると図面が焼き付き、長野の糸巻きから〈いと〉が繰り出される
+         （総延長の数字は線の伸びと同期。糸巻きは繰り出したぶん回り、少し痩せる）
+       ・実施中は 01（朱の点が灯る）。提案数は勢いあまって 03 まで数え、朱で 02 に訂正（＋1 は敷地募集中）
+       ・タイトルは自分の幅を実測する。中空の Proposals は、ふれている間だけ仮充填
+       ・コーヒーの染みは消しゴムで消せる（改訂履歴に残る）
+       ・イントロ後、地図の余白を押すと 次の敷地（NEXT?）を仮置き
+       ・ヒーローのクリック／タップ、Esc キー、Skip ボタンでイントロを飛ばせる */
+    function onIntroStart(fn) {
+      if (document.documentElement.classList.contains('intro-go')) fn();
+      else document.addEventListener('introstart', fn, { once: true });
+    }
+    function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+    function easeOut(p) { return 1 - Math.pow(1 - p, 3); }
+    function pad2(n) { return (n < 10 ? '0' : '') + n; }
+    function svgEl(tag, attrs, parent) {
+      var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      for (var k in attrs) el.setAttribute(k, attrs[k]);
+      if (parent) parent.appendChild(el);
+      return el;
+    }
+
+    var root = document.documentElement;
+    var hero = document.getElementById('top');
     var chart = document.getElementById('chart');
     var svg = document.getElementById('chartSvg');
-    setTimeout(function () { chart.classList.add('is-drawn'); }, reduceMotion ? 0 : 250);
-    if (reduceMotion) {
-      Array.prototype.forEach.call(svg.querySelectorAll('animateMotion, set'), function (el) { el.parentNode.removeChild(el); });
+    var title = document.getElementById('heroTitle');
+
+    // 図面座標 ⇄ 経緯度（正距円筒図法）と、長野からの距離
+    var LON0 = 134.4, LAT1 = 40.2, K = 90, KX = Math.cos(37 * Math.PI / 180) * K;
+    var OX = 272.8, OY = 319.6, O_LAT = 36.649, O_LON = 138.195;
+    var pt = svg.createSVGPoint ? svg.createSVGPoint() : null;
+    function toChart(e) {
+      var m = pt && svg.getScreenCTM();
+      if (!m) return null;
+      pt.x = e.clientX; pt.y = e.clientY;
+      var p = pt.matrixTransform(m.inverse());
+      return (p.x < 0 || p.x > 490 || p.y < 0 || p.y > 576) ? null : p;
     }
+    function toLatLon(x, y) { return { lat: LAT1 - y / K, lon: LON0 + x / KX }; }
+    function fmtLatLon(ll) { return ll.lat.toFixed(3) + '°N ' + ll.lon.toFixed(3) + '°E'; }
+    function kmFromOrigin(ll) {
+      var rad = Math.PI / 180, dLat = (ll.lat - O_LAT) * rad, dLon = (ll.lon - O_LON) * rad;
+      var a = Math.pow(Math.sin(dLat / 2), 2) + Math.cos(O_LAT * rad) * Math.cos(ll.lat * rad) * Math.pow(Math.sin(dLon / 2), 2);
+      return 2 * 6371 * Math.asin(Math.sqrt(a));
+    }
+
+    // 読み取り窓：照準中は経緯度、イントロ中は作業状況、ときどき独り言
+    var readout = document.getElementById('readout');
+    var HOME = readout.textContent;
+    var phase = '', aside = '', asideTimer = null, probing = false;
+    function showReadout() { if (!probing) readout.textContent = aside || phase || HOME; }
+    function mutter(text) {
+      aside = text; showReadout();
+      clearTimeout(asideTimer);
+      asideTimer = setTimeout(function () { aside = ''; showReadout(); }, 1800);
+    }
+
+    // 糸巻きと〈いと〉の総延長（仮置きの NEXT? のぶんは別に数える）
+    var spoolRot = document.getElementById('spoolRot');
+    var spoolWound = document.getElementById('spoolWound');
+    var cntKm = document.getElementById('cntKm');
+    var cntCand = document.getElementById('cntCand');
+    var baseKm = 0, candKm = 0;
+    function renderThreadKm() {
+      var km = baseKm + candKm;
+      spoolRot.setAttribute('transform', 'rotate(' + (km * 1.6).toFixed(1) + ' ' + OX + ' ' + OY + ')');
+      spoolWound.setAttribute('r', Math.max(2.6, 6.2 - km * 0.0026).toFixed(2));
+      cntKm.textContent = Math.round(baseKm);
+      if (candKm >= 1) { cntCand.textContent = '+' + Math.round(candKm) + ' km（仮）'; cntCand.classList.add('is-on'); }
+      else cntCand.classList.remove('is-on');
+    }
+
+    // 〈いと〉：届いた地点から順に、印・距離・光の粒が現れる
+    var THREADS = [
+      { id: '261', km: 338, s: 0.55, d: 1.25 },
+      { id: '262', km: 41,  s: 0.80, d: 0.45 },
+      { id: '263', km: 327, s: 0.90, d: 1.15 }
+    ];
+    THREADS.forEach(function (th) { th.el = document.getElementById('th-' + th.id); });
+    function arrive(id) {
+      Array.prototype.forEach.call(svg.querySelectorAll('[data-site="' + id + '"]'), function (el) { el.classList.add('is-on'); });
+      Array.prototype.forEach.call(svg.querySelectorAll('.spark[data-site="' + id + '"] > *'), function (a) {
+        if (a.beginElement) { try { a.beginElement(); } catch (err) {} }
+      });
+    }
+
+    // 実施中と提案の数（提案は 03 まで行きすぎて、朱で 02 に戻る）
+    var cntNow = document.getElementById('cntNow');
+    var cntProp = document.getElementById('cntProp');
+    var stNow = document.querySelector('.st-now');
+    var stProp = document.querySelector('.st-prop');
+    var NOW = [[0, '00'], [0.9, '01']];
+    var PROP = [[0, '00'], [0.85, '01'], [1.0, '02'], [1.3, '03'], [2.1, '02']];
+    function stepAt(seq, t) { var v = seq[0][1]; for (var i = 1; i < seq.length; i++) if (t >= seq[i][0]) v = seq[i][1]; return v; }
+
+    // 寸法線：タイトル「Project」の幅を実測（CSS の 96dpi 換算）
+    var dimVal = document.getElementById('htDimVal');
+    var row1 = title.querySelector('.r1');
+    var dimMm = 0;
+    function measure() { dimMm = row1.getBoundingClientRect().width * 25.4 / 96; }
+    function renderDim(t) { dimVal.textContent = '≒ ' + Math.round(dimMm * easeOut(clamp01((t - 0.95) / 0.7))) + ' mm'; }
+
+    // タイムライン（秒）。数字と線は経過時間から毎フレーム算出するので、スキップしても整合する
+    var T_END = 3.0;
+    var EVENTS = [
+      [0,    function () { phase = 'EXPOSING…'; showReadout(); }],
+      [0.85, function () { phase = 'UNSPOOLING…'; showReadout(); }],
+      [2.1,  function () { phase = ''; showReadout(); }],
+      [2.35, function () { coffee.spawn(); }]
+    ];
+    var t0 = 0, off = 0, evi = 0, running = false, ended = false;
+    function now() { return (performance.now() - t0) / 1000 + off; }
+    function frame() {
+      var t = now(), km = 0;
+      THREADS.forEach(function (th) {
+        var p = clamp01((t - th.s) / th.d), e = easeOut(p);
+        th.el.style.strokeDashoffset = (1 - e).toFixed(4);
+        km += th.km * e;
+        if (p >= 1 && !th.done) { th.done = true; arrive(th.id); }
+      });
+      baseKm = km;
+      renderThreadKm();
+      cntNow.textContent = stepAt(NOW, t);
+      cntProp.textContent = stepAt(PROP, t);
+      if (t >= 0.9) stNow.classList.add('is-live');
+      stProp.classList.toggle('is-struck', t >= 1.75 && t < 2.1);
+      if (t >= 2.1) stProp.classList.add('is-fixed');
+      renderDim(t);
+      while (evi < EVENTS.length && t >= EVENTS[evi][0]) EVENTS[evi++][1]();
+      if (t < T_END) requestAnimationFrame(frame);
+      else { ended = true; root.classList.add('intro-done'); }
+    }
+    cntNow.textContent = '00'; cntProp.textContent = '00'; cntKm.textContent = '0';
+    onIntroStart(function () {
+      measure();
+      t0 = performance.now(); running = true;
+      requestAnimationFrame(frame);
+    });
+
+    // スキップ：CSS アニメーションは最終フレームへ、タイムラインは終点の先へ
+    var swallowClick = false;
+    function skip(byPointer) {
+      if (!running || ended) return;
+      off += 10;
+      if (hero.getAnimations) {
+        hero.getAnimations({ subtree: true }).forEach(function (a) {
+          var tm = a.effect && a.effect.getComputedTiming ? a.effect.getComputedTiming() : null;
+          if (tm && isFinite(tm.endTime)) { try { a.finish(); } catch (err) {} }
+        });
+      }
+      // スキップのためのクリックで、NEXT? を置いたり仮充填したりしない
+      if (byPointer) { swallowClick = true; setTimeout(function () { swallowClick = false; }, 500); }
+    }
+    document.getElementById('heroSkip').addEventListener('click', function () { skip(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') skip(false); });
+    hero.addEventListener('pointerdown', function (e) {
+      if (e.button === 0 && !e.target.closest('a, button')) skip(true);
+    });
+
+    // タイトル：ふれた文字は跳ねる。タッチ端末ではタップで仮充填を切り替え
+    title.addEventListener('pointerover', function (e) {
+      var ch = ended && e.target.closest ? e.target.closest('.ht-ch') : null;
+      if (ch && !ch.classList.contains('hop')) ch.classList.add('hop');
+    });
+    title.addEventListener('animationend', function (e) {
+      if (e.animationName === 'hop') e.target.classList.remove('hop');
+    });
+    title.addEventListener('click', function () {
+      if (ended && !canHover && !swallowClick) title.classList.toggle('is-filled');
+    });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measure(); if (ended) renderDim(T_END); });
+
+    // コーヒーの染み：消すと改訂履歴に残り、しばらくすると次の一杯が置かれる（4 杯目で打ち止め）
+    var coffee = (function () {
+      var layer = document.getElementById('coffeeLayer');
+      var rev = document.getElementById('chartRev');
+      var SPOTS = [[95, 125], [420, 402], [440, 252], [135, 330]];
+      var CUPS = [
+        { drink: 'COFFEE',    name: 'コーヒー', note: '本計画に含まず',         tone: '#d9a066', grad: 'stain-coffee', say: '…失礼',          rev: 'コーヒーの染みを除去' },
+        { drink: 'COFFEE',    name: 'コーヒー', note: '2杯目（本計画に含まず）', tone: '#d9a066', grad: 'stain-coffee', say: '…失礼（2杯目）',  rev: '2杯目の染みを除去' },
+        { drink: 'COFFEE',    name: 'コーヒー', note: '3杯目（同上）',           tone: '#d9a066', grad: 'stain-coffee', say: '…たびたび失礼',  rev: '3杯目を除去。製図台での飲食を禁止' },
+        { drink: 'GREEN TEA', name: '緑茶',     note: 'コーヒーではない',       tone: '#a9c77a', grad: 'stain-tea',    say: '…お茶なら',      rev: '緑茶も禁止' }
+      ];
+      var d = new Date();
+      var today = d.getFullYear() + '.' + pad2(d.getMonth() + 1) + '.' + pad2(d.getDate());
+      var n = 0, cur = null;
+      function spawn() {
+        if (cur || n >= CUPS.length) return;
+        var cup = CUPS[n], spot = SPOTS[n];
+        var g = svgEl('g', { 'class': 'coffee is-new', transform: 'translate(' + spot[0] + ' ' + spot[1] + ')', tabindex: '0', role: 'button', 'aria-label': cup.name + 'の染みを消す' }, layer);
+        var rot = svgEl('g', { transform: 'rotate(' + Math.round(Math.random() * 360) + ')' }, svgEl('g', { 'class': 'stain', filter: 'url(#stainRough)' }, g));
+        svgEl('circle', { r: 34, fill: 'url(#' + cup.grad + ')' }, rot);
+        svgEl('circle', { r: 33, fill: 'none', stroke: cup.tone, 'stroke-opacity': 0.55, 'stroke-width': 1.3, 'stroke-dasharray': '120 5 64 3' }, rot);
+        svgEl('circle', { cx: 3, cy: -2.5, r: 33.6, fill: 'none', stroke: cup.tone, 'stroke-opacity': 0.22, 'stroke-width': 0.8, 'stroke-dasharray': '48 22 80 200' }, rot);
+        var label = svgEl('g', { 'class': 'stain-label' }, g);
+        svgEl('text', { x: 0, y: 46, 'text-anchor': 'middle', 'class': 'halo' }, label).textContent = cup.drink + ' Ø≈84 km';
+        svgEl('text', { x: 0, y: 56, 'text-anchor': 'middle', 'class': 'jp halo' }, label).textContent = cup.note;
+        g.addEventListener('click', wipe);
+        g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); wipe(); } });
+        cur = g;
+        mutter(cup.say);
+      }
+      function wipe() {
+        if (!cur) return;
+        var g = cur, cup = CUPS[n], spot = SPOTS[n], crumbs = [];
+        cur = null;
+        g.classList.remove('is-new');
+        g.classList.add('is-wiping');
+        for (var i = 0; i < 9; i++) {
+          var a = Math.random() * Math.PI * 2, r = 22 + Math.random() * 26;
+          var c = svgEl('circle', { 'class': 'crumb', cx: (spot[0] + Math.cos(a) * 12).toFixed(1), cy: (spot[1] + Math.sin(a) * 12).toFixed(1), r: (0.7 + Math.random() * 0.8).toFixed(2) }, layer);
+          c.style.setProperty('--dx', (Math.cos(a) * r).toFixed(1) + 'px');
+          c.style.setProperty('--dy', (Math.sin(a) * r).toFixed(1) + 'px');
+          crumbs.push(c);
+        }
+        setTimeout(function () {
+          crumbs.concat(g).forEach(function (el) { if (el.parentNode) el.parentNode.removeChild(el); });
+        }, 900);
+        rev.textContent = '';
+        var b = document.createElement('b');
+        b.textContent = 'REV.' + 'ABCD'.charAt(n);
+        rev.appendChild(b);
+        rev.appendChild(document.createTextNode(cup.rev + ' · ' + today));
+        rev.classList.remove('is-new'); void rev.offsetWidth; rev.classList.add('is-new');
+        n++;
+        if (n < CUPS.length) setTimeout(spawn, 5200);
+      }
+      return { spawn: spawn };
+    })();
+
+    // NEXT?：地図の余白を押すと、次の敷地を仮置き（置き直すと、前の〈いと〉は糸巻きへ巻き戻る）
+    var cand = (function () {
+      var g = document.getElementById('cand');
+      var path = document.getElementById('candThread');
+      var pin = document.getElementById('candPin');
+      var num = document.getElementById('candNum');
+      var sub = document.getElementById('candSub');
+      var tip = document.getElementById('chartTip');
+      var geo = null, prog = 0, token = 0;
+      function band(km) {
+        return km < 12 ? '近すぎ、徒歩圏' : km < 60 ? '日帰り圏' : km < 200 ? '一泊二日圏' : km < 380 ? '遠征圏' : '糸巻きが、もう一つ要ります';
+      }
+      // 長野から候補地への曲線のうち、0〜p の部分（de Casteljau で分割）
+      function draw(p) {
+        prog = p;
+        if (!geo || p <= 0) { path.removeAttribute('d'); candKm = 0; }
+        else {
+          var ax = OX + (geo.cx - OX) * p, ay = OY + (geo.cy - OY) * p;
+          var bx = geo.cx + (geo.x - geo.cx) * p, by = geo.cy + (geo.y - geo.cy) * p;
+          path.setAttribute('d', 'M' + OX + ' ' + OY + 'Q' + ax.toFixed(1) + ' ' + ay.toFixed(1) + ' ' + (ax + (bx - ax) * p).toFixed(1) + ' ' + (ay + (by - ay) * p).toFixed(1));
+          candKm = geo.km * p;
+        }
+        renderThreadKm();
+      }
+      function tween(from, to, dur, done) {
+        var my = ++token, start = performance.now();
+        (function tick() {
+          if (my !== token) return;
+          var p = clamp01((performance.now() - start) / (dur * 1000));
+          draw(from + (to - from) * easeOut(p));
+          if (p < 1) requestAnimationFrame(tick); else if (done) done();
+        })();
+      }
+      function writeTip() {
+        tip.textContent = '';
+        var b = document.createElement('b');
+        b.textContent = 'NEXT?';
+        tip.appendChild(b);
+        tip.appendChild(document.createTextNode(fmtLatLon(geo.ll) + ' ─ 長野から ≈' + Math.round(geo.km) + ' km（' + band(geo.km) + '）'));
+        var a = document.createElement('a');
+        a.href = '../contact.html';
+        a.textContent = 'この土地で相談する →';
+        tip.appendChild(a);
+      }
+      function grow() {
+        // 注記は図の内側へ。〈いと〉が入ってくる側と重なるときは、上下にずらす
+        var left = geo.x > 330, fromLeft = geo.cx < geo.x, fromAbove = geo.cy < geo.y;
+        var dy = left === fromLeft ? (fromAbove ? 15.5 : -13) : 0;
+        pin.setAttribute('transform', 'translate(' + geo.x.toFixed(1) + ' ' + geo.y.toFixed(1) + ')');
+        [num, sub].forEach(function (t) { t.setAttribute('x', left ? -11 : 11); t.setAttribute('text-anchor', left ? 'end' : 'start'); });
+        num.setAttribute('y', -1.5 + dy);
+        sub.setAttribute('y', 9.5 + dy);
+        sub.textContent = '≈ ' + Math.round(geo.km) + ' km · ' + band(geo.km);
+        tween(0, 1, Math.min(1.1, Math.max(0.35, geo.km / 320)), function () {
+          g.classList.add('is-pinned');
+          writeTip();
+        });
+      }
+      function place(x, y) {
+        var ll = toLatLon(x, y), dx = x - OX, dy = y - OY;
+        var next = { x: x, y: y, ll: ll, km: kmFromOrigin(ll), cx: (OX + x) / 2 - dy * 0.18, cy: (OY + y) / 2 + dx * 0.18 };
+        g.classList.remove('is-pinned');
+        if (geo && prog > 0) tween(prog, 0, 0.3, function () { geo = next; grow(); });
+        else { geo = next; grow(); }
+      }
+      return { place: place };
+    })();
+
+    svg.addEventListener('click', function (e) {
+      if (!ended || swallowClick) return;
+      if (e.target.closest && e.target.closest('a, .coffee, .detail')) return;
+      var p = toChart(e);
+      if (p) cand.place(p.x, p.y);
+    });
 
     // 地点にふれると、その〈いと〉が光る
     Array.prototype.forEach.call(svg.querySelectorAll('.site'), function (site) {
@@ -1017,28 +1796,23 @@
       site.addEventListener('focus', on); site.addEventListener('blur', off);
     });
 
-    // 照準と経緯度の読み取り（正距円筒図法の逆算）
-    var readout = document.getElementById('readout');
+    // 照準と経緯度の読み取り
     var xhV = document.getElementById('xhV');
     var xhH = document.getElementById('xhH');
-    var LON0 = 134.4, LAT1 = 40.2, K = 90, KX = Math.cos(37 * Math.PI / 180) * K;
-    if (canHover && svg.createSVGPoint) {
-      var pt = svg.createSVGPoint();
+    if (canHover && pt) {
       svg.addEventListener('pointermove', function (e) {
-        var m = svg.getScreenCTM();
-        if (!m) return;
-        pt.x = e.clientX; pt.y = e.clientY;
-        var p = pt.matrixTransform(m.inverse());
-        if (p.x < 0 || p.x > 490 || p.y < 0 || p.y > 576) return;
+        var p = toChart(e);
+        if (!p) return;
         xhV.setAttribute('x1', p.x); xhV.setAttribute('x2', p.x);
         xhH.setAttribute('y1', p.y); xhH.setAttribute('y2', p.y);
-        var lon = LON0 + p.x / KX, lat = LAT1 - p.y / K;
-        readout.textContent = lat.toFixed(3) + '°N ' + lon.toFixed(3) + '°E';
+        readout.textContent = fmtLatLon(toLatLon(p.x, p.y));
+        probing = true;
         chart.classList.add('is-probing');
       });
       svg.addEventListener('pointerleave', function () {
+        probing = false;
         chart.classList.remove('is-probing');
-        readout.textContent = '36.649°N 138.195°E';
+        showReadout();
       });
     }
 
@@ -1054,10 +1828,123 @@
       Array.prototype.forEach.call(document.querySelectorAll('.reveal'), function (el) { el.classList.add('in-view'); });
     }
 
+    /* ─── NOW：実施中の 263 ───
+       ・工程バーは今日の日付から算出（どの段階の、どのあたりか）。次の節目までの日数も出す
+       ・速報帯には、制作発表展示会までの日数を流す
+       ・図版は現地の写真を、画面に入っている間だけゆっくり切り替える */
+    (function () {
+      var card = document.getElementById('p263');
+      var DAY = 864e5;
+      function day(s) { var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+      var d = new Date(), today = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      var md = pad2(today.getMonth() + 1) + '.' + pad2(today.getDate());
+
+      Array.prototype.forEach.call(card.querySelectorAll('.prog-steps li'), function (li) {
+        var from = day(li.getAttribute('data-from')), to = day(li.getAttribute('data-to'));
+        li.style.setProperty('--f', clamp01((today - from) / (to - from)).toFixed(3));
+        li.classList.toggle('is-done', today >= to);
+        li.classList.toggle('is-now', today >= from && today < to);
+        li.querySelector('.ps-here em').textContent = 'TODAY ' + md;
+      });
+
+      var progNext = document.getElementById('progNext');
+      var exStart = day('2026-12-14'), exEnd = day('2026-12-19');
+      var MARKS = [['2026-10-25', '中間発表（わくばにかほ）'], ['2026-12-14', '制作発表展示会（にかほっと）'], ['2026-12-20', 'トークイベント']];
+      var next = null;
+      for (var i = 0; i < MARKS.length; i++) if (day(MARKS[i][0]) >= today) { next = MARKS[i]; break; }
+      if (today >= exStart && today <= exEnd) progNext.textContent = 'NOW　制作発表展示会 開催中（にかほっと・〜12.19）';
+      else if (next) {
+        var n = Math.round((day(next[0]) - today) / DAY);
+        if (n === 0) progNext.textContent = 'TODAY　本日、' + next[1];
+        else {
+          var em = document.createElement('em');
+          em.textContent = n;
+          progNext.textContent = 'NEXT　' + next[1] + 'まで あと';
+          progNext.appendChild(em);
+          progNext.appendChild(document.createTextNode('日'));
+        }
+      } else progNext.textContent = '予定していた工程を、すべて終えました';
+
+      var toEx = Math.round((exStart - today) / DAY);
+      var tick = toEx > 0 ? '制作発表展示会（にかほっと）まで あと ' + toEx + ' 日'
+        : today <= exEnd ? '制作発表展示会 開催中 ─ にかほっと 12.14–19' : '制作発表展示会 12.14–19 ─ にかほっと';
+      Array.prototype.forEach.call(card.querySelectorAll('.nt-count'), function (el) { el.textContent = tick; });
+
+      var imgs = card.querySelectorAll('.now-media img');
+      var cap = document.getElementById('nowCap');
+      var cur = 0, inView = false;
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            inView = en.isIntersecting;
+            if (inView) card.classList.add('is-in');
+          });
+        }, { threshold: 0.25 }).observe(card);
+      } else card.classList.add('is-in');
+      if (!reduceMotion && imgs.length > 1) setInterval(function () {
+        if (!inView || document.hidden) return;
+        imgs[cur].classList.remove('is-active');
+        cur = (cur + 1) % imgs.length;
+        imgs[cur].classList.add('is-active');
+        cap.textContent = imgs[cur].getAttribute('data-cap');
+      }, 5500);
+    })();
+
+    /* ─── NEXT：白紙の表題欄に、ありうる敷地とご依頼を書いては消す ───
+       場所は限定しない。都市と山あいの例を交互に書き、ひと巡りするたびに「都市でも、山あいでも。」へ戻る */
+    (function () {
+      var site = document.getElementById('twSite');
+      var client = document.getElementById('twClient');
+      var caret = site.parentNode.querySelector('.tw-caret');
+      var PAIRS = [
+        ['都市でも、山あいでも。', '自治体・企業・施設・芸術祭'],
+        ['駅前の広場', 'まちづくりのご担当者'],
+        ['山あいの集落', '自治体・地域の皆さま'],
+        ['オフィスビルのロビー', '企業・ビルオーナー'],
+        ['港町の古い倉庫', '施設のご担当者'],
+        ['商店街の空き店舗', '商店街・地域の皆さま'],
+        ['芸術祭のひと区画', '芸術祭 実行委員会']
+      ];
+      if (reduceMotion || !('IntersectionObserver' in window)) return;
+      var k = 0, visible = false, running = false;
+      function type(el, text, done) {
+        el.parentNode.appendChild(caret);
+        var n = 0;
+        (function step() {
+          el.textContent = text.slice(0, n);
+          if (n++ < text.length) setTimeout(step, 70 + Math.random() * 60); else done();
+        })();
+      }
+      function erase(el, done) {
+        el.parentNode.appendChild(caret);
+        (function step() {
+          var t = el.textContent;
+          if (!t.length) { done(); return; }
+          el.textContent = t.slice(0, -1);
+          setTimeout(step, 30);
+        })();
+      }
+      function cycle() {
+        if (!visible) { running = false; return; }
+        running = true;
+        setTimeout(function () {
+          erase(client, function () {
+            erase(site, function () {
+              k = (k + 1) % PAIRS.length;
+              type(site, PAIRS[k][0], function () { type(client, PAIRS[k][1], cycle); });
+            });
+          });
+        }, 2600);
+      }
+      new IntersectionObserver(function (entries) {
+        visible = entries[0].isIntersecting;
+        if (visible && !running) cycle();
+      }, { threshold: 0.3 }).observe(site.closest('.next-tb'));
+    })();
+
     /* ─── SHEETS：印の押下／タッチ端末では画面内で現像 ─── */
     var stack = document.getElementById('sheetStack');
     var sheets = Array.prototype.slice.call(stack.querySelectorAll('.sheet'));
-    var fws = Array.prototype.slice.call(stack.querySelectorAll('.fw'));
     if ('IntersectionObserver' in window) {
       var stampIO = new IntersectionObserver(function (entries) {
         entries.forEach(function (en) {
@@ -1077,11 +1964,9 @@
           });
         }, { threshold: 0.55 });
         sheets.forEach(function (s) { devIO.observe(s); });
-        fws.forEach(function (f) { devIO.observe(f); });
       }
     } else {
       sheets.forEach(function (s) { s.classList.add('is-in', 'is-developed'); });
-      fws.forEach(function (f) { f.classList.add('is-developed'); });
     }
 
     /* ─── SHEETS：図面の束（sticky stack） ─── */
@@ -1136,7 +2021,11 @@
     var resizeTimer;
     window.addEventListener('resize', function () {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function () { layoutStack(); onScroll(); }, 120);
+      resizeTimer = setTimeout(function () {
+        layoutStack(); onScroll();
+        // ウィンドウ幅が変わると、タイトルの幅を測り直す
+        measure(); if (running) renderDim(now());
+      }, 120);
     });
     window.addEventListener('load', function () { layoutStack(); onScroll(); });
     layoutStack();
