@@ -80,6 +80,7 @@
       --px: clamp(16px, 5vw, 64px);
       --stack-top: 76px;
       --strip-h: 40px;
+      --nav-h: 70px;   /* スクロール後のヘッダーの高さ（見出しへ飛ぶときの逃げ） */
     }
     html { scroll-behavior: smooth; background: var(--bp-0); }
     body {
@@ -133,7 +134,7 @@
     ════════════════════════════════════════ */
     nav#top-nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 150;
-      display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+      display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 1.5rem;
       padding: clamp(18px, 3vw, 32px) var(--px);
       border-bottom: 1px solid transparent;
       transition: padding 0.5s var(--ease-expo), background 0.5s ease, border-color 0.5s ease;
@@ -150,19 +151,71 @@
       transition: opacity 0.3s ease;
     }
     .nav-logo:hover { opacity: 0.7; }
-    .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
-    .nav-links a {
-      font-family: var(--en); font-size: 0.74rem; letter-spacing: 0.25em; text-transform: uppercase;
-      color: var(--ink-3); text-decoration: none; transition: color 0.3s ease;
+    .nav-logo { justify-self: start; }
+
+    /* 中央：このページの 2 つの区分。表示中の区分に下地が滑り、提案中は「実施先 募集中」を掲げる */
+    .nav-sections {
+      position: relative; display: flex; gap: 4px; list-style: none;
+      padding: 4px; border: 1px solid var(--line-2); border-radius: 999px;
+      background: rgba(7,20,42,0.6); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
     }
-    .nav-links a:hover { color: var(--ink); }
-    .nav-links a.is-current {
-      display: inline-flex; align-items: center; gap: 0.55rem;
-      color: var(--bp-0); background: var(--cyan); font-weight: 500;
-      padding: 0.4rem 0.95rem; margin: -0.4rem 0; border-radius: 999px;
-      box-shadow: 0 0 22px var(--cyan-glow);
+    .nav-sections::before {
+      content: ''; position: absolute; top: 4px; bottom: 4px; left: 0; border-radius: 999px;
+      width: var(--ind-w, 0px); transform: translateX(var(--ind-x, 0px));
+      background: var(--ind-c, var(--cyan)); opacity: var(--ind-o, 0);
+      transition: transform 0.55s var(--ease-expo), width 0.55s var(--ease-expo), background-color 0.4s ease, opacity 0.3s ease;
     }
-    .nav-links a.is-current::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--bp-0); }
+    .sn-item { position: relative; }
+    .sn-link {
+      position: relative; z-index: 1; display: flex; align-items: center; gap: 0.6rem; height: 100%;
+      padding: 0.5rem 1.1rem; border-radius: 999px; text-decoration: none; white-space: nowrap;
+      transition: background 0.3s ease;
+    }
+    .sn-item:not(.is-active) .sn-link:hover { background: rgba(233,241,251,0.07); }
+    .sn-jp { font-family: var(--jp); font-size: 0.82rem; letter-spacing: 0.14em; color: var(--ink); transition: color 0.35s ease; }
+    .sn-sub { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em; color: var(--ink-3); transition: color 0.35s ease; }
+    .sn-ring { display: inline-block; flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--cyan); }
+    .sn-tag {
+      display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.22rem 0.55rem; border-radius: 999px;
+      background: rgba(156,212,255,0.15); color: var(--cyan);
+      font: 500 0.6rem/1 var(--mono-jp); letter-spacing: 0.1em; transition: background 0.35s ease, color 0.35s ease;
+    }
+    .sn-tag::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; animation: blink 1.4s steps(1) infinite; }
+    .sn-item.is-active .sn-jp, .sn-item.is-active .sn-sub { color: var(--bp-0); }
+    .sn-now.is-active .live-dot { background: var(--bp-0); }
+    .sn-prop.is-active .sn-ring { border-color: var(--bp-0); }
+    .sn-prop.is-active .sn-tag { background: var(--bp-0); color: var(--cyan); }
+
+    /* ふれると開く小さな説明（提案中には相談への導線） */
+    .sn-pop {
+      position: absolute; top: calc(100% + 14px); left: 50%; z-index: 5; width: 310px; margin-left: -155px;
+      padding: 1rem 1.1rem 1.1rem; border: 1px solid var(--line-3);
+      background: rgba(7,20,42,0.97); box-shadow: 0 22px 50px rgba(2,8,20,0.6);
+      opacity: 0; visibility: hidden; transform: translateY(-6px);
+      transition: opacity 0.3s ease, transform 0.4s var(--ease-expo), visibility 0.3s;
+    }
+    .sn-pop::before { content: ''; position: absolute; left: 0; right: 0; top: -16px; height: 16px; }
+    .sn-now .sn-pop { border-color: rgba(255,91,61,0.55); }
+    .sn-item:focus-within .sn-pop { opacity: 1; visibility: visible; transform: none; }
+    @media (hover: hover) and (pointer: fine) {
+      .sn-item:hover .sn-pop { opacity: 1; visibility: visible; transform: none; }
+    }
+    .sp-k { font: 500 0.6rem/1.4 var(--mono-jp); letter-spacing: 0.16em; text-transform: uppercase; color: var(--cyan); }
+    .sn-now .sp-k { color: var(--shu); }
+    .sp-t { margin-top: 0.45rem; font-size: 0.84rem; line-height: 1.75; letter-spacing: 0.05em; color: var(--ink); }
+    .sp-d { margin-top: 0.4rem; font: 400 0.66rem/1.6 var(--mono-jp); letter-spacing: 0.08em; color: var(--ink-2); }
+    .sp-list { list-style: none; margin-top: 0.7rem; border-top: 1px dashed var(--line-2); }
+    .sp-list li { padding: 0.35rem 0; border-bottom: 1px dashed var(--line-2); font: 400 0.66rem/1.6 var(--mono-jp); letter-spacing: 0.06em; color: var(--ink-2); }
+    .sp-list b { font-weight: 400; color: var(--cyan); margin-right: 0.7em; }
+    .sp-cta {
+      display: flex; align-items: center; justify-content: space-between; margin-top: 0.85rem;
+      padding: 0.6rem 1rem; border: 1px solid var(--cyan); border-radius: 999px;
+      font-size: 0.8rem; letter-spacing: 0.12em; color: var(--bp-0); background: var(--cyan); text-decoration: none;
+      transition: background 0.35s ease, color 0.35s ease;
+    }
+    .sp-cta:hover, .sp-cta:focus-visible { background: transparent; color: var(--ink); }
+
+    .nav-right { justify-self: end; display: flex; align-items: center; gap: 0.8rem; }
     .nav-cta {
       font-family: var(--en); font-size: 0.68rem; letter-spacing: 0.25em; text-transform: uppercase;
       color: var(--ink); text-decoration: none; border: 0.5px solid var(--line-3); border-radius: 2px;
@@ -170,7 +223,7 @@
     }
     .nav-cta:hover { background: var(--ink); color: var(--bp-0); }
     .nav-menu-btn {
-      display: none; align-items: center; gap: 0.6rem;
+      display: inline-flex; align-items: center; gap: 0.6rem;
       font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
       color: var(--ink); background: rgba(12,31,61,0.6); border: 0.5px solid var(--line-3); border-radius: 999px;
       padding: 0.6rem 1.1rem; cursor: pointer; -webkit-tap-highlight-color: transparent;
@@ -190,7 +243,7 @@
       opacity: 0; visibility: hidden; transition: opacity 0.5s var(--ease-expo), visibility 0.5s;
     }
     .menu-overlay.open { opacity: 1; visibility: visible; }
-    .menu-overlay ul { list-style: none; border-top: 1px solid var(--line-2); }
+    .menu-overlay ul { width: 100%; max-width: 640px; margin: 0 auto; list-style: none; border-top: 1px solid var(--line-2); }
     .menu-overlay li { border-bottom: 1px solid var(--line-2); }
     .menu-overlay a {
       display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
@@ -309,18 +362,18 @@
     .js .ht-note { opacity: 0; animation: fadeIn 0.5s ease 1.45s forwards; }
 
     .hero-jp {
-      font-family: var(--jp); font-weight: 300; font-size: clamp(1.05rem, 2vw, 1.4rem);
+      font-family: var(--jp); font-weight: 300; font-size: clamp(1rem, 1.55vw, 1.3rem);
       letter-spacing: 0.12em; line-height: 1.8; color: var(--ink);
     }
     .hero-jp b { font-weight: 300; color: var(--cyan); }
     .nw { display: inline-block; }
     .hero-lead {
-      margin-top: 1.4rem; max-width: 34em;
-      font-size: clamp(0.85rem, 1.3vw, 0.95rem); line-height: 2.1; letter-spacing: 0.05em; color: var(--ink-2);
+      margin-top: 1.1rem; max-width: 33em;
+      font-size: clamp(0.85rem, 1.3vw, 0.95rem); line-height: 2; letter-spacing: 0.05em; color: var(--ink-2);
     }
     .hero-stats {
       display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 0 clamp(1.5rem, 4vw, 3.5rem);
-      margin-top: 2.6rem; padding-top: 1.4rem; border-top: 1px solid var(--line-2);
+      margin-top: 2.1rem; padding-top: 1.2rem; border-top: 1px solid var(--line-2);
     }
     .hero-stats dt { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); order: 2; }
     .hero-stats div { display: flex; flex-direction: column-reverse; gap: 0.3rem; }
@@ -353,7 +406,7 @@
     .js .st-now dd .live-dot { opacity: 0; transform: scale(0); transition: opacity 0.3s ease, transform 0.5s var(--ease-back); }
     .js .st-now.is-live dd .live-dot { opacity: 1; transform: none; }
     .hero-cta {
-      display: inline-flex; align-items: center; gap: 1rem; margin-top: 2.6rem;
+      display: inline-flex; align-items: center; gap: 1rem; margin-top: 2.3rem;
       padding: 1rem 1.6rem 1rem 1.8rem; border: 1px solid var(--cyan); border-radius: 999px;
       font-family: var(--jp); font-size: 0.9rem; letter-spacing: 0.14em; text-decoration: none; color: var(--ink);
       background: rgba(156,212,255,0.06);
@@ -382,12 +435,19 @@
     }
     .chart::before { top: -6px; left: -6px; border-width: 1px 0 0 1px; }
     .chart::after { bottom: -6px; right: -6px; border-width: 0 1px 1px 0; }
+    /* 見出しは 1 行：左に表題、右に凡例（実施中＝朱／提案＝白）。座標の読み取りは表題欄へ */
     .chart-head {
-      display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+      display: flex; justify-content: space-between; align-items: center; gap: 1rem;
       padding: 0 2px 10px; margin-bottom: 8px; border-bottom: 1px solid var(--line);
-      font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);
+      font-family: var(--mono-jp); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);
+      white-space: nowrap;
     }
     .chart-head b { font-weight: 400; color: var(--ink); }
+    .ch-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+    .ch-legend { display: inline-flex; align-items: center; gap: 0.45rem; flex-shrink: 0; letter-spacing: 0.1em; text-transform: none; }
+    .ch-legend i { width: 7px; height: 7px; border-radius: 50%; }
+    .ch-legend .lg-now { background: var(--shu); }
+    .ch-legend .lg-prop { background: var(--ink); margin-left: 0.55rem; }
     .chart-readout { font-family: var(--mono-jp); color: var(--cyan); font-variant-numeric: tabular-nums; white-space: nowrap; }
     .chart-svg { display: block; width: 100%; height: auto; overflow: visible; -webkit-tap-highlight-color: transparent; }
     @media (hover: hover) and (pointer: fine) { .chart-svg { cursor: crosshair; } }
@@ -428,7 +488,8 @@
     .site.is-now .core { fill: var(--shu); }
     .site.is-now .ring { stroke: var(--shu); }
     .site.is-now:hover .core, .site.is-now:focus-visible .core { fill: #ff8a70; }
-    .now-tag { font-family: var(--jp); font-size: 7.5px; fill: var(--shu); letter-spacing: 0.12em; }
+    .now-pill rect { fill: var(--shu); }
+    .now-pill text { font-family: var(--jp); font-size: 7.5px; font-weight: 500; fill: var(--bp-0); letter-spacing: 0.12em; }
     @keyframes corePop { 0% { transform: scale(0); } 55% { transform: scale(2.1); } 100% { transform: scale(1); } }
     .site .ring { fill: none; stroke: var(--cyan); stroke-width: 0.8; transform-box: fill-box; transform-origin: center; animation: ping 2.8s ease-out infinite; }
     .site .num { font-family: var(--mono); font-size: 10px; fill: var(--cyan); letter-spacing: 0.06em; }
@@ -502,16 +563,22 @@
       margin-top: 10px; border: 1px solid var(--line-2);
       font-family: var(--mono); text-transform: uppercase;
     }
-    .title-block div { padding: 6px 8px; border-right: 1px solid var(--line-2); min-width: 0; }
-    .title-block div:last-child { border-right: none; }
+    .title-block > div { padding: 6px 8px; border-right: 1px solid var(--line-2); min-width: 0; }
+    .title-block > div:nth-child(4) { border-right: none; }
     .title-block span { display: block; font-size: 0.52rem; letter-spacing: 0.16em; color: var(--ink-3); }
     .title-block b { display: block; font-weight: 400; font-size: 0.66rem; letter-spacing: 0.1em; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    /* 改訂履歴と、地図の使い方 */
-    .chart-foot { display: grid; gap: 0.15rem; margin-top: 8px; padding: 0 2px; font: 400 0.6rem/1.7 var(--mono-jp); letter-spacing: 0.08em; color: var(--ink-3); }
-    .chart-foot b { font-weight: 400; color: var(--cyan); margin-right: 0.7em; }
-    .chart-rev.is-new, .chart-rev.is-new b { animation: revFlash 1.8s ease; }
+    /* 表題欄の 2 段目：座標の読み取り（独り言もここ）と改訂履歴 */
+    .title-block .tb-pos, .title-block .tb-rev { grid-column: span 2; border-top: 1px solid var(--line-2); }
+    .title-block .tb-rev { border-right: none; }
+    .title-block .tb-pos b { color: var(--cyan); }
+    .title-block .tb-rev b { text-transform: none; font-family: var(--mono-jp); letter-spacing: 0.06em; }
+    .chart-rev em { font-style: normal; color: var(--cyan); margin-right: 0.6em; }
+    .chart-rev.is-new, .chart-rev.is-new em { animation: revFlash 1.8s ease; }
     @keyframes revFlash { 0%, 35% { color: var(--shu); } }
+
+    /* 地図の使い方 */
+    .chart-tip { margin-top: 8px; padding: 0 2px; font: 400 0.6rem/1.7 var(--mono-jp); letter-spacing: 0.08em; color: var(--ink-3); }
+    .chart-tip b { font-weight: 400; color: var(--cyan); margin-right: 0.7em; }
     .chart-tip a { margin-left: 0.5em; color: var(--cyan); text-underline-offset: 3px; white-space: nowrap; }
     .chart-tip a:hover, .chart-tip a:focus-visible { color: var(--ink); }
 
@@ -554,7 +621,7 @@
         図面を出て、現地で動いている計画。青焼きの提案と見分けられるように、
         朱の速報帯・フルカラーの図版・工程バーの「いまここ」で示す。
     ════════════════════════════════════════ */
-    .now-section { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 12vh var(--px) 0; }
+    .now-section { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 12vh var(--px) 0; scroll-margin-top: max(0px, calc(var(--nav-h) + 16px - 12vh)); }
     .sec-head--now { border-bottom-color: rgba(255,91,61,0.35); }
     .sec-head--now .sec-kicker { display: flex; align-items: center; gap: 0.75rem; color: var(--shu); }
     .live-dot { position: relative; display: inline-block; flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--shu); }
@@ -562,7 +629,7 @@
     @keyframes livePing { from { transform: scale(1); opacity: 0.7; } to { transform: scale(3.2); opacity: 0; } }
 
     .now-card {
-      position: relative; scroll-margin-top: 88px;
+      position: relative; scroll-margin-top: calc(var(--nav-h) + 20px);
       border: 1px solid rgba(255,91,61,0.5);
       background:
         radial-gradient(ellipse 55% 60% at 100% 0%, rgba(255,91,61,0.09), transparent 70%),
@@ -674,7 +741,24 @@
     /* ════════════════════════════════════════
         SHEETS（提案：図面シート／スタック）
     ════════════════════════════════════════ */
-    .sheets-section { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 8vh var(--px) 6vh; }
+    /* ヘッダーの「提案中」から来たときは、切り取り線が見える位置で止める */
+    .sheets-section { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 8vh var(--px) 6vh; scroll-margin-top: calc(var(--nav-h) + 52px); }
+
+    /* 実施先 募集中：提案がまだ「やらせてくれる人・団体」を探していることを、見出しのすぐ下で伝える */
+    .recruit {
+      display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem 2.5rem; align-items: center;
+      margin: 0 0 clamp(2.5rem, 6vw, 4rem); padding: 1.3rem 1.6rem;
+      border: 1px dashed rgba(156,212,255,0.55);
+      background: repeating-linear-gradient(-45deg, transparent 0 12px, rgba(156,212,255,0.035) 12px 13px);
+    }
+    .rc-badge { display: flex; align-items: center; gap: 0.65rem; font: 500 0.66rem/1.4 var(--mono-jp); letter-spacing: 0.16em; text-transform: uppercase; color: var(--cyan); }
+    .rc-text { margin-top: 0.5rem; font-size: 0.9rem; line-height: 1.9; letter-spacing: 0.05em; color: var(--ink); }
+    .rc-cta {
+      display: inline-flex; align-items: center; gap: 0.9rem; padding: 0.95rem 1.5rem; border: 1px solid var(--cyan); border-radius: 999px;
+      background: var(--cyan); color: var(--bp-0); font-size: 0.88rem; letter-spacing: 0.12em; text-decoration: none; white-space: nowrap;
+      transition: background 0.4s var(--ease-expo), color 0.4s var(--ease-expo), box-shadow 0.4s ease;
+    }
+    .rc-cta:hover, .rc-cta:focus-visible { background: transparent; color: var(--ink); box-shadow: 0 10px 30px rgba(156,212,255,0.2); }
     .sheets { position: relative; }
     .sheet-anchor { display: block; height: 0; scroll-margin-top: calc(var(--stack-top) + var(--i) * var(--strip-h)); }
     .sheet {
@@ -948,7 +1032,7 @@
         RESPONSIVE
     ════════════════════════════════════════ */
     @media (max-width: 1100px) {
-      .nav-links { gap: 1.3rem; }
+      .sn-sub { display: none; }
     }
     @media (max-width: 1023px) {
       .sheet-body, .now-body { grid-template-columns: minmax(0, 1fr); min-height: 0; }
@@ -957,9 +1041,16 @@
       .sec-head p { justify-self: start; }
     }
     @media (max-width: 900px) {
-      .nav-links, .nav-cta { display: none; }
-      .nav-menu-btn { display: inline-flex; }
-      .hero { grid-template-columns: minmax(0, 1fr); min-height: 0; padding-top: calc(88px + 4vh); gap: 3.5rem; }
+      /* ヘッダーは 2 段：ロゴとメニュー／実施中・提案中 */
+      :root { --nav-h: 118px; }
+      nav#top-nav { grid-template-columns: minmax(0, 1fr) auto; row-gap: 10px; }
+      .nav-sections { grid-column: 1 / -1; grid-row: 2; }
+      .sn-item { flex: 1; }
+      .sn-link { justify-content: center; padding: 0.5rem 0.6rem; }
+      .sn-pop { display: none; }
+      .nav-cta { display: none; }
+      .sheet-anchor { scroll-margin-top: calc(var(--nav-h) + 12px); }
+      .hero { grid-template-columns: minmax(0, 1fr); min-height: 0; padding-top: calc(136px + 4vh); gap: 3.5rem; }
       .chart { width: min(100%, 520px); }
       .next-body { grid-template-columns: minmax(0, 1fr); }
     }
@@ -968,9 +1059,11 @@
       .hero-stats dt { font-size: 0.54rem; letter-spacing: 0.1em; }
       .hero-cta { width: 100%; justify-content: center; }
       .title-block { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .title-block div:nth-child(2) { border-right: none; }
-      .title-block div:nth-child(-n+2) { border-bottom: 1px solid var(--line-2); }
-      .chart-head .ch-title { display: none; }
+      .title-block > div:nth-child(2), .title-block .tb-pos { border-right: none; }
+      .title-block > div:nth-child(-n+2) { border-bottom: 1px solid var(--line-2); }
+      .chart-head .ch-sub { display: none; }
+      .recruit { grid-template-columns: minmax(0, 1fr); padding: 1.2rem; }
+      .rc-cta { justify-content: space-between; }
       .sheet-strip { gap: 0.8rem; padding: 0 0.9rem; font-size: 0.6rem; }
       .ss-site, .ss-sep.s2 { display: none; }
       .plate, .now-plate { margin: 16px 16px 0; aspect-ratio: 4 / 3; }
@@ -994,7 +1087,7 @@
       .cand-sub { font-size: 9px; }
       .stain-label text { font-size: 8px; }
       .stain-label text.jp { font-size: 8.5px; }
-      .now-tag { font-size: 9px; }
+      .sn-tag-l { display: none; }
       .next-strip .ns-site, .next-strip .ss-sep { display: none; }
       .next-flow li + li::before { margin: 0 0.6rem; }
       .next-cta-row { padding-top: 0.4rem; }
@@ -1024,22 +1117,41 @@
   <!-- HEADER -->
   <nav id="top-nav" aria-label="メインナビゲーション">
     <a href="../index.html" class="nav-logo">Tsuda Shoichi</a>
-    <ul class="nav-links">
-      <li><a href="../index.html#statement">Statement</a></li>
-      <li><a href="../index.html#works">Works</a></li>
-      <li><a href="../index.html#profile">Profile</a></li>
-      <li><a href="../index.html#news">News</a></li>
-      <li><a href="proposals.html" class="is-current" aria-current="page">PP</a></li>
+    <ul class="nav-sections" id="navSections" aria-label="このページの区分">
+      <li class="sn-item sn-now">
+        <a class="sn-link" href="#now"><i class="live-dot" aria-hidden="true"></i><span class="sn-jp">実施中</span><span class="sn-sub">263 にかほ</span></a>
+        <div class="sn-pop" aria-hidden="true">
+          <p class="sp-k">In Progress — 実施中</p>
+          <p class="sp-t">にかほの神話と伝承 ─ 発酵と磁性</p>
+          <p class="sp-d nt-count">制作発表展示会（にかほっと）まで あと 81 日</p>
+        </div>
+      </li>
+      <li class="sn-item sn-prop">
+        <a class="sn-link" href="#sheets"><i class="sn-ring" aria-hidden="true"></i><span class="sn-jp">提案中</span><span class="sn-sub">261・262</span><span class="sn-tag"><span class="sn-tag-l">実施先 </span>募集中</span></a>
+        <div class="sn-pop">
+          <p class="sp-k">Open for Partners — 実施先募集中</p>
+          <p class="sp-t">この計画を一緒に実現してくださる方・団体を募集しています。</p>
+          <ul class="sp-list">
+            <li><b>261</b>六甲の帳 — 六甲山（兵庫）</li>
+            <li><b>262</b>ASAMA SPECTRUM — 北軽井沢（群馬）</li>
+          </ul>
+          <a class="sp-cta" href="../contact.html">実現について相談する <span aria-hidden="true">→</span></a>
+        </div>
+      </li>
     </ul>
-    <a href="../contact.html" class="nav-cta">Contact</a>
-    <button class="nav-menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menuOverlay"><i aria-hidden="true"></i>Menu</button>
+    <div class="nav-right">
+      <button class="nav-menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menuOverlay"><i aria-hidden="true"></i>Menu</button>
+      <a href="../contact.html" class="nav-cta">Contact</a>
+    </div>
   </nav>
 
   <div class="menu-overlay" id="menuOverlay">
     <ul>
       <li><a href="../index.html">Top<span>トップ</span></a></li>
+      <li><a href="../index.html#statement">Statement<span>ステートメント</span></a></li>
       <li><a href="../works.html">Works<span>作品</span></a></li>
       <li><a href="../index-profile.html">Profile<span>プロフィール</span></a></li>
+      <li><a href="../index.html#news">News<span>お知らせ</span></a></li>
       <li><a href="proposals.html" aria-current="page">PP<span>企画提案</span></a></li>
       <li><a href="../contact.html">Contact<span>お問い合わせ</span></a></li>
     </ul>
@@ -1065,7 +1177,7 @@
       <p class="hero-jp hero-fade d1">企画提案 ── まだ、この世界にない<b class="nw">作品の設計図。</b></p>
       <p class="hero-lead hero-fade d2">
         土地を歩き、話を聞き、採集した〈いと〉から立ち上げる、<span class="nw">サイト・スペシフィック</span>な制作計画。
-        いま、にかほの計画が現地で進行中。六甲と浅間の図面は、実現のときを待っています。
+        <span class="nw">いま、にかほの計画が</span><span class="nw">現地で進行中。</span>六甲と浅間の図面は、<span class="nw">実現のときを待っています。</span>
       </p>
       <dl class="hero-stats hero-fade d3">
         <div class="st-now"><dt>Now 実施中</dt><dd><span id="cntNow">01</span><i class="live-dot" aria-hidden="true"></i></dd></div>
@@ -1077,8 +1189,8 @@
 
     <figure class="chart hero-fade dc" id="chart">
       <div class="chart-head">
-        <span class="ch-title"><b>Site Plan</b> — 長野から伸びる〈いと〉</span>
-        <span class="chart-readout" id="readout" aria-hidden="true">36.649°N 138.195°E</span>
+        <span class="ch-title"><b>Site Plan</b><span class="ch-sub"> — 長野から伸びる〈いと〉</span></span>
+        <span class="ch-legend" aria-hidden="true"><i class="lg-now"></i>実施中<i class="lg-prop"></i>提案</span>
       </div>
 
       <svg class="chart-svg" id="chartSvg" viewBox="0 0 490 576" role="group" aria-labelledby="chartTitle chartDesc">
@@ -1205,7 +1317,7 @@
           <circle class="hit" cx="397.5" cy="85.5" r="14"/>
           <circle class="ring" cx="397.5" cy="85.5" r="3"/>
           <circle class="core" cx="397.5" cy="85.5" r="3.2"/>
-          <text class="now-tag" x="415" y="70">● 実施中</text>
+          <g class="now-pill"><rect x="415" y="60.5" width="34" height="12" rx="6"/><text x="432" y="69.2" text-anchor="middle">実施中</text></g>
           <text x="415" y="83"><tspan class="num">263</tspan><tspan class="name" dx="5">にかほ</tspan></text>
           <text class="sub" x="415" y="94">NIKAHO · AKITA</text>
         </a>
@@ -1247,11 +1359,10 @@
           <div><span>Drawn by</span><b>Tsuda Shoichi</b></div>
           <div><span>Scale</span><b>1 : 1</b></div>
           <div><span>Sheets</span><b>261 — 263</b></div>
+          <div class="tb-pos"><span>Position</span><b class="chart-readout" id="readout" aria-hidden="true">36.649°N 138.195°E</b></div>
+          <div class="tb-rev"><span>Revision</span><b class="chart-rev" id="chartRev"><em>REV.0</em>初版</b></div>
         </div>
-        <div class="chart-foot">
-          <p class="chart-rev" id="chartRev"><b>REV.0</b>初版</p>
-          <p class="chart-tip" id="chartTip" aria-live="polite"><b>TIP</b>地図の余白を押すと、次の敷地を仮置きできます。</p>
-        </div>
+        <p class="chart-tip" id="chartTip" aria-live="polite"><b>TIP</b>地図の余白を押すと、次の敷地を仮置きできます。</p>
       </figcaption>
     </figure>
   </header>
@@ -1338,6 +1449,14 @@
       <p>青く焼かれた図版は、まだ実現していない風景です。見つめていると現像され、シートを開くと提案書の本編へ進みます。</p>
     </div>
 
+    <div class="recruit reveal">
+      <div>
+        <p class="rc-badge"><i class="sn-ring" aria-hidden="true"></i>Open for Partners — 実施先 募集中</p>
+        <p class="rc-text">ここにある 2 つの計画は、実現の場を探しています。会場・主催・協賛など、一緒に実現してくださる方・団体からのご相談をお待ちしています。</p>
+      </div>
+      <a class="rc-cta" href="../contact.html">この計画について相談する <span aria-hidden="true">→</span></a>
+    </div>
+
     <div class="sheets" id="sheetStack">
 
       <!-- ─── 261 ─── -->
@@ -1345,7 +1464,7 @@
       <article class="sheet" data-site="261" style="--i:0">
         <div class="sheet-inner">
           <div class="sheet-strip">
-            <span class="ss-no">Sheet 261</span><span class="ss-status">提案中</span><span class="ss-sep"></span>
+            <span class="ss-no">Sheet 261</span><span class="ss-status">提案中・実施先募集</span><span class="ss-sep"></span>
             <span class="ss-title">六甲の帳 ── 記憶の濾過と再領土化</span><span class="ss-sep s2"></span>
             <span class="ss-site">Rokko · Hyogo</span>
             <span class="ss-count">01 / 02</span>
@@ -1382,7 +1501,7 @@
       <article class="sheet" data-site="262" style="--i:1">
         <div class="sheet-inner">
           <div class="sheet-strip">
-            <span class="ss-no">Sheet 262</span><span class="ss-status">提案中</span><span class="ss-sep"></span>
+            <span class="ss-no">Sheet 262</span><span class="ss-status">提案中・実施先募集</span><span class="ss-sep"></span>
             <span class="ss-title">ASAMA SPECTRUM</span><span class="ss-sep s2"></span>
             <span class="ss-site">Kita-Karuizawa · Gunma</span>
             <span class="ss-count">02 / 02</span>
@@ -1658,7 +1777,8 @@
     var coffee = (function () {
       var layer = document.getElementById('coffeeLayer');
       var rev = document.getElementById('chartRev');
-      var SPOTS = [[95, 125], [420, 402], [440, 252], [135, 330]];
+      // 1 杯目は右下の余白（太平洋）に。DETAIL A のまわりを混ませない
+      var SPOTS = [[420, 402], [95, 125], [440, 252], [135, 330]];
       var CUPS = [
         { drink: 'COFFEE',    name: 'コーヒー', note: '本計画に含まず',         tone: '#d9a066', grad: 'stain-coffee', say: '…失礼',          rev: 'コーヒーの染みを除去' },
         { drink: 'COFFEE',    name: 'コーヒー', note: '2杯目（本計画に含まず）', tone: '#d9a066', grad: 'stain-coffee', say: '…失礼（2杯目）',  rev: '2杯目の染みを除去' },
@@ -1701,9 +1821,9 @@
           crumbs.concat(g).forEach(function (el) { if (el.parentNode) el.parentNode.removeChild(el); });
         }, 900);
         rev.textContent = '';
-        var b = document.createElement('b');
-        b.textContent = 'REV.' + 'ABCD'.charAt(n);
-        rev.appendChild(b);
+        var em = document.createElement('em');
+        em.textContent = 'REV.' + 'ABCD'.charAt(n);
+        rev.appendChild(em);
         rev.appendChild(document.createTextNode(cup.rev + ' · ' + today));
         rev.classList.remove('is-new'); void rev.offsetWidth; rev.classList.add('is-new');
         n++;
@@ -1868,7 +1988,8 @@
       var toEx = Math.round((exStart - today) / DAY);
       var tick = toEx > 0 ? '制作発表展示会（にかほっと）まで あと ' + toEx + ' 日'
         : today <= exEnd ? '制作発表展示会 開催中 ─ にかほっと 12.14–19' : '制作発表展示会 12.14–19 ─ にかほっと';
-      Array.prototype.forEach.call(card.querySelectorAll('.nt-count'), function (el) { el.textContent = tick; });
+      // 速報帯と、ヘッダー「実施中」の説明
+      Array.prototype.forEach.call(document.querySelectorAll('.nt-count'), function (el) { el.textContent = tick; });
 
       var imgs = card.querySelectorAll('.now-media img');
       var cap = document.getElementById('nowCap');
@@ -1990,7 +2111,37 @@
       if (flat) sheets.forEach(function (s) { var inner = s.firstElementChild; inner.style.transform = ''; inner.style.filter = ''; });
     }
 
+    /* ─── HEADER：実施中／提案中。読んでいる区分に下地が滑る ─── */
+    var navSec = document.getElementById('navSections');
+    var snItems = { now: navSec.querySelector('.sn-now'), prop: navSec.querySelector('.sn-prop') };
+    var secNow = document.getElementById('now');
+    var cutEl = document.querySelector('.cutline');
+    var spyCur = null;
+    function placeInd() {
+      var it = spyCur && snItems[spyCur];
+      if (!it) { navSec.style.setProperty('--ind-o', 0); return; }
+      navSec.style.setProperty('--ind-x', it.offsetLeft + 'px');
+      navSec.style.setProperty('--ind-w', it.offsetWidth + 'px');
+      navSec.style.setProperty('--ind-c', spyCur === 'now' ? 'var(--shu)' : 'var(--cyan)');
+      navSec.style.setProperty('--ind-o', 1);
+    }
+    function spy() {
+      var probe = window.innerHeight * 0.4, cur = null;
+      if (cutEl.getBoundingClientRect().top < probe) cur = 'prop';
+      else if (secNow.getBoundingClientRect().top < probe) cur = 'now';
+      if (cur === spyCur) return;
+      spyCur = cur;
+      for (var k in snItems) {
+        snItems[k].classList.toggle('is-active', k === cur);
+        var a = snItems[k].querySelector('.sn-link');
+        if (k === cur) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
+      }
+      placeInd();
+    }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeInd);
+
     function onScroll() {
+      spy();
       var y = window.scrollY || window.pageYOffset;
       var max = document.documentElement.scrollHeight - window.innerHeight;
       var pct = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
@@ -2022,7 +2173,7 @@
     window.addEventListener('resize', function () {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function () {
-        layoutStack(); onScroll();
+        layoutStack(); onScroll(); placeInd();
         // ウィンドウ幅が変わると、タイトルの幅を測り直す
         measure(); if (running) renderDim(now());
       }, 120);
