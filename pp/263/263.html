@@ -450,9 +450,12 @@
     ════════════════════════════════════════ */
     .ph-head { position: relative; height: clamp(440px, 78vh, 760px); display: flex; flex-direction: column; justify-content: space-between; color: #fff; overflow: hidden; background: var(--night); }
     .ph-img { position: absolute; inset: 0; overflow: hidden; }
-    .ph-img img { width: 100%; height: 100%; object-fit: cover; object-position: var(--pos, 50% 50%); transform: scale(1.02); }
+    .ph-img img, .ph-img video { width: 100%; height: 100%; object-fit: cover; object-position: var(--pos, 50% 50%); transform: scale(1.02); }
+    /* PHASE 1：対話の映像をループ。流れはじめたら写真の上に重ね、再生できなければ写真のまま */
+    .ph-img .ph-vid { position: absolute; inset: 0; opacity: 0; transition: opacity 1s ease; }
+    .ph-img .ph-vid.is-on { opacity: 1; }
     @supports (animation-timeline: view()) {
-      .ph-img img { animation: phDrift linear both; animation-timeline: view(); animation-range: entry 0% exit 100%; }
+      .ph-img img, .ph-img video { animation: phDrift linear both; animation-timeline: view(); animation-range: entry 0% exit 100%; }
       @keyframes phDrift { from { transform: scale(1.14) translateY(-4%); } to { transform: scale(1.14) translateY(4%); } }
     }
     .ph-head::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7, 34, 50, 0.78) 0%, rgba(7, 34, 50, 0.3) 22%, rgba(7, 34, 50, 0) 38%), linear-gradient(0deg, rgba(7, 34, 50, 0.92) 0%, rgba(7, 34, 50, 0.5) 30%, rgba(7, 34, 50, 0) 58%); pointer-events: none; }
@@ -462,7 +465,7 @@
     .ph-top .kicker::before { content: ""; width: 9px; height: 9px; background: var(--cl); flex: none; }
     .ph-top .dt { color: #fff; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5); }
     .ph-title { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.4rem clamp(1rem, 2.6vw, 2.4rem); align-items: end; padding-bottom: clamp(2.2rem, 5vw, 3.6rem); }
-    .ph-no { font-family: var(--en); font-weight: 300; font-size: clamp(4.6rem, 10vw, 8.5rem); line-height: 0.8; color: var(--cl); letter-spacing: -0.02em; }
+    .ph-no { font-variant-numeric: lining-nums; font-family: var(--en); font-weight: 300; font-size: clamp(4.6rem, 10vw, 8.5rem); line-height: 0.8; color: var(--cl); letter-spacing: -0.02em; }
     .ph-title h2 { font-family: var(--serif); font-weight: 700; font-size: clamp(1.55rem, 3.6vw, 2.9rem); line-height: 1.45; letter-spacing: 0.1em; color: #fff; font-feature-settings: "palt"; word-break: auto-phrase; text-wrap: balance; text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35); }
     .ph-title p { font-size: clamp(0.8rem, 1.1vw, 0.92rem); letter-spacing: 0.12em; color: rgba(255, 255, 255, 0.84); margin-top: 0.5rem; }
     @media (max-width: 640px) { .ph-title { grid-template-columns: 1fr; } .ph-top { flex-direction: column; gap: 0.3rem; } }
@@ -1329,7 +1332,14 @@
 ═══════════════════════════════════════════════ -->
 <section id="phase1" data-pc="ferment" style="--c: var(--ferment); --cl: var(--ferment-l);" aria-labelledby="p1-title">
   <header class="ph-head">
-    <div class="ph-img" style="--pos: 50% 38%;"><img src="../images/img-263/対話イメージ.jpg" alt="和室で、語り手の女性の話をノートに書き留めながら聞く" loading="lazy" decoding="async"></div>
+    <div class="ph-img" style="--pos: 50% 38%;">
+      <img src="../images/img-263/対話イメージ.jpg" alt="和室で、語り手の女性の話をノートに書き留めながら聞く" loading="lazy" decoding="async">
+      <video class="ph-vid" id="p1-vid" muted loop playsinline autoplay preload="none" poster="../images/img-263/対話イメージ.jpg" aria-hidden="true">
+        <source src="../images/img-263/TALK-LOOP.webm" type='video/webm; codecs="vp9"'>
+        <source src="../images/img-263/TALK-LOOP.mp4" type='video/mp4; codecs="avc1.640028"'>
+      </video>
+    </div>
+    <p class="ph-cap">※ 映像は対話のイメージです</p>
     <div class="ph-top"><span class="kicker">PHASE 1 — 発酵</span><span class="dt">09.14 — 10.24</span></div>
     <div class="ph-title">
       <span class="ph-no" aria-hidden="true">01</span>
@@ -1795,6 +1805,26 @@ document.addEventListener('DOMContentLoaded', function () {
         } else v.pause();
       });
     }, { rootMargin: '200px 0px' }).observe(band);
+  })();
+
+  /* ── PHASE 1：対話の映像を、画面に入っているあいだだけループ再生 ── */
+  (function () {
+    var v = document.getElementById('p1-vid');
+    if (!v) return;
+    var seen = false, vis = false;
+    v.muted = true; v.defaultMuted = true; v.playsInline = true;
+    v.addEventListener('playing', function () { v.classList.add('is-on'); });
+    v.addEventListener('error', function () { v.classList.remove('is-on'); }, true);
+    function play() { var pr; try { pr = v.play(); } catch (e) { return; } if (pr && pr.catch) pr.catch(function () {}); }
+    ['pointerdown', 'keydown', 'touchend'].forEach(function (ev) {
+      window.addEventListener(ev, function () { if (vis && v.paused) play(); }, { passive: true });
+    });
+    new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        vis = e.isIntersecting;
+        if (vis) { if (!seen) { seen = true; v.preload = 'auto'; v.load(); } play(); } else v.pause();
+      });
+    }, { rootMargin: '200px 0px' }).observe(v.closest('.ph-head'));
   })();
 
   /* ── NAV：背景・進捗バー・現在地 ── */
