@@ -3,7 +3,7 @@
 <head>
   <script>
     /* ── ヒーローの開始制御 ──
-       ・タイトル書体と表紙写真がそろった瞬間に一斉スタート（読み込みが遅くても最長 0.8 秒で開始）
+       ・タイトル書体と表紙写真がそろった瞬間に一斉スタート（読み込みが遅くても最長 0.8 秒で開始。タイトルは約 0.1 秒後から読める）
        ・ページが画面に表示されていること（背景タブで開かれても、見た瞬間に最初から再生）
        ・OS の「アニメーション効果オフ（動きを減らす）」設定に関係なく再生する
        クリック・タップ・キー・スクロールで、即座に完成形へスキップできる。 */
@@ -14,7 +14,7 @@
         if (started || document.hidden) return;
         started = true;
         d.classList.add('intro-go');
-        setTimeout(function () { d.classList.add('intro-done'); }, 4200);
+        setTimeout(function () { d.classList.add('intro-done'); }, 2400);
       }
       function skip() {
         if (d.classList.contains('intro-done')) return;
@@ -30,7 +30,7 @@
           waits.push(document.fonts.load('700 60px "Shippori Mincho B1"', 'にかほの神話と伝承').catch(function () {}));
         }
         waits.push(new Promise(function (res) {
-          var im = new Image(); im.onload = im.onerror = res; im.src = '../images/img-263/ミミクリのイメージ%20(3).jpg';
+          var im = new Image(); im.onload = im.onerror = res; im.src = '../images/img-263/KISAKATA%20(3).JPG';
         }));
         Promise.all(waits).then(go);
         setTimeout(go, 800);
@@ -39,7 +39,7 @@
       document.addEventListener('visibilitychange', function () { if (document.readyState !== 'loading') go(); });
     })();
   </script>
-  <link rel="preload" as="image" href="../images/img-263/ミミクリのイメージ%20(3).jpg">
+  <link rel="preload" as="image" href="../images/img-263/KISAKATA%20(3).JPG">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -51,7 +51,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>にかほの神話と伝承（仮） | 制作スケジュール提案書</title>
-  <meta name="description" content="秋田県にかほ市での住民ヒアリングを起点に、書籍（仮）とインスタレーション（ミミクリ）へと翻訳し、12月の制作発表展示会に至るまでの制作進行を提案する（rev.4）。擬態のインスタレーション《ミミクリ》の概要と制作予定プラン解説へのリンクを含む。">
+  <meta name="description" content="秋田県にかほ市での住民ヒアリングを起点に、書籍（仮）とインスタレーション（ミミクリ）へと翻訳し、12月の制作発表展示会に至るまでの制作進行を提案する（rev.5）。擬態のインスタレーション《ミミクリ》の概要と制作予定プラン解説へのリンクを含む。">
   <meta property="og:title" content="にかほの神話と伝承（仮） — 制作スケジュール提案書">
   <meta property="og:description" content="土地の記憶を紡ぐ工程表。ヒアリング拡大 → 中間発表 → 本格制作 → 制作発表展示会。擬態のインスタレーション《ミミクリ》の概要を含む。">
   <meta property="og:type" content="website">
@@ -190,110 +190,145 @@
 
     /* ════════════════════════════════════════
         HERO — 表紙
+        ・最初の画面は「タイトル」と「九十九島の窓」だけ
+        ・タイトルは約 0.1 秒後から一字ずつ現れ、約 1.6 秒で完成（クリック・キー・スクロールで即スキップ）
+        ・スクロールすると、タイトルは鳥海山の山体崩壊のように崩れ、画面について流れ落ち、九十九島になって止まる
+        ・その下に、この計画のレシピ（材料・つくり方）と発酵の瓶
     ════════════════════════════════════════ */
-    .hero { position: relative; background: var(--night); color: var(--on-night); isolation: isolate; }
-    .hero-stage { position: relative; height: 100vh; height: 100svh; min-height: 640px; overflow: hidden; }
-    .hero-media { --ar: 1.5012; --z: 1.25; --fx: 20%; --fy: 100%; }
-    .hero-media img { transition: opacity 1.6s ease, transform 3.4s var(--ease), filter 2.4s ease; }
-    .js .hero-media img { opacity: 0; transform: scale(1.1); filter: blur(10px) brightness(0.7); }
-    .js.intro-go .hero-media img { opacity: 1; transform: none; filter: none; }
-    /* 霧：はじめは画面を覆い、左へ流れながら晴れていく */
-    .hero-mist { position: absolute; inset: -12%; pointer-events: none; opacity: 0; filter: blur(34px);
-      background:
-        radial-gradient(46% 52% at 78% 40%, rgba(150, 168, 168, 0.95), rgba(150, 168, 168, 0) 72%),
-        radial-gradient(60% 48% at 34% 66%, rgba(120, 140, 138, 0.8), rgba(120, 140, 138, 0) 72%),
-        radial-gradient(50% 40% at 12% 22%, rgba(110, 128, 128, 0.6), rgba(110, 128, 128, 0) 70%); }
-    .js .hero-mist { opacity: 1; }
-    .js.intro-go .hero-mist { opacity: 0; transform: translateX(-9%) scale(1.18); transition: opacity 2.2s cubic-bezier(0.4, 0, 0.2, 1) 0.15s, transform 3.6s var(--ease); }
-    .hero-shade {
-      position: absolute; inset: 0; pointer-events: none;
-      background:
-        linear-gradient(180deg, rgba(7, 34, 50, 0.72) 0%, rgba(7, 34, 50, 0) 24%),
-        linear-gradient(0deg, rgba(7, 34, 50, 0.94) 0%, rgba(7, 34, 50, 0.62) 22%, rgba(7, 34, 50, 0) 46%),
-        linear-gradient(270deg, rgba(7, 34, 50, 0.6) 0%, rgba(7, 34, 50, 0) 34%);
-    }
-    .hero-meta { position: absolute; left: var(--px); right: var(--px); top: clamp(76px, 10vh, 104px); display: flex; justify-content: space-between; gap: 1rem; font-family: var(--mono); font-size: clamp(0.6rem, 0.9vw, 0.7rem); letter-spacing: 0.3em; color: var(--on-night-2); }
-    .hero-meta p { display: grid; gap: 0.35rem; }
-    .hero-meta .jp { font-family: var(--sans); font-size: clamp(0.8rem, 1.2vw, 0.95rem); letter-spacing: 0.24em; color: var(--on-night); }
-    .hero-meta .r { text-align: right; }
-
-    .hero-titles { position: absolute; right: calc(var(--px) + 0.5vw); top: clamp(140px, 19vh, 190px); display: flex; flex-direction: row-reverse; align-items: flex-start; gap: clamp(0.8rem, 1.6vw, 1.6rem);
-      /* スクロールすると、タイトルはほどけて風景に溶ける（--sp：0→1） */
-      opacity: calc(1 - var(--sp, 0) * 0.92); filter: blur(calc(var(--sp, 0) * 6px)); }
-    .hero-title {
-      writing-mode: vertical-rl; font-family: var(--serif); font-weight: 700; line-height: 1.1; letter-spacing: 0.1em; color: #fff;
-      font-size: clamp(2.2rem, min(5vw, calc((100svh - 230px) / 13.4)), 5.2rem);
-      text-shadow: 0 2px 34px rgba(0, 0, 0, 0.4);
-    }
-    /* 霧の一点に凝縮していた文字が、ほどけながら一字ずつ輪郭を結ぶ */
-    .js .hero-title { letter-spacing: -0.62em; }
-    .js.intro-go .hero-title { letter-spacing: 0.1em; transition: letter-spacing 2.1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s; }
-    .hero-title .ch { display: inline-block;
-      translate: calc(var(--dx, 0px) * var(--sp, 0)) calc(var(--dy, 0px) * var(--sp, 0));
-      rotate: calc(var(--dr, 0deg) * var(--sp, 0)); }
-    .js .hero-title .ch { opacity: 0; filter: blur(22px); transform: translateY(-0.7em) scale(1.35); }
-    .js.intro-go .hero-title .ch { opacity: 1; filter: blur(0); transform: none; transition: opacity 0.9s ease, filter 1.3s cubic-bezier(0.2, 0.7, 0.2, 1), transform 1.7s var(--ease); transition-delay: calc(var(--i) * 55ms + 120ms); }
-    .js .hero-sub .vbar { transform: scaleY(0); transform-origin: top; }
-    .js.intro-go .hero-sub .vbar { transform: none; transition: transform 1.4s var(--ease) 1.1s; }
-    .hero-title .kari { font-size: 0.72em; }
-    .hero-sub { writing-mode: vertical-rl; margin-top: 3.2em; font-size: clamp(0.78rem, 1.05vw, 0.92rem); letter-spacing: 0.36em; line-height: 1.6; color: rgba(238, 246, 249, 0.86); }
-    .hero-sub .vbar { display: inline-block; width: 1px; height: 2.2em; background: currentColor; margin: 0.9em 0; opacity: 0.8; vertical-align: middle; }
-
+    .hero { --lw: min(30vw, 440px); position: relative; color: var(--ink); background: linear-gradient(180deg, #D9EEF7 0%, #EAF5F9 40%, var(--paper) 100%); }
+    .hero::before { content: ""; position: absolute; inset: 0 0 auto; height: 100svh; pointer-events: none; background-image: linear-gradient(rgba(14, 47, 66, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(14, 47, 66, 0.05) 1px, transparent 1px); background-size: 28px 28px; -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 90%); mask-image: linear-gradient(180deg, #000 0%, transparent 90%); }
+    .hero-stage { position: relative; height: 100vh; height: 100svh; min-height: 680px; max-height: 1080px; }
     .js .hf { opacity: 0; transform: translateY(12px); }
-    .js.intro-go .hf { opacity: 1; transform: none; transition: opacity 1.2s ease, transform 1.4s var(--ease); transition-delay: var(--dl, 0.6s); }
+    .js.intro-go .hf { opacity: 1; transform: none; transition: opacity 0.9s ease, transform 1.1s var(--ease); transition-delay: var(--dl, 0.3s); }
 
-    /* 表紙写真のなかの作品（気づくかな？） */
-    .spot { position: absolute; width: 11.5%; aspect-ratio: 1; transform: translate(-50%, -50%); border: 0; border-radius: 50%; background: transparent; cursor: pointer; z-index: 3; }
-    .js .spot { opacity: 0; pointer-events: none; }
-    .js.intro-go .spot { opacity: 1; pointer-events: auto; transition: opacity 1.4s ease 2.4s; }
-    .spot-ring { position: absolute; inset: 0; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.78); }
-    .spot-ring::after { content: ""; position: absolute; inset: -1px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.6); animation: ripple 3.2s ease-out infinite; }
-    @keyframes ripple { 0% { transform: scale(1); opacity: 0.9; } 70%, 100% { transform: scale(1.55); opacity: 0; } }
-    .spot-tip { position: absolute; left: 100%; top: 50%; transform: translate(14px, -50%); display: grid; white-space: nowrap; pointer-events: none; }
-    .spot-tip > span { grid-area: 1 / 1; display: inline-flex; align-items: center; gap: 0.7em; padding: 0.5em 1.1em; border-radius: 999px; background: rgba(16, 16, 16, 0.86); color: #fff; font-size: 0.74rem; letter-spacing: 0.14em; transition: opacity 0.45s ease, transform 0.6s var(--ease); }
-    .spot-tip .t2 { opacity: 0; transform: translateX(-8px); background: var(--m-paper); color: var(--m-ink); }
-    .spot-tip .t2 b { color: var(--m-rust); font-weight: 500; }
-    .spot.is-open .t1, .spot:hover .t1 { opacity: 0; transform: translateX(8px); }
-    .spot.is-open .t2, .spot:hover .t2 { opacity: 1; transform: none; }
-    .spot.is-open .spot-ring, .spot:hover .spot-ring { border-color: var(--present-l); }
+    .hx-meta { position: absolute; z-index: 2; left: var(--px); top: clamp(88px, 12vh, 112px); display: grid; gap: 0.3rem; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.3em; color: var(--muted); }
+    .hx-meta b { font-family: var(--sans); font-weight: 500; font-size: 0.92rem; letter-spacing: 0.26em; color: var(--ink); }
 
-    .hero-foot { position: absolute; left: var(--px); right: var(--px); bottom: clamp(22px, 3.6vh, 40px); z-index: 2; max-width: min(64%, 760px); }
-    .hero-accent { width: 88px; height: 2px; background: var(--present-l); }
-    .hero-lead { margin: 1.1rem 0 1.5rem; font-size: clamp(0.88rem, 1.05vw, 0.98rem); line-height: 2.05; color: rgba(238, 246, 249, 0.9); max-width: 40em; }
-    .hero-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0; border-top: 1px solid rgba(255, 255, 255, 0.3); padding-top: 1.15rem; font-size: clamp(0.92rem, 1.25vw, 1.1rem); letter-spacing: 0.18em; }
-    .hero-flow li { display: inline-flex; align-items: center; }
-    .hero-flow li + li::before { content: "→"; color: var(--present-l); margin: 0 1rem; letter-spacing: 0; }
-    .hero-flow a { text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.3s, color 0.3s; }
-    .hero-flow a:hover { color: #fff; border-bottom-color: var(--c); }
-    .hero-legend { display: flex; flex-wrap: wrap; gap: 0.4rem 1.8rem; margin-top: 0.9rem; font-size: 0.74rem; letter-spacing: 0.1em; color: var(--on-night-2); }
-    .hero-legend li { display: inline-flex; align-items: center; gap: 0.6em; }
-    .hero-legend li::before { content: ""; width: 0.78em; height: 0.78em; background: var(--c); }
-    .hero-base { display: flex; justify-content: space-between; align-items: center; margin-top: 1.3rem; font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.3em; color: var(--on-night-3); }
-    .scroll-cue { display: none; }
-    .hero-scroll { position: absolute; right: var(--px); bottom: clamp(22px, 3.6vh, 40px); z-index: 2; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.32em; color: var(--on-night-3); text-decoration: none; display: flex; align-items: center; gap: 0.8rem; }
-    .hero-scroll i { width: 1px; height: 44px; background: linear-gradient(var(--on-night-3), transparent); position: relative; overflow: hidden; }
-    .hero-scroll i::after { content: ""; position: absolute; left: 0; top: -40%; width: 100%; height: 40%; background: #fff; animation: drip 2.4s var(--ease) infinite; }
+    /* タイトル：大きな縦書き2列。崩れる文字は JS が一字ずつ動かす */
+    .hx-tbox { position: absolute; z-index: 30; left: var(--px); top: clamp(150px, 20vh, 196px); width: var(--lw); display: flex; flex-direction: row-reverse; justify-content: flex-start; align-items: flex-start; gap: clamp(0.8rem, 1.6vw, 1.6rem); pointer-events: none; }
+    .hx-title { writing-mode: vertical-rl; font-family: var(--serif); font-weight: 800; font-size: clamp(3.2rem, min(8.6vw, calc((100svh - 250px) / 6.5)), 8.2rem); line-height: 1.16; letter-spacing: 0.05em; color: var(--ink); text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6); }
+    .hx-title .ln { display: block; }
+    .hx-title .ch { position: relative; display: inline-block; will-change: transform; }
+    .js .hx-title .ch { opacity: 0; transform: translateY(-0.4em) scale(1.12); filter: blur(8px); }
+    .js.intro-go .hx-title .ch { opacity: 1; transform: none; filter: none; transition: opacity 0.6s ease, transform 0.9s var(--back), filter 0.7s ease; transition-delay: calc(var(--i) * 55ms + 80ms); }
+    .hx-title.moving .ch { transition: none !important; filter: none !important; }
+    /* 崩れはじめの、ゴゴゴ */
+    .hx-title.quaking { animation: rumble 0.16s linear infinite; }
+    @keyframes rumble { 0% { transform: translate(0, 0); } 25% { transform: translate(1.5px, -1px); } 50% { transform: translate(-1px, 1.5px); } 75% { transform: translate(1px, 1px); } 100% { transform: translate(-1.5px, -0.5px); } }
+    /* 流れ着くと、島になる（水の輪が広がる） */
+    .hx-title .ch::after { content: ""; position: absolute; left: 50%; top: 50%; width: 1.5em; height: 0.42em; margin: 0.28em 0 0 -0.75em; border-radius: 50%; border: 1.5px solid rgba(28, 124, 181, 0.55); background: radial-gradient(closest-side, rgba(143, 214, 247, 0.35), rgba(143, 214, 247, 0)); opacity: var(--land, 0); transform: scale(calc(0.6 + var(--land, 0) * 0.5)); pointer-events: none; }
+    .hx-title .ch.landed { color: #1F6B47; }
+    /* （仮）は、タイトルにぶら下がった値札 */
+    .kari { position: relative; display: inline-block; margin-top: 0.4em; padding: 0.3em 0.28em; border: 1.5px solid var(--present); border-radius: 5px 5px 12px 5px; background: #fff; color: var(--present); font-size: 0.3em; font-weight: 700; line-height: 1; cursor: help; pointer-events: auto; transform-origin: 50% -0.9em; animation: sway 3.6s ease-in-out infinite; }
+    .kari::before { content: ""; position: absolute; left: 50%; top: -0.9em; height: 0.9em; border-left: 1px solid var(--present); }
+    .kari .tip { position: absolute; left: calc(100% + 10px); top: 50%; writing-mode: horizontal-tb; transform: translate(6px, -50%); width: max-content; padding: 0.5em 0.9em; border-radius: 10px; background: var(--ink); color: #fff; font-family: var(--hand); font-weight: 600; font-size: 2.1em; letter-spacing: 0.04em; opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.4s var(--back); }
+    .kari:hover .tip, .kari:focus-visible .tip { opacity: 1; transform: translate(0, -50%); }
+    @keyframes sway { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(6deg); } }
+    .hx-sub { writing-mode: vertical-rl; margin-top: 0.6em; font-size: clamp(0.8rem, 1.05vw, 0.95rem); letter-spacing: 0.34em; line-height: 1.7; color: var(--text); }
+    .hx-sub i { display: inline-block; width: 1px; height: 2.4em; margin: 0.9em 0; background: var(--present); vertical-align: middle; }
+
+    .hx-base { position: absolute; z-index: 2; left: var(--px); bottom: clamp(20px, 3.4vh, 34px); width: var(--lw); display: grid; gap: 0.2rem; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em; color: var(--muted); }
+    .hx-base small { font-family: var(--sans); font-size: 0.62rem; letter-spacing: 0.04em; color: var(--dim); }
+    .hx-scroll { position: absolute; z-index: 2; left: calc(var(--px) + var(--lw) + 40px); bottom: clamp(20px, 3.4vh, 34px); display: grid; justify-items: center; gap: 0.4rem; font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.3em; color: var(--muted); text-decoration: none; }
+    .hx-scroll i { position: relative; width: 1px; height: 46px; background: rgba(14, 47, 66, 0.2); overflow: hidden; }
+    .hx-scroll i::after { content: ""; position: absolute; left: 0; top: -40%; width: 100%; height: 40%; background: var(--present); animation: drip 2.2s var(--ease) infinite; }
     @keyframes drip { to { top: 110%; } }
 
-    @media (max-width: 760px) {
-      .hero-stage { height: 88vh; height: 88svh; min-height: 560px; }
-      .hero-media { --z: 1; --fx: 26%; --fy: 50%; }
-      .hero-shade { background: linear-gradient(180deg, rgba(7, 34, 50, 0.7) 0%, rgba(7, 34, 50, 0) 26%), linear-gradient(0deg, rgba(9, 40, 58, 1) 0%, rgba(9, 40, 58, 0) 26%), linear-gradient(270deg, rgba(7, 34, 50, 0.62) 0%, rgba(7, 34, 50, 0) 46%); }
-      .hero-meta { flex-direction: column; gap: 0.9rem; }
-      .hero-meta .r { text-align: left; }
-      .hero-meta .r span:first-child { color: var(--on-night); }
-      .hero-titles { top: auto; bottom: 26px; right: var(--px); }
-      .hero-title { font-size: clamp(1.9rem, min(9.6vw, calc((88svh - 290px) / 13.4)), 3.2rem); }
-      .hero-sub { margin-top: 2.4em; font-size: 0.72rem; letter-spacing: 0.3em; }
-      .spot { width: 13%; }
-      .spot-tip { left: 50%; top: 100%; transform: translate(-50%, 10px); }
-      .spot-tip > span { font-size: 0.68rem; }
-      .spot-tip .t2 { transform: translateY(-6px); }
-      .spot.is-open .t1, .spot:hover .t1 { transform: translateY(6px); }
-      .hero-foot { position: relative; left: auto; right: auto; bottom: auto; max-width: none; padding: 8px var(--px) 40px; }
-      .hero-scroll { display: none; }
-      .hero-base { margin-top: 1.6rem; }
+    /* 右：九十九島の窓 */
+    .hx-win { position: absolute; left: calc(var(--px) + var(--lw) + 110px); right: var(--px); top: 88px; bottom: clamp(18px, 3vh, 30px); margin: 0; overflow: hidden; border-radius: 999px 999px 26px 26px; background: #9CC5D8; box-shadow: 0 40px 70px -48px rgba(14, 47, 66, 0.6); }
+    .hx-win > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; animation: kenburns 26s ease-in-out infinite alternate; }
+    @keyframes kenburns { from { transform: scale(1.04) translate(0, 0); } to { transform: scale(1.12) translate(-2%, -1.5%); } }
+    .js .hx-win { clip-path: inset(100% 0 0 0 round 999px 999px 26px 26px); }
+    .js.intro-go .hx-win { clip-path: inset(0 0 0 0 round 999px 999px 26px 26px); transition: clip-path 1.2s var(--ease) 0.1s; }
+    .hx-place { position: absolute; z-index: 2; left: 6%; bottom: 6%; display: grid; gap: 0.15rem; padding: 0.7rem 1rem 0.75rem; border-radius: 12px; background: rgba(255, 255, 255, 0.88); font-size: 0.8rem; letter-spacing: 0.1em; color: var(--ink); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); max-width: 300px; }
+    .hx-place b { display: flex; align-items: center; gap: 0.55em; font-family: var(--serif); font-weight: 700; font-size: 0.98rem; }
+    .hx-place b::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--present); box-shadow: 0 0 0 4px rgba(226, 96, 58, 0.2); }
+    .hx-place span { font-size: 0.72rem; line-height: 1.7; letter-spacing: 0.04em; color: var(--text); }
+
+    /* 崩落中のひとこと（画面下に出る） */
+    .quake { position: fixed; z-index: 95; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom)); width: max-content; max-width: calc(100vw - 32px); transform: translate(-50%, 16px); padding: 0.6rem 1.1rem; border-radius: 99px; background: rgba(14, 47, 66, 0.9); color: #fff; font-family: var(--hand); font-weight: 600; font-size: 0.86rem; letter-spacing: 0.04em; opacity: 0; pointer-events: none; transition: opacity 0.4s ease, transform 0.5s var(--back); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+    .quake.on { opacity: 1; transform: translate(-50%, 0); }
+    .quake b { color: #FFB496; font-weight: 600; margin-right: 0.5em; }
+
+    /* ── その下：この計画のレシピ ── */
+    .hx-recipe { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px); gap: clamp(2rem, 6vw, 5.5rem); align-items: center; padding-block: clamp(4rem, 9vw, 7rem) clamp(4rem, 8vw, 6rem); }
+    .hx-recipe .kicker { color: var(--present); margin-bottom: 0.9rem; }
+    .hx-rh { font-family: var(--serif); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.5; letter-spacing: 0.08em; color: var(--ink); font-feature-settings: "palt"; }
+    .hx-lead { margin-top: 1.2rem; max-width: 34em; font-size: 0.97rem; line-height: 2.05; color: var(--text); }
+    .hx-legend { display: flex; flex-wrap: wrap; gap: 0.3rem 1.3rem; margin-top: 1.1rem; font-size: 0.76rem; letter-spacing: 0.06em; color: var(--muted); }
+    .hx-legend li { display: inline-flex; align-items: center; gap: 0.5em; }
+    .hx-legend li::before { content: ""; width: 0.75em; height: 0.75em; border-radius: 2px; background: var(--c); }
+    .jar-row { display: flex; align-items: flex-end; gap: 1rem; margin-top: clamp(1.8rem, 4vw, 2.6rem); }
+
+    /* 発酵の瓶：中身は今日の日付しだい */
+    .jar { position: relative; flex: none; width: 128px; padding: 0; border: 0; background: none; cursor: pointer; display: grid; grid-template-columns: 100%; justify-items: center; gap: 0.4rem; -webkit-tap-highlight-color: transparent; }
+    .jar svg { width: 100%; height: auto; overflow: visible; transform-origin: 50% 92%; transition: transform 0.4s var(--back); }
+    .jar:hover svg { transform: rotate(-4deg) translateY(-3px); }
+    .jar.shake svg { animation: jarShake 0.7s ease-in-out; }
+    .jg-shadow { fill: rgba(14, 47, 66, 0.2); }
+    .jg-back { fill: rgba(255, 255, 255, 0.7); }
+    .jg-glass { fill: none; stroke: var(--ink); stroke-width: 2.4; stroke-linejoin: round; }
+    .jg-hi { fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; opacity: 0.8; }
+    .jg-lv { transform: translateY(calc((1 - var(--lv, 0)) * 92px)); transition: transform 1.8s var(--ease) 0.2s; }
+    .jg-liq { fill: url(#hx-liq); }
+    .jg-wave { animation: wave 2.6s linear infinite; }
+    @keyframes wave { to { transform: translateX(60px); } }
+    .jg-bub { fill: #fff; opacity: 0; transform-box: fill-box; transform-origin: center; animation: jbub 2.8s ease-in infinite; }
+    .jg-bub.b2 { animation-delay: 0.9s; animation-duration: 3.2s; } .jg-bub.b3 { animation-delay: 1.8s; animation-duration: 2.4s; }
+    @keyframes jbub { 0% { transform: translateY(0) scale(0.5); opacity: 0; } 20% { opacity: 0.9; } 100% { transform: translateY(-46px) scale(1.2); opacity: 0; } }
+    .jar.shake .jg-bub { animation-duration: 0.9s; }
+    .jg-cloth { fill: var(--present); }
+    .jg-string { fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; }
+    .jg-label { fill: #FFFDF8; stroke: rgba(14, 47, 66, 0.5); stroke-width: 1; }
+    .jg-t1 { font-family: var(--serif); font-weight: 700; font-size: 9px; letter-spacing: 0.12em; fill: var(--ink); }
+    .jg-t2 { font-family: var(--en); font-weight: 500; font-size: 17px; fill: var(--present); }
+    .jar-cap { padding: 0.3em 0.85em; border-radius: 99px; background: #fff; font-family: var(--hand); font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; color: var(--ink); white-space: nowrap; box-shadow: 0 8px 20px -12px rgba(14, 47, 66, 0.5); }
+    .jar-say { flex: 0 1 auto; max-width: 270px; margin-bottom: 3.6rem; padding: 0.75rem 1.05rem 0.8rem; border-radius: 16px 16px 16px 4px; background: #fff; font-family: var(--hand); font-weight: 600; font-size: 0.88rem; line-height: 1.6; color: var(--ink); box-shadow: 0 18px 36px -18px rgba(14, 47, 66, 0.55); transform-origin: 0 100%; opacity: 0; transform: scale(0.3); transition: opacity 0.2s ease, transform 0.3s cubic-bezier(0.5, 0, 0.75, 0); }
+    .jar-say.on { opacity: 1; transform: none; animation: boing 0.7s cubic-bezier(0.2, 0.9, 0.3, 1); transition: opacity 0.12s ease; }
+    @keyframes boing { 0% { transform: scale(0.3); } 50% { transform: scale(1.07); } 72% { transform: scale(0.97); } 100% { transform: none; } }
+    @keyframes jarShake { 20% { transform: rotate(-10deg); } 40% { transform: rotate(8deg); } 60% { transform: rotate(-5deg); } 80% { transform: rotate(2deg); } }
+
+    /* レシピカード */
+    .rc { position: relative; padding: 1.4rem 1.5rem 1.1rem; background: #FFFDF8; border-radius: 4px; box-shadow: 0 30px 50px -28px rgba(14, 47, 66, 0.5), 0 0 0 1px rgba(14, 47, 66, 0.08); transform: rotate(-1.6deg); background-image: repeating-linear-gradient(0deg, transparent 0 27px, rgba(28, 124, 181, 0.07) 27px 28px); }
+    .rc::before { content: ""; position: absolute; top: -13px; left: 50%; width: 112px; height: 26px; transform: translateX(-50%) rotate(3deg); background: rgba(255, 164, 126, 0.6); }
+    .js .rc.rv { opacity: 0; transform: translateY(-30px) rotate(-8deg); transition: opacity 0.5s ease, transform 0.9s var(--back); }
+    .js .rc.rv.in { opacity: 1; transform: rotate(-1.6deg); }
+    .rc-top { display: flex; justify-content: space-between; gap: 1rem; font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.18em; color: var(--muted); }
+    .rc-t { margin: 0.35rem 0 0.7rem; font-family: var(--serif); font-weight: 700; font-size: 1.3rem; line-height: 1.45; letter-spacing: 0.1em; color: var(--ink); }
+    .rc-k { display: flex; align-items: baseline; gap: 0.6em; margin: 0.5rem 0 0.3rem; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.26em; color: var(--present); }
+    .rc-k small { font-weight: 400; letter-spacing: 0.1em; color: var(--muted); }
+    .rc-ing li { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 0.45em; padding: 0.22rem 0; font-size: 0.82rem; color: var(--ink); }
+    .rc-ing i { position: relative; flex: none; align-self: center; width: 13px; height: 13px; border: 1.3px solid var(--ink); border-radius: 2px; }
+    .rc-ing i::after { content: ""; position: absolute; left: 3.5px; top: -2px; width: 5px; height: 10px; border-right: 2.2px solid var(--present); border-bottom: 2.2px solid var(--present); transform: rotate(45deg) scale(0); transform-origin: 60% 80%; transition: transform 0.35s var(--back); transition-delay: calc(var(--k) * 150ms + 0.6s); }
+    .rc.in .rc-ing i::after, .rc:not(.rv) .rc-ing i::after { transform: rotate(45deg) scale(1); }
+    .rc-ing .ld { flex: 1; min-width: 1.2em; border-bottom: 1.5px dotted rgba(14, 47, 66, 0.3); transform: translateY(-0.25em); }
+    .rc-ing .q { font-size: 0.78rem; color: var(--text); }
+    .rc-ing em { flex-basis: 100%; padding-left: 1.55rem; font-style: normal; font-size: 0.8rem; line-height: 1.4; color: var(--present); }
+    .rc-steps { border-top: 1px solid rgba(14, 47, 66, 0.12); }
+    .rc-steps a { display: grid; grid-template-columns: 3.3em 5.2em minmax(0, 1fr) auto; align-items: baseline; gap: 0.5em; padding: 0.36rem 0.2rem; border-bottom: 1px solid rgba(14, 47, 66, 0.12); text-decoration: none; transition: background 0.3s; }
+    .rc-steps a::after { content: "→"; font-size: 0.74rem; color: var(--dim); transition: transform 0.35s var(--ease), color 0.3s; }
+    .rc-steps a:hover { background: rgba(28, 124, 181, 0.06); }
+    .rc-steps a:hover::after { transform: translateX(4px); color: var(--c); }
+    .rc-steps b { font-family: var(--mono); font-weight: 500; font-size: 0.72rem; letter-spacing: 0.04em; color: var(--c); }
+    .rc-steps .v { white-space: nowrap; font-family: var(--serif); font-weight: 700; font-size: 0.96rem; letter-spacing: 0.1em; color: var(--ink); }
+    .rc-steps .d { font-size: 0.74rem; letter-spacing: 0.04em; color: var(--muted); }
+    .rc-note { margin-top: 0.6rem; font-size: 0.74rem; line-height: 1.5; color: var(--muted); }
+
+    @media (max-width: 1180px) { .hx-win { left: calc(var(--px) + var(--lw) + 60px); } .hx-scroll { display: none; } }
+    @media (max-width: 860px) {
+      .hero { --lw: auto; }
+      .hero-stage { height: auto; min-height: 0; max-height: none; padding: 150px var(--px) 0; }
+      .hx-meta { top: 88px; }
+      .hx-tbox { position: relative; left: auto; top: auto; width: auto; justify-content: center; }
+      .hx-title { font-size: clamp(3rem, min(19vw, calc((100svh - 330px) / 5.9)), 6rem); }
+      .hx-win { position: relative; left: auto; right: auto; top: auto; bottom: auto; height: min(90vw, 520px); margin-top: 1.6rem; border-radius: 999px 999px 22px 22px; }
+      .js .hx-win, .js.intro-go .hx-win { clip-path: none; }
+      .hx-base { position: static; width: auto; margin-top: 1.2rem; }
+      .hx-recipe { grid-template-columns: 1fr; padding-top: 3.2rem; }
+      .rc { max-width: 440px; width: 100%; justify-self: center; }
+      .quake { bottom: auto; top: 70px; font-size: 0.78rem; }
     }
+    @media (max-width: 420px) { .rc { padding-inline: 1.1rem; } .rc-steps a { grid-template-columns: 3em 5em minmax(0, 1fr) auto; gap: 0.35em; } .rc-steps .d { font-size: 0.66rem; } .rc-ing .q { font-size: 0.7rem; } .jar { width: 104px; } .jar-say { margin-bottom: 3rem; } }
 
     /* ════════════════════════════════════════
         OVERVIEW — 全体スケジュール概観
@@ -980,6 +1015,17 @@
     .closing::after { background: linear-gradient(0deg, rgba(9, 45, 66, 0.9) 0%, rgba(9, 45, 66, 0.45) 40%, rgba(9, 45, 66, 0.12) 100%); }
     .closing img { filter: brightness(1.02) saturate(1.05); }
 
+    /* 明るい表紙の上でも読めるよう、ナビは最初から紺の文字 */
+    .nav { color: var(--ink); }
+    .nav-links a { color: var(--text); }
+    .nav-links a:hover, .nav-links a[aria-current="true"] { color: var(--ink); }
+    .nav-links a .n { filter: brightness(0.62) saturate(1.6); }
+    .nav-links a::after { filter: brightness(0.62) saturate(1.6); }
+    .nav-links a:not([style])::after { background: var(--ink); }
+    .nav-contact { background: var(--ink); color: #fff; }
+    .nav-contact:hover { background: var(--present); }
+    body.no-scroll .nav { background: rgba(243, 248, 250, 0.95); }
+
     /* スキップ */
     .intro-skip .hero *, .intro-skip .nav { transition-duration: 0s !important; transition-delay: 0s !important; }
   </style>
@@ -1011,7 +1057,7 @@
     <p class="menu-k">SCHEDULE PROPOSAL</p>
     <ol>
       <li><a href="#overview" style="--i:0"><span class="n">00</span><span class="t">全体スケジュール概観</span><span class="e">Overview</span></a></li>
-      <li><a href="#phase1" style="--i:1; --c: var(--ferment-l);"><span class="n">01</span><span class="t">発酵 — ヒアリング拡大期</span><span class="e">09.14 — 10.24</span></a></li>
+      <li><a href="#phase1" style="--i:1; --c: var(--ferment-l);"><span class="n">01</span><span class="t">発酵 — ヒアリング拡大期</span><span class="e">10.01 — 10.24</span></a></li>
       <li><a href="#phase2" style="--i:2; --c: var(--ferment-l);"><span class="n">02</span><span class="t">中間発表</span><span class="e">10.25</span></a></li>
       <li><a href="#phase3" style="--i:3; --c: var(--magnet-l);"><span class="n">03</span><span class="t">磁性 — 本格制作期</span><span class="e">11.01 — 11.30</span></a></li>
       <li><a href="#phase4" style="--i:4; --c: var(--present-l);"><span class="n">04</span><span class="t">発表 — 展示会＋トーク</span><span class="e">12.14 — 12.20</span></a></li>
@@ -1038,52 +1084,93 @@
 <main>
 
 <!-- ══════════════════════════════════════════════
-     HERO — 表紙
+     HERO — 表紙（タイトルと九十九島の窓）＋ この計画のレシピ
 ═══════════════════════════════════════════════ -->
 <section class="hero" id="top" data-pc="present-l" aria-labelledby="hero-title">
   <div class="hero-stage">
-    <div class="hero-media cover">
-      <div class="cover-box">
-        <img src="../images/img-263/ミミクリのイメージ%20(3).jpg" alt="苔むした河原の石と倒木。手前の苔の上に、波のような線を刻んだ石の彫刻がひとつ紛れている" fetchpriority="high" decoding="async">
-        <button class="spot" id="hero-spot" type="button" style="left: 28.5%; top: 68.5%;" aria-expanded="false" aria-label="気づくかな？ — 写真のなかの作品">
-          <span class="spot-ring" aria-hidden="true"></span>
-          <span class="spot-tip" aria-live="polite"><span class="t1">気づくかな？</span><span class="t2">ここ、作品です。<b>属：地</b></span></span>
+    <p class="hx-meta hf" style="--dl: 0.05s;"><span>NIKAHO ART PROJECT 2026 ／ rev.5</span><b>にかほ芸術登竜紋</b></p>
+
+    <div class="hx-tbox">
+      <h1 class="hx-title" id="hero-title">
+        <span class="ln"><span class="ch" style="--i:0">に</span><span class="ch" style="--i:1">か</span><span class="ch" style="--i:2">ほ</span><span class="ch" style="--i:3">の</span></span>
+        <span class="ln"><span class="ch" style="--i:4">神</span><span class="ch" style="--i:5">話</span><span class="ch" style="--i:6">と</span><span class="ch" style="--i:7">伝</span><span class="ch" style="--i:8">承</span><span class="ch" style="--i:9"><span class="kari" tabindex="0"><span aria-hidden="true">仮</span><span class="sr">（仮）</span><span class="tip" aria-hidden="true">タイトルも、まだ発酵中です。</span></span></span></span>
+      </h1>
+      <p class="hx-sub hf" style="--dl: 0.5s;">制作スケジュール提案書<i aria-hidden="true"></i><span class="sr">——</span>土地の記憶を紡ぐ工程表</p>
+    </div>
+
+    <figure class="hx-win">
+      <img src="../images/img-263/KISAKATA%20(3).JPG" alt="象潟・九十九島。夏空の下、松の茂る小さな島と草はら" fetchpriority="high" decoding="async">
+      <figcaption class="hx-place hf" style="--dl: 1s;"><b>象潟・九十九島</b><span>約2500年前、鳥海山の山体崩壊で流れ下った岩が、島になった。</span></figcaption>
+    </figure>
+
+    <p class="hx-base hf" style="--dl: 0.8s;"><span>NIKAHO CITY, AKITA ／ 2026.09 — 2026.12</span><small>※ 掲載画像には設置・完成イメージを含みます ／ 2026.09.26 改訂（rev.5）</small></p>
+    <a class="hx-scroll hf" href="#recipe" style="--dl: 1.1s;"><i aria-hidden="true"></i>SCROLL</a>
+  </div>
+
+  <div class="wrap hx-recipe" id="recipe">
+    <div class="rv">
+      <p class="kicker">HOW IT'S MADE — この計画のつくり方</p>
+      <h2 class="hx-rh">土地の記憶を仕込んで、<br>12月に食べ頃へ。</h2>
+      <p class="hx-lead">秋田県にかほ市での住民ヒアリングを起点に、書籍（仮）とインスタレーション（ミミクリ）へと翻訳し、12月の制作発表展示会に至るまでの制作進行を提案する。</p>
+      <ul class="hx-legend">
+        <li style="--c: var(--ferment);">発酵＝ヒアリング・言葉の仕事</li>
+        <li style="--c: var(--magnet);">磁性＝設置・空間の仕事</li>
+        <li style="--c: var(--present);">ミミクリ＝実景への擬態設置</li>
+      </ul>
+      <div class="jar-row">
+        <button class="jar" id="hx-jar" type="button" aria-describedby="hx-cap">
+        <svg viewBox="0 0 120 156" aria-hidden="true">
+          <defs>
+            <clipPath id="hx-jar-in"><path d="M37 30H83V40C99 45 108 58 108 75V126C108 136 100 144 90 144H30C20 144 12 136 12 126V75C12 58 21 45 37 40Z"/></clipPath>
+            <linearGradient id="hx-liq" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC56B"/><stop offset="1" stop-color="#E2603A"/></linearGradient>
+          </defs>
+          <ellipse class="jg-shadow" cx="60" cy="149" rx="46" ry="6"/>
+          <path class="jg-back" d="M37 30H83V40C99 45 108 58 108 75V126C108 136 100 144 90 144H30C20 144 12 136 12 126V75C12 58 21 45 37 40Z"/>
+          <g clip-path="url(#hx-jar-in)">
+            <g class="jg-lv">
+              <path class="jg-liq jg-wave" d="M-120 52q15-6 30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0V170H-120Z"/>
+              <circle class="jg-bub" cx="40" cy="134" r="2.6"/>
+              <circle class="jg-bub b2" cx="72" cy="136" r="2"/>
+              <circle class="jg-bub b3" cx="58" cy="132" r="3"/>
+            </g>
+          </g>
+          <rect class="jg-label" x="30" y="86" width="60" height="38" rx="3"/>
+          <text class="jg-t1" x="60" y="99" text-anchor="middle">発酵度</text>
+          <text class="jg-t2" id="hx-pct" x="60" y="118" text-anchor="middle">0%</text>
+          <path class="jg-glass" d="M37 30H83V40C99 45 108 58 108 75V126C108 136 100 144 90 144H30C20 144 12 136 12 126V75C12 58 21 45 37 40Z"/>
+          <path class="jg-hi" d="M22 80C22 66 27 57 35 52"/>
+          <path class="jg-cloth" d="M30 18Q60 4 90 18L86 33Q60 26 34 33Z"/>
+          <path class="jg-string" d="M34 31Q60 25 86 31M86 31q7 4 4 11M86 31q2 7-4 10"/>
+        </svg>
+          <span class="jar-cap" id="hx-cap">発酵中</span>
+          <span class="sr">押すと、瓶がひとこと話します</span>
         </button>
+        <p class="jar-say" id="hx-say" aria-live="polite"></p>
       </div>
     </div>
-    <div class="hero-shade" aria-hidden="true"></div>
-    <div class="hero-mist" aria-hidden="true"></div>
 
-    <div class="hero-meta">
-      <p class="hf" style="--dl: 0.5s;"><span>NIKAHO ART PROJECT</span><span class="jp">にかほ芸術登竜紋</span></p>
-      <p class="r hf" style="--dl: 0.6s;"><span>2026.09 — 2026.12</span><span>SCHEDULE PROPOSAL / rev.4</span></p>
-    </div>
-
-    <div class="hero-titles">
-      <h1 class="hero-title" id="hero-title"><span class="ch" style="--i:0">に</span><span class="ch" style="--i:1">か</span><span class="ch" style="--i:2">ほ</span><span class="ch" style="--i:3">の</span><span class="ch" style="--i:4">神</span><span class="ch" style="--i:5">話</span><span class="ch" style="--i:6">と</span><span class="ch" style="--i:7">伝</span><span class="ch" style="--i:8">承</span><span class="ch kari" style="--i:9">（仮）</span></h1>
-      <p class="hero-sub hf" style="--dl: 0.9s;">制作スケジュール提案書<span class="vbar" aria-hidden="true"></span><span class="sr">——</span>土地の記憶を紡ぐ工程表</p>
-    </div>
-
-    <a class="hero-scroll hf" href="#overview" style="--dl: 1.4s;"><i aria-hidden="true"></i>SCROLL</a>
-  </div>
-
-  <div class="hero-foot">
-    <div class="hero-accent hf" style="--dl: 0.9s;"></div>
-    <p class="hero-lead hf" style="--dl: 1s;">秋田県にかほ市での住民ヒアリングを起点に、書籍（仮）とインスタレーション（ミミクリ）へと翻訳し、12月の制作発表展示会に至るまでの制作進行を提案する。</p>
-    <ol class="hero-flow hf" style="--dl: 1.15s;" aria-label="制作の流れ">
-      <li><a href="#phase1" style="--c: var(--ferment-l);">ヒアリング拡大</a></li>
-      <li><a href="#phase2" style="--c: var(--ferment-l);">中間発表</a></li>
-      <li><a href="#phase3" style="--c: var(--magnet-l);">本格制作</a></li>
-      <li><a href="#phase4" style="--c: var(--present-l);">制作発表展示会</a></li>
-    </ol>
-    <ul class="hero-legend hf" style="--dl: 1.3s;">
-      <li style="--c: var(--ferment-l);">発酵＝ヒアリング・言葉の仕事</li>
-      <li style="--c: var(--magnet-l);">磁性＝設置・空間の仕事</li>
-      <li style="--c: var(--present-l);">ミミクリ＝実景への擬態設置</li>
-    </ul>
-    <div class="hero-base hf" style="--dl: 1.4s;"><span>NIKAHO CITY, AKITA</span><span class="hero-rev">※ 掲載画像には設置・完成イメージを含みます ／ 2026.09.25 改訂（rev.4）</span></div>
+    <aside class="rc rv" aria-labelledby="rc-t" style="--rd: 0.1s;">
+      <p class="rc-top"><span>RECIPE No.263</span><span>SERVES — にかほのみなさん</span></p>
+      <p class="rc-t" id="rc-t">土地の記憶の、<br>発酵レシピ</p>
+      <p class="rc-k">材料<small>にかほ産</small></p>
+      <ul class="rc-ing">
+        <li style="--k:0"><i aria-hidden="true"></i><span class="nm">住民の語り</span><span class="ld" aria-hidden="true"></span><span class="q">10〜15名分</span></li>
+        <li style="--k:1"><i aria-hidden="true"></i><span class="nm">石・流木・漂着物</span><span class="ld" aria-hidden="true"></span><span class="q">たっぷり（現地採取）</span></li>
+        <li style="--k:2"><i aria-hidden="true"></i><span class="nm">陶のミミクリ</span><span class="ld" aria-hidden="true"></span><span class="q">1〜2点</span><em class="hand">↑ 隠し味。どれに入っているかは、ひみつ</em></li>
+        <li style="--k:3"><i aria-hidden="true"></i><span class="nm">書籍（仮）</span><span class="ld" aria-hidden="true"></span><span class="q">100部（新書判）</span></li>
+      </ul>
+      <p class="rc-k">つくり方</p>
+      <ol class="rc-steps">
+        <li><a href="#phase1" style="--c: var(--ferment);"><b>10月</b><span class="v">仕込む</span><span class="d">ヒアリング拡大</span></a></li>
+        <li><a href="#phase2" style="--c: var(--ferment);"><b>10.25</b><span class="v">味見する</span><span class="d">中間発表</span></a></li>
+        <li><a href="#phase3" style="--c: var(--magnet);"><b>11月</b><span class="v">寝かせる</span><span class="d">本格制作</span></a></li>
+        <li><a href="#phase4" style="--c: var(--present);"><b>12.14</b><span class="v">食べ頃</span><span class="d">制作発表展示会</span></a></li>
+      </ol>
+      <p class="rc-note hand">※ 発酵中につき、味（内容）は変わることがあります。</p>
+    </aside>
   </div>
 </section>
+<p class="quake" id="quake" aria-hidden="true"><b>ゴゴゴ……</b><span id="quake-t">鳥海山にならって、タイトルが山体崩壊中。</span></p>
 
 <!-- ══════════════════════════════════════════════
      OVERVIEW — 全体スケジュール概観
@@ -1113,7 +1200,7 @@
 
     <div class="cd" id="cd" aria-label="節目までの残り日数">
       <div class="cd-i rv" style="--c: var(--ferment);"><p class="cd-k">中間発表 10.25</p><p class="cd-n">あと<b data-to="2026-10-25">–</b>日</p><i class="cd-bar" aria-hidden="true"></i></div>
-      <div class="cd-i rv" style="--c: var(--magnet); --rd: 0.08s;"><p class="cd-k">書籍 入稿／モックアップ 11月末</p><p class="cd-n">あと<b data-to="2026-11-30">–</b>日</p><i class="cd-bar" aria-hidden="true"></i></div>
+      <div class="cd-i rv" style="--c: var(--magnet); --rd: 0.08s;"><p class="cd-k">書籍 入稿・印刷 11月末</p><p class="cd-n">あと<b data-to="2026-11-30">–</b>日</p><i class="cd-bar" aria-hidden="true"></i></div>
       <div class="cd-i rv" style="--c: var(--present); --rd: 0.16s;"><p class="cd-k">制作発表展示会 12.14</p><p class="cd-n">あと<b data-to="2026-12-14">–</b>日</p><i class="cd-bar" aria-hidden="true"></i></div>
     </div>
 
@@ -1126,8 +1213,8 @@
         <div class="g-lab g-axis-lab">PHASE</div>
         <div class="g-track g-months" aria-hidden="true"><span>9月</span><span>10月</span><span>11月</span><span>12月</span><span>1月</span></div>
 
-        <div class="g-lab" style="--c: var(--ferment);"><b>01 発酵</b><span class="nm">ヒアリング拡大期</span><time>09.14 — 10.24</time></div>
-        <div class="g-track" style="--c: var(--ferment);"><span class="g-name" style="--s:13; --e:54;">ヒアリング拡大期</span><span class="g-bar" style="--s:13; --e:54; --k:0;"></span></div>
+        <div class="g-lab" style="--c: var(--ferment);"><b>01 発酵</b><span class="nm">ヒアリング拡大期</span><time>10.01 — 10.24</time></div>
+        <div class="g-track" style="--c: var(--ferment);"><span class="g-name" style="--s:30; --e:54;">ヒアリング拡大期</span><span class="g-bar" style="--s:30; --e:54; --k:0;"></span></div>
 
         <div class="g-lab" style="--c: var(--ferment);"><b>02 中間発表</b><span class="nm">第2回ワークショップ</span><time>10.25 SUN</time></div>
         <div class="g-track" style="--c: var(--ferment);"><span class="g-name" style="--s:54; --e:55;">わくばにかほ</span><span class="g-pt" style="--d:54.5;"></span></div>
@@ -1145,7 +1232,7 @@
 
         <div class="g-over" aria-hidden="true">
           <i class="g-ml" style="--d:30;"></i><i class="g-ml" style="--d:61;"></i><i class="g-ml" style="--d:91;"></i><i class="g-ml" style="--d:122;"></i>
-          <i class="g-mk g-mk--l" style="--d:91; --c: var(--magnet);"><span>入稿／モックアップ 11月末</span></i>
+          <i class="g-mk g-mk--l" style="--d:91; --c: var(--magnet);"><span>入稿・印刷 11月末</span></i>
           <i class="g-mk g-mk--r" style="--d:104; --c: var(--present);"><span>搬入 12.14</span></i>
           <i class="g-today" id="g-today"><span id="g-today-lab">TODAY</span></i>
         </div>
@@ -1154,11 +1241,11 @@
 
     <ol class="ov-list">
       <li class="ov-item rv" style="--c: var(--ferment);">
-        <div class="ov-when"><span class="ov-m">9</span><span class="ov-d">中旬—10月中旬</span></div>
+        <div class="ov-when"><span class="ov-m">10</span><span class="ov-d">上旬—24日</span></div>
         <div class="ov-what">
           <p class="ov-k">PHASE 1 — 発酵</p>
           <h3 class="ov-t">ヒアリング拡大期</h3>
-          <p>紹介していただく語り手への個別訪問を開始。滞在の1日につき2〜3件のペースで10〜15名分の語りを確保し、書籍・広報誌連載・ミミクリの素材として並行整理する。</p>
+          <p>10月上旬に記録用消耗品をそろえ、語り手への個別訪問を開始。週2〜3件のペースで10〜15名分の語りを確保し、書籍・広報誌連載・ミミクリの素材として並行整理する。</p>
           <a class="ov-more" href="#phase1">PHASE 1 <i></i></a>
         </div>
       </li>
@@ -1176,7 +1263,7 @@
         <div class="ov-what">
           <p class="ov-k">PHASE 3 — 磁性</p>
           <h3 class="ov-t">本格制作期</h3>
-          <p>書籍（仮）の執筆・編集（少なくともモックアップ）と、ミミクリの制作・設置を並行。12/14搬入から逆算し、11月末までに書籍の入稿またはモックアップを完成させる。</p>
+          <p>書籍（仮）の執筆・編集と、ミミクリの制作・設置を並行。12/14搬入から逆算し、11月末までに入稿・印刷して、書籍のモックアップ（＝印刷した冊子）を完成させる。</p>
           <a class="ov-more" href="#phase3">PHASE 3 <i></i></a>
         </div>
       </li>
@@ -1185,7 +1272,7 @@
         <div class="ov-what">
           <p class="ov-k">PHASE 4 — 発表</p>
           <h3 class="ov-t">制作発表展示会 ＋ トークイベント（にかほっと）</h3>
-          <p>ミミクリの記録・書籍（仮）のモックアップを展示（12/14–19）。12/20には住民から聞いた物語と作品化プロセスを語るトークを実施し、1月以降の継続調査へつなぐ。</p>
+          <p>ミミクリ（擬態彫刻）・A0の大判写真・書籍（仮）を展示（12/14–19）。12/20には住民から聞いた物語と作品化プロセスを語るトークを行い、1月以降の継続調査へつなぐ。</p>
           <a class="ov-more" href="#phase4">PHASE 4 <i></i></a>
         </div>
       </li>
@@ -1207,7 +1294,7 @@
       </div>
       <div class="mmo-say rv" style="--rd: 0.08s;">
         <p class="mmo-tag">風景に擬態し、<br>気づいた人だけが発見する</p>
-        <p>にかほの海岸・河原・田畑に転がる石、流木、漂着物。<b>その大半を現地で採取した本物とし、陶で作る1〜2点の擬態彫刻を</b>、見分けがつかないように紛れ込ませる。どれが作品かを見分けられない体験が、目の前の風景そのものを「作品かもしれない」という眼差しへ反転させる。</p>
+        <p>にかほの海岸・河原・田畑に転がる石、流木、漂着物。<b>その大半を現地で採取した本物とし、陶で作る1〜2点のミミクリ（擬態彫刻）を</b>、見分けがつかないように紛れ込ませる。どれが作品かを見分けられない体験が、目の前の風景そのものを「作品かもしれない」という眼差しへ反転させる。</p>
         <a class="mmo-go" href="263-M.html">制作予定プラン解説をひらく <i aria-hidden="true"></i></a>
       </div>
     </div>
@@ -1340,10 +1427,10 @@
       </video>
     </div>
     <p class="ph-cap">※ 映像は対話のイメージです</p>
-    <div class="ph-top"><span class="kicker">PHASE 1 — 発酵</span><span class="dt">09.14 — 10.24</span></div>
+    <div class="ph-top"><span class="kicker">PHASE 1 — 発酵</span><span class="dt">10.01 — 10.24</span></div>
     <div class="ph-title">
       <span class="ph-no" aria-hidden="true">01</span>
-      <div><h2 id="p1-title">住民ヒアリングを広げ、素材を蓄積する</h2><p>9月中旬 → 10月中旬 ／ 語り手への個別訪問</p></div>
+      <div><h2 id="p1-title">住民ヒアリングを広げ、素材を蓄積する</h2><p>10月上旬 → 10月24日 ／ 語り手への個別訪問</p></div>
     </div>
   </header>
   <div class="wrap ph-body">
@@ -1352,8 +1439,8 @@
       <div class="col rv">
         <h3><span>A</span>ヒアリング</h3>
         <ul class="rules">
-          <li>週2〜3件のペースで個別訪問。10月中旬までに10〜15名分の語りを確保</li>
-          <li>録音（マイク等）・ノートに加え、現場（家・庭・田畑）の写真も撮影</li>
+          <li>週2〜3件の座談形式で訪問し、10/24までに10〜15名分を確保</li>
+          <li>レコーダーでの録音・ノートに加え、現場（家・庭・田畑）も撮影</li>
           <li>対象者ごとに書籍／展示／広報誌の掲載可否を管理</li>
         </ul>
       </div>
@@ -1439,7 +1526,7 @@
           <li>ヒアリングで集めた語りの抜粋（同意を得たもの）</li>
           <li>インスタレーション設置シミュレーション（模型、または現地写真への合成）</li>
           <li>採取物の候補と陶の試作原型 — 質感の再現度を住民に確認してもらう</li>
-          <li>書籍（仮）のモックアップ案 — 目次構成、判型、ページ数の仮決定</li>
+          <li>書籍（仮）の構成案 — 目次構成、判型、ページ数の仮決定</li>
         </ul>
       </div>
       <div class="col2 rv" style="--cc: var(--magnet); --rd: 0.08s;">
@@ -1491,14 +1578,14 @@
     </div>
   </header>
   <div class="wrap ph-body">
-    <p class="lead rv">12月14日の搬入から逆算し、書籍（仮）は少なくとも展示用のモックアップを11月末までに完成させる。印刷本とする場合は、既存の左美都本の製本仕様・印刷会社を踏襲すれば見通しを立てやすいが、秋田県内、理想的にはにかほ市内の会社を利用したい。形態・部数・印刷費は予算の確認後に確定する。</p>
+    <p class="lead rv">12月14日の搬入から逆算し、11月末までに入稿・印刷して、書籍（仮）のモックアップ（＝印刷した冊子100部）を完成させる。今回は左美都本と同じ新書判で西岡総合印刷（長野）に依頼し、モックアップを経て正式な出版に至った場合は、秋田県・にかほ市にゆかりのある出版社や印刷会社を利用したい。</p>
     <p class="wk-k rv">WEEKLY PLAN</p>
     <div class="rev rv" id="rev">
       <div class="rev-arc" id="rev-arc" aria-hidden="true"><span>逆算</span></div>
       <div class="rev-row">
         <button class="wkb" type="button" data-w="0" aria-pressed="false"><b>W1</b><span>執筆・ヒアリング・成形・許可</span><i></i></button>
         <button class="wkb" type="button" data-w="1" aria-pressed="false"><b>W2</b><span>装丁・同意・焼成・計画</span><i></i></button>
-        <button class="wkb" type="button" data-w="2" aria-pressed="false"><b>W3</b><span>見本・記録・彩色テスト・手配</span><i></i></button>
+        <button class="wkb" type="button" data-w="2" aria-pressed="false"><b>W3</b><span>入稿・記録・彩色テスト・手配</span><i></i></button>
         <button class="wkb" type="button" data-w="3" aria-pressed="false"><b>W4</b><span>印刷・展示・設置・搬入準備</span><i></i></button>
         <span class="rev-end" id="rev-end">12.14<small>搬入</small></span>
       </div>
@@ -1524,14 +1611,14 @@
         </tr>
         <tr>
           <th scope="row">W3</th>
-          <td data-th="書籍（仮）">校正・モックアップ確定<span class="tag">見本・入稿</span></td>
+          <td data-th="書籍（仮）">校正・入稿データ確定<span class="tag">入稿</span></td>
           <td data-th="ヒアリング・記録">録音・写真の整理<span class="tag">記録</span></td>
           <td data-th="ミミクリ" class="mm-col">手彩色・現地設置テスト<span class="tag">彩色・テスト</span></td>
           <td data-th="設置・会場">設営什器・照明の手配<span class="tag">手配</span></td>
         </tr>
         <tr>
           <th scope="row">W4</th>
-          <td data-th="書籍（仮）">印刷・製本（印刷本の場合）<span class="tag">印刷</span></td>
+          <td data-th="書籍（仮）">印刷・製本<br>（モックアップ100部）<span class="tag">印刷</span></td>
           <td data-th="ヒアリング・記録">展示用パネル準備<span class="tag">展示</span></td>
           <td data-th="ミミクリ" class="mm-col">最終設置・撮影（プレートは案）<span class="tag">設置</span></td>
           <td data-th="設置・会場">搬入動線・キャプション原稿作成<span class="tag">搬入準備</span></td>
@@ -1559,12 +1646,12 @@
     </div>
   </header>
   <div class="wrap ph-body">
-    <p class="lead rv">ミミクリのインスタレーション記録写真、書籍（仮）のモックアップを展示空間で発表する。会場では左美都本（長野・左美都の既存書籍）も参考展示し、〈いと〉〈洞窟〉のコンセプトがにかほ・長野の両側から立ち上がる構成にする。</p>
+    <p class="lead rv">ミミクリ（擬態彫刻）と、それを現地に設置して撮影したA0の大判写真、書籍（仮）のモックアップ（印刷した冊子）を展示空間で発表する。会場では左美都本（長野・左美都の既存書籍）も参考展示し、〈いと〉〈洞窟〉のコンセプトがにかほ・長野の両側から立ち上がる構成にする。</p>
     <div class="p4">
       <div class="col2 rv" style="--cc: var(--present);">
         <h3><span>12/14–19</span>展示会</h3>
         <ul class="rules">
-          <li>インスタレーション記録写真、書籍（仮）のモックアップ、にかほヒアリングの抜粋を展示</li>
+          <li>ミミクリ（擬態彫刻）、A0大判写真パネル2点、書籍（仮）のモックアップ、ヒアリングの抜粋を展示</li>
           <li>左美都本（長野・左美都の既存書籍）を対の展示物として併置し、二つの土地の物語を並走させる</li>
           <li>会場周辺の実景にミミクリを1〜2点設置し、来場者が気づかぬまま通り過ぎる仕掛けをつくる</li>
           <li>会場アンケートを設置し、続きを聞かせてくれそうな住民を掘り起こす</li>
@@ -1666,8 +1753,8 @@
     <h2 class="h2 rv" id="add-title">補足タスク — 今回追加で提案する4点</h2>
     <div class="add-grid">
       <div class="add rv"><p class="n">01</p><h3>同意管理の明文化</h3><p>ヒアリング対象者ごとに、録音の可否と、書籍・展示・広報誌それぞれの掲載可否を一枚のシートで管理する。11月の編集作業で迷わずに済む。</p></div>
-      <div class="add rv" style="--rd: 0.08s;"><p class="n">02</p><h3>印刷仕様・予算の再確認</h3><p>送付済みの予算書がにかほ本の部数・単価前提になっているか、左美都本と共有できる仕様（判型・紙）がないか、早めに印刷会社へ相談しておく。書籍の形態・部数・印刷費は予算の確認後に確定する。</p></div>
-      <div class="add rv"><p class="n">03</p><h3>ミミクリ設置候補地の選定</h3><p>ヒアリング先の裏庭・河原・会場周辺から2〜3箇所を早期に絞り込み、地権者・管理者への説明と許可取得を9月中に打診しておく。公園・保護区域等に該当する場合は管理者が別になるため、先に確認する。撮影のための一時設置は、撮影後にすべて持ち帰る。</p></div>
+      <div class="add rv" style="--rd: 0.08s;"><p class="n">02</p><h3>印刷仕様・予算の再確認</h3><p>書籍（モックアップ）は予算書どおり新書判・計84P・100部を西岡総合印刷で印刷し、入稿前に正式な見積を取る。正式な出版に至った場合は、秋田県・にかほ市にゆかりのある出版社・印刷会社に相談する。</p></div>
+      <div class="add rv"><p class="n">03</p><h3>ミミクリ設置候補地の選定</h3><p>ヒアリング先の裏庭・河原・会場周辺から2〜3箇所を早期に絞り込み、地権者・管理者への説明と許可取得を10月中旬までに打診しておく。公園・保護区域等に該当する場合は管理者が別になるため、先に確認する。撮影のための一時設置は、撮影後にすべて持ち帰る。</p></div>
       <div class="add rv" style="--rd: 0.08s;"><p class="n">04</p><h3>1月以降への橋渡し</h3><p>12月で終わらせず、1/17の第3回ワークショップと不定期連載（継続の可否は調整中）につなげる前提で、住民へのヒアリングを断続的に継続し、展示会場でのアンケート等から次の候補を掘り起こしておく。</p></div>
     </div>
   </div>
@@ -1718,15 +1805,111 @@
 document.addEventListener('DOMContentLoaded', function () {
   var root = document.documentElement;
 
-  /* ── 表紙タイトル：スクロールで一字ずつほどけ、風景に溶ける ── */
-  var heroStage = document.querySelector('.hero-stage');
-  var titles = document.querySelector('.hero-titles');
-  Array.prototype.forEach.call(titles.querySelectorAll('.ch'), function (c) {
-    var r = function (a, b) { return (a + Math.random() * (b - a)).toFixed(1); };
-    c.style.setProperty('--dx', r(-90, 90) + 'px');
-    c.style.setProperty('--dy', r(40, 260) + 'px');
-    c.style.setProperty('--dr', r(-50, 50) + 'deg');
-  });
+  /* ── 表紙：発酵の瓶
+       ・中身は今日の日付で決まる（10.01 仕込み開始 → 12.14 食べ頃）
+       ・押すと瓶がゆれて、ひとこと話す（言うことは押すたびに変わる） ── */
+  (function () {
+    var jar = document.getElementById('hx-jar'), say = document.getElementById('hx-say');
+    if (!jar) return;
+    var DAY = 864e5, now = new Date(), T = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    var A = Date.UTC(2026, 9, 1), B = Date.UTC(2026, 11, 14), E = Date.UTC(2026, 11, 20);
+    var p = Math.max(0, Math.min(1, (T - A) / (B - A))), lv = 0.12 + 0.76 * p, pct = Math.round(p * 100), cap, first;
+    if (T < A) { cap = '仕込みまで あと ' + Math.round((A - T) / DAY) + ' 日'; first = 'ぷくっ。10月1日から、仕込みはじめます。'; }
+    else if (T < B) { cap = '食べ頃まで あと ' + Math.round((B - T) / DAY) + ' 日'; first = 'ぷくっ。いま、にかほの語りを仕込んでいます。'; }
+    else if (T <= E) { cap = 'いまが食べ頃（開催中）'; first = '食べ頃です。にかほっとへ、どうぞ。'; lv = 0.9; pct = 100; }
+    else { cap = 'おかわりは 1.17（WS3）'; first = 'ごちそうさまでした。つづきは1月17日に。'; lv = 0.9; pct = 100; }
+    document.getElementById('hx-cap').textContent = cap;
+    document.getElementById('hx-pct').textContent = pct + '%';
+    jar.setAttribute('aria-label', '発酵の瓶：発酵度 ' + pct + '%、' + cap);
+    // 表紙がひらいてから、液が満ちる
+    var root = document.documentElement;
+    (function fill() { if (root.classList.contains('intro-go')) setTimeout(function () { jar.style.setProperty('--lv', lv.toFixed(3)); }, 500); else setTimeout(fill, 100); })();
+    var LINES = [first, 'ふたを開けるのは、12月14日まで待ってね。', '隠し味の場所は……ひみつです。', '語りが入るほど、よく発酵します。', 'かきまぜないでください。いい感じなので。'];
+    var i = 0, tm = 0;
+    jar.addEventListener('click', function () {
+      jar.classList.remove('shake'); void jar.offsetWidth; jar.classList.add('shake');
+      say.textContent = LINES[i++ % LINES.length];
+      say.classList.remove('on'); void say.offsetWidth; say.classList.add('on');
+      clearTimeout(tm);
+      tm = setTimeout(function () { say.classList.remove('on'); jar.classList.remove('shake'); }, 3000);
+    });
+  })();
+
+  /* ── 表紙：タイトルの山体崩壊
+       ・スクロールしはじめると、タイトルがゴゴゴと震え、上の字から順に崩れ落ちる
+       ・崩れた字は画面について流れ下り（スクロール約 1.1 画面ぶん）、画面の下で九十九島になって止まる
+       ・そのまま少しのあいだ島としてついてきて、さらにスクロールすると静かに沈んで消える
+       ・いちばん上まで戻れば、タイトルは元どおり ── */
+  (function () {
+    var title = document.getElementById('hero-title'), note = document.getElementById('quake'), noteT = document.getElementById('quake-t');
+    if (!title) return;
+    var chs = Array.prototype.slice.call(title.querySelectorAll('.ch'));
+    var N = chs.length, C = [], vw = 0, vh = 0, measured = false, ticking = false, landedMsg = false;
+    var seed = 263;
+    function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+    function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+    function inOut(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+    function outQ(t) { return 1 - (1 - t) * (1 - t); }
+    // 島の並び（左右に散らばる順番）と、崩れはじめの遅れ：上の字ほど先に崩れる
+    var slots = [], u = [];
+    for (var i = 0; i < N; i++) slots.push(i);
+    for (i = N - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)), tmp = slots[i]; slots[i] = slots[j]; slots[j] = tmp; }
+    for (i = 0; i < N; i++) u.push({ slot: slots[i], jx: rnd() - 0.5, v: rnd(), rot: (rnd() - 0.5) * 150, sc: 0.42 + rnd() * 0.16, s: 0.02 + (i % 5) * 0.035 + rnd() * 0.06 });
+    function measure() {
+      vw = window.innerWidth; vh = window.innerHeight;
+      chs.forEach(function (el) { el.style.transform = ''; });
+      var sy = window.scrollY;
+      C = chs.map(function (el, k) {
+        var r = el.getBoundingClientRect(), q = u[k];
+        return {
+          x0: r.left + r.width / 2, y0: r.top + sy + r.height / 2,
+          tx: vw * (0.08 + 0.84 * (q.slot + 0.5 + q.jx * 0.5) / N),
+          ty: vh * (0.56 + 0.15 * q.v),
+          rot: q.rot, sc: q.sc, s: q.s
+        };
+      });
+      measured = true;
+    }
+    function upd() {
+      ticking = false;
+      var y = window.scrollY;
+      if (!measured || !vh) measure();
+      var R = vh * 1.1, p = y / R;
+      if (p <= 0) {
+        chs.forEach(function (el) { el.style.transform = ''; el.style.opacity = ''; el.style.removeProperty('--land'); el.classList.remove('landed'); });
+        title.classList.remove('moving', 'quaking');
+        if (note) note.classList.remove('on');
+        return;
+      }
+      title.classList.add('moving');
+      title.classList.toggle('quaking', p < 0.09);
+      var fade = clamp((p - 1.02) / 0.4);
+      chs.forEach(function (el, k) {
+        var c = C[k], t = clamp((p - c.s) / (0.92 - c.s)), ey = inOut(t), ex = outQ(t);
+        var tumble = Math.sin(t * Math.PI * 2.2) * 14 * (1 - t);
+        var dx = (c.tx - c.x0) * ex;
+        var dy = y + (c.ty - c.y0) * ey;   // スクロールぶん押し戻して、画面についてくる
+        var sc = 1 - (1 - c.sc) * ey;
+        el.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px) rotate(' + (c.rot * ey + tumble).toFixed(1) + 'deg) scale(' + sc.toFixed(3) + ')';
+        el.style.opacity = (1 - fade).toFixed(3);
+        var land = clamp((t - 0.88) / 0.12);
+        el.style.setProperty('--land', land.toFixed(2));
+        el.classList.toggle('landed', land > 0.5);
+      });
+      if (note) {
+        note.classList.toggle('on', p > 0.02 && fade < 0.6);
+        var done = p > 0.95;
+        if (done !== landedMsg) {
+          landedMsg = done;
+          noteT.textContent = done ? '流れ着いて、九十九島になりました。' : '鳥海山にならって、タイトルが山体崩壊中。';
+          note.querySelector('b').textContent = done ? 'ざざん。' : 'ゴゴゴ……';
+        }
+      }
+    }
+    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(upd); } }, { passive: true });
+    window.addEventListener('resize', function () { measured = false; if (!ticking) { ticking = true; requestAnimationFrame(upd); } }, { passive: true });
+    if (window.scrollY > 0) setTimeout(upd, 900);
+  })();
 
   /* ── 概観の帯：6本の動画と写真の場面を1本につないだ映像（約50秒）を、画面に入っているあいだだけ流す
        ・映像の終わりは頭へ溶けこむように作ってあるので、ループの継ぎ目は見えない
@@ -1837,7 +2020,6 @@ document.addEventListener('DOMContentLoaded', function () {
     nav.classList.toggle('is-solid', y > 60);
     bar.style.setProperty('--p', h > 0 ? Math.min(1, y / h) : 0);
     toTop.classList.toggle('on', y > window.innerHeight * 0.8);
-    titles.style.setProperty('--sp', Math.min(1, Math.max(0, y / (heroStage.offsetHeight * 0.7))).toFixed(3));
     ticking = false;
   }
   window.addEventListener('scroll', function () { if (!ticking) { requestAnimationFrame(onScroll); ticking = true; } }, { passive: true });
@@ -1901,15 +2083,6 @@ document.addEventListener('DOMContentLoaded', function () {
       out.innerHTML = '<b>TODAY ' + todayStr + '</b>次は ' + next.name + (left === 0 ? '（本日）' : '');
     }
   })();
-
-  /* ── 表紙の作品（気づくかな？） ── */
-  var spot = document.getElementById('hero-spot');
-  spot.addEventListener('click', function (e) {
-    e.stopPropagation();
-    var open = !spot.classList.contains('is-open');
-    spot.classList.toggle('is-open', open);
-    spot.setAttribute('aria-expanded', open ? 'true' : 'false');
-  });
 
   /* ── ライトボックス ── */
   var lb = document.getElementById('lb'), lbImg = lb.querySelector('img'), lbCap = lb.querySelector('figcaption'), lastFocus = null;
@@ -1984,7 +2157,7 @@ document.addEventListener('DOMContentLoaded', function () {
   (function () {
     var cd = $('cd');
     if (!cd) return;
-    var start = ymd('2026-09-14');
+    var start = ymd('2026-10-01');
     var items = Array.prototype.slice.call(cd.querySelectorAll('.cd-i'));
     items.forEach(function (it) {
       var b = it.querySelector('b'), key = b.getAttribute('data-to'), T = ymd(key);
