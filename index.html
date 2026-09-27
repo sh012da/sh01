@@ -169,6 +169,34 @@
     .nav-links a.nav-pp:hover .nav-pp-tip, .nav-links a.nav-pp:focus-visible .nav-pp-tip {
       opacity: 1; visibility: visible; transform: translate(-50%, 0);
     }
+    /* PP と EX を 1 つのカプセルに ── 「まだない作品の設計図」と「実現した展示の記録」を並べて示す */
+    .nav-duo {
+      display: inline-flex; align-items: stretch; margin: -0.42rem 0;
+      border: 0.5px solid rgba(232,228,219,0.3); border-radius: 999px;
+      background: linear-gradient(90deg, rgba(156,212,255,0.12), rgba(156,212,255,0.03) 50%, rgba(242,194,139,0.03) 50%, rgba(242,194,139,0.12));
+      box-shadow: 0 0 18px rgba(156,212,255,0.08), 0 0 18px rgba(242,194,139,0.06);
+    }
+    .nav-links .nav-duo a.nav-pp {
+      margin: 0; border: 0; box-shadow: none; background: transparent; border-radius: 999px 0 0 999px;
+      padding: 0.42rem 0.85rem 0.42rem 1.6rem;
+    }
+    .nav-links .nav-duo a.nav-pp:hover, .nav-links .nav-duo a.nav-pp:focus-visible { background: rgba(156,212,255,0.18); box-shadow: none; transform: none; }
+    .nav-links a.nav-ex {
+      color: var(--text); border-left: 0.5px solid rgba(232,228,219,0.28); border-radius: 0 999px 999px 0;
+      padding: 0.42rem 1.6rem 0.42rem 0.85rem;
+      transition: color 0.3s ease, background 0.3s ease;
+    }
+    .nav-links a.nav-ex::before {
+      content: ''; position: absolute; right: 0.68rem; top: 50%; width: 7px; height: 6px; margin-top: -3px;
+      border: 1px solid #f2c28b; box-shadow: 0 0 8px rgba(242,194,139,0.7);
+    }
+    .nav-links a.nav-ex::after { display: none; }
+    .nav-links a.nav-ex:hover, .nav-links a.nav-ex:focus-visible { color: #fff; background: rgba(242,194,139,0.18); }
+    .nav-links a.nav-ex.active { color: var(--text); }
+    .nav-ex-tip { border-color: rgba(242,194,139,0.4) !important; background: rgba(30,21,12,0.92) !important; }
+    .nav-links a.nav-ex:hover .nav-pp-tip, .nav-links a.nav-ex:focus-visible .nav-pp-tip {
+      opacity: 1; visibility: visible; transform: translate(-50%, 0);
+    }
     @media (max-width: 1024px) and (min-width: 769px) {
       .nav-links { gap: 1.2rem; }
     }
@@ -1280,6 +1308,7 @@
       .nav-links.open li:nth-child(5) { transition-delay: 0.16s; }
       .nav-links.open li:nth-child(6) { transition-delay: 0.26s; }
       .nav-links.open li:nth-child(7) { transition-delay: 0.36s; }
+      .nav-links.open li:nth-child(8) { transition-delay: 0.46s; }
 
       .nav-menu-item {
         position: relative;
@@ -1361,7 +1390,7 @@
         opacity: 0; transform: translateY(16px); filter: blur(6px);
         transition: opacity 0.8s var(--ease-expo), transform 0.8s var(--ease-expo), filter 0.8s var(--ease-expo);
       }
-      .nav-links.open .nav-menu-footer { opacity: 1; transform: translateY(0); filter: blur(0); transition-delay: 0.48s; }
+      .nav-links.open .nav-menu-footer { opacity: 1; transform: translateY(0); filter: blur(0); transition-delay: 0.58s; }
 
       /* ── PP（企画提案）── */
       .nav-menu-badge {
@@ -1372,6 +1401,17 @@
       }
       .nav-menu-item--pp .nav-menu-num { color: rgba(156,212,255,0.65); }
       .nav-menu-item--pp::before { background: linear-gradient(90deg, transparent, rgba(156,212,255,0.12), transparent); }
+      .nav-menu-item--ex .nav-menu-badge { color: #f2c28b; border-color: rgba(242,194,139,0.6); }
+      .nav-menu-item--ex .nav-menu-num { color: rgba(242,194,139,0.65); }
+      .nav-menu-item--ex::before { background: linear-gradient(90deg, transparent, rgba(242,194,139,0.12), transparent); }
+      /* 4 項目になっても、低い画面でロゴと重ならず、はみ出したらスクロールできるように */
+      .nav-links { justify-content: safe center; overflow-y: auto; padding-top: 6.5rem; padding-bottom: 2.5rem; }
+      .nav-menu-item { padding-top: 1.35rem; padding-bottom: 1.35rem; }
+      .nav-menu-footer { margin-top: 2rem; }
+      @media (max-height: 700px) {
+        .nav-menu-item { padding-top: 0.95rem; padding-bottom: 0.95rem; }
+        .nav-menu-ja { font-size: clamp(1.2rem, 5.4vw, 1.5rem); }
+      }
       .nav-menu-footer-text {
         font-family: var(--en); font-size: 0.58rem; letter-spacing: 0.32em;
         color: rgba(232,228,219,0.28); text-transform: uppercase;
@@ -1579,9 +1619,27 @@
         </span>
       </a>
     </li>
+    <li class="sp-only">
+      <a href="exhibition/ex.html" class="nav-menu-item nav-menu-item--ex">
+        <span class="nav-menu-num">04</span>
+        <span class="nav-menu-text">
+          <span class="nav-menu-ja">展示記録<span class="nav-menu-badge">EX</span></span>
+          <span class="nav-menu-en">Exhibitions</span>
+        </span>
+        <span class="nav-menu-arrow">
+          <span class="nav-menu-arrow-shaft"></span>
+          <span class="nav-menu-arrow-head"></span>
+        </span>
+      </a>
+    </li>
     <li class="sp-only nav-menu-footer"><span class="nav-menu-footer-text">Tsuda Shoichi</span></li>
     <li class="pc-only"><a href="#news" onclick="closeMenu()">News</a></li>
-    <li class="pc-only"><a href="pp/proposals.html" class="nav-pp" aria-label="PP（Project Proposals／企画提案）">PP<span class="nav-pp-tip" aria-hidden="true">Project Proposals ─ 企画提案</span></a></li>
+    <li class="pc-only nav-duo-li">
+      <span class="nav-duo" role="group" aria-label="企画提案と展示記録">
+        <a href="pp/proposals.html" class="nav-pp" aria-label="PP（Project Proposals／企画提案）">PP<span class="nav-pp-tip" aria-hidden="true">Project Proposals ─ 企画提案</span></a>
+        <a href="exhibition/ex.html" class="nav-ex" aria-label="EX（Exhibitions／展示記録）">EX<span class="nav-pp-tip nav-ex-tip" aria-hidden="true">Exhibitions ─ 展示記録</span></a>
+      </span>
+    </li>
   </ul>
   
   <button class="nav-hamburger" id="hamburger" aria-label="メニューを開く" onclick="toggleMenu()">
@@ -1871,7 +1929,7 @@
       </a>
     </li>
     <li class="news-item has-link">
-      <a href="https://sh012da.github.io/sh01/exhibition/ina.html" class="news-item-link" data-tooltip="若手作家公募個展「トライアル・ギャラリー」の展示ページが開きます">
+      <a href="https://sh012da.github.io/sh01/exhibition/ex-ina.html" class="news-item-link" data-tooltip="若手作家公募個展「トライアル・ギャラリー」の展示ページが開きます">
         <span class="news-date">2026.07.03</span>
         <div class="news-body"><span class="news-tag">Update</span><br>若手作家公募個展「トライアル・ギャラリー」の展示ページを公開しました。</div>
       </a>
@@ -1889,7 +1947,7 @@
       </a>
     </li>
     <li class="news-item has-link">
-      <a href="https://sh012da.github.io/sh01/exhibition/bunka.html" class="news-item-link" data-tooltip="文化庁メディア芸術クリエイター育成支援事業の展示ページが開きます">
+      <a href="https://sh012da.github.io/sh01/exhibition/ex-bunka.html" class="news-item-link" data-tooltip="文化庁メディア芸術クリエイター育成支援事業の展示ページが開きます">
         <span class="news-date">2026.06.25</span>
         <div class="news-body"><span class="news-tag">Update</span><br>文化庁メディア芸術クリエイター育成支援事業採択企画の展示ページを公開しました。</div>
       </a>
@@ -1901,7 +1959,7 @@
       </a>
     </li>
     <li class="news-item has-link">
-      <a href="https://sh012da.github.io/sh01/exhibition/nN.html" class="news-item-link" data-tooltip="グループ展「next × N-ART 展」の展示ページが開きます">
+      <a href="https://sh012da.github.io/sh01/exhibition/ex-nN.html" class="news-item-link" data-tooltip="グループ展「next × N-ART 展」の展示ページが開きます">
         <span class="news-date">2026.02.10</span>
         <div class="news-body"><span class="news-tag">Exhibition</span><br>ホクト文化ホール 1 階ギャラリーにて、グループ展「next × N-ART 展」を開催いたしました。</div>
       </a>
