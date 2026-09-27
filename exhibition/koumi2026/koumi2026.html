@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1e2128">
+  <title>二重の遠景 ｜ Tsuda Shoichi</title>
+  <meta name="description" content="二重の遠景 — 小海の海（うみ）、左美都の層。小海町高原美術館 Hall 3 にて、絵画・映像・陶芸・空間構成によって二つの風土を重ねる津田翔一の展示。">
+  <meta property="og:title" content="二重の遠景 ｜ Tsuda Shoichi">
+  <meta property="og:description" content="海なき地に、海の記憶を編む。小海町高原美術館 Hall 3 — 津田翔一。">
+  <meta property="og:type" content="website">
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5RF8JPF5D8');
+  </script>
+
+  <link rel="icon" type="image/jpeg" href="../../images/exhi-koumi2026/inari-river-stone.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@200;300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       TOKENS & BASE
+    ================================================================ */
+    :root {
+      --paper:       #ece5db;
+      --paper2:      #e4dace;
+      --paper3:      #f5f0e9;
+      --ink:         #24232a;
+      --ink2:        #4b463f;
+      --muted:       #7c7368;
+      --line:        rgba(36,35,42,0.14);
+      --line-mid:    rgba(36,35,42,0.26);
+      --koumi:       #b45f45;
+      --koumi-soft:  rgba(180,95,69,0.16);
+      --samizu:      #3e566d;
+      --samizu-soft: rgba(62,86,109,0.16);
+      --cross:       #8a8076;
+      --night:       #1e2128;
+      --night2:      #282c35;
+      --on-night:    #ece5db;
+      --on-night-dim: rgba(236,229,219,0.62);
+      --en:          'Cormorant Garamond', serif;
+      --serif:       'Noto Serif JP', serif;
+      --sans:        'Noto Sans JP', sans-serif;
+      --ease:        cubic-bezier(0.16, 1, 0.3, 1);
+      --px:          clamp(20px, 6vw, 88px);
+      --maxw:        1180px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: clip; }
+    body {
+      background: var(--paper); color: var(--ink); font-family: var(--sans);
+      font-size: 15.5px; line-height: 2; letter-spacing: 0.04em;
+      -webkit-font-smoothing: antialiased; overflow-x: clip;
+      line-break: strict; overflow-wrap: break-word;
+      padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right);
+    }
+    body.no-scroll { overflow: hidden; }
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+    ::selection { background: var(--koumi); color: var(--paper3); }
+    :focus-visible { outline: 2px solid var(--koumi); outline-offset: 3px; }
+
+    .container { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--px); position: relative; }
+    .sp-only { display: none; }
+    @media (max-width: 768px) { .pc-only { display: none !important; } .sp-only { display: inline; } }
+
+    /* ============================================================
+       LEFT RAIL (PDF の左帯 = 進捗バー)
+    ================================================================ */
+    .rail {
+      position: fixed; left: 0; top: 0; bottom: 0; width: 7px; z-index: 4000;
+      background: linear-gradient(180deg, rgba(62,86,109,0.22) 0 50%, rgba(180,95,69,0.22) 50% 100%);
+      pointer-events: none;
+    }
+    .rail-fill {
+      position: absolute; left: 0; top: 0; width: 100%; height: 0%;
+      background: linear-gradient(180deg, var(--samizu) 0%, var(--samizu) 45%, var(--koumi) 55%, var(--koumi) 100%);
+      background-size: 100% 100vh; background-position: top;
+    }
+    @media (max-width: 768px) { .rail { width: 4px; } }
+
+    /* ============================================================
+       NAV
+    ================================================================ */
+    nav#top-nav {
+      --nav-fg: var(--on-night); --nav-sbg: rgba(236,229,219,0.92); --nav-accent: var(--koumi);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 5000; opacity: 0; transform: translateY(-100%);
+      display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 16px;
+      padding: clamp(16px, 2.4vw, 26px) var(--px); color: var(--nav-fg);
+      transition: background 0.5s var(--ease), padding 0.5s var(--ease), color 0.5s var(--ease), transform 0.6s var(--ease), opacity 0.6s;
+    }
+    nav#top-nav.scrolled {
+      padding-top: 12px; padding-bottom: 12px; background: var(--nav-sbg); color: var(--ink);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line);
+    }
+    .nav-brand { justify-self: start; display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
+    .nav-brand b { font-family: var(--serif); font-weight: 400; font-size: 1.02rem; letter-spacing: 0.2em; white-space: nowrap; }
+    .nav-brand small { font-family: var(--en); font-size: 0.72rem; letter-spacing: 0.28em; text-transform: uppercase; opacity: 0.7; white-space: nowrap; }
+    .nav-brand:hover b { color: var(--nav-accent); }
+    .nav-now { justify-self: center; display: flex; align-items: center; gap: 12px; font-size: 0.84rem; letter-spacing: 0.12em; white-space: nowrap;
+      opacity: 0; transform: translateY(-6px); transition: opacity 0.5s, transform 0.5s var(--ease); pointer-events: none; }
+    .nav-now.show { opacity: 1; transform: none; }
+    .nav-now .no { font-family: var(--en); font-style: italic; font-size: 1.1rem; color: var(--nav-accent); }
+    .nav-now .bar { width: 72px; height: 2px; background: rgba(128,128,128,0.28); border-radius: 2px; overflow: hidden; }
+    .nav-now .bar i { display: block; height: 100%; width: 0; background: var(--nav-accent); }
+    .nav-right { justify-self: end; display: flex; align-items: center; gap: 10px; }
+    .nav-pill { display: inline-flex; align-items: center; gap: 8px; font-size: 0.8rem; letter-spacing: 0.08em; padding: 8px 18px; border-radius: 40px; background: var(--koumi); color: #fff; white-space: nowrap; transition: background 0.3s, transform 0.4s var(--ease); }
+    .nav-pill .short-i { display: none; }
+    @media (max-width: 600px) { .nav-pill .short-i { display: inline; } }
+    .nav-pill:hover { background: #99492f; transform: translateX(2px); }
+    .nav-pill.ghost { background: transparent; color: inherit; border: 1px solid currentColor; }
+    .nav-pill.ghost:hover { background: var(--koumi); border-color: var(--koumi); color: #fff; transform: translateX(-2px); }
+    .menu-btn { display: inline-flex; align-items: center; gap: 10px; padding: 8px 18px; border: 1px solid currentColor; border-radius: 40px; font-size: 0.8rem; letter-spacing: 0.16em; white-space: nowrap; transition: background 0.3s, color 0.3s; }
+    .menu-btn:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .menu-btn i { display: block; width: 16px; height: 1px; background: currentColor; box-shadow: 0 -5px 0 currentColor, 0 5px 0 currentColor; }
+    @media (max-width: 900px) {
+      nav#top-nav { grid-template-columns: minmax(0, 1fr) auto; }
+      .nav-now { display: none; }
+    }
+    @media (max-width: 600px) {
+      .nav-pill .long { display: none; }
+      .nav-pill { padding: 8px 12px; }
+      .menu-btn { padding: 8px 14px; }
+      .nav-brand small { display: none; }
+    }
+
+    /* 目次パネル */
+    .menu-overlay { position: fixed; inset: 0; z-index: 6000; background: var(--ov-bg); color: var(--ov-fg); opacity: 0; visibility: hidden;
+      transition: opacity 0.45s var(--ease), visibility 0.45s; overflow-y: auto; padding: clamp(84px, 11vh, 120px) var(--px) 60px; }
+    body.menu-open .menu-overlay { opacity: 1; visibility: visible; }
+    .mo-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.6fr); gap: clamp(28px, 6vw, 90px); }
+    .mo-title small { display: block; font-size: 0.72rem; letter-spacing: 0.3em; color: var(--ov-dim); margin-bottom: 10px; }
+    .mo-title b { display: block; font-family: var(--serif); font-weight: 300; font-size: clamp(2rem, 4vw, 2.9rem); letter-spacing: 0.12em; line-height: 1.35; }
+    .mo-title span { display: block; font-family: var(--en); font-style: italic; color: var(--ov-dim); margin-top: 6px; letter-spacing: 0.06em; }
+    .mo-links { display: flex; flex-direction: column; gap: 10px; margin-top: 30px; }
+    .mo-links a { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; font-size: 0.88rem; letter-spacing: 0.08em; transition: background 0.3s, border-color 0.3s; }
+    .mo-links a:hover { background: rgba(255,255,255,0.08); }
+    .mo-links a.hl { background: var(--koumi); border-color: var(--koumi); color: #fff; }
+    .mo-links a.hl:hover { background: #99492f; }
+    .mo-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; column-gap: 36px; align-content: start; }
+    .mo-list li { opacity: 0; transform: translateY(10px); transition: opacity 0.5s, transform 0.6s var(--ease); }
+    body.menu-open .mo-list li { opacity: 1; transform: none; }
+    .mo-list a { display: grid; grid-template-columns: 46px minmax(0, 1fr); padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.12); transition: padding 0.4s var(--ease), color 0.3s; }
+    .mo-list a:hover { padding-left: 8px; color: #f0b39d; }
+    .mo-list .no { font-family: var(--en); font-style: italic; font-size: 1.1rem; color: #f0b39d; grid-row: span 2; }
+    .mo-list .ja { font-size: 1.05rem; letter-spacing: 0.1em; }
+    .mo-list .en { font-family: var(--en); font-style: italic; font-size: 0.9rem; color: var(--ov-dim); }
+    .mo-list a.current .ja::after { content: '現在地'; margin-left: 10px; font-size: 0.66rem; letter-spacing: 0.1em; padding: 2px 8px; border-radius: 20px; background: var(--koumi); color: #fff; vertical-align: 2px; }
+    @media (max-width: 800px) { .mo-inner { grid-template-columns: 1fr; } .mo-list { grid-template-columns: 1fr; } .mo-links { margin-top: 18px; } }
+    .menu-close { position: fixed; top: 20px; right: 20px; width: 46px; height: 46px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; z-index: 2; }
+    .menu-close::before, .menu-close::after { content: ''; position: absolute; left: 13px; top: 22px; width: 18px; height: 1px; background: currentColor; transform: rotate(45deg); }
+    .menu-close::after { transform: rotate(-45deg); }
+    body.is-ready nav#top-nav { opacity: 1; transform: none; }
+    nav#top-nav:not(.scrolled) { --nav-accent: #f0b39d; }
+    .menu-overlay { --ov-bg: rgba(30,33,40,0.97); --ov-fg: var(--on-night); --ov-dim: var(--on-night-dim); }
+
+    /* ============================================================
+       HERO
+    ================================================================ */
+    .hero {
+      position: relative; height: 100vh; height: 100svh; min-height: 620px;
+      background: var(--night); color: var(--on-night); overflow: hidden; cursor: default;
+    }
+    .hero-bg { position: absolute; inset: -24px; transition: transform 1.4s var(--ease); }
+    .hero-bg img {
+      width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%;
+      opacity: 0; transform: scale(1.14);
+      transition: opacity 1.6s ease, transform 9s cubic-bezier(0.2, 0.6, 0.2, 1);
+      filter: saturate(0.75) brightness(0.72);
+    }
+    body.is-ready .hero-bg img { opacity: 1; transform: scale(1.02); }
+    .hero-shade {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(180deg, rgba(30,33,40,0.55) 0%, rgba(30,33,40,0.05) 30%, rgba(30,33,40,0.2) 55%, rgba(30,33,40,0.92) 100%),
+        linear-gradient(90deg, rgba(30,33,40,0.55) 0%, rgba(30,33,40,0) 55%);
+    }
+    .hero-ridges { position: absolute; left: 0; right: 0; top: 50%; width: 100%; height: 30vh; transform: translateY(-40%); pointer-events: none; overflow: visible; }
+    .hero-ridges path { fill: none; stroke-width: 1.6; vector-effect: non-scaling-stroke; stroke-dasharray: 1; stroke-dashoffset: 1; }
+    .hero-ridges .r-koumi { stroke: rgba(226,138,108,0.85); }
+    .hero-ridges .r-samizu { stroke: rgba(150,183,212,0.85); }
+    body.is-ready .hero-ridges path { animation: draw 1.5s var(--ease) forwards; }
+    .hero-ridges { opacity: 0.75; }
+    body.is-ready .hero-ridges .r-samizu { animation-delay: 0.12s; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+
+    .hero-frame { position: absolute; inset: clamp(16px, 3.2vw, 40px); border: 1px solid rgba(236,229,219,0.24); pointer-events: none; }
+    .hero-corner { position: absolute; font-family: var(--en); font-style: italic; font-size: 0.9rem; letter-spacing: 0.08em; line-height: 1.35; color: var(--on-night-dim); }
+    .hero-corner.tl { top: clamp(62px, 9vh, 96px); left: calc(var(--px) + 4px); }
+    .hero-corner.tr { top: clamp(62px, 9vh, 96px); right: calc(var(--px) + 4px); text-align: right; }
+    .hero-vertical {
+      position: absolute; right: calc(clamp(16px, 3.2vw, 40px) + 18px); top: 50%;
+      writing-mode: vertical-rl; transform: translateY(-50%);
+      font-family: var(--en); font-style: italic; font-size: 0.78rem; letter-spacing: 0.34em; color: rgba(236,229,219,0.45);
+    }
+    .hero-vertical b { font-weight: 400; color: #f0b39d; }
+    .hero-vertical em { font-style: italic; color: #a9c4dc; }
+    @media (max-width: 768px) { .hero-vertical { display: none; } }
+
+    .hero-body { position: absolute; left: var(--px); right: var(--px); bottom: clamp(150px, 24vh, 230px); }
+    .hero-eyebrow {
+      font-family: var(--en); font-size: clamp(0.7rem, 1.4vw, 0.95rem); letter-spacing: 0.42em; text-transform: uppercase;
+      color: #eab29c; margin-bottom: 1.2rem; opacity: 0; transition: opacity 1s ease 0.5s;
+    }
+    body.is-ready .hero-eyebrow { opacity: 1; }
+    .hero-title {
+      position: relative; font-family: var(--serif); font-weight: 300;
+      font-size: clamp(64px, 12.5vw, 176px); line-height: 1.02; letter-spacing: 0.04em;
+      --dx: 0px; --dy: 0px;
+    }
+    .hero-title .ln { display: block; position: relative; }
+    .hero-title .ch { display: inline-block; opacity: 0; transform: translateY(0.35em); filter: blur(8px); transition: opacity 0.9s var(--ease), transform 1.1s var(--ease), filter 0.9s var(--ease); }
+    body.is-ready .hero-title .ch { opacity: 1; transform: none; filter: none; }
+    /* 二重 — 赤と青のゴースト */
+    .hero-title .ln::before, .hero-title .ln::after {
+      content: attr(data-text); position: absolute; left: 0; top: 0; pointer-events: none;
+      opacity: 0; transition: opacity 1.4s ease 0.6s;
+      mix-blend-mode: screen; opacity: 0;
+    }
+    .hero-title .ln::before { color: rgba(226,120,92,0.62); transform: translate(calc(var(--dx) * -1), calc(var(--dy) * -1)); }
+    .hero-title .ln::after { color: rgba(110,160,205,0.62); transform: translate(var(--dx), var(--dy)); }
+    body.is-ready .hero-title .ln::before, body.is-ready .hero-title .ln::after { opacity: 1; }
+    .hero-title .ln .ink { position: relative; z-index: 1; }
+    .hero-sub {
+      margin-top: 1.3rem; font-family: var(--serif); font-weight: 300;
+      font-size: clamp(1rem, 2.1vw, 1.45rem); letter-spacing: 0.24em; color: #bfd3e4;
+      opacity: 0; transform: translateY(10px); transition: opacity 1s ease 0.75s, transform 1s var(--ease) 0.75s;
+    }
+    body.is-ready .hero-sub { opacity: 1; transform: none; }
+
+    .hero-foot {
+      position: absolute; left: var(--px); right: var(--px); bottom: clamp(52px, 8vh, 82px);
+      display: flex; justify-content: space-between; align-items: flex-end; gap: 20px;
+      border-top: 1px solid rgba(236,229,219,0.28); padding-top: 18px;
+      opacity: 0; transition: opacity 1s ease 1s;
+    }
+    body.is-ready .hero-foot { opacity: 1; }
+    .hero-foot .artist { font-size: 1.05rem; letter-spacing: 0.2em; }
+    .hero-foot .artist small { display: block; font-family: var(--en); font-style: italic; font-size: 0.8rem; letter-spacing: 0.16em; color: var(--on-night-dim); }
+    .hero-foot .meta { text-align: right; font-size: 0.8rem; color: var(--on-night-dim); line-height: 1.8; }
+    .hero-foot .meta b { display: block; font-family: var(--en); font-weight: 400; font-size: 1.25rem; letter-spacing: 0.16em; color: var(--on-night); }
+    .hero-cue {
+      position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
+      font-family: var(--en); font-size: 0.66rem; letter-spacing: 0.34em; color: var(--on-night-dim);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    .hero-cue::before { content: ''; width: 1px; height: 26px; background: linear-gradient(var(--on-night-dim), transparent); animation: cue 2.2s ease-in-out infinite; transform-origin: top; }
+    @keyframes cue { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
+    .hero-skip {
+      position: absolute; right: var(--px); bottom: 14px; font-family: var(--en); font-size: 0.66rem; letter-spacing: 0.26em;
+      color: var(--on-night-dim); text-transform: uppercase; transition: opacity 0.4s;
+    }
+    body.intro-done .hero-skip { opacity: 0; pointer-events: none; }
+    body.intro-done * { transition-delay: 0s !important; }
+    body.intro-done .hero-ridges path { animation: none; stroke-dashoffset: 0; }
+    @media (max-width: 768px) {
+      .hero-body { bottom: 150px; }
+      .hero-eyebrow { font-size: 0.62rem; letter-spacing: 0.28em; }
+      .hero-foot { bottom: 48px; align-items: flex-end; }
+      .hero-foot .artist small { display: none; }
+      .hero-foot .artist { font-size: 0.95rem; }
+      .hero-foot .meta { font-size: 0.7rem; }
+      .hero-foot .meta b { font-size: 1.05rem; }
+      .hero-corner.tr { display: none; }
+    }
+
+    /* ============================================================
+       COMMON SECTION TYPOGRAPHY
+    ================================================================ */
+    section { position: relative; }
+    .section { padding: clamp(96px, 14vw, 170px) 0; }
+    .sec-head { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--line-mid); margin-bottom: clamp(36px, 5vw, 56px); }
+    .sec-label { font-weight: 700; font-size: 0.86rem; letter-spacing: 0.14em; color: var(--koumi); }
+    .sec-label.blue { color: var(--samizu); }
+    .sec-label .no { font-family: var(--en); font-weight: 400; font-style: italic; font-size: 1.05rem; margin-right: 0.6em; }
+    .sec-en { font-family: var(--en); font-style: italic; font-size: 0.95rem; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; }
+    .sec-title { font-family: var(--serif); font-weight: 600; font-size: clamp(1.9rem, 4.6vw, 3.25rem); line-height: 1.45; letter-spacing: 0.05em; margin-bottom: clamp(24px, 3vw, 36px); }
+    .sec-title .soft { font-weight: 300; font-size: 0.62em; display: block; letter-spacing: 0.1em; color: var(--ink2); }
+    .lead { font-family: var(--serif); font-size: clamp(1.08rem, 1.9vw, 1.32rem); line-height: 2; font-weight: 400; margin-bottom: 1.6rem; max-width: 46em; }
+    .body-txt { max-width: 44em; color: var(--ink2); }
+    .body-txt + .body-txt { margin-top: 1.1em; }
+    .cap { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.08em; margin-top: 12px; display: flex; justify-content: space-between; gap: 16px; }
+    .cap .en { font-family: var(--en); font-style: italic; font-size: 0.9rem; }
+
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 1.1s var(--ease), transform 1.1s var(--ease); }
+    .reveal.in { opacity: 1; transform: none; }
+    .reveal.d1 { transition-delay: 0.1s; } .reveal.d2 { transition-delay: 0.2s; } .reveal.d3 { transition-delay: 0.3s; }
+
+    .tag { display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; padding: 3px 12px; border-radius: 3px; color: var(--paper3); background: var(--samizu); white-space: nowrap; }
+    .tag.koumi { background: var(--koumi); }
+    .tag.both { background: linear-gradient(90deg, var(--koumi) 0 50%, var(--samizu) 50% 100%); }
+    .tag.site { background: var(--cross); }
+
+    .zoomable { cursor: zoom-in; }
+
+    /* ============================================================
+       01 CONCEPT
+    ================================================================ */
+    #concept { background: var(--paper); overflow: hidden; }
+    .concept-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 88px); align-items: start; }
+    .concept-title { font-family: var(--serif); font-weight: 600; font-size: clamp(2.1rem, 5.4vw, 3.9rem); line-height: 1.4; letter-spacing: 0.06em; margin-bottom: 2rem; }
+    .concept-title .sea { color: var(--samizu); position: relative; }
+    .altitude {
+      border-left: 1px solid var(--line-mid); padding: 8px 0 8px clamp(20px, 3vw, 36px); position: sticky; top: 120px;
+    }
+    .altitude .k { font-size: 0.74rem; letter-spacing: 0.2em; color: var(--muted); }
+    .altitude .num { font-family: var(--serif); font-weight: 200; font-size: clamp(3.6rem, 8vw, 6.2rem); line-height: 1; letter-spacing: 0.02em; color: var(--ink); font-variant-numeric: tabular-nums; }
+    .altitude .num small { font-size: 0.34em; margin-left: 6px; color: var(--muted); }
+    .altitude .sub { font-size: 0.82rem; color: var(--ink2); margin-top: 10px; line-height: 1.9; }
+    .altitude .gauge { position: relative; height: 150px; margin-top: 26px; border-left: 1px dashed var(--line-mid); }
+    .altitude .gauge span { position: absolute; left: 12px; font-size: 0.72rem; color: var(--muted); white-space: nowrap; transform: translateY(-50%); }
+    .altitude .gauge span::before { content: ''; position: absolute; left: -17px; top: 50%; width: 9px; height: 9px; border-radius: 50%; transform: translateY(-50%); background: var(--paper); border: 1px solid var(--muted); }
+    .altitude .gauge .g-museum { top: 0%; color: var(--ink); font-weight: 500; }
+    .altitude .gauge .g-museum::before { background: var(--koumi); border-color: var(--koumi); }
+    .altitude .gauge .g-sea { top: 100%; color: var(--samizu); }
+    .altitude .gauge .g-sea::before { background: var(--samizu); border-color: var(--samizu); }
+    .altitude .gauge i { position: absolute; left: -1px; top: 0; width: 1px; height: 0; background: linear-gradient(var(--koumi), var(--samizu)); transition: height 2s var(--ease) 0.4s; }
+    .altitude.in .gauge i { height: 100%; }
+
+    .ridge-stage { margin-top: clamp(60px, 9vw, 110px); }
+    .ridge-svg { width: 100%; height: auto; display: block; overflow: visible; }
+    .ridge-svg .rk { stroke: var(--koumi); stroke-width: 2.2; fill: none; stroke-linejoin: round; }
+    .ridge-svg .rs { stroke: var(--samizu); stroke-width: 2.2; fill: none; }
+    .ridge-svg .dot { fill: none; stroke: var(--ink); stroke-width: 1.6; }
+    .ridge-svg .halo { fill: var(--koumi-soft); }
+    .ridge-legend { display: flex; flex-wrap: wrap; gap: 8px 28px; font-size: 0.8rem; color: var(--ink2); margin-top: 14px; }
+    .ridge-legend span::before { content: ''; display: inline-block; width: 22px; height: 2px; vertical-align: middle; margin-right: 8px; background: var(--c); }
+    .ridge-state { font-family: var(--serif); font-size: 0.95rem; color: var(--ink); margin-top: 6px; min-height: 1.8em; transition: opacity 0.5s; }
+
+    /* ============================================================
+       02 FOUR LAYERS
+    ================================================================ */
+    #layers { background: var(--paper3); }
+    .layers-stack { border-top: 1px solid var(--line-mid); }
+    .layer {
+      position: relative; display: grid; grid-template-columns: 64px minmax(0,1fr);
+      gap: 0 clamp(16px, 3vw, 36px); padding: clamp(26px, 3.4vw, 40px) 0; border-bottom: 1px solid var(--line-mid);
+      overflow: hidden;
+    }
+    .layer .num { font-family: var(--en); font-style: italic; font-size: 2rem; line-height: 1.2; color: var(--koumi); }
+    .layer h3 { font-family: var(--serif); font-size: clamp(1.1rem, 2vw, 1.35rem); font-weight: 600; letter-spacing: 0.06em; line-height: 1.6; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-bottom: 10px; }
+    .layer p { color: var(--ink2); font-size: 0.95rem; }
+    .layer p a { color: var(--koumi); border-bottom: 1px solid currentColor; }
+    .layer { transition: background 0.6s ease; cursor: default; }
+    .layer .num { transition: transform 0.6s var(--ease), color 0.4s; display: inline-block; }
+    .layer.is-on { background: linear-gradient(90deg, rgba(180,95,69,0.08), transparent 75%); }
+    .layer.is-on .num { transform: scale(1.35) translateX(6px); }
+
+    /* 四層スタック（3D） */
+    .layers-wrap { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr); gap: clamp(28px, 5vw, 64px); align-items: start; }
+    .stack-col { position: sticky; top: 104px; }
+    .stack { position: relative; height: 400px; perspective: 1400px; }
+    .stack-float { position: absolute; inset: 0; animation: floaty 6s ease-in-out infinite; transform-style: preserve-3d; }
+    @keyframes floaty { 50% { transform: translateY(-8px); } }
+    .stack .pl {
+      position: absolute; left: 50%; top: 52%; width: 58%; aspect-ratio: 1; border-radius: 6px;
+      transform: translate(-50%, -50%) rotateX(60deg) rotateZ(-42deg) translateZ(calc((var(--i) - 1.5) * 66px));
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.5) inset, 18px 24px 30px -12px rgba(36,35,42,0.35);
+      transition: transform 0.9s var(--ease), opacity 0.6s, filter 0.6s, box-shadow 0.6s; opacity: 0.92;
+    }
+    .stack .pl::after { content: attr(data-t); position: absolute; left: 10px; bottom: 8px; font-family: var(--en); font-style: italic; font-size: 0.9rem; color: rgba(255,255,255,0.92); text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+    .stack.has-on .pl:not(.on) { opacity: 0.34; filter: saturate(0.35); }
+    .stack .pl.on { transform: translate(-50%, -50%) rotateX(60deg) rotateZ(-42deg) translateZ(calc((var(--i) - 1.5) * 66px + 38px)); box-shadow: 0 0 0 3px var(--koumi), 24px 34px 40px -12px rgba(36,35,42,0.45); }
+    .stack-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; position: relative; z-index: 2; }
+    .stack-legend button { background: var(--paper3); }
+    .stack-legend button { text-align: left; font-size: 0.78rem; padding: 8px 12px; border: 1px solid var(--line-mid); border-radius: 3px; display: flex; gap: 10px; align-items: center; transition: background 0.3s, color 0.3s, border-color 0.3s; }
+    .stack-legend button i { font-family: var(--en); font-style: italic; font-size: 1rem; color: var(--koumi); min-width: 1.4em; }
+    .stack-legend button.on { background: var(--ink); color: var(--paper3); border-color: var(--ink); }
+    .stack-legend button.on i { color: #f0b39d; }
+    .stack-hint { font-family: var(--en); font-style: italic; font-size: 0.85rem; color: var(--muted); margin-top: 10px; letter-spacing: 0.08em; }
+    .sw-glaze {
+      background:
+        linear-gradient(115deg, rgba(62,86,109,0.55) 0 30%, transparent 30% 100%),
+        linear-gradient(65deg, transparent 0 40%, rgba(180,95,69,0.45) 40% 62%, transparent 62%),
+        linear-gradient(160deg, rgba(120,160,140,0.5) 0 45%, rgba(214,205,230,0.7) 45% 100%),
+        #cfd8d6;
+    }
+    .sw-video { background: repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0 1px, transparent 1px 4px), linear-gradient(120deg, #5f7e56, #8aa36c 40%, #9c3b2f 62%, #6b5b4a); }
+    .sw-video::before { content: ''; position: absolute; left: 12px; top: 12px; width: 9px; height: 9px; border-radius: 50%; background: #ff5a47; animation: blink 1.4s steps(2) infinite; }
+    @keyframes blink { 50% { opacity: 0.1; } }
+    .sw-clay { background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.4) 0 2px, transparent 3px) 0 0 / 14px 14px, radial-gradient(circle at 70% 70%, rgba(90,60,40,0.18) 0 1.5px, transparent 2px) 0 0 / 11px 11px, linear-gradient(135deg, #d8c6b2, #bfa58b); }
+    .sw-concrete { background: radial-gradient(circle, rgba(50,50,55,0.55) 0 3px, transparent 4px) 12px 14px / 46px 40px, linear-gradient(90deg, rgba(0,0,0,0.06) 0 1px, transparent 1px) 0 0 / 92px 100%, linear-gradient(180deg, #b7b3ae, #a19c96); }
+    @media (max-width: 768px) {
+      .layer { grid-template-columns: 44px minmax(0,1fr); }
+      .layers-wrap { grid-template-columns: 1fr; gap: 0; }
+      .stack-col { top: 58px; z-index: 5; background: linear-gradient(var(--paper3) 82%, rgba(245,240,233,0)); padding-bottom: 14px; margin: 0 calc(var(--px) * -1); padding-left: var(--px); padding-right: var(--px); }
+      .stack { height: 190px; }
+      .stack .pl { width: 36%; transform: translate(-50%, -50%) rotateX(60deg) rotateZ(-42deg) translateZ(calc((var(--i) - 1.5) * 34px)); }
+      .stack .pl.on { transform: translate(-50%, -50%) rotateX(60deg) rotateZ(-42deg) translateZ(calc((var(--i) - 1.5) * 34px + 22px)); }
+      .stack .pl::after { font-size: 0.7rem; }
+      .stack-legend { grid-template-columns: repeat(4, 1fr); }
+      .stack-legend button { font-size: 0.66rem; padding: 6px; justify-content: center; }
+      .stack-legend button span { display: none; }
+      .stack-hint { display: none; }
+    }
+
+    /* ============================================================
+       INDEX — 地層の目次
+    ================================================================ */
+    #index { background: var(--paper); padding: clamp(64px, 8vw, 110px) 0 0; }
+    .si-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; font-size: 0.76rem; letter-spacing: 0.2em; color: var(--muted); margin-bottom: 14px; }
+    .si-head .en { font-family: var(--en); font-style: italic; letter-spacing: 0.08em; font-size: 0.95rem; }
+    .strata-list { list-style: none; border-radius: 4px; overflow: hidden; box-shadow: 0 30px 60px -40px rgba(36,35,42,0.6); }
+    .strata-list li { opacity: 0; transform: translateX(var(--from, -40px)); transition: transform 1s var(--ease) var(--d, 0s), opacity 0.8s ease var(--d, 0s); }
+    .strata-list li:nth-child(even) { --from: 40px; }
+    .strata-list.in li { opacity: 1; transform: none; }
+    .strata-list a {
+      position: relative; display: grid; grid-template-columns: 48px minmax(0, 11em) minmax(0, 1fr) auto; align-items: center; gap: 16px;
+      padding: 0 22px; height: var(--h, 48px); background: var(--c); color: var(--fc, #fff);
+      border-top: 1px solid rgba(255,255,255,0.14); overflow: hidden;
+      transition: height 0.5s var(--ease), filter 0.3s;
+    }
+    .strata-list a::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 9px); opacity: 0.6; pointer-events: none; }
+    .strata-list a:hover, .strata-list a:focus-visible { --h: 78px; filter: brightness(1.07); }
+    .strata-list .no { font-family: var(--en); font-style: italic; font-size: 1.1rem; }
+    .strata-list b { font-weight: 500; letter-spacing: 0.12em; font-size: 0.92rem; }
+    .strata-list i { font-style: normal; font-family: var(--serif); font-size: 0.92rem; opacity: 0; transform: translateX(-12px); transition: opacity 0.4s, transform 0.5s var(--ease); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .strata-list a:hover i, .strata-list a:focus-visible i { opacity: 0.95; transform: none; }
+    .strata-list em { font-family: var(--en); font-style: italic; font-size: 0.92rem; opacity: 0.75; letter-spacing: 0.06em; }
+    .strata-list .fossil a em::before { content: ''; display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #e2574a; margin-right: 10px; box-shadow: 0 0 0 0 rgba(226,87,74,0.7); animation: fossilPing 2s ease-out infinite; }
+    @keyframes fossilPing { 70% { box-shadow: 0 0 0 10px rgba(226,87,74,0); } 100% { box-shadow: 0 0 0 0 rgba(226,87,74,0); } }
+    @media (max-width: 768px) {
+      .strata-list a { grid-template-columns: 34px minmax(0,1fr) auto; gap: 10px; padding: 0 14px; --h: 46px; }
+      .strata-list i { display: none; }
+      .strata-list em { font-size: 0.8rem; }
+      .strata-list a:hover, .strata-list a:focus-visible { --h: 52px; }
+    }
+
+    /* ============================================================
+       03 SITE VIEWS — 懐中電灯
+    ================================================================ */
+    #views { background: var(--night); color: var(--on-night); }
+    #views .sec-head { border-color: rgba(236,229,219,0.2); }
+    #views .sec-en, #views .body-txt, #views .cap { color: var(--on-night-dim); }
+    #views .sec-title { font-size: clamp(1.6rem, 3.1vw, 2.35rem); }
+    .views-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+    .torch { position: relative; border-radius: 4px; overflow: hidden; aspect-ratio: 1800 / 2114; background: #000; touch-action: pan-y; --x: 50%; --y: 62%; --r: 110px; cursor: crosshair; user-select: none; -webkit-user-select: none; }
+    .torch > img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+    .torch .shade { position: absolute; inset: 0; pointer-events: none; transition: opacity 1.2s ease;
+      background: radial-gradient(circle at var(--x) var(--y), rgba(8,9,12,0) 0, rgba(8,9,12,0.05) calc(var(--r) * 0.7), rgba(8,9,12,0.95) calc(var(--r) * 2)); }
+    .torch.lit .shade { opacity: 0; }
+    .torch .beam { position: absolute; left: var(--x); top: var(--y); width: calc(var(--r) * 2); height: calc(var(--r) * 2); margin: calc(var(--r) * -1) 0 0 calc(var(--r) * -1); border-radius: 50%; box-shadow: 0 0 0 1px rgba(255,236,200,0.25), 0 0 60px rgba(255,236,200,0.15) inset; pointer-events: none; transition: opacity 0.6s; }
+    .torch.lit .beam { opacity: 0; }
+    .torch .tl { position: absolute; transform: translate(-50%, -50%); font-size: 0.72rem; letter-spacing: 0.08em; color: #fff; background: rgba(20,22,26,0.78); padding: 4px 10px; border-radius: 2px; white-space: nowrap; opacity: var(--o, 0); transition: opacity 0.25s; pointer-events: none; border-left: 3px solid var(--c); }
+    .torch .mikan { position: absolute; right: 12px; bottom: 12px; background: #111; color: #fff; font-size: 0.7rem; letter-spacing: 0.1em; padding: 4px 10px; border-radius: 2px; }
+    .torch-ctrl { display: flex; gap: 12px; margin-top: 16px; align-items: center; flex-wrap: wrap; }
+    .torch-ctrl button { border: 1px solid rgba(236,229,219,0.45); padding: 8px 20px; border-radius: 30px; font-size: 0.8rem; letter-spacing: 0.1em; transition: background 0.3s, color 0.3s; }
+    .torch-ctrl button:hover, .torch-ctrl button[aria-pressed="true"] { background: var(--on-night); color: var(--night); }
+    .torch-ctrl span { font-size: 0.78rem; color: var(--on-night-dim); }
+    .found { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 22px; }
+    .found span { font-size: 0.74rem; padding: 4px 12px; border-radius: 20px; border: 1px dashed rgba(236,229,219,0.3); color: var(--on-night-dim); transition: all 0.4s var(--ease); }
+    .found span.got { border-style: solid; border-color: var(--c); background: var(--c); color: #fff; }
+    .found-msg { font-family: var(--serif); font-size: 0.92rem; margin-top: 12px; min-height: 1.8em; color: #f0b39d; }
+    @media (max-width: 900px) { .views-grid { grid-template-columns: 1fr; } }
+
+
+    /* ============================================================
+       03 SITE — ZOC
+    ================================================================ */
+    #site { background: var(--paper); }
+    .zoc-wrap { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 56px); align-items: start; }
+    .zoc-figure { position: relative; border-radius: 4px; overflow: hidden; box-shadow: 0 30px 60px -30px rgba(36,35,42,0.45); background: #cfc8bf; }
+    .zoc-figure img { width: 100%; transition: filter 0.6s ease; }
+    .zoc-figure.dim img { filter: saturate(0.65) brightness(0.9); }
+    .zoc-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .zoc-svg .zone { transition: opacity 0.6s ease; }
+    .zoc-svg .zone.off { opacity: 0; }
+    .zoc-svg .ring { fill: none; stroke-width: 5; stroke-dasharray: 26 18; animation: march 18s linear infinite; }
+    .zoc-svg .z-koumi .ring { stroke: #d0694b; }
+    .zoc-svg .z-samizu .ring { stroke: #3c5f80; animation-direction: reverse; }
+    @keyframes march { to { stroke-dashoffset: -440; } }
+    .zoc-svg .ridge { stroke: rgba(255,255,255,0.95); stroke-width: 4; stroke-dasharray: 10 10; transition: opacity 0.6s; }
+    .zoc-svg .ridge.off { opacity: 0; }
+    .zoc-svg .ridge-label { fill: #fff; font-family: 'Noto Sans JP', sans-serif; font-size: 46px; letter-spacing: 3px; paint-order: stroke; stroke: rgba(30,33,40,0.55); stroke-width: 6px; }
+    .zoc-svg.animate .zone { animation: breathe 5.5s ease-in-out infinite; }
+    @keyframes breathe { 50% { opacity: 0.78; } }
+
+    .hot {
+      position: absolute; width: 38px; height: 38px; margin: -19px 0 0 -19px; border-radius: 50%;
+      color: #fff; font-family: var(--en); font-size: 1.15rem; font-weight: 500; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.3); transition: transform 0.4s var(--ease), box-shadow 0.4s;
+      z-index: 2;
+    }
+    .hot.koumi { background: var(--koumi); }
+    .hot.samizu { background: var(--samizu); }
+    .hot::before { content: ''; position: absolute; inset: -2px; border-radius: 50%; border: 2px solid currentColor; opacity: 0; }
+    .hot.koumi::before { border-color: #f0b39d; } .hot.samizu::before { border-color: #a9c4dc; }
+    .hot:not(.is-active)::before { animation: ping 2.6s ease-out infinite; }
+    @keyframes ping { 0% { transform: scale(1); opacity: 0.9; } 100% { transform: scale(2.1); opacity: 0; } }
+    .hot:hover, .hot.is-active { transform: scale(1.22); box-shadow: 0 0 0 5px rgba(255,255,255,0.75), 0 8px 20px rgba(0,0,0,0.35); }
+    .hot.edge { width: auto; border-radius: 40px; padding: 0 14px 0 6px; gap: 8px; font-family: var(--sans); font-size: 0.72rem; letter-spacing: 0.1em; margin-left: -60px; }
+    .hot.edge b { display: inline-flex; width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.2); align-items: center; justify-content: center; font-family: var(--en); font-size: 1.05rem; font-weight: 500; }
+
+    .zoc-toggles { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .tgl { font-size: 0.78rem; letter-spacing: 0.08em; padding: 6px 14px 6px 10px; border: 1px solid var(--line-mid); border-radius: 30px; display: inline-flex; align-items: center; gap: 8px; transition: background 0.3s, border-color 0.3s, color 0.3s; }
+    .tgl::before { content: ''; width: 12px; height: 12px; border-radius: 50%; border: 2px dashed var(--c); }
+    .tgl[aria-pressed="true"] { background: var(--c); border-color: var(--c); color: #fff; }
+    .tgl[aria-pressed="true"]::before { border-color: #fff; border-style: solid; }
+
+    .zoc-panel h3 { font-family: var(--serif); font-size: 1.12rem; font-weight: 600; display: flex; align-items: center; gap: 12px; margin-bottom: 2px; }
+    .zoc-panel h3::before { content: ''; width: 34px; height: 12px; border-radius: 2px; background: var(--c); }
+    .zoc-panel .en { font-size: 0.7rem; letter-spacing: 0.16em; color: var(--muted); margin-bottom: 12px; display: block; }
+    .zoc-group { background: var(--paper3); border: 1px solid var(--line); border-radius: 4px; padding: 20px 22px 12px; margin-bottom: 16px; }
+    .zoc-item { display: grid; grid-template-columns: 28px minmax(0,1fr); gap: 12px; padding: 12px 8px; margin: 0 -8px; border-radius: 4px; cursor: pointer; transition: background 0.3s; width: calc(100% + 16px); text-align: left; }
+    .zoc-item + .zoc-item { border-top: 1px dashed var(--line); }
+    .zoc-item .n { width: 26px; height: 26px; border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--en); font-size: 1rem; background: var(--c); margin-top: 3px; }
+    .zoc-item b { display: block; font-size: 0.94rem; line-height: 1.7; }
+    .zoc-item small { display: block; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; }
+    .zoc-item .d { display: block; font-size: 0.86rem; color: var(--ink2); line-height: 1.85; max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.6s var(--ease), opacity 0.5s, margin 0.5s; }
+    .zoc-item.is-active { background: rgba(255,255,255,0.7); }
+    .zoc-item.is-active .d { max-height: 220px; opacity: 1; margin-top: 6px; }
+    .zoc-item .d a { color: var(--koumi); border-bottom: 1px solid currentColor; }
+    .zoc-note { font-size: 0.76rem; color: var(--muted); line-height: 1.9; border-top: 1px solid var(--line); padding-top: 12px; }
+    @media (max-width: 900px) {
+      .zoc-wrap { grid-template-columns: 1fr; }
+      .hot { width: 32px; height: 32px; margin: -16px 0 0 -16px; font-size: 1rem; }
+    }
+
+    /* ============================================================
+       04 WORKS — 稜線スライダー
+    ================================================================ */
+    #works { background: var(--night); color: var(--on-night); }
+    #works .sec-head { border-color: rgba(236,229,219,0.2); }
+    #works .sec-en { color: var(--on-night-dim); }
+    #works .body-txt { color: var(--on-night-dim); }
+    .duo-view { display: flex; align-items: center; gap: 0; margin-top: clamp(30px, 4vw, 48px); }
+    .duo-view figure { flex: 1 1 0; min-width: 0; transition: flex-grow 0.9s var(--ease), opacity 0.6s; margin: 0; }
+    .duo-view:hover figure { opacity: 0.55; }
+    .duo-view figure:hover { flex-grow: 1.7; opacity: 1; }
+    .duo-view img { display: block; width: 100%; height: auto; cursor: zoom-in; box-shadow: 0 30px 50px -30px rgba(0,0,0,0.8); }
+    .duo-view figcaption { display: flex; align-items: baseline; gap: 10px; margin-top: 12px; font-size: 0.82rem; letter-spacing: 0.08em; color: var(--on-night-dim); }
+    .duo-view figcaption b { font-weight: 500; color: var(--on-night); padding-left: 10px; border-left: 3px solid var(--c); }
+    .duo-view figcaption em { font-family: var(--en); font-size: 0.9rem; }
+    .duo-ridge { flex: 0 0 clamp(36px, 5vw, 70px); align-self: stretch; position: relative; display: flex; justify-content: center; }
+    .duo-ridge::before { content: ''; width: 1px; height: 100%; background: linear-gradient(transparent, rgba(236,229,219,0.5) 15%, rgba(236,229,219,0.5) 85%, transparent); }
+    .duo-ridge span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); writing-mode: vertical-rl; font-size: 0.72rem; letter-spacing: 0.4em; background: var(--night); padding: 10px 0; color: var(--on-night-dim); }
+    .duo-hint { text-align: center; font-size: 0.8rem; letter-spacing: 0.1em; color: var(--on-night-dim); margin-top: 18px; }
+    .works-duo { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 4vw, 56px); margin-top: clamp(40px, 6vw, 72px); }
+    .work-card { border-top: 2px solid var(--c); padding-top: 18px; }
+    .work-card .loc { font-size: 0.72rem; letter-spacing: 0.18em; color: var(--c2); }
+    .work-card h3 { font-family: var(--serif); font-size: clamp(1.2rem, 2.4vw, 1.6rem); font-weight: 400; letter-spacing: 0.06em; margin: 4px 0 10px; }
+    .work-card p { font-size: 0.92rem; color: var(--on-night-dim); }
+    @media (max-width: 768px) {
+      .works-duo { grid-template-columns: 1fr; }
+      .duo-view { flex-direction: column; }
+      .duo-view:hover figure { opacity: 1; }
+      .duo-view figure, .duo-view figure:hover { flex: none; width: 100%; }
+      .duo-ridge { flex: none; width: 100%; height: 44px; }
+      .duo-ridge::before { width: 100%; height: 1px; align-self: center; background: linear-gradient(90deg, transparent, rgba(236,229,219,0.5) 15%, rgba(236,229,219,0.5) 85%, transparent); }
+      .duo-ridge span { writing-mode: horizontal-tb; padding: 0 12px; }
+    }
+
+    /* ============================================================
+       05 ENTRANCE
+    ================================================================ */
+    #entrance { background: var(--paper); }
+    .entrance-fig { position: relative; border: 1px solid var(--ink); padding: clamp(6px, 1vw, 10px); background: var(--paper3); }
+    .entrance-fig .inner { position: relative; overflow: hidden; }
+    .entrance-fig .inner > img { width: 100%; }
+    .loop-screen {
+      position: absolute; left: 39.6%; top: 35.3%; width: 19.8%; height: 18.1%; overflow: hidden; background: #000;
+    }
+    .loop-screen img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity 1.2s ease; }
+    .loop-screen img.on { opacity: 1; }
+    .loop-screen .cutno { position: absolute; left: 5%; bottom: 7%; z-index: 2; font-family: var(--en); font-size: clamp(7px, 0.9vw, 12px); color: #fff; letter-spacing: 0.16em; text-shadow: 0 1px 3px #000; }
+    .cuts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 14px; background: var(--night); padding: 12px; border-radius: 3px; }
+    .cuts button { text-align: left; color: var(--on-night); opacity: 0.5; transition: opacity 0.4s; }
+    .cuts button:hover, .cuts button.on { opacity: 1; }
+    .cuts img { width: 100%; height: auto; border-radius: 2px; }
+    .cuts .bar { display: block; height: 2px; background: rgba(255,255,255,0.14); margin-top: 7px; overflow: hidden; }
+    .cuts .bar i { display: block; height: 100%; width: 0; background: #ff5a47; }
+    .cuts button.on .bar i { animation: prog var(--dur, 3.6s) linear forwards; }
+    @keyframes prog { to { width: 100%; } }
+    .cuts b { display: block; font-family: var(--en); font-weight: 400; font-size: 0.82rem; letter-spacing: 0.14em; margin-top: 4px; }
+    .cuts small { display: block; font-size: 0.68rem; color: var(--on-night-dim); }
+    .cuts-cap { font-size: 0.8rem; color: var(--ink2); margin-top: 10px; }
+    .cuts-cap b { font-weight: 700; letter-spacing: 0.08em; margin-right: 8px; }
+    @media (max-width: 600px) { .cuts { gap: 6px; padding: 8px; } .cuts small { display: none; } }
+    .loop-screen::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.08) 0 1px, transparent 1px 3px); pointer-events: none; }
+    .loop-badge {
+      position: absolute; top: 14px; right: 14px; background: rgba(20,22,26,0.82); color: #fff; font-size: 0.7rem;
+      letter-spacing: 0.14em; padding: 6px 12px; border-radius: 2px; display: flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums;
+    }
+    .loop-badge::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #ff5a47; animation: blink 1.4s steps(2) infinite; }
+    .loop-badge .tc { opacity: 0.7; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 5vw, 64px); margin-top: clamp(32px, 4vw, 48px); }
+    .two-col h3 { font-size: 0.95rem; font-weight: 700; letter-spacing: 0.14em; color: var(--samizu); display: inline-block; border-bottom: 2px solid var(--samizu); padding-bottom: 4px; margin-bottom: 14px; }
+    .two-col p { color: var(--ink2); font-size: 0.94rem; }
+    .runup { margin-top: 18px; background: var(--paper2); border-left: 3px solid var(--koumi); padding: 12px 18px; font-size: 0.92rem; }
+    .runup b { color: var(--koumi); }
+    .specs { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line-mid); border-bottom: 1px solid var(--line-mid); margin-top: clamp(36px, 5vw, 56px); }
+    .specs div { padding: 16px 18px; }
+    .specs div + div { border-left: 1px solid var(--line); }
+    .specs small { display: block; font-size: 0.7rem; letter-spacing: 0.14em; color: var(--koumi); }
+    .specs b { font-weight: 500; font-size: 0.98rem; }
+    @media (max-width: 768px) {
+      .two-col { grid-template-columns: 1fr; }
+      .specs { grid-template-columns: 1fr 1fr; }
+      .specs div:nth-child(3) { border-left: 0; }
+      .specs div:nth-child(n+3) { border-top: 1px solid var(--line); }
+    }
+
+    /* ============================================================
+       06 CHAMBER — マクロからミクロへ
+    ================================================================ */
+    #chamber { background: var(--paper3); }
+    #chamber .section { padding-bottom: 40px; }
+    .zoom-track { position: relative; height: 260vh; }
+    .zoom-sticky { position: sticky; top: 0; height: 100vh; height: 100svh; display: flex; align-items: center; overflow: hidden; }
+    .zoom-grid { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: center; width: 100%; }
+    .zoom-frame { position: relative; height: min(78vh, 780px); aspect-ratio: 769 / 1024; overflow: hidden; border-radius: 4px; box-shadow: 0 30px 60px -30px rgba(36,35,42,0.5); background: #ddd; }
+    .zoom-frame img { width: 100%; height: 100%; object-fit: cover; transform-origin: 46% 55%; will-change: transform; }
+    .zoom-frame .vig { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 46% 55%, transparent 20%, rgba(20,20,24,0.65) 75%); opacity: 0; }
+    .zoom-frame .scope { position: absolute; left: 46%; top: 55%; width: 34%; aspect-ratio: 1; transform: translate(-50%, -50%); border: 1px solid rgba(255,255,255,0.85); border-radius: 50%; opacity: 0; pointer-events: none; }
+    .zoom-frame .scope::before, .zoom-frame .scope::after { content: ''; position: absolute; background: rgba(255,255,255,0.85); }
+    .zoom-frame .scope::before { left: 50%; top: -12px; bottom: -12px; width: 1px; }
+    .zoom-frame .scope::after { top: 50%; left: -12px; right: -12px; height: 1px; }
+    .scale-bar { display: flex; align-items: center; gap: 12px; font-family: var(--en); font-size: 0.85rem; letter-spacing: 0.24em; color: var(--muted); margin-bottom: 22px; }
+    .scale-bar .bar { flex: 1; max-width: 240px; height: 2px; background: var(--line-mid); position: relative; }
+    .scale-bar .bar i { position: absolute; left: 0; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--koumi); transform: translateX(-50%); }
+    .steps { position: relative; min-height: 230px; }
+    .step { position: absolute; inset: 0 0 auto 0; opacity: 0; transform: translateY(18px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+    .step.on { opacity: 1; transform: none; }
+    .step .k { font-family: var(--en); font-style: italic; color: var(--koumi); letter-spacing: 0.12em; }
+    .step h3 { font-family: var(--serif); font-size: clamp(1.25rem, 2.6vw, 1.8rem); font-weight: 400; line-height: 1.6; margin: 6px 0 12px; }
+    .step p { color: var(--ink2); font-size: 0.94rem; max-width: 30em; }
+    @media (max-width: 900px) {
+      .zoom-grid { grid-template-columns: 1fr; gap: 18px; justify-items: center; }
+      .zoom-frame { height: 56vh; height: 56svh; }
+      .zoom-text { width: 100%; }
+      .steps { min-height: 190px; }
+      .scale-bar { margin-bottom: 10px; }
+    }
+
+    .dolphin-cta {
+      position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 24px;
+      background: var(--night); color: var(--on-night); border-radius: 6px; overflow: hidden;
+      padding: clamp(28px, 4.5vw, 52px) clamp(24px, 4.5vw, 56px); margin-top: clamp(48px, 6vw, 72px);
+      transition: transform 0.6s var(--ease), box-shadow 0.6s var(--ease);
+    }
+    .dolphin-cta:hover { transform: translateY(-4px); box-shadow: 0 24px 50px -20px rgba(30,33,40,0.6); }
+    .dolphin-cta .sonar { position: absolute; right: calc(clamp(24px, 4.5vw, 56px) + 36px); top: 50%; width: 0; height: 0; }
+    .dolphin-cta .sonar i { position: absolute; left: -260px; top: -260px; width: 520px; height: 520px; border-radius: 50%; border: 1px solid rgba(169,196,220,0.55); transform: scale(0.02); opacity: 0; animation: sonar 3.6s ease-out infinite; }
+    .dolphin-cta .sonar i:nth-child(2) { animation-delay: 1.2s; } .dolphin-cta .sonar i:nth-child(3) { animation-delay: 2.4s; }
+    @keyframes sonar { 0% { transform: scale(0.02); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
+    .dolphin-cta .swim { position: absolute; left: 0; bottom: 6%; width: 120px; opacity: 0.2; animation: swim 14s linear infinite; }
+    @keyframes swim { 0% { transform: translateX(-200px) translateY(0); } 50% { transform: translateX(calc(50vw)) translateY(-10px); } 100% { transform: translateX(calc(100vw)) translateY(0); } }
+    .dolphin-cta .k { font-family: var(--en); font-style: italic; letter-spacing: 0.18em; color: #f0b39d; font-size: 0.9rem; position: relative; }
+    .dolphin-cta h3 { font-family: var(--serif); font-weight: 400; font-size: clamp(1.5rem, 3.4vw, 2.4rem); letter-spacing: 0.08em; line-height: 1.5; position: relative; }
+    .dolphin-cta p { color: var(--on-night-dim); font-size: 0.9rem; position: relative; max-width: 34em; }
+    .dolphin-cta .go { position: relative; width: 72px; height: 72px; border-radius: 50%; border: 1px solid rgba(236,229,219,0.4); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; transition: background 0.4s, color 0.4s, transform 0.6s var(--ease); }
+    .dolphin-cta:hover .go { background: var(--koumi); border-color: var(--koumi); transform: translateX(6px); }
+    .panel-thumbs { display: flex; gap: 14px; margin-top: 22px; flex-wrap: wrap; }
+    .panel-thumbs button { width: 110px; border-radius: 3px; overflow: hidden; border: 1px solid var(--line); transition: transform 0.4s var(--ease); background: #fff; }
+    .panel-thumbs button:hover { transform: translateY(-3px) rotate(-1deg); }
+    .panel-thumbs span { display: block; font-size: 0.66rem; color: var(--muted); padding: 4px 6px; text-align: left; line-height: 1.5; }
+    @media (max-width: 600px) { .dolphin-cta { grid-template-columns: 1fr; } .dolphin-cta .go { width: 56px; height: 56px; } }
+
+    /* ============================================================
+       07 MEANING
+    ================================================================ */
+    #meaning { background: var(--paper); overflow: hidden; }
+    .meaning-cols { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 72px); margin-top: clamp(36px, 5vw, 56px); }
+    .meaning-cols h3 { font-family: var(--serif); font-weight: 600; font-size: 1.15rem; margin-bottom: 12px; }
+    .meaning-cols p { color: var(--ink2); font-size: 0.94rem; }
+    .meaning-cols p + p { margin-top: 1em; }
+    .singularity { text-align: center; margin-top: clamp(64px, 9vw, 110px); }
+    .singularity .kicker { font-family: var(--en); font-style: italic; letter-spacing: 0.16em; color: var(--muted); }
+    .singularity .kicker b { font-weight: 400; color: var(--samizu); } .singularity .kicker em { color: var(--koumi); font-style: italic; }
+    .quote-box { position: relative; margin: 20px auto 0; max-width: 880px; background: var(--paper2); border: 1px solid var(--line); border-radius: 6px; padding: clamp(36px, 5vw, 60px) clamp(20px, 4vw, 48px); }
+    .quote-box p { font-family: var(--serif); font-size: clamp(1.05rem, 2.2vw, 1.4rem); line-height: 2.1; letter-spacing: 0.08em; }
+    .quote-box .pt { position: absolute; left: 50%; top: 0; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; background: var(--paper); border: 1.6px solid var(--ink); }
+    .quote-box .pt::after { content: ''; position: absolute; inset: -8px; border-radius: 50%; border: 1px solid var(--cross); animation: ping 3s ease-out infinite; }
+    .meaning-ridge { margin-top: clamp(40px, 6vw, 70px); opacity: 0.6; }
+    @media (max-width: 768px) { .meaning-cols { grid-template-columns: 1fr; } }
+
+    /* ============================================================
+       08 SAMIZU WARE
+    ================================================================ */
+    #ware { background: #faf8f4; }
+    .ware { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+    .bowl-wrap { position: relative; }
+    .bowl-band { height: 10px; border-radius: 2px; background: linear-gradient(125deg, #a33c38 0%, #d4a44a 28%, #3a5a8c 52%, #4a7454 76%, #e3e2da 100%); margin-bottom: 26px; }
+    .bowl { width: 100%; height: auto; display: block; overflow: visible; cursor: pointer; }
+    .bowl .drip { transform-box: fill-box; transform-origin: 50% 0; transform: scaleY(0); transition: transform 1.8s var(--ease), opacity 0.5s, filter 0.5s; }
+    .bowl-wrap.in .drip { transform: scaleY(1); }
+    .bowl.has-sel .drip:not(.sel) { opacity: 0.22; filter: saturate(0.2); }
+    .bowl .drip.sel { filter: drop-shadow(0 0 8px rgba(255,255,255,0.6)); }
+    .bowl .spin { animation: bowlSheen 6s ease-in-out infinite; }
+    @keyframes bowlSheen { 0% { transform: translateX(-260px); } 60%, 100% { transform: translateX(420px); } }
+    .color-say { text-align: center; min-height: 4.6em; margin-top: 8px; font-family: var(--serif); transition: color 0.4s; }
+    .color-say b { display: block; font-weight: 400; font-size: clamp(1.3rem, 2.6vw, 1.7rem); letter-spacing: 0.4em; }
+    .color-say span { font-size: 0.85rem; color: var(--muted); letter-spacing: 0.24em; }
+    .ware h3 { font-family: var(--serif); font-weight: 300; font-size: clamp(1.8rem, 4vw, 2.6rem); letter-spacing: 0.3em; }
+    .ware .en { font-family: var(--en); letter-spacing: 0.4em; color: var(--muted); font-size: 0.85rem; }
+    .ware .poem { font-family: var(--serif); letter-spacing: 0.18em; line-height: 2.2; margin: 18px 0 26px; color: var(--ink2); }
+    .colors { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+    .colors button { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 6px 0; border-radius: 4px; transition: background 0.3s; }
+    .colors button:hover, .colors button[aria-pressed="true"] { background: rgba(0,0,0,0.04); }
+    .colors i { width: clamp(38px, 5vw, 54px); aspect-ratio: 1; border-radius: 50%; background: var(--c); border: 1px solid rgba(0,0,0,0.08); transition: transform 0.5s var(--ease); }
+    .colors button:hover i, .colors button[aria-pressed="true"] i { transform: scale(1.14) translateY(-3px); }
+    .colors b { font-family: var(--serif); font-weight: 600; font-size: 0.95rem; }
+    .colors small { font-size: 0.68rem; color: var(--muted); line-height: 1.6; text-align: center; border-top: 1px solid var(--line); padding-top: 6px; width: 100%; }
+    .ware .charm { text-align: center; margin-top: 18px; font-size: 0.78rem; letter-spacing: 0.5em; color: var(--muted); }
+    @media (max-width: 768px) { .ware { grid-template-columns: 1fr; } }
+
+    /* ============================================================
+       09 DATA & CLOSING
+    ================================================================ */
+    #data { background: var(--night); color: var(--on-night); }
+    #data h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(2.2rem, 5vw, 3.4rem); letter-spacing: 0.08em; }
+    #data .en-sub { font-family: var(--en); font-style: italic; letter-spacing: 0.08em; color: var(--on-night-dim); font-size: clamp(0.9rem, 1.6vw, 1.1rem); margin-top: 6px; }
+    #data .note { border-left: 2px solid rgba(236,229,219,0.3); padding-left: 20px; margin: 36px 0 44px; font-size: 0.9rem; color: var(--on-night-dim); max-width: 44em; }
+    .data-list { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 26px 48px; }
+    .data-list dt { font-size: 0.72rem; letter-spacing: 0.16em; color: var(--on-night-dim); }
+    .data-list dd { font-size: 1.08rem; letter-spacing: 0.06em; }
+    .legend { display: flex; flex-wrap: wrap; gap: 10px 30px; margin-top: 44px; font-size: 0.82rem; color: var(--on-night-dim); }
+    .legend span::before { content: ''; display: inline-block; width: 11px; height: 11px; border-radius: 50%; margin-right: 8px; vertical-align: -1px; background: var(--c); }
+    @media (max-width: 600px) { .data-list { grid-template-columns: 1fr; } }
+
+    .closing { background: var(--night2); color: var(--on-night); text-align: center; padding: clamp(80px, 10vw, 120px) 0; }
+    .closing h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(1.4rem, 3vw, 1.9rem); letter-spacing: 0.14em; margin-bottom: 14px; }
+    .closing p { color: var(--on-night-dim); font-size: 0.92rem; max-width: 34em; margin: 0 auto 30px; }
+    .btn-line { display: inline-block; border: 1px solid rgba(236,229,219,0.5); padding: 14px 36px; letter-spacing: 0.14em; font-size: 0.9rem; transition: background 0.4s, color 0.4s; }
+    .btn-line:hover { background: var(--on-night); color: var(--night); }
+    .closing .row { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+    footer { background: #16181d; color: var(--on-night-dim); text-align: center; padding: 34px 20px; font-size: 0.78rem; }
+    footer .f-logo { font-family: var(--serif); letter-spacing: 0.2em; color: var(--on-night); margin-bottom: 4px; }
+
+    /* ============================================================
+       LIGHTBOX / BACK TO TOP
+    ================================================================ */
+    .lightbox { position: fixed; inset: 0; z-index: 7000; background: rgba(18,19,23,0.94); display: flex; align-items: center; justify-content: center; padding: 50px 16px 30px; opacity: 0; visibility: hidden; transition: opacity 0.4s, visibility 0.4s; cursor: zoom-out; }
+    .lightbox.open { opacity: 1; visibility: visible; }
+    .lightbox img { max-width: min(1400px, 100%); max-height: 100%; object-fit: contain; border-radius: 2px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+    .lightbox .lb-close { position: absolute; top: 14px; right: 18px; color: #fff; font-family: var(--en); letter-spacing: 0.2em; font-size: 0.8rem; }
+    .to-top { position: fixed; right: 18px; bottom: 18px; z-index: 3000; width: 48px; height: 48px; border-radius: 50%; background: var(--night); border: 1px solid rgba(236,229,219,0.35); color: var(--on-night); display: flex; align-items: center; justify-content: center; font-family: var(--en); font-size: 0.7rem; letter-spacing: 0.1em; opacity: 0; transform: translateY(12px); transition: opacity 0.4s, transform 0.4s var(--ease); pointer-events: none; }
+    .to-top.show { opacity: 0.9; transform: none; pointer-events: auto; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; transition-delay: 0s !important; }
+      .zoom-track { height: auto; } .zoom-sticky { position: relative; height: auto; padding: 40px 0; }
+      .step { position: relative; opacity: 1; transform: none; margin-bottom: 20px; } .steps { min-height: 0; }
+    }
+    @media (max-width: 600px) { .sec-head { flex-wrap: wrap; gap: 2px 16px; } .sec-label { white-space: nowrap; } .sec-en { font-size: 0.78rem; } }
+  </style>
+</head>
+<body class="is-loading">
+
+  <div class="rail" aria-hidden="true"><div class="rail-fill" id="railFill"></div></div>
+
+  <!-- ============== NAV ============== -->
+  <nav id="top-nav" aria-label="サイト">
+    <a href="#top" class="nav-brand"><b>二重の遠景</b><small>Tsuda Shoichi</small></a>
+    <p class="nav-now" id="navNow" aria-hidden="true"><span class="no"></span><span class="t"></span><span class="bar"><i></i></span></p>
+    <div class="nav-right">
+      <a href="koumi2026-dolphin.html" class="nav-pill"><span class="long">コウミカワイルカ</span><span class="short-i">イルカ</span> →</a>
+      <button class="menu-btn" id="menuBtn" aria-label="目次を開く" aria-controls="menuOverlay"><i></i>目次</button>
+    </div>
+  </nav>
+
+  <div class="menu-overlay" id="menuOverlay" aria-hidden="true" role="dialog" aria-label="目次">
+    <button class="menu-close" id="menuClose" aria-label="目次を閉じる"></button>
+    <div class="mo-inner">
+      <div>
+        <p class="mo-title"><small>INDEX ／ 目次</small><b>二重の遠景</b><span>Koumi Town Highland Museum of Art — Hall 3</span></p>
+        <div class="mo-links">
+        <a href="koumi2026-dolphin.html" class="hl">コウミカワイルカ解説<span aria-hidden="true">→</span></a>
+        <a href="https://sh012da.github.io/sh01/contact.html">お問い合わせ<span aria-hidden="true">→</span></a>
+        <a href="https://sh012da.github.io/sh01/">津田翔一 トップページ<span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <ol class="mo-list">
+        <li style="transition-delay:0.00s"><a href="#concept" data-no="01" data-ja="企画の趣旨"><span class="no">01</span><span class="ja">企画の趣旨</span><span class="en">Concept</span></a></li>
+        <li style="transition-delay:0.04s"><a href="#layers" data-no="02" data-ja="展示の要素"><span class="no">02</span><span class="ja">展示の要素</span><span class="en">Four Layers</span></a></li>
+        <li style="transition-delay:0.08s"><a href="#views" data-no="03" data-ja="展示イメージ"><span class="no">03</span><span class="ja">展示イメージ</span><span class="en">Site Views</span></a></li>
+        <li style="transition-delay:0.12s"><a href="#site" data-no="04" data-ja="展示構成・ZOC"><span class="no">04</span><span class="ja">展示構成・ZOC</span><span class="en">Spatial Layout</span></a></li>
+        <li style="transition-delay:0.16s"><a href="#works" data-no="05" data-ja="二つの風景"><span class="no">05</span><span class="ja">二つの風景</span><span class="en">Two Landscapes</span></a></li>
+        <li style="transition-delay:0.20s"><a href="#entrance" data-no="06" data-ja="導入エリア"><span class="no">06</span><span class="ja">導入エリア</span><span class="en">Entrance</span></a></li>
+        <li style="transition-delay:0.24s"><a href="#chamber" data-no="07" data-ja="奥の通路・小部屋"><span class="no">07</span><span class="ja">奥の通路・小部屋</span><span class="en">The Whale's Chamber</span></a></li>
+        <li style="transition-delay:0.28s"><a href="#meaning" data-no="08" data-ja="意義と期待される効果"><span class="no">08</span><span class="ja">意義と期待される効果</span><span class="en">Where Two Times Meet</span></a></li>
+        <li style="transition-delay:0.32s"><a href="#ware" data-no="09" data-ja="左美都焼き"><span class="no">09</span><span class="ja">左美都焼き</span><span class="en">Samizu Ware</span></a></li>
+        <li style="transition-delay:0.36s"><a href="#data" data-no="10" data-ja="作品データ"><span class="no">10</span><span class="ja">作品データ</span><span class="en">Data</span></a></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ============== HERO ============== -->
+  <header class="hero" id="top">
+    <div class="hero-bg"><img src="../../images/exhi-koumi2026/hall-3.jpg" alt="小海町高原美術館 Hall 3 のコンクリート柱と展示作品" fetchpriority="high"></div>
+    <div class="hero-shade"></div>
+
+    <svg class="hero-ridges" id="heroRidges" viewBox="0 0 1440 240" preserveAspectRatio="none" aria-hidden="true">
+      <path class="r-koumi" pathLength="1" d="M-20 196 L180 70 L380 190 L560 84 L760 196 L940 76 L1130 184 L1300 110 L1460 160"/>
+      <path class="r-samizu" pathLength="1" d="M-20 150 C 120 128, 240 128, 360 146 S 600 170, 720 150 S 960 124, 1080 142 S 1320 160, 1460 138"/>
+    </svg>
+
+    <div class="hero-frame" aria-hidden="true"></div>
+    <p class="hero-vertical" aria-hidden="true">SEDIMENT OF TWO LANDSCAPES — <em>SAMIZU</em> / <b>KOUMI</b></p>
+
+    <div class="hero-body">
+      <p class="hero-eyebrow">Koumi Town Highland Museum of Art — Hall 3</p>
+      <h1 class="hero-title" id="heroTitle" aria-label="二重の遠景">
+        <span class="ln" data-text="二重の"><span class="ink"><span class="ch">二</span><span class="ch">重</span><span class="ch">の</span></span></span>
+        <span class="ln" data-text="遠景"><span class="ink"><span class="ch">遠</span><span class="ch">景</span></span></span>
+      </h1>
+      <p class="hero-sub">小海の海（うみ）、左美都の層</p>
+    </div>
+
+    <div class="hero-foot">
+      <div class="artist">津田 翔一<small>Tsuda Shoichi — Painting / Video / Ceramics</small></div>
+      <div class="meta"><b>2026.09</b>展示作品案 第3版 ／ 会場｜小海町高原美術館 Hall 3</div>
+    </div>
+    <div class="hero-cue" aria-hidden="true">SCROLL</div>
+    <button class="hero-skip" id="heroSkip">Skip intro</button>
+  </header>
+
+  <main>
+    <!-- ============== INDEX — 地層の目次 ============== -->
+    <nav id="index" aria-label="目次">
+      <div class="container">
+        <p class="si-head reveal"><span>INDEX ／ 地層をたどる</span><span class="en">dig down through the layers</span></p>
+        <ol class="strata-list reveal">
+          <li style="--d:0s"><a href="#concept" style="--c:#dccbac; --fc:#24232a"><span class="no">01</span><b>企画の趣旨</b><i>海なき地に、海の記憶を編む。</i><em>Concept</em></a></li>
+          <li style="--d:.05s"><a href="#layers" style="--c:#cdb28e; --fc:#24232a"><span class="no">02</span><b>展示の要素</b><i>四つのメディアが、一つの空間で回遊する。</i><em>Four Layers</em></a></li>
+          <li style="--d:.1s"><a href="#views" style="--c:#bb9d7b; --fc:#24232a"><span class="no">03</span><b>展示イメージ</b><i>現況の Hall 3に、作品を仮置きする。</i><em>Site Views</em></a></li>
+          <li style="--d:.15s"><a href="#site" style="--c:#a8836a"><span class="no">04</span><b>展示構成</b><i>柱を境に、二つのZOCが静かに重なる。</i><em>Spatial Layout</em></a></li>
+          <li style="--d:.2s"><a href="#works" style="--c:#b45f45"><span class="no">05</span><b>二つの風景</b><i>柱の稜線をはさんで、二つの風土が向き合う。</i><em>Two Landscapes</em></a></li>
+          <li style="--d:.25s"><a href="#entrance" style="--c:#8d6b5b"><span class="no">06</span><b>導入エリア</b><i>大型モニター1台で、静かに導く。</i><em>Entrance</em></a></li>
+          <li style="--d:.3s"><a href="#chamber" style="--c:#6e6963"><span class="no">07</span><b>奥の通路・小部屋</b><i>くじらの伝承が息づく小部屋。</i><em>The Whale's Chamber</em></a></li>
+          <li style="--d:.35s"><a href="#meaning" style="--c:#56606b"><span class="no">08</span><b>意義と期待される効果</b><i>交わるはずのない二つの時空間を、接続する。</i><em>Where Two Times Meet</em></a></li>
+          <li style="--d:.4s"><a href="#ware" style="--c:#3e566d"><span class="no">09</span><b>左美都焼き</b><i>祈りと〈いと〉が織りなす器。</i><em>Samizu Ware</em></a></li>
+          <li style="--d:.45s" class="fossil"><a href="koumi2026-dolphin.html" style="--c:#26323f"><span class="no">+</span><b>コウミカワイルカ</b><i>最深部に眠る化石 — 解説ページへ</i><em>Fossil →</em></a></li>
+        </ol>
+      </div>
+    </nav>
+
+    <!-- ============== 01 CONCEPT ============== -->
+    <section class="section" id="concept">
+      <div class="container">
+        <div class="sec-head reveal"><p class="sec-label"><span class="no">01</span>企画の趣旨</p><p class="sec-en">Concept</p></div>
+
+        <div class="concept-grid">
+          <div>
+            <h2 class="concept-title reveal">海なき地に、<br><span class="sea">海</span>の記憶を編む。</h2>
+            <p class="lead reveal">標高1,100mに位置する小海町高原美術館は、山々に囲まれた「海なき地」でありながら、豊かな水の記憶と物語を秘めた土地である。</p>
+            <p class="body-txt reveal">かつて千曲川を遡って海を目指したという「くじらの夫婦」の伝承。そして八ヶ岳崩壊による地質的変容の歴史——湖沼群の生誕。標高こそ高いが、この土地の地層には、幾重にも折り重なった水の記憶が眠っている。</p>
+            <p class="body-txt reveal">本展示は、津田がこれまで扱ってきた「左美都の風景」と、「小海の伝承と実在の風景」という、地理的・時間的に遠く隔たった二つの風土を、Hall 3という一つの局所的な展示空間内に交差させる。重厚なコンクリートの柱を境界としながら、両者は反発するのではなく、地層のように静かに重なり合う。</p>
+          </div>
+
+          <aside class="altitude reveal d2" id="altitude">
+            <p class="k">ALTITUDE ／ 美術館の標高</p>
+            <p class="num"><span id="altNum">0</span><small>m</small></p>
+            <p class="sub">海から最も遠い場所のひとつで、<br>海の記憶を辿る。</p>
+            <div class="gauge" aria-hidden="true">
+              <i></i>
+              <span class="g-museum">小海町高原美術館 — 1,100m</span>
+              <span class="g-sea">海面 — 0m</span>
+            </div>
+          </aside>
+        </div>
+
+        <div class="ridge-stage reveal" id="ridgeStage">
+          <svg class="ridge-svg" viewBox="0 0 1200 220" aria-hidden="true">
+            <circle class="halo" id="ridgeHalo" cx="1060" cy="46" r="0"/>
+            <path class="rk" id="ridgeK" d=""/>
+            <path class="rs" id="ridgeS" d=""/>
+            <circle class="dot" id="ridgeDot" cx="1060" cy="46" r="13"/>
+          </svg>
+          <div class="ridge-legend">
+            <span style="--c: var(--koumi)">赤：小海町（八ヶ岳と湖沼群）の稜線</span>
+            <span style="--c: var(--samizu)">青：左美都の稜線</span>
+          </div>
+          <p class="ridge-state" id="ridgeState">スクロールすると、二つの風土の輪郭が近づいていく。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 02 FOUR LAYERS ============== -->
+    <section class="section" id="layers">
+      <div class="container">
+        <div class="sec-head reveal"><p class="sec-label blue"><span class="no">02</span>展示の要素</p><p class="sec-en">Four Layers of a Single Site</p></div>
+        <h2 class="sec-title reveal">四つのメディアが、<br>一つの空間で回遊する。</h2>
+        <p class="body-txt reveal" style="margin-bottom: clamp(36px, 5vw, 56px);">本展示は、単一のメディアに留まらず、空間全体を多層的なインスタレーションとして構成する要素で成り立っている。絵画・映像・立体・建築という異なる層が、Hall 3という一つの現場のなかで重なり合う。</p>
+
+        <div class="layers-wrap">
+          <div class="stack-col reveal">
+            <div class="stack" id="stack" aria-hidden="true">
+              <div class="stack-float">
+                <div class="pl sw-concrete" style="--i:0" data-l="3" data-t="IV — site"></div>
+                <div class="pl sw-clay" style="--i:1" data-l="2" data-t="III — clay"></div>
+                <div class="pl sw-video" style="--i:2" data-l="1" data-t="II — video"></div>
+                <div class="pl sw-glaze" style="--i:3" data-l="0" data-t="I — oil"></div>
+              </div>
+            </div>
+            <div class="stack-legend" id="stackLegend">
+              <button data-l="0"><i>I</i><span>絵画</span></button>
+              <button data-l="1"><i>II</i><span>映像</span></button>
+              <button data-l="2"><i>III</i><span>陶芸</span></button>
+              <button data-l="3"><i>IV</i><span>空間</span></button>
+            </div>
+            <p class="stack-hint">— 四つの層が、ひとつの現場に重なる</p>
+          </div>
+        <div class="layers-stack">
+          <article class="layer reveal" data-l="0">
+            <span class="num">I</span>
+            <div>
+              <h3>絵画（油彩画）による多層的な平面空間 <span class="tag both">両風景</span></h3>
+              <p>油彩の透明層（グレーズ）の重なりを通して、二つの風土を平面上に堆積させる、本展示の核となる要素。柱の前面には稲荷神社と川の石を主題とした小海町の風景を、奥側面には『林（3）』を中心とした左美都の風景を配置し、柱の稜線を境界として静かに向き合わせる。</p>
+            </div>
+          </article>
+          <article class="layer reveal" data-l="1">
+            <span class="num">II</span>
+            <div>
+              <h3>映像投影による「実在と記憶の風景」 <span class="tag both">両風景</span></h3>
+              <p>小海町の実在の風景、あるいはかつて海を目指したくじらの視点のような流動的なイメージを、静的な展示空間に重ね合わせる。入口付近のモニターでは、稲荷神社と川の石の映像をループ再生し、鑑賞者を本編へと静かに導く。</p>
+            </div>
+          </article>
+          <article class="layer reveal" data-l="2">
+            <span class="num">III</span>
+            <div>
+              <h3>立体造形（陶芸） <span class="tag koumi">小海の風景</span></h3>
+              <p>展示ケース内に、陶土によるクジラの架空の骨を展示する。「くじらの夫婦」の伝承に基づく造形で、記憶が密かに蓄積する『洞窟』の概念を小さなスケールで現前させ、鑑賞者の視線をマクロ（広大な風景）からミクロ（内面的な地層）へと誘導する。<a href="koumi2026-dolphin.html">コウミカワイルカの解説へ</a></p>
+            </div>
+          </article>
+          <article class="layer reveal" data-l="3">
+            <span class="num">IV</span>
+            <div>
+              <h3>サイトスペシフィックな空間構成 <span class="tag site">Hall 3</span></h3>
+              <p>高い天井、重厚なコンクリートの柱、そして自然光を取り込む大窓。美術館の建築構造そのものを一つの『空間』として捉え、複数のメディアを配置することで、地理的・時間的に隔たった風土が交差する特異点をつくり出す。</p>
+            </div>
+          </article>
+        </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 03 SITE VIEWS ============== -->
+    <section class="section" id="views">
+      <div class="container">
+        <div class="sec-head reveal"><p class="sec-label" style="color:#eab29c"><span class="no">03</span>展示イメージ</p><p class="sec-en">Site Views — Hall 3, Current Condition</p></div>
+        <div class="views-grid">
+          <div>
+            <h2 class="sec-title reveal">現況の Hall 3に、<br>作品を仮置きする。</h2>
+            <p class="body-txt reveal">以下は現段階のおおまかな展示イメージである。柱の二面それぞれに、小海町の風景（左）と左美都の風景（右）のメイン作品を配し、奥の通路・小部屋へと展示は続いていく。画中の白パネルは、稲荷神社と川の石の風景画（I-B）を仮に示す<b style="color:#fff">※未定</b>のプレースホルダー。</p>
+            <p class="body-txt reveal" style="margin-top:1.2em">暗がりのHall 3を、光で照らして歩いてみてください。隠れている五つの場所を見つけると……？</p>
+            <div class="found reveal" id="found">
+              <span style="--c:var(--koumi)" data-f="k">小海町の風景</span>
+              <span style="--c:#6f8fae" data-f="s">左美都の風景</span>
+              <span style="--c:var(--cross)" data-f="p">コンクリートの柱</span>
+              <span style="--c:var(--koumi)" data-f="c">奥の通路・小部屋</span>
+              <span style="--c:#6f8fae" data-f="m">左美都の取材映像</span>
+            </div>
+            <p class="found-msg" id="foundMsg" aria-live="polite"></p>
+          </div>
+          <div class="reveal d2">
+            <div class="torch" id="torch">
+              <img src="../../images/exhi-koumi2026/hall-3.jpg" alt="Hall 3 の展示イメージ。柱の左前面に小海町の風景、右奥面に左美都の風景の油彩が掛かる" loading="lazy">
+              <div class="shade"></div>
+              <div class="beam"></div>
+              <span class="tl" style="left:32%; top:62%; --c:var(--koumi)" data-x="32" data-y="68" data-f="k">小海町の風景（左）</span>
+              <span class="tl" style="left:59%; top:63%; --c:#6f8fae" data-x="59" data-y="70" data-f="s">左美都の風景（右）｜林（3）</span>
+              <span class="tl" style="left:46%; top:30%; --c:var(--cross)" data-x="46" data-y="33" data-f="p">重厚なコンクリートの柱</span>
+              <span class="tl" style="left:14%; top:58%; --c:var(--koumi)" data-x="14" data-y="66" data-f="c">奥の通路・小部屋へ →</span>
+              <span class="tl" style="left:80%; top:57%; --c:#6f8fae" data-x="81" data-y="63.5" data-f="m">左美都の取材映像</span>
+              <span class="mikan">※未定</span>
+            </div>
+            <div class="torch-ctrl">
+              <button id="torchLight" aria-pressed="false">照明をつける</button>
+              <span class="pc-only">カーソルで照らす</span><span class="sp-only">タップした場所を照らす</span>
+            </div>
+            <p class="cap"><span>Fig. 1 — 柱正面より</span><span class="en">Site View</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 04 SITE — ZOC ============== -->
+    <section class="section" id="site">
+      <div class="container">
+        <div class="sec-head reveal"><p class="sec-label"><span class="no">04</span>展示構成について</p><p class="sec-en">Spatial Layout — ZOC</p></div>
+        <h2 class="sec-title reveal">柱を境に、<br>二つのZOCが静かに重なる。</h2>
+        <p class="body-txt reveal" style="margin-bottom: clamp(32px, 4vw, 48px);">Zone of Control（ZOC）＝各作品が主に作用する空間的領域。柱の左前面（小海町の風景）と右奥面（左美都の風景）、それぞれの主作品を中心に領域を設定し、柱の稜線＝作品の境界で二つのZOCが重なり合う。番号をタップすると、各作品の解説が開きます。</p>
+
+        <div class="zoc-wrap">
+          <div class="reveal">
+            <div class="zoc-toggles" role="group" aria-label="表示の切り替え">
+              <button class="tgl" style="--c: var(--koumi)" data-toggle="koumi" aria-pressed="true">小海町の風景 ZOC</button>
+              <button class="tgl" style="--c: var(--samizu)" data-toggle="samizu" aria-pressed="true">左美都の風景 ZOC</button>
+              <button class="tgl" style="--c: var(--cross)" data-toggle="ridge" aria-pressed="true">柱の稜線</button>
+            </div>
+            <div class="zoc-figure" id="zocFigure">
+              <img src="../../images/exhi-koumi2026/hall-3.jpg" alt="Hall 3 の展示風景。中央のコンクリート柱の左前面と右奥面に油彩画が掛かる" width="1800" height="2114" loading="lazy">
+              <svg class="zoc-svg animate" viewBox="0 0 1800 2114" aria-hidden="true">
+                <defs>
+                  <radialGradient id="gK"><stop offset="0" stop-color="#d0694b" stop-opacity="0.42"/><stop offset="1" stop-color="#d0694b" stop-opacity="0"/></radialGradient>
+                  <radialGradient id="gS"><stop offset="0" stop-color="#3c5f80" stop-opacity="0.5"/><stop offset="1" stop-color="#3c5f80" stop-opacity="0"/></radialGradient>
+                </defs>
+                <g class="zone z-koumi" data-zone="koumi">
+                  <ellipse cx="470" cy="1560" rx="560" ry="470" fill="url(#gK)"/>
+                  <ellipse class="ring" cx="470" cy="1560" rx="560" ry="470"/>
+                </g>
+                <g class="zone z-samizu" data-zone="samizu">
+                  <ellipse cx="1240" cy="1520" rx="560" ry="470" fill="url(#gS)"/>
+                  <ellipse class="ring" cx="1240" cy="1520" rx="560" ry="470"/>
+                </g>
+                <g class="ridge" data-zone="ridge">
+                  <line x1="836" y1="80" x2="836" y2="1760"/>
+                  <text class="ridge-label" x="856" y="260">柱の稜線 ＝ 境界</text>
+                </g>
+              </svg>
+              <!-- hotspots injected by JS -->
+            </div>
+            <p class="cap"><span>展示イメージ ／ 柱正面より</span><span class="en">Fig. 01</span></p>
+          </div>
+
+          <div class="zoc-panel reveal d2" id="zocPanel">
+            <div class="zoc-group" style="--c: var(--koumi)">
+              <h3>小海町の風景 ZOC</h3>
+              <span class="en">REAL &amp; INHERITED LANDSCAPE OF KOUMI</span>
+              <div data-list="koumi"></div>
+            </div>
+            <div class="zoc-group" style="--c: var(--samizu)">
+              <h3>左美都の風景 ZOC</h3>
+              <span class="en">TSUDA'S FICTIONAL TERRAIN — SAMIZU</span>
+              <div data-list="samizu"></div>
+            </div>
+            <p class="zoc-note">※ ZOC（Zone of Control）は各作品が主に作用する空間的領域を示す概念図。二つの円は柱の稜線——実景と架空の風土が接する境界——で重なる。配置は現段階のイメージであり、今後の現地調査・照明計画により精緻化する。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 04 WORKS — 稜線スライダー ============== -->
+    <section class="section" id="works">
+      <div class="container">
+        <div class="sec-head reveal"><p class="sec-label" style="color:#eab29c"><span class="no">05</span>二つの風景</p><p class="sec-en">Two Landscapes, One Ridge</p></div>
+        <h2 class="sec-title reveal">柱の稜線をはさんで、<br>二つの風土が向き合う。</h2>
+        <p class="body-txt reveal">柱の左前面に小海町の風景、奥側面に左美都の風景。実際の会場では柱の角——稜線——が両者を分けています。二枚の油彩を、それぞれ全体のまま並べました。</p>
+
+        <div class="duo-view reveal">
+          <figure style="--c: var(--koumi)">
+            <img class="zoomable" src="../../images/exhi-koumi2026/inari-river-stone.jpg" alt="稲荷神社と川の石の風景（油彩）全図" width="1920" height="1535" loading="lazy">
+            <figcaption><b>小海の風景</b><span>稲荷神社と川の石の風景</span><em>Koumi</em></figcaption>
+          </figure>
+          <div class="duo-ridge" aria-hidden="true"><span>稜線</span></div>
+          <figure style="--c: #6f8fae">
+            <img class="zoomable" src="../../images/【M+P100縦】林(3)20251128.jpg" alt="林（3）（油彩）全図" width="1920" height="1447" loading="lazy">
+            <figcaption><b>左美都の風景</b><span>林（3）</span><em>Samizu</em></figcaption>
+          </figure>
+        </div>
+        <p class="duo-hint"><span class="pc-only">作品にカーソルを重ねると、その一枚が手前に大きく出てきます。</span>クリック（タップ）で全体を拡大表示。</p>
+
+        <div class="works-duo">
+          <article class="work-card reveal" style="--c: var(--koumi); --c2: #eab29c;">
+            <p class="loc">柱・左前面 ／ 小海町の風景 ZOC</p>
+            <h3>稲荷神社と川の石の風景</h3>
+            <p>岩肌が崩れ落ちる動的なイメージを、鋭角的な面構成で再構築した油彩画。「くじらの夫婦」と「稲荷神社と川の石」——ふたつの伝承を接続する。</p>
+          </article>
+          <article class="work-card reveal d2" style="--c: #6f8fae; --c2: #a9c4dc;">
+            <p class="loc">柱・奥側面 ／ 左美都の風景 ZOC</p>
+            <h3>林（3）</h3>
+            <p>ZOCの中心となるメイン油彩。左美都の風景を表現する主作品。垂直に流れる筆触が、柱の高さと呼応する。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 05 ENTRANCE ============== -->
+    <section class="section" id="entrance">
+      <div class="container">
+        <div class="sec-head reveal"><p class="sec-label blue"><span class="no">06</span>展示構成 ｜ 導入エリア</p><p class="sec-en">Entrance — Introduction</p></div>
+        <h2 class="sec-title reveal"><span class="soft">手前エリアは</span>大型モニター1台で、静かに導く。</h2>
+        <p class="body-txt reveal" style="margin-bottom: clamp(28px, 4vw, 44px);">隣接する他作家の展示ゾーンとの境界を尊重し、展示は基本的にHall 3の内部で完結させる。大型モニター1台による映像のループ再生のみとし、視覚的な要素を最小限に抑える。</p>
+
+        <figure class="entrance-fig reveal">
+          <div class="inner">
+            <img class="zoomable" src="../../images/exhi-koumi2026/entrance-monitor.jpg" alt="コンクリート壁に掛けられた大型モニターに稲荷神社の映像が映る導入エリア" loading="lazy">
+            <div class="loop-screen" id="loopScreen" aria-hidden="true"><img src="../../images/exhi-koumi2026/loop-cut01.jpg" alt="" class="on"><img src="../../images/exhi-koumi2026/loop-cut02.jpg" alt=""><img src="../../images/exhi-koumi2026/loop-cut03.jpg" alt=""><img src="../../images/exhi-koumi2026/loop-cut04.jpg" alt=""></div>
+            <span class="loop-badge">LOOP PLAYBACK <span class="tc" id="tc">00:00</span></span>
+          </div>
+        </figure>
+        <p class="cap"><span>導入エリアの設置イメージ ｜ 大型モニター1台（壁掛け）</span><span class="en">Fig. 02</span></p>
+        <div class="cuts reveal" id="cuts" role="group" aria-label="ループ映像のカット"><button data-cut="0" class="on"><img src="../../images/exhi-koumi2026/loop-cut01.jpg" alt="ループ映像 cut.01：稲荷神社の参道" loading="lazy"><span class="bar"><i></i></span><b>cut. 01</b><small>参道</small></button><button data-cut="1"><img src="../../images/exhi-koumi2026/loop-cut02.jpg" alt="ループ映像 cut.02：岩壁に抱かれた社殿" loading="lazy"><span class="bar"><i></i></span><b>cut. 02</b><small>社殿</small></button><button data-cut="2"><img src="../../images/exhi-koumi2026/loop-cut03.jpg" alt="ループ映像 cut.03：崩れ落ちる岩肌" loading="lazy"><span class="bar"><i></i></span><b>cut. 03</b><small>岩肌</small></button><button data-cut="3"><img src="../../images/exhi-koumi2026/loop-cut04.jpg" alt="ループ映像 cut.04：岩陰の社殿" loading="lazy"><span class="bar"><i></i></span><b>cut. 04</b><small>岩陰</small></button></div>
+        <p class="cuts-cap reveal"><b>ループ映像スチル ｜ 稲荷神社と川の石</b>通路壁沿いに投影。稲荷神社の参道・岩肌・社殿を捉えた素材カットより。大型モニターでは、静かなループとして流れる。</p>
+
+        <div class="two-col">
+          <div class="reveal">
+            <h3>構成</h3>
+            <p>大型モニターを通路の壁沿いに配置する。稲荷神社と川の石の映像をループ再生し、展示空間への導入とする。</p>
+          </div>
+          <div class="reveal d2">
+            <h3>目的</h3>
+            <p>隣接する展示への影響を防ぐ。鑑賞者の視線や意識を静かに本編へと接続する。特に、「くじらの夫婦」と「稲荷神社と川の石」をつなぐ。</p>
+            <p class="runup">いわば展示への<b>「助走」</b>の役割を担う。</p>
+          </div>
+        </div>
+
+        <div class="specs reveal">
+          <div><small>設置形式</small><b>壁掛け・大型モニター</b></div>
+          <div><small>台数</small><b>1台</b></div>
+          <div><small>再生方式</small><b>サイレントループ</b></div>
+          <div><small>配置</small><b>通路壁沿い</b></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 06 CHAMBER ============== -->
+    <section id="chamber">
+      <div class="section" style="padding-bottom: 20px;">
+        <div class="container">
+          <div class="sec-head reveal"><p class="sec-label"><span class="no">07</span>展示構成 ｜ 奥の通路・小部屋</p><p class="sec-en">The Whale's Chamber</p></div>
+          <h2 class="sec-title reveal">奥へ進むと、<br>くじらの伝承が息づく小部屋がある。</h2>
+          <p class="body-txt reveal">柱まわりの本編から奥の通路・小部屋へと展示は続く。「くじらの夫婦」の生態・分布にまつわる資料パネルと、その伝承に基づく陶芸作品を展示ケースに収め、神話と実体をつなぐ小さな部屋を構成する。</p>
+        </div>
+      </div>
+
+      <div class="zoom-track" id="zoomTrack">
+        <div class="zoom-sticky">
+          <div class="container" style="width:100%">
+            <div class="zoom-grid">
+              <div class="zoom-frame" id="zoomFrame">
+                <img src="../../images/exhi-koumi2026/whale-chamber.jpg" alt="奥の小部屋。壁面に資料パネル、中央に透明なアクリルケースに収めた陶芸の骨" loading="lazy">
+                <div class="vig"></div>
+                <div class="scope"></div>
+              </div>
+              <div class="zoom-text">
+                <div class="scale-bar" aria-hidden="true"><span>MACRO</span><span class="bar"><i id="scaleDot"></i></span><span>MICRO</span></div>
+                <div class="steps">
+                  <div class="step on" data-step="0">
+                    <p class="k">01 — Room</p>
+                    <h3>壁に並ぶ、<br>くじらの生態と分布。</h3>
+                    <p>資料パネルが、伝承の生き物を「実在」の側へと引き寄せる。スクロールすると、視線は部屋の奥へ進んでいきます。</p>
+                  </div>
+                  <div class="step" data-step="1">
+                    <p class="k">02 — Vitrine</p>
+                    <h3>通路の先の、<br>透明なアクリルケース。</h3>
+                    <p>部屋の奥、光の落ちる白い台座。その上の小さな箱の中に、ひとつの造形が佇んでいる。</p>
+                  </div>
+                  <div class="step" data-step="2">
+                    <p class="k">03 — Bone</p>
+                    <h3>陶土でつくられた、<br>架空の骨。</h3>
+                    <p>広大な風景から、骨のディテールへ。視線のスケールが切り替わるその瞬間に、伝承と実体がつながる。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" style="padding-top: 40px;">
+        <div class="container">
+          <div class="two-col" style="margin-top:0">
+            <div class="reveal">
+              <h3>構成</h3>
+              <p>壁面に「くじらの生態と分布」等の資料パネルを並べ、通路の先に置いた展示ケースの中に、コウミカワイルカ（＝くじら）の骨（陶芸）を静かに佇ませる。</p>
+              <div class="panel-thumbs">
+                <button data-lb="../../images/exhi-koumi2026/panel-vertebra.jpg"><img src="../../images/exhi-koumi2026/panel-vertebra.jpg" alt="資料パネル：化石化したコウミカワイルカの椎骨" loading="lazy"><span>資料パネル 1</span></button>
+                <button data-lb="../../images/exhi-koumi2026/panel-ecology.jpg"><img src="../../images/exhi-koumi2026/panel-ecology.jpg" alt="資料パネル：コウミカワイルカの特徴と生態" loading="lazy"><span>資料パネル 2</span></button>
+              </div>
+            </div>
+            <div class="reveal d2">
+              <h3>意図</h3>
+              <p>透明なアクリルケースに収められた繊細な造形が、鑑賞者の視線を風景全体というマクロな視点から、骨のディテールというミクロな視点へと静かに誘導する。伝承と実体をつなぐ、空間のアクセントとしての役割を果たす。</p>
+            </div>
+          </div>
+
+          <a class="dolphin-cta reveal" href="koumi2026-dolphin.html">
+            <svg class="swim" viewBox="0 0 200 60" aria-hidden="true"><path fill="#a9c4dc" d="M4 34 C 18 30, 30 30, 40 31 C 52 22, 66 20, 80 20 L 92 10 L 96 20 C 120 21, 146 26, 166 32 L 184 22 L 180 36 L 192 48 L 168 40 C 140 46, 104 48, 74 46 L 66 54 L 62 45 C 48 43, 36 40, 26 37 C 16 38, 8 37, 4 34 Z"/></svg>
+            <div class="sonar" aria-hidden="true"><i></i><i></i><i></i></div>
+            <div>
+              <p class="k">Koumi River Dolphin — MLMM 10452</p>
+              <h3>海なき町に、イルカがいた。</h3>
+              <p>小海の地層から見つかったとされる小型ハクジラ類「コウミカワイルカ」。その姿、化石、地層、そして日本海からの遡上の道のりを、資料パネルとともに詳しく解説します。</p>
+            </div>
+            <span class="go" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 07 MEANING ============== -->
+    <section class="section" id="meaning">
+      <div class="container">
+        <div class="sec-head reveal"><p class="sec-label blue"><span class="no">08</span>本作品の意義と期待される効果</p><p class="sec-en">Where Two Times Meet</p></div>
+        <h2 class="sec-title reveal">交わるはずのない<br>二つの時空間を、接続する。</h2>
+        <p class="lead reveal">「左美都の風景」と「小海の風景」という、本来交わるはずのない二つの時空間を、神話（くじらの夫婦）と地質学的な事実（八ヶ岳崩壊）を視覚言語として編み直しながらひとつの空間に接続する。単なる郷土史の紹介を超えた、普遍的な「土地の記憶」へのアクセスを可能にする。</p>
+
+        <div class="meaning-cols">
+          <div class="reveal">
+            <h3>意義</h3>
+            <p>神話と地質学的事実を視覚言語として再編集し、郷土史の紹介を超えた「土地の記憶」への普遍的なアクセスを可能にする。</p>
+            <p>架空の風土「左美都」と、実在する「小海」を等価に扱うことで、風景を事実ではなく記憶として鑑賞する視点を提示する。</p>
+          </div>
+          <div class="reveal d2">
+            <h3>期待される効果</h3>
+            <p>重厚な油彩画、非物質的な映像の光、そして微細な立体物という異なるメディアの間を回遊することで、鑑賞者は自らの身体感覚を通して風景の多層性を体験する。</p>
+            <p>静的な展示空間が、過去と現在、神話と実在が交差する動的な「場」へと変容し、鑑賞者自身の内側に新たな風景像を立ち上がらせる。</p>
+          </div>
+        </div>
+
+        <div class="singularity reveal">
+          <p class="kicker"><b>SAMIZU</b> ／ <em>KOUMI</em> — 特異点　SINGULARITY</p>
+          <div class="quote-box">
+            <span class="pt" aria-hidden="true"></span>
+            <p>静的な展示空間が、過去と現在、<br class="pc-only">神話と実在が交差する動的な「場」へと変容する。</p>
+          </div>
+        </div>
+
+        <svg class="ridge-svg meaning-ridge" viewBox="0 0 1200 120" aria-hidden="true">
+          <path class="rk" style="opacity:.7" d="M40 96 L230 30 L420 100 L610 36 L800 100 L990 40 L1160 86"/>
+          <path class="rs" style="opacity:.7" d="M40 70 C 160 58, 280 58, 400 68 S 640 80, 760 68 S 1000 56, 1160 64"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ============== 08 SAMIZU WARE ============== -->
+    <section class="section" id="ware">
+      <div class="container">
+        <div class="sec-head reveal"><p class="sec-label blue"><span class="no">09</span>左美都の層から</p><p class="sec-en">Samizu Ware</p></div>
+        <div class="ware">
+          <div class="bowl-wrap reveal" id="bowlWrap">
+            <div class="bowl-band" aria-hidden="true"></div>
+            <svg class="bowl" id="bowl" viewBox="0 0 420 300" role="img" aria-label="五色の釉が流れる左美都焼きの器のイメージ。色をクリックすると、その色の意味が表示される">
+              <defs>
+                <clipPath id="bowlClip"><path d="M30 96 C 40 190, 110 262, 160 268 L 260 268 C 310 262, 380 190, 390 96 Z"/></clipPath>
+                <linearGradient id="pool" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a33c38"/><stop offset=".28" stop-color="#d4a44a"/><stop offset=".52" stop-color="#3a5a8c"/><stop offset=".76" stop-color="#4a7454"/><stop offset="1" stop-color="#e3e2da"/></linearGradient>
+                <linearGradient id="roundG" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/><stop offset=".7" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".26"/></linearGradient>
+                <linearGradient id="sheenG" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".45"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+              </defs>
+              <ellipse cx="210" cy="284" rx="130" ry="10" fill="rgba(0,0,0,.12)"/>
+              <rect x="168" y="262" width="84" height="16" rx="3" fill="#bfae98"/>
+              <path d="M30 96 C 40 190, 110 262, 160 268 L 260 268 C 310 262, 380 190, 390 96 Z" fill="#d6c8b4"/>
+              <g clip-path="url(#bowlClip)"><rect x="20" y="88" width="380" height="26" fill="#efe9df"/><path class="drip" data-k="0" style="transition-delay:0.00s" fill="#a33c38" d="M30 92 h72 v110 q -9 22 -18 0 q -9 34 -18 0 q -9 16 -18 0 q -9 28 -18 0 Z"/><path class="drip" data-k="1" style="transition-delay:0.15s" fill="#3a5a8c" d="M102 92 h72 v132 q -9 34 -18 0 q -9 16 -18 0 q -9 28 -18 0 q -9 22 -18 0 Z"/><path class="drip" data-k="2" style="transition-delay:0.30s" fill="#4a7454" d="M174 92 h72 v100 q -9 16 -18 0 q -9 28 -18 0 q -9 22 -18 0 q -9 34 -18 0 Z"/><path class="drip" data-k="3" style="transition-delay:0.45s" fill="#d4a44a" d="M246 92 h72 v124 q -9 28 -18 0 q -9 22 -18 0 q -9 34 -18 0 q -9 16 -18 0 Z"/><path class="drip" data-k="4" style="transition-delay:0.60s" fill="#f3f2ee" d="M318 92 h72 v92 q -9 22 -18 0 q -9 34 -18 0 q -9 16 -18 0 q -9 28 -18 0 Z"/><rect x="20" y="80" width="380" height="200" fill="url(#roundG)"/><rect class="spin" x="0" y="80" width="90" height="200" fill="url(#sheenG)" transform="skewX(-20)"/></g>
+              <ellipse cx="210" cy="96" rx="180" ry="30" fill="url(#pool)" opacity=".85"/>
+              <ellipse cx="210" cy="96" rx="180" ry="30" fill="none" stroke="#efe6d8" stroke-width="5"/>
+              <ellipse cx="210" cy="102" rx="150" ry="20" fill="rgba(0,0,0,.18)"/>
+            </svg>
+            <p class="color-say" id="colorSay" aria-live="polite"><b>五色の魔除け</b><span>色をえらぶと、その意味があらわれる</span></p>
+          </div>
+          <div class="reveal d2">
+            <h3>左美都焼き</h3>
+            <p class="en">SAMIZU WARE</p>
+            <p class="poem">古代の記憶から現代へ。<br>祈りと〈いと〉が織りなす器。</p>
+            <div class="colors" id="colors">
+              <button style="--c:#a33c38" data-c="#a33c38" aria-pressed="false"><i></i><b>赤</b><small>生命<br>火と血の色</small></button>
+              <button style="--c:#3a5a8c" data-c="#3a5a8c" aria-pressed="false"><i></i><b>青</b><small>祈り<br>山河と天の色</small></button>
+              <button style="--c:#4a7454" data-c="#4a7454" aria-pressed="false"><i></i><b>緑</b><small>再生<br>森羅万象</small></button>
+              <button style="--c:#d4a44a" data-c="#d4a44a" aria-pressed="false"><i></i><b>黄</b><small>実り<br>土と実りの色</small></button>
+              <button style="--c:#f3f2ee" data-c="#e3e2da" aria-pressed="false"><i></i><b>白</b><small>浄化<br>雪と清浄の色</small></button>
+            </div>
+            <p class="charm">五色の魔除け</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== 09 DATA ============== -->
+    <section class="section" id="data">
+      <div class="container">
+        <h2 class="reveal">二重の遠景</h2>
+        <p class="en-sub reveal">An Exhibition for Hall 3, Koumi Town Highland Museum of Art</p>
+        <p class="note reveal">本ページに掲載した空間写真は、いずれも現地確認済みの設置イメージであり、本展示の構成は展示企画書（第3版）をもって確定とする。今後は什器・照明計画等の実務的な詳細を、館内協議のうえ詰めていく。</p>
+        <dl class="data-list reveal">
+          <div><dt>展示作品名</dt><dd>二重の遠景</dd></div>
+          <div><dt>サブタイトル</dt><dd>小海の海（うみ）、左美都の層</dd></div>
+          <div><dt>作家</dt><dd>津田 翔一（絵画 / 映像 / 陶芸）</dd></div>
+          <div><dt>会場</dt><dd>小海町高原美術館　Hall 3</dd></div>
+          <div><dt>使用メディア</dt><dd>油彩画／映像投影／陶芸／空間構成</dd></div>
+          <div><dt>時期</dt><dd>2026.09</dd></div>
+        </dl>
+        <div class="legend reveal">
+          <span style="--c:#6f8fae">左美都の風景</span>
+          <span style="--c:var(--koumi)">小海の風景</span>
+          <span style="--c:var(--cross)">交差点／特異点</span>
+        </div>
+        <p class="note reveal" style="margin:40px 0 0; font-size:.78rem">本ページは、次の2点の資料と現地設置写真を統合した最終提案書（展示作品案 第3版）にもとづく。<br>・展示企画書「二重の遠景」展示作品案 第2版（2026年8月1日）<br>・展示エリアおよび空間構成に関する方針案（2026年8月8日）</p>
+      </div>
+    </section>
+
+    <section class="closing">
+      <div class="container">
+        <h2 class="reveal">お問い合わせ</h2>
+        <p class="reveal">「二重の遠景」、作品、または取材等に関するお問い合わせは、下記よりお気軽にご連絡ください。</p>
+        <div class="row reveal">
+          <a class="btn-line" href="koumi2026-dolphin.html">コウミカワイルカ解説へ&ensp;→</a>
+          <a class="btn-line" href="https://sh012da.github.io/sh01/contact.html">問い合わせフォームへ&ensp;→</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p class="f-logo">津田 翔一 / Tsuda Shoichi</p>
+    <p>© 2026 Tsuda Shoichi. All Rights Reserved.</p>
+  </footer>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true"><span class="lb-close">CLOSE ×</span><img alt=""></div>
+  <a href="#top" class="to-top" id="toTop" aria-label="ページ先頭に戻る">TOP</a>
+
+  <script>
+  (function () {
+    var body = document.body;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+
+    /* ---------- intro (title visible from ~0.15s, fully by ~0.9s) ---------- */
+    function ready() { if (!body.classList.contains('is-ready')) { body.classList.add('is-ready'); body.classList.remove('is-loading'); } }
+    requestAnimationFrame(function () { requestAnimationFrame(ready); });
+    setTimeout(ready, 300);
+    var chars = document.querySelectorAll('.hero-title .ch');
+    chars.forEach(function (c, i) { c.style.transitionDelay = (0.15 + i * 0.08) + 's'; });
+    function finishIntro() { ready(); body.classList.add('intro-done'); }
+    document.getElementById('heroSkip').addEventListener('click', function (e) { e.stopPropagation(); finishIntro(); });
+    document.querySelector('.hero').addEventListener('click', finishIntro);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') finishIntro(); });
+    setTimeout(function () { body.classList.add('intro-done'); }, 2600);
+
+    /* ---------- hero: double-vision title follows the pointer ---------- */
+    var title = document.getElementById('heroTitle');
+    var hero = document.querySelector('.hero');
+    var tx = 4, ty = 1.5, cx = 4, cy = 1.5, heroBg = document.querySelector('.hero-bg');
+    hero.addEventListener('pointermove', function (e) {
+      var r = hero.getBoundingClientRect();
+      tx = ((e.clientX - r.left) / r.width - 0.5) * 16;
+      ty = ((e.clientY - r.top) / r.height - 0.5) * 10;
+    });
+    hero.addEventListener('pointerleave', function () { tx = 4; ty = 1.5; });
+    var t0 = performance.now();
+    function heroLoop(now) {
+      if (window.scrollY < window.innerHeight) {
+        var drift = reduce ? 0 : Math.sin((now - t0) / 1800) * 2;
+        cx += (tx + drift - cx) * 0.06; cy += (ty - cy) * 0.06;
+        var s = clamp(1 - window.scrollY / (window.innerHeight * 0.7), 0, 1);
+        title.style.setProperty('--dx', (cx * (0.4 + s * 0.6)).toFixed(2) + 'px');
+        title.style.setProperty('--dy', (cy * s).toFixed(2) + 'px');
+        heroBg.style.transform = 'translate3d(' + (-cx * 0.9).toFixed(1) + 'px,' + (-cy * 1.6 + window.scrollY * 0.18).toFixed(1) + 'px,0)';
+      }
+      requestAnimationFrame(heroLoop);
+    }
+    requestAnimationFrame(heroLoop);
+
+    /* ---------- nav / mobile menu ---------- */
+    var nav = document.getElementById('top-nav');
+    var menuOverlay = document.getElementById('menuOverlay');
+    function setMenu(open) { body.classList.toggle('menu-open', open); body.classList.toggle('no-scroll', open); menuOverlay.setAttribute('aria-hidden', !open); }
+    document.getElementById('menuBtn').addEventListener('click', function () { setMenu(true); });
+    document.getElementById('menuClose').addEventListener('click', function () { setMenu(false); });
+    menuOverlay.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
+
+    /* ---------- reveal ---------- */
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+
+    /* ---------- altitude counter ---------- */
+    var altEl = document.getElementById('altitude'), altNum = document.getElementById('altNum');
+    new IntersectionObserver(function (entries, obs) {
+      if (!entries[0].isIntersecting) return; obs.disconnect();
+      var st = performance.now(), dur = reduce ? 1 : 1800;
+      (function tick(now) {
+        var p = clamp((now - st) / dur, 0, 1), e = 1 - Math.pow(1 - p, 4);
+        altNum.textContent = Math.round(1100 * e).toLocaleString('en-US');
+        if (p < 1) requestAnimationFrame(tick);
+      })(st);
+    }, { threshold: 0.4 }).observe(altEl);
+
+    /* ---------- ridge merge (scroll driven) ---------- */
+    var rk = document.getElementById('ridgeK'), rs = document.getElementById('ridgeS');
+    var rdot = document.getElementById('ridgeDot'), rhalo = document.getElementById('ridgeHalo');
+    var rstage = document.getElementById('ridgeStage'), rstate = document.getElementById('ridgeState');
+    var zig = [0, -1, 0.95, -0.85, 1, -0.9, 0.95, -0.55, 0.3];
+    function drawRidge(m) {
+      var base = 150, ak = 62 * (1 - m), as = 9 * (1 - m), d = '', i;
+      for (i = 0; i < zig.length; i++) { d += (i ? ' L' : 'M') + (40 + i * 140) + ' ' + (base + 30 * (1 - m) + zig[i] * ak).toFixed(1); }
+      rk.setAttribute('d', d);
+      var ds = '';
+      for (i = 0; i <= 56; i++) { var x = 40 + i * 20; ds += (i ? ' L' : 'M') + x + ' ' + (base - 6 * (1 - m) + Math.sin(i / 3.2) * as + Math.sin(i / 9) * as * 0.6).toFixed(1); }
+      rs.setAttribute('d', ds);
+      var dx = 1060 - m * 460, dy = 46 + m * (base - 46);
+      rdot.setAttribute('cx', dx); rdot.setAttribute('cy', dy);
+      rhalo.setAttribute('cx', dx); rhalo.setAttribute('cy', dy); rhalo.setAttribute('r', (m > 0.9 ? (m - 0.9) * 10 * 34 : 0).toFixed(1));
+      rstate.textContent = m > 0.96 ? '二つの風土の輪郭が、一枚の地平線として重なる。——特異点' : (m > 0.4 ? '赤と青の稜線が、少しずつ同じ高さへ。' : 'スクロールすると、二つの風土の輪郭が近づいていく。');
+    }
+    drawRidge(0);
+
+    /* ---------- ZOC ---------- */
+    var works = [
+      { n: 1, z: 'koumi', x: 581, y: 1453, t: '稲荷神社と川の石の風景画', p: '柱・左前面 ／ 油彩', d: '岩肌が崩れ落ちる動的なイメージを鋭角的な面構成で再構築した油彩画。ふたつの伝承を接続する。' },
+      { n: 3, z: 'koumi', x: 250, y: 1400, t: 'コウミカワイルカの骨と解説パネル', p: '奥の小部屋 ／ 陶芸・資料パネル', d: '伝承「くじらの夫婦」と「稲荷神社と川の石」を繋ぐ模擬考古関連資料。マクロからミクロへ。<a href="koumi2026-dolphin.html">解説ページを開く →</a>' },
+      { n: 5, z: 'koumi', x: 900, y: 2040, edge: true, t: '稲荷神社と川の石の風景映像', p: '手前・通路壁面 ／ 大型モニター', d: '画面手前に壁面設置した大型モニターに、1984年に取材した現地映像をAIで高画質化して流している——という設定の映像。<a href="#entrance">導入エリアへ ↓</a>' },
+      { n: 2, z: 'samizu', x: 1068, y: 1480, t: '林（3）', p: '柱・奥側面 ／ 油彩', d: 'ZOCの中心となるメイン油彩。左美都の風景を表現する主作品。' },
+      { n: 4, z: 'samizu', x: 1464, y: 1342, t: '左美都の取材映像', p: '右壁面 ／ 小型モニター', d: '壁面に掛けた小型モニターに、2023年に撮影した現地取材映像を流す。' }
+    ];
+    var fig = document.getElementById('zocFigure');
+    var hots = {}, items = {};
+    works.forEach(function (w) {
+      var h = document.createElement('button');
+      h.className = 'hot ' + w.z + (w.edge ? ' edge' : '');
+      h.style.left = (w.x / 1800 * 100) + '%'; h.style.top = (w.y / 2114 * 100) + '%';
+      h.setAttribute('aria-label', w.n + '：' + w.t);
+      h.innerHTML = w.edge ? '<b>' + w.n + '</b>手前・通路側' : w.n;
+      fig.appendChild(h); hots[w.n] = h;
+      var it = document.createElement('button');
+      it.className = 'zoc-item'; it.style.setProperty('--c', w.z === 'koumi' ? 'var(--koumi)' : 'var(--samizu)');
+      it.innerHTML = '<span class="n">' + w.n + '</span><span><b>' + w.t + '</b><small>' + w.p + '</small><span class="d">' + w.d + '</span></span>';
+      document.querySelector('[data-list="' + w.z + '"]').appendChild(it); items[w.n] = it;
+      function act(e) { if (e && e.target.closest('a')) return; activate(w.n, e && e.currentTarget === h); }
+      h.addEventListener('click', act); it.addEventListener('click', act);
+      h.addEventListener('mouseenter', function () { if (matchMedia('(hover:hover)').matches) activate(w.n, false); });
+    });
+    var current = 0;
+    function activate(n, fromHot) {
+      current = n;
+      Object.keys(hots).forEach(function (k) { hots[k].classList.toggle('is-active', +k === n); items[k].classList.toggle('is-active', +k === n); });
+      if (fromHot && window.innerWidth <= 900) items[n].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    activate(1, false);
+    document.querySelectorAll('.tgl').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var on = b.getAttribute('aria-pressed') !== 'true';
+        b.setAttribute('aria-pressed', on);
+        var key = b.dataset.toggle;
+        fig.querySelectorAll('[data-zone="' + key + '"]').forEach(function (g) { g.classList.toggle('off', !on); });
+        if (key !== 'ridge') fig.querySelectorAll('.hot.' + key).forEach(function (h) { h.style.opacity = on ? 1 : 0.35; });
+      });
+    });
+
+    /* ---------- loop timecode ---------- */
+    var tc = document.getElementById('tc'), sec = 0;
+    setInterval(function () { sec = (sec + 1) % 180; tc.textContent = ('0' + Math.floor(sec / 60)).slice(-2) + ':' + ('0' + sec % 60).slice(-2); }, 1000);
+
+    /* ---------- chamber zoom (macro → micro) ---------- */
+    var track = document.getElementById('zoomTrack'), zf = document.getElementById('zoomFrame');
+    var zimg = zf.querySelector('img'), zvig = zf.querySelector('.vig'), zscope = zf.querySelector('.scope');
+    var steps = document.querySelectorAll('.step'), sdot = document.getElementById('scaleDot');
+    function zoomUpdate() {
+      var r = track.getBoundingClientRect(), total = r.height - window.innerHeight;
+      var p = clamp(-r.top / total, 0, 1);
+      var e = p * p * (3 - 2 * p);
+      zimg.style.transform = 'scale(' + (1 + e * 1.35).toFixed(3) + ')';
+      zvig.style.opacity = (e * 0.9).toFixed(2);
+      zscope.style.opacity = clamp((p - 0.62) * 4, 0, 1).toFixed(2);
+      zscope.style.transform = 'translate(-50%,-50%) scale(' + (1.25 - clamp((p - 0.62) * 4, 0, 1) * 0.25).toFixed(3) + ')';
+      sdot.style.left = (p * 100) + '%';
+      var idx = p < 0.34 ? 0 : (p < 0.68 ? 1 : 2);
+      steps.forEach(function (s, i) { s.classList.toggle('on', i === idx); });
+    }
+
+    /* ---------- samizu ware: five-color bowl ---------- */
+    var bowl = document.getElementById('bowl'), say = document.getElementById('colorSay');
+    var colorBtns = document.querySelectorAll('#colors button'), drips = bowl.querySelectorAll('.drip');
+    var meanings = [['赤 — 生命', '火と血の色'], ['青 — 祈り', '山河と天の色'], ['緑 — 再生', '森羅万象'], ['黄 — 実り', '土と実りの色'], ['白 — 浄化', '雪と清浄の色']];
+    function pickColor(k) {
+      var on = k >= 0 && colorBtns[k].getAttribute('aria-pressed') !== 'true';
+      colorBtns.forEach(function (o, i) { o.setAttribute('aria-pressed', on && i === k); });
+      drips.forEach(function (d, i) { d.classList.toggle('sel', on && i === k); });
+      bowl.classList.toggle('has-sel', on);
+      say.innerHTML = on ? '<b style="color:' + (k === 4 ? '#8a8076' : colorBtns[k].dataset.c) + '">' + meanings[k][0] + '</b><span>' + meanings[k][1] + '</span>' : '<b>五色の魔除け</b><span>色をえらぶと、その意味があらわれる</span>';
+    }
+    colorBtns.forEach(function (b, i) { b.addEventListener('click', function () { pickColor(i); }); });
+    drips.forEach(function (d, i) { d.addEventListener('click', function () { pickColor(i); }); });
+
+    /* ---------- four-layer stack ---------- */
+    var stack = document.getElementById('stack'), planes = stack.querySelectorAll('.pl');
+    var legendBtns = document.querySelectorAll('#stackLegend button'), layerEls = document.querySelectorAll('.layer[data-l]');
+    var curLayer = -1;
+    function setLayer(n) {
+      if (n === curLayer) return; curLayer = n;
+      planes.forEach(function (p) { p.classList.toggle('on', +p.dataset.l === n); });
+      stack.classList.toggle('has-on', n >= 0);
+      legendBtns.forEach(function (b) { b.classList.toggle('on', +b.dataset.l === n); });
+      layerEls.forEach(function (a) { a.classList.toggle('is-on', +a.dataset.l === n); });
+    }
+    layerEls.forEach(function (a) { a.addEventListener('mouseenter', function () { setLayer(+a.dataset.l); }); });
+    legendBtns.forEach(function (b) { b.addEventListener('click', function () {
+      var el = document.querySelector('.layer[data-l="' + b.dataset.l + '"]');
+      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.42, behavior: 'smooth' });
+      setLayer(+b.dataset.l);
+    }); });
+    function layerUpdate() {
+      var vh = window.innerHeight, best = -1, bd = 1e9;
+      layerEls.forEach(function (a) { var r = a.getBoundingClientRect(); var d = Math.abs(r.top + r.height / 2 - vh * 0.55); if (r.bottom > 0 && r.top < vh && d < bd) { bd = d; best = +a.dataset.l; } });
+      if (best >= 0) setLayer(best);
+    }
+
+    /* ---------- site views: flashlight ---------- */
+    var torch = document.getElementById('torch'), tls = torch.querySelectorAll('.tl'), lightBtn = document.getElementById('torchLight');
+    var foundEls = document.querySelectorAll('#found span'), foundMsg = document.getElementById('foundMsg');
+    var tx0 = 0.5, ty0 = 0.62, torchAuto = true, lit = false, got = {};
+    function torchPlace(x, y) {
+      tx0 = x; ty0 = y;
+      var w = torch.clientWidth, h = torch.clientHeight, R = Math.max(70, w * 0.17);
+      torch.style.setProperty('--x', (x * 100) + '%'); torch.style.setProperty('--y', (y * 100) + '%'); torch.style.setProperty('--r', R + 'px');
+      tls.forEach(function (l) {
+        var d = Math.hypot((l.dataset.x / 100 - x) * w, (l.dataset.y / 100 - y) * h);
+        var o = lit ? 1 : clamp(1.5 - d / (R * 1.1), 0, 1);
+        l.style.setProperty('--o', o.toFixed(2));
+        if (o > 0.85 && !torchAuto && !got[l.dataset.f]) {
+          got[l.dataset.f] = 1;
+          document.querySelector('#found [data-f="' + l.dataset.f + '"]').classList.add('got');
+          var n = Object.keys(got).length;
+          foundMsg.textContent = n === 5 ? 'すべて発見！ 二つの風土は、この柱のもとで重なります。' : n + ' / 5 — 見つけた！';
+          if (n === 5) { setTimeout(function () { setLit(true); }, 600); }
+        }
+      });
+    }
+    function setLit(v) { lit = v; torch.classList.toggle('lit', v); lightBtn.setAttribute('aria-pressed', v); lightBtn.textContent = v ? '照明を消す' : '照明をつける'; torchPlace(tx0, ty0); }
+    function torchFromEvent(e) { var r = torch.getBoundingClientRect(); torchAuto = false; torchPlace(clamp((e.clientX - r.left) / r.width, 0, 1), clamp((e.clientY - r.top) / r.height, 0, 1)); }
+    torch.addEventListener('pointermove', function (e) { if (e.pointerType === 'mouse') torchFromEvent(e); });
+    torch.addEventListener('pointerdown', torchFromEvent);
+    lightBtn.addEventListener('click', function () { torchAuto = false; setLit(!lit); });
+    var torchVisible = false;
+    new IntersectionObserver(function (en) { torchVisible = en[0].isIntersecting; }).observe(torch);
+    (function sweep(now) {
+      if (torchAuto && torchVisible && !reduce) torchPlace(0.5 + Math.sin(now / 1500) * 0.3, 0.55 + Math.sin(now / 1100) * 0.18);
+      if (torchAuto) requestAnimationFrame(sweep);
+    })(performance.now());
+    torchPlace(0.5, 0.62);
+
+    /* ---------- entrance loop player ---------- */
+    var loopImgs = document.querySelectorAll('#loopScreen img'), cutBtns = document.querySelectorAll('#cuts button');
+    var cutIdx = 0, CUT_MS = 3600, cutTimer;
+    function showCut(k) {
+      cutIdx = k;
+      loopImgs.forEach(function (im, i) { im.classList.toggle('on', i === k); });
+      cutBtns.forEach(function (b, i) { b.classList.remove('on'); if (i === k) { void b.offsetWidth; b.classList.add('on'); } });
+    }
+    function startCuts() { clearInterval(cutTimer); cutTimer = setInterval(function () { showCut((cutIdx + 1) % loopImgs.length); }, CUT_MS); }
+    cutBtns.forEach(function (b, i) { b.style.setProperty('--dur', CUT_MS / 1000 + 's'); b.addEventListener('click', function () { showCut(i); startCuts(); }); });
+    showCut(0); startCuts();
+
+    /* ---------- lightbox ---------- */
+    var lb = document.getElementById('lightbox'), lbImg = lb.querySelector('img');
+    function openLb(src, alt) { lbImg.src = src; lbImg.alt = alt || ''; lb.classList.add('open'); lb.setAttribute('aria-hidden', 'false'); body.classList.add('no-scroll'); }
+    function closeLb() { lb.classList.remove('open'); lb.setAttribute('aria-hidden', 'true'); body.classList.remove('no-scroll'); }
+    document.querySelectorAll('img.zoomable').forEach(function (im) { im.addEventListener('click', function () { openLb(im.currentSrc || im.src, im.alt); }); });
+    document.querySelectorAll('[data-lb]').forEach(function (b) { b.addEventListener('click', function () { openLb(b.dataset.lb, b.querySelector('img').alt); }); });
+    lb.addEventListener('click', closeLb);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeLb(); setMenu(false); } });
+
+    /* ---------- scroll loop ---------- */
+    var rail = document.getElementById('railFill'), toTop = document.getElementById('toTop');
+    var navLinks = document.querySelectorAll('.mo-list a[href^="#"]');
+    function setNow(act, arr) {
+      var nn = document.getElementById('navNow');
+      if (act < 0) { nn.classList.remove('show'); return; }
+      var a = navLinks[act], r = arr[act].getBoundingClientRect(), vh = window.innerHeight;
+      nn.querySelector('.no').textContent = a.dataset.no;
+      nn.querySelector('.t').textContent = a.dataset.ja;
+      nn.querySelector('.bar i').style.width = (clamp((vh * 0.4 - r.top) / Math.max(r.height, 1), 0, 1) * 100) + '%';
+      nn.classList.add('show');
+    }
+
+    var sections = Array.prototype.map.call(navLinks, function (a) { return document.querySelector(a.getAttribute('href')); });
+    var ticking = false;
+    function onScroll() {
+      var y = window.scrollY, h = document.documentElement.scrollHeight - window.innerHeight;
+      rail.style.height = (y / h * 100) + '%';
+      nav.classList.toggle('scrolled', y > window.innerHeight * 0.75);
+      toTop.classList.toggle('show', y > window.innerHeight);
+      var rr = rstage.getBoundingClientRect(), vh = window.innerHeight;
+      drawRidge(clamp((vh * 0.92 - rr.top) / (vh * 0.55), 0, 1));
+      zoomUpdate();
+      layerUpdate();
+      var act = -1;
+      sections.forEach(function (s, i) { if (s && s.getBoundingClientRect().top < vh * 0.4) act = i; });
+      navLinks.forEach(function (a, i) { a.classList.toggle('current', i === act); });
+      setNow(act, sections);
+      ticking = false;
+    }
+    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+    window.addEventListener('resize', onScroll);
+    onScroll();
+  })();
+  </script>
+</body>
+</html>
