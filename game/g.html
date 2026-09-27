@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RF8JPF5D8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5RF8JPF5D8');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0f0d16">
+  <title>TSUDA SHOICHI | ゲーム Games</title>
+  <meta name="description" content="作品シリーズ「左美都の神話と伝承」から生まれた、ブラウザで遊べる2つのゲーム。パズル「左美都村の記憶 ─ 狂気の果て ─」と、世代交代型RPG「Dynasty 33: 左美都神話」。">
+  <meta property="og:title" content="TSUDA SHOICHI | ゲーム Games">
+  <meta property="og:description" content="左美都の神話と伝承を、指先でなぞる。ブラウザで遊べる2つのゲーム。">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/jpeg" href="../images/game/screen-rpg.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ════════════════════════════════════════
+        TOKENS — 夜の遊び場
+        PP（設計図）・EX（展示室）と並ぶ、手のひらの左美都。
+    ════════════════════════════════════════ */
+    :root {
+      --bg-0: #0f0d16;
+      --bg-1: #16131f;
+      --ink:   #ece6f5;
+      --ink-2: rgba(236,230,245,0.72);
+      --ink-3: rgba(236,230,245,0.45);
+      --line:   rgba(236,230,245,0.1);
+      --line-2: rgba(236,230,245,0.18);
+      --line-3: rgba(236,230,245,0.32);
+      --violet: #c9b8ff;
+      --puzzle: #ce93d8;
+      --gold:   #d4af37;
+      --en:   'Cormorant Garamond', serif;
+      --jp:   'Noto Serif JP', serif;
+      --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+      --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --px: clamp(16px, 5vw, 64px);
+      --maxw: 1180px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: clip; }
+    body {
+      background: var(--bg-0); color: var(--ink); font-family: var(--jp); font-weight: 300;
+      line-height: 1.9; letter-spacing: 0.05em; -webkit-font-smoothing: antialiased; overflow-x: clip; line-break: strict;
+      padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right);
+    }
+    body.no-scroll { overflow: hidden; }
+    body::before {
+      content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background:
+        radial-gradient(ellipse 60% 45% at 20% 0%, rgba(206,147,216,0.1), transparent 60%),
+        radial-gradient(ellipse 60% 45% at 85% 10%, rgba(212,175,55,0.07), transparent 60%),
+        radial-gradient(circle, rgba(236,230,245,0.05) 1px, transparent 1.4px) 0 0 / 22px 22px;
+    }
+    img { display: block; max-width: 100%; height: auto; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+    ::selection { background: var(--violet); color: var(--bg-0); }
+    :focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; }
+    .container { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--px); }
+
+    /* ════════════════════════════════════════
+        NAV（PP・EX と同じ骨格）
+    ════════════════════════════════════════ */
+    nav#top-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 150;
+      display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 1.5rem;
+      padding: clamp(18px, 3vw, 32px) var(--px); border-bottom: 1px solid transparent;
+      transition: padding 0.5s var(--ease-expo), background 0.5s ease, border-color 0.5s ease;
+    }
+    nav#top-nav.scrolled { padding-top: 14px; padding-bottom: 14px; background: rgba(15,13,22,0.86); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom-color: var(--line); }
+    .nav-logo { justify-self: start; font-family: var(--en); font-size: clamp(0.78rem, 2.2vw, 0.92rem); letter-spacing: 0.3em; text-transform: uppercase; white-space: nowrap; transition: opacity 0.3s; }
+    .nav-logo:hover { opacity: 0.7; }
+    .nav-sections { display: flex; gap: 4px; list-style: none; padding: 4px; border: 1px solid var(--line-2); border-radius: 999px; background: rgba(15,13,22,0.6); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+    .sn-link { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 1.1rem; border-radius: 999px; white-space: nowrap; transition: background 0.35s, color 0.35s; }
+    .sn-link:hover { background: rgba(236,230,245,0.07); }
+    .sn-jp { font-size: 0.82rem; letter-spacing: 0.14em; }
+    .sn-sub { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em; color: var(--ink-3); }
+    .sn-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c); box-shadow: 0 0 8px var(--c); flex-shrink: 0; }
+    .sn-link.is-active { background: var(--ink); color: var(--bg-0); }
+    .sn-link.is-active .sn-sub { color: rgba(15,13,22,0.6); }
+    .nav-right { justify-self: end; display: flex; align-items: center; gap: 0.8rem; }
+    .nav-cta { font-family: var(--en); font-size: 0.68rem; letter-spacing: 0.25em; text-transform: uppercase; border: 0.5px solid var(--line-3); border-radius: 2px; padding: 0.55rem 1.4rem; transition: background 0.4s var(--ease-expo), color 0.4s var(--ease-expo); }
+    .nav-cta:hover { background: var(--ink); color: var(--bg-0); }
+    .nav-menu-btn { display: inline-flex; align-items: center; gap: 0.6rem; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; background: rgba(22,19,31,0.6); border: 0.5px solid var(--line-3); border-radius: 999px; padding: 0.6rem 1.1rem; position: relative; z-index: 160; -webkit-tap-highlight-color: transparent; }
+    .nav-menu-btn i { display: block; width: 14px; height: 1px; background: currentColor; position: relative; transition: background 0.3s; }
+    .nav-menu-btn i::before, .nav-menu-btn i::after { content: ''; position: absolute; left: 0; width: 14px; height: 1px; background: currentColor; transition: transform 0.4s var(--ease-expo); }
+    .nav-menu-btn i::before { top: -4px; } .nav-menu-btn i::after { top: 4px; }
+    .nav-menu-btn[aria-expanded="true"] i { background: transparent; }
+    .nav-menu-btn[aria-expanded="true"] i::before { transform: translateY(4px) rotate(45deg); }
+    .nav-menu-btn[aria-expanded="true"] i::after { transform: translateY(-4px) rotate(-45deg); }
+    @media (max-width: 900px) { nav#top-nav { grid-template-columns: minmax(0, 1fr) auto; } .nav-sections { display: none; } }
+    @media (max-width: 520px) { .nav-cta { display: none; } }
+    .menu-overlay { position: fixed; inset: 0; z-index: 140; display: flex; flex-direction: column; justify-content: safe center; padding: 6rem 1.5rem 3rem; background: rgba(15,13,22,0.97); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); opacity: 0; visibility: hidden; transition: opacity 0.5s var(--ease-expo), visibility 0.5s; overflow-y: auto; }
+    .menu-overlay.open { opacity: 1; visibility: visible; }
+    .menu-overlay ul { width: 100%; max-width: 640px; margin: 0 auto; list-style: none; border-top: 1px solid var(--line-2); }
+    .menu-overlay li { border-bottom: 1px solid var(--line-2); }
+    .menu-overlay a { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 1.2rem 0.25rem; font-family: var(--en); font-size: 1.6rem; font-weight: 300; letter-spacing: 0.12em; transition: padding 0.4s var(--ease-expo); }
+    .menu-overlay a:hover { padding-left: 0.9rem; }
+    .menu-overlay a span { font-family: var(--jp); font-size: 0.78rem; letter-spacing: 0.12em; color: var(--ink-3); }
+    .menu-overlay a[aria-current="page"], .menu-overlay a[aria-current="page"] span { color: var(--violet); }
+    @media (max-height: 760px) { .menu-overlay a { padding-top: 0.95rem; padding-bottom: 0.95rem; font-size: 1.4rem; } }
+
+    /* ════════════════════════════════════════
+        HERO — 2 台の画面が、スタートを待っている
+    ════════════════════════════════════════ */
+    .hero { min-height: 100vh; min-height: 100svh; display: flex; align-items: center; padding: clamp(110px, 16vh, 150px) 0 clamp(50px, 8vh, 80px); }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: center; width: 100%; }
+    .fade { opacity: 0; transform: translateY(14px); animation: fadeUp 0.9s var(--ease-expo) forwards; }
+    @keyframes fadeUp { to { opacity: 1; transform: none; } }
+    .d1 { animation-delay: 0.08s; } .d2 { animation-delay: 0.16s; } .d3 { animation-delay: 0.26s; } .d4 { animation-delay: 0.36s; }
+    .eyebrow { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--violet); display: flex; align-items: center; gap: 12px; }
+    .eyebrow::before { content: ''; width: 28px; height: 1px; background: currentColor; }
+    .hero-title { font-family: var(--en); font-weight: 300; line-height: 0.95; margin: 22px 0 26px; font-size: clamp(3.4rem, 8vw, 7.4rem); }
+    .hero-title span { display: block; }
+    .hero-title .outline { font-style: italic; color: transparent; -webkit-text-stroke: 1px var(--ink); padding-left: 0.45em; }
+    .hero-title .outline em { font-style: italic; color: var(--violet); -webkit-text-stroke: 0; }
+    .lead { font-size: clamp(1.02rem, 1.8vw, 1.28rem); letter-spacing: 0.14em; line-height: 1.8; }
+    .lead b { font-weight: 400; color: var(--violet); }
+    .hero-text { color: var(--ink-2); margin-top: 16px; max-width: 30em; font-size: 0.95rem; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+    .chips span { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.14em; padding: 5px 12px; border: 1px solid var(--line-2); border-radius: 999px; color: var(--ink-2); }
+    .press { margin-top: 30px; font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.3em; color: var(--violet); display: inline-flex; align-items: center; gap: 12px; }
+    .press i { font-style: normal; animation: blink 1.1s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .devices { position: relative; display: flex; justify-content: center; align-items: center; gap: clamp(14px, 3vw, 34px); padding: 20px 0; }
+    .phone {
+      display: block; position: relative; width: min(42%, 250px); border-radius: 30px; padding: 9px; background: linear-gradient(160deg, #2b2638, #0b0a10);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 40px 70px -30px rgba(0,0,0,0.9), 0 0 60px -10px var(--glow);
+      transform: rotate(var(--rot)) translateY(var(--ty, 0)); transition: transform 0.7s var(--ease-expo), box-shadow 0.7s;
+    }
+    .phone::before { content: ''; position: absolute; top: 15px; left: 50%; width: 30%; height: 5px; margin-left: -15%; border-radius: 5px; background: #000; z-index: 2; opacity: 0.7; }
+    .phone img { width: 100%; height: auto; border-radius: 22px; }
+    .phone:hover, .phone:focus-visible { transform: rotate(0deg) translateY(-10px) scale(1.03); box-shadow: 0 0 0 1px rgba(255,255,255,0.14), 0 50px 80px -30px rgba(0,0,0,0.95), 0 0 90px -6px var(--glow); }
+    .phone .play { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(8px); opacity: 0; transition: opacity 0.4s, transform 0.5s var(--ease-expo); z-index: 3;
+      font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.2em; padding: 7px 16px; border-radius: 999px; background: var(--ink); color: var(--bg-0); white-space: nowrap; }
+    .phone:hover .play, .phone:focus-visible .play { opacity: 1; transform: translateX(-50%); }
+    .phone.p1 { --rot: -5deg; --glow: rgba(206,147,216,0.35); }
+    .phone.p2 { --rot: 4deg; --ty: 26px; --glow: rgba(212,175,55,0.3); }
+    @media (max-width: 860px) { .hero { min-height: 0; } .hero-grid { grid-template-columns: 1fr; } }
+
+    /* ════════════════════════════════════════
+        GAME CARDS
+    ════════════════════════════════════════ */
+    .section { padding: clamp(80px, 11vw, 140px) 0; }
+    .sec-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; padding-bottom: 22px; border-bottom: 1px solid var(--line-2); margin-bottom: clamp(36px, 5vw, 56px); }
+    .sec-head h2 { font-weight: 300; font-size: clamp(1.9rem, 4.2vw, 3rem); letter-spacing: 0.1em; line-height: 1.3; }
+    .sec-head h2 span { display: block; font-family: var(--en); font-style: italic; font-size: 0.5em; letter-spacing: 0.04em; color: var(--ink-3); margin-top: 4px; }
+    .sec-head p { max-width: 28em; font-size: 0.88rem; color: var(--ink-2); }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 1s var(--ease-expo), transform 1s var(--ease-expo); }
+    .reveal.in { opacity: 1; transform: none; }
+
+    .game { display: grid; grid-template-columns: minmax(0, 0.62fr) minmax(0, 1.38fr); gap: clamp(28px, 5vw, 72px); align-items: center; padding: clamp(24px, 3.5vw, 44px); border: 1px solid var(--line); border-radius: 6px; background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.005)); position: relative; overflow: hidden; }
+    .game + .game { margin-top: clamp(28px, 4vw, 44px); }
+    .game::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle 360px at 15% 50%, var(--glow), transparent 70%); opacity: 0.6; }
+    .game.rev { grid-template-columns: minmax(0, 1.38fr) minmax(0, 0.62fr); }
+    .game.rev .g-shot { order: 2; }
+    .game.rev::before { background: radial-gradient(circle 360px at 85% 50%, var(--glow), transparent 70%); }
+    .g-shot { position: relative; justify-self: center; width: min(100%, 260px); }
+    .g-shot .phone { width: 100%; --rot: 0deg; }
+    .g-body { position: relative; }
+    .g-no { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.2em; color: var(--c); }
+    .g-body h3 { font-weight: 400; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: 0.08em; line-height: 1.45; margin: 10px 0 2px; }
+    .g-body h3 small { display: block; font-size: 0.5em; letter-spacing: 0.16em; color: var(--c); font-weight: 400; margin-top: 4px; }
+    .g-genre { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 16px; }
+    .g-genre span { font-size: 0.72rem; letter-spacing: 0.1em; padding: 3px 12px; border-radius: 999px; border: 1px solid var(--line-3); color: var(--ink-2); }
+    .g-genre span:first-child { border-color: var(--c); color: var(--c); }
+    .g-desc { color: var(--ink-2); font-size: 0.94rem; max-width: 36em; }
+    .howto { list-style: none; margin-top: 18px; border-top: 1px solid var(--line); }
+    .howto li { display: grid; grid-template-columns: 2.2em minmax(0, 1fr); padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 0.86rem; color: var(--ink-2); }
+    .howto b { font-family: var(--mono); font-weight: 500; font-size: 0.72rem; color: var(--c); padding-top: 3px; }
+    .howto em { font-style: normal; color: var(--ink); }
+    .g-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 24px; }
+    .btn-play { display: inline-flex; align-items: center; gap: 12px; padding: 0.9rem 1.9rem; border-radius: 999px; background: var(--c); color: #140f1c; font-weight: 500; letter-spacing: 0.14em; font-size: 0.92rem; transition: transform 0.4s var(--ease-expo), box-shadow 0.4s; box-shadow: 0 0 24px -4px var(--c); }
+    .btn-play:hover { transform: translateY(-3px); box-shadow: 0 0 36px -2px var(--c); }
+    .btn-play i { font-style: normal; font-size: 0.8em; }
+    .btn-sub { font-size: 0.82rem; color: var(--ink-2); border-bottom: 1px solid var(--line-3); padding-bottom: 2px; transition: color 0.3s; }
+    .btn-sub:hover { color: var(--ink); }
+    @media (max-width: 800px) {
+      .game, .game.rev { grid-template-columns: 1fr; }
+      .game.rev .g-shot { order: 0; }
+      .g-shot { width: min(70%, 240px); }
+    }
+
+    /* 報告・きょうだいページ */
+    .report { margin-top: clamp(48px, 6vw, 72px); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 20px; align-items: center; padding: clamp(22px, 3vw, 32px); border: 1px dashed var(--line-3); border-radius: 6px; }
+    .report small { display: block; font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.2em; color: var(--violet); margin-bottom: 6px; }
+    .report p { font-size: 0.92rem; color: var(--ink-2); }
+    .report a { padding: 0.8rem 1.5rem; border-radius: 999px; border: 1px solid var(--line-3); font-size: 0.86rem; letter-spacing: 0.1em; white-space: nowrap; transition: background 0.3s, color 0.3s; }
+    .report a:hover { background: var(--ink); color: var(--bg-0); }
+    @media (max-width: 640px) { .report { grid-template-columns: 1fr; } .report a { justify-self: start; } }
+
+    .siblings { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--line-2); border-radius: 6px; overflow: hidden; }
+    .siblings > * { padding: clamp(20px, 3vw, 32px); border-right: 1px solid var(--line-2); transition: background 0.4s; }
+    .siblings > *:last-child { border-right: 0; }
+    .siblings a:hover { background: rgba(255,255,255,0.04); }
+    .siblings b { display: block; font-family: var(--en); font-weight: 300; font-size: 2rem; letter-spacing: 0.1em; color: var(--c); line-height: 1.2; }
+    .siblings span { font-size: 0.84rem; color: var(--ink-2); }
+    .siblings .here { background: rgba(201,184,255,0.06); }
+    .siblings .here span::after { content: '　← いまここ'; color: var(--violet); font-size: 0.78em; }
+    @media (max-width: 640px) { .siblings { grid-template-columns: 1fr; } .siblings > * { border-right: 0; border-bottom: 1px solid var(--line-2); } .siblings > *:last-child { border-bottom: 0; } }
+
+    footer { border-top: 1px solid var(--line); padding: 38px var(--px); text-align: center; font-size: 0.78rem; color: var(--ink-3); }
+    footer .f-logo { font-size: 0.9rem; letter-spacing: 0.2em; color: var(--ink); margin-bottom: 4px; }
+    .to-top { position: fixed; right: 18px; bottom: 18px; z-index: 120; width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--line-3); background: rgba(15,13,22,0.8); display: flex; align-items: center; justify-content: center; opacity: 0; transform: translateY(10px); pointer-events: none; transition: opacity 0.4s, transform 0.4s var(--ease-expo); }
+    .to-top.show { opacity: 1; transform: none; pointer-events: auto; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
+  </style>
+</head>
+<body>
+
+  <nav id="top-nav" aria-label="サイト">
+    <a href="../index.html" class="nav-logo">Tsuda Shoichi</a>
+    <ul class="nav-sections" aria-label="このページのゲーム">
+      <li><a class="sn-link" href="#puzzle" data-spy="puzzle"><span class="sn-dot" style="--c:#ce93d8" aria-hidden="true"></span><span class="sn-jp">パズル</span><span class="sn-sub">01</span></a></li>
+      <li><a class="sn-link" href="#rpg" data-spy="rpg"><span class="sn-dot" style="--c:#d4af37" aria-hidden="true"></span><span class="sn-jp">RPG</span><span class="sn-sub">02</span></a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="nav-menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menuOverlay"><i aria-hidden="true"></i>Menu</button>
+      <a href="../contact.html" class="nav-cta">Contact</a>
+    </div>
+  </nav>
+
+  <div class="menu-overlay" id="menuOverlay">
+    <ul>
+      <li><a href="../index.html">Top<span>トップ</span></a></li>
+      <li><a href="../index.html#statement">Statement<span>ステートメント</span></a></li>
+      <li><a href="../works/works.html">Works<span>作品</span></a></li>
+      <li><a href="../index-profile.html">Profile<span>プロフィール</span></a></li>
+      <li><a href="../index.html#news">News<span>お知らせ</span></a></li>
+      <li><a href="../pp/proposals.html">PP<span>企画提案</span></a></li>
+      <li><a href="../exhibition/ex.html">EX<span>展示記録</span></a></li>
+      <li><a href="g.html" aria-current="page">G<span>ゲーム</span></a></li>
+      <li><a href="../contact.html">Contact<span>お問い合わせ</span></a></li>
+    </ul>
+  </div>
+
+  <!-- ══════════════ HERO ══════════════ -->
+  <header class="hero" id="top">
+    <div class="container" style="width:100%">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow fade">G — Games / Play in Samizu</p>
+          <h1 class="hero-title fade d1" aria-label="Games of Samizu">
+            <span>Games</span>
+            <span class="outline">of Sami<em>z</em>u</span>
+          </h1>
+          <p class="lead fade d2">遊ぶ ── 左美都の神話と伝承を、<b>指先でなぞる</b>。</p>
+          <p class="hero-text fade d3">作品シリーズ「左美都の神話と伝承」から生まれた、ブラウザで遊べる2つのゲームです。インストールは不要。パソコンでも、スマートフォンでも遊べます。</p>
+          <div class="chips fade d3"><span>2 GAMES</span><span>FREE</span><span>PC / SMARTPHONE</span></div>
+          <p class="press fade d4"><i aria-hidden="true">▶</i>PRESS START — 画面を選んでください</p>
+        </div>
+        <div class="devices fade d2">
+          <a class="phone p1" href="g-samizuPUZZLE.html" aria-label="パズル「左美都村の記憶」を遊ぶ">
+            <img src="../images/game/screen-puzzle.jpg" alt="パズル「左美都村の記憶」のプレイ画面。色の実が並ぶ盤面と、スコア・正気度のゲージ" width="600" height="1298">
+            <span class="play">PLAY ▶</span>
+          </a>
+          <a class="phone p2" href="g-samizuRPG.html" aria-label="RPG「左美都神話」を遊ぶ">
+            <img src="../images/game/screen-rpg.jpg" alt="RPG「左美都神話」のタイトル画面。開祖の名と性別を選んで始める" width="600" height="1298">
+            <span class="play">PLAY ▶</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="games" aria-labelledby="gamesTitle">
+      <div class="container">
+        <div class="sec-head reveal">
+          <h2 id="gamesTitle">ゲームをえらぶ<span>Choose a game</span></h2>
+          <p>どちらも「左美都の神話と伝承」に登場する土地や人物、伝承をもとにしています。元になった物語は、作品ページで読むことができます。</p>
+        </div>
+
+        <!-- 01 PUZZLE -->
+        <article class="game reveal" id="puzzle" style="--c:#ce93d8; --glow:rgba(206,147,216,0.22)">
+          <div class="g-shot">
+            <a class="phone" href="g-samizuPUZZLE.html" aria-label="パズル「左美都村の記憶」を遊ぶ">
+              <img src="../images/game/screen-puzzle.jpg" alt="" width="600" height="1298" loading="lazy">
+              <span class="play">PLAY ▶</span>
+            </a>
+          </div>
+          <div class="g-body">
+            <p class="g-no">GAME 01 — PUZZLE</p>
+            <h3>左美都村の記憶<small>─ 狂気の果て ─</small></h3>
+            <div class="g-genre"><span>なぞり消しパズル</span><span>全12章</span><span>「アケビ」より</span></div>
+            <p class="g-desc">文字を学ぶ旅に出たサララ、赤人、沼持。帰り道で三人は、いつも同じように見つかるアケビの反復に閉じ込められていく。章をクリアするごとに、物語が一歩ずつ進みます。</p>
+            <ul class="howto">
+              <li><b>01</b><span>上下左右に<em>同じ色を3つ以上</em>なぞって消す。</span></li>
+              <li><b>02</b><span>連鎖は起きにくい。頭をフル回転させて、<em>正気度（SANITY）</em>が尽きる前に目標点へ。</span></li>
+              <li><b>03</b><span>手詰まりになったら<em>「1手戻る」</em>（正気度 −15）。</span></li>
+            </ul>
+            <div class="g-actions">
+              <a class="btn-play" href="g-samizuPUZZLE.html">遊ぶ <i aria-hidden="true">▶</i></a>
+              <a class="btn-sub" href="../works/works-samizu.html#statement">元になった物語「アケビの幻視」を読む →</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- 02 RPG -->
+        <article class="game rev reveal" id="rpg" style="--c:#d4af37; --glow:rgba(212,175,55,0.18)">
+          <div class="g-shot">
+            <a class="phone" href="g-samizuRPG.html" aria-label="RPG「左美都神話」を遊ぶ">
+              <img src="../images/game/screen-rpg.jpg" alt="" width="600" height="1298" loading="lazy">
+              <span class="play">PLAY ▶</span>
+            </a>
+          </div>
+          <div class="g-body">
+            <p class="g-no">GAME 02 — RPG</p>
+            <h3>Dynasty 33: 左美都神話<small>─ 絆と血脈の果てに ─</small></h3>
+            <div class="g-genre"><span>世代交代型リアクティブRPG</span><span>全5ステージ</span><span>「左美都の神話と伝承」より</span></div>
+            <p class="g-desc">開祖の名と在り方を決めて、左美都の歴史を刻みはじめる。伴侶と絆を深め、後継者に血脈をつなぎながら、犀川の急流から左美都の深奥まで、怪異の討伐へ向かう。</p>
+            <ul class="howto">
+              <li><b>01</b><span><em>1年を進める</em>と、伴侶との対話や縁談が起きる。絆を深めると後継者を授かることも。</span></li>
+              <li><b>02</b><span>当主が倒れても、子どもが生き残っていれば<em>世代交代</em>して神話は続く。</span></li>
+              <li><b>03</b><span>遠征では<em>剣撃（QTE）</em>・<em>陣形連鎖（パズル）</em>・絆 100% で放つ<em>比翼の絆連携</em>を使い分ける。PC は A・S・D キー、スマホはタップ。</span></li>
+            </ul>
+            <div class="g-actions">
+              <a class="btn-play" href="g-samizuRPG.html">遊ぶ <i aria-hidden="true">▶</i></a>
+              <a class="btn-sub" href="../works/works-samizu.html">元になった「左美都の神話と伝承」を見る →</a>
+            </div>
+          </div>
+        </article>
+
+        <div class="report reveal">
+          <div>
+            <small>HIGH SCORE &amp; BUG REPORT</small>
+            <p>ハイスコアの報告や、不具合（バグ）の報告をお待ちしています。お問い合わせフォームからお気軽にどうぞ。</p>
+          </div>
+          <a href="../contact.html">報告する →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top: 0" aria-label="ほかのアーカイブ">
+      <div class="container">
+        <div class="siblings reveal">
+          <a href="../pp/proposals.html" style="--c:#9cd4ff"><b>PP</b><span>企画提案 ── まだ、この世界にない作品の設計図</span></a>
+          <a href="../exhibition/ex.html" style="--c:#f2c28b"><b>EX</b><span>展示記録 ── 作品が、空間に置かれた記録</span></a>
+          <div class="here" style="--c:#c9b8ff"><b>G</b><span>ゲーム ── 左美都で遊ぶ</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p class="f-logo">津田 翔一 / Tsuda Shoichi</p>
+    <p>© 2026 Tsuda Shoichi. All Rights Reserved.</p>
+  </footer>
+  <a href="#top" class="to-top" id="toTop" aria-label="ページ先頭に戻る">↑</a>
+
+  <script>
+  (function () {
+    var menuBtn = document.getElementById('menuBtn'), overlay = document.getElementById('menuOverlay');
+    function setMenu(open) { overlay.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', open); document.body.classList.toggle('no-scroll', open); }
+    menuBtn.addEventListener('click', function () { setMenu(!overlay.classList.contains('open')); });
+    overlay.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
+
+    var io = new IntersectionObserver(function (en) {
+      en.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add('in'); io.unobserve(x.target); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
+    document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+
+    var nav = document.getElementById('top-nav'), toTop = document.getElementById('toTop'), spy = document.querySelectorAll('.sn-link'), ticking = false;
+    function onScroll() {
+      var y = window.scrollY, vh = window.innerHeight, act = null;
+      nav.classList.toggle('scrolled', y > 40);
+      toTop.classList.toggle('show', y > vh);
+      spy.forEach(function (a) { var s = document.getElementById(a.dataset.spy); if (s && s.getBoundingClientRect().top < vh * 0.5) act = a; });
+      spy.forEach(function (a) { a.classList.toggle('is-active', a === act); });
+      ticking = false;
+    }
+    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+    onScroll();
+  })();
+  </script>
+</body>
+</html>

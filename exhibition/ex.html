@@ -163,13 +163,14 @@
         HERO — 夜の展示室。スポットライトで一枚ずつ照らす
     ════════════════════════════════════════ */
     .hero { position: relative; min-height: 100vh; min-height: 100svh; padding: clamp(110px, 16vh, 150px) 0 clamp(56px, 8vh, 90px); display: flex; align-items: center; }
-    .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); gap: clamp(32px, 5vw, 80px); align-items: center; width: 100%; }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: clamp(32px, 5vw, 80px); align-items: center; width: 100%; }
+    .hero-copy { container-type: inline-size; min-width: 0; }
     .fade { opacity: 0; transform: translateY(14px); animation: fadeUp 0.9s var(--ease-expo) forwards; }
     @keyframes fadeUp { to { opacity: 1; transform: none; } }
     .d1 { animation-delay: 0.08s; } .d2 { animation-delay: 0.16s; } .d3 { animation-delay: 0.26s; } .d4 { animation-delay: 0.36s; } .d5 { animation-delay: 0.46s; }
     .hero-eyebrow { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--amber); display: flex; align-items: center; gap: 12px; }
     .hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: currentColor; }
-    .hero-title { font-family: var(--en); font-weight: 300; line-height: 0.92; letter-spacing: -0.01em; margin: 22px 0 26px; font-size: clamp(3.6rem, 8.6vw, 8.2rem); }
+    .hero-title { font-family: var(--en); font-weight: 300; line-height: 0.95; letter-spacing: -0.01em; margin: 22px 0 26px; font-size: clamp(3rem, 22cqi, 7.6rem); white-space: nowrap; }
     .hero-title span { display: block; }
     .hero-title .outline { font-style: italic; color: transparent; -webkit-text-stroke: 1px var(--ink); padding-left: 0.5em; }
     .hero-title .outline em { font-style: italic; color: var(--amber); -webkit-text-stroke: 0; }
@@ -184,45 +185,51 @@
     .hero-cta span { transition: transform 0.4s var(--ease-expo); }
     .hero-cta:hover span { transform: translateY(3px); }
 
-    /* サロン展示の壁 */
+    /* サロン展示の壁 ── 額は 2 段に並べ、各段の高さをそろえる（位置を固定しないので重ならない） */
     .wall {
-      position: relative; aspect-ratio: 1 / 0.94; width: 100%;
+      position: relative; width: 100%; padding: clamp(30px, 3.4vw, 46px) clamp(18px, 2.6vw, 34px) clamp(46px, 5vw, 64px);
       background:
         radial-gradient(circle 340px at var(--sx, 50%) var(--sy, 40%), rgba(242,194,139,0.13), transparent 70%),
-        linear-gradient(180deg, #1d1a17, #151311 78%, #0f0e0d 78.4%, #14120f);
+        linear-gradient(180deg, #1d1a17, #151311);
       border-radius: 4px; overflow: hidden; box-shadow: inset 0 0 120px rgba(0,0,0,0.6);
     }
-    .wall::after { content: ''; position: absolute; left: 0; right: 0; top: 78%; height: 22%; background: repeating-linear-gradient(90deg, rgba(255,255,255,0.018) 0 2px, transparent 2px 38px); pointer-events: none; }
-    .wall-rail { position: absolute; left: 0; right: 0; top: 2.4%; height: 3px; background: linear-gradient(90deg, #2b2724, #3a3531, #2b2724); z-index: 1; }
+    .wall::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: clamp(22px, 2.6vw, 34px); background: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 38px), linear-gradient(180deg, #0f0e0d, #14120f); border-top: 1px solid rgba(255,255,255,0.05); pointer-events: none; }
+    .wall-rail { position: absolute; left: 0; right: 0; top: 12px; height: 3px; background: linear-gradient(90deg, #2b2724, #3a3531, #2b2724); z-index: 1; }
+    .wall-row { position: relative; z-index: 2; display: flex; align-items: flex-start; gap: clamp(14px, 2.4vw, 28px); }
+    .wall-row + .wall-row { margin-top: clamp(18px, 2.4vw, 30px); }
     .fr {
-      position: absolute; left: var(--l); top: var(--t); width: var(--w); z-index: 2;
+      /* 額縁の余白（--fp）を基準幅にし、残りを写真の縦横比で配分 → 同じ段の写真は必ず同じ高さになる */
+      --fp: clamp(4px, 0.55vw, 8px);
+      position: relative; flex: var(--ar) 1 calc(var(--fp) * 2); min-width: 0;
       opacity: 0; transform: translateY(-18px) rotate(var(--r, 0deg));
       animation: hang 0.9s var(--ease-expo) forwards; animation-delay: var(--dl);
     }
     @keyframes hang { to { opacity: 1; transform: translateY(0) rotate(0deg); } }
-    .fr a { display: block; position: relative; padding: 5%; background: #0c0b0a; box-shadow: 0 18px 30px -12px rgba(0,0,0,0.8); transition: transform 0.6s var(--ease-expo), box-shadow 0.6s; }
+    .fr a { display: block; position: relative; padding: var(--fp); background: #0c0b0a; box-shadow: 0 18px 30px -12px rgba(0,0,0,0.8); transition: transform 0.6s var(--ease-expo), box-shadow 0.6s; }
     .fr img { width: 100%; height: auto; filter: brightness(0.5) saturate(0.7); transition: filter 0.6s ease; }
     .fr .cone { position: absolute; left: 50%; bottom: 96%; width: 180%; height: 140%; transform: translateX(-50%); pointer-events: none;
       background: radial-gradient(ellipse 50% 100% at 50% 100%, rgba(255,226,180,0.22), transparent 70%); opacity: 0; transition: opacity 0.6s; }
-    .fr .tag { position: absolute; left: 0; top: calc(100% + 8px); font-family: var(--mono); font-size: clamp(0.5rem, 0.8vw, 0.62rem); letter-spacing: 0.1em; color: var(--ink-3); white-space: nowrap; transition: color 0.4s; }
-    .fr .tag b { font-weight: 500; color: var(--amber); margin-right: 6px; }
-    .fr .live-dot { position: absolute; right: 6px; top: 6px; z-index: 2; }
+    .fr .tag { display: block; margin-top: 8px; font-family: var(--mono-jp); font-size: 0.62rem; line-height: 1.55; letter-spacing: 0.06em; color: var(--ink-3); overflow-wrap: anywhere; transition: color 0.4s; }
+    .fr .tag b { display: block; font-family: var(--mono); font-weight: 500; color: var(--amber); letter-spacing: 0.14em; }
+    .fr .live-dot { position: absolute; right: 8px; top: 8px; z-index: 2; }
     .fr.on a { transform: translateY(-4px) scale(1.03); box-shadow: 0 26px 40px -14px rgba(0,0,0,0.9); }
     .fr.on img { filter: none; }
     .fr.on .cone { opacity: 1; }
     .fr.on .tag { color: var(--ink); }
 
-    .wall-wrap { position: relative; }
+    /* 説明板 ── 壁の下に置き、題名は 2 行まで・会場は 1 行で省略 */
     .plate {
-      position: absolute; left: 4%; right: 4%; bottom: 4%; z-index: 3;
-      display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center;
-      padding: 12px 16px; background: rgba(236,230,220,0.94); color: var(--wall-0); border-radius: 2px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 16px; align-items: center;
+      margin-top: 14px; padding: 14px 18px; min-height: 84px;
+      background: rgba(236,230,220,0.94); color: var(--wall-0); border-radius: 2px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
-    .plate .yr { font-family: var(--en); font-size: 1.7rem; line-height: 1; font-variant-numeric: lining-nums; }
-    .plate .tt { font-size: 0.9rem; font-weight: 500; letter-spacing: 0.08em; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .plate .vn { display: block; font-size: 0.7rem; letter-spacing: 0.06em; color: rgba(18,17,16,0.62); font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .plate .go { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.14em; padding: 6px 12px; border: 1px solid rgba(18,17,16,0.4); border-radius: 999px; white-space: nowrap; transition: background 0.3s, color 0.3s; }
+    .plate .yr { font-family: var(--en); font-size: 1.8rem; line-height: 1; font-variant-numeric: lining-nums; padding-right: 16px; border-right: 1px solid rgba(18,17,16,0.18); }
+    .plate .txt { min-width: 0; }
+    .plate .tt { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; font-size: 0.92rem; font-weight: 500; letter-spacing: 0.06em; line-height: 1.5; }
+    .plate .tt small { display: block; font-size: 0.78em; font-weight: 400; letter-spacing: 0.04em; color: rgba(18,17,16,0.7); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .plate .tt .now { color: #c8402a; margin-right: 0.5em; }
+    .plate .vn { display: block; margin-top: 2px; font-size: 0.7rem; letter-spacing: 0.04em; color: rgba(18,17,16,0.62); font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .plate .go { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.14em; padding: 7px 14px; border: 1px solid rgba(18,17,16,0.4); border-radius: 999px; white-space: nowrap; transition: background 0.3s, color 0.3s; }
     .plate .go:hover { background: var(--wall-0); color: var(--ink); }
     .plate.swap > * { animation: plateIn 0.5s var(--ease-expo); }
     @keyframes plateIn { from { opacity: 0; transform: translateY(6px); } }
@@ -230,13 +237,12 @@
     @media (max-width: 900px) {
       .hero { min-height: 0; }
       .hero-grid { grid-template-columns: 1fr; }
-      .plate { grid-template-columns: minmax(0, 1fr) auto; }
-      .plate .yr { display: none; }
+      .hero-copy { container-type: normal; }
+      .hero-title { font-size: clamp(3rem, 15vw, 6.4rem); }
     }
     @media (max-width: 600px) {
-      .wall { aspect-ratio: 1 / 0.8; }
-      .fr .tag { display: none; }
-      .plate { position: relative; left: auto; right: auto; bottom: auto; margin-top: 10px; }
+      .plate { grid-template-columns: minmax(0, 1fr) auto; padding: 12px 14px; }
+      .plate .yr { display: none; }
     }
 
     /* ════════════════════════════════════════
@@ -379,6 +385,7 @@
       <li><a href="../index.html#news">News<span>お知らせ</span></a></li>
       <li><a href="../pp/proposals.html">PP<span>企画提案</span></a></li>
       <li><a href="ex.html" aria-current="page">EX<span>展示記録</span></a></li>
+      <li><a href="../game/g.html">G<span>ゲーム</span></a></li>
       <li><a href="../contact.html">Contact<span>お問い合わせ</span></a></li>
     </ul>
   </div>
@@ -387,7 +394,7 @@
   <header class="hero" id="top">
     <div class="container" style="width:100%">
       <div class="hero-grid">
-        <div>
+        <div class="hero-copy">
           <p class="hero-eyebrow fade">EX — Exhibitions / 2022 – 2026</p>
           <h1 class="hero-title fade d1" aria-label="Exhibition Archive">
             <span>Exhibition</span>
@@ -404,13 +411,11 @@
         </div>
 
         <div class="fade d2">
-          <div class="wall-wrap">
-            <div class="wall" id="wall" role="group" aria-label="展示室の壁。各展示の会場写真">
-              <div class="wall-rail" aria-hidden="true"></div>
-            </div>
-            <div class="plate" id="plate" aria-live="polite"></div>
+          <div class="wall" id="wall" role="group" aria-label="展示室の壁。各展示の会場写真">
+            <div class="wall-rail" aria-hidden="true"></div>
           </div>
-          <p class="wall-hint"><span>HOVER — 照らす ／ CLICK — ひらく</span><span id="wallCount">01 / 06</span></p>
+          <div class="plate" id="plate" aria-live="polite"></div>
+          <p class="wall-hint"><span>HOVER — 照らす ／ CLICK — ひらく</span><span id="wallCount">01 / 05</span></p>
         </div>
       </div>
     </div>
@@ -565,25 +570,26 @@
     });
 
     /* ---------- salon wall ---------- */
-    var HANG = [
-      { id: 'koumi',   l: 5,  t: 8,  w: 30, r: -1.5 },
-      { id: 'kakuchi', l: 41, t: 8,  w: 46, r: 1 },
-      { id: 'bunka',   l: 41, t: 47, w: 28, r: -1 },
-      { id: 'nN',      l: 73, t: 47, w: 22, r: 1.5 },
-      { id: 'ina',     l: 5,  t: 51, w: 30, r: 1 }
-    ];
+    /* 壁の 2 段。上段＝開催中と最初の個展、下段＝そのほか。読む順に照らしていく */
+    var ROWS = [['koumi', 'kakuchi'], ['ina', 'bunka', 'nN']];
+    var TILT = [-1.2, 1, 0.8, -1, 1.2];
     var wall = document.getElementById('wall'), plate = document.getElementById('plate'), countEl = document.getElementById('wallCount');
     var frames = [], byId = {};
     EX.forEach(function (e) { byId[e.id] = e; });
-    HANG.forEach(function (hg, i) {
-      var e = byId[hg.id], d = document.createElement('div');
+    var order = [];
+    ROWS.forEach(function (ids) {
+      var row = document.createElement('div'); row.className = 'wall-row'; wall.appendChild(row);
+      ids.forEach(function (id) { order.push({ id: id, row: row }); });
+    });
+    order.forEach(function (o, i) {
+      var e = byId[o.id], d = document.createElement('div');
       d.className = 'fr';
-      d.style.cssText = '--l:' + hg.l + '%;--t:' + hg.t + '%;--w:' + hg.w + '%;--r:' + hg.r + 'deg;--dl:' + (0.25 + i * 0.09) + 's';
+      d.style.cssText = '--ar:' + (e.w / e.h).toFixed(3) + ';--r:' + TILT[i] + 'deg;--dl:' + (0.25 + i * 0.09) + 's';
       d.innerHTML = '<span class="cone" aria-hidden="true"></span><a href="' + e.href + '" aria-label="' + e.title + '（' + e.year + '）の記録をひらく">'
         + (e.live ? '<span class="live-dot" aria-hidden="true"></span>' : '')
         + '<img src="' + IMG + e.img + '" alt="' + e.alt + '" width="' + e.w + '" height="' + e.h + '"></a>'
-        + '<span class="tag" aria-hidden="true"><b>' + e.year + '</b>' + e.title + '</span>';
-      wall.appendChild(d);
+        + '<span class="tag" aria-hidden="true" title="' + e.title + '"><b>' + e.year + '</b>' + e.title + '</span>';
+      o.row.appendChild(d);
       frames.push({ el: d, e: e });
       d.addEventListener('mouseenter', function () { pause = true; light(i); });
       d.addEventListener('focusin', function () { pause = true; light(i); });
@@ -594,7 +600,7 @@
       if (i === cur) return; cur = i;
       frames.forEach(function (f, k) { f.el.classList.toggle('on', k === i); });
       var e = frames[i].e;
-      plate.innerHTML = '<span class="yr">' + e.year + '</span><span><span class="tt">' + (e.live ? '● 開催中　' : '') + e.title + (e.sub ? '　' + e.sub : '') + '</span><span class="vn">' + e.venue + '</span></span><a class="go" href="' + e.href + '">OPEN →</a>';
+      plate.innerHTML = '<span class="yr">' + e.year + '</span><span class="txt"><span class="tt">' + (e.live ? '<span class="now">● 開催中</span>' : '') + e.title + (e.sub ? '<small>' + e.sub + '</small>' : '') + '</span><span class="vn">' + e.venue + '</span></span><a class="go" href="' + e.href + '">OPEN →</a>';
       plate.classList.remove('swap'); void plate.offsetWidth; plate.classList.add('swap');
       countEl.textContent = ('0' + (i + 1)).slice(-2) + ' / ' + ('0' + frames.length).slice(-2);
       var r = frames[i].el.getBoundingClientRect(), wr = wall.getBoundingClientRect();
