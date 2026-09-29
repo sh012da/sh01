@@ -863,12 +863,11 @@
     .shard[data-shard="0"] { left: 72%; top: 43%; }
     .shard[data-shard="1"] { left: 50%; top: 68%; }
     .shard[data-shard="2"] { right: 4%; left: auto; top: 30px; margin-right: -17px; }
-    .shard[data-shard="5"] { left: 50%; top: 14%; }
+    .shard[data-shard="5"] { left: 0; top: 14%; }
     .shard[data-shard="7"] { left: 46%; top: 55%; }
     @media (max-width: 768px) {
       .shard { width: 38px; height: 38px; margin: -19px 0 0 -19px; }
       .shard[data-shard="0"] { left: 80%; top: 36%; }
-      .shard[data-shard="5"] { top: 50%; left: 84%; }
     }
     .fly { position: fixed; z-index: 9600; width: 34px; height: 34px; pointer-events: none; filter: drop-shadow(0 0 10px rgba(240,179,157,0.9)); }
     .fly svg { width: 100%; height: 100%; }
@@ -946,6 +945,37 @@
     @media (max-width: 768px) {
       body:not(.past-hero) .hud { opacity: 0; pointer-events: none; }
       .hero-quest { margin-top: 1.2rem; padding: 8px 16px 8px 12px; font-size: 0.76rem; letter-spacing: 0.06em; }
+    }
+
+    /* ---- 稜線スライダー（復活） ---- */
+    .rs-stage { position: relative; margin-top: clamp(30px, 4vw, 48px); aspect-ratio: 16 / 9.6; max-height: 78vh; width: 100%; overflow: hidden; border-radius: 4px; background: #000; cursor: ew-resize; touch-action: pan-y; user-select: none; -webkit-user-select: none; box-shadow: 0 40px 70px -40px rgba(0,0,0,0.9); --p: 50; outline-offset: 6px; }
+    .rs-img { position: absolute; inset: -2% -3%; width: 106%; height: 104%; max-width: none; object-fit: cover; pointer-events: none; will-change: transform; }
+    .rs-clip { position: absolute; inset: 0; }
+    .rs-line { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+    .rs-line polyline { fill: none; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+    .rs-line .glow { stroke: rgba(240,179,157,0.45); stroke-width: 12; filter: blur(5px); }
+    .rs-line .line { stroke: #fff; stroke-width: 2; }
+    .rs-handle { position: absolute; top: 0; bottom: 0; left: calc(var(--p) * 1%); width: 0; pointer-events: none; }
+    .rs-handle .knob { position: absolute; left: 0; top: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 40px; background: rgba(30,33,40,0.88); color: #fff; border: 1px solid rgba(255,255,255,0.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); font-size: 0.72rem; letter-spacing: 0.14em; white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,0.4); transition: transform 0.4s var(--ease); }
+    .rs-handle .knob i { font-style: normal; font-size: 0.6rem; opacity: 0.85; animation: rsNudge 1.8s ease-in-out infinite; }
+    .rs-handle .knob i:last-child { animation-name: rsNudgeR; }
+    @keyframes rsNudge { 50% { transform: translateX(-4px); } }
+    @keyframes rsNudgeR { 50% { transform: translateX(4px); } }
+    .rs-stage.drag .knob { transform: translate(-50%, -50%) scale(1.12); }
+    .rs-stage:focus-visible { outline: 2px solid #f0b39d; }
+    .rs-tag { position: absolute; bottom: 16px; max-width: 46%; font-size: 0.74rem; letter-spacing: 0.08em; color: #fff; line-height: 1.7; padding: 8px 14px; background: rgba(20,22,26,0.66); border-left: 3px solid var(--c); pointer-events: none; transition: opacity 0.4s; }
+    .rs-tag b { display: block; font-weight: 500; font-size: 0.86rem; letter-spacing: 0.12em; }
+    .rs-tag em { font-family: var(--en); font-size: 0.9rem; opacity: 0.8; }
+    .rs-tag.l { left: 16px; --c: var(--koumi); } .rs-tag.r { right: 16px; --c: #6f8fae; text-align: right; border-left: 0; border-right: 3px solid var(--c); }
+    .rs-full { justify-content: center; margin-top: 10px; }
+    .rs-full button { width: min(200px, 44%); background: rgba(255,255,255,0.05); border-color: rgba(236,229,219,0.25); }
+    .rs-full span { color: var(--on-night-dim); }
+    .rs-stage .shard[data-shard="5"] { left: 0; top: 14%; pointer-events: auto; }
+    @media (max-width: 768px) {
+      .rs-stage { aspect-ratio: 4 / 5; max-height: 74vh; }
+      .rs-tag { bottom: 10px; max-width: 47%; font-size: 0.66rem; padding: 6px 9px; }
+      .rs-tag em { display: none; }
+      .rs-handle .knob { padding: 8px 10px; font-size: 0.64rem; }
     }
   </style>
 </head>
@@ -1247,20 +1277,21 @@
       <div class="container">
         <div class="sec-head reveal"><p class="sec-label" style="color:#eab29c"><span class="no">05</span>二つの風景</p><p class="sec-en">Two Landscapes, One Ridge</p></div>
         <h2 class="sec-title reveal">柱の稜線をはさんで、<br>二つの風土が向き合う。</h2>
-        <p class="body-txt reveal">柱の左前面に小海町の風景、奥側面に左美都の風景。実際の会場では柱の角——稜線——が両者を分けています。二枚の油彩を、それぞれ全体のまま並べました。</p>
+        <p class="body-txt reveal">柱の左前面に小海町の風景、奥側面に左美都の風景。実際の会場では柱の角——稜線——が両者を分けています。二枚の油彩を重ね、その境目を稜線として動かせるようにしました。</p>
 
-        <div class="duo-view reveal">
-          <figure style="--c: var(--koumi)">
-            <img class="zoomable" src="../../images/exhi-koumi2026/inari-river-stone.jpg" alt="稲荷神社と川の石の風景（油彩）全図" width="1920" height="1535" loading="lazy">
-            <figcaption><b>小海の風景</b><span>稲荷神社と川の石の風景</span><em>Koumi</em></figcaption>
-          </figure>
-          <div class="duo-ridge"><span aria-hidden="true">稜線</span></div>
-          <figure style="--c: #6f8fae">
-            <img class="zoomable" src="../../images/【M+P100縦】林(3)20251128.jpg" alt="林（3）（油彩）全図" width="1920" height="1447" loading="lazy">
-            <figcaption><b>左美都の風景</b><span>林（3）</span><em>Samizu</em></figcaption>
-          </figure>
+        <div class="rs-stage reveal" id="rsStage" tabindex="0" role="slider" aria-label="稜線を動かして二つの風景を切り替える" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+          <img class="rs-img rs-a" src="../../images/exhi-koumi2026/inari-river-stone.jpg" alt="稲荷神社と川の石の風景（油彩）" width="1920" height="1535" loading="lazy" draggable="false">
+          <div class="rs-clip" id="rsClip"><img class="rs-img rs-b" src="../../images/【M+P100縦】林(3)20251128.jpg" alt="林（3）（油彩）" width="1920" height="1447" loading="lazy" draggable="false"></div>
+          <svg class="rs-line" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline id="rsGlow" class="glow"/><polyline id="rsLine" class="line"/></svg>
+          <div class="rs-handle" id="rsHandle"><span class="knob" aria-hidden="true"><i>◀</i><b>稜線</b><i>▶</i></span></div>
+          <p class="rs-tag l"><b>小海の風景</b>稲荷神社と川の石　<em>Koumi</em></p>
+          <p class="rs-tag r"><b>左美都の風景</b>林（3）　<em>Samizu</em></p>
         </div>
-        <p class="duo-hint"><span class="pc-only">作品にカーソルを重ねると、その一枚が手前に大きく出てきます。</span>クリック（タップ）で全体を拡大表示。</p>
+        <p class="duo-hint"><span class="pc-only">稜線をドラッグ、または矢印キーで動かしてみてください。</span><span class="sp-only">稜線を左右になぞってみてください。</span>動かした分だけ、二つの風土が入れ替わります。</p>
+        <div class="panel-thumbs rs-full">
+          <button data-lb="../../images/exhi-koumi2026/inari-river-stone.jpg"><img src="../../images/exhi-koumi2026/inari-river-stone.jpg" alt="稲荷神社と川の石の風景（油彩）全図" loading="lazy"><span>小海の風景 ― 全図を見る</span></button>
+          <button data-lb="../../images/【M+P100縦】林(3)20251128.jpg"><img src="../../images/【M+P100縦】林(3)20251128.jpg" alt="林（3）（油彩）全図" loading="lazy"><span>左美都の風景 ― 全図を見る</span></button>
+        </div>
 
         <div class="works-duo">
           <article class="work-card reveal" style="--c: var(--koumi); --c2: #eab29c;">
@@ -1919,13 +1950,13 @@
     }
     DEF.forEach(function (d, i) { d.id = i; });
 
-    var MOUNTS = { 0: '.hero', 1: '#ridgeFrame', 2: '.stack-col', 5: '.duo-ridge', 7: '#zoomFrame' };
+    var MOUNTS = { 0: '.hero', 1: '#ridgeFrame', 2: '.stack-col', 5: '.rs-handle', 7: '#zoomFrame' };
     var LATE = { 1: 1, 2: 1, 7: 1 };
     Object.keys(MOUNTS).forEach(function (k) {
       var id = +k, host = $(MOUNTS[k]); if (!host || has(id)) return;
       var b = document.createElement('button');
       b.className = 'shard' + (LATE[id] ? ' pending' : ''); b.dataset.shard = id; b.setAttribute('aria-label', '地層のかけらを拾う'); b.innerHTML = SHARD_SVG;
-      b.addEventListener('click', function (e) { e.stopPropagation(); collect(id); });
+      b.addEventListener('pointerdown', function (e) { e.stopPropagation(); }); b.addEventListener('click', function (e) { e.stopPropagation(); collect(id); });
       host.appendChild(b); shardEls[id] = b;
     });
     function reveal(id) { if (shardEls[id]) shardEls[id].classList.remove('pending'); }
@@ -2204,6 +2235,45 @@
     if (store.done && store.shards.length >= TOTAL) { $('#hudBtn').title = 'クリックでかけらの一覧。全部集めました！'; }
 
     renderPanel();
+  })();
+  </script>
+  <script>
+  /* ---------- 稜線スライダー ---------- */
+  (function () {
+    var st = document.getElementById('rsStage'); if (!st) return;
+    var clip = document.getElementById('rsClip'), line = document.getElementById('rsLine'), glow = document.getElementById('rsGlow');
+    var imgA = st.querySelector('.rs-a'), imgB = st.querySelector('.rs-b');
+    var tagL = st.querySelector('.rs-tag.l'), tagR = st.querySelector('.rs-tag.r');
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var J = [0, -2.6, 1.8, -1.6, 2.9, -2.2, 1.4, -2.8, 2.2, -1.2, 2.6, -1.9, 0.6];
+    var p = 50, target = 50, touched = false, dragging = false, raf = 0;
+    function clampv(v) { return Math.max(4, Math.min(96, v)); }
+    function render() {
+      var pts = J.map(function (j, i) { return (p + j).toFixed(2) + ',' + (i / (J.length - 1) * 100).toFixed(2); });
+      var poly = pts.join(' ') + ' 100,100 100,0';
+      clip.style.clipPath = 'polygon(' + pts.map(function (q) { return q.split(',')[0] + '% ' + q.split(',')[1] + '%'; }).join(',') + ',100% 100%,100% 0%)';
+      line.setAttribute('points', pts.join(' ')); glow.setAttribute('points', pts.join(' '));
+      st.style.setProperty('--p', p.toFixed(2)); st.setAttribute('aria-valuenow', Math.round(p));
+      var d = (p - 50) / 50;
+      imgA.style.transform = 'translate3d(' + (d * -1.6).toFixed(2) + '%,0,0) scale(' + (1.02 + Math.max(0, p - 50) / 900).toFixed(3) + ')';
+      imgB.style.transform = 'translate3d(' + (d * 1.6).toFixed(2) + '%,0,0) scale(' + (1.02 + Math.max(0, 50 - p) / 900).toFixed(3) + ')';
+      tagL.style.opacity = p > 30 ? 1 : 0; tagR.style.opacity = p < 70 ? 1 : 0;
+    }
+    function loop() { p += (target - p) * 0.18; render(); if (Math.abs(target - p) > 0.05) raf = requestAnimationFrame(loop); else { p = target; render(); raf = 0; } }
+    function go(v) { target = clampv(v); if (!raf) raf = requestAnimationFrame(loop); }
+    function fromEvent(e) { var r = st.getBoundingClientRect(); go((e.clientX - r.left) / r.width * 100); }
+    st.addEventListener('pointerdown', function (e) { touched = true; dragging = true; st.classList.add('drag'); try { st.setPointerCapture(e.pointerId); } catch (x) {} fromEvent(e); });
+    st.addEventListener('pointermove', function (e) { if (dragging || (e.pointerType === 'mouse' && e.buttons === 0 && !reduce && st.matches(':hover'))) { if (!dragging) touched = true; fromEvent(e); } });
+    st.addEventListener('pointerup', function () { dragging = false; st.classList.remove('drag'); });
+    st.addEventListener('pointercancel', function () { dragging = false; st.classList.remove('drag'); });
+    st.addEventListener('keydown', function (e) { var k = e.key; if (k === 'ArrowLeft' || k === 'ArrowDown') { touched = true; go(target - 6); e.preventDefault(); } else if (k === 'ArrowRight' || k === 'ArrowUp') { touched = true; go(target + 6); e.preventDefault(); } else if (k === 'Home') { go(4); } else if (k === 'End') { go(96); } });
+    render();
+    /* 初回：勝手に稜線が動いて誘う */
+    new IntersectionObserver(function (en, ob) {
+      if (!en[0].isIntersecting) return; ob.disconnect(); if (reduce) return;
+      var t0 = performance.now();
+      (function demo(now) { if (touched) return; var t = (now - t0) / 3600; if (t >= 1) { go(50); return; } target = clampv(50 + Math.sin(t * Math.PI * 2) * 32 * (1 - t * 0.3)); if (!raf) raf = requestAnimationFrame(loop); requestAnimationFrame(demo); })(t0);
+    }, { threshold: 0.5 }).observe(st);
   })();
   </script>
 </body>
