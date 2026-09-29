@@ -160,102 +160,153 @@
     @media (max-height: 760px) { .menu-overlay a { padding-top: 0.95rem; padding-bottom: 0.95rem; font-size: 1.4rem; } }
 
     /* ════════════════════════════════════════
-        HERO — 夜の展示室。スポットライトで一枚ずつ照らす
+        HERO — 闇の展示室を、光で歩く
+        画面いっぱいの会場写真を暗闇で覆い、ポインタ（指）の位置だけを照らす。
+        明かりが通った場所だけ、巨大な EXHIBITION の文字も点灯する。
     ════════════════════════════════════════ */
-    .hero { position: relative; min-height: 100vh; min-height: 100svh; padding: clamp(110px, 16vh, 150px) 0 clamp(56px, 8vh, 90px); display: flex; align-items: center; }
-    .hero-grid { display: grid; grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: clamp(32px, 5vw, 80px); align-items: center; width: 100%; }
-    .hero-copy { container-type: inline-size; min-width: 0; }
-    .fade { opacity: 0; transform: translateY(14px); animation: fadeUp 0.9s var(--ease-expo) forwards; }
-    @keyframes fadeUp { to { opacity: 1; transform: none; } }
-    .d1 { animation-delay: 0.08s; } .d2 { animation-delay: 0.16s; } .d3 { animation-delay: 0.26s; } .d4 { animation-delay: 0.36s; } .d5 { animation-delay: 0.46s; }
-    .hero-eyebrow { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--amber); display: flex; align-items: center; gap: 12px; }
-    .hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: currentColor; }
-    .hero-title { font-family: var(--en); font-weight: 300; line-height: 0.95; letter-spacing: -0.01em; margin: 22px 0 26px; font-size: clamp(3rem, 22cqi, 7.6rem); white-space: nowrap; }
-    .hero-title span { display: block; }
-    .hero-title .outline { font-style: italic; color: transparent; -webkit-text-stroke: 1px var(--ink); padding-left: 0.5em; }
-    .hero-title .outline em { font-style: italic; color: var(--amber); -webkit-text-stroke: 0; }
-    .hero-lead { font-size: clamp(1.02rem, 1.8vw, 1.3rem); letter-spacing: 0.14em; line-height: 1.8; }
-    .hero-lead b { font-weight: 400; color: var(--amber); }
-    .hero-text { color: var(--ink-2); margin-top: 18px; max-width: 30em; font-size: 0.95rem; }
-    .stats { display: flex; gap: clamp(22px, 4vw, 48px); margin-top: 34px; padding-top: 22px; border-top: 1px solid var(--line-2); }
-    .stats small { display: block; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.16em; color: var(--ink-3); text-transform: uppercase; }
-    .stats b { display: flex; align-items: center; gap: 10px; font-family: var(--en); font-weight: 300; font-size: clamp(2.2rem, 4vw, 3rem); line-height: 1.1; font-variant-numeric: lining-nums; }
-    .hero-cta { display: inline-flex; align-items: center; gap: 14px; margin-top: 30px; padding: 0.9rem 1.8rem; border: 1px solid var(--line-3); border-radius: 999px; font-size: 0.9rem; letter-spacing: 0.14em; transition: background 0.4s, color 0.4s, border-color 0.4s; }
-    .hero-cta:hover { background: var(--amber); color: var(--wall-0); border-color: var(--amber); }
-    .hero-cta span { transition: transform 0.4s var(--ease-expo); }
-    .hero-cta:hover span { transform: translateY(3px); }
-    .hero-acts { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 30px; }
-    .hero-acts .hero-cta { margin-top: 0; }
-    .dice { display: inline-flex; align-items: center; gap: 12px; padding: 0.9rem 1.5rem; border-radius: 999px; font-size: 0.9rem; letter-spacing: 0.14em; color: var(--amber); border: 1px dashed rgba(242,194,139,0.5); transition: background 0.4s, color 0.4s, border-color 0.4s; }
+    .hx {
+      --lx: 62%; --ly: 42%; --lr: 300px; --bar: 150px;
+      position: relative; height: 100vh; height: 100svh; min-height: 640px; overflow: hidden;
+      background: #0b0a09; isolation: isolate;
+    }
+    .hx-slides { position: absolute; inset: 0; z-index: 0; }
+    .hx-slide { position: absolute; inset: 0; visibility: hidden; overflow: hidden; }
+    .hx-slide img { width: 100%; height: 100%; object-fit: cover; object-position: var(--pos, 50% 50%); filter: saturate(0.92) contrast(1.05); transform: scale(1.06); }
+    .hx-slide.was { visibility: visible; z-index: 1; }
+    .hx-slide.on { visibility: visible; z-index: 2; animation: hxWipe 1.3s var(--ease-expo) both; }
+    .hx-slide.on img { animation: hxKen 11s linear both; }
+    @keyframes hxWipe { from { clip-path: inset(0 0 0 100%); } to { clip-path: inset(0 0 0 0); } }
+    @keyframes hxKen { from { transform: scale(1.16) translate3d(1.6%, 0, 0); } to { transform: scale(1.03) translate3d(0, 0, 0); } }
+    /* 暗闇。光の輪の中だけが透ける */
+    .hx-dark {
+      position: absolute; inset: 0; z-index: 3; pointer-events: none;
+      background:
+        radial-gradient(circle var(--lr) at var(--lx) var(--ly), rgba(11,10,9,0) 0%, rgba(11,10,9,0.28) 42%, rgba(11,10,9,0.9) 100%),
+        linear-gradient(180deg, rgba(11,10,9,0.55) 0%, transparent 22%, transparent 58%, rgba(11,10,9,0.92) 100%);
+    }
+    .hx-dark::after {
+      content: ''; position: absolute; inset: 0; mix-blend-mode: screen;
+      background: radial-gradient(circle calc(var(--lr) * 0.9) at var(--lx) var(--ly), rgba(255,214,160,0.16), transparent 70%);
+    }
+    /* 巨大な文字：輪郭だけの層と、光の中だけ見える塗りの層を重ねる */
+    .hx-type {
+      position: absolute; inset: 0; z-index: 4; pointer-events: none;
+      display: flex; align-items: flex-end; justify-content: center; padding-bottom: calc(var(--bar) + clamp(4px, 2vh, 24px));
+    }
+    .hx-word { display: flex; font-family: var(--en); font-weight: 300; font-size: min(15.2vw, 30vh); line-height: 0.78; letter-spacing: -0.015em; white-space: nowrap; overflow: hidden; padding: 0.04em 0.02em 0; }
+    .hx-word span { display: inline-block; transform: translateY(110%); animation: hxRise 1.3s var(--ease-expo) forwards; animation-delay: calc(0.25s + var(--i) * 0.06s); }
+    @keyframes hxRise { to { transform: none; } }
+    .hx-type.out .hx-word { color: transparent; -webkit-text-stroke: 1px rgba(236,230,220,0.26); }
+    .hx-type.lit {
+      -webkit-mask-image: radial-gradient(circle var(--lr) at var(--lx) var(--ly), #000 18%, transparent 72%);
+      mask-image: radial-gradient(circle var(--lr) at var(--lx) var(--ly), #000 18%, transparent 72%);
+    }
+    .hx-type.lit .hx-word { color: #f8eddc; text-shadow: 0 0 60px rgba(242,194,139,0.45); }
+    .hx-type.lit .hx-word .am { color: var(--amber); }
+
+    /* 光の輪に付くカーソル（マウスのときだけ） */
+    .hx-cur { position: absolute; left: 0; top: 0; z-index: 6; pointer-events: none; width: 76px; height: 76px; margin: -38px 0 0 -38px; border: 1px solid rgba(242,194,139,0.7); border-radius: 50%; display: grid; place-items: center; opacity: 0; transform: translate3d(var(--cx, -200px), var(--cy, -200px), 0) scale(0.6); transition: opacity 0.35s, transform 0.35s var(--ease-expo); }
+    .hx-cur { background: rgba(11,10,9,0.25); }
+    .hx-cur span { font-family: var(--mono-jp); font-size: 0.6rem; letter-spacing: 0.16em; color: var(--amber); white-space: nowrap; }
+    .hx.aim .hx-cur { opacity: 1; transform: translate3d(var(--cx), var(--cy), 0) scale(1); transition: opacity 0.35s, transform 0.12s linear; }
+    .hx.aim { cursor: none; }
+    .hx.aim .hx-ui a, .hx.aim .hx-ui button { cursor: pointer; }
+
+    /* 文字や操作の層 */
+    .hx-ui {
+      position: relative; z-index: 5; height: 100%; pointer-events: none;
+      display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 400px); grid-template-rows: auto 1fr auto;
+      grid-template-areas: "intro info" ". ." "bar bar";
+      column-gap: 40px; padding: clamp(104px, 15vh, 140px) var(--px) 0;
+    }
+    .hx-ui a, .hx-ui button { pointer-events: auto; }
+    .hx-intro { grid-area: intro; max-width: 30em; }
+    .hx-eyebrow { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--amber); display: flex; align-items: center; gap: 12px; }
+    .hx-eyebrow::before { content: ''; width: 28px; height: 1px; background: currentColor; }
+    .hx-h1 { margin-top: 18px; font-weight: 300; font-size: clamp(1.25rem, 2.3vw, 1.75rem); letter-spacing: 0.16em; line-height: 1.7; }
+    .hx-h1 b { font-weight: 400; color: var(--amber); }
+    .hx-hint { display: inline-flex; align-items: center; gap: 10px; margin-top: 16px; font-family: var(--mono-jp); font-size: 0.64rem; letter-spacing: 0.14em; color: var(--ink-2); }
+    .hx-hint i { width: 9px; height: 9px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 0 rgba(242,194,139,0.6); animation: hxPing 2s ease-out infinite; }
+    @keyframes hxPing { 70% { box-shadow: 0 0 0 10px rgba(242,194,139,0); } 100% { box-shadow: 0 0 0 0 rgba(242,194,139,0); } }
+    .hx-intro .stats { display: flex; gap: clamp(20px, 3vw, 36px); margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--line-2); }
+    .hx-intro .stats small { display: block; font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.16em; color: var(--ink-3); text-transform: uppercase; }
+    .hx-intro .stats b { display: flex; align-items: center; gap: 8px; font-family: var(--en); font-weight: 300; font-size: clamp(1.7rem, 2.6vw, 2.2rem); line-height: 1.1; font-variant-numeric: lining-nums; }
+    .stats .num { display: inline-block; min-width: 1.1em; }
+    .dice { display: inline-flex; align-items: center; gap: 10px; margin-top: 22px; padding: 0.7rem 1.3rem; border-radius: 999px; font-size: 0.84rem; letter-spacing: 0.14em; color: var(--amber); border: 1px dashed rgba(242,194,139,0.5); background: rgba(11,10,9,0.4); transition: background 0.4s, color 0.4s, border-color 0.4s; }
     .dice:hover { background: var(--amber-soft); border-style: solid; }
     .dice i { font-style: normal; display: inline-block; transition: transform 0.6s var(--ease-expo); }
     .dice:hover i { transform: rotate(180deg); }
     .dice.roll i { animation: roll 0.6s var(--ease-expo); }
     @keyframes roll { to { transform: rotate(540deg); } }
-    .stats .num { display: inline-block; min-width: 1.1em; }
 
-    /* サロン展示の壁 ── 額は 2 段に並べ、各段の高さをそろえる（位置を固定しないので重ならない） */
-    .wall {
-      position: relative; width: 100%; padding: clamp(30px, 3.4vw, 46px) clamp(18px, 2.6vw, 34px) clamp(46px, 5vw, 64px);
-      background:
-        radial-gradient(circle 340px at var(--sx, 50%) var(--sy, 40%), rgba(242,194,139,0.13), transparent 70%),
-        linear-gradient(180deg, #1d1a17, #151311);
-      border-radius: 4px; overflow: hidden; box-shadow: inset 0 0 120px rgba(0,0,0,0.6);
-    }
-    .wall::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: clamp(22px, 2.6vw, 34px); background: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 38px), linear-gradient(180deg, #0f0e0d, #14120f); border-top: 1px solid rgba(255,255,255,0.05); pointer-events: none; }
-    .wall-rail { position: absolute; left: 0; right: 0; top: 12px; height: 3px; background: linear-gradient(90deg, #2b2724, #3a3531, #2b2724); z-index: 1; }
-    .wall-row { position: relative; z-index: 2; display: flex; align-items: flex-start; gap: clamp(14px, 2.4vw, 28px); }
-    .wall-row + .wall-row { margin-top: clamp(18px, 2.4vw, 30px); }
-    .fr {
-      /* 額縁の余白（--fp）を基準幅にし、残りを写真の縦横比で配分 → 同じ段の写真は必ず同じ高さになる */
-      --fp: clamp(4px, 0.55vw, 8px);
-      position: relative; flex: var(--ar) 1 calc(var(--fp) * 2); min-width: 0;
-      opacity: 0; transform: translateY(-18px) rotate(var(--r, 0deg));
-      animation: hang 0.9s var(--ease-expo) forwards; animation-delay: var(--dl);
-    }
-    @keyframes hang { to { opacity: 1; transform: translateY(0) rotate(0deg); } }
-    .fr a { display: block; position: relative; padding: var(--fp); background: #0c0b0a; box-shadow: 0 18px 30px -12px rgba(0,0,0,0.8); transition: transform 0.6s var(--ease-expo), box-shadow 0.6s; }
-    .fr img { width: 100%; height: auto; filter: brightness(0.5) saturate(0.7); transition: filter 0.6s ease; }
-    .fr .cone { position: absolute; left: 50%; bottom: 96%; width: 180%; height: 140%; transform: translateX(-50%); pointer-events: none;
-      background: radial-gradient(ellipse 50% 100% at 50% 100%, rgba(255,226,180,0.22), transparent 70%); opacity: 0; transition: opacity 0.6s; }
-    .fr .tag { display: block; margin-top: 8px; font-family: var(--mono-jp); font-size: 0.62rem; line-height: 1.55; letter-spacing: 0.06em; color: var(--ink-3); overflow-wrap: anywhere; transition: color 0.4s; }
-    .fr .tag b { display: block; font-family: var(--mono); font-weight: 500; color: var(--amber); letter-spacing: 0.14em; }
-    .fr .live-dot { position: absolute; right: 8px; top: 8px; z-index: 2; }
-    .fr.on a { transform: translateY(-4px) scale(1.03); box-shadow: 0 26px 40px -14px rgba(0,0,0,0.9); }
-    .fr.on img { filter: none; }
-    .fr.on .cone { opacity: 1; }
-    .fr.on .tag { color: var(--ink); }
+    /* いま照らしている展示 */
+    .hx-info { grid-area: info; justify-self: end; width: 100%; text-align: right; }
+    .hx-no { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.2em; color: var(--ink-3); display: flex; justify-content: flex-end; align-items: center; gap: 12px; }
+    .hx-no b { color: var(--ink); font-weight: 400; }
+    .hx-no .now { color: var(--live); display: inline-flex; align-items: center; gap: 6px; }
+    .hx-year { font-family: var(--en); font-weight: 300; font-size: clamp(4rem, 8vw, 7rem); line-height: 0.9; color: transparent; -webkit-text-stroke: 1px var(--amber); margin-top: 6px; font-variant-numeric: lining-nums; }
+    .hx-ttl { font-weight: 300; font-size: clamp(1.3rem, 2.2vw, 1.8rem); letter-spacing: 0.14em; line-height: 1.45; margin-top: 10px; }
+    .hx-ttl small { display: block; font-size: 0.5em; letter-spacing: 0.1em; color: var(--ink-2); margin-top: 4px; }
+    .hx-vn { font-size: 0.74rem; color: var(--ink-3); letter-spacing: 0.08em; margin-top: 8px; line-height: 1.6; }
+    .hx-btns { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .hx-peek, .hx-open { display: inline-flex; align-items: center; gap: 10px; padding: 0.75rem 1.3rem; border-radius: 999px; font-size: 0.84rem; letter-spacing: 0.12em; white-space: nowrap; transition: background 0.35s, color 0.35s, border-color 0.35s, transform 0.35s var(--ease-expo); }
+    .hx-peek { background: var(--amber); color: var(--wall-0); font-weight: 400; }
+    .hx-peek small { font-family: var(--mono); font-size: 0.64rem; opacity: 0.7; }
+    .hx-peek .eye { width: 16px; height: 10px; border: 1.5px solid currentColor; border-radius: 50% / 60%; position: relative; }
+    .hx-peek .eye::after { content: ''; position: absolute; left: 50%; top: 50%; width: 4px; height: 4px; margin: -2px 0 0 -2px; border-radius: 50%; background: currentColor; }
+    .hx-peek:hover { background: #ffd9a8; transform: translateY(-2px); }
+    .hx-open { border: 1px solid var(--line-3); background: rgba(11,10,9,0.45); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+    .hx-open:hover { background: var(--ink); color: var(--wall-0); border-color: var(--ink); }
+    .hx-open i { font-style: normal; transition: transform 0.35s var(--ease-expo); }
+    .hx-open:hover i { transform: translateX(4px); }
+    .hx-info.swap > * { animation: hxIn 0.8s var(--ease-expo) both; }
+    .hx-info.swap > :nth-child(2) { animation-delay: 0.05s; } .hx-info.swap > :nth-child(3) { animation-delay: 0.1s; }
+    .hx-info.swap > :nth-child(4) { animation-delay: 0.15s; } .hx-info.swap > :nth-child(5) { animation-delay: 0.2s; }
+    @keyframes hxIn { from { opacity: 0; transform: translateY(16px); filter: blur(6px); } }
 
-    /* 説明板 ── 壁の下に置き、題名は 2 行まで・会場は 1 行で省略 */
-    .plate {
-      display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 16px; align-items: center;
-      margin-top: 14px; padding: 14px 18px; min-height: 84px;
-      background: rgba(236,230,220,0.94); color: var(--wall-0); border-radius: 2px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-    .plate .yr { font-family: var(--en); font-size: 1.8rem; line-height: 1; font-variant-numeric: lining-nums; padding-right: 16px; border-right: 1px solid rgba(18,17,16,0.18); }
-    .plate .txt { min-width: 0; }
-    .plate .tt { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; font-size: 0.92rem; font-weight: 500; letter-spacing: 0.06em; line-height: 1.5; }
-    .plate .tt small { display: block; font-size: 0.78em; font-weight: 400; letter-spacing: 0.04em; color: rgba(18,17,16,0.7); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .plate .tt .now { color: #c8402a; margin-right: 0.5em; }
-    .plate .vn { display: block; margin-top: 2px; font-size: 0.7rem; letter-spacing: 0.04em; color: rgba(18,17,16,0.62); font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .plate .acts { display: flex; align-items: center; gap: 6px; }
-    .plate .pk { font-family: var(--mono-jp); font-size: 0.64rem; letter-spacing: 0.1em; padding: 7px 12px; border-radius: 999px; background: var(--wall-0); color: var(--amber); white-space: nowrap; transition: background 0.3s, color 0.3s; }
-    .plate .pk:hover { background: var(--amber); color: var(--wall-0); }
-    .plate .go { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.14em; padding: 7px 14px; border: 1px solid rgba(18,17,16,0.4); border-radius: 999px; white-space: nowrap; transition: background 0.3s, color 0.3s; }
-    .plate .go:hover { background: var(--wall-0); color: var(--ink); }
-    .plate.swap > * { animation: plateIn 0.5s var(--ease-expo); }
-    @keyframes plateIn { from { opacity: 0; transform: translateY(6px); } }
-    .wall-hint { margin-top: 12px; font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.12em; color: var(--ink-3); display: flex; justify-content: space-between; gap: 12px; }
+    /* 下の索引：5 つの展示。いま照らしているものは線が伸び、伸びきると次へ */
+    .hx-bar { grid-area: bar; margin: 0 calc(var(--px) * -1); }
+    .hx-idx { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0 clamp(10px, 1.6vw, 22px); padding: 0 var(--px); list-style: none; }
+    .hx-idx button { position: relative; display: block; width: 100%; text-align: left; padding: 14px 0 16px; color: var(--ink-3); transition: color 0.35s; }
+    .hx-idx button::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--line-2); }
+    .hx-idx .pg { position: absolute; left: 0; top: 0; height: 2px; width: 100%; background: var(--amber); transform: scaleX(0); transform-origin: left; }
+    .hx-idx button[aria-current="true"] { color: var(--ink); }
+    .hx-idx button[aria-current="true"] .pg { animation: hxFill var(--dur, 7s) linear forwards; }
+    .hx.paused .hx-idx .pg, .hx.lb-open .hx-idx .pg { animation-play-state: paused; }
+    @keyframes hxFill { to { transform: scaleX(1); } }
+    .hx-idx button:hover { color: var(--ink); }
+    .hx-idx .n { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em; display: flex; align-items: center; gap: 8px; }
+    .hx-idx .n .live-dot { width: 6px; height: 6px; }
+    .hx-idx .t { display: block; margin-top: 4px; font-size: 0.82rem; letter-spacing: 0.1em; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    /* 最下部を流れる帯：開催中の知らせ */
+    .hx-tick { display: block; overflow: hidden; border-top: 1px solid var(--line); background: rgba(11,10,9,0.72); color: var(--ink-2); font-family: var(--mono-jp); font-size: 0.66rem; letter-spacing: 0.16em; white-space: nowrap; transition: color 0.3s, background 0.3s; }
+    .hx-tick:hover { color: var(--wall-0); background: var(--amber); }
+    .hx-tick span { display: inline-flex; gap: 2.4em; padding: 9px 0; animation: hxTick 38s linear infinite; }
+    .hx-tick b { color: var(--live); font-weight: 400; }
+    .hx-tick:hover b { color: var(--wall-0); }
+    @keyframes hxTick { to { transform: translateX(-50%); } }
+
     @media (max-width: 900px) {
-      .hero { min-height: 0; }
-      .hero-grid { grid-template-columns: 1fr; }
-      .hero-copy { container-type: normal; }
-      .hero-title { font-size: clamp(3rem, 15vw, 6.4rem); }
+      .hx { --bar: 132px; min-height: 600px; }
+      .hx-ui { grid-template-columns: minmax(0, 1fr); grid-template-areas: "intro" "." "info" "bar"; grid-template-rows: auto 1fr auto auto; padding-top: 92px; }
+      .hx-intro .stats, .hx-hint { display: none; }
+      .hx-eyebrow { font-size: 0.6rem; letter-spacing: 0.14em; }
+      .hx-h1 { font-size: 1.02rem; margin-top: 12px; }
+      .hx-btns { flex-wrap: nowrap; margin-top: 14px; }
+      .hx-peek, .hx-open { padding: 0.65rem 1rem; font-size: 0.78rem; letter-spacing: 0.08em; }
+      .hx-ttl { font-size: 1.25rem; margin-top: 4px; }
+      .dice { margin-top: 14px; padding: 0.55rem 1rem; font-size: 0.78rem; }
+      .hx-info { text-align: left; margin-bottom: 18px; }
+      .hx-no, .hx-btns { justify-content: flex-start; }
+      .hx-year { font-size: 3.4rem; }
+      .hx-type { padding-bottom: calc(var(--bar) + 6px); }
+      .hx-word { font-size: 17.5vw; }
+      .hx-idx { display: flex; overflow-x: auto; scrollbar-width: none; gap: 14px; }
+      .hx-idx::-webkit-scrollbar { display: none; }
+      .hx-idx li { flex: 0 0 38%; }
+      .hx-idx button { padding: 10px 0 12px; }
     }
-    @media (max-width: 600px) {
-      .plate { grid-template-columns: minmax(0, 1fr) auto; padding: 12px 14px; }
-      .plate .yr { display: none; }
-    }
+    @media (max-width: 900px) and (max-height: 760px) { .hx-year { display: none; } .hx-vn { display: none; } }
 
     /* ════════════════════════════════════════
         SECTION HEADINGS
@@ -467,35 +518,31 @@
   </div>
 
   <!-- ══════════════ HERO ══════════════ -->
-  <header class="hero" id="top">
-    <div class="container" style="width:100%">
-      <div class="hero-grid">
-        <div class="hero-copy">
-          <p class="hero-eyebrow fade">EX — Exhibitions / 2022 – 2026</p>
-          <h1 class="hero-title fade d1" aria-label="Exhibition Archive">
-            <span>Exhibition</span>
-            <span class="outline">Archi<em>v</em>e</span>
-          </h1>
-          <p class="hero-lead fade d2">展示記録 ── 作品が、<b>ひとつの空間</b>に置かれた記録。</p>
-          <p class="hero-text fade d3">美術館の展示室、ギャラリー、ホールのロビー。作品がその場所の光や壁と出会った時間を、会場ごとに残しています。壁に掛かった一枚にふれると、その展示の記録がひらきます。</p>
-          <div class="stats fade d4">
-            <div><small>On View 開催中</small><b><span class="num" data-n="1">01</span> <span class="live-dot" aria-hidden="true"></span></b></div>
-            <div><small>Records 記録</small><b><span class="num" data-n="7">07</span></b></div>
-            <div><small>Venues 会場</small><b><span class="num" data-n="8">08</span></b></div>
-          </div>
-          <div class="hero-acts fade d5">
-            <a class="hero-cta" href="#archive">記録をひらく <span aria-hidden="true">↓</span></a>
-            <button class="dice" id="dice" type="button"><i aria-hidden="true">⟳</i>ランダムに一枚</button>
-          </div>
-        </div>
+  <header class="hx" id="top">
+    <div class="hx-slides" id="hxSlides" aria-hidden="true"></div>
+    <div class="hx-dark" aria-hidden="true"></div>
+    <div class="hx-type out" aria-hidden="true"><p class="hx-word" id="hxWord">EXHIBITION</p></div>
+    <div class="hx-type lit" aria-hidden="true"><p class="hx-word">EXHIBITION</p></div>
+    <div class="hx-cur" aria-hidden="true"><span>のぞく</span></div>
 
-        <div class="fade d2">
-          <div class="wall" id="wall" role="group" aria-label="展示室の壁。各展示の会場写真">
-            <div class="wall-rail" aria-hidden="true"></div>
-          </div>
-          <div class="plate" id="plate" aria-live="polite"></div>
-          <p class="wall-hint"><span>HOVER — 照らす ／ CLICK — ひらく</span><span id="wallCount">01 / 05</span></p>
+    <div class="hx-ui">
+      <div class="hx-intro fade">
+        <p class="hx-eyebrow">EX — Exhibition Archive / 2022 – 2026</p>
+        <h1 class="hx-h1">照明の落ちた展示室。<br><b>光を向けた場所</b>から、<br>展示の記録が浮かびあがる。</h1>
+        <p class="hx-hint"><i aria-hidden="true"></i>MOVE — 照らす ／ CLICK — 会場をのぞく</p>
+        <div class="stats">
+          <div><small>On View 開催中</small><b><span class="num" data-n="1">01</span> <span class="live-dot" aria-hidden="true"></span></b></div>
+          <div><small>Records 記録</small><b><span class="num" data-n="7">07</span></b></div>
+          <div><small>Venues 会場</small><b><span class="num" data-n="8">08</span></b></div>
         </div>
+        <button class="dice" id="dice" type="button"><i aria-hidden="true">⟳</i>ランダムに一枚</button>
+      </div>
+
+      <div class="hx-info" id="hxInfo" aria-live="polite"></div>
+
+      <div class="hx-bar fade d3">
+        <ul class="hx-idx" id="hxIdx" aria-label="展示を選ぶ"></ul>
+        <a class="hx-tick" href="#now" aria-label="開催中の展示へ"><span aria-hidden="true" id="hxTick"></span></a>
       </div>
     </div>
   </header>
@@ -705,53 +752,117 @@
       });
     });
 
-    /* ---------- salon wall ---------- */
-    /* 壁の 2 段。上段＝開催中と最初の個展、下段＝そのほか。読む順に照らしていく */
-    var ROWS = [['koumi', 'kakuchi'], ['ina', 'bunka', 'nN']];
-    var TILT = [-1.2, 1, 0.8, -1, 1.2];
-    var wall = document.getElementById('wall'), plate = document.getElementById('plate'), countEl = document.getElementById('wallCount');
-    var frames = [], byId = {};
+    /* ---------- hero：闇の展示室を、光で歩く ---------- */
+    var HX = [
+      { id: 'koumi', src: '../images/exhi-koumi2026/hall-3.jpg', pos: '50% 62%' },
+      { id: 'nN' }, { id: 'bunka' }, { id: 'ina' }, { id: 'kakuchi' }
+    ];
+    var byId = {};
     EX.forEach(function (e) { byId[e.id] = e; });
-    var order = [];
-    ROWS.forEach(function (ids) {
-      var row = document.createElement('div'); row.className = 'wall-row'; wall.appendChild(row);
-      ids.forEach(function (id) { order.push({ id: id, row: row }); });
+    var hx = document.getElementById('top'), hxSlides = document.getElementById('hxSlides');
+    var hxInfo = document.getElementById('hxInfo'), hxIdx = document.getElementById('hxIdx'), hxBar = hxIdx.parentNode;
+    var hxCur = -1, slides = [], idxBtns = [], W = 0, H = 0;
+    /* 大きな文字を 1 字ずつ立ち上げる。A を琥珀に */
+    document.querySelectorAll('.hx-word').forEach(function (w) {
+      w.innerHTML = w.textContent.split('').map(function (c, k) { return '<span style="--i:' + k + '"' + (k === 4 ? ' class="am"' : '') + '>' + c + '</span>'; }).join('');
     });
-    order.forEach(function (o, i) {
-      var e = byId[o.id], d = document.createElement('div');
-      d.className = 'fr';
-      d.style.cssText = '--ar:' + (e.w / e.h).toFixed(3) + ';--r:' + TILT[i] + 'deg;--dl:' + (0.25 + i * 0.09) + 's';
-      d.innerHTML = '<span class="cone" aria-hidden="true"></span><a href="' + e.href + '" aria-label="' + e.title + '（' + e.year + '）の記録をひらく">'
-        + (e.live ? '<span class="live-dot" aria-hidden="true"></span>' : '')
-        + '<img src="' + IMG + e.img + '" alt="' + e.alt + '" width="' + e.w + '" height="' + e.h + '"></a>'
-        + '<span class="tag" aria-hidden="true" title="' + e.title + '"><b>' + e.year + '</b>' + e.title + '</span>';
-      o.row.appendChild(d);
-      frames.push({ el: d, e: e });
-      d.addEventListener('mouseenter', function () { pause = true; light(i); });
-      d.addEventListener('focusin', function () { pause = true; light(i); });
-      d.addEventListener('mouseleave', function () { pause = false; });
+    HX.forEach(function (h, i) {
+      var e = byId[h.id], s = document.createElement('div');
+      s.className = 'hx-slide';
+      s.innerHTML = '<img src="' + (h.src || IMG + e.img) + '" alt="" style="--pos:' + (h.pos || '50% 50%') + '"' + (i ? ' loading="lazy"' : ' fetchpriority="high"') + '>';
+      hxSlides.appendChild(s); slides.push(s);
+      var li = document.createElement('li');
+      li.innerHTML = '<button type="button" aria-label="' + e.year + ' ' + e.title + 'を照らす"><span class="pg" aria-hidden="true"></span>'
+        + '<span class="n">' + ('0' + (i + 1)).slice(-2) + ' — ' + e.year + (e.live ? ' <span class="live-dot" aria-hidden="true"></span>' : '') + '</span>'
+        + '<span class="t">' + e.title + '</span></button>';
+      hxIdx.appendChild(li);
+      var b = li.firstChild; idxBtns.push(b);
+      b.addEventListener('click', function () { show(i); });
+      b.querySelector('.pg').addEventListener('animationend', function () { if (!reduce && hxCur === i) show((i + 1) % HX.length); });
     });
-    var cur = -1, pause = false;
-    function light(i) {
-      if (i === cur) return; cur = i;
-      frames.forEach(function (f, k) { f.el.classList.toggle('on', k === i); });
-      var e = frames[i].e;
-      plate.innerHTML = '<span class="yr">' + e.year + '</span><span class="txt"><span class="tt">' + (e.live ? '<span class="now">● 開催中</span>' : '') + e.title + (e.sub ? '<small>' + e.sub + '</small>' : '') + '</span><span class="vn">' + e.venue + '</span></span><span class="acts">'
-        + (SHOTS[e.id] ? '<button class="pk" type="button" data-peek="' + e.id + '" aria-label="' + e.title + 'の会場写真をのぞく">のぞく</button>' : '')
-        + '<a class="go" href="' + e.href + '">OPEN →</a></span>';
-      plate.classList.remove('swap'); void plate.offsetWidth; plate.classList.add('swap');
-      countEl.textContent = ('0' + (i + 1)).slice(-2) + ' / ' + ('0' + frames.length).slice(-2);
-      var r = frames[i].el.getBoundingClientRect(), wr = wall.getBoundingClientRect();
-      if (wr.width) { wall.style.setProperty('--sx', ((r.left + r.width / 2 - wr.left) / wr.width * 100) + '%'); wall.style.setProperty('--sy', ((r.top + r.height / 2 - wr.top) / wr.height * 100) + '%'); }
+    /* 画面外に出た写真も先に読んでおく */
+    setTimeout(function () { slides.forEach(function (s) { s.querySelector('img').loading = 'eager'; }); }, 1500);
+    function show(i) {
+      if (i === hxCur) return;
+      var prev = slides[hxCur];
+      slides.forEach(function (s) { s.classList.remove('was'); });
+      if (prev) { prev.classList.remove('on'); prev.classList.add('was'); }
+      var s = slides[i]; s.classList.remove('on'); void s.offsetWidth; s.classList.add('on');
+      hxCur = i;
+      idxBtns.forEach(function (b, k) { b.setAttribute('aria-current', k === i); });
+      var e = byId[HX[i].id], n = SHOTS[e.id] ? SHOTS[e.id][1].length : 0;
+      hxInfo.innerHTML = '<p class="hx-no"><span><b>' + ('0' + (i + 1)).slice(-2) + '</b> / ' + ('0' + HX.length).slice(-2) + '</span>' + (e.live ? '<span class="now"><span class="live-dot" aria-hidden="true"></span>開催中</span>' : '') + '</p>'
+        + '<p class="hx-year">' + e.year + '</p>'
+        + '<h2 class="hx-ttl">' + e.title + (e.sub ? '<small>' + e.sub + '</small>' : '') + '</h2>'
+        + '<p class="hx-vn">' + e.venue + '</p>'
+        + '<div class="hx-btns">' + (n ? '<button class="hx-peek" type="button" data-peek="' + e.id + '"><span class="eye" aria-hidden="true"></span>会場をのぞく<small>' + n + '枚</small></button>' : '')
+        + '<a class="hx-open" href="' + e.href + '">記録をひらく <i aria-hidden="true">→</i></a></div>';
+      hxInfo.classList.remove('swap'); void hxInfo.offsetWidth; hxInfo.classList.add('swap');
+      if (W) measure();
     }
-    setTimeout(function () { light(0); }, reduce ? 0 : 900);
-    setInterval(function () { if (!pause && !document.hidden && !reduce) light((cur + 1) % frames.length); }, 3400);
-    wall.addEventListener('pointermove', function (ev) {
-      if (ev.pointerType !== 'mouse') return;
-      var wr = wall.getBoundingClientRect();
-      wall.style.setProperty('--sx', ((ev.clientX - wr.left) / wr.width * 100) + '%');
-      wall.style.setProperty('--sy', ((ev.clientY - wr.top) / wr.height * 100) + '%');
+    show(0);
+    document.getElementById('hxTick').innerHTML = (function () {
+      var k = byId.koumi, one = '<b>● ON VIEW 開催中</b><span>' + k.title + ' ─ ' + k.sub + '</span><span>' + k.venue + '</span><span>' + k.date + ' —</span>';
+      return one + one + one + one;
+    })();
+
+    /* 光：ポインタに遅れてついていく。しばらく触られないと、展示室をひとりで歩きまわる */
+    var L = { x: 0, y: 0, r: 0 }, T = { x: 0, y: 0, r: 0 }, lastMove = -1e9, flash = 0, fine = window.matchMedia('(pointer: fine)').matches;
+    function measure() {
+      W = hx.clientWidth; H = hx.clientHeight; T.r = Math.max(170, Math.min(W, H) * (W < 700 ? 0.42 : 0.34));
+      /* 大きな文字は、下の索引（スマホでは説明ごと）のすぐ上に置く */
+      var top = (W <= 900 ? hxInfo : hxBar).getBoundingClientRect().top - hx.getBoundingClientRect().top;
+      hx.style.setProperty('--bar', Math.max(0, H - top) + 'px');
+    }
+    function paint() {
+      hx.style.setProperty('--lx', L.x.toFixed(1) + 'px'); hx.style.setProperty('--ly', L.y.toFixed(1) + 'px');
+      hx.style.setProperty('--lr', (L.r * (1 + flash)).toFixed(1) + 'px');
+      hx.style.setProperty('--cx', L.x.toFixed(1) + 'px'); hx.style.setProperty('--cy', L.y.toFixed(1) + 'px');
+    }
+    measure();
+    L.x = T.x = W * 0.62; L.y = T.y = H * 0.42; L.r = T.r;
+    if (reduce) { L.r = T.r * 1.5; paint(); }
+    else {
+      var visible = true, running = false;
+      new IntersectionObserver(function (en) { visible = en[0].isIntersecting; if (visible) loop(); }, { threshold: 0 }).observe(hx);
+      function loop() {
+        if (running) return; running = true;
+        requestAnimationFrame(function step(t) {
+          if (!visible || document.hidden) { running = false; return; }
+          if (t - lastMove > 2600) {
+            /* ひとり歩き：8 の字を描いてゆっくり壁をなめる */
+            T.x = W * (0.5 + 0.34 * Math.sin(t / 2600)); T.y = H * (0.44 + 0.2 * Math.sin(t / 1900 + 1.2));
+          }
+          var k = t - lastMove > 2600 ? 0.035 : 0.16;
+          L.x += (T.x - L.x) * k; L.y += (T.y - L.y) * k; L.r += (T.r - L.r) * 0.08; flash *= 0.9;
+          paint(); requestAnimationFrame(step);
+        });
+      }
+      document.addEventListener('visibilitychange', function () { if (!document.hidden && visible) loop(); });
+    }
+    function aimAt(ev) {
+      var r = hx.getBoundingClientRect();
+      T.x = ev.clientX - r.left; T.y = ev.clientY - r.top; lastMove = performance.now();
+      if (reduce) { L.x = T.x; L.y = T.y; paint(); }
+    }
+    hx.addEventListener('pointermove', function (ev) {
+      aimAt(ev);
+      hx.classList.toggle('aim', ev.pointerType === 'mouse' && fine && !ev.target.closest('a, button, .hx-bar'));
     });
+    hx.addEventListener('pointerleave', function () { hx.classList.remove('aim'); lastMove = -1e9; });
+    hx.addEventListener('pointerdown', function (ev) { aimAt(ev); flash = 0.35; });
+    /* 写真そのものをクリック（タップ）すると、照らしている会場をのぞく */
+    hx.addEventListener('click', function (ev) {
+      if (ev.target.closest('a, button, .hx-intro, .hx-info, .hx-bar')) return;
+      var id = HX[hxCur].id;
+      if (SHOTS[id]) { openLb(id, 0, hxInfo.querySelector('.hx-peek')); gtag('event', 'hero_peek', { exhibition: id }); }
+    });
+    /* 索引や説明にふれている間と、写真を見ている間は次へ進まない */
+    [hxInfo, hxIdx].forEach(function (el) {
+      el.addEventListener('pointerenter', function () { hx.classList.add('paused'); });
+      el.addEventListener('pointerleave', function () { hx.classList.remove('paused'); });
+    });
+    window.addEventListener('resize', function () { measure(); if (reduce) paint(); });
 
     /* ---------- lightbox：会場をのぞく ---------- */
     var lb = document.getElementById('lb'), lbImg = document.getElementById('lbImg'), lbStage = document.getElementById('lbStage');
@@ -765,7 +876,7 @@
       lbGo.href = lbEx.href;
       lbDots.innerHTML = SHOTS[id][1].map(function (_, k) { return '<button type="button" aria-label="' + (k + 1) + '枚目"></button>'; }).join('');
       lbDots.querySelectorAll('button').forEach(function (b, k) { b.addEventListener('click', function () { showLb(k); }); });
-      lb.classList.add('open'); lb.setAttribute('aria-hidden', 'false'); document.body.classList.add('no-scroll');
+      lb.classList.add('open'); lb.setAttribute('aria-hidden', 'false'); document.body.classList.add('no-scroll'); hx.classList.add('lb-open');
       showLb(lbI, true);
       document.getElementById('lbClose').focus();
       gtag('event', 'peek_open', { exhibition: id });
@@ -773,7 +884,7 @@
     function closeLb() {
       if (!lb.classList.contains('open')) return;
       setZoom(false);
-      lb.classList.remove('open'); lb.setAttribute('aria-hidden', 'true'); document.body.classList.remove('no-scroll');
+      lb.classList.remove('open'); lb.setAttribute('aria-hidden', 'true'); document.body.classList.remove('no-scroll'); hx.classList.remove('lb-open');
       if (lbReturn && lbReturn.focus) lbReturn.focus();
     }
     function showLb(i, first) {
