@@ -570,7 +570,7 @@
     .loop-screen {
       position: absolute; left: 39.6%; top: 35.3%; width: 19.8%; height: 18.1%; overflow: hidden; background: #000;
     }
-    .loop-screen img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity 1.2s ease; }
+    .loop-screen img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s ease; }
     .loop-screen img.on { opacity: 1; }
     .loop-screen .cutno { position: absolute; left: 5%; bottom: 7%; z-index: 2; font-family: var(--en); font-size: clamp(7px, 0.9vw, 12px); color: #fff; letter-spacing: 0.16em; text-shadow: 0 1px 3px #000; }
     .cuts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 14px; background: var(--night); padding: 12px; border-radius: 3px; }
@@ -785,11 +785,9 @@
     @keyframes marq { to { transform: translateX(-50%); } }
 
     /* ワイプ表示 */
-    .entrance-fig.reveal { clip-path: inset(0 0 100% 0); transition: opacity 1.1s var(--ease), transform 1.1s var(--ease), clip-path 1.6s var(--ease); }
-    .entrance-fig.reveal.in { clip-path: inset(0 0 0 0); }
-    .duo-view.reveal figure { clip-path: inset(100% -60px -80px -60px); transition: clip-path 1.5s var(--ease), flex-grow 0.9s var(--ease), opacity 0.6s; }
-    .duo-view.reveal figure + .duo-ridge + figure { transition-delay: 0.3s, 0s, 0s; }
-    .duo-view.reveal.in figure { clip-path: inset(0 -60px -80px -60px); }
+    /* ワイプは中身(.inner)に掛ける。観測対象そのものにclip-pathを掛けると、IntersectionObserverが交差なしと判定して永遠に表示されない */
+    .entrance-fig.reveal .inner { clip-path: inset(0 0 100% 0); transition: clip-path 1.6s var(--ease); }
+    .entrance-fig.reveal.in .inner { clip-path: inset(0 0 0 0); }
 
     /* スクラブ文字 */
     .sc { opacity: 0.16; transition: opacity 0.5s ease; }
