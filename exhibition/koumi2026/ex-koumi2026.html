@@ -999,6 +999,39 @@
     #index, #concept, #layers, #site, #entrance, #meaning, #ware { background-image: var(--sepa), var(--noise); background-size: 176px 176px, 180px 180px; background-position: 88px 88px, 0 0; }
     #views, #works, #quiz, #data, .closing { background-image: radial-gradient(circle at 50% 50%, rgba(0,0,0,0.22) 0 3px, rgba(255,255,255,0.05) 3.4px 4.4px, transparent 4.8px), var(--noise); background-size: 176px 176px, 180px 180px; background-position: 88px 88px, 0 0; }
     .hud-btn, .hud-panel, .toast { background-color: rgba(36,36,39,0.94); }
+
+    /* ---- トップビューの再構成：文字は縦中央、稜線は文字の下の地平線 ---- */
+    .hero { --foot-b: clamp(52px, 8vh, 82px); --ridge-h: clamp(56px, 13vh, 130px); }
+    .hero-ridges { top: auto; bottom: calc(var(--foot-b) + 88px); height: var(--ridge-h); transform: none; opacity: 0.9; }
+    .hero-ridges .r-samizu { stroke-width: 1.4; }
+    .hero-ridges .r-k2 { stroke: rgba(226,138,108,0.38); stroke-width: 1.2; }
+    .hero-body { top: clamp(96px, 13vh, 130px); bottom: calc(var(--foot-b) + 88px + var(--ridge-h)); display: flex; flex-direction: column; justify-content: center; }
+    .hero-title { font-size: clamp(60px, min(11.5vw, 15.5vh), 176px); }
+    .hero-eyebrow { margin-bottom: clamp(0.6rem, 2vh, 1.2rem); }
+    .hero-sub { margin-top: clamp(0.7rem, 2vh, 1.3rem); }
+    .hero-quest { align-self: flex-start; margin-top: clamp(1rem, 3vh, 1.7rem); }
+    .artist-link { border-bottom: 1px solid transparent; transition: border-color 0.3s, color 0.3s; }
+    .artist-link:hover { border-color: currentColor; color: #f0b39d; }
+    body:not(.past-hero) .hud { opacity: 0; pointer-events: none; }
+    @media (max-width: 768px) {
+      .hero { --foot-b: 48px; --ridge-h: clamp(50px, 10vh, 100px); }
+      .hero-body { top: 96px; bottom: calc(var(--foot-b) + 96px + var(--ridge-h)); }
+      .hero-title { font-size: clamp(64px, min(21vw, 14vh), 120px); }
+    }
+    @media (max-height: 560px) { .hero-quest { display: none; } }
+    .hero-foot .artist { white-space: nowrap; }
+    @media (max-width: 768px) {
+      .hero-eyebrow { font-size: 0.58rem; letter-spacing: 0.2em; }
+      .hero-foot .meta { min-width: 0; }
+      .shard[data-shard="0"] { left: 88%; top: 17%; }
+    }
+
+    /* ---- ヘッダー：津田の名前 → インデックスへ ---- */
+    .nav-id { justify-self: start; display: flex; align-items: center; gap: clamp(12px, 1.8vw, 22px); min-width: 0; }
+    .nav-id .nav-brand b { font-size: 1.05rem; letter-spacing: 0.22em; }
+    .nav-title { font-family: var(--serif); font-weight: 300; font-size: 0.86rem; letter-spacing: 0.22em; white-space: nowrap; padding-left: clamp(12px, 1.8vw, 22px); border-left: 1px solid currentColor; opacity: 0.72; transition: opacity 0.3s, color 0.3s; line-height: 1.2; }
+    .nav-title:hover { opacity: 1; color: var(--nav-accent); }
+    @media (max-width: 600px) { .nav-title { display: none; } .nav-brand small { display: block; } }
   </style>
 </head>
 <body class="is-loading">
@@ -1007,7 +1040,7 @@
 
   <!-- ============== NAV ============== -->
   <nav id="top-nav" aria-label="サイト">
-    <a href="#top" class="nav-brand"><b>二重の遠景</b><small>Tsuda Shoichi</small></a>
+    <div class="nav-id"><a href="https://sh012da.github.io/sh01/" class="nav-brand" aria-label="津田翔一 トップページへ"><b>津田 翔一</b><small>Tsuda Shoichi</small></a><a href="#top" class="nav-title">二重の遠景</a></div>
     <p class="nav-now" id="navNow" aria-hidden="true"><span class="no"></span><span class="t"></span><span class="bar"><i></i></span></p>
     <div class="nav-right">
       <a href="ex-koumi2026-dolphin.html" class="nav-pill"><span class="long">コウミカワイルカ</span><span class="short-i">イルカ</span> →</a>
@@ -1049,8 +1082,9 @@
     <div class="hero-shade"></div>
 
     <svg class="hero-ridges" id="heroRidges" viewBox="0 0 1440 240" preserveAspectRatio="none" aria-hidden="true">
-      <path class="r-koumi" pathLength="1" d="M-20 196 L180 70 L380 190 L560 84 L760 196 L940 76 L1130 184 L1300 110 L1460 160"/>
-      <path class="r-samizu" pathLength="1" d="M-20 150 C 120 128, 240 128, 360 146 S 600 170, 720 150 S 960 124, 1080 142 S 1320 160, 1460 138"/>
+      <path class="r-koumi r-k2" pathLength="1" transform="translate(0 30)" d="M-20 196 C 110 196, 170 84, 310 96 S 470 190, 620 150 S 830 38, 985 92 S 1200 192, 1310 140 S 1420 110, 1460 128"/>
+      <path class="r-koumi" pathLength="1" d="M-20 196 C 110 196, 170 84, 310 96 S 470 190, 620 150 S 830 38, 985 92 S 1200 192, 1310 140 S 1420 110, 1460 128"/>
+      <path class="r-samizu" pathLength="1" d="M-20 156 C 120 136, 240 136, 360 152 S 600 176, 720 156 S 960 130, 1080 148 S 1320 166, 1460 144"/>
     </svg>
 
     <div class="hero-frame" aria-hidden="true"></div>
@@ -1066,7 +1100,7 @@
     </div>
 
     <div class="hero-foot">
-      <div class="artist">津田 翔一<small>Tsuda Shoichi — Painting / Video / Ceramics</small></div>
+      <div class="artist"><a href="https://sh012da.github.io/sh01/" class="artist-link">津田 翔一</a><small>Tsuda Shoichi — Painting / Video / Ceramics</small></div>
       <div class="meta"><b>2026.09</b>展示作品案 第3版 ／ 会場｜小海町高原美術館 Hall 3</div>
     </div>
     <div class="hero-cue" aria-hidden="true">SCROLL</div>
