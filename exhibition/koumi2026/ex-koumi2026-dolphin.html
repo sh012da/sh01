@@ -186,13 +186,29 @@
     .seabed { position: absolute; left: 0; right: 0; bottom: -1px; height: 90px; pointer-events: none; }
     .seabed svg { width: 100%; height: 100%; display: block; }
 
-    .hd { position: absolute; left: 0; top: 0; width: clamp(200px, 28vw, 420px); z-index: 2; will-change: transform; pointer-events: none; }
-    .hd .fish { width: 100%; display: block; filter: drop-shadow(0 24px 20px rgba(6,60,90,0.35)); transition: transform 0.7s var(--ease); }
-    .hd.flip .fish { transform: scaleX(-1); }
-    .hd.munch .fish { animation: munch 0.35s ease; }
-    .hd.flip.munch .fish { animation: munchF 0.35s ease; }
-    @keyframes munch { 50% { transform: scale(1.08, 0.94); } }
-    @keyframes munchF { 50% { transform: scaleX(-1) scale(1.08, 0.94); } }
+    .hd { position: absolute; left: 0; top: 0; width: clamp(210px, 28vw, 420px); z-index: 2; will-change: transform; pointer-events: none; }
+    /* からだ・尾の付け根・尾びれの 3 つに分け、尾をしならせて泳がせる */
+    .hd-flip { position: relative; filter: drop-shadow(0 24px 20px rgba(6,60,90,0.35)); transition: transform 0.7s var(--ease); }
+    .hd.flip .hd-flip { transform: scaleX(-1); }
+    .hd-pitch { position: relative; transform-origin: 45% 50%; }
+    .hd .seg { width: 100%; display: block; }
+    .hd .body { clip-path: inset(0 27% 0 0); }
+    .seg-b, .seg-c { position: absolute; inset: 0; will-change: transform; }
+    .seg-b { transform-origin: 72% 44%; }
+    .seg-b .stock { clip-path: inset(0 8.5% 0 70.5%); }
+    .seg-c { transform-origin: 90% 50%; }
+    .seg-c .fluke { clip-path: inset(0 0 0 89%); }
+    .hd.munch .hd-pitch { animation: munch 0.35s ease; }
+    @keyframes munch { 50% { scale: 1.08 0.94; } }
+    .blow { position: absolute; z-index: 2; width: var(--sz, 8px); height: var(--sz, 8px); margin: calc(var(--sz, 8px) / -2); border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.9); background: radial-gradient(circle at 32% 30%, #fff 0 18%, rgba(255,255,255,0.1) 24%); pointer-events: none; animation: blow 2.6s ease-out forwards; }
+    @keyframes blow { 0% { transform: scale(0.3); opacity: 0; } 12% { opacity: 1; } 100% { transform: translate(var(--bx, 0px), -170px) scale(1.2); opacity: 0; } }
+    /* 奥を横切る小魚の群れ */
+    .school { position: absolute; left: 0; width: 180px; height: 70px; pointer-events: none; z-index: 1; opacity: 0.35;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 70'%3E%3Cg fill='%230b4f73'%3E%3Cpath id='f' d='M10 10c4-5 11-5 15-1l5-4-1 6 1 6-5-4c-4 4-11 4-15-3z'/%3E%3Cuse href='%23f' x='34' y='14'/%3E%3Cuse href='%23f' x='12' y='30'/%3E%3Cuse href='%23f' x='60' y='4'/%3E%3Cuse href='%23f' x='52' y='36'/%3E%3Cuse href='%23f' x='88' y='20'/%3E%3Cuse href='%23f' x='30' y='48'/%3E%3Cuse href='%23f' x='120' y='30'/%3E%3Cuse href='%23f' x='84' y='48'/%3E%3C/g%3E%3C/svg%3E") no-repeat center / contain;
+      animation: school var(--dur, 34s) linear infinite; }
+    .school.s1 { top: 22%; --dur: 32s; }
+    .school.s2 { top: 58%; --dur: 46s; width: 120px; height: 46px; opacity: 0.22; animation-delay: -20s; }
+    @keyframes school { 0% { transform: translate(110vw, 0) scaleX(1); } 25% { transform: translate(75vw, -26px); } 50% { transform: translate(45vw, 10px); } 75% { transform: translate(15vw, -18px); } 100% { transform: translate(-220px, 0); } }
     .hd .sonar { position: absolute; left: 1%; top: 58%; width: 0; height: 0; transition: left 0.7s var(--ease); }
     .hd.flip .sonar { left: 99%; }
     .hd .sonar i { position: absolute; left: -60px; top: -60px; width: 120px; height: 120px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.8); opacity: 0; animation: ping 2.8s ease-out infinite; }
@@ -251,7 +267,8 @@
     .sec-label .no { display: inline-grid; place-items: center; min-width: 38px; height: 38px; padding: 0 6px; border-radius: 50%; background: var(--samizu); color: #fff; font-family: var(--pop); font-weight: 600; font-size: 0.95rem; letter-spacing: 0; }
     .sec-en { font-family: var(--pop); font-weight: 500; font-size: 0.86rem; letter-spacing: 0.04em; color: var(--muted); text-align: right; }
     .sec-title { font-family: var(--round); font-weight: 900; font-size: clamp(1.9rem, 4.8vw, 3.3rem); line-height: 1.35; letter-spacing: 0.03em; margin-bottom: clamp(20px, 3vw, 30px); }
-    .sec-title em { font-style: normal; background: linear-gradient(transparent 64%, rgba(55,182,224,0.35) 64%); padding: 0 0.08em; }
+    .sec-title em { font-style: normal; background: linear-gradient(transparent 64%, rgba(55,182,224,0.35) 64%) no-repeat 0 0 / 0% 100%; padding: 0 0.08em; transition: background-size 1.1s var(--ease) 0.35s; }
+    .sec-title.in em { background-size: 100% 100%; }
     .lead { font-family: var(--round); font-weight: 700; font-size: clamp(1.08rem, 1.9vw, 1.28rem); line-height: 1.9; margin-bottom: 1.2rem; max-width: 44em; }
     .body-txt { color: var(--ink2); max-width: 44em; }
     .body-txt + .body-txt { margin-top: 1em; }
@@ -279,6 +296,11 @@
     .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .stat { padding: 18px 18px 16px; border-radius: 20px; background: #fff; box-shadow: 0 14px 30px -24px rgba(10,60,90,0.5); transition: transform 0.5s var(--boing); }
     .stat:hover { transform: translateY(-4px) rotate(-1deg); }
+    .stats.reveal { transform: none; }
+    .stats.reveal .stat { opacity: 0; transform: translateY(24px) scale(0.9); transition: opacity 0.6s, transform 0.7s var(--boing); }
+    .stats.reveal.in .stat { opacity: 1; transform: none; }
+    .stats.reveal.in .stat:nth-child(2) { transition-delay: 0.1s; } .stats.reveal.in .stat:nth-child(3) { transition-delay: 0.2s; } .stats.reveal.in .stat:nth-child(4) { transition-delay: 0.3s; }
+    .stats.reveal.in .stat:hover { transform: translateY(-4px) rotate(-1deg); transition-delay: 0s; }
     .stat:nth-child(1) { background: #dff4fb; } .stat:nth-child(4) { background: #ffe9e1; }
     .stat small { display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; color: var(--muted); }
     .stat b { display: block; font-family: var(--round); font-weight: 900; font-size: clamp(1.2rem, 2vw, 1.5rem); line-height: 1.35; margin: 2px 0; }
@@ -421,6 +443,13 @@
     .facts li span { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em; color: #9a6a2b; padding-top: 3px; }
     .core { display: flex; height: 34px; border-radius: 12px; overflow: hidden; margin-top: 28px; position: relative; box-shadow: inset 0 0 0 2px rgba(255,255,255,0.5); }
     .core i { flex: var(--f); background: var(--c); transition: flex 0.6s var(--ease); }
+    .core.reveal { opacity: 1; transform: none; }
+    .core.reveal i { transform: translateY(-120%); }
+    .core.reveal.in i { animation: settle 0.8s var(--boing) forwards; animation-delay: calc(var(--k) * 110ms + 0.2s); }
+    @keyframes settle { from { transform: translateY(-120%); } to { transform: none; } }
+    .core.reveal .fossil { scale: 0; }
+    .core.reveal.in .fossil { animation: fossilPop 0.6s var(--boing) 1.5s forwards, ringBeat 1.6s ease-in-out 2.1s infinite; }
+    @keyframes fossilPop { to { scale: 1; } }
     .core:hover i:nth-child(odd) { flex: calc(var(--f) * 1.3); }
     .core-cap { display: flex; justify-content: space-between; font-size: 0.74rem; color: var(--ink2); margin-top: 8px; }
     .core .fossil { position: absolute; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; background: var(--mark); box-shadow: 0 0 0 4px rgba(255,255,255,0.7); animation: ringBeat 1.6s ease-in-out infinite; }
@@ -437,6 +466,12 @@
     .site-stage { position: relative; aspect-ratio: 1400 / 1228; }
     .site-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #fff; opacity: 0; transition: opacity 0.7s ease, transform 1.2s var(--ease); transform: scale(1.02); }
     .site-stage img.on { opacity: 1; transform: none; }
+    .site-fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; transition: opacity 0.5s; }
+    .site-stage.t1 .site-fx { opacity: 0; }
+    .site-fx .rv { fill: none; stroke: rgba(255,255,255,0.85); stroke-width: 7; stroke-linecap: round; stroke-dasharray: 10 38; animation: flowRun2 1.6s linear infinite; }
+    @keyframes flowRun2 { to { stroke-dashoffset: -48; } }
+    .site-fx .dig-ping { fill: none; stroke: #ff5a3c; stroke-width: 6; transform-box: fill-box; transform-origin: center; animation: pinPing 2s ease-out infinite; }
+    .site-fx .dig-ping.d2 { animation-delay: 1s; }
     .site-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 64px); align-items: start; }
     .site-note { font-size: 0.9rem; color: var(--ink2); background: var(--sky); border-radius: 18px; padding: 14px 18px; margin-top: 18px; }
     .site-note::before { content: '● '; color: var(--mark); }
@@ -449,7 +484,7 @@
     #journey .sec-label { color: #fff; }
     #journey .sec-label .no { background: #fff; color: var(--samizu); }
     #journey .sec-en, #journey .body-txt { color: var(--on-dark-dim); }
-    #journey .sec-title em { background: linear-gradient(transparent 64%, rgba(255,255,255,0.28) 64%); }
+    #journey .sec-title em { background-image: linear-gradient(transparent 64%, rgba(255,255,255,0.28) 64%); }
     .route { margin-top: clamp(30px, 5vw, 56px); }
     .route svg { width: 100%; height: auto; display: block; overflow: visible; }
     .route .river-bg { fill: none; stroke: rgba(255,255,255,0.18); stroke-width: 14; stroke-linecap: round; }
@@ -461,6 +496,18 @@
     .route .st text { font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 16px; fill: #fff; letter-spacing: 1px; }
     .route .st text.sm { font-family: 'Fredoka', sans-serif; font-weight: 500; font-size: 11px; fill: rgba(255,255,255,0.65); }
     .route .sea { fill: rgba(255,255,255,0.18); }
+    .route .wv { fill: none; stroke: rgba(255,255,255,0.7); stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 16 10; animation: waveRun 1.6s linear infinite; }
+    .route .wv.w2 { animation-duration: 2.2s; animation-direction: reverse; opacity: 0.6; }
+    @keyframes waveRun { to { stroke-dashoffset: 26; } }
+    .route .st circle { transform-box: fill-box; transform-origin: center; transition: fill 0.4s, stroke 0.4s, transform 0.5s var(--boing); }
+    .route .st.passed circle { transform: scale(1.25); }
+    .route .st text { transition: opacity 0.4s; }
+    .route .st:not(.passed) text { opacity: 0.5; }
+    .route .burst { fill: none; stroke: #ffd2c2; stroke-width: 3; opacity: 0; transform-box: fill-box; transform-origin: center; }
+    .route.arrived .burst { animation: pinPing 1.8s ease-out infinite; }
+    .route.arrived .burst.b2 { animation-delay: 0.9s; }
+    .route .yay { font: 900 18px 'Zen Maru Gothic', sans-serif; fill: #ffd2c2; opacity: 0; transition: opacity 0.4s, transform 0.6s var(--boing); transform-box: fill-box; transform-origin: center; transform: translateY(10px); }
+    .route.arrived .yay { opacity: 1; transform: none; }
     .route .mtn { fill: none; stroke: rgba(255,210,194,0.8); stroke-width: 2; stroke-linejoin: round; }
     .route .alt { font-family: 'Fredoka', sans-serif; font-size: 14px; fill: rgba(255,255,255,0.7); }
     .legend-box { margin-top: clamp(36px, 5vw, 56px); display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: clamp(16px, 3vw, 32px); }
@@ -482,9 +529,32 @@
     #paleo { background: var(--sky); }
     .paleo-grid { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
     .currents { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
-    .currents span { display: inline-flex; align-items: center; gap: 10px; font-size: 0.84rem; font-weight: 700; padding: 7px 16px; border-radius: 30px; background: #fff; }
-    .currents span::before { content: ''; width: 28px; height: 4px; border-radius: 4px; background: var(--c); }
+    .currents button { display: inline-flex; align-items: center; gap: 10px; min-height: 42px; font-size: 0.86rem; font-weight: 700; padding: 0 18px; border-radius: 30px; background: #fff; box-shadow: 0 6px 16px -10px rgba(10,60,90,0.5); transition: transform 0.4s var(--boing), background 0.3s, color 0.3s; }
+    .currents button small { font-weight: 500; font-size: 0.74rem; color: var(--muted); }
+    .currents button::before { content: ''; width: 28px; height: 4px; border-radius: 4px; background: linear-gradient(90deg, var(--c) 0 40%, transparent 40% 60%, var(--c) 60%) 0 0 / 14px 100%; animation: dashRun 0.8s linear infinite; }
+    @keyframes dashRun { to { background-position: 14px 0; } }
+    .currents button:hover { transform: translateY(-2px); }
+    .currents button[aria-pressed="true"] { background: var(--c); color: #fff; }
+    .currents button[aria-pressed="true"] small { color: rgba(255,255,255,0.85); }
+    .currents button[aria-pressed="true"]::before { background: linear-gradient(90deg, #fff 0 40%, transparent 40% 60%, #fff 60%) 0 0 / 14px 100%; }
     .paleo-fig { position: relative; }
+    /* 海流が流れる古地理図 */
+    .flowmap { position: relative; }
+    .flowmap svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    .flowmap .cur { transition: opacity 0.5s; }
+    .flowmap .cur .glow { fill: none; stroke-width: 26; stroke-linecap: round; opacity: 0.22; }
+    .flowmap .warm .glow { stroke: #ff5a3c; } .flowmap .cold .glow { stroke: #2f73c8; }
+    .flowmap .cur .run { fill: none; stroke: #fff; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 4 30; animation: flowRun 1.4s linear infinite; opacity: 0.9; }
+    .flowmap .cold .run { animation-duration: 1.8s; }
+    @keyframes flowRun { to { stroke-dashoffset: -34; } }
+    .flowmap.pick-warm .cold, .flowmap.pick-cold .warm { opacity: 0.12; }
+    .flowmap.pick-warm .warm .glow, .flowmap.pick-cold .cold .glow { opacity: 0.45; stroke-width: 34; }
+    .koumi-pin circle { fill: none; stroke: #ffc53d; stroke-width: 5; transform-box: fill-box; transform-origin: center; animation: pinPing 2.2s ease-out infinite; }
+    .koumi-pin .pp2 { animation-delay: 1.1s; }
+    @keyframes pinPing { 0% { transform: scale(0.4); opacity: 1; } 100% { transform: scale(2.2); opacity: 0; } }
+    .koumi-pin .lbl rect { fill: #12303e; }
+    .koumi-pin .lbl text { fill: #fff; font: 700 17px 'Zen Maru Gothic', sans-serif; }
+    .flow-zoom { position: absolute; right: 10px; bottom: 10px; }
     @media (max-width: 860px) { .paleo-grid { grid-template-columns: 1fr; } }
 
     /* ============================================================
@@ -549,6 +619,8 @@
     .btn-line:first-child { background: #fff; color: var(--deep); border-color: #fff; }
     .btn-line:hover { background: #fff; color: var(--deep); transform: translateY(-3px); }
     .back-cta svg { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 90px; opacity: 0.8; }
+    .back-cta svg .flow { animation: riverSlide 5s linear infinite; }
+    @keyframes riverSlide { to { transform: translateX(300px); } }
     footer { background: var(--deep2); color: var(--on-dark-dim); text-align: center; padding: 34px 20px; font-size: 0.78rem; }
     footer .f-logo { font-family: var(--round); font-weight: 700; letter-spacing: 0.14em; color: #fff; margin-bottom: 4px; }
 
@@ -560,9 +632,11 @@
     .to-top.show { opacity: 1; transform: none; pointer-events: auto; }
     .to-top:hover { transform: translateY(-3px); }
 
+    /* 「視差効果を減らす」設定でも止めずに、ゆっくり・小さめに動かす */
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; transition-delay: 0s !important; }
-      .hd { transform: translate(30vw, 22vh); }
+      html { scroll-behavior: auto; }
+      .reveal { transform: none; }
+      .caustics, .rays { animation-duration: 30s; }
     }
     @media (max-width: 600px) { .sec-head { flex-wrap: wrap; gap: 4px 16px; } .sec-label { white-space: nowrap; } .sec-en { font-size: 0.76rem; } }
   </style>
@@ -622,8 +696,18 @@
     <div class="rays" aria-hidden="true"></div>
     <div class="snow" id="snow" aria-hidden="true"></div>
 
+    <div class="school s1" aria-hidden="true"></div>
+    <div class="school s2" aria-hidden="true"></div>
     <div class="hd" id="heroDolphin" aria-hidden="true">
-      <img class="fish" src="../../images/exhi-koumi2026/dolphin-cutout.webp" alt="" width="1565" height="534">
+      <div class="hd-flip">
+        <div class="hd-pitch" id="hdPitch">
+          <img class="seg body" src="../../images/exhi-koumi2026/dolphin-cutout.webp" alt="" width="1565" height="534">
+          <div class="seg-b" id="segB">
+            <img class="seg stock" src="../../images/exhi-koumi2026/dolphin-cutout.webp" alt="" width="1565" height="534">
+            <div class="seg-c" id="segC"><img class="seg fluke" src="../../images/exhi-koumi2026/dolphin-cutout.webp" alt="" width="1565" height="534"></div>
+          </div>
+        </div>
+      </div>
       <span class="sonar"><i></i><i></i><i></i></span>
     </div>
     <div class="hero-hint" aria-hidden="true">
@@ -795,6 +879,18 @@
             <div class="site-stage fig" id="siteStage">
               <img class="on zoomable" src="../../images/exhi-koumi2026/fig-site-map.jpg" alt="小海町周辺の地形図。発掘された場所に赤い丸印がある" loading="lazy">
               <img class="zoomable" src="../../images/exhi-koumi2026/fig-geology.jpg" alt="化石発見地周辺の地質図と地質断面図A-A'。赤い丸印が化石発見地を示す" loading="lazy">
+              <svg class="site-fx" viewBox="0 0 1400 1228" aria-hidden="true">
+                <defs>
+                  <path id="chikuma" d="M905 1228 C 930 1080, 945 900, 962 790 S 1004 620, 1002 520 S 986 382, 960 322 S 880 190, 852 110 S 816 24, 800 0"/>
+                  <path id="upstream" d="M800 -40 C 816 24, 852 110, 880 190 S 960 322, 986 382 S 1004 470, 1002 530"/>
+                </defs>
+                <use href="#chikuma" class="rv"/>
+                <g class="mini"><g transform="scale(-1,1)"><image href="../../images/exhi-koumi2026/dolphin-mini.webp" x="-60" y="-21" width="120" height="41"/></g>
+                  <animateMotion dur="8s" repeatCount="indefinite" rotate="auto" keyPoints="0;1;1" keyTimes="0;0.8;1" calcMode="linear"><mpath href="#upstream"/></animateMotion>
+                  <animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;0.08;0.7;0.8;1" dur="8s" repeatCount="indefinite"/>
+                </g>
+                <g transform="translate(665 565)"><circle class="dig-ping" r="34"/><circle class="dig-ping d2" r="34"/></g>
+              </svg>
             </div>
             <p class="cap"><span id="siteCap">小海町周辺 ／ ※発掘された場所</span><span class="en">Fig. — Site</span></p>
           </div>
@@ -817,6 +913,8 @@
         <div class="route" id="route">
           <svg viewBox="0 0 1200 460" aria-hidden="true">
             <path class="sea" d="M0 460 L0 340 C 60 330, 120 350, 190 360 L 220 460 Z"/>
+            <path class="wv" d="M8 384 q 12 -8 24 0 t 24 0 t 24 0 t 24 0 t 24 0 t 24 0 t 24 0"/>
+            <path class="wv w2" d="M4 414 q 12 -8 24 0 t 24 0 t 24 0 t 24 0 t 24 0 t 24 0 t 24 0 t 24 0"/>
             <path class="mtn" d="M860 150 L920 70 L975 130 L1030 40 L1080 110 L1130 60 L1200 120"/>
             <text class="alt" x="16" y="440">0 m — sea level</text>
             <text class="alt" x="1188" y="28" text-anchor="end">1,100 m — 小海町高原美術館</text>
@@ -852,12 +950,34 @@
         <div class="sec-head reveal"><p class="sec-label"><span class="no">07</span>古地質環境の復元と意義</p><p class="sec-en">Paleoenvironment</p></div>
         <div class="paleo-grid">
           <div class="paleo-fig reveal">
-            <div class="fig"><img class="zoomable" src="../../images/exhi-koumi2026/fig-paleogeography.jpg" alt="古地理図。日本列島周辺の暖流（赤）と寒流（青）の流入経路が矢印で示され、小海周辺が黒く塗られている" loading="lazy"></div>
+            <div class="fig flowmap" id="flowmap">
+              <img src="../../images/exhi-koumi2026/fig-paleogeography.jpg" alt="古地理図。日本列島周辺の暖流（赤）と寒流（青）の流入経路が矢印で示され、小海周辺が黒く塗られている" width="900" height="954" loading="lazy">
+              <svg viewBox="0 0 900 954" aria-hidden="true">
+                <defs>
+                  <path id="cw1" d="M330 588 C 410 520, 492 462, 512 366 S 532 200, 546 84"/>
+                  <path id="cw2" d="M204 950 C 256 860, 352 818, 462 778 S 640 626, 690 572 S 770 505, 800 486"/>
+                  <path id="cc1" d="M404 62 C 382 178, 300 262, 222 330 S 112 448, 90 516"/>
+                  <path id="cc2" d="M862 190 C 782 244, 732 332, 702 420 S 666 522, 656 552"/>
+                  <radialGradient id="gWarm"><stop offset="0" stop-color="#fff"/><stop offset="0.35" stop-color="#ffb199"/><stop offset="1" stop-color="#ff5a3c" stop-opacity="0"/></radialGradient>
+                  <radialGradient id="gCold"><stop offset="0" stop-color="#fff"/><stop offset="0.35" stop-color="#a9dcff"/><stop offset="1" stop-color="#2f73c8" stop-opacity="0"/></radialGradient>
+                </defs>
+                <g class="cur warm" data-cur="warm"></g>
+                <g class="cur cold" data-cur="cold"></g>
+                <g class="koumi-pin" transform="translate(470 622)">
+                  <circle class="pp1" r="26"/><circle class="pp2" r="26"/>
+                  <g class="lbl"><rect x="30" y="-17" width="58" height="30" rx="15"/><text x="59" y="4" text-anchor="middle">小海</text></g>
+                </g>
+              </svg>
+              <button class="flow-zoom chip" type="button" data-lb="../../images/exhi-koumi2026/fig-paleogeography.jpg">⤢ 拡大</button>
+            </div>
           </div>
           <div>
             <h2 class="sec-title reveal">暖流と寒流が、<br><em>出会う海。</em></h2>
             <p class="body-txt reveal">古地理図に基づく古環境の復元モデル。化石産出層は、当時の地殻変動によって形成された湾盆や、そこに流入する海流の影響を強く受けた環境下で堆積した。</p>
-            <div class="currents reveal"><span style="--c:#e0473a">暖流の流入経路</span><span style="--c:#2f73c8">寒流の流入経路</span></div>
+            <div class="currents reveal" role="group" aria-label="海流を選んで光らせる">
+              <button type="button" data-show="warm" style="--c:#e0473a" aria-pressed="false">暖流の流入経路 <small>南から北へ</small></button>
+              <button type="button" data-show="cold" style="--c:#2f73c8" aria-pressed="false">寒流の流入経路 <small>北から南へ</small></button>
+            </div>
             <p class="body-txt reveal">これらの海流が交差する水域が、多様な海洋生物にとって極めて好適な生息環境を形成していた。この化石の発見は、当時の古地理や沿岸生態系の進化、そしてコウミカワイルカの生態を解明する上で、非常に重要なデータを提供する。</p>
             <p class="en-note reveal"><small>PALEOGEOGRAPHY AND STRATIGRAPHY</small>Reconstruction model of the paleoenvironment based on paleogeographic maps. The collision and mixing of warm and cold currents created a highly productive transition zone, providing an optimal habitat and feeding ground for diverse marine life.</p>
           </div>
@@ -921,7 +1041,7 @@
       </div>
       <svg viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true">
         <path d="M0 60 L120 20 L240 70 L360 25 L480 72 L600 30 L720 70 L840 26 L960 66 L1080 36 L1200 58" fill="none" stroke="#f0a489" stroke-width="2" vector-effect="non-scaling-stroke"/>
-        <path d="M0 50 C 150 42, 300 58, 450 50 S 750 40, 900 50 S 1100 56, 1200 48" fill="none" stroke="#9fe3fa" stroke-width="2" vector-effect="non-scaling-stroke"/>
+        <path class="flow" d="M-300 50 q 75 -12 150 0 t 150 0 t 150 0 t 150 0 t 150 0 t 150 0 t 150 0 t 150 0 t 150 0 t 150 0 t 150 0" fill="none" stroke="#9fe3fa" stroke-width="2" vector-effect="non-scaling-stroke"/>
       </svg>
     </section>
   </main>
@@ -957,7 +1077,7 @@
     /* ---------- hero dolphin: ポインタを追い、ごはん（小魚）を食べにいく ---------- */
     var hero = document.querySelector('.hero'), hd = document.getElementById('heroDolphin');
     var feedEl = document.getElementById('feed'), feedN = document.getElementById('feedN'), eatenN = 0;
-    var dX = -400, dY = 0, tX = 0, tY = 0, lastMove = -1e9, wanderAt = 0, heroOn = true, flip = true, foods = [];
+    var dX = -900, dY = 0, tX = 0, tY = 0, lastMove = -1e9, wanderAt = 0, heroOn = true, flip = true, foods = [];
     var FISH = '<svg viewBox="0 0 30 18"><path fill="#ff8a4c" d="M2 9c5-7 14-8 20-3l6-5-2 8 2 8-6-5c-6 5-15 4-20-3z"/><circle cx="8" cy="8" r="1.6" fill="#12303e"/></svg>';
     function heroSize() { return hero.getBoundingClientRect(); }
     hero.addEventListener('pointermove', function (e) { var r = heroSize(); tX = e.clientX - r.left; tY = e.clientY - r.top; lastMove = performance.now(); });
@@ -972,7 +1092,6 @@
         foods.push({ el: f, x: x, y: y });
       }
       tX = x; tY = y; lastMove = performance.now();
-      if (reduce) eatNext();
     });
     function eatNext() {
       var f = foods.shift(); if (!f) return;
@@ -986,19 +1105,53 @@
       if (eatenN === 1 || eatenN % 10 === 0) gtag('event', 'dolphin_feed', { count: eatenN });
     }
     new IntersectionObserver(function (en) { heroOn = en[0].isIntersecting; }).observe(hero);
+    /* 泳ぎ：ふだんは画面の中を 8 の字に巡回。ポインタやごはんがあれば、そちらへ。
+       尾は速さに合わせてしなる。「視差効果を減らす」設定でも止めず、ゆっくり泳ぐ */
+    var segB = document.getElementById('segB'), segC = document.getElementById('segC'), pitch = document.getElementById('hdPitch');
+    var calm = reduce ? 0.6 : 1, phase = 0, lastT = 0, blowAt = 0, vx = 0, vy = 0, started = false;
+    function blow(x, y) {
+      var b = document.createElement('span'); b.className = 'blow';
+      b.style.left = x + 'px'; b.style.top = y + 'px';
+      b.style.setProperty('--sz', (5 + Math.random() * 9).toFixed(0) + 'px');
+      b.style.setProperty('--bx', ((Math.random() - 0.5) * 40).toFixed(0) + 'px');
+      hero.appendChild(b); setTimeout(function () { b.remove(); }, 2700);
+    }
     (function swim(now) {
-      if (heroOn && !reduce) {
-        var r = heroSize(), w = hd.offsetWidth, h = hd.offsetHeight;
-        if (foods.length) { tX = foods[0].x; tY = foods[0].y; lastMove = now; }
-        else if (now - lastMove > 2600 && now > wanderAt) { tX = r.width * (0.15 + Math.random() * 0.7); tY = r.height * (0.18 + Math.random() * 0.34); wanderAt = now + 4200; }
-        var goalX = tX + (flip ? -w * 0.96 : -w * 0.04), goalY = tY - h * 0.58;
-        var k = foods.length ? 0.045 : 0.028, vx = (goalX - dX) * k, vy = (goalY - dY) * k;
-        var sp = Math.hypot(vx, vy), max = foods.length ? 11 : 7; if (sp > max) { vx *= max / sp; vy *= max / sp; }
-        dX += vx; dY += vy;
-        if (Math.abs(tX - (dX + w / 2)) > w * 0.35) { var nf = tX > dX + w / 2; if (nf !== flip) { flip = nf; hd.classList.toggle('flip', flip); } }
-        var tilt = Math.max(-14, Math.min(14, vy * 2.2)) * (flip ? 1 : -1);
-        hd.style.transform = 'translate3d(' + dX.toFixed(1) + 'px,' + (dY + Math.sin(now / 900) * 6).toFixed(1) + 'px,0) rotate(' + tilt.toFixed(1) + 'deg)';
-        if (foods.length) {
+      var dt = Math.min(50, lastT ? now - lastT : 16); lastT = now;
+      if (heroOn && !document.hidden) {
+        var r = heroSize(), W = r.width, H = r.height, w = hd.offsetWidth, h = hd.offsetHeight;
+        if (!started) { started = true; dX = -w * 0.9; dY = H * 0.24; }
+        var gX, gY, chase = foods.length > 0;
+        if (chase) {
+          tX = foods[0].x; tY = foods[0].y; lastMove = now;
+          gX = tX - (flip ? w * 0.96 : w * 0.04); gY = tY - h * 0.58;
+        } else if (now - lastMove < 2200) {
+          gX = tX - w / 2; gY = tY - h / 2;
+        } else {
+          /* 画面からはみ出さない範囲で、ゆったりと 8 の字 */
+          var A = Math.max(0.02, (W - w) / 2 / W - 0.03);
+          gX = W * (0.5 + A * Math.sin(now / 3600)) - w / 2;
+          gY = H * (0.3 + 0.1 * Math.sin(now / 2300 + 1)) - h / 2;
+        }
+        var k = (chase ? 0.05 : 0.03) * calm, ax = (gX - dX) * k, ay = (gY - dY) * k;
+        var max = (chase ? 11 : 5.5) * calm, sp = Math.hypot(ax, ay); if (sp > max) { ax *= max / sp; ay *= max / sp; }
+        vx += (ax - vx) * 0.2; vy += (ay - vy) * 0.2;
+        dX += vx * dt / 16; dY += vy * dt / 16;
+        if (vx > 0.5 && !flip) { flip = true; hd.classList.add('flip'); }
+        else if (vx < -0.5 && flip) { flip = false; hd.classList.remove('flip'); }
+        var speed = Math.min(12, Math.hypot(vx, vy));
+        phase += dt / 1000 * Math.PI * 2 * (0.9 + speed * 0.14) * calm;
+        var amp = (7 + speed * 0.9) * (reduce ? 0.7 : 1);
+        segB.style.transform = 'rotate(' + (Math.sin(phase) * amp).toFixed(2) + 'deg)';
+        segC.style.transform = 'rotate(' + (Math.sin(phase - 1.1) * amp * 1.5).toFixed(2) + 'deg)';
+        pitch.style.transform = 'rotate(' + (Math.sin(phase + 0.7) * 1.4).toFixed(2) + 'deg)';
+        var tilt = clamp(vy * 2.6, -16, 16) * (flip ? 1 : -1);
+        hd.style.transform = 'translate3d(' + dX.toFixed(1) + 'px,' + (dY + Math.sin(now / 900) * 5).toFixed(1) + 'px,0) rotate(' + tilt.toFixed(1) + 'deg)';
+        if (now > blowAt) {
+          blowAt = now + 500 + Math.random() * 900;
+          blow(dX + w * (flip ? 0.79 : 0.21), dY + h * 0.2);
+        }
+        if (chase) {
           var headX = dX + (flip ? w * 0.96 : w * 0.04), headY = dY + h * 0.58;
           if (Math.hypot(foods[0].x - headX, foods[0].y - headY) < Math.max(34, w * 0.1)) eatNext();
         }
@@ -1131,6 +1284,32 @@
     new IntersectionObserver(function (en) { if (en[0].isIntersecting && !cv.width) paintRock(); }).observe(dig);
     var rsT; window.addEventListener('resize', function () { clearTimeout(rsT); rsT = setTimeout(function () { if (!found && strokes === 0) paintRock(); }, 200); });
 
+
+    /* ---------- paleo：海流を流す ---------- */
+    var flowmap = document.getElementById('flowmap'), SVGNS = 'http://www.w3.org/2000/svg';
+    [['warm', ['cw1', 'cw2'], 'gWarm', 7], ['cold', ['cc1', 'cc2'], 'gCold', 9]].forEach(function (c) {
+      var g = flowmap.querySelector('.' + c[0]);
+      c[1].forEach(function (id) {
+        var d = document.getElementById(id).getAttribute('d');
+        g.insertAdjacentHTML('beforeend', '<path class="glow" d="' + d + '"/><path class="run" d="' + d + '"/>');
+        /* 流れにのって進む光の粒 */
+        for (var n = 0; n < 4; n++) {
+          g.insertAdjacentHTML('beforeend', '<circle r="' + (n % 2 ? 9 : 13) + '" fill="url(#' + c[2] + ')"><animateMotion dur="' + c[3] + 's" begin="-' + (n * c[3] / 4).toFixed(2) + 's" repeatCount="indefinite" rotate="auto"><mpath href="#' + id + '"/></animateMotion></circle>');
+        }
+      });
+    });
+    var curBtns = document.querySelectorAll('.currents button');
+    curBtns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var on = b.getAttribute('aria-pressed') !== 'true';
+        curBtns.forEach(function (o) { o.setAttribute('aria-pressed', o === b && on); });
+        flowmap.classList.toggle('pick-warm', on && b.dataset.show === 'warm');
+        flowmap.classList.toggle('pick-cold', on && b.dataset.show === 'cold');
+      });
+    });
+
+    document.querySelectorAll('.core i').forEach(function (el, k) { el.style.setProperty('--k', k); });
+
     /* ---------- site tabs ---------- */
     var tabs = document.querySelectorAll('.tabs button'), stageImgs = document.querySelectorAll('#siteStage img'), siteCap = document.getElementById('siteCap');
     var caps = ['小海町周辺 ／ ※発掘された場所', '地質図と地質断面図A-A\' ／ 赤い丸印＝化石発見地'];
@@ -1139,6 +1318,7 @@
         var n = +t.dataset.tab;
         tabs.forEach(function (o) { o.setAttribute('aria-selected', o === t); });
         stageImgs.forEach(function (im, i) { im.classList.toggle('on', i === n); });
+        document.getElementById('siteStage').classList.toggle('t1', n === 1);
         siteCap.textContent = caps[n];
       });
     });
@@ -1163,17 +1343,18 @@
       g.innerHTML = '<circle cx="' + pt.x + '" cy="' + pt.y + '" r="' + (s.goal ? 9 : 6) + '"/>' +
         '<text x="' + pt.x + '" y="' + (pt.y + s.dy) + '" text-anchor="middle">' + s.name + '</text>' +
         '<text class="sm" x="' + pt.x + '" y="' + (pt.y + s.dy + (s.dy > 0 ? 16 : -18)) + '" text-anchor="middle">' + s.sub + '</text>';
+      if (s.goal) g.innerHTML += '<circle class="burst" cx="' + pt.x + '" cy="' + pt.y + '" r="16"/><circle class="burst b2" cx="' + pt.x + '" cy="' + pt.y + '" r="16"/><text class="yay" x="' + (pt.x - 12) + '" y="' + (pt.y - 26) + '" text-anchor="end">到着！</text>';
       stG.appendChild(g); stEls.push(g);
     });
     function routeUpdate() {
       var r = route.getBoundingClientRect(), vh = window.innerHeight;
-      var p = clamp((vh * 0.85 - r.top) / (vh * 0.75), 0, 1);
-      if (reduce) p = 1;
+      var p = clamp((vh * 0.85 - r.top) / (vh * 0.6), 0, 1);
       river.style.strokeDashoffset = L * (1 - p);
       var pt = river.getPointAtLength(L * p), pt2 = river.getPointAtLength(Math.min(L, L * p + 2));
       var ang = Math.atan2(pt2.y - pt.y, pt2.x - pt.x) * 180 / Math.PI;
       swimmer.setAttribute('transform', 'translate(' + pt.x + ',' + pt.y + ') rotate(' + ang + ')');
       stations.forEach(function (s, i) { stEls[i].classList.toggle('passed', p >= s.t - 0.001); });
+      route.classList.toggle('arrived', p >= 0.999);
       if (route.scrollWidth > route.clientWidth + 4) route.scrollLeft = pt.x / 1200 * route.scrollWidth - route.clientWidth / 2;
     }
 
@@ -1230,7 +1411,7 @@
     function openLb(src, alt) { lbImg.src = src; lbImg.alt = alt || ''; lb.classList.add('open'); lb.setAttribute('aria-hidden', 'false'); body.classList.add('no-scroll'); }
     function closeLb() { lb.classList.remove('open'); lb.setAttribute('aria-hidden', 'true'); body.classList.remove('no-scroll'); }
     document.querySelectorAll('img.zoomable').forEach(function (im) { im.addEventListener('click', function () { openLb(im.currentSrc || im.src, im.alt); }); });
-    document.querySelectorAll('[data-lb]').forEach(function (b) { b.addEventListener('click', function () { openLb(b.dataset.lb, b.querySelector('img').alt); }); });
+    document.querySelectorAll('[data-lb]').forEach(function (b) { b.addEventListener('click', function () { openLb(b.dataset.lb, (b.querySelector('img') || flowmap.querySelector('img')).alt); }); });
     lb.addEventListener('click', closeLb);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeLb(); setMenu(false); zoom(false); } });
 
