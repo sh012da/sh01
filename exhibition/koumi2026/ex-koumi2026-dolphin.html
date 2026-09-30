@@ -271,6 +271,10 @@
     .spot:not(.is-active)::before { animation: spotPing 2.4s ease-out infinite; }
     @keyframes spotPing { 0% { transform: scale(1); opacity: 0.9; } 100% { transform: scale(2); opacity: 0; } }
     .spot:hover, .spot.is-active { transform: scale(1.2); box-shadow: 0 0 0 5px rgba(255,255,255,0.9), 0 6px 16px rgba(0,0,0,0.3); }
+    .spot-target { position: absolute; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; border: 2px solid var(--mark); box-shadow: 0 0 0 1.5px rgba(255,255,255,0.85), inset 0 0 0 1.5px rgba(255,255,255,0.85); cursor: pointer; z-index: 1; transition: transform 0.4s var(--ease), border-width 0.3s; }
+    .spot-target::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; border: 2px solid var(--mark); opacity: 0; }
+    .spot-target.is-active { transform: scale(1.35); border-width: 2.5px; }
+    .spot-target.is-active::after { animation: spotPing 1.8s ease-out infinite; }
     .echo { position: absolute; left: 24.8%; top: 34.8%; width: 0; height: 0; pointer-events: none; opacity: 0; transition: opacity 0.4s; }
     .echo.on { opacity: 1; }
     .echo i { position: absolute; left: -90px; top: -90px; width: 180px; height: 180px; border-radius: 50%; border: 2px solid rgba(192,57,43,0.7); clip-path: polygon(50% 50%, 0 0, 0 100%); transform: scale(0.1); opacity: 0; }
@@ -292,7 +296,7 @@
     .anat-card p.long { color: var(--ink2); font-size: 0.95rem; }
     .anat-card.swap { animation: swap 0.6s var(--ease); }
     @keyframes swap { from { opacity: 0; transform: translateY(8px); } }
-    @media (max-width: 768px) { .anat-panel { grid-template-columns: 1fr; } .spot { width: 26px; height: 26px; margin: -13px 0 0 -13px; font-size: 0.85rem; } }
+    @media (max-width: 768px) { .anat-panel { grid-template-columns: 1fr; } .spot { width: 22px; height: 22px; margin: -11px 0 0 -11px; font-size: 0.75rem; } .spot:hover, .spot.is-active { box-shadow: 0 0 0 3px rgba(255,255,255,0.9), 0 4px 10px rgba(0,0,0,0.3); } .spot-target { width: 16px; height: 16px; margin: -8px 0 0 -8px; border-width: 1.5px; } }
 
     /* ============================================================
        03 FOSSIL
@@ -882,8 +886,8 @@
 
     /* ---------- anatomy hotspots ---------- */
     var parts = [
-      { x: 24.8, y: 34.8, ja: '丸い額', en: 'Melon', short: 'エコーロケーション能力を集中させる', long: '額のふくらみ「メロン」は脂肪組織でできており、発した音を前方へと束ねるレンズのような役割を果たすと考えられている。濁った川の水の中で、音によって獲物や障害物の位置を知るための器官。' },
-      { x: 28.8, y: 41.7, ja: '小さな目', en: 'Small Eyes', short: '視力よりエコーロケーションに依存', long: '光の届きにくい濁った水中では、視覚よりも聴覚が頼りになる。小さな目は、音の世界に生きたことを物語る特徴のひとつ。' },
+      { x: 24.0, y: 32.0, ja: '丸い額', en: 'Melon', short: 'エコーロケーション能力を集中させる', long: '額のふくらみ「メロン」は脂肪組織でできており、発した音を前方へと束ねるレンズのような役割を果たすと考えられている。濁った川の水の中で、音によって獲物や障害物の位置を知るための器官。' },
+      { x: 33.2, y: 26.5, tx: 27.75, ty: 44.4, ja: '小さな目', en: 'Small Eyes', short: '視力よりエコーロケーションに依存', long: '光の届きにくい濁った水中では、視覚よりも聴覚が頼りになる。小さな目は、音の世界に生きたことを物語る特徴のひとつ。' },
       { x: 14.0, y: 55.2, ja: '長い吻', en: 'Long Snout', short: '魚を捕らえるのに適している', long: '細長く伸びた吻と、その縁に並ぶ歯。すばやく首を振り、魚をはさみ取るのに適したかたち。腰椎化石に見られる「魚類を捉える機能に関連している構成」とも呼応する。' },
       { x: 43.2, y: 70.8, ja: '胸びれ', en: 'Pectoral Flipper', short: '操縦性とバランスを制御する', long: '大きな胸びれは、方向転換や姿勢の安定に使われる。入り組んだ水路や浅瀬を器用に泳ぎ回るための舵。' },
       { x: 90.3, y: 48.5, ja: '強力な尾びれ', en: 'Powerful Tail Fluke', short: '推進力を生みだす', long: '上下に打ち振る尾びれは、からだを前へ押し出す推進力の源。川の流れに逆らって遡上するための力を担う。' }
@@ -895,6 +899,14 @@
       b.className = 'spot'; b.style.left = p.x + '%'; b.style.top = p.y + '%';
       b.textContent = idx + 1; b.setAttribute('aria-label', p.ja + '（' + p.en + '）');
       anatFig.appendChild(b); spots.push(b);
+      if (p.tx != null) {
+        /* 目のように小さい部位は、番号を引き出し線の先へ逃がし、部位そのものは輪で囲んで見せる */
+        var t = document.createElement('span');
+        t.className = 'spot-target'; t.style.left = p.tx + '%'; t.style.top = p.ty + '%';
+        t.setAttribute('aria-hidden', 'true');
+        t.addEventListener('click', function () { showPart(idx); });
+        anatFig.appendChild(t); b.target = t;
+      }
       var r = document.createElement('button');
       r.setAttribute('role', 'tab');
       r.innerHTML = '<span class="n">' + (idx + 1) + '</span><b>' + p.ja + '</b><small>' + p.en + '</small>';
@@ -904,7 +916,7 @@
     });
     function showPart(idx) {
       var p = parts[idx];
-      spots.forEach(function (s, i) { s.classList.toggle('is-active', i === idx); });
+      spots.forEach(function (s, i) { s.classList.toggle('is-active', i === idx); if (s.target) s.target.classList.toggle('is-active', i === idx); });
       rows.forEach(function (r, i) { r.classList.toggle('is-active', i === idx); r.setAttribute('aria-selected', i === idx); });
       anatCard.innerHTML = '<p class="k">0' + (idx + 1) + ' — ' + p.en + '</p><h3>' + p.ja + '</h3><p class="short">' + p.short + '</p><p class="long">' + p.long + '</p>';
       anatCard.classList.remove('swap'); void anatCard.offsetWidth; anatCard.classList.add('swap');
