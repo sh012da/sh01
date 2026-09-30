@@ -518,10 +518,6 @@
     .hot.edge b { display: inline-flex; width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.2); align-items: center; justify-content: center; font-family: var(--en); font-size: 1.05rem; font-weight: 500; }
 
     .zoc-toggles { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
-    .tgl { font-size: 0.78rem; letter-spacing: 0.08em; padding: 6px 14px 6px 10px; border: 1px solid var(--line-mid); border-radius: 30px; display: inline-flex; align-items: center; gap: 8px; transition: background 0.3s, border-color 0.3s, color 0.3s; }
-    .tgl::before { content: ''; width: 12px; height: 12px; border-radius: 50%; border: 2px dashed var(--c); }
-    .tgl[aria-pressed="true"] { background: var(--c); border-color: var(--c); color: #fff; }
-    .tgl[aria-pressed="true"]::before { border-color: #fff; border-style: solid; }
 
     .zoc-panel h3 { font-family: var(--serif); font-size: 1.12rem; font-weight: 600; display: flex; align-items: center; gap: 12px; margin-bottom: 2px; }
     .zoc-panel h3::before { content: ''; width: 34px; height: 12px; border-radius: 2px; background: var(--c); }
@@ -539,8 +535,87 @@
     .zoc-note { font-size: 0.76rem; color: var(--muted); line-height: 1.9; border-top: 1px solid var(--line); padding-top: 12px; }
     @media (max-width: 900px) {
       .zoc-wrap { grid-template-columns: 1fr; }
-      .hot { width: 32px; height: 32px; margin: -16px 0 0 -16px; font-size: 1rem; }
+      .hot { width: 34px; height: 34px; margin: -17px 0 0 -17px; font-size: 1rem; }
     }
+
+    /* ---- 展示構成：見方・写真／平面図・いま選んでいる作品 ---- */
+    #site .body-txt { margin-bottom: clamp(22px, 3vw, 32px); }
+    #site .body-txt b.k { color: var(--koumi); } #site .body-txt b.s { color: var(--samizu); }
+    .zoc-key { display: grid; grid-template-columns: auto repeat(3, minmax(0, 1fr)); gap: 10px; align-items: stretch; margin-bottom: clamp(26px, 3.4vw, 40px); }
+    .zk-title { align-self: center; font-family: var(--serif); font-weight: 600; font-size: 0.98rem; letter-spacing: 0.1em; padding-right: 8px; }
+    .zk-title small { display: block; font-family: var(--sans); font-weight: 400; font-size: 0.68rem; letter-spacing: 0.06em; color: var(--muted); }
+    .zk { display: flex; align-items: center; gap: 12px; text-align: left; padding: 12px 14px; min-height: 56px; border: 1px solid var(--line-mid); border-radius: 6px; background: var(--paper3); font-size: 0.74rem; line-height: 1.55; color: var(--ink2); transition: background 0.3s, border-color 0.3s, opacity 0.3s; }
+    .zk b { display: block; font-size: 0.86rem; font-weight: 600; color: var(--ink); letter-spacing: 0.04em; }
+    .zk .sw { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%; border: 3px dashed var(--c); background: color-mix(in srgb, var(--c) 18%, transparent); }
+    .zk .sw.line { border-radius: 0; border: 0; width: 30px; background: repeating-linear-gradient(180deg, var(--c) 0 5px, transparent 5px 9px) center / 3px 100% no-repeat; }
+    .zk[aria-pressed="true"] { border-color: var(--c); box-shadow: inset 4px 0 0 var(--c); }
+    .zk[aria-pressed="false"] { opacity: 0.5; }
+    .zk[aria-pressed="false"] b { text-decoration: line-through; }
+    .zk:hover { background: #fff; }
+    @media (max-width: 900px) {
+      .zoc-key { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+      .zk-title { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 10px; }
+      .zk { flex-direction: column; align-items: flex-start; gap: 8px; }
+    }
+    @media (max-width: 640px) {
+      .zoc-key { grid-template-columns: 1fr; }
+      .zk { flex-direction: row; align-items: center; gap: 12px; }
+    }
+
+    .zoc-stage { min-width: 0; }
+    @media (min-width: 901px) { .zoc-stage { position: sticky; top: 84px; } }
+    .zoc-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; margin-bottom: 12px; border-radius: 40px; background: rgba(36,35,42,0.08); }
+    .zoc-tabs button { border-radius: 40px; padding: 8px 12px; min-height: 44px; font-size: 0.84rem; letter-spacing: 0.08em; color: var(--ink2); transition: background 0.3s, color 0.3s; }
+    .zoc-tabs button small { font-size: 0.66rem; color: var(--muted); margin-left: 6px; letter-spacing: 0.04em; }
+    .zoc-tabs button[aria-selected="true"] { background: var(--ink); color: #fff; }
+    .zoc-tabs button[aria-selected="true"] small { color: rgba(255,255,255,0.7); }
+    /* 画面の高さに収まるよう、縦横比を保ったまま幅を決める（番号の位置がずれない） */
+    .zoc-figure { width: min(100%, calc(74vh * 1800 / 2114)); margin-inline: auto; }
+    .zoc-svg .ring { stroke-width: 7; stroke-dasharray: 30 16; }
+    .zoc-svg .ridge { stroke-width: 5; }
+    .ztag { position: absolute; z-index: 1; transform: translateY(-50%); padding: 4px 10px; border-radius: 30px; font-size: 0.7rem; letter-spacing: 0.08em; color: #fff; white-space: nowrap; pointer-events: none; transition: opacity 0.5s; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+    .ztag.ridge-tag { transform: translate(-50%, -50%); background: rgba(36,36,39,0.78); border: 1px dashed rgba(255,255,255,0.8); }
+    .ztag.k { background: var(--koumi); } .ztag.s { background: var(--samizu); }
+    .ztag.off { opacity: 0; }
+    .zoc-plan { position: relative; aspect-ratio: 600 / 640; width: min(100%, calc(74vh * 600 / 640)); margin-inline: auto; border-radius: 4px; overflow: hidden; background: var(--paper3); box-shadow: 0 30px 60px -30px rgba(36,35,42,0.45); }
+    .zoc-plan[hidden] { display: none; }
+    .zoc-figure[hidden] { display: none; }
+    .zoc-plan svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .zoc-plan .p-room { fill: none; stroke: var(--ink); stroke-width: 3; }
+    .zoc-plan .p-chamber { fill: url(#pHatch); stroke: var(--ink); stroke-width: 2; }
+    .zoc-plan .p-pillar { fill: #a9a39c; stroke: var(--ink); stroke-width: 2; }
+    .zoc-plan .p-face { stroke-width: 9; stroke-linecap: round; }
+    .zoc-plan .p-face.k, .zoc-plan .p-wall.k { stroke: var(--koumi); } .zoc-plan .p-face.s { stroke: var(--samizu); }
+    .zoc-plan .p-wall { stroke-width: 9; }
+    .zoc-plan .ring { fill: none; stroke-width: 3; stroke-dasharray: 12 8; }
+    .zoc-plan .ring.k { stroke: var(--koumi); } .zoc-plan .ring.s { stroke: var(--samizu); }
+    .zoc-plan .zone { transition: opacity 0.6s; } .zoc-plan .zone.off, .zoc-plan .ridge.off { opacity: 0; }
+    .zoc-plan .ridge { stroke: var(--ink); stroke-width: 2.5; stroke-dasharray: 7 6; fill: var(--ink); transition: opacity 0.6s; }
+    .zoc-plan .p-cone { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 5; }
+    .zoc-plan .p-eye { fill: var(--ink); }
+    .zoc-plan .p-lbl { font-family: var(--sans); font-size: 15px; letter-spacing: 1px; fill: var(--ink2); }
+    .zoc-plan .p-lbl.dark { fill: #fff; font-size: 17px; }
+
+    /* いま選んでいる作品（タブレット・スマホでは図のすぐ下に出す） */
+    .zoc-now { display: none; }
+    @media (max-width: 900px) {
+      .zoc-panel .zoc-group { display: none; }
+      .zoc-now { display: block; margin-top: 12px; padding: 16px 16px 14px; border-radius: 6px; background: var(--paper3); border: 1px solid var(--line); border-top: 4px solid var(--c, var(--koumi)); }
+      .zn-top { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+      .zn-chips { display: flex; gap: 6px; flex: 1; }
+      .zn-chips button { width: 40px; height: 40px; border-radius: 50%; font-family: var(--en); font-size: 1.05rem; color: #fff; background: var(--c); opacity: 0.45; transition: opacity 0.3s, transform 0.3s var(--ease); }
+      .zn-chips button[aria-current="true"] { opacity: 1; transform: scale(1.08); box-shadow: 0 0 0 3px #fff, 0 0 0 4px var(--c); }
+      .zn-step { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line-mid); font-size: 0.9rem; }
+      .zn-zone { display: inline-block; font-size: 0.68rem; letter-spacing: 0.1em; color: #fff; background: var(--c); padding: 2px 10px; border-radius: 20px; }
+      .zoc-now h3 { font-family: var(--serif); font-size: 1.08rem; font-weight: 600; letter-spacing: 0.04em; line-height: 1.6; margin-top: 6px; }
+      .zoc-now .p { font-size: 0.74rem; color: var(--muted); letter-spacing: 0.06em; }
+      .zoc-now .d { font-size: 0.9rem; color: var(--ink2); line-height: 1.85; margin-top: 8px; }
+      .zoc-now .d a { color: var(--koumi); border-bottom: 1px solid currentColor; }
+      .zoc-now.swap .zn-body { animation: znIn 0.5s var(--ease); }
+      @keyframes znIn { from { opacity: 0; transform: translateY(8px); } }
+    }
+    @media (max-width: 480px) { .zoc-tabs button small { display: none; } }
+    @media (max-width: 380px) { .zn-chips button, .zn-step { width: 36px; height: 36px; } .zn-chips { gap: 4px; } }
 
     /* ============================================================
        04 WORKS — 稜線スライダー
@@ -1264,16 +1339,24 @@
       <div class="container">
         <div class="sec-head reveal"><p class="sec-label"><span class="no">04</span>展示構成について</p><p class="sec-en">Spatial Layout — ZOC</p></div>
         <h2 class="sec-title reveal">柱を境に、<br>二つのZOCが静かに重なる。</h2>
-        <p class="body-txt reveal" style="margin-bottom: clamp(32px, 4vw, 48px);">Zone of Control（ZOC）＝各作品が主に作用する空間的領域。柱の左前面（小海町の風景）と右奥面（左美都の風景）、それぞれの主作品を中心に領域を設定し、柱の稜線＝作品の境界で二つのZOCが重なり合う。番号をタップすると、各作品の解説が開きます。</p>
+        <p class="body-txt reveal">柱の角（稜線）を境に、左に<b class="k">小海町の風景</b>、右に<b class="s">左美都の風景</b>。それぞれの作品が主に作用する範囲を <b>ZOC</b>（Zone of Control）と呼び、二つの ZOC は稜線で静かに重なり合う。</p>
+
+        <!-- 見方：凡例を兼ねた切り替えボタン -->
+        <div class="zoc-key reveal" role="group" aria-label="図の見方と表示の切り替え">
+          <p class="zk-title">図の見方<small>押すと表示を切り替えられます</small></p>
+          <button class="zk" style="--c: var(--koumi)" data-toggle="koumi" aria-pressed="true"><i class="sw ring" aria-hidden="true"></i><span><b>赤い円 — 小海町の風景</b>実在の風景と伝承の作品が効く範囲</span></button>
+          <button class="zk" style="--c: var(--samizu)" data-toggle="samizu" aria-pressed="true"><i class="sw ring" aria-hidden="true"></i><span><b>青い円 — 左美都の風景</b>架空の風土の作品が効く範囲</span></button>
+          <button class="zk" style="--c: var(--cross)" data-toggle="ridge" aria-pressed="true"><i class="sw line" aria-hidden="true"></i><span><b>点線 — 柱の稜線</b>二つの ZOC が重なる境界</span></button>
+        </div>
 
         <div class="zoc-wrap">
-          <div class="reveal">
-            <div class="zoc-toggles" role="group" aria-label="表示の切り替え">
-              <button class="tgl" style="--c: var(--koumi)" data-toggle="koumi" aria-pressed="true">小海町の風景 ZOC</button>
-              <button class="tgl" style="--c: var(--samizu)" data-toggle="samizu" aria-pressed="true">左美都の風景 ZOC</button>
-              <button class="tgl" style="--c: var(--cross)" data-toggle="ridge" aria-pressed="true">柱の稜線</button>
+          <div class="zoc-stage reveal">
+            <div class="zoc-tabs" role="tablist" aria-label="図の種類">
+              <button role="tab" id="zocTabPhoto" aria-selected="true" aria-controls="zocFigure" data-view="photo">写真で見る<small>柱の正面から</small></button>
+              <button role="tab" id="zocTabPlan" aria-selected="false" aria-controls="zocPlan" data-view="plan" tabindex="-1">平面図で見る<small>真上から</small></button>
             </div>
-            <div class="zoc-figure" id="zocFigure">
+            <div class="zoc-views" id="zocViews">
+            <div class="zoc-figure" id="zocFigure" role="tabpanel" aria-labelledby="zocTabPhoto">
               <img src="../../images/exhi-koumi2026/hall-3.jpg" alt="Hall 3 の展示風景。中央のコンクリート柱の左前面と右奥面に油彩画が掛かる" width="1800" height="2114" loading="lazy">
               <svg class="zoc-svg animate" viewBox="0 0 1800 2114" aria-hidden="true">
                 <defs>
@@ -1290,12 +1373,42 @@
                 </g>
                 <g class="ridge" data-zone="ridge">
                   <line x1="836" y1="80" x2="836" y2="1760"/>
-                  <text class="ridge-label" x="856" y="260">柱の稜線 ＝ 境界</text>
                 </g>
               </svg>
+              <span class="ztag ridge-tag" data-zone="ridge" style="left: 46.4%; top: 9%">柱の稜線 ＝ 境界</span>
+              <span class="ztag k" data-zone="koumi" style="left: 4%; top: 22%">小海町の風景</span>
+              <span class="ztag s" data-zone="samizu" style="right: 4%; top: 22%">左美都の風景</span>
               <!-- hotspots injected by JS -->
             </div>
-            <p class="cap"><span>展示イメージ ／ 柱正面より</span><span class="en">Fig. 01</span></p>
+            <div class="zoc-plan" id="zocPlan" role="tabpanel" aria-labelledby="zocTabPlan" hidden>
+              <svg viewBox="0 0 600 640" aria-hidden="true">
+                <defs>
+                  <radialGradient id="pK"><stop offset="0" stop-color="#d0694b" stop-opacity="0.34"/><stop offset="1" stop-color="#d0694b" stop-opacity="0.04"/></radialGradient>
+                  <radialGradient id="pS"><stop offset="0" stop-color="#3c5f80" stop-opacity="0.4"/><stop offset="1" stop-color="#3c5f80" stop-opacity="0.05"/></radialGradient>
+                  <pattern id="pHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="rgba(36,35,42,0.28)" stroke-width="2"/></pattern>
+                </defs>
+                <rect class="p-room" x="30" y="30" width="540" height="560"/>
+                <rect class="p-chamber" x="30" y="30" width="190" height="170"/>
+                <text class="p-lbl" x="125" y="62" text-anchor="middle">奥の小部屋</text>
+                <g class="zone" data-zone="koumi"><circle cx="212" cy="410" r="140" fill="url(#pK)"/><circle class="ring k" cx="212" cy="410" r="140"/></g>
+                <g class="zone" data-zone="samizu"><circle cx="388" cy="410" r="140" fill="url(#pS)"/><circle class="ring s" cx="388" cy="410" r="140"/></g>
+                <polygon class="p-pillar" points="300,214 396,310 300,406 204,310"/>
+                <text class="p-lbl dark" x="300" y="316" text-anchor="middle">柱</text>
+                <line class="p-face k" x1="204" y1="310" x2="300" y2="406"/>
+                <line class="p-face s" x1="300" y1="406" x2="396" y2="310"/>
+                <g class="ridge" data-zone="ridge"><line x1="300" y1="406" x2="300" y2="590"/><circle cx="300" cy="406" r="7"/></g>
+                <text class="p-lbl" x="310" y="452">稜線</text>
+                <path class="p-cone" d="M300 548 L236 470 M300 548 L364 470"/>
+                <circle class="p-eye" cx="300" cy="548" r="9"/>
+                <text class="p-lbl" x="316" y="572">写真の視点</text>
+                <line class="p-wall k" x1="120" y1="590" x2="250" y2="590"/>
+                <text class="p-lbl" x="30" y="624">手前・通路側</text>
+                <text class="p-lbl" x="570" y="624" text-anchor="end">概念図（縮尺なし）</text>
+              </svg>
+            </div>
+            </div>
+            <div class="zoc-now" id="zocNow" aria-live="polite"></div>
+            <p class="cap"><span id="zocCap">展示イメージ ／ 柱正面より</span><span class="en" id="zocFig">Fig. 01</span></p>
           </div>
 
           <div class="zoc-panel reveal d2" id="zocPanel">
@@ -1692,37 +1805,80 @@
       { n: 2, z: 'samizu', x: 1068, y: 1480, t: '林（3）', p: '柱・奥側面 ／ 油彩', d: 'ZOCの中心となるメイン油彩。左美都の風景を表現する主作品。' },
       { n: 4, z: 'samizu', x: 1464, y: 1342, t: '左美都の取材映像', p: '右壁面 ／ 小型モニター', d: '壁面に掛けた小型モニターに、2023年に撮影した現地取材映像を流す。' }
     ];
-    var fig = document.getElementById('zocFigure');
+    var fig = document.getElementById('zocFigure'), plan = document.getElementById('zocPlan'), zviews = document.getElementById('zocViews');
+    /* 平面図（600×640）での位置 */
+    var PLAN = { 1: [238, 356], 2: [362, 356], 3: [125, 125], 4: [548, 300], 5: [185, 572] };
     var hots = {}, items = {};
     works.forEach(function (w) {
-      var h = document.createElement('button');
-      h.className = 'hot ' + w.z + (w.edge ? ' edge' : '');
-      h.style.left = (w.x / 1800 * 100) + '%'; h.style.top = (w.y / 2114 * 100) + '%';
-      h.setAttribute('aria-label', w.n + '：' + w.t);
-      h.innerHTML = w.edge ? '<b>' + w.n + '</b>手前・通路側' : w.n;
-      fig.appendChild(h); hots[w.n] = h;
+      function mk(parent, x, y, edge) {
+        var h = document.createElement('button');
+        h.className = 'hot ' + w.z + (edge ? ' edge' : '');
+        h.style.left = x + '%'; h.style.top = y + '%';
+        h.setAttribute('aria-label', w.n + '：' + w.t);
+        h.innerHTML = edge ? '<b>' + w.n + '</b>手前・通路側' : w.n;
+        parent.appendChild(h); (hots[w.n] = hots[w.n] || []).push(h);
+        h.addEventListener('click', act);
+        h.addEventListener('mouseenter', function () { if (matchMedia('(hover:hover)').matches) activate(w.n, false); });
+        return h;
+      }
+      mk(fig, w.x / 1800 * 100, w.y / 2114 * 100, w.edge);
+      mk(plan, PLAN[w.n][0] / 600 * 100, PLAN[w.n][1] / 640 * 100, false);
       var it = document.createElement('button');
       it.className = 'zoc-item'; it.style.setProperty('--c', w.z === 'koumi' ? 'var(--koumi)' : 'var(--samizu)');
       it.innerHTML = '<span class="n">' + w.n + '</span><span><b>' + w.t + '</b><small>' + w.p + '</small><span class="d">' + w.d + '</span></span>';
       document.querySelector('[data-list="' + w.z + '"]').appendChild(it); items[w.n] = it;
-      function act(e) { if (e && e.target.closest('a')) return; activate(w.n, e && e.currentTarget === h); }
-      h.addEventListener('click', act); it.addEventListener('click', act);
-      h.addEventListener('mouseenter', function () { if (matchMedia('(hover:hover)').matches) activate(w.n, false); });
+      function act(e) { if (e && e.target.closest('a')) return; activate(w.n, false); }
+      it.addEventListener('click', act);
+    });
+    /* 番号順に 1 → 5 とめくれるように */
+    var order = works.map(function (w) { return w.n; }).sort(), byN = {};
+    works.forEach(function (w) { byN[w.n] = w; });
+    var zNow = document.getElementById('zocNow');
+    zNow.innerHTML = '<div class="zn-top"><div class="zn-chips" role="group" aria-label="作品を選ぶ">'
+      + order.map(function (n) { return '<button type="button" data-n="' + n + '" style="--c: var(--' + byN[n].z + ')" aria-label="' + n + '：' + byN[n].t + '">' + n + '</button>'; }).join('')
+      + '</div><button class="zn-step" type="button" data-step="-1" aria-label="前の作品">←</button><button class="zn-step" type="button" data-step="1" aria-label="次の作品">→</button></div><div class="zn-body"></div>';
+    zNow.addEventListener('click', function (e) {
+      var c = e.target.closest('[data-n]'), st = e.target.closest('[data-step]');
+      if (c) activate(+c.dataset.n);
+      else if (st) activate(order[(order.indexOf(current) + +st.dataset.step + order.length) % order.length]);
     });
     var current = 0;
-    function activate(n, fromHot) {
+    function activate(n) {
+      if (n === current) return;
       current = n;
-      Object.keys(hots).forEach(function (k) { hots[k].classList.toggle('is-active', +k === n); items[k].classList.toggle('is-active', +k === n); });
-      if (fromHot && window.innerWidth <= 900) items[n].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      Object.keys(hots).forEach(function (k) {
+        hots[k].forEach(function (h) { h.classList.toggle('is-active', +k === n); });
+        items[k].classList.toggle('is-active', +k === n);
+      });
+      var w = byN[n];
+      zNow.style.setProperty('--c', 'var(--' + w.z + ')');
+      zNow.querySelectorAll('.zn-chips button').forEach(function (b) { b.setAttribute('aria-current', +b.dataset.n === n); });
+      zNow.querySelector('.zn-body').innerHTML = '<span class="zn-zone">' + (w.z === 'koumi' ? '小海町の風景 ZOC' : '左美都の風景 ZOC') + '</span><h3>' + n + '　' + w.t + '</h3><p class="p">' + w.p + '</p><p class="d">' + w.d + '</p>';
+      zNow.classList.remove('swap'); void zNow.offsetWidth; zNow.classList.add('swap');
     }
-    activate(1, false);
-    document.querySelectorAll('.tgl').forEach(function (b) {
+    activate(1);
+    document.querySelectorAll('.zk').forEach(function (b) {
       b.addEventListener('click', function () {
         var on = b.getAttribute('aria-pressed') !== 'true';
         b.setAttribute('aria-pressed', on);
         var key = b.dataset.toggle;
-        fig.querySelectorAll('[data-zone="' + key + '"]').forEach(function (g) { g.classList.toggle('off', !on); });
-        if (key !== 'ridge') fig.querySelectorAll('.hot.' + key).forEach(function (h) { h.style.opacity = on ? 1 : 0.35; });
+        zviews.querySelectorAll('[data-zone="' + key + '"]').forEach(function (g) { g.classList.toggle('off', !on); });
+        if (key !== 'ridge') zviews.querySelectorAll('.hot.' + key).forEach(function (h) { h.style.opacity = on ? 1 : 0.35; });
+      });
+    });
+    /* 写真 ／ 平面図 の切り替え */
+    var zTabs = document.querySelectorAll('.zoc-tabs [role="tab"]');
+    function setView(v) {
+      zTabs.forEach(function (t) { var on = t.dataset.view === v; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
+      fig.hidden = v !== 'photo'; plan.hidden = v !== 'plan';
+      document.getElementById('zocCap').textContent = v === 'plan' ? 'Hall 3 の配置 ／ 真上から見た概念図' : '展示イメージ ／ 柱正面より';
+      document.getElementById('zocFig').textContent = v === 'plan' ? 'Fig. 01b' : 'Fig. 01';
+    }
+    zTabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { setView(t.dataset.view); });
+      t.addEventListener('keydown', function (e) {
+        if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+        var nx = zTabs[(i + 1) % zTabs.length]; setView(nx.dataset.view); nx.focus();
       });
     });
 
@@ -2076,9 +2232,9 @@
     new MutationObserver(function () { if ($$('#found span.got').length >= 5) collect(3, $('#torch')); }).observe($('#found'), { subtree: true, attributes: true, attributeFilter: ['class'] });
     var zocSeen = {};
     new MutationObserver(function () {
-      $$('.zoc-figure .hot.is-active').forEach(function (h) { zocSeen[h.getAttribute('aria-label').charAt(0)] = 1; });
+      $$('.zoc-views .hot.is-active').forEach(function (h) { zocSeen[h.getAttribute('aria-label').charAt(0)] = 1; });
       if (Object.keys(zocSeen).length >= 5) collect(4, $('#zocFigure'));
-    }).observe($('#zocFigure'), { subtree: true, attributes: true, attributeFilter: ['class'] });
+    }).observe($('#zocViews'), { subtree: true, attributes: true, attributeFilter: ['class'] });
     var entVisible = false, cutSeen = {};
     new IntersectionObserver(function (en) { entVisible = en[0].isIntersecting; }, { threshold: 0.25 }).observe($('.entrance-fig'));
     $$('#cuts button').forEach(function (b, i) {
