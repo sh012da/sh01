@@ -330,20 +330,63 @@
       transform: translate(-50%, 180%); transition: transform 0.8s var(--ease-expo); max-width: calc(100vw - 20px);
     }
     .dock.show { transform: translate(-50%, 0); }
-    .dock-btn { width: 44px; height: 44px; flex: none; border-radius: 999px; display: grid; place-items: center; font-family: var(--en); font-size: 1rem; color: rgba(244,241,235,0.7); transition: background-color 0.3s ease, color 0.3s ease; }
-    .dock-btn:hover { background: rgba(255,255,255,0.06); color: #fff; }
-    .dock-btn:disabled { opacity: 0.25; cursor: default; background: none; }
-    .dock-mid { width: clamp(190px, 26vw, 280px); padding: 0 8px; min-width: 0; }
-    .dock-now { display: flex; align-items: baseline; gap: 10px; line-height: 1.4; white-space: nowrap; overflow: hidden; }
-    .dock-now .en { font-size: 0.58rem; letter-spacing: 0.22em; color: var(--gold); flex: none; }
-    .dock-now b { font-weight: 300; font-size: 0.8rem; letter-spacing: 0.08em; color: var(--fg); overflow: hidden; text-overflow: ellipsis; }
-    .dock-segs { display: flex; gap: 4px; margin-top: 6px; }
-    .dock-segs button { flex: 1; height: 12px; display: flex; align-items: center; }
-    .dock-segs button span { display: block; width: 100%; height: 1px; background: rgba(255,255,255,0.18); overflow: hidden; }
-    .dock-segs button span i { display: block; height: 100%; width: 100%; background: var(--seg, var(--gold)); transform-origin: left; transform: scaleX(var(--p, 0)); }
-    .dock-txt { position: relative; width: auto; padding: 0 14px; font-family: var(--en); font-size: 0.62rem; letter-spacing: 0.24em; text-transform: uppercase; gap: 8px; display: inline-flex; align-items: center; }
-    .dock-txt + .dock-txt::before { content: ''; position: absolute; left: 0; top: 30%; bottom: 30%; width: 0.5px; background: rgba(255,255,255,0.14); }
-    .dock-txt svg { width: 13px; height: 13px; flex: none; }
+    /* 順路の地図：会場ごとに駅があり、歩いたぶんだけ線が満ちていく */
+    .dock { padding: 8px 10px; gap: 4px; }
+    .dock-btn {
+      position: relative; width: 44px; height: 44px; flex: none; border-radius: 999px; display: grid; place-items: center;
+      color: rgba(244,241,235,0.78); transition: background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+    }
+    .dock-btn svg { width: 16px; height: 16px; }
+    .dock-btn:hover { background: rgba(255,255,255,0.07); color: #fff; }
+    .dock-btn:disabled { opacity: 0.22; cursor: default; background: none; }
+    .dock-arrow { border: 0.5px solid rgba(232,228,219,0.18); }
+    .dock-arrow:not(:disabled):hover { border-color: var(--gold); color: var(--gold); }
+    .dock-mid { width: clamp(270px, 30vw, 360px); padding: 2px 14px 0; min-width: 0; }
+    .dock-now { display: flex; align-items: baseline; gap: 10px; line-height: 1.35; white-space: nowrap; }
+    .dock-no { flex: none; font-family: var(--en); font-size: 0.7rem; letter-spacing: 0.12em; color: var(--gold); font-variant-numeric: lining-nums; }
+    .dock-now b { min-width: 0; font-weight: 400; font-size: 0.86rem; letter-spacing: 0.08em; color: var(--fg); overflow: hidden; text-overflow: ellipsis; }
+    .dock-ph { margin-left: auto; flex: none; font-size: 0.66rem; letter-spacing: 0.1em; color: var(--text-muted); font-variant-numeric: lining-nums tabular-nums; }
+    .dock-ph em { font-style: normal; font-family: var(--en); font-size: 0.82rem; color: var(--fg); }
+
+    .route { position: relative; height: 26px; margin-top: 4px; }
+    .route-line { position: absolute; left: 0; right: 0; top: 7px; height: 1px; background: linear-gradient(90deg, transparent, rgba(232,228,219,0.2) 6%, rgba(232,228,219,0.2) 94%, transparent); }
+    .route-line i { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; background: linear-gradient(90deg, rgba(229,211,179,0.2), var(--gold)); transform-origin: left; transform: scaleX(var(--f, 0)); transition: transform 0.25s linear; }
+    .st {
+      position: absolute; top: 0; left: var(--x); transform: translateX(-50%); width: 40px; height: 26px;
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+    }
+    .st i { width: 7px; height: 7px; margin-top: 4px; border-radius: 50%; border: 1px solid rgba(232,228,219,0.4); background: #0b0b0a; transition: all 0.4s var(--ease-out-back); }
+    .st span { font-family: var(--en); font-size: 0.64rem; letter-spacing: 0.04em; line-height: 1; color: var(--text-muted); font-variant-numeric: lining-nums; transition: color 0.3s ease; }
+    .st.past i { border-color: var(--seg); background: var(--seg); }
+    .st[aria-current="true"] i { width: 11px; height: 11px; margin-top: 2px; border-color: var(--gold); background: var(--gold); box-shadow: 0 0 0 4px rgba(229,211,179,0.14), 0 0 12px rgba(229,211,179,0.6); }
+    .st[aria-current="true"] span { color: var(--gold); }
+    .st:hover i { border-color: #fff; transform: scale(1.3); }
+    .st:hover span { color: var(--fg); }
+
+    .dock-sep { width: 0.5px; height: 30px; background: rgba(255,255,255,0.14); margin: 0 4px; flex: none; }
+    .dock-txt { width: auto; padding: 0 14px; gap: 8px; display: inline-flex; align-items: center; font-size: 0.74rem; letter-spacing: 0.1em; }
+    .dock-txt svg { width: 14px; height: 14px; flex: none; }
+
+    /* ボタンにふれると、何をするかを小さく */
+    [data-tip]::after {
+      content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 16px); transform: translate(-50%, 6px);
+      padding: 6px 12px; border-radius: 2px; white-space: nowrap; pointer-events: none;
+      font-family: var(--jp); font-size: 0.68rem; letter-spacing: 0.1em; line-height: 1.5; color: var(--fg);
+      background: rgba(10,10,8,0.94); border: 0.5px solid rgba(229,211,179,0.35); opacity: 0; transition: opacity 0.25s ease, transform 0.35s var(--ease-expo);
+    }
+    [data-tip]:hover::after, [data-tip]:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+    .st[data-tip]::after { bottom: calc(100% + 42px); }
+    @media (hover: none) { [data-tip]::after { display: none; } }
+
+    /* はじめて出てきたときだけ、使い方をひとこと */
+    .dock-hint {
+      position: absolute; left: 50%; bottom: calc(100% + 14px); transform: translate(-50%, 8px); opacity: 0; pointer-events: none;
+      padding: 8px 16px; border-radius: 999px; white-space: nowrap; font-size: 0.72rem; letter-spacing: 0.1em; color: #141210;
+      background: var(--gold); box-shadow: 0 10px 24px rgba(0,0,0,0.4); transition: opacity 0.5s ease, transform 0.6s var(--ease-expo);
+    }
+    .dock-hint::after { content: ''; position: absolute; left: 50%; top: 100%; margin-left: -5px; border: 5px solid transparent; border-top-color: var(--gold); }
+    .dock-hint.on { opacity: 1; transform: translate(-50%, 0); }
+    .dock:hover .dock-hint { opacity: 0; }
 
     /* ════════════════════════════════════════
         INDEX — すべての展示を一望
@@ -630,10 +673,16 @@
       .ch-meta { margin-top: 12px; padding-top: 12px; }
       .ch-hint { margin-top: 18px; }
       .ph.sm { width: calc(var(--ph) * 0.84 * var(--ar)); }
-      .dock-mid { width: min(150px, 38vw); }
-      .dock-txt .t { display: none; }
+      .dock { padding: 6px 8px; gap: 2px; }
+      .dock-mid { width: min(212px, 54vw); padding: 2px 8px 0; }
+      .dock-now { gap: 8px; }
+      .dock-no .yr, .dock-ph .lb { display: none; }
+      .dock-now b { font-size: 0.8rem; }
+      .dock-txt .t, .dock-rnd, .dock-sep { display: none; }
       .dock-txt { width: 40px; padding: 0; justify-content: center; }
-      .dock-btn { width: 40px; }
+      .dock-btn { width: 40px; height: 40px; }
+      .st span { font-size: 0.58rem; }
+      .dock-hint { white-space: normal; width: max-content; max-width: calc(100vw - 40px); text-align: center; }
       footer { padding-bottom: calc(110px + env(safe-area-inset-bottom)); }
     }
     @media (min-width: 769px) and (max-height: 940px) {
@@ -785,15 +834,17 @@
     <p class="footer-copy">© 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
-  <nav class="dock" id="dock" aria-label="会場の移動">
-    <button class="dock-btn" id="dPrev" type="button" aria-label="前の会場へ">←</button>
+  <nav class="dock" id="dock" aria-label="順路（会場の移動）">
+    <p class="dock-hint" id="dockHint" aria-hidden="true">順路の点を押すと、その会場へ移動できます</p>
+    <button class="dock-btn dock-arrow" id="dPrev" type="button" aria-label="前の会場へ" data-tip="前の会場へ"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M13 8H3M7 4 3 8l4 4"/></svg></button>
     <div class="dock-mid">
-      <p class="dock-now" aria-live="polite"><span class="en" id="dNo"></span><b id="dTitle"></b></p>
-      <div class="dock-segs" id="dSegs"></div>
+      <p class="dock-now" aria-live="polite"><span class="dock-no" id="dNo"></span><b id="dTitle"></b><span class="dock-ph" id="dPh"></span></p>
+      <div class="route" id="route" role="group" aria-label="順路"><span class="route-line" aria-hidden="true"><i id="routeFill"></i></span></div>
     </div>
-    <button class="dock-btn" id="dNext" type="button" aria-label="次の会場へ">→</button>
-    <button class="dock-btn dock-txt" id="dRnd" type="button" title="気まぐれに、どこかの一枚へ"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M1 4h3.5c3 0 4 8 7 8H15M12.5 9.5 15 12l-2.5 2.5M1 12h3.5c1.2 0 2-1.3 2.7-3M15 4h-3.5c-1.2 0-2 1.3-2.7 3M12.5 1.5 15 4l-2.5 2.5"/></svg><span class="t">Shuffle</span><span class="sr-only">気まぐれに、どこかの写真へ</span></button>
-    <a class="dock-btn dock-txt" href="#archive" data-jump="archive"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12"/></svg><span class="t">Index</span><span class="sr-only">展示の一覧へ</span></a>
+    <button class="dock-btn dock-arrow" id="dNext" type="button" aria-label="次の会場へ" data-tip="次の会場へ"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+    <span class="dock-sep" aria-hidden="true"></span>
+    <button class="dock-btn dock-txt dock-rnd" id="dRnd" type="button" data-tip="どこかの一枚へ、おまかせで"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M1 4h3.5c3 0 4 8 7 8H15M12.5 9.5 15 12l-2.5 2.5M1 12h3.5c1.2 0 2-1.3 2.7-3M15 4h-3.5c-1.2 0-2 1.3-2.7 3M12.5 1.5 15 4l-2.5 2.5"/></svg><span class="t">おまかせ</span><span class="sr-only">（どこかの写真へ）</span></button>
+    <a class="dock-btn dock-txt" href="#archive" data-jump="archive" data-tip="すべての展示の一覧へ"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12"/></svg><span class="t">一覧</span><span class="sr-only">展示の一覧へ</span></a>
   </nav>
 
   <div class="cursor" id="cursor" aria-hidden="true"><div class="cursor-in"><span class="it">View</span><small>記録をひらく</small></div></div>
@@ -1044,12 +1095,15 @@
     }).join('');
 
     /* ---------- dock ---------- */
-    var dock = document.getElementById('dock'), dSegs = document.getElementById('dSegs');
-    dSegs.innerHTML = CH.map(function (e, i) {
-      return '<button type="button" data-jump="' + e.id + '" aria-label="' + pad(i + 1) + ' ' + e.year + ' ' + esc(e.title) + 'へ" style="--seg:' + e.acc + '"><span><i></i></span></button>';
-    }).join('');
-    var segs = dSegs.querySelectorAll('i');
-    var dNo = document.getElementById('dNo'), dTitle = document.getElementById('dTitle');
+    var dock = document.getElementById('dock'), route = document.getElementById('route'), routeFill = document.getElementById('routeFill');
+    /* 駅は、各区間の真ん中に置く（線は会場の中を歩くあいだ、次の駅へ向かって伸びる） */
+    route.insertAdjacentHTML('beforeend', CH.map(function (e, i) {
+      return '<button type="button" class="st" data-jump="' + e.id + '" data-tip="No.' + pad(i + 1) + '　' + e.year + '「' + esc(e.short || e.title) + '」"'
+        + ' aria-label="No.' + pad(i + 1) + ' ' + e.year + ' ' + esc(e.title) + 'へ" style="--x:' + ((i + 0.5) / CH.length * 100).toFixed(2) + '%;--seg:' + e.acc + '">'
+        + '<i></i><span>' + e.year + '</span></button>';
+    }).join(''));
+    var stations = route.querySelectorAll('.st');
+    var dNo = document.getElementById('dNo'), dTitle = document.getElementById('dTitle'), dPh = document.getElementById('dPh');
     var dPrev = document.getElementById('dPrev'), dNext = document.getElementById('dNext');
     var cur = -2;
     dPrev.addEventListener('click', function () { jump(CH[Math.max(0, cur < 0 ? 0 : cur - 1)].id); });
@@ -1111,8 +1165,15 @@
     var bar = document.getElementById('progress'), b2t = document.getElementById('b2t'), b2tVal = document.getElementById('b2tVal');
     var ticking = false, seenCh = {}, saveT;
     function remember(v) { clearTimeout(saveT); saveT = setTimeout(function () { store('ex-last', v); }, 400); }
+    /* 順路の使い方を、最初の一回だけそっと */
+    var hintDone = !!store('ex-dock-hint'), dockHint = document.getElementById('dockHint');
+    function showHint() {
+      hintDone = true; store('ex-dock-hint', '1');
+      setTimeout(function () { dockHint.classList.add('on'); }, 900);
+      setTimeout(function () { dockHint.classList.remove('on'); }, 5600);
+    }
     function onScroll() {
-      var y = window.scrollY, active = -1, bg = '';
+      var y = window.scrollY, active = -1, bg = '', at = -1, prog = 0;
       var max = Math.max(1, document.documentElement.scrollHeight - vh), pr = Math.min(1, y / max);
       bar.style.transform = 'scaleX(' + pr.toFixed(4) + ')';
       b2tVal.style.strokeDashoffset = (301.6 * (1 - pr)).toFixed(1);
@@ -1124,30 +1185,39 @@
         if (inView) {
           active = i; bg = e.bg;
           /* いま見ている写真を覚えておく（次に来たとき、ここから） */
+          prog = p;
           if (!isStatic && e.dist) {
-            var ph = e.track.querySelectorAll('.ph'), x = p * e.dist + vw / 2, at = 0;
+            var ph = e.track.querySelectorAll('.ph'), x = p * e.dist + vw / 2; at = 0;
             for (var j = 0; j < ph.length; j++) if (ph[j].offsetLeft <= x) at = j;
             remember(e.id + ':' + at);
           } else remember(e.id);
         }
         if (y + vh * 0.5 >= e.top) active = Math.max(active, i);
-        segs[i].parentNode.parentNode.setAttribute('aria-current', inView);
-        segs[i].style.setProperty('--p', y + vh * 0.5 < e.top ? 0 : (e.dist ? Math.max(0.04, p) : 1));
+        stations[i].setAttribute('aria-current', inView);
       });
       document.body.style.backgroundColor = bg || '';
       var pastAll = archive.getBoundingClientRect().top < vh * 0.5;
       if (pastAll) active = CH.length;
+      /* 順路の線：駅 i から、歩いたぶんだけ次の駅へ */
+      var f = active < 0 ? 0 : active >= CH.length ? 1 : Math.min(1, (active + 0.5 + prog) / CH.length);
+      routeFill.style.setProperty('--f', f.toFixed(4));
+      stations.forEach(function (st, i) { st.classList.toggle('past', i < active || active >= CH.length); });
+      if (active >= 0 && active < CH.length) {
+        var n = CH[active].shots.length;
+        dPh.innerHTML = at >= 0 ? '<span class="lb">写真 </span><em>' + pad(at + 1) + '</em> / ' + pad(n) : pad(n) + '<span class="lb"> 枚</span>';
+      } else dPh.textContent = '';
       var heroGone = hero.getBoundingClientRect().bottom < vh * 0.4;
       heroVisible = !heroGone;
       dock.classList.toggle('show', heroGone);
+      if (heroGone && !hintDone) showHint();
       b2t.classList.toggle('show', heroGone);
       if (active !== cur) {
         cur = active;
-        if (cur >= CH.length) { dNo.textContent = 'Index'; dTitle.textContent = 'すべての展示の一覧'; }
-        else if (cur < 0) { dNo.textContent = 'Lobby'; dTitle.textContent = 'まもなく開場です（下へ）'; }
+        if (cur >= CH.length) { dNo.textContent = 'Exit'; dTitle.textContent = 'すべての展示の一覧'; }
+        else if (cur < 0) { dNo.textContent = 'Lobby'; dTitle.textContent = 'まもなく開場です — 下へ'; }
         else {
           var e = CH[cur];
-          dNo.textContent = pad(cur + 1) + '/' + pad(CH.length) + ' · ' + e.year;
+          dNo.innerHTML = 'No.' + pad(cur + 1) + '<span class="yr"> · ' + e.year + '</span>';
           dTitle.textContent = e.title;
           if (!seenCh[e.id]) { seenCh[e.id] = 1; gtag('event', 'chapter_view', { exhibition: e.id }); }
         }
