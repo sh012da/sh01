@@ -188,6 +188,8 @@
     .hero-body { margin-top: 18px; max-width: 34em; font-size: clamp(0.8rem, 1.1vw, 0.9rem); line-height: 2.1; color: var(--text-muted); letter-spacing: 0.08em; }
     .js .hero-en, .js .hero-sub, .js .hero-body, .js .hero-acts { opacity: 0; transform: translateY(20px); animation: fadeUp 1.2s var(--ease-expo) forwards; }
     .js .hero-en { animation-delay: 0.9s; } .js .hero-sub { animation-delay: 1.1s; } .js .hero-body { animation-delay: 1.25s; } .js .hero-acts { animation-delay: 1.4s; }
+    .js .hero-en { transform: none; animation: enIn 2.2s var(--ease-expo) 0.8s forwards; }
+    @keyframes enIn { from { opacity: 0; letter-spacing: 1.1em; filter: blur(6px); } to { opacity: 1; letter-spacing: 0.42em; filter: none; } }
     .js .hero-rule { transform: scaleX(0); animation: drawLine 1.5s var(--ease-expo) 1.3s forwards; }
     @keyframes manifest { 0% { opacity: 0; transform: translateY(30px) scale(0.95); filter: blur(10px); } 100% { opacity: 1; transform: none; filter: blur(0); } }
     @keyframes clipUp { to { opacity: 1; transform: none; } }
@@ -250,8 +252,8 @@
     .ch-no { display: flex; align-items: center; gap: 14px; font-family: var(--en); font-size: 0.68rem; letter-spacing: 0.4em; color: var(--acc); text-transform: uppercase; }
     .ch-no::after { content: ''; width: 60px; height: 1px; background: color-mix(in srgb, var(--acc) 45%, transparent); }
     .ch-year {
-      font-family: var(--en); font-weight: 300; font-size: clamp(4.6rem, 9vw, 8.4rem); line-height: 0.9; letter-spacing: 0.02em;
-      color: transparent; -webkit-text-stroke: 0.6px color-mix(in srgb, var(--acc) 55%, transparent); margin: 6px 0 0 -0.04em;
+      display: flex; font-family: var(--en); font-weight: 300; font-size: clamp(4.2rem, 8.4vw, 7.8rem); line-height: 1; letter-spacing: 0.02em;
+      color: transparent; -webkit-text-stroke: 0.6px color-mix(in srgb, var(--acc) 55%, transparent); margin: -0.12em 0 -0.16em -0.04em;
     }
     .ch-intro h2 { margin-top: 14px; font-weight: 300; font-size: clamp(1.7rem, 3vw, 2.6rem); line-height: 1.4; letter-spacing: 0.12em; color: var(--fg); }
     .ch-intro h2 small { display: block; margin-top: 0.6em; font-size: 0.4em; font-weight: 300; letter-spacing: 0.14em; color: var(--text-muted); line-height: 1.7; }
@@ -263,7 +265,7 @@
     .ch-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
     .ch-hint { display: flex; align-items: center; gap: 14px; margin-top: 24px; font-family: var(--en); font-size: 0.62rem; letter-spacing: 0.35em; color: var(--muted-col); text-transform: uppercase; }
     .ch-hint i { width: 60px; height: 1px; background: linear-gradient(to right, var(--acc), transparent); animation: pulseLine 2.4s infinite var(--ease-expo); }
-    .tag-live { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 10px; font-family: var(--en); font-size: 0.62rem; letter-spacing: 0.3em; color: var(--ex); text-transform: uppercase; }
+    .ch-no.is-live { color: var(--ex); gap: 12px; }
 
     .ph { flex: none; margin: 0; width: calc(var(--ph) * var(--ar)); display: flex; flex-direction: column; gap: 12px; }
     .ph.sm { width: calc(var(--ph) * 0.74 * var(--ar)); align-self: flex-start; }
@@ -421,6 +423,112 @@
     .back-to-top:hover .b2t-text { color: var(--bg); }
 
     /* ════════════════════════════════════════
+        KINETIC TYPE — 文字が、そっと動く
+    ════════════════════════════════════════ */
+    /* 一字ずつ現れる（章の題・見出し・閉館のご案内） */
+    .split .c { display: inline-block; white-space: pre; }
+    .js .split .c {
+      opacity: 0; transform: translateY(0.55em) rotate(5deg); filter: blur(6px);
+      transition: opacity 0.9s ease, transform 1.2s var(--ease-expo), filter 0.9s ease;
+      transition-delay: calc(var(--i) * 42ms + var(--d, 0ms));
+    }
+    .js .in .split .c, .js .split.in .c { opacity: 1; transform: none; filter: none; }
+
+    /* ヒーローの題：ふれると、一字だけ会釈する */
+    .hero-title .ch1 i { display: inline-block; font-style: normal; transition: transform 0.8s var(--ease-out-back), color 0.5s ease, text-shadow 0.5s ease; }
+    .hero-title .ch1 i:hover { transform: translateY(-0.07em) rotate(-4deg); color: var(--gold); text-shadow: 0 0 34px rgba(229,211,179,0.5); }
+
+    /* ことばが入れ替わる */
+    .rot { position: relative; display: inline-block; color: var(--gold); }
+    .rot::after { content: ''; position: absolute; left: 0; right: 0; bottom: -0.2em; height: 0.5px; background: linear-gradient(90deg, var(--gold), transparent); }
+    .rot .c { display: inline-block; transition: opacity 0.45s ease, transform 0.7s var(--ease-expo), filter 0.45s ease; transition-delay: calc(var(--i) * 38ms); }
+    .rot.out .c { opacity: 0; transform: translateY(-0.5em); filter: blur(5px); }
+    .rot.pre .c { opacity: 0; transform: translateY(0.5em); filter: blur(5px); transition: none; }
+
+    /* 年号：オドメーターのように回って止まる */
+    /* 1 桁ぶんの窓を字面より高くとり、上下の数字が覗かないように */
+    .od { --oh: 1.45em; display: block; height: var(--oh); overflow: hidden; }
+    .od-col { display: block; transition: transform 2.1s var(--ease-expo); transition-delay: calc(var(--k) * 140ms + 120ms); }
+    .od-col > span { display: flex; align-items: center; height: var(--oh); }
+    .in .od-col { transform: translateY(calc((var(--d) + 10) * var(--oh) * -1)); }
+
+    /* ════════════════════════════════════════
+        PROLOGUE — このページ自体の、壁のキャプション
+    ════════════════════════════════════════ */
+    .prologue {
+      max-width: 1400px; margin: 0 auto; padding: clamp(90px, 15vh, 160px) var(--px) clamp(56px, 9vh, 100px);
+      display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(36px, 7vw, 120px); align-items: end;
+    }
+    .label {
+      position: relative; max-width: 400px; padding: 26px 28px 22px; border-radius: 2px;
+      background: #ece6da; color: #1c1a17; box-shadow: 0 30px 60px -28px rgba(0,0,0,0.85), 0 0 0 0.5px rgba(0,0,0,0.3);
+      transform: rotate(-0.6deg); transition: transform 0.8s var(--ease-out-back);
+    }
+    .label:hover, .js .prologue.in > .label:hover { transform: rotate(0.4deg) translateY(-3px); transition: transform 0.8s var(--ease-out-back); }
+    .label::before { content: ''; position: absolute; top: 12px; right: 14px; width: 6px; height: 6px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff, #9a9186); box-shadow: 0 1px 1px rgba(0,0,0,0.3); }
+    .label .en { display: block; font-size: 0.56rem; letter-spacing: 0.32em; color: #847b70; margin-bottom: 14px; }
+    .label dl div { display: grid; grid-template-columns: 3.4em minmax(0, 1fr); gap: 12px; padding: 5px 0; border-top: 0.5px solid rgba(28,26,23,0.14); font-size: 0.8rem; line-height: 1.7; }
+    .label dl div:first-child { border-top: 0; }
+    .label dt { color: #847b70; font-size: 0.7rem; letter-spacing: 0.14em; padding-top: 0.1em; }
+    .label dd { color: #1c1a17; letter-spacing: 0.06em; }
+    .label dd .it { font-family: var(--en); font-style: italic; font-size: 0.95rem; color: #5b544b; margin-left: 0.4em; }
+    .label dd small { color: #847b70; font-size: 0.7rem; }
+    .label .title { font-size: 0.95rem; }
+
+    .stats ul { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 0.5px solid var(--border-mid); }
+    .stats li { padding: 22px 0 0; display: flex; flex-direction: column; gap: 4px; }
+    .stats li + li { padding-left: clamp(12px, 2vw, 28px); border-left: 0.5px solid var(--border); }
+    .stats b { font-family: var(--en); font-weight: 300; font-size: clamp(2.8rem, 5.6vw, 5rem); line-height: 1; color: var(--gold); letter-spacing: 0.02em; font-variant-numeric: lining-nums tabular-nums; }
+    .stats .en { font-size: 0.58rem; color: var(--muted-col); letter-spacing: 0.3em; }
+    .stats li > span:last-child { font-size: 0.76rem; color: var(--text-muted); letter-spacing: 0.1em; }
+    .stats .note { margin-top: 26px; font-size: 0.74rem; color: var(--text-dim); letter-spacing: 0.08em; }
+    .js .prologue > * { opacity: 0; transform: translateY(26px); transition: opacity 1.1s ease, transform 1.3s var(--ease-expo); }
+    .js .prologue.in > * { opacity: 1; transform: none; }
+    .js .prologue.in > .label { transform: rotate(-0.6deg); }
+    .js .prologue.in > .stats { transition-delay: 0.15s; }
+
+    /* 会場の名前が、ゆっくり流れていく */
+    .ticker { overflow: hidden; border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); padding: 18px 0; }
+    .ticker-track { display: flex; width: max-content; animation: tick 110s linear infinite; }
+    .ticker:hover .ticker-track { animation-play-state: paused; }
+    .ticker span { display: inline-flex; align-items: baseline; gap: 14px; padding: 0 26px; font-size: 0.86rem; letter-spacing: 0.14em; color: var(--text-muted); white-space: nowrap; }
+    .ticker em { font-family: var(--en); font-style: italic; font-weight: 300; font-size: 1.6rem; letter-spacing: 0.04em; color: var(--gold); }
+    .ticker i { font-style: normal; font-family: var(--en); color: rgba(229,211,179,0.35); align-self: center; }
+    @keyframes tick { to { transform: translateX(-50%); } }
+
+    /* 写真の上だけに現れる、ちいさな案内 */
+    .cursor { position: fixed; left: 0; top: 0; z-index: 400; pointer-events: none; display: none; }
+    .cursor-in {
+      position: absolute; left: -46px; top: -46px; width: 92px; height: 92px; border-radius: 50%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+      background: rgba(229,211,179,0.94); color: #141210; box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+      transform: scale(0.2); opacity: 0; transition: transform 0.55s var(--ease-out-back), opacity 0.3s ease;
+    }
+    .cursor.on .cursor-in { transform: scale(1); opacity: 1; }
+    .cursor .it { font-family: var(--en); font-style: italic; font-size: 1.2rem; line-height: 1; }
+    .cursor small { font-size: 0.56rem; letter-spacing: 0.16em; }
+
+    /* 章の中の、館内のお願い */
+    .ch-hint small { display: block; margin-top: 6px; font-family: var(--jp); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: none; color: var(--text-dim); }
+    .ch-hint { align-items: flex-start; }
+    .ch-hint i { margin-top: 0.5em; flex: none; }
+
+    /* ════════════════════════════════════════
+        CLOSING — 閉館のご案内
+    ════════════════════════════════════════ */
+    .closing { max-width: 1100px; margin: 0 auto; padding: clamp(70px, 12vh, 140px) var(--px) clamp(60px, 10vh, 110px); text-align: center; }
+    .closing .en { color: var(--gold); font-size: 0.62rem; }
+    .closing .chime { display: block; width: 1px; height: 56px; margin: 0 auto 26px; background: linear-gradient(to bottom, transparent, var(--gold)); }
+    .closing h2 { margin: 20px 0 22px; font-weight: 200; font-size: clamp(1.5rem, 3.4vw, 2.6rem); line-height: 1.75; letter-spacing: 0.14em; color: var(--fg); }
+    .closing .body { font-size: 0.86rem; line-height: 2.2; color: var(--text-muted); letter-spacing: 0.08em; }
+    .closing .body em { font-style: normal; color: var(--gold); }
+    .closing-acts { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 34px; }
+    .js .closing .body, .js .closing-acts, .js .closing > .en, .js .closing .chime { opacity: 0; transform: translateY(18px); transition: opacity 1.1s ease 0.9s, transform 1.2s var(--ease-expo) 0.9s; }
+    .js .closing > .en, .js .closing .chime { transition-delay: 0s; }
+    .js .closing.in .body, .js .closing.in .closing-acts, .js .closing.in > .en, .js .closing.in .chime { opacity: 1; transform: none; }
+    .js .closing.in .closing-acts { transition-delay: 1.15s; }
+
+    /* ════════════════════════════════════════
         RESPONSIVE
     ════════════════════════════════════════ */
     @media (max-width: 1100px) {
@@ -505,8 +613,17 @@
       .slide-now { flex-wrap: wrap; row-gap: 6px; }
       .ch-track { padding-top: 80px; padding-bottom: 96px; }
       .ch-intro h2 { font-size: 1.5rem; }
-      .ch-year { font-size: 4.6rem; }
+      .ch-year { font-size: 4.2rem; }
       .ch-no { letter-spacing: 0.26em; white-space: nowrap; }
+      .closing h2 { font-size: 1.2rem; letter-spacing: 0.08em; }
+      .closing .body { font-size: 0.8rem; letter-spacing: 0.04em; }
+      .closing .body br { display: none; }
+      .prologue { grid-template-columns: 1fr; padding-top: 72px; }
+      .label { max-width: none; }
+      .stats ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stats li:nth-child(3) { border-left: 0; padding-left: 0; }
+      .stats li { padding-bottom: 14px; }
+      .ticker em { font-size: 1.3rem; }
       .ch-no::after { display: none; }
       .row .kd > span:not(.jp):not(.on) { display: none; }
       .ch-quote { display: none; }
@@ -519,6 +636,13 @@
       .dock-btn { width: 40px; }
       footer { padding-bottom: calc(110px + env(safe-area-inset-bottom)); }
     }
+    @media (min-width: 769px) and (max-height: 940px) {
+      .ch-intro h2 { margin-top: 8px; }
+      .ch-meta { margin-top: 12px; padding-top: 12px; }
+      .ch-quote { margin-top: 14px; line-height: 1.9; font-size: 0.88rem; }
+      .ch-btns { margin-top: 16px; }
+      .ch-hint { margin-top: 18px; }
+    }
     @media (max-width: 768px) and (max-height: 700px) {
       .ch-meta .wide { display: none; }
     }
@@ -528,7 +652,9 @@
     .static .ch-track { width: auto; overflow-x: auto; scroll-snap-type: x proximity; padding-top: 90px; padding-bottom: 60px; }
     .static .ch-track > * { scroll-snap-align: start; }
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+      *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; transition-delay: 0s !important; }
+      .ticker { overflow-x: auto; }
+      .ticker-track { animation: none; }
     }
   </style>
 </head>
@@ -568,13 +694,13 @@
       <p class="hero-eyebrow"><span>Exhibition Archive — 2022 – 2026</span></p>
       <h1 class="hero-title"><span class="sr-only">展示記録 Exhibitions</span><span aria-hidden="true" id="heroWord">展示記録</span></h1>
       <p class="hero-en" aria-hidden="true">Exhibitions</p>
-      <p class="hero-sub">作品が、ひとつの空間に置かれた記録。</p>
+      <p class="hero-sub"><span class="sr-only">作品が、ひとつの空間に置かれた記録。</span><span aria-hidden="true">作品が、ひとつの空間に<span class="rot" id="rot">置かれた</span>記録。</span></p>
       <div class="hero-rule" aria-hidden="true"></div>
       <p class="hero-body">下へスクロールするだけで、2022年から2026年までの会場を、新しい順にめぐれます。会場のなかでは、写真が横へ流れていきます。</p>
       <div class="hero-acts">
         <a class="btn primary" href="#now" data-jump="koumi">会場をめぐる <span class="ar" aria-hidden="true">↓</span></a>
         <a class="btn" href="#archive" data-jump="archive">展示の一覧 <span class="ar" aria-hidden="true">→</span></a>
-        <a class="resume" id="resume" href="#"><span class="en">Continue</span><span>前回の続きから</span><b id="resumeT"></b></a>
+        <a class="resume" id="resume" href="#"><span class="en">Bookmark</span><span>しおりの位置から</span><b id="resumeT"></b></a>
       </div>
     </div>
     <div class="hero-caption">
@@ -592,12 +718,31 @@
     </a>
   </header>
 
+  <!-- ══════════════ PROLOGUE ══════════════ -->
+  <section class="prologue reveal" id="prologue" aria-label="このページについて">
+    <div class="label">
+      <span class="en">Wall Label</span>
+      <dl>
+        <div><dt>作家</dt><dd>津田 翔一<span class="it">Tsuda Shoichi</span></dd></div>
+        <div><dt>題名</dt><dd class="title">《展示記録》 2022 – 2026</dd></div>
+        <div><dt>素材</dt><dd>写真、テキスト、スクロール、あなたの指先</dd></div>
+        <div><dt>寸法</dt><dd>サイズ可変<small>（ご覧の画面による）</small></dd></div>
+        <div><dt>所要</dt><dd>約3分<small>（寄り道を含まず）</small></dd></div>
+      </dl>
+    </div>
+    <div class="stats">
+      <ul id="stats"></ul>
+      <p class="note">※ 搬入・搬出で運んだ作品の総重量は、集計しておりません。</p>
+    </div>
+  </section>
+  <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
+
   <main id="chapters"></main>
 
   <!-- ══════════════ INDEX ══════════════ -->
   <section class="index" id="archive" aria-labelledby="indexTitle">
-    <div class="index-head">
-      <h2 id="indexTitle">All Exhibitions<small>展示の一覧</small></h2>
+    <div class="index-head reveal">
+      <h2 id="indexTitle">All Exhibitions<small class="split-me">展示の一覧</small></h2>
       <span class="count" id="count" aria-hidden="true"></span>
     </div>
     <p class="index-lead">すべての展示を、新しい順に。行を押すと、それぞれの記録ページがひらきます。</p>
@@ -622,6 +767,19 @@
     </a>
   </section>
 
+  <!-- ══════════════ CLOSING ══════════════ -->
+  <section class="closing reveal" id="closing" aria-labelledby="closingTitle">
+    <span class="chime" aria-hidden="true"></span>
+    <p class="en">Closing Announcement — 閉館のご案内</p>
+    <h2 id="closingTitle" class="split-me">本日はご来場いただき、<br>まことにありがとうございました。</h2>
+    <p class="body">お忘れ物のないよう、お気をつけてお帰りください。<br>なお当館は、<em>二十四時間・年中無休</em>で開館しております。</p>
+    <div class="closing-acts">
+      <a class="btn" href="#top" data-jump="top">もういちど、入口から <span class="ar" aria-hidden="true">↑</span></a>
+      <a class="btn" href="../works/works.html">作品を見る <span class="ar" aria-hidden="true">→</span></a>
+      <a class="btn" href="../index.html">トップページへ <span class="ar" aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
   <footer>
     <p class="footer-logo">津田 翔一 / Tsuda Shoichi</p>
     <p class="footer-copy">© 2026 Tsuda Shoichi. All Rights Reserved.</p>
@@ -634,9 +792,11 @@
       <div class="dock-segs" id="dSegs"></div>
     </div>
     <button class="dock-btn" id="dNext" type="button" aria-label="次の会場へ">→</button>
-    <button class="dock-btn dock-txt" id="dRnd" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M1 4h3.5c3 0 4 8 7 8H15M12.5 9.5 15 12l-2.5 2.5M1 12h3.5c1.2 0 2-1.3 2.7-3M15 4h-3.5c-1.2 0-2 1.3-2.7 3M12.5 1.5 15 4l-2.5 2.5"/></svg><span class="t">Shuffle</span><span class="sr-only">どこかの写真へ</span></button>
+    <button class="dock-btn dock-txt" id="dRnd" type="button" title="気まぐれに、どこかの一枚へ"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M1 4h3.5c3 0 4 8 7 8H15M12.5 9.5 15 12l-2.5 2.5M1 12h3.5c1.2 0 2-1.3 2.7-3M15 4h-3.5c-1.2 0-2 1.3-2.7 3M12.5 1.5 15 4l-2.5 2.5"/></svg><span class="t">Shuffle</span><span class="sr-only">気まぐれに、どこかの写真へ</span></button>
     <a class="dock-btn dock-txt" href="#archive" data-jump="archive"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12"/></svg><span class="t">Index</span><span class="sr-only">展示の一覧へ</span></a>
   </nav>
+
+  <div class="cursor" id="cursor" aria-hidden="true"><div class="cursor-in"><span class="it">View</span><small>記録をひらく</small></div></div>
 
   <a href="#top" class="back-to-top" id="b2t" aria-label="ページ先頭に戻る">
     <svg class="b2t-progress" viewBox="0 0 100 100" aria-hidden="true"><circle class="bg" cx="50" cy="50" r="48"></circle><circle class="val" id="b2tVal" cx="50" cy="50" r="48"></circle></svg>
@@ -707,11 +867,43 @@
     function src(e, i, s) { return WEB + e.id + '-' + pad(i + 1) + '-' + s + '.jpg'; }
     function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
     function anchorOf(e) { return e.anchor || 'ch-' + e.id; }
+    /* 文字を一字ずつの span に（読み上げは元の文のまま） */
+    function splitEl(el, delay) {
+      if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', el.textContent.replace(/\s+/g, ' ').trim());
+      var i = 0;
+      Array.prototype.slice.call(el.childNodes).forEach(function (n) {
+        if (n.nodeType !== 3) return;
+        var f = document.createDocumentFragment();
+        Array.from(n.textContent).forEach(function (ch) {
+          var s = document.createElement('span'); s.className = 'c'; s.setAttribute('aria-hidden', 'true');
+          s.style.setProperty('--i', i++); s.textContent = ch; f.appendChild(s);
+        });
+        el.replaceChild(f, n);
+      });
+      el.classList.add('split');
+      if (delay) el.style.setProperty('--d', delay + 'ms');
+    }
+    /* 年号のオドメーター：各桁が 0→9 を一周してから止まる */
+    function odo(y) {
+      return Array.from(y).map(function (d, k) {
+        var col = '';
+        for (var n = 0; n < 20; n++) col += '<span>' + (n % 10) + '</span>';
+        return '<span class="od" style="--d:' + d + ';--k:' + k + '"><span class="od-col">' + col + '</span></span>';
+      }).join('');
+    }
+    /* 館内のお願い（章ごとに一つ） */
+    var ETIQUETTE = [
+      '館内では、走らずに横へどうぞ。',
+      '作品にはお手を触れず、スクロールにはお手を触れてください。',
+      '立ち止まるのも、鑑賞のうちです。',
+      'フラッシュ撮影はご遠慮ください。スクリーンショットは、お静かに。',
+      '順路は右へ。迷ったら、下へ。'
+    ];
     var small = window.matchMedia('(max-width: 700px)').matches;
 
     /* ---------- hero：文字を一字ずつ ---------- */
     var word = document.getElementById('heroWord');
-    word.innerHTML = word.textContent.split('').map(function (c, k) { return '<span class="ch1" style="--i:' + k + '">' + c + '</span>'; }).join('');
+    word.innerHTML = word.textContent.split('').map(function (c, k) { return '<span class="ch1" style="--i:' + k + '"><i>' + c + '</i></span>'; }).join('');
 
     /* ---------- hero：会場の写真がゆっくり入れ替わる ---------- */
     var slides = document.getElementById('slides'), dots = document.getElementById('slideDots');
@@ -750,6 +942,44 @@
       rs.classList.add('show');
     }
 
+    /* ---------- hero：ことばが入れ替わる ---------- */
+    var rot = document.getElementById('rot'), words = ['置かれた', '照らされた', '見つめられた', '息づいた', '居座った'], wi = 0;
+    function setRot(w) { rot.innerHTML = Array.from(w).map(function (c, i) { return '<span class="c" style="--i:' + i + '">' + c + '</span>'; }).join(''); }
+    setRot(words[0]);
+    if (!reduce) setInterval(function () {
+      if (!heroVisible || document.hidden) return;
+      rot.classList.add('out');
+      setTimeout(function () {
+        wi = (wi + 1) % words.length;
+        rot.classList.remove('out'); rot.classList.add('pre'); setRot(words[wi]);
+        void rot.offsetWidth; rot.classList.remove('pre');
+      }, 620);
+    }, 3800);
+
+    /* ---------- prologue：数字 ---------- */
+    var venueNames = [];
+    EX.forEach(function (e) { e.venue.split(' ／ ').forEach(function (v) { var n = v.replace(/（.*?）/, ''); if (venueNames.indexOf(n) < 0) venueNames.push(n); }); });
+    var nPhotos = CH.reduce(function (a, e) { return a + e.shots.length; }, 0);
+    var years = +EX[0].year - +EX[EX.length - 1].year + 1;
+    document.getElementById('stats').innerHTML = [[EX.length, 'Exhibitions', '展示'], [venueNames.length, 'Venues', '会場'], [nPhotos, 'Photographs', '枚の写真'], [years, 'Years', '年']]
+      .map(function (s) { return '<li><b data-count="' + s[0] + '">' + (reduce ? pad(s[0]) : '00') + '</b><span class="en">' + s[1] + '</span><span>' + s[2] + '</span></li>'; }).join('');
+    function countUp() {
+      document.querySelectorAll('#stats b').forEach(function (b, k) {
+        var t = +b.dataset.count, t0 = performance.now() + k * 120, dur = 1600;
+        (function f(now) {
+          var q = Math.min(1, Math.max(0, (now - t0) / dur)), ez = 1 - Math.pow(1 - q, 4);
+          b.textContent = pad(Math.round(t * ez));
+          if (q < 1) requestAnimationFrame(f);
+        })(performance.now());
+      });
+    }
+
+    /* ---------- ticker：会場の名前 ---------- */
+    var tk = EX.map(function (e) {
+      return e.venue.split(' ／ ').map(function (v) { return '<span><em>' + e.year + '</em>' + esc(v.replace(/（.*?）/, '')) + '</span><i>✳</i>'; }).join('');
+    }).join('');
+    document.getElementById('ticker').innerHTML = tk + tk;
+
     /* ---------- chapters ---------- */
     var main = document.getElementById('chapters');
     EX.forEach(function (e) {
@@ -757,7 +987,7 @@
       if (!e.shots) {
         sec.className = 'itl'; sec.id = 'ch-' + e.id;
         sec.setAttribute('aria-label', e.year + ' ' + e.title);
-        sec.innerHTML = '<div class="itl-in"><p class="itl-year" aria-hidden="true">' + e.year + '</p>'
+        sec.innerHTML = '<div class="itl-in"><p class="itl-year" aria-hidden="true" style="display:flex;line-height:1">' + odo(e.year) + '</p>'
           + '<div><span class="en">' + e.kindEn + (e.wip ? ' — In Preparation' : '') + '</span>'
           + '<h3>' + esc(e.title) + (e.sub ? '<small>' + esc(e.sub) + '</small>' : '') + '</h3>'
           + '<p>' + esc(e.venue) + '</p><p>' + esc(e.note) + '</p></div>'
@@ -769,9 +999,9 @@
       sec.style.setProperty('--acc', e.acc);
       sec.setAttribute('aria-labelledby', 't-' + e.id);
       var intro = '<div class="ch-intro">'
-        + (e.live ? '<p class="tag-live"><span class="live-dot" aria-hidden="true"></span>Now on View — 開催中</p>' : '')
-        + '<p class="ch-no">No.' + pad(no) + ' — ' + e.kindEn + '</p>'
-        + '<p class="ch-year" aria-hidden="true">' + e.year + '</p>'
+        + (e.live ? '<p class="ch-no is-live"><span class="live-dot" aria-hidden="true"></span>Now on View — 開催中 · No.' + pad(no) + '</p>'
+                  : '<p class="ch-no">No.' + pad(no) + ' — ' + e.kindEn + '</p>')
+        + '<p class="ch-year" aria-hidden="true">' + odo(e.year) + '</p>'
         + '<h2 id="t-' + e.id + '">' + esc(e.title) + (e.sub ? '<small>' + esc(e.sub) + '</small>' : '') + '</h2>'
         + '<dl class="ch-meta"><div><dt>Date</dt><dd>' + e.date + '</dd></div><div><dt>Type</dt><dd>' + e.kindLabel + '</dd></div>'
         + '<div class="wide"><dt>Venue</dt><dd>' + esc(e.venue) + '</dd></div></dl>'
@@ -780,7 +1010,7 @@
         + (e.extra || []).map(function (x) {
             return '<a class="btn" href="' + x.href + '"' + (x.ext ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + x.label + ' <span class="ar" aria-hidden="true">' + (x.ext ? '↗' : '→') + '</span></a>';
           }).join('') + '</div>'
-        + '<p class="ch-hint" aria-hidden="true"><i></i>Scroll — ' + e.shots.length + ' photographs</p></div>';
+        + '<p class="ch-hint" aria-hidden="true"><i></i><span>Scroll — ' + pad(e.shots.length) + ' photographs<small>' + ETIQUETTE[(no - 1) % ETIQUETTE.length] + '</small></span></p></div>';
       var photos = e.shots.map(function (s, i) {
         var ar = (s[0] / s[1]).toFixed(4), sm = i % 3 === 2;
         var vh = Math.round(60 * (sm ? 0.74 : 1) * s[0] / s[1]), mvh = Math.round(46 * (sm ? 0.84 : 1) * s[0] / s[1]);
@@ -792,11 +1022,14 @@
       var next = EX[EX.indexOf(e) + 1];
       var end = '<a class="ch-end" href="' + e.href + '"><span class="en">No.' + pad(no) + ' / ' + pad(CH.length) + ' — ' + e.year + '</span>'
         + '<b>「' + esc(e.title) + '」の記録を、もっと見る</b><span class="arrow" aria-hidden="true"></span>'
-        + '<span class="next">' + (next ? '↓ 次は ' + next.year + '「' + esc(next.short || next.title) + '」' : '↓ すべての展示の一覧へ') + '</span></a>';
+        + '<span class="next">' + (next ? '次の会場まで、徒歩0分。<br>↓ ' + next.year + '「' + esc(next.short || next.title) + '」' : '出口は、こちらです。<br>↓ すべての展示の一覧へ') + '</span></a>';
       sec.innerHTML = '<div class="ch-pin"><div class="ch-track">' + intro + photos + end + '</div></div>';
+      splitEl(sec.querySelector('h2'), 260);
       main.appendChild(sec);
       e.sec = sec; e.track = sec.querySelector('.ch-track'); e.dist = 0; e.top = 0;
     });
+
+    document.querySelectorAll('.split-me').forEach(function (el) { splitEl(el); });
 
     /* ---------- index ---------- */
     document.getElementById('count').textContent = pad(EX.length);
@@ -853,7 +1086,8 @@
     }
     function jump(key) {
       var p = String(key).split(':'), e = byId[p[0]], y;
-      if (p[0] === 'archive') y = document.getElementById('archive').getBoundingClientRect().top + window.scrollY - 40;
+      if (p[0] === 'top') y = 0;
+      else if (p[0] === 'archive') y = document.getElementById('archive').getBoundingClientRect().top + window.scrollY - 40;
       else if (e && e.shots) y = targetY(e, p[1] != null ? +p[1] : null);
       else if (e) y = e.sec.getBoundingClientRect().top + window.scrollY - 60;
       else return;
@@ -910,7 +1144,7 @@
       if (active !== cur) {
         cur = active;
         if (cur >= CH.length) { dNo.textContent = 'Index'; dTitle.textContent = 'すべての展示の一覧'; }
-        else if (cur < 0) { dNo.textContent = 'Start'; dTitle.textContent = '下へスクロールで会場へ'; }
+        else if (cur < 0) { dNo.textContent = 'Lobby'; dTitle.textContent = 'まもなく開場です（下へ）'; }
         else {
           var e = CH[cur];
           dNo.textContent = pad(cur + 1) + '/' + pad(CH.length) + ' · ' + e.year;
@@ -955,11 +1189,39 @@
     /* ---------- 現れる動き ---------- */
     if (!reduce && 'IntersectionObserver' in window) {
       var io = new IntersectionObserver(function (en) {
-        en.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add('in'); io.unobserve(x.target); } });
+        en.forEach(function (x) {
+          if (!x.isIntersecting) return;
+          x.target.classList.add('in'); io.unobserve(x.target);
+          if (x.target.id === 'prologue') countUp();
+        });
       }, { rootMargin: '0px -4% 0px -4%', threshold: 0.12 });
-      document.querySelectorAll('.ph, .ch, .itl').forEach(function (el) { io.observe(el); });
+      document.querySelectorAll('.ph, .ch, .itl, .reveal').forEach(function (el) { io.observe(el); });
     } else {
-      document.querySelectorAll('.ph, .ch, .itl').forEach(function (el) { el.classList.add('in'); });
+      document.querySelectorAll('.ph, .ch, .itl, .reveal').forEach(function (el) { el.classList.add('in'); });
+      if (!reduce) countUp();
+    }
+
+    /* ---------- 写真の上だけに現れる、ちいさな案内（マウスのときだけ） ---------- */
+    var cursor = document.getElementById('cursor');
+    if (!reduce && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      var cx = 0, cy = 0, tx = 0, ty = 0, cOn = false, cRun = false;
+      cursor.style.display = 'block';
+      function cLoop() {
+        cx += (tx - cx) * 0.22; cy += (ty - cy) * 0.22;
+        cursor.style.transform = 'translate3d(' + cx.toFixed(1) + 'px,' + cy.toFixed(1) + 'px,0)';
+        if (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.4) requestAnimationFrame(cLoop); else cRun = false;
+      }
+      function cCheck() {
+        var el = document.elementFromPoint(tx, ty), hit = !!(el && el.closest('.ph a, .ch-end'));
+        if (hit && !cOn) { cx = tx; cy = ty; cursor.style.transform = 'translate3d(' + cx + 'px,' + cy + 'px,0)'; }
+        if (hit !== cOn) { cOn = hit; cursor.classList.toggle('on', hit); }
+      }
+      document.addEventListener('mousemove', function (ev) {
+        tx = ev.clientX; ty = ev.clientY; cCheck();
+        if (!cRun) { cRun = true; requestAnimationFrame(cLoop); }
+      }, { passive: true });
+      window.addEventListener('scroll', function () { if (tx || ty) cCheck(); }, { passive: true });
+      document.documentElement.addEventListener('mouseleave', function () { cOn = false; cursor.classList.remove('on'); });
     }
 
     /* ---------- SP menu ---------- */
