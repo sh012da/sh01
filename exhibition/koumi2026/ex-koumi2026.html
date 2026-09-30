@@ -125,7 +125,13 @@
     .menu-btn i { display: block; width: 16px; height: 1px; background: currentColor; box-shadow: 0 -5px 0 currentColor, 0 5px 0 currentColor; }
     @media (max-width: 900px) {
       nav#top-nav { grid-template-columns: minmax(0, 1fr) auto; }
-      .nav-now { display: none; }
+      /* いまどの章を読んでいるか：ナビの下に細い帯で出す */
+      .nav-now { position: absolute; left: 0; right: 0; top: 100%; justify-self: stretch; justify-content: flex-start; gap: 10px; padding: 5px var(--px) 6px; font-size: 0.74rem; letter-spacing: 0.08em; background: rgb(232,229,224); border-bottom: 1px solid var(--line); }
+      nav#top-nav:not(.scrolled) .nav-now { opacity: 0; }
+      .nav-now .no { font-size: 0.95rem; }
+      .nav-now .t { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+      .nav-now .bar { flex: 1; min-width: 40px; width: auto; }
+      .stack-col { top: 88px !important; }
     }
     @media (max-width: 600px) {
       .nav-pill .long { display: none; }
@@ -245,9 +251,11 @@
       opacity: 0; transition: opacity 1s ease 1s;
     }
     body.is-ready .hero-foot { opacity: 1; }
-    .hero-foot .artist { font-size: 1.05rem; letter-spacing: 0.2em; }
+    .hero-foot .artist { font-size: 1.05rem; letter-spacing: 0.2em; white-space: nowrap; flex-shrink: 0; }
     .hero-foot .artist small { display: block; font-family: var(--en); font-style: italic; font-size: 0.8rem; letter-spacing: 0.16em; color: var(--on-night-dim); }
-    .hero-foot .meta { text-align: right; font-size: 0.8rem; color: var(--on-night-dim); line-height: 1.8; }
+    .hero-foot .meta { min-width: 0; text-align: right; font-size: 0.8rem; color: var(--on-night-dim); line-height: 1.8; }
+    .hero-foot .meta .nw { display: inline-block; }
+    @media (max-width: 768px) { .hero-foot .meta .nw { display: block; } }
     .hero-foot .meta b { display: block; font-family: var(--en); font-weight: 400; font-size: 1.25rem; letter-spacing: 0.16em; color: var(--on-night); }
     .hero-cue {
       position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
@@ -324,6 +332,13 @@
     .altitude .gauge .g-museum::before { background: var(--koumi); border-color: var(--koumi); }
     .altitude .gauge .g-sea { top: 100%; color: var(--samizu); }
     .altitude .gauge .g-sea::before { background: var(--samizu); border-color: var(--samizu); }
+    @media (max-width: 860px) {
+      .concept-grid { grid-template-columns: minmax(0, 1fr); }
+      .altitude { position: relative; top: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 28px; border-left: 0; border-top: 1px solid var(--line-mid); padding: 22px 0 0; }
+      .altitude .gauge { grid-column: 2; grid-row: 1 / span 3; width: 200px; height: 120px; margin: 6px 0 0 8px; }
+      .altitude .gauge span { font-size: 0.66rem; }
+    }
+    @media (max-width: 420px) { .altitude { grid-template-columns: minmax(0, 1fr); } .altitude .gauge { grid-column: 1; grid-row: auto; width: auto; margin: 22px 0 0 8px; height: 90px; } }
     .altitude .gauge i { position: absolute; left: -1px; top: 0; width: 1px; height: 0; background: linear-gradient(var(--koumi), var(--samizu)); transition: height 2s var(--ease) 0.4s; }
     .altitude.in .gauge i { height: 100%; }
 
@@ -430,10 +445,11 @@
     .strata-list .fossil a em::before { content: ''; display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #e2574a; margin-right: 10px; box-shadow: 0 0 0 0 rgba(226,87,74,0.7); animation: fossilPing 2s ease-out infinite; }
     @keyframes fossilPing { 70% { box-shadow: 0 0 0 10px rgba(226,87,74,0); } 100% { box-shadow: 0 0 0 0 rgba(226,87,74,0); } }
     @media (max-width: 768px) {
-      .strata-list a { grid-template-columns: 34px minmax(0,1fr) auto; gap: 10px; padding: 0 14px; --h: 46px; }
+      .strata-list a { grid-template-columns: 34px minmax(0,1fr) auto; gap: 10px; padding: 11px 14px; height: auto; min-height: 50px; }
+      .strata-list b { line-height: 1.5; letter-spacing: 0.08em; }
       .strata-list i { display: none; }
       .strata-list em { font-size: 0.8rem; }
-      .strata-list a:hover, .strata-list a:focus-visible { --h: 52px; }
+      .strata-list a:hover, .strata-list a:focus-visible { filter: brightness(1.07); }
     }
 
     /* ============================================================
@@ -945,9 +961,14 @@
     .q-look b { display: block; font-size: 0.7rem; letter-spacing: 0.2em; color: var(--c, #f0b39d); }
     .q-look a { border-bottom: 1px solid currentColor; }
     .q-acts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+    /* 表紙の上では、同じ内容のボタンが表紙にあるので隠す */
+    body:not(.past-hero) .hud { opacity: 0; pointer-events: none; }
+    @media (max-width: 768px) and (max-height: 700px) { .hero-cue { display: none; } }
     @media (max-width: 640px) { .q-opts { grid-template-columns: 1fr; } .q-opt { padding: 16px 18px; } }
     @media (max-width: 768px) {
-      body:not(.past-hero) .hud { opacity: 0; pointer-events: none; }
+      .hud { left: 12px; bottom: max(12px, env(safe-area-inset-bottom)); }
+      .hud-btn { padding: 6px 14px 6px 7px; font-size: 0.74rem; }
+      .hud-btn .lbl { display: none; }
       .hero-quest { margin-top: 1.2rem; padding: 8px 16px 8px 12px; font-size: 0.76rem; letter-spacing: 0.06em; }
     }
 
@@ -1067,7 +1088,7 @@
 
     <div class="hero-foot">
       <div class="artist">津田 翔一<small>Tsuda Shoichi — Painting / Video / Ceramics</small></div>
-      <div class="meta"><b>2026.09</b>展示作品案 第3版 ／ 会場｜小海町高原美術館 Hall 3</div>
+      <div class="meta"><b>2026.09</b><span class="nw">展示作品案 第3版</span> <span class="pc-only">／ </span><span class="nw">会場｜小海町高原美術館 Hall 3</span></div>
     </div>
     <div class="hero-cue" aria-hidden="true">SCROLL</div>
     <button class="hero-skip" id="heroSkip">Skip intro</button>
@@ -1111,7 +1132,7 @@
 
           <aside class="altitude reveal d2" id="altitude">
             <p class="k">ALTITUDE ／ 美術館の標高</p>
-            <p class="num"><span id="altNum">0</span><small>m</small></p>
+            <p class="num"><span id="altNum">1,100</span><small>m</small></p>
             <p class="sub">海から最も遠い場所のひとつで、<br>海の記憶を辿る。</p>
             <div class="gauge" aria-hidden="true">
               <i></i>
@@ -1892,7 +1913,7 @@
     mount.innerHTML =
       '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="shG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0b39d"/><stop offset=".5" stop-color="#ece5db"/><stop offset="1" stop-color="#a9c4dc"/></linearGradient></defs></svg>' +
       '<div class="alt-hud" id="altHud" aria-hidden="true"><span>1,100m</span><span class="a-line"><i id="altDot"></i></span><span><b id="altNow">1,100</b>m</span><span class="a-sea">SEA</span></div>' +
-      '<div class="hud" id="hud"><button class="hud-btn" id="hudBtn" aria-expanded="false" aria-controls="hudPanel"><span class="ring" id="hudRing"></span><span>地層のかけら <b id="hudCount">0</b> / ' + TOTAL + '</span></button></div>' +
+      '<div class="hud" id="hud"><button class="hud-btn" id="hudBtn" aria-expanded="false" aria-controls="hudPanel"><span class="ring" id="hudRing"></span><span><span class="lbl">地層のかけら </span><b id="hudCount">0</b> / ' + TOTAL + '</span></button></div>' +
       '<div class="hud-panel" id="hudPanel" role="dialog" aria-label="地層のかけら">' +
         '<h2>地層のかけら<small>Fragments of the Strata</small></h2>' +
         '<div class="hp-bar"><i id="hpBar"></i></div><ol class="hp-list" id="hpList"></ol>' +
