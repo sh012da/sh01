@@ -192,12 +192,16 @@
         HERO — 表紙
         ・最初の画面は「タイトル」と「九十九島の窓」だけ
         ・タイトルは約 0.1 秒後から一字ずつ現れ、約 1.6 秒で完成（クリック・キー・スクロールで即スキップ）
-        ・スクロールすると、タイトルは鳥海山の山体崩壊のように崩れ、画面について流れ落ち、九十九島になって止まる
+        ・スクロールすると表紙はその場にとどまり、タイトルは鳥海山の山体崩壊のように、下の字から静かに海へ沈む
+          沈んだ字は水平線に九十九島となって浮かぶ（動きはすべて表紙の中だけで完結し、本文には重ならない）
         ・その下に、この計画のレシピ（材料・つくり方）と発酵の瓶
     ════════════════════════════════════════ */
-    .hero { --lw: min(30vw, 440px); position: relative; color: var(--ink); background: linear-gradient(180deg, #D9EEF7 0%, #EAF5F9 40%, var(--paper) 100%); }
-    .hero::before { content: ""; position: absolute; inset: 0 0 auto; height: 100svh; pointer-events: none; background-image: linear-gradient(rgba(14, 47, 66, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(14, 47, 66, 0.05) 1px, transparent 1px); background-size: 28px 28px; -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 90%); mask-image: linear-gradient(180deg, #000 0%, transparent 90%); }
-    .hero-stage { position: relative; height: 100vh; height: 100svh; min-height: 680px; max-height: 1080px; }
+    .hero { --lw: min(30vw, 440px); position: relative; color: var(--ink); background: linear-gradient(180deg, #EAF5F9 0%, #EAF5F9 50%, var(--paper) 100%); }
+    /* 表紙は、崩落が終わるまでその場にとどまる（スクロール 0.9 画面ぶん） */
+    .hx-pin { position: relative; height: calc(100vh + 90vh); height: calc(clamp(680px, 100svh, 1080px) + 90svh); }
+    .hero-stage::before { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgba(14, 47, 66, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(14, 47, 66, 0.05) 1px, transparent 1px); background-size: 28px 28px; -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 90%); mask-image: linear-gradient(180deg, #000 0%, transparent 90%); }
+    .hero-stage { position: sticky; top: 0; height: 100vh; height: 100svh; min-height: 680px; max-height: 1080px; background: linear-gradient(180deg, #D9EEF7 0%, #EAF5F9 100%); }
+    @media (max-height: 679px) { .hx-pin { height: auto; } .hero-stage { position: relative; } }
     .js .hf { opacity: 0; transform: translateY(12px); }
     .js.intro-go .hf { opacity: 1; transform: none; transition: opacity 0.9s ease, transform 1.1s var(--ease); transition-delay: var(--dl, 0.3s); }
 
@@ -211,13 +215,24 @@
     .hx-title .ch { position: relative; display: inline-block; will-change: transform; }
     .js .hx-title .ch { opacity: 0; transform: translateY(-0.4em) scale(1.12); filter: blur(8px); }
     .js.intro-go .hx-title .ch { opacity: 1; transform: none; filter: none; transition: opacity 0.6s ease, transform 0.9s var(--back), filter 0.7s ease; transition-delay: calc(var(--i) * 55ms + 80ms); }
-    .hx-title.moving .ch { transition: none !important; filter: none !important; }
-    /* 崩れはじめの、ゴゴゴ */
-    .hx-title.quaking { animation: rumble 0.16s linear infinite; }
-    @keyframes rumble { 0% { transform: translate(0, 0); } 25% { transform: translate(1.5px, -1px); } 50% { transform: translate(-1px, 1.5px); } 75% { transform: translate(1px, 1px); } 100% { transform: translate(-1.5px, -0.5px); } }
-    /* 流れ着くと、島になる（水の輪が広がる） */
-    .hx-title .ch::after { content: ""; position: absolute; left: 50%; top: 50%; width: 1.5em; height: 0.42em; margin: 0.28em 0 0 -0.75em; border-radius: 50%; border: 1.5px solid rgba(28, 124, 181, 0.55); background: radial-gradient(closest-side, rgba(143, 214, 247, 0.35), rgba(143, 214, 247, 0)); opacity: var(--land, 0); transform: scale(calc(0.6 + var(--land, 0) * 0.5)); pointer-events: none; }
-    .hx-title .ch.landed { color: #1F6B47; }
+    /* 沈むあいだ：字は水平線の手前で霞み、その下は見えない（マスクは .hx-tbox の中だけ） */
+    .hx-tbox.sinking { -webkit-mask: linear-gradient(#000 0 0) 0 0 / 100% calc(var(--hz) - 34px) no-repeat, linear-gradient(#000, transparent) 0 calc(var(--hz) - 34px) / 100% 34px no-repeat; mask: linear-gradient(#000 0 0) 0 0 / 100% calc(var(--hz) - 34px) no-repeat, linear-gradient(#000, transparent) 0 calc(var(--hz) - 34px) / 100% 34px no-repeat; }
+    .hx-tbox.sinking .hx-title .ch { transition: none !important; filter: none !important; }
+    .hx-tbox.sinking .kari { animation-play-state: paused; }
+    .hx-tbox.sinking .kari .tip { display: none; }
+
+    /* 水平線と九十九島（JS が島を描く） */
+    .hx-sea { position: absolute; z-index: 31; left: 0; top: 0; height: 0; pointer-events: none; visibility: hidden; }
+    .hx-sea.on { visibility: visible; }
+    .hx-sea svg { position: absolute; left: 0; bottom: -1px; overflow: visible; }
+    .hx-sea .hz { fill: url(#hx-hz); transform-origin: 0 0; }
+    .hx-sea .isl { fill: var(--ink); }
+    .hx-sea .isl .rf { opacity: 0.13; }
+    .hx-sea .isl .pn { fill: none; stroke: var(--ink); stroke-width: 1.1; stroke-linecap: round; }
+    .hx-sea .rp { fill: none; stroke: var(--ink); stroke-width: 0.8; }
+    .hx-sea-cap { position: absolute; left: 0; top: 14px; width: max-content; max-width: 100%; font-family: var(--serif); font-weight: 600; font-size: clamp(0.78rem, 0.95vw, 0.88rem); letter-spacing: 0.24em; line-height: 1.8; color: var(--ink); }
+    .hx-sea-cap span { position: absolute; left: 0; top: 0; width: max-content; opacity: 0; transform: translateY(6px); }
+    .hx-sea-cap small { display: block; font-family: var(--mono); font-weight: 400; font-size: 0.58rem; letter-spacing: 0.3em; color: var(--muted); }
     /* （仮）は、タイトルにぶら下がった値札 */
     .kari { position: relative; display: inline-block; margin-top: 0.4em; padding: 0.3em 0.28em; border: 1.5px solid var(--present); border-radius: 5px 5px 12px 5px; background: #fff; color: var(--present); font-size: 0.3em; font-weight: 700; line-height: 1; cursor: help; pointer-events: auto; transform-origin: 50% -0.9em; animation: sway 3.6s ease-in-out infinite; }
     .kari::before { content: ""; position: absolute; left: 50%; top: -0.9em; height: 0.9em; border-left: 1px solid var(--present); }
@@ -244,11 +259,6 @@
     .hx-place b { display: flex; align-items: center; gap: 0.55em; font-family: var(--serif); font-weight: 700; font-size: 0.98rem; }
     .hx-place b::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--present); box-shadow: 0 0 0 4px rgba(226, 96, 58, 0.2); }
     .hx-place span { font-size: 0.72rem; line-height: 1.7; letter-spacing: 0.04em; color: var(--text); }
-
-    /* 崩落中のひとこと（画面下に出る） */
-    .quake { position: fixed; z-index: 95; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom)); width: max-content; max-width: calc(100vw - 32px); transform: translate(-50%, 16px); padding: 0.6rem 1.1rem; border-radius: 99px; background: rgba(14, 47, 66, 0.9); color: #fff; font-family: var(--hand); font-weight: 600; font-size: 0.86rem; letter-spacing: 0.04em; opacity: 0; pointer-events: none; transition: opacity 0.4s ease, transform 0.5s var(--back); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
-    .quake.on { opacity: 1; transform: translate(-50%, 0); }
-    .quake b { color: #FFB496; font-weight: 600; margin-right: 0.5em; }
 
     /* ── その下：この計画のレシピ ── */
     .hx-recipe { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px); gap: clamp(2rem, 6vw, 5.5rem); align-items: center; padding-block: clamp(4rem, 9vw, 7rem) clamp(4rem, 8vw, 6rem); }
@@ -317,16 +327,18 @@
     @media (max-width: 1180px) { .hx-win { left: calc(var(--px) + var(--lw) + 60px); } .hx-scroll { display: none; } }
     @media (max-width: 860px) {
       .hero { --lw: auto; }
-      .hero-stage { height: auto; min-height: 0; max-height: none; padding: 150px var(--px) 0; }
+      .hx-pin { height: auto; }
+      .hero-stage { position: relative; height: auto; min-height: 0; max-height: none; padding: 150px var(--px) 0; }
       .hx-meta { top: 88px; }
-      .hx-tbox { position: relative; left: auto; top: auto; width: auto; justify-content: center; }
+      .hx-tbox { position: relative; left: auto; top: auto; width: auto; justify-content: center; padding-bottom: 4.4rem; }
+      .hx-sea-cap { width: 100%; text-align: center; }
+      .hx-sea-cap span { width: 100%; }
       .hx-title { font-size: clamp(3rem, min(19vw, calc((100svh - 330px) / 5.9)), 6rem); }
       .hx-win { position: relative; left: auto; right: auto; top: auto; bottom: auto; height: min(90vw, 520px); margin-top: 1.6rem; border-radius: 999px 999px 22px 22px; }
       .js .hx-win, .js.intro-go .hx-win { clip-path: none; }
       .hx-base { position: static; width: auto; margin-top: 1.2rem; }
       .hx-recipe { grid-template-columns: 1fr; padding-top: 3.2rem; }
       .rc { max-width: 440px; width: 100%; justify-self: center; }
-      .quake { bottom: auto; top: 70px; font-size: 0.78rem; }
     }
     @media (max-width: 420px) { .rc { padding-inline: 1.1rem; } .rc-steps a { grid-template-columns: 3em 5em minmax(0, 1fr) auto; gap: 0.35em; } .rc-steps .d { font-size: 0.66rem; } .rc-ing .q { font-size: 0.7rem; } .jar { width: 104px; } .jar-say { margin-bottom: 3rem; } }
 
@@ -1087,7 +1099,8 @@
      HERO — 表紙（タイトルと九十九島の窓）＋ この計画のレシピ
 ═══════════════════════════════════════════════ -->
 <section class="hero" id="top" data-pc="present-l" aria-labelledby="hero-title">
-  <div class="hero-stage">
+  <div class="hx-pin" id="hx-pin">
+  <div class="hero-stage" id="hx-stage">
     <p class="hx-meta hf" style="--dl: 0.05s;"><span>NIKAHO ART PROJECT 2026 ／ rev.5</span><b>にかほ芸術登竜紋</b></p>
 
     <div class="hx-tbox">
@@ -1097,6 +1110,10 @@
       </h1>
       <p class="hx-sub hf" style="--dl: 0.5s;">制作スケジュール提案書<i aria-hidden="true"></i><span class="sr">——</span>土地の記憶を紡ぐ工程表</p>
     </div>
+    <div class="hx-sea" id="hx-sea" aria-hidden="true">
+      <svg id="hx-sea-svg"><defs><linearGradient id="hx-hz" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#0E2F42" stop-opacity="0"/><stop offset="0.12" stop-color="#0E2F42" stop-opacity="0.5"/><stop offset="0.88" stop-color="#0E2F42" stop-opacity="0.5"/><stop offset="1" stop-color="#0E2F42" stop-opacity="0"/></linearGradient></defs></svg>
+      <p class="hx-sea-cap"><span id="hx-cap-a"><small>c. 2,500 YEARS AGO — MT. CHOKAI</small>約2500年前、鳥海山が崩れ、海へ流れ下った。</span><span id="hx-cap-b"><small>KISAKATA — KUJUKUSHIMA</small>その岩が、象潟の九十九島になった。</span></p>
+    </div>
 
     <figure class="hx-win">
       <img src="../images/img-263/KISAKATA%20(3).JPG" alt="象潟・九十九島。夏空の下、松の茂る小さな島と草はら" fetchpriority="high" decoding="async">
@@ -1105,6 +1122,7 @@
 
     <p class="hx-base hf" style="--dl: 0.8s;"><span>NIKAHO CITY, AKITA ／ 2026.09 — 2026.12</span><small>※ 掲載画像には設置・完成イメージを含みます ／ 2026.09.26 改訂（rev.5）</small></p>
     <a class="hx-scroll hf" href="#recipe" style="--dl: 1.1s;"><i aria-hidden="true"></i>SCROLL</a>
+  </div>
   </div>
 
   <div class="wrap hx-recipe" id="recipe">
@@ -1170,7 +1188,6 @@
     </aside>
   </div>
 </section>
-<p class="quake" id="quake" aria-hidden="true"><b>ゴゴゴ……</b><span id="quake-t">鳥海山にならって、タイトルが山体崩壊中。</span></p>
 
 <!-- ══════════════════════════════════════════════
      OVERVIEW — 全体スケジュール概観
@@ -1836,79 +1853,171 @@ document.addEventListener('DOMContentLoaded', function () {
   })();
 
   /* ── 表紙：タイトルの山体崩壊
-       ・スクロールしはじめると、タイトルがゴゴゴと震え、上の字から順に崩れ落ちる
-       ・崩れた字は画面について流れ下り（スクロール約 1.1 画面ぶん）、画面の下で九十九島になって止まる
-       ・そのまま少しのあいだ島としてついてきて、さらにスクロールすると静かに沈んで消える
-       ・いちばん上まで戻れば、タイトルは元どおり ── */
+       ・スクロールしても表紙はその場にとどまり（PC）、そのあいだにタイトルが崩れる
+       ・まず水平線が引かれ、字は下のほうから順に、ゆっくり海へ沈む（右の列 → 左の列）
+       ・字はまっすぐ沈み（ほかの字に重ならない）、水平線の手前で霞んで見えなくなる
+       ・沈んだところに波紋が広がって島が浮かび、島は水面をすべるように左右へ散っていく
+       ・ひと文字ごとに一つの島と、そのまわりの小島。すべて沈むと「九十九島」ができあがる
+       ・動きは表紙の中だけで完結し、本文やほかの要素には一切重ならない
+       ・スマートフォンでは表紙をとどめず、タイトルが画面の上へ抜けるまでのあいだに沈みきる
+       ・スクロールを戻せば、タイトルはそのまま元の姿へ浮かび上がる ── */
   (function () {
-    var title = document.getElementById('hero-title'), note = document.getElementById('quake'), noteT = document.getElementById('quake-t');
-    if (!title) return;
+    var pin = document.getElementById('hx-pin'), stage = document.getElementById('hx-stage');
+    var title = document.getElementById('hero-title'), tbox = title && title.parentNode;
+    var sea = document.getElementById('hx-sea'), svg = document.getElementById('hx-sea-svg');
+    if (!pin || !stage || !title || !sea || !svg) return;
+    var NS = 'http://www.w3.org/2000/svg';
     var chs = Array.prototype.slice.call(title.querySelectorAll('.ch'));
-    var N = chs.length, C = [], vw = 0, vh = 0, measured = false, ticking = false, landedMsg = false;
+    var fades = Array.prototype.slice.call(stage.querySelectorAll('.hx-sub, .hx-base, .hx-scroll'));
+    var capA = document.getElementById('hx-cap-a'), capB = document.getElementById('hx-cap-b');
+    var N = chs.length, C = [], SM = [], W = 0, pinned = false, L = 1, top0 = 0, measured = false, ticking = false, on = false;
     var seed = 263;
     function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
     function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
     function inOut(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
-    function outQ(t) { return 1 - (1 - t) * (1 - t); }
-    // 島の並び（左右に散らばる順番）と、崩れはじめの遅れ：上の字ほど先に崩れる
-    var slots = [], u = [];
+    function outC(t) { return 1 - Math.pow(1 - t, 3); }
+    function el(tag, attrs, parent) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); (parent || svg).appendChild(e); return e; }
+    // 島のかたち：なだらかな丘。大きな島には松を一、二本
+    function mound(w, h, lean) {
+      var a = -w / 2, b = w / 2, m = w * lean;
+      return 'M' + a.toFixed(1) + ' 0C' + (a + w * 0.18).toFixed(1) + ' ' + (-h * 0.7).toFixed(1) + ' ' + (m - w * 0.2).toFixed(1) + ' ' + (-h).toFixed(1) + ' ' + m.toFixed(1) + ' ' + (-h).toFixed(1) +
+        'S' + (b - w * 0.16).toFixed(1) + ' ' + (-h * 0.55).toFixed(1) + ' ' + b.toFixed(1) + ' 0Z';
+    }
+    function pine(x, y, s) {
+      return 'M' + x.toFixed(1) + ' ' + y.toFixed(1) + 'v' + (-5 * s).toFixed(1) +
+        'M' + (x - 4 * s).toFixed(1) + ' ' + (y - 4 * s).toFixed(1) + 'q' + (4 * s).toFixed(1) + ' ' + (-3.4 * s).toFixed(1) + ' ' + (8 * s).toFixed(1) + ' 0' +
+        'M' + (x - 2.8 * s).toFixed(1) + ' ' + (y - 6.4 * s).toFixed(1) + 'q' + (2.8 * s).toFixed(1) + ' ' + (-2.6 * s).toFixed(1) + ' ' + (5.6 * s).toFixed(1) + ' 0';
+    }
+    function island(x, w, h, lean, pines) {
+      var g = el('g', { 'class': 'isl' });
+      var d = mound(w, h, lean);
+      el('path', { d: d }, g);
+      el('path', { d: d, 'class': 'rf', transform: 'scale(1,-0.42)' }, g);
+      if (pines) for (var i = 0; i < pines; i++) el('path', { d: pine(w * (lean + (i ? 0.2 : -0.06)), -h * (i ? 0.62 : 0.92), i ? 0.75 : 1), 'class': 'pn' }, g);
+      return { g: g, x: x };
+    }
+    // 字ごとの性格（沈む順番・流れる向き・傾き・島の大きさ）と、小島の配置。乱数は固定なので毎回同じ景色になる
+    var lines = Array.prototype.slice.call(title.querySelectorAll('.ln'));
+    var slots = [], U = [];
     for (var i = 0; i < N; i++) slots.push(i);
     for (i = N - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)), tmp = slots[i]; slots[i] = slots[j]; slots[j] = tmp; }
-    for (i = 0; i < N; i++) u.push({ slot: slots[i], jx: rnd() - 0.5, v: rnd(), rot: (rnd() - 0.5) * 150, sc: 0.42 + rnd() * 0.16, s: 0.02 + (i % 5) * 0.035 + rnd() * 0.06 });
+    chs.forEach(function (c, k) {
+      var ln = lines.indexOf(c.parentNode), sib = Array.prototype.slice.call(c.parentNode.querySelectorAll('.ch')), fromBottom = sib.length - 1 - sib.indexOf(c);
+      U.push({ s: 0.07 + ln * 0.14 + fromBottom * 0.055 + rnd() * 0.02, slot: slots[k], jx: rnd() - 0.5, rot: (rnd() - 0.5) * 7,
+        w: 30 + rnd() * 26, h: 9 + rnd() * 9, lean: (rnd() - 0.5) * 0.3, pines: rnd() < 0.7 ? (rnd() < 0.4 ? 2 : 1) : 0 });
+    });
+    var SMALL = 22, SU = [];
+    for (i = 0; i < SMALL; i++) SU.push({ u: rnd(), w: 8 + rnd() * 16, h: 3 + rnd() * 5, lean: (rnd() - 0.5) * 0.4, at: 0.3 + rnd() * 0.58 });
+    var DUR = 0.36, hzBar, ripples = [], islands = [], smalls = [];
+
     function measure() {
-      vw = window.innerWidth; vh = window.innerHeight;
-      chs.forEach(function (el) { el.style.transform = ''; });
-      var sy = window.scrollY;
-      C = chs.map(function (el, k) {
-        var r = el.getBoundingClientRect(), q = u[k];
-        return {
-          x0: r.left + r.width / 2, y0: r.top + sy + r.height / 2,
-          tx: vw * (0.08 + 0.84 * (q.slot + 0.5 + q.jx * 0.5) / N),
-          ty: vh * (0.56 + 0.15 * q.v),
-          rot: q.rot, sc: q.sc, s: q.s
-        };
+      tbox.classList.remove('sinking');
+      tbox.style.height = '';
+      chs.forEach(function (c) { c.style.transform = ''; });
+      pinned = getComputedStyle(stage).position === 'sticky';
+      // 位置はレイアウト上の値で測る（登場アニメーション中の変形に左右されない）。基準は .hx-tbox
+      var bottom = 0;
+      var box = chs.map(function (c) {
+        var kr = c.querySelector('.kari'), b = c.offsetTop + c.offsetHeight;
+        if (kr) b = Math.max(b, c.offsetTop + kr.offsetTop + kr.offsetHeight);
+        bottom = Math.max(bottom, b);
+        return { l: c.offsetLeft, t: c.offsetTop, w: c.offsetWidth, h: c.offsetHeight };
       });
+      var tTop = tbox.offsetTop, hz;   // 水平線の高さ（.hx-tbox の上端から）
+      if (pinned) hz = Math.max(bottom + 14, stage.querySelector('.hx-base').offsetTop - 16 - tTop);
+      else hz = bottom + 22;
+      if (pinned) tbox.style.height = Math.ceil(hz + 2) + 'px';
+      tbox.style.setProperty('--hz', hz.toFixed(1) + 'px');
+      W = tbox.offsetWidth;
+      sea.style.left = tbox.offsetLeft + 'px';
+      sea.style.top = (tTop + hz).toFixed(1) + 'px';
+      sea.style.width = W + 'px';
+      // 字の行き先：島の位置
+      C = box.map(function (r, k) {
+        var q = U[k];
+        return { x0: r.l + r.w / 2, top: r.t, bot: r.t + r.h, ix: W * (0.07 + 0.86 * (q.slot + 0.5 + q.jx * 0.55) / N), D: hz - r.t + 6 };
+      });
+      // 描きなおし
+      while (svg.childNodes.length > 1) svg.removeChild(svg.lastChild);
+      svg.setAttribute('width', W.toFixed(0)); svg.setAttribute('height', 40);
+      svg.setAttribute('viewBox', '0 -39 ' + W.toFixed(0) + ' 40');
+      hzBar = el('rect', { 'class': 'hz', x: 0, y: -0.5, width: W.toFixed(1), height: 1 });
+      ripples = []; islands = []; smalls = [];
+      var z = Math.min(1, W / 440);   // 幅の狭い画面では、島も小さく
+      SU.forEach(function (q) { var x = W * (0.03 + 0.94 * q.u); smalls.push({ g: island(x, q.w * z, q.h * z, q.lean, 0).g, x: x, at: q.at }); });
+      C.forEach(function (c, k) {
+        var q = U[k];
+        islands.push(island(c.ix, q.w * z, q.h * z, q.lean, q.pines));
+        ripples.push([el('ellipse', { 'class': 'rp', cx: 0, cy: 0, rx: 0, ry: 0, opacity: 0 }), el('ellipse', { 'class': 'rp', cx: 0, cy: 0, rx: 0, ry: 0, opacity: 0 })]);
+      });
+      var py = pin.getBoundingClientRect().top + window.scrollY;
+      if (pinned) { top0 = py; L = Math.max(1, pin.offsetHeight - stage.offsetHeight); }
+      else { top0 = 0; L = Math.max(240, py + stage.offsetTop + tTop + hz - window.innerHeight * 0.2); }
       measured = true;
     }
+
+    function show(e, a, dy) { e.style.opacity = a.toFixed(3); e.style.transform = a > 0.999 ? 'none' : 'translateY(' + ((1 - a) * (dy || 6)).toFixed(1) + 'px)'; }
+
     function upd() {
       ticking = false;
-      var y = window.scrollY;
-      if (!measured || !vh) measure();
-      var R = vh * 1.1, p = y / R;
+      if (!measured) measure();
+      var p = clamp((window.scrollY - top0) / L);
       if (p <= 0) {
-        chs.forEach(function (el) { el.style.transform = ''; el.style.opacity = ''; el.style.removeProperty('--land'); el.classList.remove('landed'); });
-        title.classList.remove('moving', 'quaking');
-        if (note) note.classList.remove('on');
+        if (on) {
+          on = false;
+          tbox.classList.remove('sinking'); sea.classList.remove('on');
+          chs.forEach(function (c) { c.style.transform = ''; });
+          fades.forEach(function (e) { e.style.opacity = ''; e.style.transform = ''; });
+        }
         return;
       }
-      title.classList.add('moving');
-      title.classList.toggle('quaking', p < 0.09);
-      var fade = clamp((p - 1.02) / 0.4);
-      chs.forEach(function (el, k) {
-        var c = C[k], t = clamp((p - c.s) / (0.92 - c.s)), ey = inOut(t), ex = outQ(t);
-        var tumble = Math.sin(t * Math.PI * 2.2) * 14 * (1 - t);
-        var dx = (c.tx - c.x0) * ex;
-        var dy = y + (c.ty - c.y0) * ey;   // スクロールぶん押し戻して、画面についてくる
-        var sc = 1 - (1 - c.sc) * ey;
-        el.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px) rotate(' + (c.rot * ey + tumble).toFixed(1) + 'deg) scale(' + sc.toFixed(3) + ')';
-        el.style.opacity = (1 - fade).toFixed(3);
-        var land = clamp((t - 0.88) / 0.12);
-        el.style.setProperty('--land', land.toFixed(2));
-        el.classList.toggle('landed', land > 0.5);
-      });
-      if (note) {
-        note.classList.toggle('on', p > 0.02 && fade < 0.6);
-        var done = p > 0.95;
-        if (done !== landedMsg) {
-          landedMsg = done;
-          noteT.textContent = done ? '流れ着いて、九十九島になりました。' : '鳥海山にならって、タイトルが山体崩壊中。';
-          note.querySelector('b').textContent = done ? 'ざざん。' : 'ゴゴゴ……';
+      on = true;
+      tbox.classList.add('sinking'); sea.classList.add('on');
+      // 水平線が引かれ、添え書きが退く
+      hzBar.style.transform = 'scaleX(' + outC(clamp(p / 0.14)).toFixed(3) + ')';
+      var f = 1 - clamp(p / 0.07);
+      // 表紙下端の添え書きは、とどまる表紙（PC）でだけ水平線に場所をゆずる
+      fades.forEach(function (e) { if (!pinned && !e.classList.contains('hx-sub')) return; e.style.opacity = f.toFixed(3); e.style.transform = 'translateY(' + ((1 - f) * 10).toFixed(1) + 'px)'; });
+      show(capA, clamp((p - 0.08) / 0.1) * (1 - clamp((p - 0.78) / 0.07)));
+      show(capB, clamp((p - 0.86) / 0.1));
+      // 字が沈む
+      chs.forEach(function (c, k) {
+        var q = U[k], m = C[k], t = clamp((p - q.s) / DUR), e = inOut(t);
+        var dy = m.D * e;
+        c.style.transform = t > 0 ? 'translateY(' + dy.toFixed(1) + 'px) rotate(' + (q.rot * e).toFixed(2) + 'deg)' : '';
+        // 水に触れてから沈みきるまで（0 → 1）
+        var wet = clamp((dy - (C[k].D - 6 - (m.bot - m.top))) / Math.max(1, m.bot - m.top + 6));
+        var rx = m.x0, r = ripples[k];
+        for (var n = 0; n < 2; n++) {
+          var w = clamp((wet - n * 0.22) / 0.78), a = Math.sin(Math.PI * w) * (n ? 0.32 : 0.55);
+          r[n].setAttribute('cx', rx.toFixed(1));
+          r[n].setAttribute('rx', (4 + 38 * outC(w)).toFixed(1));
+          r[n].setAttribute('ry', (1 + 4.2 * outC(w)).toFixed(1));
+          r[n].setAttribute('opacity', a.toFixed(3));
         }
-      }
+        // 島は字の沈んだところに浮かび、それから水面をすべって散る
+        var rise = outC(clamp((wet - 0.55) / 0.45)), go = inOut(clamp((p - q.s - DUR * 0.9) / 0.13));
+        var ix = m.x0 + (m.ix - m.x0) * go;
+        islands[k].g.setAttribute('transform', 'translate(' + ix.toFixed(1) + ' 0) scale(' + (0.7 + 0.3 * go).toFixed(3) + ' ' + (rise * (0.8 + 0.2 * go)).toFixed(3) + ')');
+        islands[k].g.style.opacity = rise > 0 ? 1 : 0;
+      });
+      smalls.forEach(function (s) {
+        var rise = outC(clamp((p - s.at) / 0.12));
+        s.g.setAttribute('transform', 'translate(' + s.x.toFixed(1) + ' 0) scale(1 ' + rise.toFixed(3) + ')');
+        s.g.style.opacity = rise > 0 ? 0.8 : 0;
+      });
     }
-    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(upd); } }, { passive: true });
-    window.addEventListener('resize', function () { measured = false; if (!ticking) { ticking = true; requestAnimationFrame(upd); } }, { passive: true });
-    if (window.scrollY > 0) setTimeout(upd, 900);
+    function kick() { if (!ticking) { ticking = true; requestAnimationFrame(upd); } }
+    window.addEventListener('scroll', kick, { passive: true });
+    var lw = window.innerWidth;
+    window.addEventListener('resize', function () {
+      // スマートフォンのアドレスバーの出入り（高さだけの変化）では測り直さない
+      if (window.innerWidth === lw && !pinned && measured) return;
+      lw = window.innerWidth; measured = false; on = true; kick();
+    }, { passive: true });
+    // 書体がそろってから測る（字の位置が変わるため）
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measured = false; kick(); });
+    setTimeout(function () { measured = false; kick(); }, 900);
   })();
 
   /* ── 概観の帯：6本の動画と写真の場面を1本につないだ映像（約50秒）を、画面に入っているあいだだけ流す
@@ -2608,7 +2717,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var brew = $('brew');
     if (!brew) return;
     var btn = brew.querySelector('.brew-btn'), sayH = $('brew-say-h'), sayT = $('brew-say-t');
-    var stage = document.querySelector('.hero-stage'), foot = document.querySelector('footer');
+    var stage = document.querySelector('.hx-pin') || document.querySelector('.hero-stage'), foot = document.querySelector('footer');
     // [ひとこと, お知らせ] — 言い回しは変わっても、伝えることは同じ
     var MSG = [
       ['ぷくっ。', 'この計画は発酵中です。内容は今後、変化していく可能性があります。'],
