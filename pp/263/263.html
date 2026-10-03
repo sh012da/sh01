@@ -1862,7 +1862,8 @@ document.addEventListener('DOMContentLoaded', function () {
        ・字はまっすぐ上下に動くだけなので、ほかの字に重ならない。水平線より下は見えない
        ・動きは Web Animations の transform と opacity だけ。描画は GPU に任せ、メインの処理が混んでいてもなめらかに動く
        ・表紙が画面の外にあるあいだ・タブが裏にあるあいだは止める。右下のボタンでいつでも止められる
-       ・OS の「動きを減らす」設定がオンなら、くり返しの動きはせず、タイトルを静かに置いておく
+       ・表紙の登場と同じく、OS の「アニメーション効果オフ（動きを減らす）」設定に関係なく再生する（止めたい人は右下のボタンで）
+       ・書体の読み込みが遅くても、最長 2.5 秒で始める
        ・字の位置や画面の大きさが変わったら（回転・リサイズ・書体の読み込み）測り直し、同じ時点から続ける ── */
   (function () {
     var stage = document.getElementById('hx-stage'), title = document.getElementById('hero-title');
@@ -1871,13 +1872,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var tbox = title.parentNode, win = stage.querySelector('.hx-win');
     var chs = Array.prototype.slice.call(title.querySelectorAll('.ch')), N = chs.length;
     var lines = Array.prototype.slice.call(title.querySelectorAll('.ln'));
-    var reduce = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
     var NS = 'http://www.w3.org/2000/svg', HY = 40;
     var T = 16000;            // 一巡の長さ（ミリ秒）
     var QUAKE = [6000, 7500]; // 揺れ
     var FALL = 7300;          // 最初の字が崩れはじめる
     var BACK = 12600;         // 島が寄り集まりはじめる
-    var START = 2600;         // 最初の一巡は、ここから再生する（表紙が出てから約3秒で揺れはじめる）
+    var START = 4700;         // 最初の一巡は、ここから再生する（表紙が出そろってから約1.3秒で揺れはじめる）
     var EASE_IN = 'cubic-bezier(0.55, 0, 0.8, 0.2)', EASE_OUT = 'cubic-bezier(0.16, 1, 0.3, 1)', EASE_IO = 'cubic-bezier(0.65, 0, 0.35, 1)';
     var anims = [], nodes = [], built = false, visible = true, userHold = false, size = '';
 
@@ -2019,7 +2019,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function key() { return [stage.offsetWidth, stage.offsetHeight, tbox.offsetWidth, title.offsetHeight].join('x'); }
     function start(at) {
       clear();
-      if (reduce.matches) { tbox.style.removeProperty('--hz'); hold.hidden = true; return; }
       build();
       size = key();
       anims.forEach(function (a) { a.currentTime = at; });
@@ -2029,10 +2028,13 @@ document.addEventListener('DOMContentLoaded', function () {
     function now() { return anims.length ? (anims[0].currentTime || 0) % T : START; }
 
     // 登場アニメーションと書体の読み込みが終わってから始める
-    var root = document.documentElement, ready = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+    var root = document.documentElement, ready = Promise.race([
+      document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve(),
+      new Promise(function (res) { setTimeout(res, 2500); })
+    ]);
     (function wait() {
       if (!root.classList.contains('intro-done')) return setTimeout(wait, 120);
-      ready.then(function () { start(START); });
+      ready.then(function () { if (!built) start(START); });
     })();
     hold.addEventListener('click', function () {
       userHold = !userHold;
@@ -2042,7 +2044,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { visible = es[0].isIntersecting; sync(); }).observe(stage);
     document.addEventListener('visibilitychange', sync);
-    if (reduce.addEventListener) reduce.addEventListener('change', function () { if (built || reduce.matches) start(now()); });
+    // 書体が遅れて届いたら、字の位置が変わるので測り直す
+    if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', function () { if (built && key() !== size) start(now()); });
     var rt = 0;
     window.addEventListener('resize', function () {
       clearTimeout(rt);
