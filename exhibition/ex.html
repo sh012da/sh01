@@ -11,27 +11,26 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#080808">
+  <meta name="theme-color" content="#060606">
   <title>TSUDA SHOICHI | 展示記録 Exhibitions</title>
-  <meta name="description" content="津田翔一の展示記録（EX）。長野県立美術館、北野カルチュラルセンター、小海町高原美術館ほか、2022年から2026年までの個展・グループ展を、スクロールするだけでめぐれる記録ページ。">
+  <meta name="description" content="津田翔一の展示記録（EX）。小海町高原美術館、長野県立美術館、北野カルチュラルセンターほか、2022年から2026年までの展示会場を、奥へ奥へと歩いてめぐる記録ページ。">
   <meta property="og:title" content="TSUDA SHOICHI | 展示記録 Exhibitions">
-  <meta property="og:description" content="作品が、ひとつの空間に置かれた記録。スクロールするだけで、5つの会場をめぐれます。">
+  <meta property="og:description" content="スクロールするたびに、会場の奥へ。2026年から2022年まで、5つの会場を歩いてめぐる展示記録。">
   <meta property="og:type" content="website">
   <link rel="icon" type="image/jpeg" href="../images/exhi-ex/cover-nagano2022.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400;500&display=swap" rel="stylesheet">
-  <link rel="preload" as="image" href="../images/exhi-ex/web/koumi-01-l.jpg" media="(min-width: 701px)">
-  <link rel="preload" as="image" href="../images/exhi-ex/web/koumi-01-s.jpg" media="(max-width: 700px)">
 
   <style>
     /* ════════════════════════════════════════
-        TOKENS — トップページ・作品系ページと同じ語彙で
-        漆黒の地、生成りの文字、真鍮色のアクセント、髪の毛ほどの罫線。
-        EX の印（琥珀 #f2c28b）はナビの配色から。
+        TOKENS — サイト共通の語彙
+        漆黒の地、生成りの文字、真鍮色、髪の毛ほどの罫線。
+        EX の印は琥珀 #f2c28b。会場ごとの差し色は --glow に流し込む。
     ════════════════════════════════════════ */
+    @property --glow { syntax: '<color>'; inherits: true; initial-value: #d49a7f; }
     :root {
-      --bg:          #080808;
+      --bg:          #060606;
       --fg:          #ede9e4;
       --text:        #e8e4db;
       --text-muted:  rgba(232,228,219,0.68);
@@ -43,13 +42,13 @@
       --muted-col:   #938c84;
       --ex:          #f2c28b;
       --pp:          #9cd4ff;
-      --acc:         var(--gold);
+      --glow:        #d49a7f;
       --en:          'Cormorant Garamond', serif;
       --jp:          'Noto Serif JP', serif;
       --ease-expo:   cubic-bezier(0.16, 1, 0.3, 1);
       --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
       --px:          clamp(16px, 5vw, 64px);
-      --ph:          min(60svh, 620px);
+      transition: --glow 1.6s ease;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { overflow-x: clip; -webkit-text-size-adjust: 100%; background: var(--bg); }
@@ -57,7 +56,6 @@
       background: var(--bg); color: var(--text); font-family: var(--jp); font-weight: 300;
       line-height: 1.8; letter-spacing: 0.04em; -webkit-font-smoothing: antialiased;
       overflow-x: clip; line-break: strict; overflow-wrap: break-word;
-      transition: background-color 1.2s ease;
     }
     body.no-scroll { overflow: hidden; }
     img { display: block; max-width: 100%; }
@@ -72,26 +70,19 @@
     .live-dot::after { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 1px solid var(--ex); animation: ping 2.4s ease-out infinite; }
     @keyframes ping { 0% { transform: scale(1); opacity: 0.9; } 100% { transform: scale(3.4); opacity: 0; } }
 
-    /* 髪の毛ほどの枠のボタン（サイト共通の CONTACT と同じ作法） */
     .btn {
       display: inline-flex; align-items: center; gap: 0.8em; min-height: 44px; padding: 0 1.4rem;
       border: 0.5px solid rgba(203,191,176,0.4); border-radius: 2px; color: var(--accent);
       font-family: var(--jp); font-weight: 300; font-size: 0.8rem; letter-spacing: 0.14em; white-space: nowrap;
-      transition: background-color 0.4s var(--ease-expo), color 0.4s var(--ease-expo), border-color 0.4s ease, box-shadow 0.4s ease;
+      transition: background-color 0.4s var(--ease-expo), color 0.4s var(--ease-expo), border-color 0.4s ease;
     }
     .btn .ar { display: inline-block; transition: transform 0.4s var(--ease-expo); }
-    .btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); box-shadow: 0 4px 16px rgba(203,191,176,0.2); }
+    .btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
     .btn:hover .ar { transform: translateX(4px); }
-    .btn.primary { border-color: color-mix(in srgb, var(--acc) 70%, transparent); color: var(--fg); background: color-mix(in srgb, var(--acc) 10%, transparent); }
-    .btn.primary:hover { background: var(--acc); border-color: var(--acc); color: var(--bg); }
 
-    /* ════════════════════════════════════════
-        SCROLL PROGRESS
-    ════════════════════════════════════════ */
     .scroll-progress {
-      position: fixed; top: 0; left: 0; height: 2.5px; width: 100%; z-index: 10000; pointer-events: none;
-      background: var(--accent); box-shadow: 0 0 10px rgba(203,191,176,0.6);
-      transform-origin: left; transform: scaleX(0);
+      position: fixed; top: 0; left: 0; height: 2px; width: 100%; z-index: 10000; pointer-events: none;
+      background: linear-gradient(90deg, rgba(229,211,179,0.3), var(--gold)); transform-origin: left; transform: scaleX(0);
     }
 
     /* ════════════════════════════════════════
@@ -100,12 +91,12 @@
     nav#top-nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 999;
       display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-      padding: clamp(24px,4vw,40px) var(--px);
+      padding: clamp(20px,3vw,34px) var(--px);
       border-bottom: 0.5px solid transparent;
       transition: background 0.6s var(--ease-expo), padding 0.6s var(--ease-expo), border-color 0.6s ease;
     }
     nav#top-nav.scrolled {
-      padding: clamp(12px,2vw,24px) var(--px);
+      padding: clamp(12px,2vw,22px) var(--px);
       background: rgba(10,10,8,0.88); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
       border-bottom-color: rgba(232,228,219,0.08);
     }
@@ -148,294 +139,350 @@
       position: relative; z-index: 1000; font-family: var(--en); font-size: clamp(0.55rem,1.5vw,0.65rem); letter-spacing: 0.25em; text-transform: uppercase;
       border: 0.5px solid rgba(184,168,152,0.4); padding: 0.55rem 1.4rem; color: var(--accent); border-radius: 2px; transition: all 0.4s var(--ease-expo);
     }
-    .nav-cta:hover { background: var(--accent); color: var(--bg); box-shadow: 0 4px 16px rgba(203,191,176,0.2); }
+    .nav-cta:hover { background: var(--accent); color: var(--bg); }
     .nav-hamburger { display: none; }
     .sp-only { display: none !important; }
 
     /* ════════════════════════════════════════
-        HERO — 会場の写真がゆっくり入れ替わる
+        THE WALK — 縦にスクロールすると、会場の奥へ歩いていく
+        舞台は画面に貼りつき、その中を「目」だけが前へ進む。
+        位置は毎フレーム、スクロール量へなめらかに追いつく（ホイールの段差を吸収）。
+    ════════════════════════════════════════ */
+    .walk { position: relative; }
+    .stage {
+      position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden;
+      background: radial-gradient(120% 90% at 50% 50%, #0d0c0b 0%, #060606 70%);
+      contain: strict;
+    }
+    .glow {
+      position: absolute; left: 50%; top: 50%; width: 130vmax; height: 130vmax; margin: -65vmax 0 0 -65vmax; pointer-events: none;
+      background: radial-gradient(closest-side, color-mix(in srgb, var(--glow) 30%, transparent) 0%, color-mix(in srgb, var(--glow) 9%, transparent) 38%, transparent 72%);
+      opacity: 0.9;
+    }
+    .dust { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .world { position: absolute; inset: 0; }
+    .vignette {
+      position: absolute; inset: 0; pointer-events: none; z-index: 6000;
+      background:
+        linear-gradient(to bottom, rgba(6,6,6,0.75), transparent 18%, transparent 78%, rgba(6,6,6,0.85)),
+        radial-gradient(130% 100% at 50% 50%, transparent 55%, rgba(0,0,0,0.6));
+    }
+
+    /* 舞台の住人：すべて画面の中心から、奥行きに応じて置かれる */
+    .it {
+      position: absolute; left: 50%; top: 50%; visibility: hidden; opacity: 0;
+      transform-origin: 50% 50%; backface-visibility: hidden;
+    }
+    .it.on { visibility: visible; }
+
+    /* 写真 */
+    .ph { width: var(--w); will-change: transform, opacity; }
+    .ph-hit { position: relative; display: block; width: 100%; aspect-ratio: var(--ar); overflow: hidden; background: #0f0e0d; box-shadow: 0 40px 80px -30px rgba(0,0,0,0.95); cursor: zoom-in; }
+    .ph-hit::after { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 0 0.5px rgba(232,228,219,0.14); pointer-events: none; }
+    .ph img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.9s ease, transform 1.2s var(--ease-expo); }
+    .ph img.ok { opacity: 1; }
+    .ph-hit:hover img { transform: scale(1.025); }
+    .ph figcaption { display: flex; gap: 14px; margin-top: 14px; font-size: 0.95rem; line-height: 1.6; color: var(--text-muted); letter-spacing: 0.06em; }
+    .ph figcaption .n { font-family: var(--en); font-size: 1rem; color: var(--glow); flex: none; letter-spacing: 0.12em; }
+
+    /* 会場の入口（ゲート） */
+    .gate { width: min(1100px, 76vw); text-align: center; pointer-events: none; text-shadow: 0 0 40px rgba(0,0,0,0.9), 0 0 12px rgba(0,0,0,0.6); }
+    .gate::before { content: ''; position: absolute; inset: -30% -12%; z-index: -1; background: radial-gradient(closest-side, rgba(6,6,6,0.92), rgba(6,6,6,0.6) 55%, transparent); }
+    .g-no { display: inline-flex; align-items: center; gap: 12px; font-family: var(--en); font-size: clamp(0.8rem, 1.1vw, 1rem); letter-spacing: 0.42em; color: var(--glow); text-transform: uppercase; }
+    .g-no.live { color: var(--ex); }
+    .gate h2 { margin: 0.35em 0 0.3em; font-weight: 200; font-size: clamp(2.6rem, 6.6vw, 7rem); line-height: 1.2; letter-spacing: 0.12em; color: var(--fg); word-break: keep-all; }
+    .g-sub { font-size: clamp(0.95rem, 1.5vw, 1.35rem); letter-spacing: 0.2em; color: var(--text); }
+    .g-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 28px; margin-top: 1.4em; font-size: clamp(0.78rem, 1vw, 0.95rem); letter-spacing: 0.12em; color: var(--text-muted); }
+    .g-meta b { font-family: var(--en); font-weight: 400; font-size: 1.15em; letter-spacing: 0.14em; color: var(--gold); }
+    .g-quote { max-width: 34em; margin: 1.6em auto 0; font-size: clamp(0.85rem, 1.1vw, 1.02rem); line-height: 2.1; letter-spacing: 0.1em; color: var(--text-muted); }
+
+    /* 入口の奥に浮かぶ、年号 */
+    .year {
+      font-family: var(--en); font-weight: 300; font-size: 34vw; line-height: 0.8; letter-spacing: -0.01em; white-space: nowrap; pointer-events: none;
+      color: transparent; -webkit-text-stroke: 1px color-mix(in srgb, var(--glow) 42%, transparent);
+    }
+
+    /* 壁のキャプション（このページ自体の） */
+    .label {
+      width: 380px; padding: 24px 26px 20px; border-radius: 2px; pointer-events: none;
+      background: #ece6da; color: #1c1a17; box-shadow: 0 40px 70px -30px rgba(0,0,0,0.95);
+    }
+    .label::before { content: ''; position: absolute; top: 12px; right: 14px; width: 6px; height: 6px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff, #9a9186); }
+    .label .en { display: block; font-size: 0.56rem; letter-spacing: 0.32em; color: #847b70; margin-bottom: 12px; }
+    .label dl div { display: grid; grid-template-columns: 3.4em minmax(0, 1fr); gap: 12px; padding: 5px 0; border-top: 0.5px solid rgba(28,26,23,0.14); font-size: 0.8rem; line-height: 1.7; }
+    .label dl div:first-child { border-top: 0; }
+    .label dt { color: #847b70; font-size: 0.7rem; letter-spacing: 0.14em; padding-top: 0.1em; }
+    .label dd { color: #1c1a17; letter-spacing: 0.06em; }
+    .label dd .it2 { font-family: var(--en); font-style: italic; font-size: 0.95rem; color: #5b544b; margin-left: 0.4em; }
+    .label dd small { color: #847b70; font-size: 0.7rem; }
+
+    /* 床の注意書き */
+    .sign { display: flex; align-items: center; gap: 14px; white-space: nowrap; pointer-events: none; font-size: 1rem; letter-spacing: 0.14em; color: var(--text-muted); }
+    .sign::before { content: ''; width: 9px; height: 9px; border: 1px solid var(--glow); transform: rotate(45deg); flex: none; }
+
+    /* 会場の出口：記録ページへ */
+    .end {
+      display: flex; flex-direction: column; gap: 18px; width: min(420px, 34vw); padding: 30px 32px;
+      border: 0.5px solid color-mix(in srgb, var(--glow) 55%, transparent); border-radius: 2px;
+      background: rgba(10,10,9,0.78); box-shadow: 0 40px 80px -30px rgba(0,0,0,0.95);
+      transition: border-color 0.4s ease, background-color 0.4s ease;
+    }
+    .end:hover { border-color: var(--glow); background: rgba(22,19,16,0.92); }
+    .end .en { font-size: 0.66rem; color: var(--glow); }
+    .end b { font-weight: 300; font-size: 1.45rem; line-height: 1.6; letter-spacing: 0.1em; color: var(--fg); }
+    .end .arrow { position: relative; display: block; width: 48px; height: 12px; transition: width 0.5s var(--ease-out-back); }
+    .end .arrow::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 0.75px; background: var(--glow); }
+    .end .arrow::after { content: ''; position: absolute; right: 0; top: 50%; width: 8px; height: 8px; border-top: 0.75px solid var(--glow); border-right: 0.75px solid var(--glow); transform: translateY(-50%) rotate(45deg); }
+    .end:hover .arrow { width: 84px; }
+    .end .next { font-size: 0.8rem; color: var(--text-dim); line-height: 1.8; letter-spacing: 0.08em; }
+
+    /* ページのない展示（通りすがりの小部屋） */
+    .itl { width: min(620px, 52vw); padding: 34px 38px; text-align: left; border-top: 0.5px solid var(--border-mid); border-bottom: 0.5px solid var(--border-mid); background: linear-gradient(90deg, rgba(10,10,9,0.85), rgba(10,10,9,0.55)); }
+    .itl .y { font-family: var(--en); font-weight: 300; font-size: 4.4rem; line-height: 0.9; color: rgba(229,211,179,0.28); }
+    .itl .en { display: block; margin-top: 14px; font-size: 0.62rem; color: var(--muted-col); }
+    .itl h2 { margin-top: 6px; font-weight: 300; font-size: 1.7rem; line-height: 1.5; letter-spacing: 0.1em; color: var(--fg); }
+    .itl h2 small { display: block; font-size: 0.55em; color: var(--text-muted); letter-spacing: 0.1em; }
+    .itl p { margin-top: 6px; font-size: 0.86rem; color: var(--text-muted); }
+    .itl .btn { margin-top: 20px; background: rgba(10,10,9,0.6); }
+
+    /* 出口 */
+    .exit { width: 80vw; text-align: center; }
+    .exit .big { display: block; font-family: var(--en); font-weight: 300; font-size: 15vw; line-height: 0.9; letter-spacing: 0.12em; color: transparent; -webkit-text-stroke: 1px rgba(229,211,179,0.55); }
+    .exit p { margin-top: 18px; font-size: 1.15rem; letter-spacing: 0.2em; color: var(--text); }
+    .exit small { display: block; margin-top: 10px; font-family: var(--en); font-size: 0.8rem; letter-spacing: 0.4em; color: var(--gold); text-transform: uppercase; }
+
+    /* ════════════════════════════════════════
+        HERO — 入口。奥にはもう、会場が見えている
     ════════════════════════════════════════ */
     .hero {
-      position: relative; min-height: 100svh; display: flex; flex-direction: column; justify-content: center;
-      padding: 9rem var(--px) 7rem; overflow: hidden; border-bottom: 0.5px solid var(--border);
+      position: absolute; inset: 0; z-index: 7000; pointer-events: none;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+      padding: 7rem var(--px) 9.5rem; transform-origin: 50% 46%;
     }
-    .hero-slides { position: absolute; inset: 0; z-index: 0; background: #0b0b0a; }
-    .hero-slides img {
-      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 45%;
-      opacity: 0; transform: scale(1); transition: opacity 2.5s ease-in-out, transform 2.5s ease-in-out; will-change: opacity;
-    }
-    .hero-slides img.on { opacity: 1; transform: scale(1.05); transition: opacity 2.5s ease-in-out, transform 10s linear; }
-    .hero-overlay {
-      position: absolute; inset: 0; z-index: 1; pointer-events: none;
-      background:
-        linear-gradient(90deg, rgba(8,8,8,0.88) 0%, rgba(8,8,8,0.55) 45%, rgba(8,8,8,0.25) 100%),
-        linear-gradient(to bottom, rgba(10,10,8,0.35), rgba(10,10,8,0.9));
-    }
-    .hero-inner { position: relative; z-index: 2; width: 100%; max-width: 1400px; margin: 0 auto; }
-
-    .hero-eyebrow { display: flex; align-items: center; gap: 15px; overflow: hidden; font-family: var(--en); font-size: clamp(0.62rem, 1.4vw, 0.85rem); letter-spacing: 0.45em; color: var(--accent); text-transform: uppercase; margin-bottom: 18px; }
-    .hero-eyebrow span { display: inline-block; }
-    .hero-eyebrow::after { content: ''; flex: 1; max-width: 520px; height: 1px; background: rgba(229,211,179,0.3); transform-origin: left; }
-    .js .hero-eyebrow span { opacity: 0; transform: translateY(100%); animation: clipUp 1.2s var(--ease-expo) 0.2s forwards; }
-    .js .hero-eyebrow::after { transform: scaleX(0); animation: drawLine 1.5s var(--ease-expo) 0.5s forwards; }
-
-    .hero-title { font-family: var(--jp); font-weight: 200; font-size: clamp(3.4rem, 10vw, 8.4rem); line-height: 1.08; letter-spacing: 0.15em; color: var(--fg); text-shadow: 0 0 40px rgba(229,211,179,0.18); }
-    .hero-title .ch1 { display: inline-block; }
-    .js .hero-title .ch1 { opacity: 0; transform: translateY(30px) scale(0.95); animation: manifest 1.4s var(--ease-expo) forwards; animation-delay: calc(var(--i) * 0.12s + 0.3s); }
-    .hero-en { font-family: var(--en); font-weight: 300; font-size: clamp(0.95rem, 2.3vw, 2rem); letter-spacing: 0.42em; color: var(--gold); margin-top: 12px; margin-left: 0.15em; text-transform: uppercase; }
-    .hero-sub { margin-top: clamp(26px, 4.5vh, 50px); max-width: 620px; font-size: clamp(0.95rem, 1.7vw, 1.2rem); letter-spacing: 0.24em; color: var(--text); line-height: 1.9; }
-    .hero-rule { margin-top: 20px; width: clamp(150px, 20vw, 250px); height: 1px; background: linear-gradient(90deg, var(--gold), transparent); transform-origin: left; }
-    .hero-body { margin-top: 18px; max-width: 34em; font-size: clamp(0.8rem, 1.1vw, 0.9rem); line-height: 2.1; color: var(--text-muted); letter-spacing: 0.08em; }
-    .js .hero-en, .js .hero-sub, .js .hero-body, .js .hero-acts { opacity: 0; transform: translateY(20px); animation: fadeUp 1.2s var(--ease-expo) forwards; }
-    .js .hero-en { animation-delay: 0.9s; } .js .hero-sub { animation-delay: 1.1s; } .js .hero-body { animation-delay: 1.25s; } .js .hero-acts { animation-delay: 1.4s; }
-    .js .hero-en { transform: none; animation: enIn 2.2s var(--ease-expo) 0.8s forwards; }
-    @keyframes enIn { from { opacity: 0; letter-spacing: 1.1em; filter: blur(6px); } to { opacity: 1; letter-spacing: 0.42em; filter: none; } }
-    .js .hero-rule { transform: scaleX(0); animation: drawLine 1.5s var(--ease-expo) 1.3s forwards; }
-    @keyframes manifest { 0% { opacity: 0; transform: translateY(30px) scale(0.95); filter: blur(10px); } 100% { opacity: 1; transform: none; filter: blur(0); } }
-    @keyframes clipUp { to { opacity: 1; transform: none; } }
-    @keyframes drawLine { to { transform: scaleX(1); } }
-    @keyframes fadeUp { to { opacity: 1; transform: none; } }
-
-    .hero-acts { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 26px; margin-top: 30px; }
-    .resume { display: none; align-items: baseline; gap: 12px; font-size: 0.82rem; color: var(--text-muted); border-bottom: 0.5px solid var(--border-mid); padding: 6px 0; transition: color 0.3s ease, border-color 0.3s ease; max-width: 100%; }
+    .hero a, .hero button { pointer-events: auto; }
+    .hero-eyebrow { display: flex; align-items: center; gap: 18px; font-family: var(--en); font-size: clamp(0.62rem, 1.1vw, 0.8rem); letter-spacing: 0.5em; color: var(--accent); text-transform: uppercase; }
+    .hero-eyebrow i { width: clamp(30px, 6vw, 90px); height: 1px; background: rgba(229,211,179,0.45); transform-origin: center; }
+    .hero-title { margin-top: clamp(14px, 2.4vh, 26px); font-weight: 200; font-size: clamp(3.6rem, 13.5vw, 13rem); line-height: 1; letter-spacing: 0.18em; margin-right: -0.18em; color: var(--fg); text-shadow: 0 0 60px rgba(0,0,0,0.9), 0 0 120px color-mix(in srgb, var(--glow) 25%, transparent); white-space: nowrap; }
+    .hero-title .ch { display: inline-block; }
+    .hero-en { display: flex; align-items: center; justify-content: center; gap: clamp(14px, 2.4vw, 34px); margin-top: clamp(16px, 2.6vh, 30px); font-family: var(--en); font-weight: 300; font-size: clamp(0.9rem, 1.9vw, 1.7rem); letter-spacing: 0.5em; margin-right: -0.5em; color: var(--gold); text-transform: uppercase; }
+    .hero-en i { width: 1px; height: 1.1em; background: rgba(229,211,179,0.4); }
+    .hero-sub { margin-top: clamp(22px, 4vh, 44px); font-size: clamp(0.92rem, 1.45vw, 1.2rem); letter-spacing: 0.26em; color: var(--text); }
+    .rot { position: relative; display: inline-block; color: var(--gold); }
+    .rot::after { content: ''; position: absolute; left: 0; right: 0.26em; bottom: -0.25em; height: 0.5px; background: linear-gradient(90deg, var(--gold), transparent); }
+    .rot .c { display: inline-block; transition: opacity 0.45s ease, transform 0.7s var(--ease-expo); transition-delay: calc(var(--i) * 38ms); }
+    .rot.out .c { opacity: 0; transform: translateY(-0.6em); }
+    .rot.pre .c { opacity: 0; transform: translateY(0.6em); transition: none; }
+    .hero-lead { margin-top: 14px; font-size: clamp(0.76rem, 1vw, 0.86rem); letter-spacing: 0.12em; color: var(--text-dim); }
+    .resume { display: none; align-items: baseline; gap: 12px; margin-top: 22px; font-size: 0.8rem; color: var(--text-muted); border-bottom: 0.5px solid var(--border-mid); padding: 6px 2px; transition: color 0.3s ease, border-color 0.3s ease; }
     .resume.show { display: inline-flex; }
-    .resume .en { font-size: 0.6rem; color: var(--gold); flex: none; }
-    .resume > span { flex: none; }
-    .resume b { font-weight: 400; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .resume .en { font-size: 0.6rem; color: var(--gold); }
+    .resume b { font-weight: 400; color: var(--text); }
     .resume:hover { color: var(--fg); border-color: var(--gold); }
 
-    /* 開催中の知らせ（トップの LATEST NEWS と同じガラスの箱） */
+    .hero-foot {
+      position: absolute; left: var(--px); right: var(--px); bottom: clamp(26px, 5vh, 50px);
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 20px; text-align: left;
+    }
+    .stats { display: flex; gap: clamp(16px, 2.4vw, 36px); list-style: none; }
+    .stats li { display: flex; flex-direction: column; gap: 2px; }
+    .stats b { font-family: var(--en); font-weight: 300; font-size: clamp(1.8rem, 2.8vw, 2.6rem); line-height: 1; color: var(--fg); font-variant-numeric: lining-nums tabular-nums; }
+    .stats span { font-family: var(--en); font-size: 0.58rem; letter-spacing: 0.3em; color: var(--muted-col); text-transform: uppercase; }
+    .enter { display: flex; flex-direction: column; align-items: center; gap: 10px; font-family: var(--en); font-size: 0.66rem; letter-spacing: 0.5em; margin-right: -0.5em; color: var(--accent); text-transform: uppercase; }
+    .enter small { font-family: var(--jp); font-size: 0.66rem; letter-spacing: 0.2em; margin-right: -0.5em; text-transform: none; color: var(--text-dim); }
+    .enter .shaft { position: relative; width: 1px; height: 64px; overflow: hidden; background: rgba(232,228,219,0.14); }
+    .enter .shaft::after { content: ''; position: absolute; left: 0; top: -40%; width: 1px; height: 40%; background: linear-gradient(to bottom, transparent, var(--gold)); animation: shaft 2.2s var(--ease-expo) infinite; }
+    @keyframes shaft { 0% { transform: translateY(0); } 100% { transform: translateY(350%); } }
     .onview {
-      position: absolute; z-index: 3; right: var(--px); bottom: clamp(26px, 5vh, 48px);
-      display: flex; align-items: center; gap: 18px; padding: 14px 22px 14px 14px; max-width: min(460px, calc(100% - 2 * var(--px)));
+      justify-self: end; display: flex; align-items: center; gap: 16px; padding: 12px 20px 12px 12px; max-width: 400px;
       background: rgba(10,10,8,0.55); border: 0.5px solid rgba(242,194,139,0.35); border-radius: 2px;
       -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
       transition: border-color 0.4s ease, background-color 0.4s ease, transform 0.5s var(--ease-expo);
     }
     .onview:hover { border-color: rgba(242,194,139,0.8); background: rgba(30,21,12,0.7); transform: translateY(-3px); }
-    .onview img { width: 64px; height: 64px; object-fit: cover; border-radius: 2px; flex: none; }
-    .onview small { display: flex; align-items: center; gap: 10px; font-family: var(--en); font-size: 0.62rem; letter-spacing: 0.3em; color: var(--ex); text-transform: uppercase; }
-    .onview b { display: block; font-weight: 400; font-size: 1.05rem; letter-spacing: 0.12em; color: var(--fg); line-height: 1.6; }
-    .onview span.v { display: block; font-size: 0.72rem; color: var(--text-dim); line-height: 1.5; letter-spacing: 0.06em; }
-    .onview .go { margin-left: auto; flex: none; color: var(--ex); font-family: var(--en); transition: transform 0.4s var(--ease-expo); }
-    .onview:hover .go { transform: translateY(3px); }
+    .onview img { width: 56px; height: 56px; object-fit: cover; flex: none; }
+    .onview small { display: flex; align-items: center; gap: 10px; font-family: var(--en); font-size: 0.6rem; letter-spacing: 0.3em; color: var(--ex); text-transform: uppercase; }
+    .onview b { display: block; font-weight: 400; font-size: 1rem; letter-spacing: 0.12em; color: var(--fg); line-height: 1.6; }
+    .onview span.v { display: block; font-size: 0.7rem; color: var(--text-dim); line-height: 1.5; letter-spacing: 0.06em; }
 
-    /* いま映っている会場の名前と、会場の切り替え */
-    .hero-caption { position: absolute; z-index: 3; left: var(--px); bottom: clamp(26px, 5vh, 48px); display: flex; align-items: center; gap: 22px; }
-    .scroll-cue { display: flex; align-items: center; gap: 15px; }
-    .scroll-cue span { font-family: var(--en); font-size: 0.62rem; letter-spacing: 0.4em; color: var(--muted-col); text-transform: uppercase; }
-    .scroll-cue i { width: 60px; height: 1px; background: linear-gradient(to right, var(--muted-col), transparent); animation: pulseLine 2.4s infinite var(--ease-expo); }
-    @keyframes pulseLine { 0% { transform: scaleX(0); transform-origin: left; } 50% { transform: scaleX(1); transform-origin: left; } 51% { transform: scaleX(1); transform-origin: right; } 100% { transform: scaleX(0); transform-origin: right; } }
-    .slide-now { display: flex; align-items: center; gap: 14px; font-size: 0.72rem; color: var(--text-dim); letter-spacing: 0.08em; }
-    .slide-now a { color: var(--text-muted); border-bottom: 0.5px solid transparent; transition: color 0.3s ease, border-color 0.3s ease; }
-    .slide-now a:hover { color: var(--fg); border-color: var(--gold); }
-    .slide-now .en { font-size: 0.6rem; color: var(--gold); letter-spacing: 0.3em; }
-    .slide-dots { display: flex; gap: 6px; }
-    .slide-dots button { width: 18px; height: 20px; display: flex; align-items: center; }
-    .slide-dots button i { display: block; width: 100%; height: 1px; background: rgba(232,228,219,0.25); transition: background 0.4s ease, height 0.4s ease; }
-    .slide-dots button[aria-current="true"] i { background: var(--gold); height: 2px; }
+    /* 入口の文字が、ひとつずつ灯る */
+    .js .hero-eyebrow, .js .hero-en, .js .hero-sub, .js .hero-lead, .js .hero-foot > *, .js .resume.show { opacity: 0; transform: translateY(14px); animation: rise 1.4s var(--ease-expo) forwards; }
+    .js .hero-eyebrow { animation-delay: 0.5s; }
+    .js .hero-title .ch { opacity: 0; transform: translateY(0.18em) scale(1.06); animation: rise 1.8s var(--ease-expo) forwards; animation-delay: calc(var(--i) * 110ms + 0.7s); }
+    .js .hero-en { animation-delay: 1.3s; } .js .hero-sub { animation-delay: 1.5s; } .js .hero-lead { animation-delay: 1.62s; } .js .resume.show { animation-delay: 1.75s; }
+    .js .hero-foot > :nth-child(1) { animation-delay: 1.8s; } .js .hero-foot > :nth-child(2) { animation-delay: 1.95s; } .js .hero-foot > :nth-child(3) { animation-delay: 2.1s; }
+    @keyframes rise { to { opacity: 1; transform: none; } }
 
     /* ════════════════════════════════════════
-        CHAPTER — 縦にスクロールすると、会場を横に歩く
+        HUD — いまどこを歩いているか
     ════════════════════════════════════════ */
-    .ch { position: relative; }
-    .ch-pin { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; display: flex; align-items: center; }
-    .ch-pin::before {
-      content: ''; position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(55% 60% at 14% 50%, color-mix(in srgb, var(--acc) 9%, transparent), transparent 72%);
-    }
-    .ch-track {
-      position: relative; display: flex; align-items: center; gap: clamp(16px, 2.4vw, 36px); width: max-content;
-      padding: 72px var(--px) 84px; will-change: transform;
-    }
-    .ch-intro { position: relative; flex: none; width: min(540px, 84vw); padding-right: clamp(0px, 3vw, 44px); }
-    .ch-no { display: flex; align-items: center; gap: 14px; font-family: var(--en); font-size: 0.68rem; letter-spacing: 0.4em; color: var(--acc); text-transform: uppercase; }
-    .ch-no::after { content: ''; width: 60px; height: 1px; background: color-mix(in srgb, var(--acc) 45%, transparent); }
-    .ch-year {
-      display: flex; font-family: var(--en); font-weight: 300; font-size: clamp(4.2rem, 8.4vw, 7.8rem); line-height: 1; letter-spacing: 0.02em;
-      color: transparent; -webkit-text-stroke: 0.6px color-mix(in srgb, var(--acc) 55%, transparent); margin: -0.12em 0 -0.16em -0.04em;
-    }
-    .ch-intro h2 { margin-top: 14px; font-weight: 300; font-size: clamp(1.7rem, 3vw, 2.6rem); line-height: 1.4; letter-spacing: 0.12em; color: var(--fg); }
-    .ch-intro h2 small { display: block; margin-top: 0.6em; font-size: 0.4em; font-weight: 300; letter-spacing: 0.14em; color: var(--text-muted); line-height: 1.7; }
-    .ch-meta { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 18px; padding-top: 16px; border-top: 0.5px solid var(--border); font-size: 0.76rem; color: var(--text-muted); line-height: 1.7; }
-    .ch-meta dt { font-family: var(--en); font-size: 0.6rem; letter-spacing: 0.3em; color: var(--muted-col); text-transform: uppercase; }
-    .ch-meta div { min-width: 0; }
-    .ch-meta .wide { flex-basis: 100%; }
-    .ch-quote { margin-top: 18px; padding-left: 16px; border-left: 1px solid color-mix(in srgb, var(--acc) 60%, transparent); font-size: clamp(0.88rem, 1.2vw, 0.98rem); line-height: 2.05; color: var(--text); letter-spacing: 0.08em; }
-    .ch-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
-    .ch-hint { display: flex; align-items: center; gap: 14px; margin-top: 24px; font-family: var(--en); font-size: 0.62rem; letter-spacing: 0.35em; color: var(--muted-col); text-transform: uppercase; }
-    .ch-hint i { width: 60px; height: 1px; background: linear-gradient(to right, var(--acc), transparent); animation: pulseLine 2.4s infinite var(--ease-expo); }
-    .ch-no.is-live { color: var(--ex); gap: 12px; }
+    .hud { position: fixed; z-index: 150; pointer-events: none; opacity: 0; transition: opacity 0.7s ease, transform 0.9s var(--ease-expo); }
+    .hud.show { opacity: 1; }
+    .hud.show a, .hud.show button { pointer-events: auto; }
 
-    .ph { flex: none; margin: 0; width: calc(var(--ph) * var(--ar)); display: flex; flex-direction: column; gap: 12px; }
-    .ph.sm { width: calc(var(--ph) * 0.74 * var(--ar)); align-self: flex-start; }
-    .ph.sm.lo { align-self: flex-end; }
-    .ph a { position: relative; display: block; aspect-ratio: var(--ar); border-radius: 10px; overflow: hidden; background: #0e0e0d; box-shadow: 0 30px 60px -30px rgba(0,0,0,0.9); }
-    .ph a::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 0.5px rgba(232,228,219,0.1); pointer-events: none; }
-    .ph img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.5s var(--ease-expo), opacity 1.2s ease, filter 1.2s ease; }
-    .js .ph img { opacity: 0; transform: scale(1.06); filter: blur(8px) brightness(0.8); }
-    .js .ph.in img { opacity: 1; transform: scale(1); filter: none; }
-    .ph a:hover img { transform: scale(1.03); }
-    .ph figcaption { display: flex; gap: 12px; font-size: 0.76rem; line-height: 1.7; color: var(--text-muted); letter-spacing: 0.06em; }
-    .ph figcaption .n { font-family: var(--en); font-size: 0.78rem; color: var(--acc); flex: none; letter-spacing: 0.1em; }
+    /* 左下：会場の札 */
+    .panel { left: var(--px); bottom: clamp(26px, 5vh, 48px); width: min(420px, 34vw); transform: translateY(16px); }
+    .panel.show { transform: none; }
+    .panel::before { content: ''; position: absolute; inset: -60px -90px -60px -120px; z-index: -1; pointer-events: none; background: radial-gradient(closest-side, rgba(6,6,6,0.82), rgba(6,6,6,0.5) 60%, transparent); }
+    .p-no { display: flex; align-items: center; gap: 12px; font-family: var(--en); font-size: 0.66rem; letter-spacing: 0.34em; color: var(--glow); text-transform: uppercase; }
+    .p-no::after { content: ''; flex: 1; max-width: 80px; height: 0.5px; background: color-mix(in srgb, var(--glow) 50%, transparent); }
+    .p-title { margin-top: 8px; overflow: hidden; font-weight: 300; font-size: 1.55rem; line-height: 1.45; letter-spacing: 0.12em; color: var(--fg); }
+    .p-title span { display: block; }
+    .p-title.swap span { animation: swapIn 0.9s var(--ease-expo); }
+    @keyframes swapIn { from { transform: translateY(105%); } to { transform: none; } }
+    .p-meta { margin-top: 4px; font-size: 0.74rem; letter-spacing: 0.08em; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .p-acts { display: flex; align-items: center; gap: 22px; margin-top: 16px; }
+    .p-open { display: inline-flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 18px; border: 0.5px solid color-mix(in srgb, var(--glow) 60%, transparent); font-size: 0.76rem; letter-spacing: 0.14em; color: var(--fg); background: rgba(10,10,9,0.5); transition: background-color 0.4s ease, color 0.4s ease; }
+    .p-open:hover { background: var(--glow); color: #120f0c; }
+    .p-ph { font-family: var(--en); font-size: 0.8rem; letter-spacing: 0.14em; color: var(--text-muted); font-variant-numeric: lining-nums tabular-nums; }
+    .p-ph em { font-style: normal; font-size: 1.5rem; color: var(--fg); margin-right: 2px; }
+    .p-tools { display: flex; gap: 6px; padding-left: 18px; border-left: 0.5px solid var(--border-mid); }
+    .p-ph:empty { display: none; }
+    .p-ph:empty + .p-tools { padding-left: 0; border-left: 0; }
+    .p-tool { position: relative; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; border: 0.5px solid rgba(232,228,219,0.2); color: var(--text-muted); background: rgba(10,10,9,0.5); transition: border-color 0.3s ease, color 0.3s ease, transform 0.5s var(--ease-out-back); }
+    .p-tool svg { width: 15px; height: 15px; }
+    .p-tool:hover { border-color: var(--gold); color: var(--gold); transform: rotate(-8deg); }
 
-    .ch-end {
-      position: relative; flex: none; width: min(360px, 76vw); height: var(--ph); padding: clamp(24px, 2.6vw, 36px);
-      display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;
-      border: 0.5px solid var(--border-mid); border-radius: 10px; background: rgba(255,255,255,0.02);
-      transition: border-color 0.5s ease, background-color 0.5s ease;
+    /* 右端：順路の縦線（押す・つまんで動かすと、その地点へ） */
+    .rail { right: clamp(18px, 2.6vw, 40px); top: 50%; height: min(58vh, 520px); width: 150px; transform: translate(14px, -50%); }
+    .rail.show { transform: translate(0, -50%); }
+    .r-line { position: absolute; right: -5.5px; top: 0; bottom: 0; width: 20px; cursor: ns-resize; touch-action: none; }
+    .r-line::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgba(232,228,219,0.16); }
+    .r-fill { position: absolute; left: 50%; top: 0; width: 1px; height: 100%; background: linear-gradient(to bottom, rgba(229,211,179,0.15), var(--gold)); transform-origin: top; transform: scaleY(0); }
+    .r-tick { position: absolute; left: calc(50% - 3px); width: 7px; height: 0.5px; background: rgba(232,228,219,0.3); }
+    .r-st { position: absolute; right: 0; display: flex; align-items: center; gap: 10px; transform: translateY(-50%); padding: 4px 0 4px 10px; }
+    .r-st i { width: 9px; height: 9px; border-radius: 50%; border: 1px solid rgba(232,228,219,0.45); background: #0b0b0a; transition: all 0.4s var(--ease-out-back); flex: none; }
+    .r-st.mini i { width: 5px; height: 5px; margin: 0 2px; }
+    .r-st span { font-family: var(--en); font-size: 0.72rem; letter-spacing: 0.1em; color: var(--text-dim); transition: color 0.3s ease; font-variant-numeric: lining-nums; }
+    .r-st em { position: absolute; right: calc(100% + 4px); top: 50%; transform: translate(8px, -50%); opacity: 0; white-space: nowrap; font-style: normal; font-size: 0.72rem; letter-spacing: 0.1em; color: var(--fg); padding: 4px 10px; background: rgba(10,10,8,0.92); border: 0.5px solid rgba(229,211,179,0.3); transition: opacity 0.3s ease, transform 0.4s var(--ease-expo); pointer-events: none; }
+    .r-st:hover em, .r-st:focus-visible em { opacity: 1; transform: translate(0, -50%); }
+    .r-st:hover i { border-color: #fff; transform: scale(1.3); }
+    .r-st.past i { background: var(--c); border-color: var(--c); }
+    .r-st[aria-current="true"] i { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 0 4px rgba(229,211,179,0.14), 0 0 14px rgba(229,211,179,0.6); }
+    .r-st[aria-current="true"] span { color: var(--gold); }
+    .r-head { position: absolute; right: 0; top: 0; width: 70px; height: 1px; transform: translateY(0); pointer-events: none; }
+    .r-head::before { content: ''; position: absolute; right: 0; top: 0; width: 26px; height: 1px; background: var(--fg); box-shadow: 0 0 10px rgba(255,255,255,0.7); }
+    .walked { position: absolute; right: 0; bottom: calc(100% + 26px); text-align: right; font-family: var(--en); font-size: 0.58rem; letter-spacing: 0.3em; color: var(--muted-col); text-transform: uppercase; white-space: nowrap; }
+    .walked b { display: block; font-weight: 300; font-size: 1.5rem; letter-spacing: 0.04em; color: var(--fg); font-variant-numeric: lining-nums tabular-nums; }
+    .walked b small { font-size: 0.6em; color: var(--muted-col); margin-left: 4px; }
+
+    /* スマホ：下の順路バー */
+    .bar {
+      left: 50%; bottom: max(14px, env(safe-area-inset-bottom)); display: none; align-items: center; gap: 4px; padding: 6px 8px;
+      width: min(440px, calc(100vw - 20px)); transform: translate(-50%, 140%);
+      background: rgba(10,10,10,0.62); -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%);
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 999px; box-shadow: 0 24px 50px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08);
     }
-    .ch-end::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--acc) 12%, transparent), transparent); transform: translateX(-100%); transition: transform 0.9s cubic-bezier(0.19,1,0.22,1); }
-    .ch-end:hover { border-color: color-mix(in srgb, var(--acc) 60%, transparent); }
-    .ch-end:hover::before { transform: translateX(100%); }
-    .ch-end .en { position: relative; font-size: 0.62rem; color: var(--muted-col); }
-    .ch-end b { position: relative; display: block; font-weight: 300; font-size: clamp(1.25rem, 2.1vw, 1.7rem); line-height: 1.6; letter-spacing: 0.1em; color: var(--fg); }
-    .ch-end .arrow { position: relative; display: block; width: 44px; height: 12px; transition: width 0.5s var(--ease-out-back); }
-    .ch-end .arrow::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 0.75px; background: var(--acc); }
-    .ch-end .arrow::after { content: ''; position: absolute; right: 0; top: 50%; width: 7px; height: 7px; border-top: 0.75px solid var(--acc); border-right: 0.75px solid var(--acc); transform: translateY(-50%) rotate(45deg); }
-    .ch-end:hover .arrow { width: 72px; }
-    .ch-end .next { position: relative; font-size: 0.74rem; color: var(--text-dim); line-height: 1.7; }
+    .bar.show { transform: translate(-50%, 0); }
+    .b-btn { width: 40px; height: 40px; flex: none; display: grid; place-items: center; border-radius: 50%; color: rgba(244,241,235,0.8); }
+    .b-btn svg { width: 16px; height: 16px; }
+    .b-btn:disabled { opacity: 0.25; }
+    .b-mid { flex: 1; min-width: 0; padding: 0 6px; }
+    .b-now { display: flex; align-items: baseline; gap: 8px; white-space: nowrap; line-height: 1.4; }
+    .b-now .no { flex: none; font-family: var(--en); font-size: 0.7rem; letter-spacing: 0.1em; color: var(--glow); }
+    .b-now b { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-weight: 400; font-size: 0.8rem; letter-spacing: 0.06em; color: var(--fg); }
+    .b-now .cnt { margin-left: auto; flex: none; font-family: var(--en); font-size: 0.76rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .b-track { position: relative; height: 2px; margin-top: 6px; background: rgba(232,228,219,0.14); border-radius: 2px; }
+    .b-track i { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(229,211,179,0.3), var(--gold)); transform-origin: left; transform: scaleX(0); border-radius: 2px; }
+    .b-track s { position: absolute; top: -2px; width: 1px; height: 6px; background: rgba(232,228,219,0.4); }
 
-    .js .ch-intro > * { opacity: 0; transform: translateY(24px); filter: blur(4px); transition: opacity 1s ease, transform 1.2s var(--ease-expo), filter 1s ease; }
-    .js .ch.in .ch-intro > * { opacity: 1; transform: none; filter: none; }
-    .js .ch.in .ch-intro > *:nth-child(2) { transition-delay: 0.08s; }
-    .js .ch.in .ch-intro > *:nth-child(3) { transition-delay: 0.16s; }
-    .js .ch.in .ch-intro > *:nth-child(4) { transition-delay: 0.24s; }
-    .js .ch.in .ch-intro > *:nth-child(5) { transition-delay: 0.32s; }
-    .js .ch.in .ch-intro > *:nth-child(n+6) { transition-delay: 0.4s; }
-
-    /* ページのない展示（あいだの帯） */
-    .itl { padding: clamp(60px, 12vh, 120px) var(--px); }
-    .itl-in {
-      display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px clamp(20px, 4vw, 60px); align-items: center;
-      max-width: 1300px; margin: 0 auto; padding: clamp(22px, 3vw, 36px) 0; border-top: 0.5px solid var(--border-mid); border-bottom: 0.5px solid var(--border);
+    /* 走りすぎたとき */
+    .runner {
+      position: fixed; left: 50%; top: clamp(84px, 13vh, 120px); z-index: 300; pointer-events: none;
+      display: flex; align-items: center; gap: 14px; padding: 10px 20px 10px 14px; border-radius: 999px;
+      background: var(--gold); color: #141210; box-shadow: 0 14px 30px rgba(0,0,0,0.5);
+      transform: translate(-50%, -20px) scale(0.96); opacity: 0; transition: opacity 0.4s ease, transform 0.6s var(--ease-out-back);
     }
-    .itl .itl-year { margin: 0; font-family: var(--en); font-weight: 300; font-size: clamp(3rem, 7vw, 6rem); line-height: 0.9; color: rgba(229,211,179,0.16); }
-    .itl .en { font-size: 0.6rem; color: var(--muted-col); }
-    .itl h3 { margin-top: 4px; font-weight: 300; font-size: clamp(1.15rem, 2vw, 1.5rem); line-height: 1.5; letter-spacing: 0.1em; color: var(--fg); }
-    .itl h3 small { display: block; font-size: 0.6em; color: var(--text-muted); letter-spacing: 0.1em; }
-    .itl p:not(.itl-year) { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
-    .js .itl-in { opacity: 0; transform: translateY(30px); transition: opacity 1.2s ease, transform 1.2s var(--ease-expo); }
-    .js .itl.in .itl-in { opacity: 1; transform: none; }
+    .runner.on { opacity: 1; transform: translate(-50%, 0); }
+    .runner svg { width: 22px; height: 22px; flex: none; }
+    .runner b { display: block; font-weight: 500; font-size: 0.82rem; letter-spacing: 0.12em; line-height: 1.4; }
+    .runner small { display: block; font-family: var(--en); font-size: 0.6rem; letter-spacing: 0.24em; text-transform: uppercase; opacity: 0.7; }
+
+    /* 写真の上だけに現れる、ちいさな案内 */
+    .cursor { position: fixed; left: 0; top: 0; z-index: 400; pointer-events: none; display: none; }
+    .cursor-in {
+      position: absolute; left: -44px; top: -44px; width: 88px; height: 88px; border-radius: 50%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+      background: rgba(229,211,179,0.94); color: #141210; box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+      transform: scale(0.2); opacity: 0; transition: transform 0.55s var(--ease-out-back), opacity 0.3s ease;
+    }
+    .cursor.on .cursor-in { transform: scale(1); opacity: 1; }
+    .cursor .t1 { font-family: var(--en); font-style: italic; font-size: 1.15rem; line-height: 1; }
+    .cursor small { font-size: 0.54rem; letter-spacing: 0.16em; }
 
     /* ════════════════════════════════════════
-        DOCK — 作品系ページのガラスのドックと同じ質感
+        LIGHTBOX — 一枚を、壁いっぱいに
     ════════════════════════════════════════ */
-    .dock {
-      position: fixed; left: 50%; bottom: max(16px, env(safe-area-inset-bottom)); z-index: 150;
-      display: flex; align-items: center; gap: 2px; padding: 6px;
-      background: rgba(10,10,10,0.55); -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%);
-      border: 1px solid rgba(255,255,255,0.08); border-radius: 999px;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08);
-      transform: translate(-50%, 180%); transition: transform 0.8s var(--ease-expo); max-width: calc(100vw - 20px);
+    .lb {
+      position: fixed; inset: 0; z-index: 2000; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 14px;
+      padding: clamp(14px, 3vw, 34px) clamp(14px, 4vw, 64px) max(18px, env(safe-area-inset-bottom));
+      background: rgba(5,5,5,0.96); opacity: 0; visibility: hidden; transition: opacity 0.45s ease, visibility 0.45s;
     }
-    .dock.show { transform: translate(-50%, 0); }
-    /* 順路の地図：会場ごとに駅があり、歩いたぶんだけ線が満ちていく */
-    .dock { padding: 8px 10px; gap: 4px; }
-    .dock-btn {
-      position: relative; width: 44px; height: 44px; flex: none; border-radius: 999px; display: grid; place-items: center;
-      color: rgba(244,241,235,0.78); transition: background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
-    }
-    .dock-btn svg { width: 16px; height: 16px; }
-    .dock-btn:hover { background: rgba(255,255,255,0.07); color: #fff; }
-    .dock-btn:disabled { opacity: 0.22; cursor: default; background: none; }
-    .dock-arrow { border: 0.5px solid rgba(232,228,219,0.18); }
-    .dock-arrow:not(:disabled):hover { border-color: var(--gold); color: var(--gold); }
-    .dock-mid { width: clamp(270px, 30vw, 360px); padding: 2px 14px 0; min-width: 0; }
-    .dock-now { display: flex; align-items: baseline; gap: 10px; line-height: 1.35; white-space: nowrap; }
-    .dock-no { flex: none; font-family: var(--en); font-size: 0.7rem; letter-spacing: 0.12em; color: var(--gold); font-variant-numeric: lining-nums; }
-    .dock-now b { min-width: 0; font-weight: 400; font-size: 0.86rem; letter-spacing: 0.08em; color: var(--fg); overflow: hidden; text-overflow: ellipsis; }
-    .dock-ph { margin-left: auto; flex: none; font-size: 0.66rem; letter-spacing: 0.1em; color: var(--text-muted); font-variant-numeric: lining-nums tabular-nums; }
-    .dock-ph em { font-style: normal; font-family: var(--en); font-size: 0.82rem; color: var(--fg); }
-
-    .route { position: relative; height: 26px; margin-top: 4px; }
-    .route-line { position: absolute; left: 0; right: 0; top: 7px; height: 1px; background: linear-gradient(90deg, transparent, rgba(232,228,219,0.2) 6%, rgba(232,228,219,0.2) 94%, transparent); }
-    .route-line i { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; background: linear-gradient(90deg, rgba(229,211,179,0.2), var(--gold)); transform-origin: left; transform: scaleX(var(--f, 0)); transition: transform 0.25s linear; }
-    .st {
-      position: absolute; top: 0; left: var(--x); transform: translateX(-50%); width: 40px; height: 26px;
-      display: flex; flex-direction: column; align-items: center; gap: 3px;
-    }
-    .st i { width: 7px; height: 7px; margin-top: 4px; border-radius: 50%; border: 1px solid rgba(232,228,219,0.4); background: #0b0b0a; transition: all 0.4s var(--ease-out-back); }
-    .st span { font-family: var(--en); font-size: 0.64rem; letter-spacing: 0.04em; line-height: 1; color: var(--text-muted); font-variant-numeric: lining-nums; transition: color 0.3s ease; }
-    .st.past i { border-color: var(--seg); background: var(--seg); }
-    .st[aria-current="true"] i { width: 11px; height: 11px; margin-top: 2px; border-color: var(--gold); background: var(--gold); box-shadow: 0 0 0 4px rgba(229,211,179,0.14), 0 0 12px rgba(229,211,179,0.6); }
-    .st[aria-current="true"] span { color: var(--gold); }
-    .st:hover i { border-color: #fff; transform: scale(1.3); }
-    .st:hover span { color: var(--fg); }
-
-    .dock-sep { width: 0.5px; height: 30px; background: rgba(255,255,255,0.14); margin: 0 4px; flex: none; }
-    .dock-txt { width: auto; padding: 0 14px; gap: 8px; display: inline-flex; align-items: center; font-size: 0.74rem; letter-spacing: 0.1em; }
-    .dock-txt svg { width: 14px; height: 14px; flex: none; }
-
-    /* ボタンにふれると、何をするかを小さく */
-    [data-tip]::after {
-      content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 16px); transform: translate(-50%, 6px);
-      padding: 6px 12px; border-radius: 2px; white-space: nowrap; pointer-events: none;
-      font-family: var(--jp); font-size: 0.68rem; letter-spacing: 0.1em; line-height: 1.5; color: var(--fg);
-      background: rgba(10,10,8,0.94); border: 0.5px solid rgba(229,211,179,0.35); opacity: 0; transition: opacity 0.25s ease, transform 0.35s var(--ease-expo);
-    }
-    [data-tip]:hover::after, [data-tip]:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
-    .st[data-tip]::after { bottom: calc(100% + 42px); }
-    @media (hover: none) { [data-tip]::after { display: none; } }
-
-    /* はじめて出てきたときだけ、使い方をひとこと */
-    .dock-hint {
-      position: absolute; left: 50%; bottom: calc(100% + 14px); transform: translate(-50%, 8px); opacity: 0; pointer-events: none;
-      padding: 8px 16px; border-radius: 999px; white-space: nowrap; font-size: 0.72rem; letter-spacing: 0.1em; color: #141210;
-      background: var(--gold); box-shadow: 0 10px 24px rgba(0,0,0,0.4); transition: opacity 0.5s ease, transform 0.6s var(--ease-expo);
-    }
-    .dock-hint::after { content: ''; position: absolute; left: 50%; top: 100%; margin-left: -5px; border: 5px solid transparent; border-top-color: var(--gold); }
-    .dock-hint.on { opacity: 1; transform: translate(-50%, 0); }
-    .dock:hover .dock-hint { opacity: 0; }
+    .lb.open { opacity: 1; visibility: visible; }
+    .lb-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .lb-head .en { color: var(--gold); font-size: 0.66rem; }
+    .lb-head b { display: block; font-weight: 300; font-size: 0.95rem; letter-spacing: 0.1em; color: var(--fg); }
+    .lb-x { width: 44px; height: 44px; flex: none; display: grid; place-items: center; border-radius: 50%; border: 0.5px solid rgba(232,228,219,0.25); transition: border-color 0.3s ease, transform 0.5s var(--ease-out-back); }
+    .lb-x:hover { border-color: var(--gold); transform: rotate(90deg); }
+    .lb-x svg { width: 14px; height: 14px; }
+    .lb-stage { position: relative; display: grid; place-items: center; min-height: 0; }
+    .lb-stage img { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 40px 80px -30px rgba(0,0,0,0.9); transform: scale(0.97); opacity: 0; transition: transform 0.7s var(--ease-expo), opacity 0.5s ease; }
+    .lb-stage img.ok { transform: none; opacity: 1; }
+    .lb-nav { position: absolute; top: 50%; width: 52px; height: 52px; margin-top: -26px; display: grid; place-items: center; border-radius: 50%; background: rgba(10,10,9,0.6); border: 0.5px solid rgba(232,228,219,0.2); transition: border-color 0.3s ease; }
+    .lb-nav:hover { border-color: var(--gold); }
+    .lb-nav svg { width: 16px; height: 16px; }
+    .lb-prev { left: 0; } .lb-next { right: 0; }
+    .lb-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 24px; }
+    .lb-cap { display: flex; gap: 14px; font-size: 0.84rem; color: var(--text-muted); letter-spacing: 0.06em; line-height: 1.7; }
+    .lb-cap .n { font-family: var(--en); color: var(--gold); flex: none; font-size: 0.95rem; }
 
     /* ════════════════════════════════════════
         INDEX — すべての展示を一望
     ════════════════════════════════════════ */
-    .index { padding: clamp(100px, 16vh, 180px) var(--px) 40px; max-width: 1400px; margin: 0 auto; }
-    .index-head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.08); }
-    .index-head h2 { font-family: var(--en); font-weight: 400; font-size: clamp(0.8rem, 1.8vw, 1rem); letter-spacing: 0.4em; color: var(--fg); text-transform: uppercase; }
-    .index-head h2 small { display: block; margin-top: 10px; font-family: var(--jp); font-weight: 300; font-size: clamp(1.5rem, 3vw, 2.3rem); letter-spacing: 0.15em; text-transform: none; }
-    .index-head .count { font-family: var(--en); font-weight: 300; font-size: clamp(2.8rem, 6vw, 4.6rem); line-height: 1; color: rgba(229,211,179,0.12); }
-    .index-lead { margin: 18px 0 clamp(20px, 3vw, 36px); font-size: 0.84rem; color: var(--text-muted); letter-spacing: 0.08em; }
+    .index { position: relative; z-index: 2; padding: clamp(110px, 16vh, 190px) var(--px) 40px; max-width: 1400px; margin: 0 auto; }
+    .index-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; padding-bottom: 24px; border-bottom: 0.5px solid var(--border-mid); }
+    .index-head .en { color: var(--gold); font-size: 0.66rem; }
+    .index-head h2 { margin-top: 10px; font-weight: 200; font-size: clamp(2rem, 4.6vw, 4rem); line-height: 1.2; letter-spacing: 0.14em; color: var(--fg); }
+    .index-head .count { font-family: var(--en); font-weight: 300; font-size: clamp(3.4rem, 8vw, 7rem); line-height: 0.8; color: transparent; -webkit-text-stroke: 0.6px rgba(229,211,179,0.4); }
+    .index-lead { margin: 18px 0 clamp(14px, 2vw, 26px); font-size: 0.84rem; color: var(--text-muted); letter-spacing: 0.08em; }
     .rows { list-style: none; }
     .row {
-      position: relative; display: grid; grid-template-columns: 72px 120px minmax(0, 1.3fr) minmax(0, 1fr) 130px 48px; gap: 24px; align-items: center;
-      padding: 18px 10px; border-bottom: 0.5px solid rgba(232,228,219,0.15); overflow: hidden;
-      transition: padding-left 0.5s var(--ease-out-back), border-color 0.5s ease;
+      position: relative; display: grid; grid-template-columns: 90px minmax(0, 1.5fr) minmax(0, 1fr) 150px 40px; gap: 28px; align-items: center;
+      padding: clamp(20px, 2.6vw, 30px) 6px; border-bottom: 0.5px solid rgba(232,228,219,0.13); overflow: hidden;
+      transition: padding-left 0.6s var(--ease-expo), border-color 0.5s ease;
     }
-    .row::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(203,191,176,0.08), transparent); transform: translateX(-100%); transition: transform 0.8s cubic-bezier(0.19,1,0.22,1); pointer-events: none; }
-    .row:hover { padding-left: 22px; border-color: rgba(203,191,176,0.5); }
-    .row:hover::before { transform: translateX(100%); }
-    .row .y { font-family: var(--en); font-weight: 300; font-size: 1.5rem; letter-spacing: 0.06em; color: var(--accent); }
-    .row .th { width: 120px; aspect-ratio: 3 / 2; border-radius: 6px; overflow: hidden; background: #111; }
-    .row .th img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(30%) brightness(0.75); transition: transform 1.2s var(--ease-expo), filter 0.8s ease; }
-    .row:hover .th img { transform: scale(1.08); filter: none; }
-    .row .th.none { display: grid; place-items: center; font-family: var(--en); font-size: 0.55rem; letter-spacing: 0.24em; color: var(--muted-col); border: 0.5px solid var(--border); background: transparent; text-align: center; line-height: 1.6; text-transform: uppercase; }
-    .row h3 { font-weight: 300; font-size: 1.05rem; line-height: 1.55; letter-spacing: 0.1em; color: var(--fg); transition: color 0.4s ease; }
+    .row::before { content: ''; position: absolute; left: 0; bottom: -0.5px; width: 100%; height: 1px; background: var(--c, var(--gold)); transform: scaleX(0); transform-origin: left; transition: transform 0.8s var(--ease-expo); }
+    .row:hover { padding-left: 24px; }
+    .row:hover::before { transform: scaleX(1); }
+    .row .y { font-family: var(--en); font-weight: 300; font-size: 1.7rem; letter-spacing: 0.04em; color: var(--accent); font-variant-numeric: lining-nums; }
+    .row .th { display: none; }
+    .row h3 { font-weight: 300; font-size: clamp(1.2rem, 2.1vw, 1.8rem); line-height: 1.45; letter-spacing: 0.1em; color: var(--fg); transition: color 0.4s ease, transform 0.6s var(--ease-expo); }
+    .row h3 small { display: block; margin-top: 4px; font-size: max(0.42em, 0.72rem); color: var(--text-muted); letter-spacing: 0.08em; }
     .row:hover h3 { color: #fff; }
-    .row h3 small { display: block; font-size: 0.72rem; color: var(--text-muted); letter-spacing: 0.06em; }
-    .row .vn { font-size: 0.76rem; color: var(--text-muted); line-height: 1.7; letter-spacing: 0.04em; }
+    .row .vn { font-size: 0.78rem; color: var(--text-muted); line-height: 1.75; letter-spacing: 0.04em; }
     .row .kd { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; font-family: var(--en); font-size: 0.6rem; letter-spacing: 0.22em; color: var(--muted-col); text-transform: uppercase; }
     .row .kd .jp { font-family: var(--jp); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: none; color: var(--text-muted); }
     .row .kd .on { display: inline-flex; align-items: center; gap: 8px; color: var(--ex); }
-    .row .arr { position: relative; width: 30px; height: 12px; justify-self: end; transition: width 0.5s var(--ease-out-back); }
-    .row .arr::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 0.75px; background: rgba(203,191,176,0.5); }
-    .row .arr::after { content: ''; position: absolute; right: 0; top: 50%; width: 6px; height: 6px; border-top: 0.75px solid rgba(203,191,176,0.5); border-right: 0.75px solid rgba(203,191,176,0.5); transform: translateY(-50%) rotate(45deg); }
-    .row:hover .arr { width: 48px; }
-    .row:hover .arr::before { background: var(--accent); box-shadow: 0 0 10px rgba(203,191,176,0.6); }
-    .row:hover .arr::after { border-color: var(--accent); }
+    .row .arr { position: relative; width: 28px; height: 12px; justify-self: end; transition: width 0.5s var(--ease-out-back); }
+    .row .arr::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 0.75px; background: rgba(203,191,176,0.55); }
+    .row .arr::after { content: ''; position: absolute; right: 0; top: 50%; width: 6px; height: 6px; border-top: 0.75px solid rgba(203,191,176,0.55); border-right: 0.75px solid rgba(203,191,176,0.55); transform: translateY(-50%) rotate(45deg); }
+    .row:hover .arr { width: 40px; }
     .index-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-top: 26px; font-size: 0.8rem; color: var(--text-muted); }
     .index-foot a { color: var(--accent); border-bottom: 0.5px solid rgba(203,191,176,0.5); transition: color 0.3s ease, border-color 0.3s ease; }
     .index-foot a:hover { color: #fff; border-color: #fff; }
+    /* 行にふれると、その会場の一枚がついてくる */
+    .peek { position: fixed; left: 0; top: 0; z-index: 120; width: 300px; aspect-ratio: 3 / 2; pointer-events: none; display: none; }
+    .peek-in { position: absolute; inset: 0; overflow: hidden; box-shadow: 0 30px 60px -20px rgba(0,0,0,0.9); transform: scale(0.6); opacity: 0; transition: transform 0.6s var(--ease-expo), opacity 0.35s ease; }
+    .peek.on .peek-in { transform: none; opacity: 1; }
+    .peek img { width: 100%; height: 100%; object-fit: cover; }
 
     /* ════════════════════════════════════════
-        PP BRIDGE / FOOTER
+        PP BRIDGE / CLOSING / FOOTER
     ════════════════════════════════════════ */
     .bridge { padding: clamp(60px, 10vh, 110px) var(--px); max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.4fr; gap: 16px; }
-    .bridge > * { position: relative; border-radius: 12px; padding: clamp(26px, 3.4vw, 48px); border: 0.5px solid var(--border); overflow: hidden; }
+    .bridge > * { position: relative; border-radius: 2px; padding: clamp(26px, 3.4vw, 48px); border: 0.5px solid var(--border); overflow: hidden; }
     .bridge .here { background: rgba(255,255,255,0.015); }
-    .bridge .pp { border-color: rgba(156,212,255,0.35); background: linear-gradient(135deg, rgba(156,212,255,0.1), rgba(156,212,255,0.02)); box-shadow: 0 0 40px rgba(156,212,255,0.06); transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.5s var(--ease-expo); }
-    .bridge .pp:hover { border-color: rgba(156,212,255,0.8); box-shadow: 0 0 50px rgba(156,212,255,0.16); transform: translateY(-4px); }
+    .bridge .pp { border-color: rgba(156,212,255,0.35); background: linear-gradient(135deg, rgba(156,212,255,0.1), rgba(156,212,255,0.02)); transition: border-color 0.4s ease, transform 0.5s var(--ease-expo); }
+    .bridge .pp:hover { border-color: rgba(156,212,255,0.8); transform: translateY(-4px); }
     .bridge .en { font-size: 0.62rem; color: var(--muted-col); }
     .bridge .pp .en { color: var(--pp); }
     .bridge h3 { font-weight: 300; font-size: clamp(1.15rem, 2vw, 1.6rem); line-height: 1.75; letter-spacing: 0.1em; margin: 12px 0 8px; color: var(--fg); word-break: keep-all; text-wrap: balance; }
@@ -445,158 +492,49 @@
     .bridge .go .arr::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 0.75px; background: currentColor; }
     .bridge .go .arr::after { content: ''; position: absolute; right: 0; top: 50%; width: 6px; height: 6px; border-top: 0.75px solid currentColor; border-right: 0.75px solid currentColor; transform: translateY(-50%) rotate(45deg); }
     .bridge .pp:hover .go .arr { width: 48px; }
-    footer { padding: 3rem var(--px) calc(120px + env(safe-area-inset-bottom)); text-align: center; border-top: 0.5px solid var(--border); }
-    .footer-logo { font-weight: 200; font-size: clamp(0.75rem, 1.8vw, 0.88rem); color: rgba(232,228,219,0.28); letter-spacing: 0.08em; margin-bottom: 0.5rem; }
-    .footer-copy { font-family: var(--en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--text-dim); }
 
-    /* BACK TO TOP — トップページと同じ円 */
-    .back-to-top {
-      position: fixed; right: clamp(20px, 4vw, 40px); bottom: clamp(20px, 4vw, 40px); z-index: 160;
-      width: clamp(52px, 8vw, 70px); height: clamp(52px, 8vw, 70px); border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      opacity: 0; visibility: hidden; transform: translateY(20px); transition: opacity 0.6s var(--ease-expo), visibility 0.6s, transform 0.6s var(--ease-expo);
-    }
-    .back-to-top.show { opacity: 1; visibility: visible; transform: none; }
-    .b2t-inner { position: absolute; inset: 4px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(10,10,8,0.5); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 10px 24px rgba(0,0,0,0.4); transition: background 0.4s var(--ease-expo), transform 0.4s var(--ease-expo); }
-    .b2t-text { font-family: var(--en); font-size: clamp(0.6rem, 1.4vw, 0.75rem); letter-spacing: 0.15em; margin-right: -0.15em; color: var(--fg); transition: color 0.4s var(--ease-expo); }
-    .b2t-progress { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); pointer-events: none; }
-    .b2t-progress circle { fill: none; stroke-width: 1.5; }
-    .b2t-progress .bg { stroke: rgba(232,228,219,0.1); }
-    .b2t-progress .val { stroke: var(--accent); stroke-dasharray: 301.6; stroke-dashoffset: 301.6; }
-    .back-to-top:hover .b2t-inner { background: var(--accent); transform: scale(0.92); }
-    .back-to-top:hover .b2t-text { color: var(--bg); }
-
-    /* ════════════════════════════════════════
-        KINETIC TYPE — 文字が、そっと動く
-    ════════════════════════════════════════ */
-    /* 一字ずつ現れる（章の題・見出し・閉館のご案内） */
-    .split .c { display: inline-block; white-space: pre; }
-    .js .split .c {
-      opacity: 0; transform: translateY(0.55em) rotate(5deg); filter: blur(6px);
-      transition: opacity 0.9s ease, transform 1.2s var(--ease-expo), filter 0.9s ease;
-      transition-delay: calc(var(--i) * 42ms + var(--d, 0ms));
-    }
-    .js .in .split .c, .js .split.in .c { opacity: 1; transform: none; filter: none; }
-
-    /* ヒーローの題：ふれると、一字だけ会釈する */
-    .hero-title .ch1 i { display: inline-block; font-style: normal; transition: transform 0.8s var(--ease-out-back), color 0.5s ease, text-shadow 0.5s ease; }
-    .hero-title .ch1 i:hover { transform: translateY(-0.07em) rotate(-4deg); color: var(--gold); text-shadow: 0 0 34px rgba(229,211,179,0.5); }
-
-    /* ことばが入れ替わる */
-    .rot { position: relative; display: inline-block; color: var(--gold); }
-    .rot::after { content: ''; position: absolute; left: 0; right: 0; bottom: -0.2em; height: 0.5px; background: linear-gradient(90deg, var(--gold), transparent); }
-    .rot .c { display: inline-block; transition: opacity 0.45s ease, transform 0.7s var(--ease-expo), filter 0.45s ease; transition-delay: calc(var(--i) * 38ms); }
-    .rot.out .c { opacity: 0; transform: translateY(-0.5em); filter: blur(5px); }
-    .rot.pre .c { opacity: 0; transform: translateY(0.5em); filter: blur(5px); transition: none; }
-
-    /* 年号：オドメーターのように回って止まる */
-    /* 1 桁ぶんの窓を字面より高くとり、上下の数字が覗かないように */
-    .od { --oh: 1.45em; display: block; height: var(--oh); overflow: hidden; }
-    .od-col { display: block; transition: transform 2.1s var(--ease-expo); transition-delay: calc(var(--k) * 140ms + 120ms); }
-    .od-col > span { display: flex; align-items: center; height: var(--oh); }
-    .in .od-col { transform: translateY(calc((var(--d) + 10) * var(--oh) * -1)); }
-
-    /* ════════════════════════════════════════
-        PROLOGUE — このページ自体の、壁のキャプション
-    ════════════════════════════════════════ */
-    .prologue {
-      max-width: 1400px; margin: 0 auto; padding: clamp(90px, 15vh, 160px) var(--px) clamp(56px, 9vh, 100px);
-      display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(36px, 7vw, 120px); align-items: end;
-    }
-    .label {
-      position: relative; max-width: 400px; padding: 26px 28px 22px; border-radius: 2px;
-      background: #ece6da; color: #1c1a17; box-shadow: 0 30px 60px -28px rgba(0,0,0,0.85), 0 0 0 0.5px rgba(0,0,0,0.3);
-      transform: rotate(-0.6deg); transition: transform 0.8s var(--ease-out-back);
-    }
-    .label:hover, .js .prologue.in > .label:hover { transform: rotate(0.4deg) translateY(-3px); transition: transform 0.8s var(--ease-out-back); }
-    .label::before { content: ''; position: absolute; top: 12px; right: 14px; width: 6px; height: 6px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff, #9a9186); box-shadow: 0 1px 1px rgba(0,0,0,0.3); }
-    .label .en { display: block; font-size: 0.56rem; letter-spacing: 0.32em; color: #847b70; margin-bottom: 14px; }
-    .label dl div { display: grid; grid-template-columns: 3.4em minmax(0, 1fr); gap: 12px; padding: 5px 0; border-top: 0.5px solid rgba(28,26,23,0.14); font-size: 0.8rem; line-height: 1.7; }
-    .label dl div:first-child { border-top: 0; }
-    .label dt { color: #847b70; font-size: 0.7rem; letter-spacing: 0.14em; padding-top: 0.1em; }
-    .label dd { color: #1c1a17; letter-spacing: 0.06em; }
-    .label dd .it { font-family: var(--en); font-style: italic; font-size: 0.95rem; color: #5b544b; margin-left: 0.4em; }
-    .label dd small { color: #847b70; font-size: 0.7rem; }
-    .label .title { font-size: 0.95rem; }
-
-    .stats ul { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 0.5px solid var(--border-mid); }
-    .stats li { padding: 22px 0 0; display: flex; flex-direction: column; gap: 4px; }
-    .stats li + li { padding-left: clamp(12px, 2vw, 28px); border-left: 0.5px solid var(--border); }
-    .stats b { font-family: var(--en); font-weight: 300; font-size: clamp(2.8rem, 5.6vw, 5rem); line-height: 1; color: var(--gold); letter-spacing: 0.02em; font-variant-numeric: lining-nums tabular-nums; }
-    .stats .en { font-size: 0.58rem; color: var(--muted-col); letter-spacing: 0.3em; }
-    .stats li > span:last-child { font-size: 0.76rem; color: var(--text-muted); letter-spacing: 0.1em; }
-    .stats .note { margin-top: 26px; font-size: 0.74rem; color: var(--text-dim); letter-spacing: 0.08em; }
-    .js .prologue > * { opacity: 0; transform: translateY(26px); transition: opacity 1.1s ease, transform 1.3s var(--ease-expo); }
-    .js .prologue.in > * { opacity: 1; transform: none; }
-    .js .prologue.in > .label { transform: rotate(-0.6deg); }
-    .js .prologue.in > .stats { transition-delay: 0.15s; }
-
-    /* 会場の名前が、ゆっくり流れていく */
-    .ticker { overflow: hidden; border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); padding: 18px 0; }
-    .ticker-track { display: flex; width: max-content; animation: tick 110s linear infinite; }
-    .ticker:hover .ticker-track { animation-play-state: paused; }
-    .ticker span { display: inline-flex; align-items: baseline; gap: 14px; padding: 0 26px; font-size: 0.86rem; letter-spacing: 0.14em; color: var(--text-muted); white-space: nowrap; }
-    .ticker em { font-family: var(--en); font-style: italic; font-weight: 300; font-size: 1.6rem; letter-spacing: 0.04em; color: var(--gold); }
-    .ticker i { font-style: normal; font-family: var(--en); color: rgba(229,211,179,0.35); align-self: center; }
-    @keyframes tick { to { transform: translateX(-50%); } }
-
-    /* 写真の上だけに現れる、ちいさな案内 */
-    .cursor { position: fixed; left: 0; top: 0; z-index: 400; pointer-events: none; display: none; }
-    .cursor-in {
-      position: absolute; left: -46px; top: -46px; width: 92px; height: 92px; border-radius: 50%;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-      background: rgba(229,211,179,0.94); color: #141210; box-shadow: 0 12px 30px rgba(0,0,0,0.4);
-      transform: scale(0.2); opacity: 0; transition: transform 0.55s var(--ease-out-back), opacity 0.3s ease;
-    }
-    .cursor.on .cursor-in { transform: scale(1); opacity: 1; }
-    .cursor .it { font-family: var(--en); font-style: italic; font-size: 1.2rem; line-height: 1; }
-    .cursor small { font-size: 0.56rem; letter-spacing: 0.16em; }
-
-    /* 章の中の、館内のお願い */
-    .ch-hint small { display: block; margin-top: 6px; font-family: var(--jp); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: none; color: var(--text-dim); }
-    .ch-hint { align-items: flex-start; }
-    .ch-hint i { margin-top: 0.5em; flex: none; }
-
-    /* ════════════════════════════════════════
-        CLOSING — 閉館のご案内
-    ════════════════════════════════════════ */
     .closing { max-width: 1100px; margin: 0 auto; padding: clamp(70px, 12vh, 140px) var(--px) clamp(60px, 10vh, 110px); text-align: center; }
     .closing .en { color: var(--gold); font-size: 0.62rem; }
     .closing .chime { display: block; width: 1px; height: 56px; margin: 0 auto 26px; background: linear-gradient(to bottom, transparent, var(--gold)); }
-    .closing h2 { margin: 20px 0 22px; font-weight: 200; font-size: clamp(1.5rem, 3.4vw, 2.6rem); line-height: 1.75; letter-spacing: 0.14em; color: var(--fg); }
+    .closing h2 { margin: 20px 0 22px; font-weight: 200; font-size: clamp(1.4rem, 3.2vw, 2.5rem); line-height: 1.75; letter-spacing: 0.14em; color: var(--fg); }
     .closing .body { font-size: 0.86rem; line-height: 2.2; color: var(--text-muted); letter-spacing: 0.08em; }
     .closing .body em { font-style: normal; color: var(--gold); }
+    .receipt { display: inline-grid; grid-template-columns: auto auto; gap: 4px 28px; margin-top: 30px; padding: 18px 26px; text-align: left; border-top: 0.5px dashed var(--border-mid); border-bottom: 0.5px dashed var(--border-mid); font-size: 0.78rem; color: var(--text-muted); letter-spacing: 0.08em; }
+    .receipt b { font-family: var(--en); font-weight: 400; font-size: 1.05rem; color: var(--fg); text-align: right; font-variant-numeric: lining-nums tabular-nums; }
     .closing-acts { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 34px; }
-    .js .closing .body, .js .closing-acts, .js .closing > .en, .js .closing .chime { opacity: 0; transform: translateY(18px); transition: opacity 1.1s ease 0.9s, transform 1.2s var(--ease-expo) 0.9s; }
-    .js .closing > .en, .js .closing .chime { transition-delay: 0s; }
-    .js .closing.in .body, .js .closing.in .closing-acts, .js .closing.in > .en, .js .closing.in .chime { opacity: 1; transform: none; }
-    .js .closing.in .closing-acts { transition-delay: 1.15s; }
+    footer { padding: 3rem var(--px) calc(60px + env(safe-area-inset-bottom)); text-align: center; border-top: 0.5px solid var(--border); }
+    .footer-logo { font-weight: 200; font-size: clamp(0.75rem, 1.8vw, 0.88rem); color: rgba(232,228,219,0.28); letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+    .footer-copy { font-family: var(--en); font-size: clamp(0.52rem, 1.3vw, 0.62rem); letter-spacing: 0.18em; color: var(--text-dim); }
+
+    .js .reveal { opacity: 0; transform: translateY(26px); transition: opacity 1.1s ease, transform 1.3s var(--ease-expo); }
+    .js .reveal.in { opacity: 1; transform: none; }
 
     /* ════════════════════════════════════════
         RESPONSIVE
     ════════════════════════════════════════ */
     @media (max-width: 1100px) {
       .nav-links { gap: 1.2rem; }
-      .back-to-top { display: none; }
+      .panel { width: min(380px, 44vw); }
     }
     @media (max-width: 900px) {
-      .row { grid-template-columns: 96px minmax(0, 1fr) 36px; gap: 4px 16px; padding: 18px 4px; align-items: start; }
-      .row:hover { padding-left: 12px; }
-      .row .th { width: 96px; grid-column: 1; grid-row: 1 / span 4; }
+      .row { grid-template-columns: 104px minmax(0, 1fr) 30px; gap: 4px 18px; padding: 18px 2px; align-items: start; }
+      .row:hover { padding-left: 10px; }
+      .row .th { display: block; width: 104px; aspect-ratio: 3 / 2; overflow: hidden; background: #111; grid-column: 1; grid-row: 1 / span 4; }
+      .row .th img { width: 100%; height: 100%; object-fit: cover; }
+      .row .th.none { display: grid; place-items: center; font-family: var(--en); font-size: 0.55rem; letter-spacing: 0.24em; color: var(--muted-col); border: 0.5px solid var(--border); background: transparent; text-align: center; line-height: 1.6; text-transform: uppercase; }
       .row .y { grid-column: 2; grid-row: 1; font-size: 1.1rem; line-height: 1.2; }
       .row h3, .row .vn, .row .kd { grid-column: 2; }
-      .row .kd { flex-direction: row; flex-wrap: wrap; gap: 4px 12px; margin-top: 2px; }
-      .row h3 { font-size: 0.98rem; }
+      .row h3 { font-size: 1.05rem; }
       .row .vn { font-size: 0.72rem; }
+      .row .kd { flex-direction: row; flex-wrap: wrap; gap: 4px 12px; margin-top: 2px; }
       .row .arr { grid-column: 3; grid-row: 1 / span 4; align-self: center; }
       .bridge { grid-template-columns: 1fr; }
-      .itl-in { grid-template-columns: 1fr; }
     }
     @media (max-width: 768px) {
       .pc-only { display: none !important; }
       .sp-only { display: block !important; }
       nav#top-nav, nav#top-nav.scrolled { padding: 0.8rem 1.25rem; }
       .nav-cta { display: none; }
-      /* トップページと同じ、丸いハンバーガー */
       .nav-hamburger {
         display: flex; align-items: center; justify-content: center; position: relative; z-index: 1000;
         width: 52px; height: 52px; border-radius: 50%; border: 0.5px solid rgba(232,228,219,0.15);
@@ -611,7 +549,6 @@
       .nav-hamburger.open .hamburger-lines span:nth-child(1) { width: 26px; transform: translateY(6.25px) rotate(-45deg); background: #fff; }
       .nav-hamburger.open .hamburger-lines span:nth-child(2) { width: 0; opacity: 0; }
       .nav-hamburger.open .hamburger-lines span:nth-child(3) { width: 26px; transform: translateY(-6.25px) rotate(45deg); background: #fff; }
-
       .nav-links {
         position: fixed; inset: 0; z-index: 998; flex-direction: column; justify-content: safe center; align-items: center; gap: 0;
         width: 100vw; height: 100dvh; padding: 6.5rem 1.75rem 2.5rem; overflow-y: auto;
@@ -624,8 +561,8 @@
       .nav-menu-heading { display: flex !important; align-items: center; gap: 1rem; margin-bottom: 0.5rem; }
       .nav-menu-heading::after { content: ''; flex: 1; height: 0.5px; background: rgba(232,228,219,0.16); }
       .nav-menu-heading span { font-family: var(--en); font-size: 0.62rem; letter-spacing: 0.38em; color: var(--muted-col); text-transform: uppercase; }
-      .nav-links li.sp-only { opacity: 0; transform: translateY(30px); filter: blur(8px); transition: opacity 0.8s var(--ease-expo), transform 0.8s var(--ease-expo), filter 0.8s var(--ease-expo); }
-      .nav-links.open li.sp-only { opacity: 1; transform: none; filter: none; }
+      .nav-links li.sp-only { opacity: 0; transform: translateY(30px); transition: opacity 0.8s var(--ease-expo), transform 0.8s var(--ease-expo); }
+      .nav-links.open li.sp-only { opacity: 1; transform: none; }
       .nav-links.open li:nth-child(8) { transition-delay: 0.1s; } .nav-links.open li:nth-child(9) { transition-delay: 0.18s; }
       .nav-links.open li:nth-child(10) { transition-delay: 0.26s; } .nav-links.open li:nth-child(11) { transition-delay: 0.34s; }
       .nav-links.open li:nth-child(12) { transition-delay: 0.42s; } .nav-links.open li:nth-child(13) { transition-delay: 0.5s; }
@@ -645,65 +582,64 @@
       .nav-menu-g i { font-style: normal; display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; border: 0.5px solid rgba(201,184,255,0.55); color: #c9b8ff; font-family: var(--en); font-size: 0.62rem; }
       .nav-menu-foot { margin-top: 2rem; text-align: center; font-family: var(--en); font-size: 0.58rem; letter-spacing: 0.32em; color: rgba(232,228,219,0.28); text-transform: uppercase; }
 
-      :root { --ph: min(46svh, 118vw); }
-      .hero { padding: 7rem 1.25rem 3rem; justify-content: flex-start; }
-      .hero-overlay { background: linear-gradient(to bottom, rgba(10,10,8,0.55), rgba(10,10,8,0.82) 55%, rgba(10,10,8,0.96)); }
-      .hero-title { letter-spacing: 0.1em; }
-      .hero-sub { letter-spacing: 0.16em; }
-      .hero-body { font-size: 0.8rem; }
-      .onview { position: relative; right: auto; bottom: auto; margin-top: 30px; max-width: 100%; z-index: 2; }
-      .hero-caption { position: relative; left: auto; bottom: auto; z-index: 2; margin-top: 26px; }
-      .slide-now { flex-wrap: wrap; row-gap: 6px; }
-      .ch-track { padding-top: 80px; padding-bottom: 96px; }
-      .ch-intro h2 { font-size: 1.5rem; }
-      .ch-year { font-size: 4.2rem; }
-      .ch-no { letter-spacing: 0.26em; white-space: nowrap; }
-      .closing h2 { font-size: 1.2rem; letter-spacing: 0.08em; }
-      .closing .body { font-size: 0.8rem; letter-spacing: 0.04em; }
+      .hero { padding: 5.5rem 1.25rem max(18px, env(safe-area-inset-bottom)); justify-content: flex-end; }
+      .hero-eyebrow { letter-spacing: 0.36em; gap: 12px; }
+      .hero-title { font-size: 20vw; letter-spacing: 0.1em; margin-right: -0.1em; }
+      .hero-en { letter-spacing: 0.36em; margin-right: -0.36em; }
+      .hero-sub { letter-spacing: 0.14em; }
+      .hero-foot { position: relative; left: auto; right: auto; bottom: auto; width: 100%; margin-top: 26px; grid-template-columns: 1fr; justify-items: center; gap: 18px; }
+      .hero-lead { font-size: 0.72rem; letter-spacing: 0.06em; }
+      .enter .shaft { height: 40px; }
+      .hero-foot .enter { order: 3; }
+      .stats { gap: 22px; justify-content: center; }
+      .stats li { align-items: center; }
+      .stats b { font-size: 1.7rem; }
+      .onview { justify-self: stretch; max-width: none; }
+
+      .gate { width: 90vw; }
+      .gate h2 { font-size: 11vw; letter-spacing: 0.08em; word-break: normal; }
+      .g-no { letter-spacing: 0.26em; font-size: 0.72rem; }
+      .g-sub { font-size: 0.92rem; letter-spacing: 0.1em; }
+      .g-meta { font-size: 0.74rem; flex-direction: column; gap: 2px; }
+      .g-quote { display: none; }
+      .year { font-size: 52vw; }
+      .label { width: 84vw; }
+      .end { width: 80vw; padding: 24px 24px; }
+      .end b { font-size: 1.2rem; }
+      .itl { width: 88vw; padding: 26px 22px; }
+      .itl .y { font-size: 3.2rem; }
+      .itl h2 { font-size: 1.35rem; }
+      .exit .big { font-size: 26vw; }
+      .exit p { font-size: 0.95rem; letter-spacing: 0.12em; }
+      .sign { font-size: 0.78rem; letter-spacing: 0.06em; white-space: normal; width: 80vw; justify-content: center; text-align: left; }
+      .ph figcaption { font-size: 0.8rem; margin-top: 10px; }
+
+      .panel, .rail { display: none; }
+      .bar { display: flex; }
+      .runner { top: 80px; padding: 9px 18px 9px 12px; }
+      .runner b { white-space: nowrap; font-size: 0.76rem; letter-spacing: 0.06em; }
+      .runner small { display: none; }
       .closing .body br { display: none; }
-      .prologue { grid-template-columns: 1fr; padding-top: 72px; }
-      .label { max-width: none; }
-      .stats ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .stats li:nth-child(3) { border-left: 0; padding-left: 0; }
-      .stats li { padding-bottom: 14px; }
-      .ticker em { font-size: 1.3rem; }
-      .ch-no::after { display: none; }
-      .row .kd > span:not(.jp):not(.on) { display: none; }
-      .ch-quote { display: none; }
-      .ch-meta { margin-top: 12px; padding-top: 12px; }
-      .ch-hint { margin-top: 18px; }
-      .ph.sm { width: calc(var(--ph) * 0.84 * var(--ar)); }
-      .dock { padding: 6px 8px; gap: 2px; }
-      .dock-mid { width: min(212px, 54vw); padding: 2px 8px 0; }
-      .dock-now { gap: 8px; }
-      .dock-no .yr, .dock-ph .lb { display: none; }
-      .dock-now b { font-size: 0.8rem; }
-      .dock-txt .t, .dock-rnd, .dock-sep { display: none; }
-      .dock-txt { width: 40px; padding: 0; justify-content: center; }
-      .dock-btn { width: 40px; height: 40px; }
-      .st span { font-size: 0.58rem; }
-      .dock-hint { white-space: normal; width: max-content; max-width: calc(100vw - 40px); text-align: center; }
-      footer { padding-bottom: calc(110px + env(safe-area-inset-bottom)); }
+      footer { padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
     }
-    @media (min-width: 769px) and (max-height: 940px) {
-      .ch-intro h2 { margin-top: 8px; }
-      .ch-meta { margin-top: 12px; padding-top: 12px; }
-      .ch-quote { margin-top: 14px; line-height: 1.9; font-size: 0.88rem; }
-      .ch-btns { margin-top: 16px; }
-      .ch-hint { margin-top: 18px; }
-    }
-    @media (max-width: 768px) and (max-height: 700px) {
-      .ch-meta .wide { display: none; }
+    @media (min-width: 769px) and (max-height: 760px) {
+      .hero-sub { margin-top: 18px; }
+      .g-quote { display: none; }
+      .panel .p-meta { display: none; }
     }
 
-    /* 動きを減らす設定：横スクロールの固定をやめ、指やホイールでそのまま横に送る */
-    .static .ch-pin { position: relative; height: auto; overflow: visible; }
-    .static .ch-track { width: auto; overflow-x: auto; scroll-snap-type: x proximity; padding-top: 90px; padding-bottom: 60px; }
-    .static .ch-track > * { scroll-snap-align: start; }
+    /* 動きを減らす設定：奥行きをやめ、展示を縦に並べる */
+    .static .walk { height: auto !important; }
+    .static .stage { position: relative; height: auto; overflow: visible; contain: none; background: none; }
+    .static .glow, .static .dust, .static .vignette, .static .year, .static .hud, .static .cursor { display: none !important; }
+    .static .hero { position: relative; min-height: 100svh; }
+    .static .world { position: relative; inset: auto; display: flex; flex-direction: column; align-items: center; gap: 56px; padding: 40px 16px 80px; }
+    .static .it { position: relative; left: auto; top: auto; visibility: visible; opacity: 1 !important; transform: none !important; max-width: 100%; }
+    .static .ph { width: min(760px, 100%) !important; }
+    .static .ph img { opacity: 1; }
+    .static .gate { margin-top: 60px; }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; transition-delay: 0s !important; }
-      .ticker { overflow-x: auto; }
-      .ticker-track { animation: none; }
     }
   </style>
 </head>
@@ -735,63 +671,44 @@
     <a href="../contact.html" class="nav-cta">Contact</a>
   </nav>
 
-  <!-- ══════════════ HERO ══════════════ -->
-  <header class="hero" id="top">
-    <div class="hero-slides" id="slides" aria-hidden="true"></div>
-    <div class="hero-overlay" aria-hidden="true"></div>
-    <div class="hero-inner">
-      <p class="hero-eyebrow"><span>Exhibition Archive — 2022 – 2026</span></p>
-      <h1 class="hero-title"><span class="sr-only">展示記録 Exhibitions</span><span aria-hidden="true" id="heroWord">展示記録</span></h1>
-      <p class="hero-en" aria-hidden="true">Exhibitions</p>
-      <p class="hero-sub"><span class="sr-only">作品が、ひとつの空間に置かれた記録。</span><span aria-hidden="true">作品が、ひとつの空間に<span class="rot" id="rot">置かれた</span>記録。</span></p>
-      <div class="hero-rule" aria-hidden="true"></div>
-      <p class="hero-body">下へスクロールするだけで、2022年から2026年までの会場を、新しい順にめぐれます。会場のなかでは、写真が横へ流れていきます。</p>
-      <div class="hero-acts">
-        <a class="btn primary" href="#now" data-jump="koumi">会場をめぐる <span class="ar" aria-hidden="true">↓</span></a>
-        <a class="btn" href="#archive" data-jump="archive">展示の一覧 <span class="ar" aria-hidden="true">→</span></a>
-        <a class="resume" id="resume" href="#"><span class="en">Bookmark</span><span>しおりの位置から</span><b id="resumeT"></b></a>
-      </div>
-    </div>
-    <div class="hero-caption">
-      <div class="scroll-cue pc-only" aria-hidden="true"><i></i><span>Scroll</span></div>
-      <div class="slide-now"><span class="en" id="slideNo">01 / 05</span><a href="#now" id="slideLink" data-jump="koumi"></a><span class="slide-dots" id="slideDots" role="group" aria-label="背景の会場写真"></span></div>
-    </div>
-    <a class="onview" href="#now" data-jump="koumi">
-      <img src="../images/exhi-ex/web/koumi-01-s.jpg" alt="" width="613" height="720">
-      <span>
-        <small><span class="live-dot" aria-hidden="true"></span>Now on View</small>
-        <b>二重の遠景</b>
-        <span class="v">小海町高原美術館 Hall 3 ／ 2026.09 —</span>
-      </span>
-      <span class="go" aria-hidden="true">↓</span>
-    </a>
-  </header>
+  <!-- ══════════════ THE WALK ══════════════ -->
+  <section class="walk" id="walk" aria-label="会場をめぐる">
+    <div class="stage" id="stage">
+      <div class="glow" aria-hidden="true"></div>
+      <canvas class="dust" id="dust" aria-hidden="true"></canvas>
+      <div class="world" id="world"></div>
+      <div class="vignette" aria-hidden="true"></div>
 
-  <!-- ══════════════ PROLOGUE ══════════════ -->
-  <section class="prologue reveal" id="prologue" aria-label="このページについて">
-    <div class="label">
-      <span class="en">Wall Label</span>
-      <dl>
-        <div><dt>作家</dt><dd>津田 翔一<span class="it">Tsuda Shoichi</span></dd></div>
-        <div><dt>題名</dt><dd class="title">《展示記録》 2022 – 2026</dd></div>
-        <div><dt>素材</dt><dd>写真、テキスト、スクロール、あなたの指先</dd></div>
-        <div><dt>寸法</dt><dd>サイズ可変<small>（ご覧の画面による）</small></dd></div>
-        <div><dt>所要</dt><dd>約3分<small>（寄り道を含まず）</small></dd></div>
-      </dl>
-    </div>
-    <div class="stats">
-      <ul id="stats"></ul>
-      <p class="note">※ 搬入・搬出で運んだ作品の総重量は、集計しておりません。</p>
+      <header class="hero" id="top">
+        <p class="hero-eyebrow"><span>Tsuda Shoichi</span><i></i><span>Exhibition Archive</span></p>
+        <h1 class="hero-title"><span class="sr-only">展示記録 Exhibitions</span><span aria-hidden="true" id="heroWord">展示記録</span></h1>
+        <p class="hero-en" aria-hidden="true"><span>Exhibitions</span><i></i><span>2022 — 2026</span></p>
+        <p class="hero-sub"><span class="sr-only">作品が、ひとつの空間に置かれた記録。</span><span aria-hidden="true">作品が、ひとつの空間に<span class="rot" id="rot">置かれた</span>記録。</span></p>
+        <p class="hero-lead">スクロールするたびに、会場の奥へ。2026年から2022年まで、歩いてめぐれます。</p>
+        <a class="resume" id="resume" href="#walk"><span class="en">Bookmark</span><span>しおりの位置から</span><b id="resumeT"></b></a>
+        <div class="hero-foot">
+          <ul class="stats" id="stats" aria-label="展示記録の数字"></ul>
+          <a class="enter" href="#walk" data-jump="koumi"><span class="shaft" aria-hidden="true"></span><span>Scroll to Enter</span><small>スクロールで入館</small></a>
+          <a class="onview" href="#walk" data-jump="koumi">
+            <img src="../images/exhi-ex/web/koumi-01-s.jpg" alt="" width="613" height="720">
+            <span>
+              <small><span class="live-dot" aria-hidden="true"></span>Now on View</small>
+              <b>二重の遠景</b>
+              <span class="v">小海町高原美術館 Hall 3 ／ 2026.09 —</span>
+            </span>
+          </a>
+        </div>
+      </header>
     </div>
   </section>
-  <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
-
-  <main id="chapters"></main>
 
   <!-- ══════════════ INDEX ══════════════ -->
   <section class="index" id="archive" aria-labelledby="indexTitle">
     <div class="index-head reveal">
-      <h2 id="indexTitle">All Exhibitions<small class="split-me">展示の一覧</small></h2>
+      <div>
+        <p class="en">All Exhibitions</p>
+        <h2 id="indexTitle">展示の一覧</h2>
+      </div>
       <span class="count" id="count" aria-hidden="true"></span>
     </div>
     <p class="index-lead">すべての展示を、新しい順に。行を押すと、それぞれの記録ページがひらきます。</p>
@@ -820,8 +737,13 @@
   <section class="closing reveal" id="closing" aria-labelledby="closingTitle">
     <span class="chime" aria-hidden="true"></span>
     <p class="en">Closing Announcement — 閉館のご案内</p>
-    <h2 id="closingTitle" class="split-me">本日はご来場いただき、<br>まことにありがとうございました。</h2>
+    <h2 id="closingTitle">本日はご来場いただき、<br>まことにありがとうございました。</h2>
     <p class="body">お忘れ物のないよう、お気をつけてお帰りください。<br>なお当館は、<em>二十四時間・年中無休</em>で開館しております。</p>
+    <div class="receipt" aria-label="本日の記録">
+      <span>本日の歩行距離</span><b id="rcWalk">0.0 m</b>
+      <span>ご覧になった会場</span><b id="rcVenue">0 / 5</b>
+      <span>すれちがった写真</span><b id="rcPh">0 枚</b>
+    </div>
     <div class="closing-acts">
       <a class="btn" href="#top" data-jump="top">もういちど、入口から <span class="ar" aria-hidden="true">↑</span></a>
       <a class="btn" href="../works/works.html">作品を見る <span class="ar" aria-hidden="true">→</span></a>
@@ -834,42 +756,77 @@
     <p class="footer-copy">© 2026 Tsuda Shoichi. All Rights Reserved.</p>
   </footer>
 
-  <nav class="dock" id="dock" aria-label="順路（会場の移動）">
-    <p class="dock-hint" id="dockHint" aria-hidden="true">順路の点を押すと、その会場へ移動できます</p>
-    <button class="dock-btn dock-arrow" id="dPrev" type="button" aria-label="前の会場へ" data-tip="前の会場へ"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M13 8H3M7 4 3 8l4 4"/></svg></button>
-    <div class="dock-mid">
-      <p class="dock-now" aria-live="polite"><span class="dock-no" id="dNo"></span><b id="dTitle"></b><span class="dock-ph" id="dPh"></span></p>
-      <div class="route" id="route" role="group" aria-label="順路"><span class="route-line" aria-hidden="true"><i id="routeFill"></i></span></div>
+  <!-- ══════════════ HUD ══════════════ -->
+  <aside class="hud panel" id="panel" aria-label="いまいる会場">
+    <p class="p-no" id="pNo"></p>
+    <p class="p-title" id="pTitle" aria-live="polite"><span></span></p>
+    <p class="p-meta" id="pMeta"></p>
+    <div class="p-acts">
+      <a class="p-open" id="pOpen" href="#">記録をひらく <span aria-hidden="true">→</span></a>
+      <span class="p-ph" id="pPh"></span>
+      <span class="p-tools">
+        <button class="p-tool" id="pRnd" type="button" aria-label="どこかの一枚へ、おまかせでワープ" title="おまかせワープ"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M1 4h3.5c3 0 4 8 7 8H15M12.5 9.5 15 12l-2.5 2.5M1 12h3.5c1.2 0 2-1.3 2.7-3M15 4h-3.5c-1.2 0-2 1.3-2.7 3M12.5 1.5 15 4l-2.5 2.5"/></svg></button>
+        <a class="p-tool" href="#archive" data-jump="archive" aria-label="すべての展示の一覧へ" title="一覧へ"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12"/></svg></a>
+      </span>
     </div>
-    <button class="dock-btn dock-arrow" id="dNext" type="button" aria-label="次の会場へ" data-tip="次の会場へ"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
-    <span class="dock-sep" aria-hidden="true"></span>
-    <button class="dock-btn dock-txt dock-rnd" id="dRnd" type="button" data-tip="どこかの一枚へ、おまかせで"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M1 4h3.5c3 0 4 8 7 8H15M12.5 9.5 15 12l-2.5 2.5M1 12h3.5c1.2 0 2-1.3 2.7-3M15 4h-3.5c-1.2 0-2 1.3-2.7 3M12.5 1.5 15 4l-2.5 2.5"/></svg><span class="t">おまかせ</span><span class="sr-only">（どこかの写真へ）</span></button>
-    <a class="dock-btn dock-txt" href="#archive" data-jump="archive" data-tip="すべての展示の一覧へ"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12"/></svg><span class="t">一覧</span><span class="sr-only">展示の一覧へ</span></a>
+  </aside>
+
+  <nav class="hud rail" id="rail" aria-label="順路（押すと、その会場へ）">
+    <p class="walked" aria-hidden="true">Walked<b id="walked">000.0<small>m</small></b></p>
+    <div class="r-line" id="rLine" aria-hidden="true"><i class="r-fill" id="rFill"></i></div>
+    <span class="r-head" id="rHead" aria-hidden="true"></span>
   </nav>
 
-  <div class="cursor" id="cursor" aria-hidden="true"><div class="cursor-in"><span class="it">View</span><small>記録をひらく</small></div></div>
+  <nav class="hud bar" id="bar" aria-label="順路（会場の移動）">
+    <button class="b-btn" id="bPrev" type="button" aria-label="前の会場へ"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M13 8H3M7 4 3 8l4 4"/></svg></button>
+    <div class="b-mid">
+      <p class="b-now"><span class="no" id="bNo"></span><b id="bTitle"></b><span class="cnt" id="bPh"></span></p>
+      <div class="b-track" id="bTrack" aria-hidden="true"><i id="bFill"></i></div>
+    </div>
+    <button class="b-btn" id="bNext" type="button" aria-label="次の会場へ"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+    <a class="b-btn" href="#archive" data-jump="archive" aria-label="展示の一覧へ"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12"/></svg></a>
+  </nav>
 
-  <a href="#top" class="back-to-top" id="b2t" aria-label="ページ先頭に戻る">
-    <svg class="b2t-progress" viewBox="0 0 100 100" aria-hidden="true"><circle class="bg" cx="50" cy="50" r="48"></circle><circle class="val" id="b2tVal" cx="50" cy="50" r="48"></circle></svg>
-    <span class="b2t-inner"><span class="b2t-text">TOP</span></span>
-  </a>
+  <div class="runner" id="runner" role="status" aria-live="polite">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="14.5" cy="4" r="2"/><path d="M8 21l3-6 3 2v5M6 12l3-4h5l2 4 3 1M11 15l2-7"/></svg>
+    <span><b id="runnerT">館内では、走らないでください。</b><small>Please walk in the gallery</small></span>
+  </div>
+
+  <div class="lb" id="lb" role="dialog" aria-modal="true" aria-labelledby="lbTitle">
+    <div class="lb-head">
+      <div><p class="en" id="lbNo"></p><b id="lbTitle"></b></div>
+      <button class="lb-x" id="lbX" type="button" aria-label="閉じる"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M1 1l12 12M13 1 1 13"/></svg></button>
+    </div>
+    <div class="lb-stage">
+      <img id="lbImg" alt="">
+      <button class="lb-nav lb-prev" id="lbPrev" type="button" aria-label="前の写真"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M13 8H3M7 4 3 8l4 4"/></svg></button>
+      <button class="lb-nav lb-next" id="lbNext" type="button" aria-label="次の写真"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+    </div>
+    <div class="lb-foot">
+      <p class="lb-cap"><span class="n" id="lbN"></span><span id="lbCap"></span></p>
+      <a class="btn" id="lbLink" href="#">この展示の記録ページへ <span class="ar" aria-hidden="true">→</span></a>
+    </div>
+  </div>
+
+  <div class="peek" id="peek" aria-hidden="true"><div class="peek-in"><img id="peekImg" alt=""></div></div>
+  <div class="cursor" id="cursor" aria-hidden="true"><div class="cursor-in"><span class="t1" id="curT">View</span><small id="curS">拡大する</small></div></div>
 
   <script>
   (function () {
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var WEB = '../images/exhi-ex/web/';
     function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (_) { return null; } }
+    function $(id) { return document.getElementById(id); }
 
     /* 展示の一覧（新しい順）。href は exhibition/ からの相対パス。
        shots: [横, 縦, 説明]。写真は images/exhi-ex/web/<id>-NN-(s|l).jpg
-       acc：その章の差し色（各展示の記録ページの配色から、暗い地に沈むよう抑えて）
-       hero：ヒーローの背景に使う写真の番号 */
+       acc：その会場の差し色（各展示の記録ページの配色から） */
     var EX = [
-      { id: 'koumi', anchor: 'now', year: '2026', date: '2026.09 —', title: '二重の遠景', short: '二重の遠景', sub: '小海の海（うみ）、左美都の層',
-        venue: '小海町高原美術館 Hall 3（長野県南佐久郡小海町）', place: '小海町高原美術館', kind: 'group', kindLabel: '展示参加', kindEn: 'Group Exhibition', live: true, media: '油彩画／映像投影／陶芸／空間構成',
-        href: 'koumi2026/ex-koumi2026.html', bg: '#0a0908', acc: '#d49a7f', hero: 0,
+      { id: 'koumi', year: '2026', date: '2026.09 —', title: '二重の遠景', short: '二重の遠景', sub: '小海の海（うみ）、左美都の層',
+        venue: '小海町高原美術館 Hall 3（長野県南佐久郡小海町）', place: '小海町高原美術館', kind: 'group', kindLabel: '展示参加', kindEn: 'Group Exhibition', live: true,
+        href: 'koumi2026/ex-koumi2026.html', acc: '#d49a7f',
         quote: '山々に囲まれた「海なき地」に、海の記憶を編む。架空の風土「左美都」と実在する「小海」を、コンクリートの柱をはさんで重ね合わせる。',
-        extra: [{ href: 'koumi2026/ex-koumi2026-dolphin.html', label: 'コウミカワイルカ解説' }, { href: 'https://www.koumi-museum.com/exhibitions/1056/', label: '美術館の展覧会情報', ext: true }],
+        extra: { href: 'koumi2026/ex-koumi2026-dolphin.html', label: 'コウミカワイルカ解説' },
         shots: [[1533, 1800, 'Hall 3 の展示風景。中央のコンクリート柱の左前面と右奥面に油彩画が掛かる'],
           [1800, 1439, '稲荷神社と川の石の風景（油彩）'],
           [1800, 1199, 'コンクリート壁の大型モニターに稲荷神社の映像が映る導入エリア'],
@@ -881,7 +838,7 @@
           [1291, 1800, '資料パネル：コウミカワイルカの特徴と生態']] },
       { id: 'nN', year: '2026', date: '2026.2.10 — 2.23', title: 'next×N-ART2026', short: 'next×N-ART2026', sub: 'アートは変容する多面体',
         venue: 'ホクト文化ホール 1F ギャラリー（長野県長野市）', place: 'ホクト文化ホール', kind: 'group', kindLabel: 'グループ展', kindEn: 'Group Exhibition',
-        href: 'ex-nN.html', bg: '#08090a', acc: '#9db4c8', thumb: 'cover-nN.jpg', hero: 0,
+        href: 'ex-nN.html', acc: '#9db4c8',
         quote: '「アートは変容する多面体」ホクト文化ホールに集う11名の作家たち。',
         shots: [[1800, 1200, 'ホクト文化ホール 展示風景全景'], [1800, 1200, '左壁面 大型油彩2点と小品'], [1800, 1200, '廊下ギャラリー 大型作品3点並ぶ'],
           [1234, 1800, 'エントランスロビー 硝子越しに展示された大型油彩'], [1800, 1200, '青緑系 単体作品クローズアップ'], [1800, 1200, '廊下ギャラリー 展示風景'],
@@ -890,7 +847,7 @@
         kind: 'group', kindLabel: 'グループ展', kindEn: 'Group Exhibition', href: '../works/works-samizu.html', note: '記録は、作品シリーズ「左美都の神話と伝承」のページにあります。', linkLabel: '作品ページで見る' },
       { id: 'bunka', year: '2024', date: '2024', title: '左美都の記憶と地脈', short: '左美都の記憶と地脈', sub: '文化庁メディア芸術クリエイター育成支援事業 採択企画展示',
         venue: '北野カルチュラルセンター（長野県長野市） ／ 2nen Gallery（東京都中央区）', place: '北野カルチュラルセンター', kind: 'solo', kindLabel: '個展・巡回展', kindEn: 'Solo Exhibition',
-        href: 'ex-bunka.html', bg: '#0a0908', acc: '#c4a882', thumb: 'cover-bunka.jpg', hero: 0,
+        href: 'ex-bunka.html', acc: '#c4a882',
         quote: '土地の記憶から、存在の根源を問い続ける。',
         shots: [[1800, 1200, '北野カルチュラルセンター 1F ギャラリー全景'], [1800, 1200, '1F 大型油彩画'], [1800, 1200, '1F 展示風景 正面対峙'],
           [1800, 1200, '「左美都の神話と伝承」書籍現物展示'], [1800, 1200, '3F 映像展示空間全景'], [1800, 1200, '鑑賞体験 映像と影'],
@@ -899,14 +856,14 @@
         kind: 'group', kindLabel: '参加', kindEn: 'Participation', wip: true, href: 'ex-kissei.html', note: '記録ページは準備中です。', linkLabel: '準備中のページ' },
       { id: 'ina', year: '2023', date: '2023', title: 'トライアル・ギャラリー', short: 'トライアル・ギャラリー', sub: '若手作家公募個展',
         venue: '長野県伊那文化会館（長野県伊那市）', place: '長野県伊那文化会館', kind: 'solo', kindLabel: '公募個展', kindEn: 'Solo Exhibition',
-        href: 'ex-ina.html', bg: '#080a09', acc: '#98b8b2', thumb: 'cover-ina.jpg', hero: 1,
+        href: 'ex-ina.html', acc: '#98b8b2',
         quote: '風景を壁面に、遺物を中央に。発掘という所作を借りて構成された、左美都以前の記録。',
         shots: [[1800, 1200, '会場全景'], [1800, 1350, '十二枚の断片で構成された森と、鑑賞者のシルエット'], [1800, 1200, '十二の断片絵画と大型絵画'],
           [1800, 1200, '断片化する絵画とリサーチパネル'], [1800, 1200, '連作絵画、色彩の推移'], [1800, 1200, '木製匙、想定復元資料'],
           [1800, 1200, '土製耳飾の欠片、想定復元資料'], [1800, 1200, '廊下に展示された色彩豊かな絵画']] },
       { id: 'kakuchi', year: '2022', date: '2022.07 — 08', title: '＋覚知ka', short: '＋覚知ka', sub: '油彩画展',
         venue: '長野県立美術館（長野県長野市）', place: '長野県立美術館', kind: 'solo', kindLabel: '個展', kindEn: 'Solo Exhibition',
-        href: 'ex-nagano2022.html', bg: '#0a0808', acc: '#c98a82', thumb: 'cover-nagano2022.jpg', hero: 3,
+        href: 'ex-nagano2022.html', acc: '#c98a82',
         quote: '見るより先に、肌が知っている。',
         shots: [[1800, 1200, '回廊全景'], [1800, 1200, '紅と藍の部屋 左壁の連作'], [1800, 1200, '垂直の筆触 黄と黒の連作'], [1800, 1200, '角部屋 虹色の大画面'],
           [1800, 1200, '地平の部屋 全景'], [1800, 1200, '地平の絵画 別角度'], [1800, 1200, '開かれた扉と先の空間'], [1800, 1200, '出口付近の展示風景']] }
@@ -917,88 +874,561 @@
     function pad(n) { return ('0' + n).slice(-2); }
     function src(e, i, s) { return WEB + e.id + '-' + pad(i + 1) + '-' + s + '.jpg'; }
     function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
-    function anchorOf(e) { return e.anchor || 'ch-' + e.id; }
-    /* 文字を一字ずつの span に（読み上げは元の文のまま） */
-    function splitEl(el, delay) {
-      if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', el.textContent.replace(/\s+/g, ' ').trim());
-      var i = 0;
-      Array.prototype.slice.call(el.childNodes).forEach(function (n) {
-        if (n.nodeType !== 3) return;
-        var f = document.createDocumentFragment();
-        Array.from(n.textContent).forEach(function (ch) {
-          var s = document.createElement('span'); s.className = 'c'; s.setAttribute('aria-hidden', 'true');
-          s.style.setProperty('--i', i++); s.textContent = ch; f.appendChild(s);
-        });
-        el.replaceChild(f, n);
-      });
-      el.classList.add('split');
-      if (delay) el.style.setProperty('--d', delay + 'ms');
-    }
-    /* 年号のオドメーター：各桁が 0→9 を一周してから止まる */
-    function odo(y) {
-      return Array.from(y).map(function (d, k) {
-        var col = '';
-        for (var n = 0; n < 20; n++) col += '<span>' + (n % 10) + '</span>';
-        return '<span class="od" style="--d:' + d + ';--k:' + k + '"><span class="od-col">' + col + '</span></span>';
-      }).join('');
-    }
-    /* 館内のお願い（章ごとに一つ） */
+    function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+    function rnd(n) { var x = Math.sin(n * 12.9898 + 4.1414) * 43758.5453; return x - Math.floor(x); }
     var ETIQUETTE = [
-      '館内では、走らずに横へどうぞ。',
+      '館内では、走らないでください。ゆっくり進むほど、よく見えます。',
       '作品にはお手を触れず、スクロールにはお手を触れてください。',
       '立ち止まるのも、鑑賞のうちです。',
       'フラッシュ撮影はご遠慮ください。スクリーンショットは、お静かに。',
-      '順路は右へ。迷ったら、下へ。'
+      '順路は奥へ。迷ったら、下へ。'
     ];
-    var small = window.matchMedia('(max-width: 700px)').matches;
 
-    /* ---------- hero：文字を一字ずつ ---------- */
-    var word = document.getElementById('heroWord');
-    word.innerHTML = word.textContent.split('').map(function (c, k) { return '<span class="ch1" style="--i:' + k + '"><i>' + c + '</i></span>'; }).join('');
-
-    /* ---------- hero：会場の写真がゆっくり入れ替わる ---------- */
-    var slides = document.getElementById('slides'), dots = document.getElementById('slideDots');
-    var slideLink = document.getElementById('slideLink'), slideNo = document.getElementById('slideNo');
-    slides.innerHTML = CH.map(function (e, i) {
-      return '<img ' + (i ? 'data-src' : 'src') + '="' + src(e, e.hero, small ? 's' : 'l') + '" alt="" decoding="async"' + (i ? '' : ' class="on" fetchpriority="high"') + '>';
-    }).join('');
-    dots.innerHTML = CH.map(function (e) { return '<button type="button" aria-label="' + e.year + ' ' + esc(e.title) + 'の会場写真"><i></i></button>'; }).join('');
-    var sImgs = slides.querySelectorAll('img'), sDots = dots.querySelectorAll('button'), sNow = 0, sTimer, heroVisible = true;
-    function showSlide(n) {
-      sNow = (n + CH.length) % CH.length;
-      var im = sImgs[sNow];
-      if (im.dataset.src) { im.src = im.dataset.src; im.removeAttribute('data-src'); }
-      sImgs.forEach(function (x, i) { x.classList.toggle('on', i === sNow); });
-      sDots.forEach(function (d, i) { d.setAttribute('aria-current', i === sNow); });
-      var e = CH[sNow];
-      slideNo.textContent = pad(sNow + 1) + ' / ' + pad(CH.length);
-      slideLink.textContent = e.year + '　' + (e.short || e.title) + ' — ' + e.place;
-      slideLink.href = '#' + anchorOf(e); slideLink.dataset.jump = e.id + ':' + e.hero;
-      /* 次の一枚を先に読んでおく */
-      var nx = sImgs[(sNow + 1) % CH.length];
-      if (nx.dataset.src) { var pre = new Image(); pre.src = nx.dataset.src; }
-    }
-    function auto() { clearInterval(sTimer); if (!reduce) sTimer = setInterval(function () { if (heroVisible && !document.hidden) showSlide(sNow + 1); }, 6500); }
-    sDots.forEach(function (d, i) { d.addEventListener('click', function () { showSlide(i); auto(); }); });
-    showSlide(0);
-    window.addEventListener('load', auto);
-
-    /* ---------- 前回の続き ---------- */
-    var last = store('ex-last');
-    if (last && byId[last.split(':')[0]] && byId[last.split(':')[0]].shots) {
-      var le = byId[last.split(':')[0]], rs = document.getElementById('resume');
-      document.getElementById('resumeT').textContent = le.year + '「' + (le.short || le.title) + '」';
-      rs.href = '#' + anchorOf(le);
-      rs.setAttribute('data-jump', last);
-      rs.classList.add('show');
-    }
-
-    /* ---------- hero：ことばが入れ替わる ---------- */
-    var rot = document.getElementById('rot'), words = ['置かれた', '照らされた', '見つめられた', '息づいた', '居座った'], wi = 0;
+    /* ---------- hero ---------- */
+    var word = $('heroWord');
+    word.innerHTML = Array.from(word.textContent).map(function (c, k) { return '<span class="ch" style="--i:' + k + '">' + c + '</span>'; }).join('');
+    var rot = $('rot'), words = ['置かれた', '照らされた', '見つめられた', '息づいた', '居座った'], wi = 0;
     function setRot(w) { rot.innerHTML = Array.from(w).map(function (c, i) { return '<span class="c" style="--i:' + i + '">' + c + '</span>'; }).join(''); }
     setRot(words[0]);
+    var nPhotos = CH.reduce(function (a, e) { return a + e.shots.length; }, 0);
+    var venueNames = [];
+    EX.forEach(function (e) { e.venue.split(' ／ ').forEach(function (v) { var n = v.replace(/（.*?）/, ''); if (venueNames.indexOf(n) < 0) venueNames.push(n); }); });
+    $('stats').innerHTML = [[EX.length, 'Exhibitions'], [venueNames.length, 'Venues'], [nPhotos, 'Photographs'], [+EX[0].year - +EX[EX.length - 1].year + 1, 'Years']]
+      .map(function (s) { return '<li><b>' + pad(s[0]) + '</b><span>' + s[1] + '</span></li>'; }).join('');
+
+    /* ---------- 舞台をつくる ----------
+       奥行き z は「画面の高さ 1 枚ぶん進むと 1」くらいの単位。
+       カメラが c にいるとき、d = z - c 先にあるものは 1 / (1 + d) の大きさに見える。 */
+    var world = $('world'), items = [], photos = [], z = 0;
+    function add(html, z0, o) {
+      var t = document.createElement('div'); t.innerHTML = html;
+      var el = t.firstChild; world.appendChild(el);
+      o.el = el; o.z = z0; o.vis = false; o.f0 = o.f0 || 2.7; o.f1 = o.f1 || 1.7;
+      items.push(o); return o;
+    }
+    add('<div class="it label"><span class="en">Wall Label</span><dl>'
+      + '<div><dt>作家</dt><dd>津田 翔一<span class="it2">Tsuda Shoichi</span></dd></div>'
+      + '<div><dt>題名</dt><dd>《展示記録》 2022 – 2026</dd></div>'
+      + '<div><dt>素材</dt><dd>写真、テキスト、奥行き、あなたの指先</dd></div>'
+      + '<div><dt>寸法</dt><dd>サイズ可変<small>（ご覧の画面による）</small></dd></div>'
+      + '<div><dt>所要</dt><dd>約4分<small>（寄り道を含まず）</small></dd></div></dl></div>', 1.25, { kind: 'label', f0: 1.1, f1: 0.6, side: 1, yf: 0.02 });
+    z = 2.7;
+    var gk = 0;
+    EX.forEach(function (e, k) {
+      if (!e.shots) {
+        e.gz = z;
+        add('<div class="it itl" id="ch-' + e.id + '" style="--glow:' + '#cbbfb0' + '"><p class="y" aria-hidden="true">' + e.year + '</p>'
+          + '<span class="en">' + e.kindEn + (e.wip ? ' — In Preparation' : '') + '</span>'
+          + '<h2>' + esc(e.title) + (e.sub ? '<small>' + esc(e.sub) + '</small>' : '') + '</h2>'
+          + '<p>' + esc(e.venue) + '</p><p>' + esc(e.note) + '</p>'
+          + '<a class="btn" href="' + e.href + '">' + e.linkLabel + ' <span class="ar" aria-hidden="true">→</span></a></div>', z, { kind: 'itl', ex: e, side: k % 2 ? -1 : 1, xk: 0.55, yf: 0 });
+        z += 1.5; return;
+      }
+      var no = ++gk;
+      e.no = no; e.gz = z;
+      add('<div class="it year" aria-hidden="true" style="--glow:' + e.acc + '">' + e.year + '</div>', z + 0.55, { kind: 'year', f0: 3.4, f1: 2.2, yf: -0.03 });
+      add('<div class="it gate" id="ch-' + e.id + '" style="--glow:' + e.acc + '">'
+        + (e.live ? '<p class="g-no live"><span class="live-dot" aria-hidden="true"></span>Now on View — No.' + pad(no) + '</p>' : '<p class="g-no">No.' + pad(no) + ' — ' + e.kindEn + '</p>')
+        + '<h2>' + esc(e.title) + '</h2>' + (e.sub ? '<p class="g-sub">' + esc(e.sub) + '</p>' : '')
+        + '<p class="g-meta"><b>' + e.date + '</b><span>' + esc(e.venue) + '</span></p>'
+        + '<p class="g-quote">' + esc(e.quote) + '</p></div>', z, { kind: 'gate', ex: e, yf: -0.01 });
+      z += 1.6;
+      e.ph = [];
+      e.shots.forEach(function (s, i) {
+        var ar = s[0] / s[1], sm = i % 3 === 2;
+        var cap = e.title + '：' + s[2];
+        var o = add('<figure class="it ph" style="--ar:' + ar.toFixed(4) + ';--glow:' + e.acc + '">'
+          + '<button class="ph-hit" type="button" aria-label="拡大して見る：' + esc(cap) + '"><img alt="' + esc(cap) + '" width="' + s[0] + '" height="' + s[1] + '" decoding="async"></button>'
+          + '<figcaption><span class="n">' + pad(i + 1) + '</span>' + esc(s[2]) + '</figcaption></figure>', z,
+          { kind: 'ph', ex: e, i: i, ar: ar, sm: sm, side: (i % 2 ? 1 : -1) * (no % 2 ? 1 : -1), xk: 0.78 + rnd(z) * 0.22, yf: (rnd(z + 7) - 0.5) * 0.12, f0: 5.4, f1: 3.4 });
+        o.img = o.el.querySelector('img'); o.g = photos.length;
+        e.ph.push(o); photos.push(o);
+        if (i === Math.floor(e.shots.length / 2)) {
+          add('<p class="it sign" style="--glow:' + e.acc + '">' + ETIQUETTE[(no - 1) % ETIQUETTE.length] + '</p>', z + 0.42, { kind: 'sign', f0: 1.6, f1: 1.0, yf: 0.36, side: -o.side, xk: 0.35 });
+        }
+        z += sm ? 0.72 : 0.86;
+      });
+      var next = EX[k + 1];
+      add('<a class="it end" href="' + e.href + '" style="--glow:' + e.acc + '"><span class="en">No.' + pad(no) + ' — ' + e.year + ' / Record</span>'
+        + '<b>「' + esc(e.title) + '」の記録を、もっと見る</b><span class="arrow" aria-hidden="true"></span>'
+        + '<span class="next">' + (next ? '次の会場まで、徒歩0分。<br>↓ ' + next.year + '「' + esc(next.short || next.title) + '」' : '出口は、この先です。') + '</span></a>', z + 0.1, { kind: 'end', ex: e, yf: 0.02 });
+      z += 1.7;
+    });
+    add('<div class="it exit"><span class="big" aria-hidden="true">EXIT</span><p>出口はこちらです。おつかれさまでした。</p><small>↓ All Exhibitions</small></div>', z, { kind: 'exit', f0: 2.4, f1: 1.4 });
+    var EXITZ = z, D = z - 0.18;
+    var DOORS = CH.map(function (e) { return { z: e.gz - 0.25, c: e.acc }; }).concat([{ z: EXITZ - 0.3, c: '#e5d3b3' }]);
+    /* 手前のものほど上に重なる */
+    items.sort(function (a, b) { return a.z - b.z; });
+    items.forEach(function (o, k) { o.el.style.zIndex = 5000 - k; });
+
+    /* ---------- 状態 ---------- */
+    var walk = $('walk'), stage = $('stage'), hero = $('top');
+    var vw = 0, vh = 0, mobile = false, unit = 1, walkTop = 0, walkLen = 1, lastW = 0, lastH = 0;
+    var cam = { c: 0, x: 0, y: 0, tx: 0, ty: 0, v: 0, sv: 0 }, maxC = 0, seenPh = {};
+    var isStatic = reduce;
+    if (isStatic) document.documentElement.classList.add('static');
+
+    /* ---------- 寸法 ---------- */
+    function layout(force) {
+      var w = document.documentElement.clientWidth, h = window.innerHeight;
+      /* スマホのアドレスバーの出入りでは組み直さない（スクロール位置がずれないように） */
+      if (!force && w === lastW && Math.abs(h - lastH) < 140) return;
+      lastW = vw = w; lastH = vh = h;
+      mobile = vw <= 768;
+      items.forEach(function (o) {
+        if (o.kind === 'ph') {
+          var mw = mobile ? 0.86 * vw : 0.46 * vw, mh = (mobile ? 0.5 : 0.6) * vh;
+          o.w = Math.min(mw, mh * o.ar) * (o.sm ? 0.8 : 1);
+          o.el.style.setProperty('--w', o.w.toFixed(0) + 'px');
+          var room = Math.max(0, vw / 2 - o.w / 2 - (mobile ? 8 : 0.1 * vw));
+          o.x = o.side * room * (mobile ? 0.7 : o.xk);
+          o.y = o.yf * vh * (mobile ? 0.6 : 1);
+          o.img.sizes = Math.ceil(o.w * 1.15) + 'px';
+        } else if (o.kind === 'label') {
+          o.x = mobile ? 0 : vw * 0.2; o.y = o.yf * vh;
+        } else if (o.kind === 'itl') {
+          o.x = mobile ? 0 : o.side * vw * 0.14; o.y = 0;
+        } else if (o.kind === 'sign') {
+          o.x = mobile ? 0 : o.side * vw * 0.18; o.y = o.yf * vh * (mobile ? 0.86 : 1);
+        } else {
+          o.x = 0; o.y = (o.yf || 0) * vh;
+        }
+      });
+      unit = vh * (mobile ? 0.62 : 0.58);
+      walkLen = D * unit;
+      if (!isStatic) walk.style.height = (walkLen + vh) + 'px';
+      walkTop = walk.offsetTop;
+      sizeDust();
+      buildRail();
+    }
+
+    /* ---------- 塵（奥行きと速さを感じるための、光の粒） ---------- */
+    var dust = $('dust'), dx = dust.getContext('2d'), P = [], dpr = 1, DUSTL = 6;
+    function sizeDust() {
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      dust.width = Math.round(vw * dpr); dust.height = Math.round(vh * dpr);
+      var n = mobile ? 90 : 200; P = [];
+      for (var k = 0; k < n; k++) {
+        var a = rnd(k * 3.1) * Math.PI * 2, r = 0.18 + Math.pow(rnd(k * 5.7), 0.7) * 0.95;
+        P.push({ x: Math.cos(a) * r * Math.max(vw, vh) * 0.62, y: Math.sin(a) * r * Math.max(vw, vh) * 0.42, z: rnd(k * 9.3) * DUSTL, s: 0.5 + rnd(k * 2.2) * 1.3 });
+      }
+    }
+    function drawDust(c, v) {
+      dx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      dx.clearRect(0, 0, vw, vh);
+      var m = ((c % DUSTL) + DUSTL) % DUSTL, cx = vw / 2, cy = vh / 2, streak = Math.min(Math.abs(v), 40) * 0.035 * (v < 0 ? -1 : 1);
+      /* 入口の枠と、廊下の肋（あばら）。くぐり抜けるたびに奥行きがわかる */
+      var fw = vw * (mobile ? 0.94 : 0.84), fh = vh * (mobile ? 0.7 : 0.8);
+      dx.lineWidth = 1;
+      for (var r = Math.ceil(c - 0.2); r < c + 5; r++) {
+        var dr = r - c, sr = 1 / (1 + dr), ar = Math.min(1, (5 - dr) / 2.5) * Math.min(1, (dr + 0.2) / 0.3) * 0.07;
+        if (ar <= 0) continue;
+        dx.globalAlpha = ar; dx.strokeStyle = 'rgb(232,228,219)';
+        dx.strokeRect(cx - (fw / 2 + cam.x) * sr, cy - (fh / 2 + cam.y) * sr, fw * sr, fh * sr);
+      }
+      for (var g = 0; g < DOORS.length; g++) {
+        var dd = DOORS[g].z - c;
+        if (dd < -0.24 || dd > 5) continue;
+        var sd = 1 / (1 + dd), ad = Math.min(1, (5 - dd) / 2) * Math.min(1, (dd + 0.24) / 0.3);
+        var w2 = fw * 1.04 * sd, h2 = fh * 1.08 * sd, x0 = cx - (fw * 0.52 + cam.x) * sd, y0 = cy - (fh * 0.54 + cam.y) * sd;
+        dx.strokeStyle = DOORS[g].c;
+        dx.globalAlpha = ad * 0.16; dx.lineWidth = 6; dx.strokeRect(x0, y0, w2, h2);
+        dx.globalAlpha = ad * 0.75; dx.lineWidth = 1.2; dx.strokeRect(x0, y0, w2, h2);
+      }
+      dx.lineWidth = 1;
+      dx.fillStyle = dx.strokeStyle = 'rgb(236,222,196)';
+      for (var k = 0; k < P.length; k++) {
+        var p = P[k], d = p.z - m;
+        if (d < -0.25) d += DUSTL; else if (d > DUSTL - 0.25) d -= DUSTL;
+        var s = 1 / (1 + d), sx = cx + (p.x - cam.x) * s, sy = cy + (p.y - cam.y) * s;
+        var a = Math.min(1, (DUSTL - 0.25 - d) / 2) * Math.min(1, (d + 0.25) / 0.3) * 0.55;
+        if (a <= 0) continue;
+        dx.globalAlpha = a;
+        if (Math.abs(streak) > 0.02) {
+          var d2 = d + streak, s2 = 1 / (1 + Math.max(-0.2, d2));
+          dx.lineWidth = p.s * s * 1.2;
+          dx.beginPath(); dx.moveTo(sx, sy); dx.lineTo(cx + (p.x - cam.x) * s2, cy + (p.y - cam.y) * s2); dx.stroke();
+        } else {
+          dx.beginPath(); dx.arc(sx, sy, p.s * s * 1.1, 0, 6.2832); dx.fill();
+        }
+      }
+      dx.globalAlpha = 1;
+    }
+
+    /* ---------- 描く ---------- */
+    var warpDim = 0;
+    function render(c) {
+      for (var k = 0; k < items.length; k++) {
+        var o = items[k], d = o.z - c;
+        if (d > o.f0 || d < -0.26) { if (o.vis) { o.vis = false; o.el.classList.remove('on'); o.el.style.opacity = 0; } continue; }
+        if (!o.vis) { o.vis = true; o.el.classList.add('on'); }
+        var s = 1 / (1 + d);
+        var op = Math.min(1, (o.f0 - d) / (o.f0 - o.f1)) * Math.min(1, (d + 0.26) / 0.22);
+        if (o.kind === 'ph' && d > 1.1) op *= Math.max(0.4, 1 - (d - 1.1) * 0.3);
+        if (c < 0.6) op *= 0.28 + 0.72 * Math.max(0, c) / 0.6;
+        if (warpDim) op *= 1 - warpDim;
+        var X = (o.x - cam.x) * s, Y = (o.y - cam.y) * s;
+        o.el.style.transform = 'translate3d(' + X.toFixed(1) + 'px,' + Y.toFixed(1) + 'px,0) translate(-50%,-50%) scale(' + s.toFixed(4) + ')';
+        o.el.style.opacity = op.toFixed(3);
+        var pe = op > 0.6; if (pe !== o.pe) { o.pe = pe; o.el.style.pointerEvents = pe ? '' : 'none'; }
+      }
+      /* 写真は、近づく前に読みこんでおく */
+      for (var j = 0; j < photos.length; j++) {
+        var p = photos[j];
+        if (!p.src && p.z - c < 8 && p.z - c > -1) load(p);
+      }
+      hero.style.opacity = clamp(1 - c / 0.5, 0, 1).toFixed(3);
+      hero.style.transform = c > 0 ? 'scale(' + (1 + c * 0.5).toFixed(4) + ')' : '';
+      hero.style.visibility = c > 0.5 ? 'hidden' : '';
+    }
+    function load(p) {
+      p.src = true;
+      var e = p.ex, img = p.img;
+      img.srcset = src(e, p.i, 's') + ' 720w, ' + src(e, p.i, 'l') + ' ' + e.shots[p.i][0] + 'w';
+      img.src = src(e, p.i, 'l');
+      var done = function () { img.classList.add('ok'); };
+      if (img.decode) img.decode().then(done, done); else img.onload = done;
+    }
+
+    /* ---------- 毎フレーム ----------
+       スクロール量は「行き先」だけを決め、カメラはそこへ指数的に追いつく。
+       ホイールの 1 ノッチぶんの段差も、なめらかな前進になる。 */
+    var running = false, last = 0, intro = 0, lastView = 0, warp = null, t0 = performance.now();
+    function target() { return clamp((window.scrollY - walkTop) / unit, 0, D); }
+    function frame(now) {
+      var dt = Math.min(0.05, (now - last) / 1000 || 0.016); last = now;
+      var T = target();
+      if (warp) {
+        if (Math.abs(T - warp.to) > 0.02) warp = null;
+        else {
+          var q = Math.min(1, (now - warp.t0) / warp.dur), ez = q < 0.5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2;
+          cam.c = warp.from + (warp.to - warp.from) * ez;
+          warpDim = warp.long ? Math.sin(Math.PI * q) * 0.7 : 0;
+          if (q >= 1) { warp = null; warpDim = 0; }
+        }
+      }
+      if (!warp) {
+        warpDim = 0;
+        cam.c += (T - cam.c) * (1 - Math.exp(-dt * 6.5));
+        if (Math.abs(T - cam.c) < 0.0004) cam.c = T;
+      }
+      var off = 0;
+      if (intro) { var iq = Math.min(1, (now - intro) / 2800); off = 2.8 * Math.pow(1 - iq, 3); if (iq >= 1) intro = 0; }
+      var view = cam.c - off;
+      cam.v = (view - lastView) / dt; lastView = view;
+      cam.sv += (cam.v - cam.sv) * 0.15;
+      /* 指先にあわせて、目線がすこし動く。止まっていても、かすかに呼吸する */
+      var tt = (now - t0) / 1000;
+      cam.x += (cam.tx + Math.sin(tt * 0.31) * vw * 0.006 - cam.x) * (1 - Math.exp(-dt * 3));
+      cam.y += (cam.ty + Math.cos(tt * 0.23) * vh * 0.006 - cam.y) * (1 - Math.exp(-dt * 3));
+      render(view);
+      drawDust(view, cam.sv);
+      hud();
+      if (running) requestAnimationFrame(frame);
+    }
+    function start() { if (running || isStatic) return; running = true; last = performance.now(); requestAnimationFrame(frame); }
+    function stop() { running = false; }
+
+    /* ---------- HUD ---------- */
+    var panel = $('panel'), rail = $('rail'), bar = $('bar');
+    var pNo = $('pNo'), pTitle = $('pTitle'), pMeta = $('pMeta'), pOpen = $('pOpen'), pPh = $('pPh');
+    var bNo = $('bNo'), bTitle = $('bTitle'), bPh = $('bPh'), bFill = $('bFill'), bPrev = $('bPrev'), bNext = $('bNext');
+    var rFill = $('rFill'), rHead = $('rHead'), rLine = $('rLine'), walkedEl = $('walked');
+    var cur = -2, curPh = -1, stations = [], seenCh = {}, saveT, railH = 1;
+    function buildRail() {
+      rail.querySelectorAll('.r-st, .r-tick').forEach(function (n) { n.remove(); });
+      railH = rail.offsetHeight || Math.min(vh * 0.58, 520);
+      photos.forEach(function (p) {
+        var t = document.createElement('i'); t.className = 'r-tick'; t.style.top = (p.z / D * 100).toFixed(2) + '%'; rLine.appendChild(t);
+      });
+      stations = EX.map(function (e) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'r-st' + (e.shots ? '' : ' mini');
+        b.style.top = (e.gz / D * 100).toFixed(2) + '%'; b.style.setProperty('--c', e.acc || '#cbbfb0');
+        b.dataset.jump = e.id;
+        b.setAttribute('aria-label', e.year + '「' + e.title + '」へ');
+        b.innerHTML = '<em>' + esc(e.short || e.title) + '</em><span>' + (e.shots ? e.year : '') + '</span><i></i>';
+        rail.appendChild(b); return b;
+      });
+      var bt = $('bTrack');
+      bt.querySelectorAll('s').forEach(function (n) { n.remove(); });
+      CH.forEach(function (e) { var s = document.createElement('s'); s.style.left = (e.gz / D * 100).toFixed(2) + '%'; bt.appendChild(s); });
+    }
+    function remember(v) { clearTimeout(saveT); saveT = setTimeout(function () { store('ex-last', v); }, 500); }
+    function hud() {
+      var c = cam.c, act = -1, ph = -1;
+      for (var k = 0; k < CH.length; k++) if (c >= CH[k].gz - 0.9) act = k;
+      if (c >= EXITZ - 0.9) act = CH.length;
+      if (act >= 0 && act < CH.length) {
+        var e = CH[act];
+        for (var j = 0; j < e.ph.length; j++) if (c >= e.ph[j].z - 0.55) ph = j;
+        if (ph >= 0) { var g = e.ph[ph].g; if (!seenPh[g]) seenPh[g] = 1; }
+      }
+      if (c > maxC) maxC = c;
+      var f = c / D;
+      rFill.style.transform = 'scaleY(' + f.toFixed(4) + ')';
+      rHead.style.transform = 'translateY(' + (f * railH).toFixed(1) + 'px)';
+      bFill.style.transform = 'scaleX(' + f.toFixed(4) + ')';
+      walkedEl.firstChild.nodeValue = ('00' + (c * 1.6).toFixed(1)).slice(-5);
+      var show = c > 0.55 && walkTop + walkLen + vh - window.scrollY > vh * 0.6;
+      if (show !== hud.shown) { hud.shown = show; [panel, rail, bar].forEach(function (h) { h.classList.toggle('show', show); }); }
+      if (act !== cur) {
+        cur = act;
+        if (act >= CH.length) setHud('Exit', '出口 — すべての展示の一覧へ', 'おつかれさまでした', '#archive', '#cbbfb0');
+        else if (act < 0) setHud('Lobby', 'まもなく開場です', '奥へ、どうぞ', '#walk', '#d49a7f');
+        else {
+          var e2 = CH[act];
+          setHud('No.' + pad(e2.no) + ' / ' + pad(CH.length) + ' · ' + e2.kindEn, e2.title, e2.date + '　' + e2.venue, e2.href, e2.acc, e2.live);
+          if (!seenCh[e2.id]) { seenCh[e2.id] = 1; gtag('event', 'chapter_view', { exhibition: e2.id }); }
+        }
+        stations.forEach(function (s, i) { s.setAttribute('aria-current', EX[i] === CH[act]); s.classList.toggle('past', EX[i].gz < c - 0.9 && EX[i] !== CH[act]); });
+        bPrev.disabled = act <= 0; bNext.disabled = act >= CH.length;
+        curPh = -2;
+      }
+      if (ph !== curPh) {
+        curPh = ph;
+        if (act >= 0 && act < CH.length) {
+          var n = CH[act].shots.length, txt = ph >= 0 ? pad(ph + 1) : '00';
+          pPh.innerHTML = '<em>' + txt + '</em> / ' + pad(n);
+          bPh.textContent = txt + '/' + pad(n);
+          remember(CH[act].id + (ph >= 0 ? ':' + ph : ''));
+        } else { pPh.textContent = ''; bPh.textContent = ''; }
+        stations.forEach(function (s, i) { s.classList.toggle('past', EX[i].gz < c - 0.9 && EX[i] !== CH[act]); });
+      }
+      speedCheck();
+    }
+    function setHud(no, title, meta, href, acc, live) {
+      pNo.innerHTML = (live ? '<span class="live-dot" aria-hidden="true"></span>' : '') + esc(no);
+      pTitle.firstChild.textContent = title;
+      pTitle.classList.remove('swap'); void pTitle.offsetWidth; pTitle.classList.add('swap');
+      pMeta.textContent = meta; pOpen.href = href;
+      pOpen.style.display = href.charAt(0) === '#' ? 'none' : '';
+      bNo.textContent = no.split(' · ')[0].replace(' / ' + pad(CH.length), ''); bTitle.textContent = title;
+      document.documentElement.style.setProperty('--glow', acc);
+    }
+
+    /* 走りすぎたら、館内放送 */
+    var runner = $('runner'), runT = 0, runShown = 0, runCount = 0, runLines = [
+      '館内では、走らないでください。', 'お客さま、お客さま。', '作品は逃げません。', 'そんなに急いで、どちらへ。'
+    ];
+    function speedCheck() {
+      var fast = !warp && !intro && Math.abs(cam.sv) > 5.2;
+      var now = performance.now();
+      if (fast) { if (!runT) runT = now; } else runT = 0;
+      if (runT && now - runT > 260 && now - runShown > 9000) {
+        runShown = now; $('runnerT').textContent = runLines[runCount++ % runLines.length];
+        runner.classList.add('on'); setTimeout(function () { runner.classList.remove('on'); }, 2600);
+        gtag('event', 'running_in_gallery');
+      }
+    }
+
+    /* ---------- 移動 ---------- */
+    function cOf(key) {
+      var p = String(key).split(':'), e = byId[p[0]];
+      if (!e) return null;
+      if (!e.shots) return e.gz - 0.32;
+      if (p[1] != null && e.ph[+p[1]]) return e.ph[+p[1]].z - 0.14;
+      return e.gz - 0.3;
+    }
+    function jump(key) {
+      var k0 = String(key).split(':')[0];
+      if (k0 === 'top') return goC(0, true);
+      if (k0 === 'archive') { window.scrollTo({ top: $('archive').getBoundingClientRect().top + window.scrollY - 30, behavior: reduce ? 'auto' : 'smooth' }); return; }
+      if (isStatic) { var t = byId[k0]; var el = t && $('ch-' + t.id); if (el) el.scrollIntoView(); return; }
+      var c = cOf(key);
+      if (c != null) goC(clamp(c, 0, D));
+    }
+    /* 遠くへは「ワープ」：途中の写真は光の筋になって流れていく */
+    function goC(c, toTop) {
+      var y = toTop && c === 0 ? 0 : walkTop + c * unit;
+      if (isStatic) { window.scrollTo(0, y); return; }
+      var dist = Math.abs(c - cam.c);
+      if (dist > 0.05 && cam.c >= 0) warp = { from: cam.c, to: c, t0: performance.now(), dur: Math.min(2600, 700 + dist * 70), long: dist > 4 };
+      window.scrollTo(0, y);
+      start();
+    }
+    document.addEventListener('click', function (ev) {
+      var a = ev.target.closest('[data-jump]');
+      if (!a) return;
+      ev.preventDefault();
+      jump(a.dataset.jump);
+      if (a.id === 'resume') gtag('event', 'resume', { exhibition: a.dataset.jump.split(':')[0] });
+    });
+    bPrev.addEventListener('click', function () { jump(CH[Math.max(0, cur - 1)].id); });
+    bNext.addEventListener('click', function () { cur >= CH.length - 1 ? jump('archive') : jump(CH[Math.max(0, cur + 1)].id); });
+    $('pRnd').addEventListener('click', function () {
+      var p = photos[Math.floor(Math.random() * photos.length)];
+      jump(p.ex.id + ':' + p.i);
+      gtag('event', 'random_photo', { exhibition: p.ex.id });
+    });
+    /* 縦線をつまんで、好きな深さへ */
+    (function () {
+      var drag = false;
+      function at(ev) { var r = rLine.getBoundingClientRect(); goC(clamp((ev.clientY - r.top) / r.height, 0, 1) * D); }
+      rLine.addEventListener('pointerdown', function (ev) { drag = true; rLine.setPointerCapture(ev.pointerId); at(ev); });
+      rLine.addEventListener('pointermove', function (ev) { if (drag) { warp = null; var r = rLine.getBoundingClientRect(); window.scrollTo(0, walkTop + clamp((ev.clientY - r.top) / r.height, 0, 1) * D * unit); } });
+      rLine.addEventListener('pointerup', function () { drag = false; });
+    })();
+
+    /* ---------- 前回の続き ---------- */
+    var lastKey = store('ex-last');
+    if (lastKey && byId[lastKey.split(':')[0]] && byId[lastKey.split(':')[0]].shots) {
+      var le = byId[lastKey.split(':')[0]], li = lastKey.split(':')[1];
+      $('resumeT').textContent = le.year + '「' + (le.short || le.title) + '」' + (li != null ? ' 写真' + pad(+li + 1) : '');
+      $('resume').dataset.jump = lastKey;
+      $('resume').classList.add('show');
+    }
+
+    /* ---------- 写真をひらく ---------- */
+    var lb = $('lb'), lbImg = $('lbImg'), lbAt = 0, lbFrom = null;
+    function lbShow(g) {
+      lbAt = (g + photos.length) % photos.length;
+      var p = photos[lbAt], e = p.ex, s = e.shots[p.i];
+      lbImg.classList.remove('ok');
+      lbImg.onload = function () { lbImg.classList.add('ok'); };
+      lbImg.src = src(e, p.i, 'l'); lbImg.alt = e.title + '：' + s[2];
+      if (lbImg.complete && lbImg.naturalWidth) lbImg.classList.add('ok');
+      $('lbNo').textContent = 'No.' + pad(e.no) + ' — ' + e.year + ' · ' + pad(p.i + 1) + ' / ' + pad(e.shots.length);
+      $('lbTitle').textContent = e.title + '　' + e.place;
+      $('lbN').textContent = pad(p.i + 1); $('lbCap').textContent = s[2];
+      $('lbLink').href = e.href;
+      var nx = photos[(lbAt + 1) % photos.length]; (new Image()).src = src(nx.ex, nx.i, 'l');
+    }
+    function lbOpen(g) {
+      lbFrom = document.activeElement; lbShow(g);
+      lb.classList.add('open'); document.body.classList.add('no-scroll'); $('lbX').focus();
+      gtag('event', 'photo_open', { exhibition: photos[g].ex.id });
+    }
+    function lbClose() { lb.classList.remove('open'); document.body.classList.remove('no-scroll'); if (lbFrom) lbFrom.focus({ preventScroll: true }); }
+    $('lbX').addEventListener('click', lbClose);
+    $('lbPrev').addEventListener('click', function () { lbShow(lbAt - 1); });
+    $('lbNext').addEventListener('click', function () { lbShow(lbAt + 1); });
+    lb.addEventListener('click', function (ev) { if (ev.target === lb || ev.target.classList.contains('lb-stage')) lbClose(); });
+    (function () {
+      var sx = 0, sy = 0;
+      lb.addEventListener('touchstart', function (ev) { sx = ev.touches[0].clientX; sy = ev.touches[0].clientY; }, { passive: true });
+      lb.addEventListener('touchend', function (ev) {
+        var dxx = ev.changedTouches[0].clientX - sx, dyy = ev.changedTouches[0].clientY - sy;
+        if (Math.abs(dxx) > 50 && Math.abs(dxx) > Math.abs(dyy)) lbShow(lbAt + (dxx < 0 ? 1 : -1));
+      });
+    })();
+    world.addEventListener('click', function (ev) {
+      var b = ev.target.closest('.ph-hit'); if (!b) return;
+      var fig = b.parentNode, p = photos.filter(function (q) { return q.el === fig; })[0];
+      if (p) lbOpen(p.g);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (lb.classList.contains('open')) {
+        if (e.key === 'Escape') lbClose();
+        else if (e.key === 'ArrowRight') lbShow(lbAt + 1);
+        else if (e.key === 'ArrowLeft') lbShow(lbAt - 1);
+        else if (e.key === 'Tab') { var f = lb.querySelectorAll('button, a'), a0 = f[0], a1 = f[f.length - 1]; if (e.shiftKey && document.activeElement === a0) { e.preventDefault(); a1.focus(); } else if (!e.shiftKey && document.activeElement === a1) { e.preventDefault(); a0.focus(); } }
+        return;
+      }
+      if (e.key === 'Escape') setMenu(false);
+    });
+    /* キーボードで舞台の中のものにふれたら、その前まで歩く */
+    world.addEventListener('focusin', function (ev) {
+      if (isStatic) return;
+      var el = ev.target.closest('.it'), o = items.filter(function (q) { return q.el === el; })[0];
+      if (o) goC(clamp(o.z - 0.2, 0, D));
+    });
+
+    /* ---------- index ---------- */
+    $('count').textContent = pad(EX.length);
+    $('rows').innerHTML = EX.map(function (e) {
+      var th = e.shots ? '<span class="th"><img src="' + src(e, 0, 's') + '" alt="" loading="lazy" decoding="async"></span>'
+        : '<span class="th none" aria-hidden="true">' + (e.wip ? 'In<br>Preparation' : 'See Works<br>Page') + '</span>';
+      return '<li><a class="row" href="' + e.href + '" data-id="' + e.id + '" style="--c:' + (e.acc || '#cbbfb0') + '"><span class="y">' + e.year + '</span>' + th
+        + '<h3>' + esc(e.title) + (e.sub ? '<small>' + esc(e.sub) + '</small>' : '') + '</h3>'
+        + '<span class="vn">' + esc(e.venue) + '</span>'
+        + '<span class="kd">' + (e.live ? '<span class="on"><span class="live-dot" aria-hidden="true"></span>Now on View</span>' : '') + '<span>' + e.kindEn + '</span><span class="jp">' + e.kindLabel + '</span></span>'
+        + '<span class="arr" aria-hidden="true"></span></a></li>';
+    }).join('');
+
+    /* ---------- マウスのとき：目線・案内・のぞき窓 ---------- */
+    var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    var cursor = $('cursor'), peek = $('peek'), peekImg = $('peekImg');
+    if (fine && !reduce) {
+      var mx = 0, my = 0, kx = 0, ky = 0, qx = 0, qy = 0, loopOn = false;
+      cursor.style.display = 'block'; peek.style.display = 'block';
+      function follow() {
+        kx += (mx - kx) * 0.22; ky += (my - ky) * 0.22;
+        qx += (mx - qx) * 0.12; qy += (my - qy) * 0.12;
+        cursor.style.transform = 'translate3d(' + kx.toFixed(1) + 'px,' + ky.toFixed(1) + 'px,0)';
+        peek.style.transform = 'translate3d(' + (qx + 28).toFixed(1) + 'px,' + (qy - 100).toFixed(1) + 'px,0) rotate(' + clamp((mx - qx) * 0.05, -6, 6).toFixed(2) + 'deg)';
+        if (Math.abs(mx - kx) + Math.abs(my - ky) + Math.abs(mx - qx) + Math.abs(my - qy) > 0.6) requestAnimationFrame(follow); else loopOn = false;
+      }
+      document.addEventListener('mousemove', function (ev) {
+        mx = ev.clientX; my = ev.clientY;
+        cam.tx = (mx / vw - 0.5) * vw * 0.06; cam.ty = (my / vh - 0.5) * vh * 0.05;
+        if (!loopOn) { loopOn = true; requestAnimationFrame(follow); }
+      }, { passive: true });
+      function setCur(on, t, s) { cursor.classList.toggle('on', on); if (t) { $('curT').textContent = t; $('curS').textContent = s; } }
+      document.addEventListener('mouseover', function (ev) {
+        var t = ev.target;
+        if (t.closest && t.closest('.ph-hit')) setCur(true, 'View', '拡大する');
+        else if (t.closest && t.closest('.it.end')) setCur(true, 'Open', '記録ページへ');
+        else setCur(false);
+        var row = t.closest && t.closest('.row'), e = row && byId[row.dataset.id];
+        if (e && e.shots) { peekImg.src = src(e, 1, 's'); peek.classList.add('on'); } else peek.classList.remove('on');
+      });
+      document.documentElement.addEventListener('mouseleave', function () { setCur(false); peek.classList.remove('on'); });
+    }
+
+    /* トラックパッドの横スワイプも、前進に */
+    if (!isStatic) {
+      window.addEventListener('wheel', function (ev) {
+        if (Math.abs(ev.deltaX) <= Math.abs(ev.deltaY) * 1.2) return;
+        var y = window.scrollY;
+        if (y < walkTop || y > walkTop + walkLen) return;
+        ev.preventDefault(); window.scrollBy(0, ev.deltaX);
+      }, { passive: false });
+    }
+
+    /* ---------- スクロール：バー・ナビ ---------- */
+    var navEl = $('top-nav'), bar0 = $('progress');
+    function onScroll() {
+      var y = window.scrollY, max = Math.max(1, document.documentElement.scrollHeight - vh);
+      bar0.style.transform = 'scaleX(' + (y / max).toFixed(4) + ')';
+      navEl.classList.toggle('scrolled', isStatic ? y > 30 : y > walkTop + walkLen + vh * 0.3);
+      if (!running && !isStatic) start();
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    var rt;
+    window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { layout(); onScroll(); }, 120); });
+
+    /* 舞台が見えているあいだだけ、動かす */
+    if (!isStatic && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (en) { en.forEach(function (x) { if (x.isIntersecting) start(); else stop(); }); }).observe(stage);
+    }
+
+    /* ---------- 現れる動き ---------- */
+    if (!reduce && 'IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (en) {
+        en.forEach(function (x) {
+          if (!x.isIntersecting) return;
+          x.target.classList.add('in'); io.unobserve(x.target);
+          if (x.target.id === 'closing') receipt();
+        });
+      }, { threshold: 0.15 });
+      document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+    } else {
+      document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
+      receipt();
+    }
+    /* 閉館のご案内に、本日の記録を */
+    function receipt() {
+      var n = Object.keys(seenPh).length, v = CH.filter(function (e) { return seenCh[e.id]; }).length;
+      $('rcWalk').textContent = (maxC * 1.6).toFixed(1) + ' m';
+      $('rcVenue').textContent = v + ' / ' + CH.length;
+      $('rcPh').textContent = n + ' 枚';
+    }
+    window.addEventListener('scroll', function () { if ($('closing').classList.contains('in')) receipt(); }, { passive: true });
+
+    /* ---------- hero：ことばが入れ替わる ---------- */
     if (!reduce) setInterval(function () {
-      if (!heroVisible || document.hidden) return;
+      if (document.hidden || cam.c > 0.4) return;
       rot.classList.add('out');
       setTimeout(function () {
         wi = (wi + 1) % words.length;
@@ -1007,295 +1437,22 @@
       }, 620);
     }, 3800);
 
-    /* ---------- prologue：数字 ---------- */
-    var venueNames = [];
-    EX.forEach(function (e) { e.venue.split(' ／ ').forEach(function (v) { var n = v.replace(/（.*?）/, ''); if (venueNames.indexOf(n) < 0) venueNames.push(n); }); });
-    var nPhotos = CH.reduce(function (a, e) { return a + e.shots.length; }, 0);
-    var years = +EX[0].year - +EX[EX.length - 1].year + 1;
-    document.getElementById('stats').innerHTML = [[EX.length, 'Exhibitions', '展示'], [venueNames.length, 'Venues', '会場'], [nPhotos, 'Photographs', '枚の写真'], [years, 'Years', '年']]
-      .map(function (s) { return '<li><b data-count="' + s[0] + '">' + (reduce ? pad(s[0]) : '00') + '</b><span class="en">' + s[1] + '</span><span>' + s[2] + '</span></li>'; }).join('');
-    function countUp() {
-      document.querySelectorAll('#stats b').forEach(function (b, k) {
-        var t = +b.dataset.count, t0 = performance.now() + k * 120, dur = 1600;
-        (function f(now) {
-          var q = Math.min(1, Math.max(0, (now - t0) / dur)), ez = 1 - Math.pow(1 - q, 4);
-          b.textContent = pad(Math.round(t * ez));
-          if (q < 1) requestAnimationFrame(f);
-        })(performance.now());
-      });
+    /* ---------- はじめる ---------- */
+    if (isStatic) {
+      photos.forEach(load);
+      items.forEach(function (o) { o.el.classList.add('on'); });
     }
-
-    /* ---------- ticker：会場の名前 ---------- */
-    var tk = EX.map(function (e) {
-      return e.venue.split(' ／ ').map(function (v) { return '<span><em>' + e.year + '</em>' + esc(v.replace(/（.*?）/, '')) + '</span><i>✳</i>'; }).join('');
-    }).join('');
-    document.getElementById('ticker').innerHTML = tk + tk;
-
-    /* ---------- chapters ---------- */
-    var main = document.getElementById('chapters');
-    EX.forEach(function (e) {
-      var sec = document.createElement('section');
-      if (!e.shots) {
-        sec.className = 'itl'; sec.id = 'ch-' + e.id;
-        sec.setAttribute('aria-label', e.year + ' ' + e.title);
-        sec.innerHTML = '<div class="itl-in"><p class="itl-year" aria-hidden="true" style="display:flex;line-height:1">' + odo(e.year) + '</p>'
-          + '<div><span class="en">' + e.kindEn + (e.wip ? ' — In Preparation' : '') + '</span>'
-          + '<h3>' + esc(e.title) + (e.sub ? '<small>' + esc(e.sub) + '</small>' : '') + '</h3>'
-          + '<p>' + esc(e.venue) + '</p><p>' + esc(e.note) + '</p></div>'
-          + '<a class="btn" href="' + e.href + '">' + e.linkLabel + ' <span class="ar" aria-hidden="true">→</span></a></div>';
-        main.appendChild(sec); e.sec = sec; return;
-      }
-      var no = CH.indexOf(e) + 1;
-      sec.className = 'ch'; sec.id = anchorOf(e);
-      sec.style.setProperty('--acc', e.acc);
-      sec.setAttribute('aria-labelledby', 't-' + e.id);
-      var intro = '<div class="ch-intro">'
-        + (e.live ? '<p class="ch-no is-live"><span class="live-dot" aria-hidden="true"></span>Now on View — 開催中 · No.' + pad(no) + '</p>'
-                  : '<p class="ch-no">No.' + pad(no) + ' — ' + e.kindEn + '</p>')
-        + '<p class="ch-year" aria-hidden="true">' + odo(e.year) + '</p>'
-        + '<h2 id="t-' + e.id + '">' + esc(e.title) + (e.sub ? '<small>' + esc(e.sub) + '</small>' : '') + '</h2>'
-        + '<dl class="ch-meta"><div><dt>Date</dt><dd>' + e.date + '</dd></div><div><dt>Type</dt><dd>' + e.kindLabel + '</dd></div>'
-        + '<div class="wide"><dt>Venue</dt><dd>' + esc(e.venue) + '</dd></div></dl>'
-        + '<p class="ch-quote">' + esc(e.quote) + '</p>'
-        + '<div class="ch-btns"><a class="btn primary" href="' + e.href + '">記録をひらく <span class="ar" aria-hidden="true">→</span></a>'
-        + (e.extra || []).map(function (x) {
-            return '<a class="btn" href="' + x.href + '"' + (x.ext ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + x.label + ' <span class="ar" aria-hidden="true">' + (x.ext ? '↗' : '→') + '</span></a>';
-          }).join('') + '</div>'
-        + '<p class="ch-hint" aria-hidden="true"><i></i><span>Scroll — ' + pad(e.shots.length) + ' photographs<small>' + ETIQUETTE[(no - 1) % ETIQUETTE.length] + '</small></span></p></div>';
-      var photos = e.shots.map(function (s, i) {
-        var ar = (s[0] / s[1]).toFixed(4), sm = i % 3 === 2;
-        var vh = Math.round(60 * (sm ? 0.74 : 1) * s[0] / s[1]), mvh = Math.round(46 * (sm ? 0.84 : 1) * s[0] / s[1]);
-        return '<figure class="ph' + (sm ? ' sm' + (i % 2 ? ' lo' : '') : '') + '" style="--ar:' + ar + '">'
-          + '<a href="' + e.href + '" tabindex="-1"><img src="' + src(e, i, 'l') + '" srcset="' + src(e, i, 's') + ' 720w, ' + src(e, i, 'l') + ' ' + s[0] + 'w"'
-          + ' sizes="(max-width: 700px) ' + mvh + 'vh, ' + vh + 'vh" alt="' + esc(e.title + '：' + s[2]) + '" width="' + s[0] + '" height="' + s[1] + '" loading="lazy" decoding="async"></a>'
-          + '<figcaption><span class="n">' + pad(i + 1) + '</span>' + esc(s[2]) + '</figcaption></figure>';
-      }).join('');
-      var next = EX[EX.indexOf(e) + 1];
-      var end = '<a class="ch-end" href="' + e.href + '"><span class="en">No.' + pad(no) + ' / ' + pad(CH.length) + ' — ' + e.year + '</span>'
-        + '<b>「' + esc(e.title) + '」の記録を、もっと見る</b><span class="arrow" aria-hidden="true"></span>'
-        + '<span class="next">' + (next ? '次の会場まで、徒歩0分。<br>↓ ' + next.year + '「' + esc(next.short || next.title) + '」' : '出口は、こちらです。<br>↓ すべての展示の一覧へ') + '</span></a>';
-      sec.innerHTML = '<div class="ch-pin"><div class="ch-track">' + intro + photos + end + '</div></div>';
-      splitEl(sec.querySelector('h2'), 260);
-      main.appendChild(sec);
-      e.sec = sec; e.track = sec.querySelector('.ch-track'); e.dist = 0; e.top = 0;
-    });
-
-    document.querySelectorAll('.split-me').forEach(function (el) { splitEl(el); });
-
-    /* ---------- index ---------- */
-    document.getElementById('count').textContent = pad(EX.length);
-    document.getElementById('rows').innerHTML = EX.map(function (e) {
-      var th = e.shots ? '<span class="th"><img src="' + src(e, 0, 's') + '" alt="" loading="lazy" decoding="async"></span>'
-        : '<span class="th none" aria-hidden="true">' + (e.wip ? 'In<br>Preparation' : 'See Works<br>Page') + '</span>';
-      return '<li><a class="row" href="' + e.href + '"><span class="y">' + e.year + '</span>' + th
-        + '<h3>' + esc(e.title) + (e.sub ? '<small>' + esc(e.sub) + '</small>' : '') + '</h3>'
-        + '<span class="vn">' + esc(e.venue) + '</span>'
-        + '<span class="kd">' + (e.live ? '<span class="on"><span class="live-dot" aria-hidden="true"></span>Now on View</span>' : '') + '<span>' + e.kindEn + '</span><span class="jp">' + e.kindLabel + '</span></span>'
-        + '<span class="arr" aria-hidden="true"></span></a></li>';
-    }).join('');
-
-    /* ---------- dock ---------- */
-    var dock = document.getElementById('dock'), route = document.getElementById('route'), routeFill = document.getElementById('routeFill');
-    /* 駅は、各区間の真ん中に置く（線は会場の中を歩くあいだ、次の駅へ向かって伸びる） */
-    route.insertAdjacentHTML('beforeend', CH.map(function (e, i) {
-      return '<button type="button" class="st" data-jump="' + e.id + '" data-tip="No.' + pad(i + 1) + '　' + e.year + '「' + esc(e.short || e.title) + '」"'
-        + ' aria-label="No.' + pad(i + 1) + ' ' + e.year + ' ' + esc(e.title) + 'へ" style="--x:' + ((i + 0.5) / CH.length * 100).toFixed(2) + '%;--seg:' + e.acc + '">'
-        + '<i></i><span>' + e.year + '</span></button>';
-    }).join(''));
-    var stations = route.querySelectorAll('.st');
-    var dNo = document.getElementById('dNo'), dTitle = document.getElementById('dTitle'), dPh = document.getElementById('dPh');
-    var dPrev = document.getElementById('dPrev'), dNext = document.getElementById('dNext');
-    var cur = -2;
-    dPrev.addEventListener('click', function () { jump(CH[Math.max(0, cur < 0 ? 0 : cur - 1)].id); });
-    dNext.addEventListener('click', function () { cur >= CH.length - 1 ? jump('archive') : jump(CH[cur < 0 ? 0 : cur + 1].id); });
-    /* どこかの一枚へ（来るたびに、違う写真と出会えるように） */
-    document.getElementById('dRnd').addEventListener('click', function () {
-      var e = CH[Math.floor(Math.random() * CH.length)], i = Math.floor(Math.random() * e.shots.length);
-      jump(e.id + ':' + i);
-      gtag('event', 'random_photo', { exhibition: e.id });
-    });
-
-    /* ---------- layout：縦の距離＝横の距離 ---------- */
-    var isStatic = reduce;
-    if (isStatic) document.documentElement.classList.add('static');
-    var vw = 0, vh = 0;
-    function layout() {
-      vw = document.documentElement.clientWidth; vh = window.innerHeight;
-      CH.forEach(function (e) {
-        if (isStatic) { e.sec.style.height = ''; e.dist = 0; return; }
-        e.dist = Math.max(0, e.track.scrollWidth - vw);
-        e.sec.style.height = (e.dist + e.sec.firstChild.offsetHeight) + 'px';
-      });
-      CH.forEach(function (e) { e.top = e.sec.getBoundingClientRect().top + window.scrollY; });
-      onScroll();
-    }
-
-    /* 章の中の、ある写真が画面の中央に来る位置 */
-    function targetY(e, i) {
-      if (isStatic) return e.top - 20;
-      if (i == null) return e.top;
-      var f = e.track.querySelectorAll('.ph')[i];
-      var x = f.offsetLeft - (vw - f.offsetWidth) / 2;
-      return e.top + Math.min(e.dist, Math.max(0, x));
-    }
-    function jump(key) {
-      var p = String(key).split(':'), e = byId[p[0]], y;
-      if (p[0] === 'top') y = 0;
-      else if (p[0] === 'archive') y = document.getElementById('archive').getBoundingClientRect().top + window.scrollY - 40;
-      else if (e && e.shots) y = targetY(e, p[1] != null ? +p[1] : null);
-      else if (e) y = e.sec.getBoundingClientRect().top + window.scrollY - 60;
-      else return;
-      if (isStatic && e && e.shots && p[1] != null) {
-        var f = e.track.querySelectorAll('.ph')[+p[1]];
-        e.track.scrollTo({ left: f.offsetLeft - 20 });
-      }
-      window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
-    }
-    document.addEventListener('click', function (ev) {
-      var a = ev.target.closest('[data-jump]');
-      if (!a) return;
-      ev.preventDefault();
-      jump(a.dataset.jump);
-      if (a.id === 'slideLink') gtag('event', 'hero_slide', { exhibition: a.dataset.jump.split(':')[0] });
-      if (a.id === 'resume') gtag('event', 'resume', { exhibition: a.dataset.jump.split(':')[0] });
-    });
-
-    /* ---------- scroll ---------- */
-    var nav = document.getElementById('top-nav'), hero = document.getElementById('top'), archive = document.getElementById('archive');
-    var bar = document.getElementById('progress'), b2t = document.getElementById('b2t'), b2tVal = document.getElementById('b2tVal');
-    var ticking = false, seenCh = {}, saveT;
-    function remember(v) { clearTimeout(saveT); saveT = setTimeout(function () { store('ex-last', v); }, 400); }
-    /* 順路の使い方を、最初の一回だけそっと */
-    var hintDone = !!store('ex-dock-hint'), dockHint = document.getElementById('dockHint');
-    function showHint() {
-      hintDone = true; store('ex-dock-hint', '1');
-      setTimeout(function () { dockHint.classList.add('on'); }, 900);
-      setTimeout(function () { dockHint.classList.remove('on'); }, 5600);
-    }
-    function onScroll() {
-      var y = window.scrollY, active = -1, bg = '', at = -1, prog = 0;
-      var max = Math.max(1, document.documentElement.scrollHeight - vh), pr = Math.min(1, y / max);
-      bar.style.transform = 'scaleX(' + pr.toFixed(4) + ')';
-      b2tVal.style.strokeDashoffset = (301.6 * (1 - pr)).toFixed(1);
-      nav.classList.toggle('scrolled', y > 30);
-      CH.forEach(function (e, i) {
-        var p = e.dist ? Math.min(1, Math.max(0, (y - e.top) / e.dist)) : (y >= e.top - vh * 0.5 ? 1 : 0);
-        if (!isStatic) e.track.style.transform = 'translate3d(' + (-p * e.dist).toFixed(1) + 'px,0,0)';
-        var inView = y + vh * 0.5 >= e.top && y + vh * 0.5 < e.top + e.sec.offsetHeight;
-        if (inView) {
-          active = i; bg = e.bg;
-          /* いま見ている写真を覚えておく（次に来たとき、ここから） */
-          prog = p;
-          if (!isStatic && e.dist) {
-            var ph = e.track.querySelectorAll('.ph'), x = p * e.dist + vw / 2; at = 0;
-            for (var j = 0; j < ph.length; j++) if (ph[j].offsetLeft <= x) at = j;
-            remember(e.id + ':' + at);
-          } else remember(e.id);
-        }
-        if (y + vh * 0.5 >= e.top) active = Math.max(active, i);
-        stations[i].setAttribute('aria-current', inView);
-      });
-      document.body.style.backgroundColor = bg || '';
-      var pastAll = archive.getBoundingClientRect().top < vh * 0.5;
-      if (pastAll) active = CH.length;
-      /* 順路の線：駅 i から、歩いたぶんだけ次の駅へ */
-      var f = active < 0 ? 0 : active >= CH.length ? 1 : Math.min(1, (active + 0.5 + prog) / CH.length);
-      routeFill.style.setProperty('--f', f.toFixed(4));
-      stations.forEach(function (st, i) { st.classList.toggle('past', i < active || active >= CH.length); });
-      if (active >= 0 && active < CH.length) {
-        var n = CH[active].shots.length;
-        dPh.innerHTML = at >= 0 ? '<span class="lb">写真 </span><em>' + pad(at + 1) + '</em> / ' + pad(n) : pad(n) + '<span class="lb"> 枚</span>';
-      } else dPh.textContent = '';
-      var heroGone = hero.getBoundingClientRect().bottom < vh * 0.4;
-      heroVisible = !heroGone;
-      dock.classList.toggle('show', heroGone);
-      if (heroGone && !hintDone) showHint();
-      b2t.classList.toggle('show', heroGone);
-      if (active !== cur) {
-        cur = active;
-        if (cur >= CH.length) { dNo.textContent = 'Exit'; dTitle.textContent = 'すべての展示の一覧'; }
-        else if (cur < 0) { dNo.textContent = 'Lobby'; dTitle.textContent = 'まもなく開場です — 下へ'; }
-        else {
-          var e = CH[cur];
-          dNo.innerHTML = 'No.' + pad(cur + 1) + '<span class="yr"> · ' + e.year + '</span>';
-          dTitle.textContent = e.title;
-          if (!seenCh[e.id]) { seenCh[e.id] = 1; gtag('event', 'chapter_view', { exhibition: e.id }); }
-        }
-        dPrev.disabled = cur <= 0; dNext.disabled = cur >= CH.length;
-      }
-      ticking = false;
-    }
-    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
-    var rt;
-    window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(layout, 120); });
-    window.addEventListener('load', layout);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
-    layout();
-    b2t.addEventListener('click', function (ev) { ev.preventDefault(); window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
-
-    /* トラックパッドの横スワイプも、そのまま会場を歩く動きに */
-    if (!isStatic) {
-      window.addEventListener('wheel', function (ev) {
-        if (Math.abs(ev.deltaX) <= Math.abs(ev.deltaY) * 1.2) return;
-        var y = window.scrollY;
-        var inCh = CH.some(function (e) { return y >= e.top - 2 && y <= e.top + e.dist + 2; });
-        if (!inCh) return;
-        ev.preventDefault();
-        window.scrollBy(0, ev.deltaX);
-      }, { passive: false });
-    }
-    /* キーボードで章の中のボタンにふれたら、その位置まで運ぶ */
-    main.addEventListener('focusin', function (ev) {
-      if (isStatic) return;
-      var e = CH.filter(function (c) { return c.sec.contains(ev.target); })[0];
-      if (!e) return;
-      var el = ev.target.closest('.ch-intro, .ch-end, .ph'), want;
-      if (!el) return;
-      if (el.classList.contains('ch-intro')) want = e.top;
-      else want = e.top + Math.min(e.dist, Math.max(0, el.offsetLeft - (vw - el.offsetWidth) / 2));
-      if (Math.abs(window.scrollY - want) > 4) window.scrollTo({ top: want });
-    });
-
-    /* ---------- 現れる動き ---------- */
-    if (!reduce && 'IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (en) {
-        en.forEach(function (x) {
-          if (!x.isIntersecting) return;
-          x.target.classList.add('in'); io.unobserve(x.target);
-          if (x.target.id === 'prologue') countUp();
-        });
-      }, { rootMargin: '0px -4% 0px -4%', threshold: 0.12 });
-      document.querySelectorAll('.ph, .ch, .itl, .reveal').forEach(function (el) { io.observe(el); });
-    } else {
-      document.querySelectorAll('.ph, .ch, .itl, .reveal').forEach(function (el) { el.classList.add('in'); });
-      if (!reduce) countUp();
-    }
-
-    /* ---------- 写真の上だけに現れる、ちいさな案内（マウスのときだけ） ---------- */
-    var cursor = document.getElementById('cursor');
-    if (!reduce && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-      var cx = 0, cy = 0, tx = 0, ty = 0, cOn = false, cRun = false;
-      cursor.style.display = 'block';
-      function cLoop() {
-        cx += (tx - cx) * 0.22; cy += (ty - cy) * 0.22;
-        cursor.style.transform = 'translate3d(' + cx.toFixed(1) + 'px,' + cy.toFixed(1) + 'px,0)';
-        if (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.4) requestAnimationFrame(cLoop); else cRun = false;
-      }
-      function cCheck() {
-        var el = document.elementFromPoint(tx, ty), hit = !!(el && el.closest('.ph a, .ch-end'));
-        if (hit && !cOn) { cx = tx; cy = ty; cursor.style.transform = 'translate3d(' + cx + 'px,' + cy + 'px,0)'; }
-        if (hit !== cOn) { cOn = hit; cursor.classList.toggle('on', hit); }
-      }
-      document.addEventListener('mousemove', function (ev) {
-        tx = ev.clientX; ty = ev.clientY; cCheck();
-        if (!cRun) { cRun = true; requestAnimationFrame(cLoop); }
-      }, { passive: true });
-      window.addEventListener('scroll', function () { if (tx || ty) cCheck(); }, { passive: true });
-      document.documentElement.addEventListener('mouseleave', function () { cOn = false; cursor.classList.remove('on'); });
-    }
+    layout(true);
+    cam.c = target();
+    /* 入口では、奥から会場が近づいてくる */
+    if (!isStatic && cam.c < 0.05) intro = performance.now();
+    lastView = cam.c - (intro ? 2.8 : 0);
+    onScroll(); start();
+    window.addEventListener('load', function () { layout(true); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { layout(true); });
 
     /* ---------- SP menu ---------- */
-    var burger = document.getElementById('hamburger'), links = document.getElementById('navLinks');
+    var burger = $('hamburger'), links = $('navLinks');
     function setMenu(open) {
       links.classList.toggle('open', open); burger.classList.toggle('open', open);
       burger.setAttribute('aria-expanded', open); burger.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
@@ -1303,7 +1460,6 @@
     }
     burger.addEventListener('click', function () { setMenu(!links.classList.contains('open')); });
     links.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
   })();
   </script>
 </body>
