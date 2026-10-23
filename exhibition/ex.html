@@ -351,7 +351,8 @@
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-      *, *::before, *::after { animation-duration: 0.001ms !important; animation-delay: 0s !important; transition-duration: 0.001ms !important; transition-delay: 0s !important; }
+      /* ヒーローの開幕と幕（.veil）だけは、設定に関係なく演出どおりに動かす */
+      :not(.hero, .hero *, .veil), :not(.hero, .hero *)::before, :not(.hero, .hero *)::after { animation-duration: 0.001ms !important; animation-delay: 0s !important; transition-duration: 0.001ms !important; transition-delay: 0s !important; }
     }
   </style>
 </head>
@@ -513,10 +514,9 @@
          3. 題字は地層のように横にずれた断片から、線の上で組み直される（脱領土化 → 再領土化）
          4. 光が一閃し、英題は無数の記号から解読される
          5. スクロールすると、題字はふたたび断片へほどけていく
-       動きを減らす設定のときは、幕も断片も使わず静かに浮かび上がるだけ。
+       この開幕は作品の一部なので、OS の「動きを減らす」設定に関係なく再生する。
     ════════════════════════════════════════ */
-    var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var MOTION = !REDUCED && !!Element.prototype.animate;
+    var MOTION = !!Element.prototype.animate;
     var EXPO = 'cubic-bezier(0.16, 1, 0.3, 1)', TEAR = 'cubic-bezier(0.76, 0, 0.18, 1)';
     var t = $('heroTitle'), txt = t.textContent.trim(), veil = $('veil'), slices = [], introDone = !MOTION;
     function rnd(a, b) { return a + Math.random() * (b - a); }
@@ -592,10 +592,7 @@
           if (!done) requestAnimationFrame(tick);
         });
       }, 1800);
-    } else {
-      veil.remove();
-      if (REDUCED && Element.prototype.animate) t.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1400, easing: 'ease-out', fill: 'backwards' });
-    }
+    } else veil.remove();
 
     /* スクロール：題字はふたたび地層の断片へほどけていく */
     function disperse() {
